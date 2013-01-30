@@ -1,6 +1,7 @@
 # Standard imports
 import urllib
 import xml.etree.ElementTree as ET
+import os
 
 # Django imports
 from django.conf import settings
@@ -8,15 +9,20 @@ from django.conf import settings
 
 class ChoicesAPI():
 
+    def example_hospitals(self):
+        example_data = open(os.path.join(settings.PROJECT_ROOT, 'organisations', 'fixtures', 'SW1A1AA.xml'))
+        organisations = self.parse_organisations(example_data)
+        return organisations
+
     def hospitals_by_postcode(self, postcode):
         base_url = settings.NHS_CHOICES_BASE_URL
 
-        # organisation_type
         url = "%(base_url)sorganisations/hospitals/postcode/%(postcode)s.xml?apikey=%(apikey)s&range=5" % \
                 {"base_url": settings.NHS_CHOICES_BASE_URL,
                  "postcode": postcode,
                  "apikey": settings.NHS_CHOICES_API_KEY}
-        return urllib.urlopen(url)
+        organisations = self.parse_organisations(urllib.urlopen(url))
+        return organisations
 
     def parse_organisations(self, document):
         tree = ET.parse(document)
