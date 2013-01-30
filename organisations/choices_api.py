@@ -1,6 +1,6 @@
 # Standard imports
 import urllib
-from xml.dom import minidom
+import xml.etree.ElementTree as ET
 
 # Django imports
 from django.conf import settings
@@ -19,6 +19,16 @@ class ChoicesAPI():
         return urllib.urlopen(url)
 
     def parse_organisations(self, document):
-        xmldoc = minidom.parse(document)
-        results = xmldoc.getElementsByTagName("entry")
-        return results
+        tree = ET.parse(document)
+        organisations = []
+        # print tree
+
+        for entry_element in tree.getiterator('{http://www.w3.org/2005/Atom}entry'):
+            organisation = {}
+            organisation['id'] = entry_element.find('{http://www.w3.org/2005/Atom}id').text
+            content = entry_element.find('{http://www.w3.org/2005/Atom}content')
+            summary = content.find("{http://syndication.nhschoices.nhs.uk/services}organisationSummary")
+            organisation['name'] = summary.find('{http://syndication.nhschoices.nhs.uk/services}name').text
+
+            organisations.append(organisation)
+        return organisations
