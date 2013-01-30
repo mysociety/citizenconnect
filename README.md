@@ -14,6 +14,7 @@ up:
 
 ### Install the required software packages
 Assuming you're on a debian/ubuntu server:
+
     sudo xargs -a conf/packages apt-get install
 
 ### Create a postgres database and user
