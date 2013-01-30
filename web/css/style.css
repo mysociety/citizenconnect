@@ -1,0 +1,5 @@
+#wrapper {
+  width: 100%;
+  text-align: center; }
+  #wrapper #content {
+    margin: 0 auto; }
