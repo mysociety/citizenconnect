@@ -5,6 +5,7 @@
 ### General useful bits
 PyYAML
 psycopg2
+uk-postcode-utils
 
 ### Django related
 Django
@@ -23,3 +24,4 @@ django-pagination
 ### 'post_deploy_actions.bash'
 # xapian-haystack
 # django-haystack
+
