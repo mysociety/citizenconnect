@@ -21,11 +21,14 @@ class OrganisationList(TemplateView):
         context = super(OrganisationList, self).get_context_data(**kwargs)
         # Get the location GET parameter
         location = self.request.GET.get('location')
-
+        organisation_type = self.request.GET.get('organisation_type')
         context['location'] = location
+        api = ChoicesAPI()
         postcode = re.sub('\s+', '', location.upper())
-        if validation.is_valid_postcode(postcode):
-            api = ChoicesAPI()
-            organisations = api.hospitals_by_postcode(postcode)
-            context['organisations'] = organisations
+        if validation.is_valid_postcode(postcode) or validation.is_valid_partial_postcode(postcode):
+            search_type = 'postcode'
+        else:
+            search_type = 'name'
+        organisations = api.find_organisations(search_type, location, organisation_type)
+        context['organisations'] = organisations
         return context
