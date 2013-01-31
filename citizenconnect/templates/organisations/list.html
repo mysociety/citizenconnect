@@ -1,0 +1,7 @@
+<h1>Results: {{location }}</h1>
+Found: {{ organisations|length }}
+<ul>
+{% for organisation in organisations %}
+    <li>{{ organisation.name }}</li>
+{% endfor %}
+</ul>
