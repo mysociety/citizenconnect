@@ -2,3 +2,4 @@ conf/general.yml
 conf/httpd.conf
 *.pyc
 .DS_Store
+.sass-cache
