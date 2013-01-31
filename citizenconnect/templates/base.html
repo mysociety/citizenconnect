@@ -5,7 +5,12 @@
         <title>{% block fulltitle %}{% block title %}{% endblock %} :: NHS Citizen's Connect{% endblock %}</title>
         <meta charset="utf-8">
         {% block extra_headers %}{% endblock %}
-        <link href="{% static "css/style.css" %}" rel="stylesheet">
+        <!--[if lte IE 8]>
+            <link rel="stylesheet" href="{% static "css/style-old-ie.css" %}">
+        <![endif]-->
+        <!--[if gt IE 8]><!-->
+            <link rel="stylesheet" href="{% static "css/style.css" %}">
+        <!--<![endif]-->
         {% block extra_css %}{% endblock %}
         <script src="{% static "js/jquery-1.8.3.js" %}"></script>
         <script>
@@ -35,10 +40,8 @@
         <div id="staging_header">This is a staging site &ndash; any data saved here <strong>may be deleted</strong>.</div>
         {% endif %}
         <div id="wrapper">
-            <div id="content">
-                {% block content %}
-                {% endblock %}
-            </div>
+            {% block content %}
+            {% endblock %}
         </div>
 
     </body>

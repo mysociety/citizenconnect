@@ -1,4 +1,9 @@
 /**
+ * From: http://jakearchibald.github.com/sass-ie/
+ * Things from style.scss get put in here, but we turn on old-ie
+ * includes and force the 65em media query version of everything
+ */
+/**
  * This is the main stylesheet, it's included in base.html as style.css
  * or style-old-ie.css for IE <= 8.
  */
