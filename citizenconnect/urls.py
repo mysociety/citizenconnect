@@ -10,7 +10,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'citizenconnect.views.home', name='home'),
-    url(r'^organisations', include('organisations.urls')),
+    url(r'^organisations/', include('organisations.urls')),
 
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
