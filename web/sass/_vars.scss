@@ -1,0 +1,12 @@
+/**
+ * Site-wide Variables
+ */
+
+// Colours
+$font-color: #222 !default;
+$selected-background-color: #b3d4fc !default;
+$highlight-background-color: lighten($selected-background-color, 10%) !default;
+
+// Text
+$font-size: 1em !default;
+$line-height: 1.4em !default;
