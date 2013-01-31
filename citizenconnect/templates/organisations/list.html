@@ -1,5 +1,5 @@
-<h1>Results: {{location }}</h1>
-Found: {{ organisations|length }}
+<h1>Search results for: '{{location }}'</h1>
+Your search returned {{ organisations|length }} results.
 <ul>
 {% for organisation in organisations %}
     <li>{{ organisation.name }}</li>
