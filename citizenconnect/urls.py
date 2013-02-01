@@ -10,6 +10,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'citizenconnect.views.home', name='home'),
+    url(r'^ask-question$', 'citizenconnect.views.askquestion', name='ask-question'),
     # url(r'^citizenconnect/', include('citizenconnect.foo.urls')),
 
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
