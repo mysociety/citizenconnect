@@ -753,3 +753,14 @@ body {
 
 .ask-question .frequently-asked-questions .feature {
   background: #fef2e4; }
+
+.provider-results .results-list {
+  text-align: left; }
+  .provider-results .results-list ul {
+    margin-left: 0;
+    list-style: none; }
+    .provider-results .results-list ul li {
+      font-size: 1.25em;
+      padding: 0.5em; }
+    .provider-results .results-list ul li:nth-child(odd) {
+      background: #e4f0fe; }

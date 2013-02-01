@@ -111,3 +111,20 @@ body {
         }
     }
 }
+
+.provider-results {
+    .results-list {
+        text-align: left;
+        ul {
+            margin-left: 0;
+            list-style: none;
+            li {
+                font-size: $font-size * 1.25;
+                padding: 0.5em;
+            }
+            li:nth-child(odd){
+                background: $highlight-background-color;
+            }
+        }
+    }
+}
