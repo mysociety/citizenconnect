@@ -12,3 +12,5 @@ def pick_provider(request):
 def provider_results(request):
     return render(request, 'provider-results.html')
 
+def question_form(request):
+    return render(request, 'question-form.html')

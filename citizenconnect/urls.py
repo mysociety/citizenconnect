@@ -13,6 +13,7 @@ urlpatterns = patterns('',
     url(r'^ask-question$', 'citizenconnect.views.ask_question', name='ask-question'),
     url(r'^pick-provider$', 'citizenconnect.views.pick_provider', name='pick-provider'),
     url(r'^provider-results$', 'citizenconnect.views.provider_results', name='provider-results'),
+    url(r'^question-form$', 'citizenconnect.views.question_form', name='question-form'),
     # url(r'^citizenconnect/', include('citizenconnect.foo.urls')),
 
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
