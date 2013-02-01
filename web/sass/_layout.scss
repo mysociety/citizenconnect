@@ -3,78 +3,87 @@
  * Mixins to enable us to have a grid-like layout in the form that we want
  */
 
+// Variables - column and row widths will be calculated from these
+// Make sure that you don't any other borders, margins or padding to grid
+// elements directly but add them to children elements instead.
 
+// Make sure they also divide evenly between your chosen number of columns
 $mobile-width: 20em !default;
 $tablet-width: 45em !default;
 $desktop-width: 60em !default;
+$column-margin: 1em !default;
+$total-column-margins: 2 * $column-margin;
 
 // Grid wrapper
 .grid {
     margin: 0 auto;
 
     @include respond-min($tablet-width) {
-        width: 45em;
+        width: $tablet-width;
     }
 
     @include respond-min($desktop-width) {
-        width: 60em;
+        width: $desktop-width;
     }
 }
 
 // Row in a grid
 .row {
     @extend .clearfix;
-    margin-bottom: 1em;
+}
+
+.column {
+    margin: $column-margin;
+
+    @include respond-min($tablet-width) {
+        float: left;
+    }
 }
 
 .column-full {
+    @extend .column;
 
     @include respond-min($tablet-width) {
-        margin: 0 2em;
-        float: left;
-        width: 41em;
+        width: $tablet-width - $total-column-margins
     }
 
     @include respond-min($desktop-width) {
-        width: 56em;
+        width: $desktop-width - $total-column-margins;
     }
 }
 
 .column-1-2 {
+    @extend .column;
 
     @include respond-min($tablet-width) {
-        margin: 0 2em;
-        float: left;
-        width: 18.5em;
+        width: ($tablet-width / 2) - $total-column-margins;
     }
 
     @include respond-min($desktop-width) {
-        width: 26em;
+        width: ($desktop-width / 2) - $total-column-margins;
     }
 }
 
 .column-1-3 {
+    @extend .column;
 
     @include respond-min($tablet-width) {
-        margin: 0 2em;
-        float: left;
-        width: 11em;
+        width: ($tablet-width / 3) - $total-column-margins;
     }
 
     @include respond-min($desktop-width) {
-        width: 16em;
+        width: ($desktop-width / 2) - $total-column-margins;
     }
 }
 
 .column-2-3 {
+    @extend .column;
 
     @include respond-min($tablet-width) {
-        margin: 0 2em;
-        float: left;
-        width: 26em;
+        width: (($tablet-width / 3) * 2) - $total-column-margins;
     }
 
     @include respond-min($desktop-width) {
-        width: 36em;
+        width: (($tablet-width / 3) * 2) - $total-column-margins;
     }
 }

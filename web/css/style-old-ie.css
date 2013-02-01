@@ -688,38 +688,32 @@ textarea {
   width: 45em;
   width: 60em; }
 
-.row, .hero, .questions, .questions-more, .problems {
-  margin-bottom: 1em; }
+.column, .column-full, .problems .feature, .column-1-2, .hero .feature, .questions .feature, .questions-more .feature, .column-1-3, .column-2-3 {
+  margin: 1em;
+  float: left; }
 
 .column-full, .problems .feature {
-  margin: 0 2em;
-  float: left;
-  width: 41em;
-  width: 56em; }
+  width: 43em;
+  width: 58em; }
 
 .column-1-2, .hero .feature, .questions .feature, .questions-more .feature {
-  margin: 0 2em;
-  float: left;
-  width: 18.5em;
-  width: 26em; }
+  width: 20.5em;
+  width: 28em; }
 
 .column-1-3 {
-  margin: 0 2em;
-  float: left;
-  width: 11em;
-  width: 16em; }
+  width: 13em;
+  width: 28em; }
 
 .column-2-3 {
-  margin: 0 2em;
-  float: left;
-  width: 26em;
-  width: 36em; }
+  width: 28em;
+  width: 28em; }
 
 body {
   text-align: center; }
 
 .hero .feature {
-  height: 6em; }
+  min-height: 9.75;
+  min-height: 8.25em; }
   .hero .feature p {
     font-size: 1.5em; }
 
@@ -736,6 +730,8 @@ body {
 
 .feature {
   background: #e4f0fe; }
+  .feature p {
+    padding: 0.5em; }
 
 .emergency {
   color: red; }
