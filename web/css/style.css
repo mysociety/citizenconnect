@@ -589,26 +589,27 @@ textarea {
  * 2. The use of `table` rather than `block` is only necessary if using
  *    `:before` to contain the top-margins of child elements.
  */
-.clearfix:before, .row:before, .hero:before, .questions:before, .questions-more:before, .problems:before,
+.clearfix:before, .row:before, .hero:before, .homepage .questions:before, .homepage .questions-more:before, .homepage .problems:before, .ask-question .frequently-asked-questions:before,
 .clearfix:after,
 .row:after,
 .hero:after,
-.questions:after,
-.questions-more:after,
-.problems:after {
+.homepage .questions:after,
+.homepage .questions-more:after,
+.homepage .problems:after,
+.ask-question .frequently-asked-questions:after {
   content: " ";
   /* 1 */
   display: table;
   /* 2 */ }
 
-.clearfix:after, .row:after, .hero:after, .questions:after, .questions-more:after, .problems:after {
+.clearfix:after, .row:after, .hero:after, .homepage .questions:after, .homepage .questions-more:after, .homepage .problems:after, .ask-question .frequently-asked-questions:after {
   clear: both; }
 
 /*
  * For IE 6/7 only
  * Include this rule to trigger hasLayout and contain floats.
  */
-.clearfix, .row, .hero, .questions, .questions-more, .problems {
+.clearfix, .row, .hero, .homepage .questions, .homepage .questions-more, .homepage .problems, .ask-question .frequently-asked-questions {
   *zoom: 1; }
 
 /* ==========================================================================
@@ -687,32 +688,32 @@ textarea {
     .grid, #wrapper {
       width: 60em; } }
 
-.column, .column-full, .problems .feature, .column-1-2, .hero .feature, .questions .feature, .questions-more .feature, .column-1-3, .column-2-3 {
+.column, .column-full, .homepage .problems .feature, .ask-question .hero .feature, .column-1-2, .homepage .hero .feature, .homepage .questions .feature, .homepage .questions-more .feature, .column-1-3, .ask-question .frequently-asked-questions .feature, .column-2-3 {
   margin: 1em; }
   @media screen and (min-width: 45em) {
-    .column, .column-full, .problems .feature, .column-1-2, .hero .feature, .questions .feature, .questions-more .feature, .column-1-3, .column-2-3 {
+    .column, .column-full, .homepage .problems .feature, .ask-question .hero .feature, .column-1-2, .homepage .hero .feature, .homepage .questions .feature, .homepage .questions-more .feature, .column-1-3, .ask-question .frequently-asked-questions .feature, .column-2-3 {
       float: left; } }
 
 @media screen and (min-width: 45em) {
-  .column-full, .problems .feature {
+  .column-full, .homepage .problems .feature, .ask-question .hero .feature {
     width: 43em; } }
 @media screen and (min-width: 60em) {
-  .column-full, .problems .feature {
+  .column-full, .homepage .problems .feature, .ask-question .hero .feature {
     width: 58em; } }
 
 @media screen and (min-width: 45em) {
-  .column-1-2, .hero .feature, .questions .feature, .questions-more .feature {
+  .column-1-2, .homepage .hero .feature, .homepage .questions .feature, .homepage .questions-more .feature {
     width: 20.5em; } }
 @media screen and (min-width: 60em) {
-  .column-1-2, .hero .feature, .questions .feature, .questions-more .feature {
+  .column-1-2, .homepage .hero .feature, .homepage .questions .feature, .homepage .questions-more .feature {
     width: 28em; } }
 
 @media screen and (min-width: 45em) {
-  .column-1-3 {
+  .column-1-3, .ask-question .frequently-asked-questions .feature {
     width: 13em; } }
 @media screen and (min-width: 60em) {
-  .column-1-3 {
-    width: 28em; } }
+  .column-1-3, .ask-question .frequently-asked-questions .feature {
+    width: 18em; } }
 
 @media screen and (min-width: 45em) {
   .column-2-3 {
@@ -724,25 +725,8 @@ textarea {
 body {
   text-align: center; }
 
-@media screen and (min-width: 45em) {
-  .hero .feature {
-    min-height: 9.75; } }
-@media screen and (min-width: 45em) {
-  .hero .feature {
-    min-height: 8.25em; } }
-.hero .feature p {
+.hero p {
   font-size: 1.5em; }
-
-.questions .feature p {
-  font-size: 1.5em; }
-
-.questions-more .feature {
-  background: #fef2e4; }
-
-.problems .feature {
-  background: #fef2e4; }
-  .problems .feature p {
-    font-size: 1.25em; }
 
 .feature {
   background: #e4f0fe; }
@@ -751,3 +735,21 @@ body {
 
 .emergency {
   color: red; }
+
+@media screen and (min-width: 45em) {
+  .homepage .hero .feature {
+    min-height: 9.75; } }
+@media screen and (min-width: 45em) {
+  .homepage .hero .feature {
+    min-height: 8.25em; } }
+.homepage .questions .feature p {
+  font-size: 1.5em; }
+.homepage .questions-more .feature {
+  background: #fef2e4; }
+.homepage .problems .feature {
+  background: #fef2e4; }
+  .homepage .problems .feature p {
+    font-size: 1.25em; }
+
+.ask-question .frequently-asked-questions .feature {
+  background: #fef2e4; }

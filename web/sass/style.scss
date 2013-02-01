@@ -23,65 +23,14 @@ body {
 // Homepage hero area, a row in the grid
 .hero {
     @extend .row;
-    // Features in the hero are two column
-    .feature {
-        @extend .column-1-2;
-
-        // Match the heights when things are floated, bit annoying
-        // as it depends on line length
-        @include respond-min($tablet-width) {
-            min-height: 9.75
-        }
-        @include respond-min($tablet-width) {
-            min-height: 8.25em;
-        }
-
-        p {
-            font-size: $font-size * 1.5;
-        }
-    }
-}
-
-// Homepage questions areas, more rows
-.questions, .questions-more {
-    @extend .row;
-    // Features are also two column
-    .feature {
-        @extend .column-1-2;
-    }
-}
-
-// Specific questions styling
-.questions {
-    .feature {
-        p {
-            font-size: $font-size * 1.5;
-        }
-    }
-}
-.questions-more {
-    .feature {
-        background: complement($highlight-background-color);
-    }
-}
-
-// Homepage problems area
-.problems {
-    @extend .row;
-    // Feature is a full width column
-    .feature {
-        @extend .column-full;
-        background: complement($highlight-background-color);
-        p {
-            font-size: $font-size * 1.25;
-        }
+    p {
+        font-size: $font-size * 1.5;
     }
 }
 
 // Generic feature blocks
 .feature {
     background: $highlight-background-color;
-
     p {
         padding:0.5em;
     }
@@ -90,4 +39,75 @@ body {
 // Emergency text
 .emergency {
     color:red;
+}
+
+// Homepage styles
+.homepage {
+    .hero {
+        .feature {
+            @extend .column-1-2;
+            // Match the heights when things are floated, bit annoying
+            // as it depends on line length
+            @include respond-min($tablet-width) {
+                min-height: 9.75
+            }
+            @include respond-min($tablet-width) {
+                min-height: 8.25em;
+            }
+        }
+    }
+    // Homepage questions areas, more rows
+    .questions, .questions-more {
+        @extend .row;
+        // Features are also two column
+        .feature {
+            @extend .column-1-2;
+        }
+    }
+
+    // Specific questions styling
+    .questions {
+        .feature {
+            p {
+                font-size: $font-size * 1.5;
+            }
+        }
+    }
+    .questions-more {
+        .feature {
+            background: complement($highlight-background-color);
+        }
+    }
+
+    // Homepage problems area
+    .problems {
+        @extend .row;
+        // Feature is a full width column
+        .feature {
+            @extend .column-full;
+            background: complement($highlight-background-color);
+            p {
+                font-size: $font-size * 1.25;
+            }
+        }
+    }
+}
+
+// Ask question page styles
+.ask-question {
+    .hero {
+        // Feature block is full width
+        .feature {
+            @extend .column-full;
+        }
+    }
+
+    // Blocks of three frequently asked questions
+    .frequently-asked-questions {
+        @extend .row;
+        .feature {
+            background: complement($highlight-background-color);
+            @extend .column-1-3;
+        }
+    }
 }
