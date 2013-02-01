@@ -9,3 +9,6 @@ def ask_question(request):
 def pick_provider(request):
     return render(request, 'pick-provider.html')
 
+def provider_results(request):
+    return render(request, 'provider-results.html')
+
