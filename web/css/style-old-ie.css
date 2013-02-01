@@ -461,7 +461,7 @@ table {
 /*
  * HTML5 Boilerplate
  *
- * SASSified a little bit with some variables and helpers turned into mixins.
+ * SASSified a little bit with some variables.
  *
  * What follows is the result of much research on cross-browser styling.
  * Credit left inline and big thanks to Nicolas Gallagher, Jonathan Neal,
@@ -531,15 +531,58 @@ textarea {
 /*
  * Image replacement
  */
+.ir {
+  background-color: transparent;
+  border: 0;
+  overflow: hidden;
+  /* IE 6/7 fallback */
+  *text-indent: -9999px; }
+
+.ir:before {
+  content: "";
+  display: block;
+  width: 0;
+  height: 150%; }
+
 /*
  * Hide from both screenreaders and browsers: h5bp.com/u
  */
+.hidden {
+  display: none !important;
+  visibility: hidden; }
+
 /*
  * Hide only visually, but have it available for screenreaders: h5bp.com/v
  */
+.visuallyhidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px; }
+
+/*
+ * Extends the .visuallyhidden class to allow the element to be focusable
+ * when navigated to via the keyboard: h5bp.com/p
+ */
+.visuallyhidden.focusable:active,
+.visuallyhidden.focusable:focus {
+  clip: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  position: static;
+  width: auto; }
+
 /*
  * Hide visually and from screenreaders, but maintain layout
  */
+.invisible {
+  visibility: hidden; }
+
 /*
  * Clearfix: contain floats
  *
@@ -551,6 +594,28 @@ textarea {
  * 2. The use of `table` rather than `block` is only necessary if using
  *    `:before` to contain the top-margins of child elements.
  */
+.clearfix:before, .row:before, .hero:before, .questions:before, .questions-more:before, .problems:before,
+.clearfix:after,
+.row:after,
+.hero:after,
+.questions:after,
+.questions-more:after,
+.problems:after {
+  content: " ";
+  /* 1 */
+  display: table;
+  /* 2 */ }
+
+.clearfix:after, .row:after, .hero:after, .questions:after, .questions-more:after, .problems:after {
+  clear: both; }
+
+/*
+ * For IE 6/7 only
+ * Include this rule to trigger hasLayout and contain floats.
+ */
+.clearfix, .row, .hero, .questions, .questions-more, .problems {
+  *zoom: 1; }
+
 /* ==========================================================================
    Print styles.
    Inlined to avoid required HTTP connection: h5bp.com/r
@@ -614,19 +679,63 @@ textarea {
  * Mixins to help responsive design in browsers that don't do media queries
  * and produce versions specific to ie browser version
  */
+/**
+ * Layout
+ * Mixins to enable us to have a grid-like layout in the form that we want
+ */
+.grid, #wrapper {
+  margin: 0 auto;
+  width: 45em;
+  width: 60em; }
+
+.row, .hero, .questions, .questions-more, .problems {
+  margin-bottom: 1em; }
+
+.column-full, .problems .feature {
+  margin: 0 2em;
+  float: left;
+  width: 41em;
+  width: 56em; }
+
+.column-1-2, .hero .feature, .questions .feature, .questions-more .feature {
+  margin: 0 2em;
+  float: left;
+  width: 18.5em;
+  width: 26em; }
+
+.column-1-3 {
+  margin: 0 2em;
+  float: left;
+  width: 11em;
+  width: 16em; }
+
+.column-2-3 {
+  margin: 0 2em;
+  float: left;
+  width: 26em;
+  width: 36em; }
+
 body {
-  width: 100%;
   text-align: center; }
-  body #wrapper {
-    margin: 0 auto; }
-    body #wrapper .feature, body #wrapper .problems {
-      margin: 2.1em;
-      border: 1px solid #555555;
-      background: #e4f0fe; }
-    body #wrapper .problems {
-      font-size: 1.25em;
-      background: #fef2e4; }
-    body #wrapper .hero .feature {
-      font-size: 1.5em; }
-    body #wrapper .emergency {
-      color: red; }
+
+.hero .feature {
+  height: 6em; }
+  .hero .feature p {
+    font-size: 1.5em; }
+
+.questions .feature p {
+  font-size: 1.5em; }
+
+.questions-more .feature {
+  background: #fef2e4; }
+
+.problems .feature {
+  background: #fef2e4; }
+  .problems .feature p {
+    font-size: 1.25em; }
+
+.feature {
+  background: #e4f0fe; }
+
+.emergency {
+  color: red; }
