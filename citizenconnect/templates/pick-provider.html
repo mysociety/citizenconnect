@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Pick Provider{% endblock %}
+
+{% block bodyclasses %}pick-provider{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1>Pick a Provider</h1>
+</div>
+<div class="hero">
+    <form action="/provider-results">
+        <input class="provider-input" type="text" name="provider" placeholder="Please type a provider name">
+        <button type="submit">Submit</button>
+    </form>
+</div>
+{% endblock %}
