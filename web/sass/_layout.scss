@@ -72,7 +72,7 @@ $total-column-margins: 2 * $column-margin;
     }
 
     @include respond-min($desktop-width) {
-        width: ($desktop-width / 2) - $total-column-margins;
+        width: ($desktop-width / 3) - $total-column-margins;
     }
 }
 
