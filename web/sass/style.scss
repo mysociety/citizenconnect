@@ -8,34 +8,73 @@
 @import 'vars';
 @import 'boilerplate';
 @import 'utils';
+@import 'layout';
 
 // Our styles
 body {
-    width: 100%;
     text-align: center;
+}
 
-    #wrapper {
-        margin: 0 auto;
+// Wrapper is the base container of our grid
+#wrapper {
+    @extend .grid;
+}
 
-        .feature, .problems {
-            margin: $line-height * 1.5;
-            border: 1px solid lighten($font-color, 20%);
-            background: $highlight-background-color;
-        }
-
-        .problems {
-            font-size: $font-size * 1.25;
-            background: complement($highlight-background-color);
-        }
-
-        .hero {
-            .feature {
-                font-size: $font-size * 1.5;
-            }
-        }
-
-        .emergency {
-            color:red;
+// Homepage hero area, a row in the grid
+.hero {
+    @extend .row;
+    // Features in the hero are two column
+    .feature {
+        @extend .column-1-2;
+        height: 6em;
+        p {
+            font-size: $font-size * 1.5;
         }
     }
+}
+
+// Homepage questions areas, more rows
+.questions, .questions-more {
+    @extend .row;
+    // Features are also two column
+    .feature {
+        @extend .column-1-2;
+    }
+}
+
+// Specific questions styling
+.questions {
+    .feature {
+        p {
+            font-size: $font-size * 1.5;
+        }
+    }
+}
+.questions-more {
+    .feature {
+        background: complement($highlight-background-color);
+    }
+}
+
+// Homepage problems area
+.problems {
+    @extend .row;
+    // Feature is a full width column
+    .feature {
+        @extend .column-full;
+        background: complement($highlight-background-color);
+        p {
+            font-size: $font-size * 1.25;
+        }
+    }
+}
+
+// Generic feature blocks
+.feature {
+    background: $highlight-background-color;
+}
+
+// Emergency text
+.emergency {
+    color:red;
 }

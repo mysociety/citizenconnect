@@ -1,0 +1,80 @@
+/**
+ * Layout
+ * Mixins to enable us to have a grid-like layout in the form that we want
+ */
+
+
+$mobile-width: 20em !default;
+$tablet-width: 45em !default;
+$desktop-width: 60em !default;
+
+// Grid wrapper
+.grid {
+    margin: 0 auto;
+
+    @include respond-min($tablet-width) {
+        width: 45em;
+    }
+
+    @include respond-min($desktop-width) {
+        width: 60em;
+    }
+}
+
+// Row in a grid
+.row {
+    @extend .clearfix;
+    margin-bottom: 1em;
+}
+
+.column-full {
+
+    @include respond-min($tablet-width) {
+        margin: 0 2em;
+        float: left;
+        width: 41em;
+    }
+
+    @include respond-min($desktop-width) {
+        width: 56em;
+    }
+}
+
+.column-1-2 {
+
+    @include respond-min($tablet-width) {
+        margin: 0 2em;
+        float: left;
+        width: 18.5em;
+    }
+
+    @include respond-min($desktop-width) {
+        width: 26em;
+    }
+}
+
+.column-1-3 {
+
+    @include respond-min($tablet-width) {
+        margin: 0 2em;
+        float: left;
+        width: 11em;
+    }
+
+    @include respond-min($desktop-width) {
+        width: 16em;
+    }
+}
+
+.column-2-3 {
+
+    @include respond-min($tablet-width) {
+        margin: 0 2em;
+        float: left;
+        width: 26em;
+    }
+
+    @include respond-min($desktop-width) {
+        width: 36em;
+    }
+}
