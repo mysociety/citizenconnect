@@ -26,7 +26,16 @@ body {
     // Features in the hero are two column
     .feature {
         @extend .column-1-2;
-        height: 6em;
+
+        // Match the heights when things are floated, bit annoying
+        // as it depends on line length
+        @include respond-min($tablet-width) {
+            min-height: 9.75
+        }
+        @include respond-min($tablet-width) {
+            min-height: 8.25em;
+        }
+
         p {
             font-size: $font-size * 1.5;
         }
@@ -72,6 +81,10 @@ body {
 // Generic feature blocks
 .feature {
     background: $highlight-background-color;
+
+    p {
+        padding:0.5em;
+    }
 }
 
 // Emergency text
