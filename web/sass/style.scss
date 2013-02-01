@@ -112,18 +112,34 @@ body {
     }
 }
 
+// Provider page styles
 .provider-results {
+    .feature {
+        background: none;
+    }
+    .hero {
+        @extend .row;
+        .feature {
+            @extend .column-full;
+        }
+    }
     .results-list {
-        text-align: left;
-        ul {
-            margin-left: 0;
-            list-style: none;
-            li {
-                font-size: $font-size * 1.25;
-                padding: 0.5em;
-            }
-            li:nth-child(odd){
-                background: $highlight-background-color;
+        @extend .row;
+        .feature {
+            @extend .column-full;
+            text-align: left;
+            ul {
+                margin: 0;
+                padding: 0;
+                list-style: none;
+                li {
+                    font-size: $font-size * 1.25;
+                    padding: 0.5em;
+                }
+                // Stripy results
+                li:nth-child(odd){
+                    background: $highlight-background-color;
+                }
             }
         }
     }
