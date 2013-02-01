@@ -2,6 +2,8 @@
 
 {% block title %}Home{% endblock %}
 
+{% block bodyclasses %}homepage{% endblock %}
+
 {% block content %}
 <div class="header">
     <h1>NHS Citizen's Connect</h1>
@@ -17,10 +19,10 @@
 <div class="questions">
     <h2>I've got a question that needs answering</h2>
     <div class="feature">
-        <p><a href="">For London</a></p>
+        <p><a href="{% url ask-question %}">For London</a></p>
     </div>
     <div class="feature">
-        <p><a href="">For Manchester</a></p>
+        <p><a href="{% url ask-question %}">For Manchester</a></p>
     </div>
 </div>
 <div class="questions-more">
