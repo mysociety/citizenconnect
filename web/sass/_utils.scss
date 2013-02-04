@@ -24,12 +24,22 @@ $fix-mqs: false !default;
     }
 }
 
-// General old-ie mixin
-$old-ie: false !default;
+// IE8 mixin
+$ie-8: false !default;
 
-@mixin old-ie {
-    // Only use this content if we're dealing with old IE
-    @if $old-ie {
+@mixin ie-8 {
+    // Only use this content if we're dealing with IE8
+    @if $ie-8 {
+        @content;
+    }
+}
+
+// IE7 mixin
+$ie-7: false !default;
+
+@mixin ie-7 {
+    // Only use this content if we're dealing with IE7
+    @if $ie-7 {
         @content;
     }
 }
