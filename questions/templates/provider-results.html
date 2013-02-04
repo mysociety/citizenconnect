@@ -6,7 +6,7 @@
 
 {% block content %}
 <div class="header">
-    <h1>Provider Results</h1>
+    <h1>Provider Results for: '{{location }}'</h1>
 </div>
 <div class="hero">
     <div class="feature">
@@ -17,12 +17,10 @@
 <div class="results-list">
     <div class="feature">
         <ul>
-            <li>Bampton Surgery Landells Bampton Bampton, Oxford OX18 2LJ <a href="{% url question-form %}">SELECT</a></li>
-            <li>Carterton Health Centre Alvescot Road Carterton Carterton, Oxford OX18 3LJ <a href="{% url question-form %}">SELECT</a></li>
-            <li>Banbury Health Centre 58 Bridge Street Banbury Oxon OX16 5QDT <a href="{% url question-form %}">SELECT</a></li>
-            <li>Bartlemas Surgery East Oxford Health Centre Manzil Way Oxford OX4 1XD <a href="{% url question-form %}">SELECT</a></li>
-            <li>Botley Medical Centre Elms Road Botley Oxford OX2 9JS <a href="{% url question-form %}">SELECT</a></li>
-            <li>The Charlbury Medical Centre Enstone Road Charlbury Chipping Norton OX7 3PQ <a href="{% url question-form %}">SELECT</a></li>
+            {% for organisation in organisations %}
+                <li><a href="{% url question-form organisation_type=organisation.organisation_type choices_id=organisation.choices_id  %}">{{ organisation.name }}</a></li>
+            {% endfor %}
+
         </ul>
     </div>
 </div>
