@@ -1,0 +1,7 @@
+<h1>Search results for: '{{location }}'</h1>
+Your search returned {{ organisations|length }} results.
+<ul>
+{% for organisation in organisations %}
+    <li><a href="?id={{organisation.choices_id}}&amp;org_type={{organisation.organisation_type}}">{{ organisation.name }}</a></li>
+{% endfor %}
+</ul>
