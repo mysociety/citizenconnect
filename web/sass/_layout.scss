@@ -3,87 +3,74 @@
  * Mixins to enable us to have a grid-like layout in the form that we want
  */
 
-// Variables - column and row widths will be calculated from these
-// Make sure that you don't any other borders, margins or padding to grid
-// elements directly but add them to children elements instead.
-
 // Make sure they also divide evenly between your chosen number of columns
-$mobile-width: 20em !default;
+$mobile-width: 25em !default;
 $tablet-width: 45em !default;
 $desktop-width: 60em !default;
-$column-margin: 1em !default;
-$total-column-margins: 2 * $column-margin;
+// Column padding added to left and right of columns
+$column-padding: 10px !default;
+
+// Set box-sizing to border-box everywhere
+* {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
 
 // Grid wrapper
-.grid {
+@mixin grid() {
     margin: 0 auto;
 
+    // Fix the max-width of the grid, to center it
+    max-width: $mobile-width;
+
     @include respond-min($tablet-width) {
-        width: $tablet-width;
+        max-width: $tablet-width;
     }
 
     @include respond-min($desktop-width) {
-        width: $desktop-width;
+        max-width: $desktop-width;
     }
 }
 
 // Row in a grid
-.row {
+@mixin row {
     @extend .clearfix;
+    width:100%;
 }
 
-.column {
-    margin: $column-margin;
-
-    @include respond-min($tablet-width) {
-        float: left;
-    }
+@mixin column {
+    // Columns float
+    float: left;
+    padding:0 $column-padding;
 }
 
-.column-full {
-    @extend .column;
-
-    @include respond-min($tablet-width) {
-        width: $tablet-width - $total-column-margins
-    }
-
-    @include respond-min($desktop-width) {
-        width: $desktop-width - $total-column-margins;
-    }
+// Full-width columns
+@mixin column-full {
+    @include column();
+    width: 100%;
 }
 
-.column-1-2 {
-    @extend .column;
-
-    @include respond-min($tablet-width) {
-        width: ($tablet-width / 2) - $total-column-margins;
-    }
-
-    @include respond-min($desktop-width) {
-        width: ($desktop-width / 2) - $total-column-margins;
-    }
+// Half-width columns
+@mixin column-half {
+    @include column();
+    width: 50%;
 }
 
-.column-1-3 {
-    @extend .column;
-
-    @include respond-min($tablet-width) {
-        width: ($tablet-width / 3) - $total-column-margins;
-    }
-
-    @include respond-min($desktop-width) {
-        width: ($desktop-width / 3) - $total-column-margins;
-    }
+// Third-width columns
+@mixin column-third {
+    @include column();
+    width: 33.33%;
 }
 
-.column-2-3 {
-    @extend .column;
+// Two third-width columns
+@mixin column-two-thirds {
+    @include column();
+    width: 66.66%;
+}
 
-    @include respond-min($tablet-width) {
-        width: (($tablet-width / 3) * 2) - $total-column-margins;
-    }
-
-    @include respond-min($desktop-width) {
-        width: (($tablet-width / 3) * 2) - $total-column-margins;
-    }
+// Quarter-width columns
+@mixin column-quarter {
+    @include column();
+    width: 25%;
 }
