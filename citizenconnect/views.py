@@ -14,3 +14,6 @@ def provider_results(request):
 
 def question_form(request):
     return render(request, 'question-form.html')
+
+def question_confirm(request):
+    return render(request, 'question-confirm.html')
