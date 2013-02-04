@@ -17,7 +17,7 @@ class ChoicesAPI():
 
     def example_hospitals(self):
         example_data = open(os.path.join(settings.PROJECT_ROOT, 'organisations', 'fixtures', 'SW1A1AA.xml'))
-        organisations = self.parse_organisations(example_data)
+        organisations = self.parse_organisations(example_data, 'hospitals')
         return organisations
 
     def find_organisations(self, search_type, search_value, organisation_type):
