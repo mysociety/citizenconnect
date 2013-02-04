@@ -16,23 +16,25 @@ body {
 }
 
 // Wrapper is the base container of our grid
-#wrapper {
-    @extend .grid;
+#container {
+    @include grid();
 }
 
-// Homepage hero area, a row in the grid
+// Hero area
 .hero {
-    @extend .row;
+    @include row();
+    margin-bottom: 1em;
     p {
         font-size: $font-size * 1.5;
+        line-height: $font-size * 1.25;
     }
 }
 
 // Generic feature blocks
 .feature {
-    background: $highlight-background-color;
     p {
-        padding:0.5em;
+        background: $highlight-background-color;
+        padding: 1em;
     }
 }
 
@@ -45,23 +47,29 @@ body {
 .homepage {
     .hero {
         .feature {
-            @extend .column-1-2;
-            // Match the heights when things are floated, bit annoying
-            // as it depends on line length
+            @include column-full();
             @include respond-min($tablet-width) {
-                min-height: 9.75
+                @include column-half();
             }
-            @include respond-min($tablet-width) {
-                min-height: 8.25em;
+
+            p {
+                // Match the paragraph heights when things are floated, bit annoying
+                // as it depends on line length
+                @include respond-min($tablet-width) {
+                    min-height: 5.75em;
+                }
+                @include respond-min($desktop-width) {
+                    min-height: 4.5em;
+                }
             }
         }
     }
-    // Homepage questions areas, more rows
     .questions, .questions-more {
-        @extend .row;
-        // Features are also two column
+        @include row();
+        margin-bottom: 1em;
+
         .feature {
-            @extend .column-1-2;
+            @include column-half();
         }
     }
 
@@ -70,23 +78,30 @@ body {
         .feature {
             p {
                 font-size: $font-size * 1.5;
+                min-height: 3.75em;
+                @include respond-min($tablet-width) {
+                    min-height: 0;
+                }
             }
         }
     }
     .questions-more {
         .feature {
-            background: complement($highlight-background-color);
+            p {
+                background: complement($highlight-background-color);
+            }
         }
     }
 
     // Homepage problems area
     .problems {
-        @extend .row;
+        @include row();
+        margin-bottom: 1em;
         // Feature is a full width column
         .feature {
-            @extend .column-full;
-            background: complement($highlight-background-color);
+            @include column-full();
             p {
+                background: complement($highlight-background-color);
                 font-size: $font-size * 1.25;
             }
         }
@@ -98,16 +113,26 @@ body {
     .hero {
         // Feature block is full width
         .feature {
-            @extend .column-full;
+            @include column-full();
         }
     }
 
-    // Blocks of three frequently asked questions
+    // Blocks of frequently asked questions
     .frequently-asked-questions {
-        @extend .row;
+        @include row();
         .feature {
-            background: complement($highlight-background-color);
-            @extend .column-1-3;
+            @include column-half();
+            @include respond-min($tablet-width) {
+                @include column-third();
+            }
+            @include respond-min($desktop-width) {
+                @include column-quarter();
+            }
+
+            p {
+                background: complement($highlight-background-color);
+                min-height: 6.25em;
+            }
         }
     }
 }
@@ -118,15 +143,15 @@ body {
         background: none;
     }
     .hero {
-        @extend .row;
+        @include row();
         .feature {
-            @extend .column-full;
+            @include column-full();
         }
     }
     .results-list {
-        @extend .row;
+        @include row();
         .feature {
-            @extend .column-full;
+            @include column-full();
             text-align: left;
             ul {
                 margin: 0;
