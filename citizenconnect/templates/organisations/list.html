@@ -2,6 +2,6 @@
 Your search returned {{ organisations|length }} results.
 <ul>
 {% for organisation in organisations %}
-    <li>{{ organisation.name }}</li>
+    <li><a href="?id={{organisation.choices_id}}&amp;org_type={{organisation.organisation_type}}">{{ organisation.name }}</a></li>
 {% endfor %}
 </ul>

@@ -30,28 +30,33 @@ class ChoicesAPIExampleFileTests(TestCase):
     def tearDownClass(cls):
         cls._example_data.close()
 
-    def parse_example_file(self):
-        results = self._api.parse_organisations(self._example_data)
+    def parse_example_file(self, organisation_type):
+        results = self._api.parse_organisations(self._example_data, organisation_type)
         return results
 
     def test_parses_correct_number_of_results(self):
         """
         Tests that parse_organisations correctly parses an example file
         """
-        results = self.parse_example_file()
+        results = self.parse_example_file('hospitals')
         self.assertEqual(len(results), 10)
 
     def test_parses_organisation_names(self):
-        results = self._api.parse_organisations(self._example_data)
+        results = self._api.parse_organisations(self._example_data, 'hospitals')
         self.assertEqual(results[0]['name'], 'The Gordon Hospital')
         self.assertEqual(results[-1]['name'], 'Western Eye Hospital')
 
     def test_parses_organisation_ids(self):
-        results = self.parse_example_file()
+        results = self.parse_example_file('hospitals')
         first_expected_id = 'http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/42192'
         last_expected_id = 'http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/43804'
-        self.assertEqual(results[0]['id'], first_expected_id)
-        self.assertEqual(results[-1]['id'], last_expected_id)
+        self.assertEqual(results[0]['choices_id'], first_expected_id)
+        self.assertEqual(results[-1]['choices_id'], last_expected_id)
+
+    def test_parses_organisation_types(self):
+        results = self.parse_example_file('hospitals')
+        first_expected_type = 'hospitals'
+        self.assertEqual(results[0]['organisation_type'], first_expected_type)
 
     def test_handles_unknown_search_type(self):
         with self.assertRaises(ValueError) as context_manager:

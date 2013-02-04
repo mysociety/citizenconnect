@@ -39,18 +39,20 @@ class ChoicesAPI():
         url = "%(base_url)s%(path)s?%(querystring)s" % {'path' : path,
                                                         'querystring': querystring,
                                                         'base_url': settings.NHS_CHOICES_BASE_URL}
-        organisations = self.parse_organisations(urllib.urlopen(url))
+        organisations = self.parse_organisations(urllib.urlopen(url), organisation_type)
         return organisations
 
-    def parse_organisations(self, document):
+    def parse_organisations(self, document, organisation_type):
         tree = ET.parse(document)
         organisations = []
 
         for entry_element in tree.getiterator('{http://www.w3.org/2005/Atom}entry'):
             organisation = {}
-            organisation['id'] = entry_element.find('{http://www.w3.org/2005/Atom}id').text
+            identifier = entry_element.find('{http://www.w3.org/2005/Atom}id').text
+            organisation['choices_id'] = identifier.split('/')[-1]
             content = entry_element.find('{http://www.w3.org/2005/Atom}content')
             summary = content.find("{http://syndication.nhschoices.nhs.uk/services}organisationSummary")
             organisation['name'] = summary.find('{http://syndication.nhschoices.nhs.uk/services}name').text
+            organisation['organisation_type'] = organisation_type
             organisations.append(organisation)
         return organisations
