@@ -72,3 +72,6 @@ class OrganisationSummary(TemplateView):
         context['choices_id'] = choices_id
         context['organisation_type'] = organisation_type
         return context
+
+class Summary(TemplateView):
+    template_name = 'organisations/summary.html'
