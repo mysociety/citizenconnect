@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Respond to a message{% endblock %}
+
+{% block bodyclasses %}response-form{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1>Respond to a message</h1>
+</div>
+<div class="hero">
+    <div class="feature">
+        <p>Responding to <strong>message_type</strong><br/> Reference number: <strong><a href="">1234</a></strong></br>
+        Received: <strong>11:20 - 01/02/2013</strong></p>
+    </div>
+    <div class="feature">
+        <p>FORMAL COMPLAINT</P>
+    </div>
+</div>
+<div class="message-details">
+    <div class="feature">
+        <p>Institution name</p>
+        <p>Department</p>
+        <p>Message category</p>
+        <p>User Name <em>Anonimity selected</em></p>
+        <p>User phone <em>Preferred contact method</em></p>
+        <p>User Email</p>
+        <p>Message details...</p>
+        <p>Status</p>
+    </div>
+</div>
+<div class="status-form">
+    <form action="{% url org-response-confirm %}">
+        <div class="feature">
+            <select>
+                <option value="">Change status</option>
+            </select>
+        </div>
+        <div class="feature">
+            <button type="submit">Submit Status Change</button>
+        </div>
+    </form>
+</div>
+<div class="response-form">
+    <div class="feature">
+        <form action="{% url org-response-confirm %}">
+            <div>
+                <textarea class="message-input" type="text" name="message" placeholder="Public Response (NB only appears when message has been published online)"></textarea>
+            </div>
+            <button type="submit">Publish Online</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -11,4 +11,6 @@ urlpatterns = patterns('',
     url(r'^summary$', Summary.as_view(), name='org-all-summary'),
     url(r'^summary/(?P<organisation_type>\w+)/(?P<choices_id>\d+)$', OrganisationSummary.as_view(), name='org-summary'),
     url(r'^dashboard/(?P<organisation_type>\w+)/(?P<choices_id>\d+)$', OrganisationDashboard.as_view(), name='org-dashboard'),
+    url(r'^response$', ResponseForm.as_view(), name='org-response-form'),
+    url(r'^response-confirm$', ResponseConfirm.as_view(), name='org-response-confirm'),
 )

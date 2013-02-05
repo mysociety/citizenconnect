@@ -362,3 +362,48 @@ button {
         }
     }
 }
+
+// Response form
+.response-form {
+    .hero {
+        .feature {
+            @include column-full();
+            @include respond-min($tablet-width) {
+                @include column-half();
+            }
+            p {
+                @include respond-min($tablet-width) {
+                    min-height: 8.25em;
+                }
+                @include respond-min($desktop-width) {
+                    min-height: 5.75em;
+                }
+            }
+        }
+    }
+    .message-details {
+        @include row();
+        .feature {
+            @include column-full();
+            p {
+                text-align: left;
+                background: none;
+                padding-top:0;
+                padding-bottom:0;
+                font-size: $font-size;
+            }
+        }
+    }
+    .status-form {
+        @include row();
+        .feature {
+            @include column-half();
+        }
+    }
+    .response-form {
+        @include row();
+        .feature {
+            @include column-full();
+        }
+    }
+}
