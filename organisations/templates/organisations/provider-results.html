@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Provider Results{% endblock %}
+
+{% block bodyclasses %}provider-results{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1>Provider Results for: '{{location }}'</h1>
+</div>
+<div class="hero">
+    <div class="feature">
+        <p>Please select the provider you would like to see the outcomes of.</p>
+        <p>Can’t see the provider you are looking for? Then <a href="{% url org-pick-provider %}">SEARCH AGAIN</a></p>
+    </div>
+</div>
+<div class="results-list">
+    <div class="feature">
+        <ul>
+            {% for organisation in organisations %}
+                <li><a href="{% url org-summary organisation_type=organisation.organisation_type choices_id=organisation.choices_id  %}">{{ organisation.name }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
