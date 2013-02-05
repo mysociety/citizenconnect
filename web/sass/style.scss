@@ -238,9 +238,15 @@ button {
         }
     }
 
-    .map {
+    .map-container {
         @include row();
+        @include column-full();
+        #public-map {
+            height: 400px;
+        }
     }
+
+
 
     .map-instructions {
         @include row();
