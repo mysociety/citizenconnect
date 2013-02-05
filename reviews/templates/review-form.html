@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Submit your review{% endblock %}
+
+{% block bodyclasses %}review-form{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1>Submit your review</h1>
+</div>
+<div class="hero">
+    <p>Reviewing <strong>Banbury Health Centre</strong>
+</div>
+<div class="review-form">
+    <form action="{% url review-confirm %}">
+        <div>
+            <select>
+                <option value="">Please select the category best describes your question from the drop-down list</option>
+            </select>
+        </div>
+        <div>
+            <input type="text" placeholder="Review title">
+        </div>
+        <div>
+            <textarea class="message-input" type="text" name="message" placeholder="Please write the details of your review in this box"></textarea>
+        </div>
+        <div>
+            <input type="text" placeholder="Your Email Address (you must enter a contact number OR email address)">
+        </div>
+        <div>
+            <label>I would recommend <input type="radio"></label>
+            <label>I would not recommend <input type="radio"></label>
+            <label>I am neutral <input type="radio"></label>
+        <div>
+        <button type="submit">Submit</button>
+    </form>
+</div>
+{% endblock %}
