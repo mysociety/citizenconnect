@@ -4,6 +4,28 @@
 
 {% block bodyclasses %}outcomes-map{% endblock %}
 
+{% block extra_css %}
+{{ block.super }}
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
+<!--[if lte IE 8]>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.ie.css" />
+<![endif]-->
+{% endblock %}
+{% block extra_js %}
+{{ block.super }}
+<script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+<script>
+
+    $(document).ready(
+        function(){
+            var map = L.map('public-map').setView([51.505, -0.09], 13);
+            L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                   attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+                   maxZoom: 18
+               }).addTo(map);
+           });
+</script>
+{% endblock %}
 {% block content %}
 <div class="header">
     <h1>Outcomes Map</h1>
@@ -24,8 +46,9 @@
         <p><a href="">Manchester</a></p>
     </div>
 </div>
-<div class="map">
-    <p>[The map will go here]</p>
+<div class="map-container">
+    <div id="public-map" class="map">
+    </div>
 </div>
 <div class="map-instructions">
     <div class="feature">
