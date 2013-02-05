@@ -1,23 +1,23 @@
 {% extends 'base.html' %}
 
-{% block title %}Ask your question{% endblock %}
+{% block title %}Report your problem{% endblock %}
 
-{% block bodyclasses %}question-form{% endblock %}
+{% block bodyclasses %}problem-form{% endblock %}
 
 {% block content %}
 <div class="header">
-    <h1>Ask your question</h1>
+    <h1>Report your problem</h1>
 </div>
 <div class="hero">
     <p>Writing a message to <strong>Banbury Health Centre</strong>
 </div>
-<div class="question-form">
+<div class="problem-form">
     <form action="{% url problem-confirm %}">
         <div>
-            <textarea class="message-input" type="text" name="message" placeholder="Please write your question in this box, including as much information as possible to help us to help you"></textarea>
+            <textarea class="message-input" type="text" name="message" placeholder="Please write the details of your problem in this box, including as much information as possible to help us to help you"></textarea>
         </div>
         <div>
-            <input type="text" placeholder="Your Name (This is optional - you can ask questions anonymously)">
+            <input type="text" placeholder="Your Name (This is optional - you can report problems anonymously)">
         </div>
         <div>
             <input type="text" placeholder="Your Contact Number (you must enter a contact number OR email address)">
@@ -30,13 +30,13 @@
         </div>
         <div>
             <select>
-                <option value="">Please select the category best describes your question from the drop-down list</option>
+                <option value="">Please select the category best describes your problem from the drop-down list</option>
             </select>
         </div>
         <div>
             <label>Keep all details private <input type="radio"></label>
-            <label>Publish question and response but not my name <input type="radio"></label>
-            <label>Publish question and response with my name <input type="radio"></label>
+            <label>Publish problem and response but not my name <input type="radio"></label>
+            <label>Publish problem and response with my name <input type="radio"></label>
         <div>
         <button type="submit">Submit</button>
     </form>
