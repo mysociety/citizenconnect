@@ -36,3 +36,10 @@ class OrganisationList(TemplateView):
 
 def map(request):
     return render(request, 'organisations/map.html')
+
+class PickProvider(FormView):
+    template_name = 'organisations/pick-provider.html'
+    form_class = OrganisationFinderForm
+
+class ProviderResults(OrganisationList):
+    template_name = 'organisations/provider-results.html'
