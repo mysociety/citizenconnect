@@ -349,17 +349,47 @@ button {
                 }
             }
         }
-    }
 
+    }
     .messages-table {
         @include row();
         .feature {
             @include column-full();
         }
-        table, th, tr, td {
-            border: 2px solid $font-color;
-            padding: 0.25em;
+       table, th, tr, td {
+           border: 2px solid $font-color;
+           padding: 0.25em;
+       }
+   }
+}
+
+// Problem public page
+.problem-public {
+     .meta-data, .status,  {
+         @include row();
+         .feature {
+             @include column-half();
+             p {
+                 background: complement($highlight-background-color);
+             }
+         }
+     }
+
+    .provider, .service {
+        @include row();
+        .feature {
+            @include column-full();
         }
+    }
+
+    .details, .response {
+        @include row();
+          .feature {
+              @include column-full();
+              p {
+                  height: 8em;
+              }
+         }
     }
 }
 

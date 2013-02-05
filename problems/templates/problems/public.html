@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Problem report{% endblock %}
+
+{% block bodyclasses %}problem-public{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1>Problem report</h1>
+</div>
+
+<div class="meta-data">
+
+    <div class="feature">
+        <p>Reference 5344</p>
+    </div>
+
+    <div class="feature">
+        <p>Reported on: Jan 21 2013</p>
+    </div>
+
+</div>
+
+<div class="meta-data">
+    <div class="feature provider">
+        <p>Provider:  A Hospital</p>
+    </div>
+
+    <div class="feature service">
+        <p>Service:  Foot Clinic</p>
+    </div>
+</div>
+
+
+<div class="meta-data">
+    <div class="feature category">
+        <p>Category:  Cleanliness</p>
+    </div>
+
+    <div class="feature reporter">
+        <p>Reported by: Example User</p>
+    </div>
+</div>
+
+<div class="details">
+    <div class="feature">
+        <p>Details: Some details</p>
+    </div>
+</div>
+
+<div class="response">
+    <div class="feature">
+        <p>Response</p>
+    </div>
+</div>
+
+<div class="status">
+
+    <div class="feature provider-status">
+        <p>Status: Acknowledged</p>
+    </div>
+
+    <div class="feature user-status">
+        <p>User satisfied: Yes </p>
+    </div>
+
+</div>
+{% endblock %}

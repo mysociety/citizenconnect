@@ -18,3 +18,6 @@ class ProblemForm(OrganisationFormView):
 
 def problem_confirm(request):
     return render(request, 'problems/problem-confirm.html')
+
+class ProblemPublicView(TemplateView):
+    template_name = 'problems/public.html'
