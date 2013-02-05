@@ -14,6 +14,7 @@ urlpatterns = patterns('',
     url(r'^question/', include('questions.urls')),
     url(r'^problem/', include('problems.urls')),
     url(r'^review/', include('reviews.urls')),
+    url(r'^stats/', include('organisations.urls')),
 
     # url(r'^citizenconnect/', include('citizenconnect.foo.urls')),
 

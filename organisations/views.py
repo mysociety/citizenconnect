@@ -6,6 +6,7 @@ import re
 from django.views.generic import FormView, TemplateView
 
 # App imports
+from citizenconnect.shortcuts import render
 from .forms import OrganisationFinderForm
 from .choices_api import ChoicesAPI
 
@@ -32,3 +33,6 @@ class OrganisationList(TemplateView):
         organisations = api.find_organisations(search_type, location, organisation_type)
         context['organisations'] = organisations
         return context
+
+def map(request):
+    return render(request, 'organisations/map.html')

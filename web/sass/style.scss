@@ -186,7 +186,6 @@ button {
         background: none;
     }
     .hero {
-        @include row();
         .feature {
             @include column-full();
         }
@@ -209,6 +208,44 @@ button {
                     background: $highlight-background-color;
                 }
             }
+        }
+    }
+}
+
+// Outcomes map page
+.outcomes-map {
+    .hero {
+        .feature {
+            @include column-half();
+            p {
+                // Match the paragraph heights when things are floated, bit annoying
+                // as it depends on line length
+                min-height: 8.25em;
+                @include respond-min($tablet-width) {
+                    min-height: 4.5em;
+                }
+                @include respond-min($desktop-width) {
+                    min-height: 4.5em;
+                }
+            }
+        }
+    }
+
+    .map-options {
+        @include row();
+        .feature {
+            @include column-half();
+        }
+    }
+
+    .map {
+        @include row();
+    }
+
+    .map-instructions {
+        @include row();
+        .feature {
+            @include column-full();
         }
     }
 }
