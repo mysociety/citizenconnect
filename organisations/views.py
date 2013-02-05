@@ -32,3 +32,17 @@ class OrganisationList(TemplateView):
         organisations = api.find_organisations(search_type, location, organisation_type)
         context['organisations'] = organisations
         return context
+
+class OrganisationFormView(TemplateView):
+
+    # Get the organisation name
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(OrganisationFormView, self).get_context_data(**kwargs)
+        organisation_type = self.kwargs['organisation_type']
+        choices_id = self.kwargs['choices_id']
+        api = ChoicesAPI()
+        context['organisation_name'] = api.get_organisation_name(organisation_type, choices_id)
+        context['choices_id'] = choices_id
+        context['organisation_type'] = organisation_type
+        return context
