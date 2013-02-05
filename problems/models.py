@@ -8,14 +8,6 @@ class AuditedModel(models.Model):
     class Meta:
         abstract = True
 
-    def save(self, *args, **kwargs):
-        now = timezone.now()
-        if not self.id:
-            self.created = now
-        self.modified = now
-        super(AuditedModel, self).save(*args, **kwargs)
-
-
 class Problem(AuditedModel):
     ORGANISATION_CHOICES = (
         (u'hospital', u'Hospital'),
