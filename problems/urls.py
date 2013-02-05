@@ -7,6 +7,7 @@ urlpatterns = patterns('',
     url(r'^provider-results$', ProviderResults.as_view(), name='problems-provider-results'),
     url(r'^problem-form/(?P<organisation_type>\w+)/(?P<choices_id>\d+)$', ProblemForm.as_view(), name='problem-form'),
     url(r'^problem-confirm$', 'problems.views.problem_confirm', name='problem-confirm'),
+    url(r'^(?P<problem_id>\d+)$', ProblemPublicView.as_view(), name='problem-view')
 )
 
 

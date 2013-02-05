@@ -329,81 +329,34 @@ button {
     }
 }
 
-// Organisation dashboard
-.organisation-dashboard {
-    .hero {
-        .feature {
-            @include column-full();
-            @include respond-min($tablet-width) {
-                @include column-third();
-            }
-            p {
-                // Match the paragraph heights when things are floated, bit annoying
-                // as it depends on line length
-                min-height: 4em;
-                @include respond-min($tablet-width) {
-                    min-height: 7em;
-                }
-                @include respond-min($desktop-width) {
-                    min-height: 4.5em;
-                }
-            }
-        }
-    }
 
-    .messages-table {
-        @include row();
-        .feature {
-            @include column-full();
-        }
-        table, th, tr, td {
-            border: 2px solid $font-color;
-            padding: 0.25em;
-        }
-    }
-}
-
-// Response form
-.response-form {
-    .hero {
-        .feature {
-            @include column-full();
-            @include respond-min($tablet-width) {
-                @include column-half();
-            }
-            p {
-                @include respond-min($tablet-width) {
-                    min-height: 8.25em;
-                }
-                @include respond-min($desktop-width) {
-                    min-height: 5.75em;
-                }
-            }
-        }
-    }
-    .message-details {
-        @include row();
-        .feature {
-            @include column-full();
-            p {
-                text-align: left;
-                background: none;
-                padding-top:0;
-                padding-bottom:0;
-                font-size: $font-size;
-            }
-        }
-    }
-    .status-form {
+// Problem public page
+.problem-public {
+    .meta-data, .status,  {
         @include row();
         .feature {
             @include column-half();
+            p {
+                background: complement($highlight-background-color);
+            }
         }
     }
-    .response-form {
+
+    .provider, .service {
         @include row();
         .feature {
             @include column-full();
         }
+    }
+
+    .details, .response {
+    @include row();
+    .feature {
+        @include column-full();
+        p {
+            height: 8em;
+        }
+    }
+
     }
 }
