@@ -18,5 +18,5 @@ class ProblemForm(TemplateView):
     choices_id = None
     org_type = None
 
-def question_confirm(request):
+def problem_confirm(request):
     return render(request, 'problem-confirm.html')
