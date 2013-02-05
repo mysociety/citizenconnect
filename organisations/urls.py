@@ -8,4 +8,5 @@ urlpatterns = patterns('',
     url(r'^map$', 'organisations.views.map', name='org-map'),
     url(r'^pick-provider$', PickProvider.as_view(), name='org-pick-provider'),
     url(r'^provider-results$', ProviderResults.as_view(), name='org-provider-results'),
+    url(r'^summary/(?P<organisation_type>\w+)/(?P<choices_id>\d+)$', OrganisationSummary.as_view(), name='org-summary'),
 )
