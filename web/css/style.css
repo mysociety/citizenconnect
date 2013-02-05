@@ -589,7 +589,7 @@ textarea {
  * 2. The use of `table` rather than `block` is only necessary if using
  *    `:before` to contain the top-margins of child elements.
  */
-.clearfix:before, .hero:before, .homepage .questions:before, .homepage .questions-more:before, .homepage .problems:before, .ask-question .frequently-asked-questions:before, .provider-results .results-list:before, .outcomes-map .map-options:before, .outcomes-map .map-container:before, .outcomes-map .map-instructions:before, .organisation-summary .outcomes-options:before, .organisation-summary .outcomes-table:before, .organisation-summary .problems-list:before, .organisation-dashboard .messages-table:before,
+.clearfix:before, .hero:before, .homepage .questions:before, .homepage .questions-more:before, .homepage .problems:before, .ask-question .frequently-asked-questions:before, .provider-results .results-list:before, .outcomes-map .map-options:before, .outcomes-map .map-container:before, .outcomes-map .map-instructions:before, .organisation-summary .outcomes-options:before, .organisation-summary .outcomes-table:before, .organisation-summary .problems-list:before, .organisation-dashboard .messages-table:before, .response-form .message-details:before, .response-form .status-form:before, .response-form .response-form:before,
 .clearfix:after,
 .hero:after,
 .homepage .questions:after,
@@ -603,20 +603,23 @@ textarea {
 .organisation-summary .outcomes-options:after,
 .organisation-summary .outcomes-table:after,
 .organisation-summary .problems-list:after,
-.organisation-dashboard .messages-table:after {
+.organisation-dashboard .messages-table:after,
+.response-form .message-details:after,
+.response-form .status-form:after,
+.response-form .response-form:after {
   content: " ";
   /* 1 */
   display: table;
   /* 2 */ }
 
-.clearfix:after, .hero:after, .homepage .questions:after, .homepage .questions-more:after, .homepage .problems:after, .ask-question .frequently-asked-questions:after, .provider-results .results-list:after, .outcomes-map .map-options:after, .outcomes-map .map-container:after, .outcomes-map .map-instructions:after, .organisation-summary .outcomes-options:after, .organisation-summary .outcomes-table:after, .organisation-summary .problems-list:after, .organisation-dashboard .messages-table:after {
+.clearfix:after, .hero:after, .homepage .questions:after, .homepage .questions-more:after, .homepage .problems:after, .ask-question .frequently-asked-questions:after, .provider-results .results-list:after, .outcomes-map .map-options:after, .outcomes-map .map-container:after, .outcomes-map .map-instructions:after, .organisation-summary .outcomes-options:after, .organisation-summary .outcomes-table:after, .organisation-summary .problems-list:after, .organisation-dashboard .messages-table:after, .response-form .message-details:after, .response-form .status-form:after, .response-form .response-form:after {
   clear: both; }
 
 /*
  * For IE 6/7 only
  * Include this rule to trigger hasLayout and contain floats.
  */
-.clearfix, .hero, .homepage .questions, .homepage .questions-more, .homepage .problems, .ask-question .frequently-asked-questions, .provider-results .results-list, .outcomes-map .map-options, .outcomes-map .map-container, .outcomes-map .map-instructions, .organisation-summary .outcomes-options, .organisation-summary .outcomes-table, .organisation-summary .problems-list, .organisation-dashboard .messages-table {
+.clearfix, .hero, .homepage .questions, .homepage .questions-more, .homepage .problems, .ask-question .frequently-asked-questions, .provider-results .results-list, .outcomes-map .map-options, .outcomes-map .map-container, .outcomes-map .map-instructions, .organisation-summary .outcomes-options, .organisation-summary .outcomes-table, .organisation-summary .problems-list, .organisation-dashboard .messages-table, .response-form .message-details, .response-form .status-form, .response-form .response-form {
   *zoom: 1; }
 
 /* ==========================================================================
@@ -955,3 +958,43 @@ button {
   .organisation-dashboard .messages-table table, .organisation-dashboard .messages-table th, .organisation-dashboard .messages-table tr, .organisation-dashboard .messages-table td {
     border: 2px solid #222222;
     padding: 0.25em; }
+
+.response-form .hero .feature {
+  float: left;
+  padding: 0 10px;
+  width: 100%; }
+  @media screen and (min-width: 45em) {
+    .response-form .hero .feature {
+      float: left;
+      padding: 0 10px;
+      width: 50%; } }
+  @media screen and (min-width: 45em) {
+    .response-form .hero .feature p {
+      min-height: 8.25em; } }
+  @media screen and (min-width: 60em) {
+    .response-form .hero .feature p {
+      min-height: 5.75em; } }
+.response-form .message-details {
+  width: 100%; }
+  .response-form .message-details .feature {
+    float: left;
+    padding: 0 10px;
+    width: 100%; }
+    .response-form .message-details .feature p {
+      text-align: left;
+      background: none;
+      padding-top: 0;
+      padding-bottom: 0;
+      font-size: 1em; }
+.response-form .status-form {
+  width: 100%; }
+  .response-form .status-form .feature {
+    float: left;
+    padding: 0 10px;
+    width: 50%; }
+.response-form .response-form {
+  width: 100%; }
+  .response-form .response-form .feature {
+    float: left;
+    padding: 0 10px;
+    width: 100%; }

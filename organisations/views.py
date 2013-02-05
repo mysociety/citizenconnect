@@ -90,3 +90,9 @@ class OrganisationDashboard(TemplateView):
         context['choices_id'] = choices_id
         context['organisation_type'] = organisation_type
         return context
+
+class ResponseForm(TemplateView):
+    template_name = 'organisations/response-form.html'
+
+class ResponseConfirm(TemplateView):
+    template_name = 'organisations/response-confirm.html'
