@@ -8,17 +8,19 @@ from organisations.forms import OrganisationFinderForm
 from organisations.views import OrganisationList, OrganisationFormView
 
 def ask_question(request):
-    return render(request, 'ask-question.html')
+    return render(request, 'questions/ask-question.html')
 
 class PickProvider(FormView):
-    template_name = 'pick-provider.html'
+    template_name = 'questions/pick-provider.html'
     form_class = OrganisationFinderForm
 
 class ProviderResults(OrganisationList):
-    template_name = 'provider-results.html'
+    template_name = 'questions/provider-results.html'
 
-class QuestionForm(OrganisationFormView):
-    template_name = 'question-form.html'
+class QuestionForm(TemplateView):
+    template_name = 'questions/question-form.html'
+    choices_id = None
+    org_type = None
 
 def question_confirm(request):
-    return render(request, 'question-confirm.html')
+    return render(request, 'questions/question-confirm.html')
