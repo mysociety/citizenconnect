@@ -18,130 +18,126 @@
 </div>
 <div class="outcomes-options">
     <form class="" action="{{ request.path }}">
-        <select name="department">
-            <option>Department</option>
-        </select>
-        <select name="problem-type">
-            <option>Problem type</option>
-        </select>
-        <select name="department">
-            <option>Question type</option>
-        </select>
+        <div class="feature">
+            <select name="department">
+                <option>Department</option>
+            </select>
+        </div>
+        <div class="feature">
+            <select name="problem-type">
+                <option>Problem type</option>
+            </select>
+        </div>
+        <div class="feature">
+            <select name="department">
+                <option>Question type</option>
+            </select>
+        </div>
     </form>
 </div>
 <div class="outcomes-table">
-    <div id="feature">
+    <div class="feature">
         <table>
             <thead>
                 <tr>
-                    <th>Message Type</th>
-                    <th>Last 7 days</th>
+                    <th class="heading separator">Message Type</th>
                     <th>Last 7 days</th>
                     <th>Last 4 weeks</th>
-                    <th>Last 6 months</th>
+                    <th class="separator">Last 6 months</th>
                     <th>% Acknowledged in time</th>
-                    <th>% Addressed in time</th>
+                    <th class="separator">% Addressed in time</th>
                     <th>% Happy with service</th>
                     <th>% Happy with outcome</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>Total Problems Reported<br/>of which:</td>
+                    <td class="heading separator">Total Problems Reported<br/><em>of which:</em></td>
                     <td></td>
                     <td></td>
+                    <td class="separator"></td>
                     <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Received but not Acknowledged</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td class="separator"></td>
                     <td></td>
                     <td></td>
                 </tr>
                 <tr>
-                    <td>Acknowledged by not Addressed</td>
+                    <td class="heading separator">Received but not Acknowledged</td>
                     <td></td>
                     <td></td>
+                    <td class="separator"></td>
                     <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Addressed - Problem Solved</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td class="separator"></td>
                     <td></td>
                     <td></td>
                 </tr>
                 <tr>
-                    <td>Addressed - Unable to Solve</td>
+                    <td class="heading separator">Acknowledged by not Addressed</td>
                     <td></td>
                     <td></td>
+                    <td class="separator"></td>
                     <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr class="section">
-                    <td>Total Questions Sent<br/>of which:</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td class="separator"></td>
                     <td></td>
                     <td></td>
                 </tr>
                 <tr>
-                    <td>Received but not Acknowledged</td>
+                    <td class="heading separator">Addressed - Problem Solved</td>
                     <td></td>
                     <td></td>
+                    <td class="separator"></td>
                     <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Acknowledged but not Answered</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td class="separator"></td>
                     <td></td>
                     <td></td>
                 </tr>
                 <tr>
-                    <td>Question Answered</td>
+                    <td class="heading separator">Addressed - Unable to Solve</td>
                     <td></td>
                     <td></td>
+                    <td class="separator"></td>
+                    <td></td>
+                    <td class="separator"></td>
                     <td></td>
                     <td></td>
+                </tr>
+                <tr class="separator">
+                    <td class="heading separator">Total Questions Sent<br/><em>of which:</em></td>
                     <td></td>
                     <td></td>
+                    <td class="separator"></td>
+                    <td></td>
+                    <td class="separator"></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="heading separator">Received but not Acknowledged</td>
+                    <td></td>
+                    <td></td>
+                    <td class="separator"></td>
+                    <td></td>
+                    <td class="separator"></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="heading separator">Acknowledged but not Answered</td>
+                    <td></td>
+                    <td></td>
+                    <td class="separator"></td>
+                    <td></td>
+                    <td class="separator"></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="heading separator">Question Answered</td>
+                    <td></td>
+                    <td></td>
+                    <td class="separator"></td>
+                    <td></td>
+                    <td class="separator"></td>
                     <td></td>
                     <td></td>
                 </tr>
@@ -149,9 +145,9 @@
         </table>
     </div>
 </div>
-<div id="problem-list">
-    <div id="feature">
-        <p>Problem list</p>
+<div class="problem-list">
+    <div class="feature">
+        <p>[Problem list from problems app goes here]</p>
     </div>
 </div>
 {% endblock %}

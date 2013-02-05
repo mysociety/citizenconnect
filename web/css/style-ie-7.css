@@ -594,7 +594,7 @@ textarea {
  * 2. The use of `table` rather than `block` is only necessary if using
  *    `:before` to contain the top-margins of child elements.
  */
-.clearfix:before, .hero:before, .homepage .questions:before, .homepage .questions-more:before, .homepage .problems:before, .ask-question .frequently-asked-questions:before, .provider-results .results-list:before, .outcomes-map .map-options:before, .outcomes-map .map-container:before, .outcomes-map .map-instructions:before,
+.clearfix:before, .hero:before, .homepage .questions:before, .homepage .questions-more:before, .homepage .problems:before, .ask-question .frequently-asked-questions:before, .provider-results .results-list:before, .outcomes-map .map-options:before, .outcomes-map .map-container:before, .outcomes-map .map-instructions:before, .organisation-summary .outcomes-options:before, .organisation-summary .outcomes-table:before, .organisation-summary .problems-list:before,
 .clearfix:after,
 .hero:after,
 .homepage .questions:after,
@@ -604,20 +604,23 @@ textarea {
 .provider-results .results-list:after,
 .outcomes-map .map-options:after,
 .outcomes-map .map-container:after,
-.outcomes-map .map-instructions:after {
+.outcomes-map .map-instructions:after,
+.organisation-summary .outcomes-options:after,
+.organisation-summary .outcomes-table:after,
+.organisation-summary .problems-list:after {
   content: " ";
   /* 1 */
   display: table;
   /* 2 */ }
 
-.clearfix:after, .hero:after, .homepage .questions:after, .homepage .questions-more:after, .homepage .problems:after, .ask-question .frequently-asked-questions:after, .provider-results .results-list:after, .outcomes-map .map-options:after, .outcomes-map .map-container:after, .outcomes-map .map-instructions:after {
+.clearfix:after, .hero:after, .homepage .questions:after, .homepage .questions-more:after, .homepage .problems:after, .ask-question .frequently-asked-questions:after, .provider-results .results-list:after, .outcomes-map .map-options:after, .outcomes-map .map-container:after, .outcomes-map .map-instructions:after, .organisation-summary .outcomes-options:after, .organisation-summary .outcomes-table:after, .organisation-summary .problems-list:after {
   clear: both; }
 
 /*
  * For IE 6/7 only
  * Include this rule to trigger hasLayout and contain floats.
  */
-.clearfix, .hero, .homepage .questions, .homepage .questions-more, .homepage .problems, .ask-question .frequently-asked-questions, .provider-results .results-list, .outcomes-map .map-options, .outcomes-map .map-container, .outcomes-map .map-instructions {
+.clearfix, .hero, .homepage .questions, .homepage .questions-more, .homepage .problems, .ask-question .frequently-asked-questions, .provider-results .results-list, .outcomes-map .map-options, .outcomes-map .map-container, .outcomes-map .map-instructions, .organisation-summary .outcomes-options, .organisation-summary .outcomes-table, .organisation-summary .problems-list {
   *zoom: 1; }
 
 /* ==========================================================================
@@ -850,6 +853,57 @@ button {
 .outcomes-map .map-instructions {
   width: 100%; }
   .outcomes-map .map-instructions .feature {
+    float: left;
+    padding: 0 10px;
+    width: 100%; }
+
+.organisation-summary .hero .feature {
+  float: left;
+  padding: 0 10px;
+  width: 50%; }
+  .organisation-summary .hero .feature p {
+    min-height: 7em;
+    min-height: 4.5em;
+    min-height: 3.5em; }
+.organisation-summary .outcomes-options {
+  width: 100%; }
+  .organisation-summary .outcomes-options .feature {
+    float: left;
+    padding: 0 10px;
+    width: 100%;
+    float: left;
+    padding: 0 10px;
+    width: 33.33%; }
+.organisation-summary .outcomes-table {
+  width: 100%; }
+  .organisation-summary .outcomes-table .feature {
+    float: left;
+    padding: 0 10px;
+    width: 100%; }
+  .organisation-summary .outcomes-table table {
+    border: 2px solid #222222; }
+    .organisation-summary .outcomes-table table th {
+      font-size: 0.85em;
+      border-bottom: 2px solid #222222; }
+      .organisation-summary .outcomes-table table th.heading {
+        font-size: 1.25em; }
+      .organisation-summary .outcomes-table table th.separator {
+        border-right: 2px solid #222222; }
+    .organisation-summary .outcomes-table table tr {
+      border: 1px solid #e1e1e1; }
+      .organisation-summary .outcomes-table table tr.separator {
+        border-top: 2px solid #222222; }
+    .organisation-summary .outcomes-table table td {
+      font-size: 0.85em;
+      border: 1px solid #e1e1e1;
+      text-align: center; }
+      .organisation-summary .outcomes-table table td.heading {
+        width: 25%; }
+      .organisation-summary .outcomes-table table td.separator {
+        border-right: 2px solid #222222; }
+.organisation-summary .problems-list {
+  width: 100%; }
+  .organisation-summary .problems-list .feature {
     float: left;
     padding: 0 10px;
     width: 100%; }
