@@ -19,7 +19,7 @@ class Problem(AuditedModel):
         (u'appointments', u'Appointments'),
     )
     organisation_type = models.CharField(max_length=100, choices=ORGANISATION_CHOICES)
-    organisation_id = models.IntegerField(db_index=True)
+    choices_id = models.IntegerField(db_index=True)
     description = models.TextField()
     category = models.CharField(max_length=100, choices=CATEGORY_CHOICES)
     reporter_name = models.CharField(max_length=200)
