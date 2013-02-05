@@ -329,17 +329,51 @@ button {
     }
 }
 
-// Problem public page
-.problem-public {
-    .meta-data, .status,  {
-        @include row();
+// Organisation dashboard
+.organisation-dashboard {
+    .hero {
         .feature {
-            @include column-half();
+            @include column-full();
+            @include respond-min($tablet-width) {
+                @include column-third();
+            }
             p {
-                background: complement($highlight-background-color);
+                // Match the paragraph heights when things are floated, bit annoying
+                // as it depends on line length
+                min-height: 4em;
+                @include respond-min($tablet-width) {
+                    min-height: 7em;
+                }
+                @include respond-min($desktop-width) {
+                    min-height: 4.5em;
+                }
             }
         }
+
     }
+    .messages-table {
+        @include row();
+        .feature {
+            @include column-full();
+        }
+       table, th, tr, td {
+           border: 2px solid $font-color;
+           padding: 0.25em;
+       }
+   }
+}
+
+// Problem public page
+.problem-public {
+     .meta-data, .status,  {
+         @include row();
+         .feature {
+             @include column-half();
+             p {
+                 background: complement($highlight-background-color);
+             }
+         }
+     }
 
     .provider, .service {
         @include row();
@@ -349,13 +383,12 @@ button {
     }
 
     .details, .response {
-    @include row();
-    .feature {
-        @include column-full();
-        p {
-            height: 8em;
-        }
-    }
-
+        @include row();
+          .feature {
+              @include column-full();
+              p {
+                  height: 8em;
+              }
+         }
     }
 }
