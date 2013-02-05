@@ -42,6 +42,21 @@ class ChoicesAPI():
         organisations = self.parse_organisations(urllib.urlopen(url), organisation_type)
         return organisations
 
+    def get_organisation_name(self, organisation_type, choices_id):
+        path_elements = ['organisations',
+                         organisation_type,
+                         choices_id + '.xml']
+        path = '/'.join(path_elements)
+
+        parameters = {'apikey': settings.NHS_CHOICES_API_KEY}
+        querystring = urllib.urlencode(parameters)
+        url = "%(base_url)s%(path)s?%(querystring)s" % {'path' : path,
+                                                        'querystring': querystring,
+                                                        'base_url': settings.NHS_CHOICES_BASE_URL}
+
+        organisation = self.parse_organisation(urllib.urlopen(url))
+        return organisation
+
     def parse_organisations(self, document, organisation_type):
         tree = ET.parse(document)
         organisations = []
@@ -56,3 +71,10 @@ class ChoicesAPI():
             organisation['organisation_type'] = organisation_type
             organisations.append(organisation)
         return organisations
+
+    def parse_organisation(self, document):
+        tree = ET.parse(document)
+        organisation = tree.getroot()
+        link = organisation.find('{http://schemas.datacontract.org/2004/07/NHSChoices.Syndication.Resources}Link')
+        text = link.find('{http://schemas.datacontract.org/2004/07/NHSChoices.Syndication.Resources}Text')
+        return text.text

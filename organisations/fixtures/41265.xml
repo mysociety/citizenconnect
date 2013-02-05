@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Organisation xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/NHSChoices.Syndication.Resources.Orgs">
+  <Link xmlns="http://schemas.datacontract.org/2004/07/NHSChoices.Syndication.Resources">
+    <Text>Darent Valley Hospital</Text>
+    <Uri>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41265?apikey=OURKEY</Uri>
+  </Link>
+  <Address>
+    <Line1>Darenth Wood Road</Line1>
+    <Line2>Darenth Wood Road</Line2>
+    <Line3></Line3>
+    <Line4>Dartford</Line4>
+    <Line5>Kent</Line5>
+    <Postcode>DA2 8DA</Postcode>
+  </Address>
+  <CommentUrl>http://www.nhs.uk/Services/hospitals/ReviewsAndRatings/DefaultView.aspx?id=1893</CommentUrl>
+  <Easting>0</Easting>
+  <EmailAddress>generalenquiries@dvh.nhs.uk</EmailAddress>
+  <Fax>01322 428259</Fax>
+  <FiveStarRecommendationRating>
+    <Value>4.2857142857142856</Value>
+    <MaxValue>5</MaxValue>
+    <MinValue>1</MinValue>
+    <NumberOfRatings>7</NumberOfRatings>
+  </FiveStarRecommendationRating>
+  <Latitude>51.434249877929687</Latitude>
+  <Longitude>0.2572721540927887</Longitude>
+  <ModifiedDate>2013-01-08T04:30:24.58</ModifiedDate>
+  <Name>Darent Valley Hospital</Name>
+  <Northing>0</Northing>
+  <OdsCode>RN707</OdsCode>
+  <OrganisationId>41265</OrganisationId>
+  <OrganisationTypeName>hospitals</OrganisationTypeName>
+  <OverallRating>
+    <PercentWouldRecommend>73</PercentWouldRecommend>
+    <Ratings>114</Ratings>
+    <Recommendations>83</Recommendations>
+  </OverallRating>
+  <ParentOrganisationCode>RN7</ParentOrganisationCode>
+  <ParentOrganisationName>Dartford and Gravesham NHS Trust</ParentOrganisationName>
+  <ProfileLinks xmlns:d2p1="http://schemas.datacontract.org/2004/07/NHSChoices.Syndication.Resources">
+    <d2p1:Link>
+      <d2p1:Class>profile</d2p1:Class>
+      <d2p1:Text>Overview</d2p1:Text>
+      <d2p1:Uri>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41265/overview?apikey=OURKEY</d2p1:Uri>
+    </d2p1:Link>
+    <d2p1:Link>
+      <d2p1:Class>profile</d2p1:Class>
+      <d2p1:Text>Services</d2p1:Text>
+      <d2p1:Uri>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41265/services?apikey=OURKEY</d2p1:Uri>
+    </d2p1:Link>
+    <d2p1:Link>
+      <d2p1:Class>profile</d2p1:Class>
+      <d2p1:Text>Staff</d2p1:Text>
+      <d2p1:Uri>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41265/staff?apikey=OURKEY</d2p1:Uri>
+    </d2p1:Link>
+    <d2p1:Link>
+      <d2p1:Class>profile</d2p1:Class>
+      <d2p1:Text>Facilities</d2p1:Text>
+      <d2p1:Uri>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41265/facilities?apikey=OURKEY</d2p1:Uri>
+    </d2p1:Link>
+    <d2p1:Link>
+      <d2p1:Class>profile</d2p1:Class>
+      <d2p1:Text>Core Indicators</d2p1:Text>
+      <d2p1:Uri>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41265/indicators/core?apikey=OURKEY</d2p1:Uri>
+    </d2p1:Link>
+    <d2p1:Link>
+      <d2p1:Class>profile</d2p1:Class>
+      <d2p1:Text>Treatment Indicators</d2p1:Text>
+      <d2p1:Uri>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41265/indicators/treatment?apikey=OURKEY</d2p1:Uri>
+    </d2p1:Link>
+    <d2p1:Link>
+      <d2p1:Class>profile</d2p1:Class>
+      <d2p1:Text>Contact</d2p1:Text>
+      <d2p1:Uri>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41265/contact?apikey=OURKEY</d2p1:Uri>
+    </d2p1:Link>
+    <d2p1:Link>
+      <d2p1:Class>comments</d2p1:Class>
+      <d2p1:Text>Comments Before</d2p1:Text>
+      <d2p1:Uri>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41265/commentsbefore?apikey=OURKEY</d2p1:Uri>
+    </d2p1:Link>
+    <d2p1:Link>
+      <d2p1:Class>comments</d2p1:Class>
+      <d2p1:Text>Comments Since</d2p1:Text>
+      <d2p1:Uri>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41265/commentssince?apikey=OURKEY</d2p1:Uri>
+    </d2p1:Link>
+    <d2p1:Link>
+      <d2p1:Class>comments</d2p1:Class>
+      <d2p1:Text>All Comments</d2p1:Text>
+      <d2p1:Uri>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41265/comments?apikey=OURKEY</d2p1:Uri>
+    </d2p1:Link>
+  </ProfileLinks>
+  <Ratings>
+    <rating>
+      <questionText>How satisfied are you with the cleanliness of the area you were treated in?</questionText>
+      <answerText>Fairly satisfied</answerText>
+      <answerMetric
+        value="3.82786885245902"
+        type="Average"
+        minValue="1"
+        maxValue="5"
+        numberOfRatings="122" />
+    </rating>
+    <rating>
+      <questionText>Doctors and nurses worked well together…</questionText>
+      <answerText>Fairly satisfied</answerText>
+      <answerMetric
+        value="4.1271186440678"
+        type="Average"
+        minValue="1"
+        maxValue="5"
+        numberOfRatings="118" />
+    </rating>
+    <rating>
+      <questionText>How satisfied are you that you were treated with dignity and respect by the staff?</questionText>
+      <answerText>Fairly satisfied</answerText>
+      <answerMetric
+        value="4.07438016528926"
+        type="Average"
+        minValue="1"
+        maxValue="5"
+        numberOfRatings="121" />
+    </rating>
+    <rating>
+      <questionText>How satisfied are you that you were involved in decisions about your care?</questionText>
+      <answerText>Fairly satisfied</answerText>
+      <answerMetric
+        value="3.99082568807339"
+        type="Average"
+        minValue="1"
+        maxValue="5"
+        numberOfRatings="109" />
+    </rating>
+    <rating>
+      <questionText>How satisfied are you that the hospital provides same-sex accommodation?</questionText>
+      <answerText>Fairly satisfied</answerText>
+      <answerMetric
+        value="4.13636363636364"
+        type="Average"
+        minValue="1"
+        maxValue="5"
+        numberOfRatings="44" />
+    </rating>
+  </Ratings>
+  <Telephone>01322 428100</Telephone>
+  <WebAddress>http://www.dvh.nhs.uk</WebAddress>
+</Organisation>
