@@ -12,6 +12,7 @@ urlpatterns = patterns('',
     url(r'^$', 'citizenconnect.views.home', name='home'),
 
     url(r'^question/', include('questions.urls')),
+    url(r'^problem/', include('problems.urls')),
 
     # url(r'^citizenconnect/', include('citizenconnect.foo.urls')),
 
