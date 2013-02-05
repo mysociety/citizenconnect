@@ -7,16 +7,16 @@ from organisations.forms import OrganisationFinderForm
 from organisations.views import OrganisationList
 
 class PickProvider(FormView):
-    template_name = 'pick-provider.html'
+    template_name = 'problems/pick-provider.html'
     form_class = OrganisationFinderForm
 
 class ProviderResults(OrganisationList):
-    template_name = 'provider-results.html'
+    template_name = 'problems/provider-results.html'
 
 class ProblemForm(TemplateView):
-    template_name = 'problem-form.html'
+    template_name = 'problems/problem-form.html'
     choices_id = None
     org_type = None
 
 def problem_confirm(request):
-    return render(request, 'problem-confirm.html')
+    return render(request, 'problems/problem-confirm.html')
