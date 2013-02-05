@@ -10,7 +10,148 @@
 </div>
 <div class="hero">
     <div class="feature">
-        <p>All sorts of outcomes go here</p>
+        <p>96% of message responded to in time</p>
+    </div>
+    <div class="feature">
+        <p>82% of users happy with service</p>
+    </div>
+</div>
+<div class="outcomes-options">
+    <form class="" action="{{ request.path }}">
+        <select name="department">
+            <option>Department</option>
+        </select>
+        <select name="problem-type">
+            <option>Problem type</option>
+        </select>
+        <select name="department">
+            <option>Question type</option>
+        </select>
+    </form>
+</div>
+<div class="outcomes-table">
+    <div id="feature">
+        <table>
+            <thead>
+                <tr>
+                    <th>Message Type</th>
+                    <th>Last 7 days</th>
+                    <th>Last 7 days</th>
+                    <th>Last 4 weeks</th>
+                    <th>Last 6 months</th>
+                    <th>% Acknowledged in time</th>
+                    <th>% Addressed in time</th>
+                    <th>% Happy with service</th>
+                    <th>% Happy with outcome</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Total Problems Reported<br/>of which:</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Received but not Acknowledged</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Acknowledged by not Addressed</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Addressed - Problem Solved</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Addressed - Unable to Solve</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="section">
+                    <td>Total Questions Sent<br/>of which:</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Received but not Acknowledged</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Acknowledged but not Answered</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Question Answered</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div id="problem-list">
+    <div id="feature">
+        <p>Problem list</p>
     </div>
 </div>
 {% endblock %}
