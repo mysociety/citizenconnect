@@ -26,7 +26,9 @@
     $(document).ready(function(){
             var providers = [],
                 map = new L.map('public-map').setView([51.505, -0.09], 13),
-                markers = new L.MarkerClusterGroup();
+                markers = new L.MarkerClusterGroup({
+                    disableClusteringAtZoom:14
+                });
 
             // Tiles
             L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
