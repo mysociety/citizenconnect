@@ -18,5 +18,5 @@ class ReviewForm(TemplateView):
     choices_id = None
     org_type = None
 
-def review_confirm(request):
-    return render(request, 'reviews/review-confirm.html')
+class ReviewConfirm(TemplateView):
+    template_name = 'reviews/review-confirm.html'

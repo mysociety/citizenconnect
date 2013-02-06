@@ -6,28 +6,28 @@
 
 {% block content %}
 <div class="header">
-    <h1>NHS Citizen's Connect</h1>
+    <h1>NHS Citizen's Connect: {{ cobrand.name }}</h1>
 </div>
 <div class="hero">
     <div class="feature">
-        <p><a href="{% url problems-pick-provider %}">I've got a problem that needs solving</a></p>
+        <p><a href="{% url problems-pick-provider cobrand=cobrand.name %}">I've got a problem that needs solving</a></p>
     </div>
     <div class="feature">
-        <p><a href="{% url reviews-pick-provider %}">I would like to leave a review of my NHS Experience</a></p>
+        <p><a href="{% url reviews-pick-provider cobrand=cobrand.name %}">I would like to leave a review of my NHS Experience</a></p>
     </div>
 </div>
 <div class="questions">
     <h2>I've got a question that needs answering</h2>
     <div class="feature">
-        <p><a href="{% url ask-question %}">For London</a></p>
+        <p><a href="{% url ask-question cobrand=cobrand.name %}">For London</a></p>
     </div>
     <div class="feature">
-        <p><a href="{% url ask-question %}">For Manchester</a></p>
+        <p><a href="{% url ask-question cobrand=cobrand.name %}">For Manchester</a></p>
     </div>
 </div>
 <div class="questions-more">
     <div class="feature">
-        <p><a href="{% url org-map %}">See the maps!</a></p>
+        <p><a href="{% url org-map cobrand=cobrand.name %}">See the maps!</a></p>
     </div>
     <div class="feature">
         <p><a href="">Find out more</a></p>
@@ -35,7 +35,7 @@
 </div>
 <div class="problems">
     <div class="feature">
-        <p><a href="{% url org-all-summary %}">I’d like to see what issues other people have been raising</a></p>
+        <p><a href="{% url org-all-summary cobrand=cobrand.name %}">I’d like to see what issues other people have been raising</a></p>
     </div>
 </div>
 <h2 class="emergency">Emergency? Dial 999 NOW!</h2>
