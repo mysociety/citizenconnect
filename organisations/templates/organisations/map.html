@@ -10,10 +10,14 @@
 <!--[if lte IE 8]>
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.ie.css" />
 <![endif]-->
+<link rel="stylesheet" href="https://raw.github.com/Leaflet/Leaflet.markercluster/master/dist/MarkerCluster.Default.css">
+<link rel="stylesheet" href="https://raw.github.com/Leaflet/Leaflet.markercluster/master/dist/MarkerCluster.Default.css">
+<!--[if lte IE 8]><link rel="stylesheet" href="https://raw.github.com/Leaflet/Leaflet.markercluster/master/dist/MarkerCluster.Default.ie.css" /><![endif]-->
 {% endblock %}
 {% block extra_js %}
 {{ block.super }}
 <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+<script src="https://raw.github.com/Leaflet/Leaflet.markercluster/master/dist/leaflet.markercluster-src.js"></script>
 <script>
 
     $(document).ready(
