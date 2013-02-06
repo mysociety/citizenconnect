@@ -58,6 +58,14 @@ class ChoicesAPIOrganisationsExampleFileTests(TestCase):
         first_expected_type = 'hospitals'
         self.assertEqual(results[0]['organisation_type'], first_expected_type)
 
+    def test_parses_coordinates(self):
+        results = self.parse_example_file('hospitals')
+        first_expected_coordinates = {
+            'lon':-0.137492403388023,
+            'lat':51.4915466308594
+        }
+        self.assertEqual(results[0]['coordinates'], first_expected_coordinates)
+
     def test_handles_unknown_search_type(self):
         with self.assertRaises(ValueError) as context_manager:
             self._api.find_organisations('sometype', 'value', 'hospitals')
