@@ -22,3 +22,6 @@ class QuestionForm(OrganisationFormView):
 
 def question_confirm(request):
     return render(request, 'questions/question-confirm.html')
+
+class QuestionPublicView(TemplateView):
+    template_name = 'questions/public.html'
