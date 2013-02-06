@@ -284,7 +284,7 @@ button {
             }
         }
     }
-    .outcomes-table, .problem-list {
+    .outcomes-table, .problem-list, .question-list {
         @include row();
         .feature {
             @include column-full()
