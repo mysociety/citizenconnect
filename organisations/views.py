@@ -34,8 +34,22 @@ class OrganisationList(TemplateView):
         context['organisations'] = organisations
         return context
 
-def map(request):
-    return render(request, 'organisations/map.html')
+class OrganisationFormView(TemplateView):
+
+    # Get the organisation name
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(OrganisationFormView, self).get_context_data(**kwargs)
+        organisation_type = self.kwargs['organisation_type']
+        choices_id = self.kwargs['choices_id']
+        api = ChoicesAPI()
+        context['organisation_name'] = api.get_organisation_name(organisation_type, choices_id)
+        context['choices_id'] = choices_id
+        context['organisation_type'] = organisation_type
+        return context
+
+class Map(TemplateView):
+    template_name = 'organisations/map.html'
 
 class PickProvider(FormView):
     template_name = 'organisations/pick-provider.html'

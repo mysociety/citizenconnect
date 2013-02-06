@@ -1,4 +1,7 @@
 from citizenconnect.shortcuts import render
 
-def home(request):
-    return render(request, 'index.html')
+# Django imports
+from django.views.generic import TemplateView
+
+class Home(TemplateView):
+    template_name = 'index.html'
