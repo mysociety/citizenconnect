@@ -40,9 +40,12 @@
             providers = providers.concat(window.hospitals, window.gppractices);
             $.each(providers, function(index, provider) {
                 var latLng = new L.LatLng(provider.coordinates.lat, provider.coordinates.lon);
-                markers.addLayer(new L.Marker(latLng, {
+                var marker = new L.Marker(latLng, {
                     title: provider.name
-                }));
+                });
+                var type = provider.organisation_type === 'gppractices' ? 'GP' : 'Hospital';
+                marker.bindPopup("<strong>" + provider.name + "</strong><br/>Type: " + type);
+                markers.addLayer(marker);
             });
             map.addLayer(markers);
     });
