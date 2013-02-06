@@ -147,7 +147,48 @@
 </div>
 <div class="problem-list">
     <div class="feature">
-        <p>[Problem list from problems app goes here]</p>
+         <table>
+            <thead>
+                <tr>
+                    <th>Ref</th>
+                    <th>Received</th>
+                    <th>Status</th>
+                    <th>Type</th>
+                    <th>Department</th>
+                    <th>User satisfied?</th>
+                    <th>Text snippet</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>5344</td>
+                    <td>Jan 21 2013</td>
+                    <td>Acknowledged</td>
+                    <td>Cleanliness</td>
+                    <td>Foot Clinic</td>
+                    <td>Yes</td>
+                    <td><a href="{% url problem-view 1 %}">Some details...</a></td>
+                </tr>
+                <tr>
+                    <td>5344</td>
+                    <td>Jan 21 2013</td>
+                    <td>Acknowledged</td>
+                    <td>Cleanliness</td>
+                    <td>Foot Clinic</td>
+                    <td>Yes</td>
+                    <td><a href="{% url problem-view 1 %}">Some details...</a></td>
+                </tr>
+                <tr>
+                    <td>5344</td>
+                    <td>Jan 21 2013</td>
+                    <td>Acknowledged</td>
+                    <td>Cleanliness</td>
+                    <td>Foot Clinic</td>
+                    <td>Yes</td>
+                    <td><a href="{% url problem-view 1 %}">Some details...</a></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 {% endblock %}
