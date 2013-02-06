@@ -24,3 +24,6 @@ class QuestionForm(TemplateView):
 
 def question_confirm(request):
     return render(request, 'questions/question-confirm.html')
+
+class QuestionPublicView(TemplateView):
+    template_name = 'questions/public.html'

@@ -594,7 +594,7 @@ textarea {
  * 2. The use of `table` rather than `block` is only necessary if using
  *    `:before` to contain the top-margins of child elements.
  */
-.clearfix:before, .hero:before, .homepage .questions:before, .homepage .questions-more:before, .homepage .problems:before, .ask-question .frequently-asked-questions:before, .provider-results .results-list:before, .outcomes-map .map-options:before, .outcomes-map .map-container:before, .outcomes-map .map-instructions:before, .organisation-summary .outcomes-options:before, .organisation-summary .outcomes-table:before, .organisation-summary .problems-list:before, .problem-public .meta-data:before, .problem-public .status:before, .problem-public .provider:before, .problem-public .service:before, .problem-public .details:before, .problem-public .response:before,
+.clearfix:before, .hero:before, .homepage .questions:before, .homepage .questions-more:before, .homepage .problems:before, .ask-question .frequently-asked-questions:before, .provider-results .results-list:before, .outcomes-map .map-options:before, .outcomes-map .map-container:before, .outcomes-map .map-instructions:before, .organisation-summary .outcomes-options:before, .organisation-summary .outcomes-table:before, .organisation-summary .problems-list:before, .organisation-dashboard .messages-table:before, .problem-public .meta-data:before, .problem-public .status:before, .problem-public .provider:before, .problem-public .service:before, .problem-public .details:before, .problem-public .response:before, .question-public .meta-data:before, .question-public .status:before, .question-public .provider:before, .question-public .details:before, .question-public .response:before, .response-form .message-details:before, .response-form .status-form:before, .response-form .response-form:before,
 .clearfix:after,
 .hero:after,
 .homepage .questions:after,
@@ -613,20 +613,28 @@ textarea {
 .problem-public .provider:after,
 .problem-public .service:after,
 .problem-public .details:after,
-.problem-public .response:after {
+.problem-public .response:after,
+.question-public .meta-data:after,
+.question-public .status:after,
+.question-public .provider:after,
+.question-public .details:after,
+.question-public .response:after,
+.response-form .message-details:after,
+.response-form .status-form:after,
+.response-form .response-form:after {
   content: " ";
   /* 1 */
   display: table;
   /* 2 */ }
 
-.clearfix:after, .hero:after, .homepage .questions:after, .homepage .questions-more:after, .homepage .problems:after, .ask-question .frequently-asked-questions:after, .provider-results .results-list:after, .outcomes-map .map-options:after, .outcomes-map .map-container:after, .outcomes-map .map-instructions:after, .organisation-summary .outcomes-options:after, .organisation-summary .outcomes-table:after, .organisation-summary .problems-list:after, .problem-public .meta-data:after, .problem-public .status:after, .problem-public .provider:after, .problem-public .service:after, .problem-public .details:after, .problem-public .response:after {
+.clearfix:after, .hero:after, .homepage .questions:after, .homepage .questions-more:after, .homepage .problems:after, .ask-question .frequently-asked-questions:after, .provider-results .results-list:after, .outcomes-map .map-options:after, .outcomes-map .map-container:after, .outcomes-map .map-instructions:after, .organisation-summary .outcomes-options:after, .organisation-summary .outcomes-table:after, .organisation-summary .problems-list:after, .organisation-dashboard .messages-table:after, .problem-public .meta-data:after, .problem-public .status:after, .problem-public .provider:after, .problem-public .service:after, .problem-public .details:after, .problem-public .response:after, .question-public .meta-data:after, .question-public .status:after, .question-public .provider:after, .question-public .details:after, .question-public .response:after, .response-form .message-details:after, .response-form .status-form:after, .response-form .response-form:after {
   clear: both; }
 
 /*
  * For IE 6/7 only
  * Include this rule to trigger hasLayout and contain floats.
  */
-.clearfix, .hero, .homepage .questions, .homepage .questions-more, .homepage .problems, .ask-question .frequently-asked-questions, .provider-results .results-list, .outcomes-map .map-options, .outcomes-map .map-container, .outcomes-map .map-instructions, .organisation-summary .outcomes-options, .organisation-summary .outcomes-table, .organisation-summary .problems-list, .problem-public .meta-data, .problem-public .status, .problem-public .provider, .problem-public .service, .problem-public .details, .problem-public .response {
+.clearfix, .hero, .homepage .questions, .homepage .questions-more, .homepage .problems, .ask-question .frequently-asked-questions, .provider-results .results-list, .outcomes-map .map-options, .outcomes-map .map-container, .outcomes-map .map-instructions, .organisation-summary .outcomes-options, .organisation-summary .outcomes-table, .organisation-summary .problems-list, .organisation-dashboard .messages-table, .problem-public .meta-data, .problem-public .status, .problem-public .provider, .problem-public .service, .problem-public .details, .problem-public .response, .question-public .meta-data, .question-public .status, .question-public .provider, .question-public .details, .question-public .response, .response-form .message-details, .response-form .status-form, .response-form .response-form {
   *zoom: 1; }
 
 /* ==========================================================================
@@ -936,3 +944,62 @@ button {
     width: 100%; }
     .problem-public .details .feature p, .problem-public .response .feature p {
       height: 8em; }
+.question-public .meta-data, .question-public .status {
+  width: 100%; }
+  .question-public .meta-data .feature, .question-public .status .feature {
+    float: left;
+    padding: 0 10px;
+    width: 50%; }
+    .question-public .meta-data .feature p, .question-public .status .feature p {
+      background: #fde7cc; }
+.question-public .provider {
+  width: 100%; }
+  .question-public .provider .feature {
+    float: left;
+    padding: 0 10px;
+    width: 100%; }
+    .question-public .provider .feature p {
+      background: #fde7cc; }
+.question-public .details, .question-public .response {
+  width: 100%; }
+  .question-public .details .feature, .question-public .response .feature {
+    float: left;
+    padding: 0 10px;
+    width: 100%; }
+    .question-public .details .feature p, .question-public .response .feature p {
+      height: 8em; }
+
+.response-form .hero .feature {
+  float: left;
+  padding: 0 10px;
+  width: 100%;
+  float: left;
+  padding: 0 10px;
+  width: 50%; }
+  .response-form .hero .feature p {
+    min-height: 8.25em;
+    min-height: 5.75em; }
+.response-form .message-details {
+  width: 100%; }
+  .response-form .message-details .feature {
+    float: left;
+    padding: 0 10px;
+    width: 100%; }
+    .response-form .message-details .feature p {
+      text-align: left;
+      background: none;
+      padding-top: 0;
+      padding-bottom: 0;
+      font-size: 1em; }
+.response-form .status-form {
+  width: 100%; }
+  .response-form .status-form .feature {
+    float: left;
+    padding: 0 10px;
+    width: 50%; }
+.response-form .response-form {
+  width: 100%; }
+  .response-form .response-form .feature {
+    float: left;
+    padding: 0 10px;
+    width: 100%; }

@@ -334,6 +334,51 @@ button {
 .problem-public {
     .meta-data, .status,  {
         @include row();
+          .feature {
+              @include column-full();
+              p {
+                  height: 8em;
+              }
+         }
+    }
+}
+
+// Question public page
+.question-public {
+ .meta-data, .status,  {
+     @include row();
+     .feature {
+         @include column-half();
+         p {
+             background: complement($highlight-background-color);
+         }
+     }
+ }
+
+.provider{
+    @include row();
+    .feature {
+        @include column-full();
+        p {
+            background: complement($highlight-background-color);
+        }
+    }
+}
+
+.details, .response {
+    @include row();
+      .feature {
+          @include column-full();
+          p {
+              height: 8em;
+          }
+     }
+}
+}
+
+// Response form
+.response-form {
+    .hero {
         .feature {
             @include column-half();
             p {
