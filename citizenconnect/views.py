@@ -5,3 +5,6 @@ from django.views.generic import TemplateView
 
 class Home(TemplateView):
     template_name = 'index.html'
+
+class CobrandChoice(TemplateView):
+    template_name = 'cobrand_choice.html'
