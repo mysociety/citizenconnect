@@ -16,6 +16,9 @@
         <!--[if gt IE 8]><!-->
             <link rel="stylesheet" href="{% static "css/style.css" %}">
         <!--<![endif]-->
+        {% if cobrand %}
+        <link rel="stylesheet" href="{% static cobrand.stylesheet  %}">
+        {% endif %}
         {% block extra_css %}{% endblock %}
     </head>
 

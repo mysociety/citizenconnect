@@ -16,8 +16,8 @@ class ProviderResults(OrganisationList):
 class ProblemForm(OrganisationFormView):
     template_name = 'problems/problem-form.html'
 
-def problem_confirm(request):
-    return render(request, 'problems/problem-confirm.html')
+class ProblemConfirm(TemplateView):
+    template_name = 'problems/problem-confirm.html'
 
 class ProblemPublicView(TemplateView):
     template_name = 'problems/public.html'

@@ -7,8 +7,8 @@ from citizenconnect.shortcuts import render
 from organisations.forms import OrganisationFinderForm
 from organisations.views import OrganisationList, OrganisationFormView
 
-def ask_question(request):
-    return render(request, 'questions/ask-question.html')
+class AskQuestion(TemplateView):
+    template_name = 'questions/ask-question.html'
 
 class PickProvider(FormView):
     template_name = 'questions/pick-provider.html'
@@ -18,7 +18,10 @@ class ProviderResults(OrganisationList):
     template_name = 'questions/provider-results.html'
 
 class QuestionForm(OrganisationFormView):
-    template_name = 'question-form.html'
+    template_name = 'questions/question-form.html'
 
-def question_confirm(request):
-    return render(request, 'questions/question-confirm.html')
+class QuestionConfirm(TemplateView):
+    template_name = 'questions/question-confirm.html'
+
+class QuestionPublicView(TemplateView):
+    template_name = 'questions/public.html'

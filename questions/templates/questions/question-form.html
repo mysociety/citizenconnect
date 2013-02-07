@@ -12,7 +12,7 @@
     <p>Writing a message to <strong>{{ organisation_name }}</strong>
 </div>
 <div class="question-form">
-    <form action="{% url question-confirm %}">
+    <form action="{% url question-confirm cobrand=cobrand.name %}">
         <div>
             <textarea class="message-input" type="text" name="message" placeholder="Please write your question in this box, including as much information as possible to help us to help you"></textarea>
         </div>

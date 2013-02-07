@@ -145,9 +145,84 @@
         </table>
     </div>
 </div>
+<div class="header">
+    <h2>Problem reports</h2>
+</div>
 <div class="problem-list">
     <div class="feature">
-        <p>[Problem list from problems app goes here]</p>
+         <table>
+            <thead>
+                <tr>
+                    <th>Ref</th>
+                    <th>Received</th>
+                    <th>Status</th>
+                    <th>Type</th>
+                    <th>Department</th>
+                    <th>User satisfied?</th>
+                    <th>Text snippet</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>5344</td>
+                    <td>Jan 21 2013</td>
+                    <td>Acknowledged</td>
+                    <td>Cleanliness</td>
+                    <td>Foot Clinic</td>
+                    <td>Yes</td>
+                    <td><a href="{% url problem-view cobrand=cobrand.name problem_id=1 %}">Some details...</a></td>
+                </tr>
+                <tr>
+                    <td>5344</td>
+                    <td>Jan 21 2013</td>
+                    <td>Acknowledged</td>
+                    <td>Cleanliness</td>
+                    <td>Foot Clinic</td>
+                    <td>Yes</td>
+                    <td><a href="{% url problem-view cobrand=cobrand.name problem_id=1 %}">Some details...</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="header">
+    <h2>Questions</h2>
+</div>
+<div class="question-list">
+    <div class="feature">
+         <table>
+            <thead>
+                <tr>
+                    <th>Ref</th>
+                    <th>Received</th>
+                    <th>Status</th>
+                    <th>Type</th>
+                    <th>Department</th>
+                    <th>User satisfied?</th>
+                    <th>Text snippet</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>5344</td>
+                    <td>Jan 21 2013</td>
+                    <td>Acknowledged</td>
+                    <td>Appointments</td>
+                    <td></td>
+                    <td>Yes</td>
+                    <td><a href="{% url question-view cobrand=cobrand.name question_id=1 %}">How do I...</a></td>
+                </tr>
+                <tr>
+                    <td>5344</td>
+                    <td>Jan 21 2013</td>
+                    <td>Acknowledged</td>
+                    <td>Appointments</td>
+                    <td></td>
+                    <td>Yes</td>
+                    <td><a href="{% url question-view cobrand=cobrand.name question_id=1 %}">How do I...</a></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 {% endblock %}

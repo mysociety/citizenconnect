@@ -284,12 +284,13 @@ button {
             }
         }
     }
-    .outcomes-table {
+    .outcomes-table, .problem-list, .question-list {
         @include row();
         .feature {
             @include column-full()
         }
         table {
+            width: 100%;
             border: 2px solid $font-color;
             th {
                 font-size: $font-size * 0.85;
@@ -319,14 +320,12 @@ button {
                 }
             }
         }
+
+    }
+    .problem-list {
+        margin-top: 1em;
     }
 
-    .problems-list {
-        @include row();
-        .feature {
-            @include column-full();
-        }
-    }
 }
 
 // Organisation dashboard
@@ -391,6 +390,39 @@ button {
               }
          }
     }
+}
+
+// Question public page
+.question-public {
+ .meta-data, .status,  {
+     @include row();
+     .feature {
+         @include column-half();
+         p {
+             background: complement($highlight-background-color);
+         }
+     }
+ }
+
+.provider{
+    @include row();
+    .feature {
+        @include column-full();
+        p {
+            background: complement($highlight-background-color);
+        }
+    }
+}
+
+.details, .response {
+    @include row();
+      .feature {
+          @include column-full();
+          p {
+              height: 8em;
+          }
+     }
+}
 }
 
 // Response form

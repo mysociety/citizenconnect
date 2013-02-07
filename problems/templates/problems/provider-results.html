@@ -11,14 +11,14 @@
 <div class="hero">
     <div class="feature">
         <p>Please select the provider you would like your problem sent to from the below list.</p>
-        <p>Can’t see the provider you are looking for? Then <a href="{% url problems-pick-provider %}">SEARCH AGAIN</a></p>
+        <p>Can’t see the provider you are looking for? Then <a href="{% url problems-pick-provider cobrand=cobrand.name %}">SEARCH AGAIN</a></p>
     </div>
 </div>
 <div class="results-list">
     <div class="feature">
         <ul>
             {% for organisation in organisations %}
-                <li><a href="{% url problem-form organisation_type=organisation.organisation_type choices_id=organisation.choices_id  %}">{{ organisation.name }}</a></li>
+                <li><a href="{% url problem-form cobrand=cobrand.name    organisation_type=organisation.organisation_type choices_id=organisation.choices_id  %}">{{ organisation.name }}</a></li>
             {% endfor %}
         </ul>
     </div>

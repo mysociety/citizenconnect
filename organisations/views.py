@@ -48,8 +48,8 @@ class OrganisationFormView(TemplateView):
         context['organisation_type'] = organisation_type
         return context
 
-def map(request):
-    return render(request, 'organisations/map.html')
+class Map(TemplateView):
+    template_name = 'organisations/map.html'
 
 class PickProvider(FormView):
     template_name = 'organisations/pick-provider.html'

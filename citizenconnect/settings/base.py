@@ -115,6 +115,7 @@ TEMPLATE_DIRS = (
 TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
     "django.core.context_processors.request",
     "citizenconnect.context_processors.add_settings",
+    "citizenconnect.context_processors.add_cobrand",
 )
 
 INSTALLED_APPS = (

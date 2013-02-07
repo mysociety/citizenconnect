@@ -594,7 +594,7 @@ textarea {
  * 2. The use of `table` rather than `block` is only necessary if using
  *    `:before` to contain the top-margins of child elements.
  */
-.clearfix:before, .hero:before, .homepage .questions:before, .homepage .questions-more:before, .homepage .problems:before, .ask-question .frequently-asked-questions:before, .provider-results .results-list:before, .outcomes-map .map-options:before, .outcomes-map .map-container:before, .outcomes-map .map-instructions:before, .organisation-summary .outcomes-options:before, .organisation-summary .outcomes-table:before, .organisation-summary .problems-list:before, .organisation-dashboard .messages-table:before, .problem-public .meta-data:before, .problem-public .status:before, .problem-public .provider:before, .problem-public .service:before, .problem-public .details:before, .problem-public .response:before, .response-form .message-details:before, .response-form .status-form:before, .response-form .response-form:before,
+.clearfix:before, .hero:before, .homepage .questions:before, .homepage .questions-more:before, .homepage .problems:before, .ask-question .frequently-asked-questions:before, .provider-results .results-list:before, .outcomes-map .map-options:before, .outcomes-map .map-container:before, .outcomes-map .map-instructions:before, .organisation-summary .outcomes-options:before, .organisation-summary .outcomes-table:before, .organisation-summary .problem-list:before, .organisation-summary .question-list:before, .organisation-dashboard .messages-table:before, .problem-public .meta-data:before, .problem-public .status:before, .problem-public .provider:before, .problem-public .service:before, .problem-public .details:before, .problem-public .response:before, .question-public .meta-data:before, .question-public .status:before, .question-public .provider:before, .question-public .details:before, .question-public .response:before, .response-form .message-details:before, .response-form .status-form:before, .response-form .response-form:before,
 .clearfix:after,
 .hero:after,
 .homepage .questions:after,
@@ -607,7 +607,8 @@ textarea {
 .outcomes-map .map-instructions:after,
 .organisation-summary .outcomes-options:after,
 .organisation-summary .outcomes-table:after,
-.organisation-summary .problems-list:after,
+.organisation-summary .problem-list:after,
+.organisation-summary .question-list:after,
 .organisation-dashboard .messages-table:after,
 .problem-public .meta-data:after,
 .problem-public .status:after,
@@ -615,6 +616,11 @@ textarea {
 .problem-public .service:after,
 .problem-public .details:after,
 .problem-public .response:after,
+.question-public .meta-data:after,
+.question-public .status:after,
+.question-public .provider:after,
+.question-public .details:after,
+.question-public .response:after,
 .response-form .message-details:after,
 .response-form .status-form:after,
 .response-form .response-form:after {
@@ -623,14 +629,14 @@ textarea {
   display: table;
   /* 2 */ }
 
-.clearfix:after, .hero:after, .homepage .questions:after, .homepage .questions-more:after, .homepage .problems:after, .ask-question .frequently-asked-questions:after, .provider-results .results-list:after, .outcomes-map .map-options:after, .outcomes-map .map-container:after, .outcomes-map .map-instructions:after, .organisation-summary .outcomes-options:after, .organisation-summary .outcomes-table:after, .organisation-summary .problems-list:after, .organisation-dashboard .messages-table:after, .problem-public .meta-data:after, .problem-public .status:after, .problem-public .provider:after, .problem-public .service:after, .problem-public .details:after, .problem-public .response:after, .response-form .message-details:after, .response-form .status-form:after, .response-form .response-form:after {
+.clearfix:after, .hero:after, .homepage .questions:after, .homepage .questions-more:after, .homepage .problems:after, .ask-question .frequently-asked-questions:after, .provider-results .results-list:after, .outcomes-map .map-options:after, .outcomes-map .map-container:after, .outcomes-map .map-instructions:after, .organisation-summary .outcomes-options:after, .organisation-summary .outcomes-table:after, .organisation-summary .problem-list:after, .organisation-summary .question-list:after, .organisation-dashboard .messages-table:after, .problem-public .meta-data:after, .problem-public .status:after, .problem-public .provider:after, .problem-public .service:after, .problem-public .details:after, .problem-public .response:after, .question-public .meta-data:after, .question-public .status:after, .question-public .provider:after, .question-public .details:after, .question-public .response:after, .response-form .message-details:after, .response-form .status-form:after, .response-form .response-form:after {
   clear: both; }
 
 /*
  * For IE 6/7 only
  * Include this rule to trigger hasLayout and contain floats.
  */
-.clearfix, .hero, .homepage .questions, .homepage .questions-more, .homepage .problems, .ask-question .frequently-asked-questions, .provider-results .results-list, .outcomes-map .map-options, .outcomes-map .map-container, .outcomes-map .map-instructions, .organisation-summary .outcomes-options, .organisation-summary .outcomes-table, .organisation-summary .problems-list, .organisation-dashboard .messages-table, .problem-public .meta-data, .problem-public .status, .problem-public .provider, .problem-public .service, .problem-public .details, .problem-public .response, .response-form .message-details, .response-form .status-form, .response-form .response-form {
+.clearfix, .hero, .homepage .questions, .homepage .questions-more, .homepage .problems, .ask-question .frequently-asked-questions, .provider-results .results-list, .outcomes-map .map-options, .outcomes-map .map-container, .outcomes-map .map-instructions, .organisation-summary .outcomes-options, .organisation-summary .outcomes-table, .organisation-summary .problem-list, .organisation-summary .question-list, .organisation-dashboard .messages-table, .problem-public .meta-data, .problem-public .status, .problem-public .provider, .problem-public .service, .problem-public .details, .problem-public .response, .question-public .meta-data, .question-public .status, .question-public .provider, .question-public .details, .question-public .response, .response-form .message-details, .response-form .status-form, .response-form .response-form {
   *zoom: 1; }
 
 /* ==========================================================================
@@ -884,39 +890,36 @@ button {
     float: left;
     padding: 0 10px;
     width: 33.33%; }
-.organisation-summary .outcomes-table {
+.organisation-summary .outcomes-table, .organisation-summary .problem-list, .organisation-summary .question-list {
   width: 100%; }
-  .organisation-summary .outcomes-table .feature {
+  .organisation-summary .outcomes-table .feature, .organisation-summary .problem-list .feature, .organisation-summary .question-list .feature {
     float: left;
     padding: 0 10px;
     width: 100%; }
-  .organisation-summary .outcomes-table table {
+  .organisation-summary .outcomes-table table, .organisation-summary .problem-list table, .organisation-summary .question-list table {
+    width: 100%;
     border: 2px solid #222222; }
-    .organisation-summary .outcomes-table table th {
+    .organisation-summary .outcomes-table table th, .organisation-summary .problem-list table th, .organisation-summary .question-list table th {
       font-size: 0.85em;
       border-bottom: 2px solid #222222; }
-      .organisation-summary .outcomes-table table th.heading {
+      .organisation-summary .outcomes-table table th.heading, .organisation-summary .problem-list table th.heading, .organisation-summary .question-list table th.heading {
         font-size: 1.25em; }
-      .organisation-summary .outcomes-table table th.separator {
+      .organisation-summary .outcomes-table table th.separator, .organisation-summary .problem-list table th.separator, .organisation-summary .question-list table th.separator {
         border-right: 2px solid #222222; }
-    .organisation-summary .outcomes-table table tr {
+    .organisation-summary .outcomes-table table tr, .organisation-summary .problem-list table tr, .organisation-summary .question-list table tr {
       border: 1px solid #e1e1e1; }
-      .organisation-summary .outcomes-table table tr.separator {
+      .organisation-summary .outcomes-table table tr.separator, .organisation-summary .problem-list table tr.separator, .organisation-summary .question-list table tr.separator {
         border-top: 2px solid #222222; }
-    .organisation-summary .outcomes-table table td {
+    .organisation-summary .outcomes-table table td, .organisation-summary .problem-list table td, .organisation-summary .question-list table td {
       font-size: 0.85em;
       border: 1px solid #e1e1e1;
       text-align: center; }
-      .organisation-summary .outcomes-table table td.heading {
+      .organisation-summary .outcomes-table table td.heading, .organisation-summary .problem-list table td.heading, .organisation-summary .question-list table td.heading {
         width: 25%; }
-      .organisation-summary .outcomes-table table td.separator {
+      .organisation-summary .outcomes-table table td.separator, .organisation-summary .problem-list table td.separator, .organisation-summary .question-list table td.separator {
         border-right: 2px solid #222222; }
-.organisation-summary .problems-list {
-  width: 100%; }
-  .organisation-summary .problems-list .feature {
-    float: left;
-    padding: 0 10px;
-    width: 100%; }
+.organisation-summary .problem-list {
+  margin-top: 1em; }
 
 .organisation-dashboard .hero .feature {
   float: left;
@@ -960,6 +963,31 @@ button {
     padding: 0 10px;
     width: 100%; }
     .problem-public .details .feature p, .problem-public .response .feature p {
+      height: 8em; }
+
+.question-public .meta-data, .question-public .status {
+  width: 100%; }
+  .question-public .meta-data .feature, .question-public .status .feature {
+    float: left;
+    padding: 0 10px;
+    width: 50%; }
+    .question-public .meta-data .feature p, .question-public .status .feature p {
+      background: #fde7cc; }
+.question-public .provider {
+  width: 100%; }
+  .question-public .provider .feature {
+    float: left;
+    padding: 0 10px;
+    width: 100%; }
+    .question-public .provider .feature p {
+      background: #fde7cc; }
+.question-public .details, .question-public .response {
+  width: 100%; }
+  .question-public .details .feature, .question-public .response .feature {
+    float: left;
+    padding: 0 10px;
+    width: 100%; }
+    .question-public .details .feature p, .question-public .response .feature p {
       height: 8em; }
 
 .response-form .hero .feature {

@@ -28,3 +28,8 @@ NHS_CHOICES_API_KEY: 'XXXXXX'
 
 # NHS Choices API base url
 NHS_CHOICES_BASE_URL: 'http://v1.syndication.nhschoices.nhs.uk/'
+
+# Cobrands
+ALLOWED_COBRANDS:
+  - choices
+  - myhealthlondon
