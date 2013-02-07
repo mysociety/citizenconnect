@@ -26,12 +26,13 @@ class ProblemCreate(CreateView, OrganisationAwareViewMixin):
         # Get the request context (ie: run our context processors)
         # So that we know what cobrand to use
         context = RequestContext(self.request)
-        return reverse('problem-confirm', kwargs={'cobrand':context.get("cobrand").get("name")})
+        return reverse('problem-confirm', kwargs={'cobrand':context["cobrand"]["name"]})
 
     def get_initial(self):
         initial = super(ProblemCreate, self).get_initial()
         initial = initial.copy()
-        # TODO - get the organisation, can we get it from the context?
+        initial['organisation_type'] = self.kwargs['organisation_type']
+        initial['choices_id'] = self.kwargs['choices_id']
         return initial
 
 class ProblemConfirm(TemplateView):
