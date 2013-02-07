@@ -5,7 +5,7 @@ from django.views.generic import FormView, TemplateView
 # App imports
 from citizenconnect.shortcuts import render
 from organisations.forms import OrganisationFinderForm
-from organisations.views import OrganisationList, OrganisationFormView
+from organisations.views import OrganisationList, OrganisationAwareViewMixin
 
 class AskQuestion(TemplateView):
     template_name = 'questions/ask-question.html'
@@ -17,7 +17,7 @@ class PickProvider(FormView):
 class ProviderResults(OrganisationList):
     template_name = 'questions/provider-results.html'
 
-class QuestionForm(OrganisationFormView):
+class QuestionForm(TemplateView, OrganisationAwareViewMixin):
     template_name = 'questions/question-form.html'
 
 class QuestionConfirm(TemplateView):
