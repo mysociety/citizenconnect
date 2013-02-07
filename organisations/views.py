@@ -41,7 +41,7 @@ class OrganisationAwareViewMixin(object):
     # Get the organisation name
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(OrganisationFormView, self).get_context_data(**kwargs)
+        context = super(OrganisationAwareViewMixin, self).get_context_data(**kwargs)
         organisation_type = self.kwargs['organisation_type']
         choices_id = self.kwargs['choices_id']
         api = ChoicesAPI()
