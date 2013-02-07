@@ -10,8 +10,8 @@ class AuditedModel(models.Model):
 
 class Problem(AuditedModel):
     ORGANISATION_CHOICES = (
-        (u'hospital', u'Hospital'),
-        (u'gppractice', u'GP'),
+        (u'hospitals', u'Hospital'),
+        (u'gppractices', u'GP'),
     )
     CATEGORY_CHOICES = (
         (u'cleanliness', u'Cleanliness'),
