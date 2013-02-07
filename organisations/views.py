@@ -34,7 +34,9 @@ class OrganisationList(TemplateView):
         context['organisations'] = organisations
         return context
 
-class OrganisationFormView(TemplateView):
+class OrganisationAwareViewMixin(object):
+    """Mixin class for views which need to have a reference to a particular
+    organisation, such as problem and question forms."""
 
     # Get the organisation name
     def get_context_data(self, **kwargs):
