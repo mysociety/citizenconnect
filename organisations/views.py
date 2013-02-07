@@ -7,6 +7,7 @@ from django.views.generic import FormView, TemplateView
 
 # App imports
 from citizenconnect.shortcuts import render
+from problems.models import Problem
 from .forms import OrganisationFinderForm
 from .choices_api import ChoicesAPI
 
@@ -60,37 +61,20 @@ class PickProvider(FormView):
 class ProviderResults(OrganisationList):
     template_name = 'organisations/provider-results.html'
 
-class OrganisationSummary(TemplateView):
+class OrganisationSummary(TemplateView, OrganisationAwareViewMixin):
     template_name = 'organisations/organisation-summary.html'
-
-    # Get the organisation name
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super(OrganisationSummary, self).get_context_data(**kwargs)
-        organisation_type = self.kwargs['organisation_type']
-        choices_id = self.kwargs['choices_id']
-        api = ChoicesAPI()
-        context['organisation_name'] = api.get_organisation_name(organisation_type, choices_id)
-        context['choices_id'] = choices_id
-        context['organisation_type'] = organisation_type
-        return context
 
 class Summary(TemplateView):
     template_name = 'organisations/summary.html'
 
-class OrganisationDashboard(TemplateView):
+class OrganisationDashboard(TemplateView, OrganisationAwareViewMixin):
     template_name = 'organisations/dashboard.html'
 
-    # Get the organisation name
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
+        # Get all the problems
+        # TODO - One day get all the problems, questions and perhaps reviews
         context = super(OrganisationDashboard, self).get_context_data(**kwargs)
-        organisation_type = self.kwargs['organisation_type']
-        choices_id = self.kwargs['choices_id']
-        api = ChoicesAPI()
-        context['organisation_name'] = api.get_organisation_name(organisation_type, choices_id)
-        context['choices_id'] = choices_id
-        context['organisation_type'] = organisation_type
+        context['issues'] = Problem.objects.all().filter(organisation_type=kwargs['organisation_type'], choices_id=kwargs['choices_id'])
         return context
 
 class ResponseForm(TemplateView):
