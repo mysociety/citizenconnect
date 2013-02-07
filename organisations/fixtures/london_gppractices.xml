@@ -1,0 +1,1212 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns:s="http://syndication.nhschoices.nhs.uk/services" xmlns="http://www.w3.org/2005/Atom"><title type="text">NHS Choices - GP Practices Near Location - London - Within 50km</title><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/place/london/results?range=50</id><rights type="text">© Crown Copyright 2009</rights><updated>2013-02-06T13:58:55Z</updated><category term="Search" /><logo>http://www.nhs.uk/nhscwebservices/documents/logo1.jpg</logo><author><name>NHS Choices</name><uri>http://www.nhs.uk</uri><email>webservices@nhschoices.nhs.uk</email></author><link rel="self" type="application/xml" title="NHS Choices - GP Practices Near Location - London - Within 50km" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/place/London/results?apikey=UUARBGPJ&amp;range=50" /><link rel="first" type="application/xml" title="first" length="1000" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/place/London/results?apikey=UUARBGPJ&amp;range=50&amp;page=1" /><link rel="next" type="application/xml" title="next" length="1000" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/place/London/results?apikey=UUARBGPJ&amp;range=50&amp;page=2" /><link rel="last" type="application/xml" title="last" length="1000" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/place/London/results?apikey=UUARBGPJ&amp;range=50&amp;page=10" /><tracking xmlns="http://syndication.nhschoices.nhs.uk/services">&lt;img style="border: 0; width: 1px; height: 1px;" alt="" src="http://statse.webtrendslive.com/dcss9yzisf9xjyg74mgbihg8p_8d2u/njs.gif?dcsuri=/organisations%2fgppractices%2fplace%2fLondon%2fresults&amp;amp;wt.js=no&amp;amp;wt.cg_n=syndication"/&gt;</tracking><s:SearchCoords>51.511,-0.085</s:SearchCoords><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/245440</id><title type="text">Portsoken Health Centre</title><updated>2013-02-06T13:58:55Z</updated><link rel="self" title="Portsoken Health Centre" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/245440?apikey=UUARBGPJ" /><link rel="alternate" title="Portsoken Health Centre" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=84706" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Portsoken Health Centre</s:name>
+
+                                  <s:address><s:addressLine>14 - 16 Little Somerset Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E1 8AH</s:postcode></s:address>
+                                  <s:contact type="General"></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0746452435851097</s:longitude>
+                                    <s:latitude>51.513011932373</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>0.752505303559922</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12825</id><title type="text">HEALTH E1 HOMELESS MEDICAL CENTRE</title><updated>2013-02-06T13:58:55Z</updated><link rel="self" title="HEALTH E1 HOMELESS MEDICAL CENTRE" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12825?apikey=UUARBGPJ" /><link rel="alternate" title="HEALTH E1 HOMELESS MEDICAL CENTRE" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=40360" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>HEALTH E1 HOMELESS MEDICAL CENTRE</s:name>
+
+                                  <s:address><s:addressLine>9-11 Brick Lane</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E1 6PU</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>0207 247 0090</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0715750604867935</s:longitude>
+                                    <s:latitude>51.5174598693848</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>1.17961876930678</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12741</id><title type="text">SPITALFIELDS PRACTICE (THE)</title><updated>2013-02-06T13:58:55Z</updated><link rel="self" title="SPITALFIELDS PRACTICE (THE)" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12741?apikey=UUARBGPJ" /><link rel="alternate" title="SPITALFIELDS PRACTICE (THE)" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=39146" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>SPITALFIELDS PRACTICE (THE)</s:name>
+
+                                  <s:address><s:addressLine>20 Old Montague Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E1 5PB</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7247 7070</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0701726973056793</s:longitude>
+                                    <s:latitude>51.5165367126465</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>1.19746204776092</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12824</id><title type="text">ST KATHERINE'S DOCK PRACTICE</title><updated>2013-02-06T13:58:55Z</updated><link rel="self" title="ST KATHERINE'S DOCK PRACTICE" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12824?apikey=UUARBGPJ" /><link rel="alternate" title="ST KATHERINE'S DOCK PRACTICE" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=36738" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>ST KATHERINE'S DOCK PRACTICE</s:name>
+
+                                  <s:address><s:addressLine>12-14 Nightingale House</s:addressLine><s:addressLine>50 Thomas More Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E1W 1UA</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7488 3653</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0691503956913948</s:longitude>
+                                    <s:latitude>51.5066299438477</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>1.20437047477587</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12774</id><title type="text">The Neaman Practice</title><updated>2013-02-06T13:58:55Z</updated><link rel="self" title="The Neaman Practice" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12774?apikey=UUARBGPJ" /><link rel="alternate" title="The Neaman Practice" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=44090" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>The Neaman Practice</s:name>
+
+                                  <s:address><s:addressLine>15 Half Moon Court</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>England</s:addressLine><s:postcode>EC1A 7HF</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>0207 6009740</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0989046320319176</s:longitude>
+                                    <s:latitude>51.5188064575195</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>1.29798479491181</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13897</id><title type="text">New Mill Street Surgery</title><updated>2013-02-06T13:58:55Z</updated><link rel="self" title="New Mill Street Surgery" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13897?apikey=UUARBGPJ" /><link rel="alternate" title="New Mill Street Surgery" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=40561" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>New Mill Street Surgery</s:name>
+
+                                  <s:address><s:addressLine>1 Wolseley Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE1 2BP</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7252 1817</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0722959041595459</s:longitude>
+                                    <s:latitude>51.5003852844238</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>1.47271016823825</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12754</id><title type="text">City Wellbeing Practice</title><updated>2013-02-06T13:58:55Z</updated><link rel="self" title="City Wellbeing Practice" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12754?apikey=UUARBGPJ" /><link rel="alternate" title="City Wellbeing Practice" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=35634" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>City Wellbeing Practice</s:name>
+
+                                  <s:address><s:addressLine>129 Cannon Street Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E1 2LX</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7488 4240</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0631236135959625</s:longitude>
+                                    <s:latitude>51.512825012207</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>1.53185986740296</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12716</id><title type="text">WHITECHAPEL HEALTH, SHAH JALAL MEDICAL CENTRE</title><updated>2013-02-06T13:58:55Z</updated><link rel="self" title="WHITECHAPEL HEALTH, SHAH JALAL MEDICAL CENTRE" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12716?apikey=UUARBGPJ" /><link rel="alternate" title="WHITECHAPEL HEALTH, SHAH JALAL MEDICAL CENTRE" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=40793" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>WHITECHAPEL HEALTH, SHAH JALAL MEDICAL CENTRE</s:name>
+
+                                  <s:address><s:addressLine>44 Hessel Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E1 2LP</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7702 2036</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0630854964256287</s:longitude>
+                                    <s:latitude>51.5137214660645</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>1.5507167287702</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13838</id><title type="text">Artesian Health Centre ( Main Site Decima Street)</title><updated>2013-02-06T13:58:55Z</updated><link rel="self" title="Artesian Health Centre ( Main Site Decima Street)" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13838?apikey=UUARBGPJ" /><link rel="alternate" title="Artesian Health Centre ( Main Site Decima Street)" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=42034" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Artesian Health Centre ( Main Site Decima Street)</s:name>
+
+                                  <s:address><s:addressLine>6 Decima Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE1 4QX</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7403 3618</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0839652195572853</s:longitude>
+                                    <s:latitude>51.4969787597656</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>1.55926706197201</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13839</id><title type="text">Bermondsey &amp; Landowne MM ( Branch Site at Artesian)</title><updated>2013-02-06T13:58:55Z</updated><link rel="self" title="Bermondsey &amp; Landowne MM ( Branch Site at Artesian)" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13839?apikey=UUARBGPJ" /><link rel="alternate" title="Bermondsey &amp; Landowne MM ( Branch Site at Artesian)" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=42540" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Bermondsey &amp; Landowne MM ( Branch Site at Artesian)</s:name>
+
+                                  <s:address><s:addressLine>6 Decima Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE1 4QX</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7403 3618</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0839652195572853</s:longitude>
+                                    <s:latitude>51.4969787597656</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>1.55926706197201</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry>
+                                <entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13848</id><title type="text">Borough Medical Centre (Dr Misra)</title><updated>2013-02-06T13:59:16Z</updated><link rel="self" title="Borough Medical Centre (Dr Misra)" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13848?apikey=UUARBGPJ" /><link rel="alternate" title="Borough Medical Centre (Dr Misra)" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=37451" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Borough Medical Centre (Dr Misra)</s:name>
+
+                                  <s:address><s:addressLine>1-5 Newington Causeway</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE1 6ED</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7357 0288</s:telephone><s:email>pallavi.misra@gp-g85106.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0968478620052338</s:longitude>
+                                    <s:latitude>51.4989891052246</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>1.56818564095979</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/44436</id><title type="text">Borough Medical Centre (Dr Sharma)</title><updated>2013-02-06T13:59:16Z</updated><link rel="self" title="Borough Medical Centre (Dr Sharma)" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/44436?apikey=UUARBGPJ" /><link rel="alternate" title="Borough Medical Centre (Dr Sharma)" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=37928" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Borough Medical Centre (Dr Sharma)</s:name>
+
+                                  <s:address><s:addressLine>1-5 Newington Causeway</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE1 6ED</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7357 7852</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0968478620052338</s:longitude>
+                                    <s:latitude>51.4989891052246</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>1.56818564095979</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13874</id><title type="text">Blackfriars Medical Practice</title><updated>2013-02-06T13:59:16Z</updated><link rel="self" title="Blackfriars Medical Practice" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13874?apikey=UUARBGPJ" /><link rel="alternate" title="Blackfriars Medical Practice" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=43050" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Blackfriars Medical Practice</s:name>
+
+                                  <s:address><s:addressLine>45 Colombo Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE1 8EE</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7928 6216</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.106702961027622</s:longitude>
+                                    <s:latitude>51.5045433044434</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>1.67136678685308</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13798</id><title type="text">Falmouth Road Group Practice</title><updated>2013-02-06T13:59:16Z</updated><link rel="self" title="Falmouth Road Group Practice" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13798?apikey=UUARBGPJ" /><link rel="alternate" title="Falmouth Road Group Practice" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=41458" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Falmouth Road Group Practice</s:name>
+
+                                  <s:address><s:addressLine>78 Falmouth Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE1 4JW</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7407 4101</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0940807536244392</s:longitude>
+                                    <s:latitude>51.4962463378906</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>1.76321018545044</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12739</id><title type="text">WAPPING GROUP PRACTICE</title><updated>2013-02-06T13:59:16Z</updated><link rel="self" title="WAPPING GROUP PRACTICE" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12739?apikey=UUARBGPJ" /><link rel="alternate" title="WAPPING GROUP PRACTICE" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=39815" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>WAPPING GROUP PRACTICE</s:name>
+
+                                  <s:address><s:addressLine>Wapping Health Centre</s:addressLine><s:addressLine>22 Wapping Lane</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E1W 2RL</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7481 9376</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.059108592569828</s:longitude>
+                                    <s:latitude>51.5055618286133</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>1.89532751747422</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12661</id><title type="text">City Road Medical Centre</title><updated>2013-02-06T13:59:16Z</updated><link rel="self" title="City Road Medical Centre" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12661?apikey=UUARBGPJ" /><link rel="alternate" title="City Road Medical Centre" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=40526" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>City Road Medical Centre</s:name>
+
+                                  <s:address><s:addressLine>City Approach</s:addressLine><s:addressLine>190-196 City Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>EC1V 2QH</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 3316 8570</s:telephone><s:email>city.road@gp-f83029.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0913268551230431</s:longitude>
+                                    <s:latitude>51.5276756286621</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>1.90920600605056</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13871</id><title type="text">Bermondsey Spa Medical Practice</title><updated>2013-02-06T13:59:16Z</updated><link rel="self" title="Bermondsey Spa Medical Practice" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13871?apikey=UUARBGPJ" /><link rel="alternate" title="Bermondsey Spa Medical Practice" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=38357" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Bermondsey Spa Medical Practice</s:name>
+
+                                  <s:address><s:addressLine>50 Old Jamaica Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE16 4BN</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>0203 049 8910</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0695681795477867</s:longitude>
+                                    <s:latitude>51.4967422485352</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>1.91816561513578</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13842</id><title type="text">The Grange Road Practice</title><updated>2013-02-06T13:59:16Z</updated><link rel="self" title="The Grange Road Practice" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13842?apikey=UUARBGPJ" /><link rel="alternate" title="The Grange Road Practice" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=40398" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>The Grange Road Practice</s:name>
+
+                                  <s:address><s:addressLine>Bermondsey Health Centre</s:addressLine><s:addressLine>108 Grange Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE1 3BW</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 3049 7220</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0768801495432854</s:longitude>
+                                    <s:latitude>51.4941673278809</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>1.95231831913334</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12817</id><title type="text">BLITHEHALE HEALTH CENTRE</title><updated>2013-02-06T13:59:16Z</updated><link rel="self" title="BLITHEHALE HEALTH CENTRE" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12817?apikey=UUARBGPJ" /><link rel="alternate" title="BLITHEHALE HEALTH CENTRE" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=37606" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>BLITHEHALE HEALTH CENTRE</s:name>
+
+                                  <s:address><s:addressLine>22 Dunbridge Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E2 6JA</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7739 5497</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0655471384525299</s:longitude>
+                                    <s:latitude>51.5236549377441</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>1.95444015537976</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12797</id><title type="text">EAST ONE HEALTH</title><updated>2013-02-06T13:59:16Z</updated><link rel="self" title="EAST ONE HEALTH" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12797?apikey=UUARBGPJ" /><link rel="alternate" title="EAST ONE HEALTH" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=41826" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>EAST ONE HEALTH</s:name>
+
+                                  <s:address><s:addressLine>14 Deancross Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E1 2QA</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7790 2978</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0558844022452831</s:longitude>
+                                    <s:latitude>51.5136032104492</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.04185252387238</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry>
+                                <entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13780</id><title type="text">St James Church Surgery</title><updated>2013-02-06T13:59:37Z</updated><link rel="self" title="St James Church Surgery" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13780?apikey=UUARBGPJ" /><link rel="alternate" title="St James Church Surgery" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=35841" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>St James Church Surgery</s:name>
+
+                                  <s:address><s:addressLine>North Aisle, St James Church</s:addressLine><s:addressLine>Thurland Road</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>England - Uk</s:addressLine><s:postcode>SE16 4AA</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7237 4066</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0681664794683456</s:longitude>
+                                    <s:latitude>51.4958229064941</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.05574169480554</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12695</id><title type="text">ALBION HEALTH CENTRE</title><updated>2013-02-06T13:59:37Z</updated><link rel="self" title="ALBION HEALTH CENTRE" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12695?apikey=UUARBGPJ" /><link rel="alternate" title="ALBION HEALTH CENTRE" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=44996" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>ALBION HEALTH CENTRE</s:name>
+
+                                  <s:address><s:addressLine>333 Whitechapel Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E1 1BU</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7456 9820</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.058497354388237</s:longitude>
+                                    <s:latitude>51.5199432373047</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.08928319981163</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12679</id><title type="text">St Phillips Medical Centre</title><updated>2013-02-06T13:59:37Z</updated><link rel="self" title="St Phillips Medical Centre" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12679?apikey=UUARBGPJ" /><link rel="alternate" title="St Phillips Medical Centre" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=41449" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>St Phillips Medical Centre</s:name>
+
+                                  <s:address><s:addressLine>St Philips Medical Centre</s:addressLine><s:addressLine>Tower 3 2nd Floor</s:addressLine><s:addressLine>Clements Inn</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>WC2A 2AZ</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7955 7016</s:telephone><s:email>i.iqbal@lse.ac.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.115009039640427</s:longitude>
+                                    <s:latitude>51.5127716064453</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.09290117310427</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13802</id><title type="text">Princess Street Group Practice</title><updated>2013-02-06T13:59:37Z</updated><link rel="self" title="Princess Street Group Practice" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13802?apikey=UUARBGPJ" /><link rel="alternate" title="Princess Street Group Practice" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=39835" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Princess Street Group Practice</s:name>
+
+                                  <s:address><s:addressLine>2 Princess Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE1 6JP</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7928 0253</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.102756299078465</s:longitude>
+                                    <s:latitude>51.4954872131348</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.11988891383204</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12725</id><title type="text">STROUTS PLACE MEDICAL CENTRE</title><updated>2013-02-06T13:59:37Z</updated><link rel="self" title="STROUTS PLACE MEDICAL CENTRE" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12725?apikey=UUARBGPJ" /><link rel="alternate" title="STROUTS PLACE MEDICAL CENTRE" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=42509" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>STROUTS PLACE MEDICAL CENTRE</s:name>
+
+                                  <s:address><s:addressLine>3 Strouts Place</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E2 7QU</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7739 8859</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0754036083817482</s:longitude>
+                                    <s:latitude>51.5292129516602</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.13163987396753</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12742</id><title type="text">BETHNAL GREEN HEALTH CENTRE</title><updated>2013-02-06T13:59:37Z</updated><link rel="self" title="BETHNAL GREEN HEALTH CENTRE" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12742?apikey=UUARBGPJ" /><link rel="alternate" title="BETHNAL GREEN HEALTH CENTRE" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=35217" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>BETHNAL GREEN HEALTH CENTRE</s:name>
+
+                                  <s:address><s:addressLine>60 Florida Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E2 6LL</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7739 6677</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0654328763484955</s:longitude>
+                                    <s:latitude>51.5263519287109</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.18640049023795</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12173</id><title type="text">King's College NHS Health Centre</title><updated>2013-02-06T13:59:37Z</updated><link rel="self" title="King's College NHS Health Centre" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12173?apikey=UUARBGPJ" /><link rel="alternate" title="King's College NHS Health Centre" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=41055" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>King's College NHS Health Centre</s:name>
+
+                                  <s:address><s:addressLine>3rd Floor Macadam Building</s:addressLine><s:addressLine>Surrey Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>WC2R 2LS</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7848 2613</s:telephone><s:email>kingscollegehc.wpct@nhs.net</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.118000626564026</s:longitude>
+                                    <s:latitude>51.5101203918457</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.29326447369565</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12665</id><title type="text">Clerkenwell Medical Practice</title><updated>2013-02-06T13:59:37Z</updated><link rel="self" title="Clerkenwell Medical Practice" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12665?apikey=UUARBGPJ" /><link rel="alternate" title="Clerkenwell Medical Practice" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=38620" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Clerkenwell Medical Practice</s:name>
+
+                                  <s:address><s:addressLine>Pine Street</s:addressLine><s:addressLine>Finsbury Health Centre</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>EC1R 0LP</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7833 5906</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.110204808413982</s:longitude>
+                                    <s:latitude>51.5243835449219</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.29862084742105</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12683</id><title type="text">Dr Segarajasinghe</title><updated>2013-02-06T13:59:37Z</updated><link rel="self" title="Dr Segarajasinghe" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12683?apikey=UUARBGPJ" /><link rel="alternate" title="Dr Segarajasinghe" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=41797" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Dr Segarajasinghe</s:name>
+
+                                  <s:address><s:addressLine>The Pine Street Medical Centre</s:addressLine><s:addressLine>17 Pine Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>EC1R 0JH</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7713 5256</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.110204808413982</s:longitude>
+                                    <s:latitude>51.5243835449219</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.29862084742105</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12722</id><title type="text">DR VARMA</title><updated>2013-02-06T13:59:37Z</updated><link rel="self" title="DR VARMA" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12722?apikey=UUARBGPJ" /><link rel="alternate" title="DR VARMA" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=41446" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>DR VARMA</s:name>
+
+                                  <s:address><s:addressLine>5 Brayford Square</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E1 0SG</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>08444 773106</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0515637658536434</s:longitude>
+                                    <s:latitude>51.5135307312012</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.33780988936975</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry>
+                                <entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12707</id><title type="text">JUBILEE STREET PRACTICE</title><updated>2013-02-06T13:59:55Z</updated><link rel="self" title="JUBILEE STREET PRACTICE" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12707?apikey=UUARBGPJ" /><link rel="alternate" title="JUBILEE STREET PRACTICE" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=36076" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>JUBILEE STREET PRACTICE</s:name>
+
+                                  <s:address><s:addressLine>368-374 Commercial Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E1 0LS</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7780 8000</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0515637658536434</s:longitude>
+                                    <s:latitude>51.5135307312012</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.33780988936975</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/44390</id><title type="text">POLLARD ROW SURGERY</title><updated>2013-02-06T13:59:55Z</updated><link rel="self" title="POLLARD ROW SURGERY" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/44390?apikey=UUARBGPJ" /><link rel="alternate" title="POLLARD ROW SURGERY" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=41288" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>POLLARD ROW SURGERY</s:name>
+
+                                  <s:address><s:addressLine>47 Pollard Row</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E2 6NA</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7729 7942</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0653566867113113</s:longitude>
+                                    <s:latitude>51.528148651123</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.34063671275079</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13867</id><title type="text">Waterloo Health Centre</title><updated>2013-02-06T13:59:55Z</updated><link rel="self" title="Waterloo Health Centre" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13867?apikey=UUARBGPJ" /><link rel="alternate" title="Waterloo Health Centre" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=38880" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Waterloo Health Centre</s:name>
+
+                                  <s:address><s:addressLine>5 Lower Marsh</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE1 7RJ</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7928 4049</s:telephone><s:email>lam-pct.waterloohcreception@nhs.net</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.114088363945484</s:longitude>
+                                    <s:latitude>51.5001640319824</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.3500525027342</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13908</id><title type="text">Dr Bradford &amp; Partners</title><updated>2013-02-06T13:59:55Z</updated><link rel="self" title="Dr Bradford &amp; Partners" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13908?apikey=UUARBGPJ" /><link rel="alternate" title="Dr Bradford &amp; Partners" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=42665" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Dr Bradford &amp; Partners</s:name>
+
+                                  <s:address><s:addressLine>301 East Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE17 2SX</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7703 4550</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0828271582722664</s:longitude>
+                                    <s:latitude>51.4897651672363</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.36348704621116</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13817</id><title type="text">Old Kent Road Surgery</title><updated>2013-02-06T13:59:55Z</updated><link rel="self" title="Old Kent Road Surgery" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13817?apikey=UUARBGPJ" /><link rel="alternate" title="Old Kent Road Surgery" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=40972" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Old Kent Road Surgery</s:name>
+
+                                  <s:address><s:addressLine>182-184 Old Kent Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE1 5TY</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7252 6272</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0813876762986183</s:longitude>
+                                    <s:latitude>51.4897422790527</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.38303041874823</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12719</id><title type="text">RIZK FAM</title><updated>2013-02-06T13:59:55Z</updated><link rel="self" title="RIZK FAM" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12719?apikey=UUARBGPJ" /><link rel="alternate" title="RIZK FAM" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=40465" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>RIZK FAM</s:name>
+
+                                  <s:address><s:addressLine>167 Kingsland Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E2 8AL</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7739 3600</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0781715288758278</s:longitude>
+                                    <s:latitude>51.5319557189941</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.38400987074817</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/44457</id><title type="text">Aylesbury Partnership The Dun Cow Surgery</title><updated>2013-02-06T13:59:55Z</updated><link rel="self" title="Aylesbury Partnership The Dun Cow Surgery" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/44457?apikey=UUARBGPJ" /><link rel="alternate" title="Aylesbury Partnership The Dun Cow Surgery" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=37121" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Aylesbury Partnership The Dun Cow Surgery</s:name>
+
+                                  <s:address><s:addressLine>279 Old Kent Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE1 5LU</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>0844 375 6375</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0799481943249702</s:longitude>
+                                    <s:latitude>51.4897193908691</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.39561531140407</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12643</id><title type="text">Gray's Inn Medical Practice </title><updated>2013-02-06T13:59:55Z</updated><link rel="self" title="Gray's Inn Medical Practice " href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12643?apikey=UUARBGPJ" /><link rel="alternate" title="Gray's Inn Medical Practice " href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=42069" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Gray's Inn Medical Practice </s:name>
+
+                                  <s:address><s:addressLine>77 Grays Inn Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>WC1X 8TT</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7405 9360</s:telephone><s:email>graysinnmedical@nhs.net</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.114600859582424</s:longitude>
+                                    <s:latitude>51.5226554870605</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.43238079281479</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12714</id><title type="text">Choudary &amp; Nathans</title><updated>2013-02-06T13:59:55Z</updated><link rel="self" title="Choudary &amp; Nathans" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12714?apikey=UUARBGPJ" /><link rel="alternate" title="Choudary &amp; Nathans" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=38784" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Choudary &amp; Nathans</s:name>
+
+                                  <s:address><s:addressLine>14 Rushton Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>N1 5DR</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7739 3005</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0882196128368378</s:longitude>
+                                    <s:latitude>51.5330200195313</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.4578610525796</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12800</id><title type="text">Hoxton Surgery</title><updated>2013-02-06T13:59:55Z</updated><link rel="self" title="Hoxton Surgery" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12800?apikey=UUARBGPJ" /><link rel="alternate" title="Hoxton Surgery" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=44773" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Hoxton Surgery</s:name>
+
+                                  <s:address><s:addressLine>12 Rushton Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>N1 5DR</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>0844 387 8783</s:telephone><s:email>hoxton.surgery@nhs.net</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0882196128368378</s:longitude>
+                                    <s:latitude>51.5330200195313</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.4578610525796</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry>
+                                <entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12772</id><title type="text">SHOREDITCH PARK SURGERY</title><updated>2013-02-06T14:00:12Z</updated><link rel="self" title="SHOREDITCH PARK SURGERY" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12772?apikey=UUARBGPJ" /><link rel="alternate" title="SHOREDITCH PARK SURGERY" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=42421" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>SHOREDITCH PARK SURGERY</s:name>
+
+                                  <s:address><s:addressLine>10 Rushton Street</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>England - Uk</s:addressLine><s:postcode>N1 5DR</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7739 8525</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0882196128368378</s:longitude>
+                                    <s:latitude>51.5330200195313</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.4578610525796</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12796</id><title type="text">CABLE STREET SURGERY</title><updated>2013-02-06T14:00:12Z</updated><link rel="self" title="CABLE STREET SURGERY" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12796?apikey=UUARBGPJ" /><link rel="alternate" title="CABLE STREET SURGERY" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=36002" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>CABLE STREET SURGERY</s:name>
+
+                                  <s:address><s:addressLine>445 Cable Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E1W 3DE</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7423 9022</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0487985536456108</s:longitude>
+                                    <s:latitude>51.5107879638672</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.51334272443333</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/44458</id><title type="text">Aylesbury Partnership The Aylesbury Medical Centre</title><updated>2013-02-06T14:00:12Z</updated><link rel="self" title="Aylesbury Partnership The Aylesbury Medical Centre" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/44458?apikey=UUARBGPJ" /><link rel="alternate" title="Aylesbury Partnership The Aylesbury Medical Centre" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=44612" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Aylesbury Partnership The Aylesbury Medical Centre</s:name>
+
+                                  <s:address><s:addressLine>Unit 6 Taplow</s:addressLine><s:addressLine>Thurlow Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE17 2XE</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>0844 375 6375</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0872208476066589</s:longitude>
+                                    <s:latitude>51.4880409240723</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.56357270441398</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12750</id><title type="text">LAWSON PRACTICE</title><updated>2013-02-06T14:00:12Z</updated><link rel="self" title="LAWSON PRACTICE" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12750?apikey=UUARBGPJ" /><link rel="alternate" title="LAWSON PRACTICE" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=38429" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>LAWSON PRACTICE</s:name>
+
+                                  <s:address><s:addressLine>St Leonards Hospital</s:addressLine><s:addressLine>85 Nuttall Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>N1 5LZ</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>0844 387 8755</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0795366987586021</s:longitude>
+                                    <s:latitude>51.5337753295898</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.5648726612623</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12671</id><title type="text">Amwell Group Practice</title><updated>2013-02-06T14:00:12Z</updated><link rel="self" title="Amwell Group Practice" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12671?apikey=UUARBGPJ" /><link rel="alternate" title="Amwell Group Practice" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=35585" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Amwell Group Practice</s:name>
+
+                                  <s:address><s:addressLine>Amwell Group Practice</s:addressLine><s:addressLine>4 Naoroji Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>WC1X 0GB</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7837 2020</s:telephone><s:email>amwellgrouppractice@nhs.net</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.111533865332603</s:longitude>
+                                    <s:latitude>51.5271034240723</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.56918373385057</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12718</id><title type="text">The Whiston Road Surgery</title><updated>2013-02-06T14:00:12Z</updated><link rel="self" title="The Whiston Road Surgery" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12718?apikey=UUARBGPJ" /><link rel="alternate" title="The Whiston Road Surgery" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=41674" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>The Whiston Road Surgery</s:name>
+
+                                  <s:address><s:addressLine>219-221 Kingsland Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E2 8AN</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7739 8625</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.078095830976963</s:longitude>
+                                    <s:latitude>51.5337524414063</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.5815531952432</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13819</id><title type="text">Lambeth Walk Group Practice</title><updated>2013-02-06T14:00:12Z</updated><link rel="self" title="Lambeth Walk Group Practice" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13819?apikey=UUARBGPJ" /><link rel="alternate" title="Lambeth Walk Group Practice" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=40551" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Lambeth Walk Group Practice</s:name>
+
+                                  <s:address><s:addressLine>5 Lambeth Walk</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE11 6SP</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7735 4412</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.112834125757217</s:longitude>
+                                    <s:latitude>51.4956474304199</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.58279827120014</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13869</id><title type="text">Albion Street Group Practice</title><updated>2013-02-06T14:00:12Z</updated><link rel="self" title="Albion Street Group Practice" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13869?apikey=UUARBGPJ" /><link rel="alternate" title="Albion Street Group Practice" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=44732" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Albion Street Group Practice</s:name>
+
+                                  <s:address><s:addressLine>Albion Street Health Centre</s:addressLine><s:addressLine>87 Albion Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE16 7JX</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 3049 7120</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0506606064736843</s:longitude>
+                                    <s:latitude>51.5009269714355</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.63577139587652</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12656</id><title type="text">The Holborn Medical Centre</title><updated>2013-02-06T14:00:12Z</updated><link rel="self" title="The Holborn Medical Centre" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12656?apikey=UUARBGPJ" /><link rel="alternate" title="The Holborn Medical Centre" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=42233" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>The Holborn Medical Centre</s:name>
+
+                                  <s:address><s:addressLine>64 - 66 Lamb's Conduit Street</s:addressLine><s:addressLine>Holborn</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>WC1N 3NA</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 3077 0044</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.118959546089172</s:longitude>
+                                    <s:latitude>51.5218276977539</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.64592688313371</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13840</id><title type="text">Manor Place Surgery</title><updated>2013-02-06T14:00:12Z</updated><link rel="self" title="Manor Place Surgery" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13840?apikey=UUARBGPJ" /><link rel="alternate" title="Manor Place Surgery" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=41603" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Manor Place Surgery</s:name>
+
+                                  <s:address><s:addressLine>1 Manor Place</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE17 3BD</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7708 6599</s:telephone><s:email>manorplacesurgery@nhs.net</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0972969457507133</s:longitude>
+                                    <s:latitude>51.4882049560547</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.67654644604031</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry>
+                                <entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13872</id><title type="text">The Villa Street Medical Centre</title><updated>2013-02-06T14:00:29Z</updated><link rel="self" title="The Villa Street Medical Centre" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13872?apikey=UUARBGPJ" /><link rel="alternate" title="The Villa Street Medical Centre" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=36312" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>The Villa Street Medical Centre</s:name>
+
+                                  <s:address><s:addressLine>47 Villa Street</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE17 2EL</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7703 7393</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0887354463338852</s:longitude>
+                                    <s:latitude>51.4862670898438</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.7602831978236</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13818</id><title type="text">Hurley Clinic</title><updated>2013-02-06T14:00:29Z</updated><link rel="self" title="Hurley Clinic" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13818?apikey=UUARBGPJ" /><link rel="alternate" title="Hurley Clinic" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=41451" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Hurley Clinic</s:name>
+
+                                  <s:address><s:addressLine>Ebenezer House</s:addressLine><s:addressLine>Kennington Lane</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE11 4HJ</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7735 7918</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.107298702001572</s:longitude>
+                                    <s:latitude>51.4901657104492</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.78442065119958</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12761</id><title type="text">XX Place</title><updated>2013-02-06T14:00:29Z</updated><link rel="self" title="XX Place" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12761?apikey=UUARBGPJ" /><link rel="alternate" title="XX Place" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=39602" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>XX Place</s:name>
+
+                                  <s:address><s:addressLine>2 Stayners Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E1 4AH</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>0844 8151020</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0483376495540142</s:longitude>
+                                    <s:latitude>51.5215721130371</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.80492302557218</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13831</id><title type="text">Penrose Surgery</title><updated>2013-02-06T14:00:29Z</updated><link rel="self" title="Penrose Surgery" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13831?apikey=UUARBGPJ" /><link rel="alternate" title="Penrose Surgery" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=44195" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Penrose Surgery</s:name>
+
+                                  <s:address><s:addressLine>33 Penrose Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE17 3DW</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7703 3677</s:telephone><s:email>sou-pct.penrosesurgery@nhs.net</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0987737774848938</s:longitude>
+                                    <s:latitude>51.4873275756836</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.80492744173763</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12638</id><title type="text">St. Peter's Street Medical Practice</title><updated>2013-02-06T14:00:29Z</updated><link rel="self" title="St. Peter's Street Medical Practice" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12638?apikey=UUARBGPJ" /><link rel="alternate" title="St. Peter's Street Medical Practice" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=39432" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>St. Peter's Street Medical Practice</s:name>
+
+                                  <s:address><s:addressLine>16 1/2 St. Peter's Street</s:addressLine><s:addressLine>Islington</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>N1 8JG</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7288-9320</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.101112581789494</s:longitude>
+                                    <s:latitude>51.535026550293</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.89493114507357</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12640</id><title type="text">New North Health Centre</title><updated>2013-02-06T14:00:29Z</updated><link rel="self" title="New North Health Centre" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12640?apikey=UUARBGPJ" /><link rel="alternate" title="New North Health Centre" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=39417" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>New North Health Centre</s:name>
+
+                                  <s:address><s:addressLine>287-293 New North Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>N1 7AA</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020-72269090</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0923919007182121</s:longitude>
+                                    <s:latitude>51.5366859436035</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.90499798999932</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12113</id><title type="text">Covent Garden Medical Centre</title><updated>2013-02-06T14:00:29Z</updated><link rel="self" title="Covent Garden Medical Centre" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12113?apikey=UUARBGPJ" /><link rel="alternate" title="Covent Garden Medical Centre" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=44052" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Covent Garden Medical Centre</s:name>
+
+                                  <s:address><s:addressLine>47 Shorts Gardens</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>WC2H 9AA</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7379 7209</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.126457259058952</s:longitude>
+                                    <s:latitude>51.5147514343262</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.90887057768006</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13787</id><title type="text">The Trafalgar Surgery</title><updated>2013-02-06T14:00:29Z</updated><link rel="self" title="The Trafalgar Surgery" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13787?apikey=UUARBGPJ" /><link rel="alternate" title="The Trafalgar Surgery" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=35785" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>The Trafalgar Surgery</s:name>
+
+                                  <s:address><s:addressLine>10 Trafalgar Avenue</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE15 6NR</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7703 9271</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0758189335465431</s:longitude>
+                                    <s:latitude>51.4851570129395</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.94040501856574</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12699</id><title type="text">THE MISSION PRACTICE</title><updated>2013-02-06T14:00:29Z</updated><link rel="self" title="THE MISSION PRACTICE" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12699?apikey=UUARBGPJ" /><link rel="alternate" title="THE MISSION PRACTICE" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=44058" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>THE MISSION PRACTICE</s:name>
+
+                                  <s:address><s:addressLine>208 Cambridge Heath Road</s:addressLine><s:addressLine>Bethnal Green</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E2 9LS</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8983 7300</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0565978363156319</s:longitude>
+                                    <s:latitude>51.5307006835938</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.94791528869664</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12659</id><title type="text">The Museum Practice</title><updated>2013-02-06T14:00:29Z</updated><link rel="self" title="The Museum Practice" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12659?apikey=UUARBGPJ" /><link rel="alternate" title="The Museum Practice" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=40810" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>The Museum Practice</s:name>
+
+                                  <s:address><s:addressLine>58 Great Russell Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>WC1B 3BA</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7405 2739</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.126346617937088</s:longitude>
+                                    <s:latitude>51.517448425293</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.95726856989708</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry>
+                                <entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/44760</id><title type="text">Angel Medical Practice</title><updated>2013-02-06T14:00:45Z</updated><link rel="self" title="Angel Medical Practice" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/44760?apikey=UUARBGPJ" /><link rel="alternate" title="Angel Medical Practice" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=44117" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Angel Medical Practice</s:name>
+
+                                  <s:address><s:addressLine>34 Ritchie Street</s:addressLine><s:addressLine>Islington</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Islington</s:addressLine><s:postcode>N1 0DG</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>0207 837 1663</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.108354508876801</s:longitude>
+                                    <s:latitude>51.5342445373535</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.04797152072841</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12631</id><title type="text">Ritchie Street Group Practice</title><updated>2013-02-06T14:00:45Z</updated><link rel="self" title="Ritchie Street Group Practice" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12631?apikey=UUARBGPJ" /><link rel="alternate" title="Ritchie Street Group Practice" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=36649" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Ritchie Street Group Practice</s:name>
+
+                                  <s:address><s:addressLine>34 Ritchie Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>N1 0DG</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7837 1663</s:telephone><s:email>ritchiestreetgrouppractice@nhs.net</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.108354508876801</s:longitude>
+                                    <s:latitude>51.5342445373535</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.04797152072841</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12736</id><title type="text">DE BEAUVOIR SURGERY</title><updated>2013-02-06T14:00:45Z</updated><link rel="self" title="DE BEAUVOIR SURGERY" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12736?apikey=UUARBGPJ" /><link rel="alternate" title="DE BEAUVOIR SURGERY" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=40253" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>DE BEAUVOIR SURGERY</s:name>
+
+                                  <s:address><s:addressLine>30 Hertford Road</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>England - Uk</s:addressLine><s:postcode>N1 5QT</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>08444 773602</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0793475583195686</s:longitude>
+                                    <s:latitude>51.5382690429688</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.06258062590369</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12624</id><title type="text">Elizabeth Avenue Group Practice</title><updated>2013-02-06T14:00:45Z</updated><link rel="self" title="Elizabeth Avenue Group Practice" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12624?apikey=UUARBGPJ" /><link rel="alternate" title="Elizabeth Avenue Group Practice" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=45106" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Elizabeth Avenue Group Practice</s:name>
+
+                                  <s:address><s:addressLine>2 Elizabeth Avenue</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>N1 3BS</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 72266363</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0923167541623116</s:longitude>
+                                    <s:latitude>51.5384826660156</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.10145795446045</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12647</id><title type="text">Brunswick Medical Centre</title><updated>2013-02-06T14:00:45Z</updated><link rel="self" title="Brunswick Medical Centre" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12647?apikey=UUARBGPJ" /><link rel="alternate" title="Brunswick Medical Centre" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=41133" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Brunswick Medical Centre</s:name>
+
+                                  <s:address><s:addressLine>39 Brunswick Centre</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>England - Uk</s:addressLine><s:postcode>WC1N 1AF</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7837 3811</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.124610908329487</s:longitude>
+                                    <s:latitude>51.5246124267578</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.13838451059761</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13902</id><title type="text">Avicenna Health Centre</title><updated>2013-02-06T14:00:45Z</updated><link rel="self" title="Avicenna Health Centre" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13902?apikey=UUARBGPJ" /><link rel="alternate" title="Avicenna Health Centre" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=42998" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Avicenna Health Centre</s:name>
+
+                                  <s:address><s:addressLine>2 Verney Way</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE16 3HA</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7237 1685</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0642662569880486</s:longitude>
+                                    <s:latitude>51.4858665466309</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.14189409060584</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12762</id><title type="text">GLOBE TOWN SURGERY</title><updated>2013-02-06T14:00:45Z</updated><link rel="self" title="GLOBE TOWN SURGERY" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12762?apikey=UUARBGPJ" /><link rel="alternate" title="GLOBE TOWN SURGERY" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=36927" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>GLOBE TOWN SURGERY</s:name>
+
+                                  <s:address><s:addressLine>82-86 Roman Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E2 0PJ</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8980 3023</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0493526458740234</s:longitude>
+                                    <s:latitude>51.5284957885742</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.14850140886084</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13859</id><title type="text">Park Medical Centre</title><updated>2013-02-06T14:00:45Z</updated><link rel="self" title="Park Medical Centre" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13859?apikey=UUARBGPJ" /><link rel="alternate" title="Park Medical Centre" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=41050" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Park Medical Centre</s:name>
+
+                                  <s:address><s:addressLine>57 Hawkstone Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE16 2PE</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7232 2243</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0510439723730087</s:longitude>
+                                    <s:latitude>51.4919395446777</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.17414178661887</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12642</id><title type="text">Bedford Square Medical Centre</title><updated>2013-02-06T14:00:45Z</updated><link rel="self" title="Bedford Square Medical Centre" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12642?apikey=UUARBGPJ" /><link rel="alternate" title="Bedford Square Medical Centre" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=45031" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Bedford Square Medical Centre</s:name>
+
+                                  <s:address><s:addressLine>60 Bloomsbury Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>WC1B 3QU</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7580 7128</s:telephone><s:email>dunia.alnaemi@nhs.net</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.129190593957901</s:longitude>
+                                    <s:latitude>51.5183944702148</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.17621923108185</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12645</id><title type="text">The Bloomsbury Surgery</title><updated>2013-02-06T14:00:45Z</updated><link rel="self" title="The Bloomsbury Surgery" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12645?apikey=UUARBGPJ" /><link rel="alternate" title="The Bloomsbury Surgery" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=42190" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>The Bloomsbury Surgery</s:name>
+
+                                  <s:address><s:addressLine>1 Handel Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>WC1N 1PD</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7837 8559</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.124573983252048</s:longitude>
+                                    <s:latitude>51.5255126953125</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.18563048879404</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry>
+                                <entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12669</id><title type="text">Kings Cross Road Surgery</title><updated>2013-02-06T14:01:01Z</updated><link rel="self" title="Kings Cross Road Surgery" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12669?apikey=UUARBGPJ" /><link rel="alternate" title="Kings Cross Road Surgery" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=35271" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Kings Cross Road Surgery</s:name>
+
+                                  <s:address><s:addressLine>215 Kings Cross Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>WC1X 9DN</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 3040 0250</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.120066970586777</s:longitude>
+                                    <s:latitude>51.5299377441406</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.21651167225125</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12702</id><title type="text">LONDON FIELDS MEDICAL CENTRE</title><updated>2013-02-06T14:01:01Z</updated><link rel="self" title="LONDON FIELDS MEDICAL CENTRE" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12702?apikey=UUARBGPJ" /><link rel="alternate" title="LONDON FIELDS MEDICAL CENTRE" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=40560" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>LONDON FIELDS MEDICAL CENTRE</s:name>
+
+                                  <s:address><s:addressLine>38-44 Broadway Market</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E8 4QJ</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>0207 923 8100</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0621318891644478</s:longitude>
+                                    <s:latitude>51.536190032959</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.22177523534191</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12744</id><title type="text">HARFORD HEALTH CENTRE</title><updated>2013-02-06T14:01:01Z</updated><link rel="self" title="HARFORD HEALTH CENTRE" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12744?apikey=UUARBGPJ" /><link rel="alternate" title="HARFORD HEALTH CENTRE" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=44429" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>HARFORD HEALTH CENTRE</s:name>
+
+                                  <s:address><s:addressLine>115 Harford Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E1 4FG</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7790 1059</s:telephone><s:email>harfordhealthcentre@nhs.net</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0398492775857449</s:longitude>
+                                    <s:latitude>51.5178337097168</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.22431556703522</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12717</id><title type="text">Southgate Road Medical Centre</title><updated>2013-02-06T14:01:01Z</updated><link rel="self" title="Southgate Road Medical Centre" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12717?apikey=UUARBGPJ" /><link rel="alternate" title="Southgate Road Medical Centre" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=37669" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Southgate Road Medical Centre</s:name>
+
+                                  <s:address><s:addressLine>101-103 Southgate Road</s:addressLine><s:addressLine>Islington</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>N1 3JS</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>02077042233</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0864772573113441</s:longitude>
+                                    <s:latitude>51.5401840209961</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.25036049256318</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12147</id><title type="text">Soho Square General Practice</title><updated>2013-02-06T14:01:01Z</updated><link rel="self" title="Soho Square General Practice" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12147?apikey=UUARBGPJ" /><link rel="alternate" title="Soho Square General Practice" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=37538" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Soho Square General Practice</s:name>
+
+                                  <s:address><s:addressLine>First Floor</s:addressLine><s:addressLine>1 Frith Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>W1D 3HZ</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7534 6575</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.132255271077156</s:longitude>
+                                    <s:latitude>51.5139465332031</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.29634600161185</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12126</id><title type="text">Soho Square Surgery </title><updated>2013-02-06T14:01:01Z</updated><link rel="self" title="Soho Square Surgery " href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12126?apikey=UUARBGPJ" /><link rel="alternate" title="Soho Square Surgery " href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=35614" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Soho Square Surgery </s:name>
+
+                                  <s:address><s:addressLine>30 Soho Square</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>W1D 3QS</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7534 6570</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.132255271077156</s:longitude>
+                                    <s:latitude>51.5139465332031</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.29634600161185</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12618</id><title type="text">Gower Street Practice</title><updated>2013-02-06T14:01:01Z</updated><link rel="self" title="Gower Street Practice" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12618?apikey=UUARBGPJ" /><link rel="alternate" title="Gower Street Practice" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=41699" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Gower Street Practice</s:name>
+
+                                  <s:address><s:addressLine>20 Gower Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>WC1E 6DP</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7636 7628</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.130594223737717</s:longitude>
+                                    <s:latitude>51.5193138122559</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.29698414225088</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13834</id><title type="text">Silverlock Medical Centre</title><updated>2013-02-06T14:01:01Z</updated><link rel="self" title="Silverlock Medical Centre" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13834?apikey=UUARBGPJ" /><link rel="alternate" title="Silverlock Medical Centre" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=42591" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Silverlock Medical Centre</s:name>
+
+                                  <s:address><s:addressLine>2-3 Warndon Street</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Rotherhithe</s:addressLine><s:postcode>SE16 2SB</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7237 4091</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0496811494231224</s:longitude>
+                                    <s:latitude>51.490119934082</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.37962831052786</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12802</id><title type="text">DATTANI RT &amp; GHOSH T</title><updated>2013-02-06T14:01:01Z</updated><link rel="self" title="DATTANI RT &amp; GHOSH T" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12802?apikey=UUARBGPJ" /><link rel="alternate" title="DATTANI RT &amp; GHOSH T" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=43615" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>DATTANI RT &amp; GHOSH T</s:name>
+
+                                  <s:address><s:addressLine>414 Kingsland Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E8 4AA</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7249-8732</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0763518586754799</s:longitude>
+                                    <s:latitude>51.5409202575684</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.38033324525443</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12615</id><title type="text">Dr Bunt RJ &amp; Partners</title><updated>2013-02-06T14:01:01Z</updated><link rel="self" title="Dr Bunt RJ &amp; Partners" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12615?apikey=UUARBGPJ" /><link rel="alternate" title="Dr Bunt RJ &amp; Partners" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=38816" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Dr Bunt RJ &amp; Partners</s:name>
+
+                                  <s:address><s:addressLine>River Place Health Centre</s:addressLine><s:addressLine>River Place</s:addressLine><s:addressLine>Essex Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>N1 2DE</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>0203 316 8444</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0980059579014778</s:longitude>
+                                    <s:latitude>51.5403709411621</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.39325174581837</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry>
+                                <entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13822</id><title type="text">Dr Irani</title><updated>2013-02-06T14:01:17Z</updated><link rel="self" title="Dr Irani" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13822?apikey=UUARBGPJ" /><link rel="alternate" title="Dr Irani" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=37346" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Dr Irani</s:name>
+
+                                  <s:address><s:addressLine>204 Kennington Lane</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE11 5DN</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7735 1770</s:telephone><s:email>iranipractice@nhs.net</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.11464461684227</s:longitude>
+                                    <s:latitude>51.486686706543</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.39811159418886</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13845</id><title type="text">The Vauxhall Surgery</title><updated>2013-02-06T14:01:17Z</updated><link rel="self" title="The Vauxhall Surgery" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13845?apikey=UUARBGPJ" /><link rel="alternate" title="The Vauxhall Surgery" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=35189" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>The Vauxhall Surgery</s:name>
+
+                                  <s:address><s:addressLine>8 Jonathan Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE11 5NH</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7735 1971</s:telephone><s:email>vauxhall.surgery@gp-g85102.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.120291419327259</s:longitude>
+                                    <s:latitude>51.4894752502441</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.4245248992746</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12756</id><title type="text">Queensbridge</title><updated>2013-02-06T14:01:17Z</updated><link rel="self" title="Queensbridge" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12756?apikey=UUARBGPJ" /><link rel="alternate" title="Queensbridge" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=35406" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Queensbridge</s:name>
+
+                                  <s:address><s:addressLine>24 Holly Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E8 3XP</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7254 1101</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0720285847783089</s:longitude>
+                                    <s:latitude>51.5408477783203</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.43554111235927</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13829</id><title type="text">Dr Sinha &amp; Partner</title><updated>2013-02-06T14:01:17Z</updated><link rel="self" title="Dr Sinha &amp; Partner" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13829?apikey=UUARBGPJ" /><link rel="alternate" title="Dr Sinha &amp; Partner" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=35772" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Dr Sinha &amp; Partner</s:name>
+
+                                  <s:address><s:addressLine>10 Maddock Way Cooks Road</s:addressLine><s:addressLine>Walworth</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>uk</s:addressLine><s:postcode>SE17 3NH</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7735 3644</s:telephone><s:email>maddockwaysurgery@nhs.net</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.103315807878971</s:longitude>
+                                    <s:latitude>51.482006072998</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.46814796923293</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13789</id><title type="text">Surrey Docks Health Centre</title><updated>2013-02-06T14:01:17Z</updated><link rel="self" title="Surrey Docks Health Centre" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13789?apikey=UUARBGPJ" /><link rel="alternate" title="Surrey Docks Health Centre" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=39227" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Surrey Docks Health Centre</s:name>
+
+                                  <s:address><s:addressLine>Downtown Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE16 1NP</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 3049 3060</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0377023927867413</s:longitude>
+                                    <s:latitude>51.5007095336914</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.47815180907037</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13890</id><title type="text">Surrey Docks Health Centre. Drs Holden, Marrinan, O'Connor, Baxter &amp; Dhir</title><updated>2013-02-06T14:01:17Z</updated><link rel="self" title="Surrey Docks Health Centre. Drs Holden, Marrinan, O'Connor, Baxter &amp; Dhir" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13890?apikey=UUARBGPJ" /><link rel="alternate" title="Surrey Docks Health Centre. Drs Holden, Marrinan, O'Connor, Baxter &amp; Dhir" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=41151" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Surrey Docks Health Centre. Drs Holden, Marrinan, O'Connor, Baxter &amp; Dhir</s:name>
+
+                                  <s:address><s:addressLine>Downtown Road</s:addressLine><s:addressLine>Surrey Docks</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>www.surreydockshc.co.uk</s:addressLine><s:postcode>SE16 6NP</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 3049 7444</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0377023927867413</s:longitude>
+                                    <s:latitude>51.5007095336914</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.47815180907037</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12660</id><title type="text">Killick Street Health Centre</title><updated>2013-02-06T14:01:17Z</updated><link rel="self" title="Killick Street Health Centre" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12660?apikey=UUARBGPJ" /><link rel="alternate" title="Killick Street Health Centre" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=36982" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Killick Street Health Centre</s:name>
+
+                                  <s:address><s:addressLine>Killick Street Health Centre</s:addressLine><s:addressLine>75 Killick Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>N1 9RH</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7833 9939</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.119918875396252</s:longitude>
+                                    <s:latitude>51.5335311889648</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.48431666494337</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12174</id><title type="text">Great Chapel Street Medical Centre</title><updated>2013-02-06T14:01:17Z</updated><link rel="self" title="Great Chapel Street Medical Centre" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12174?apikey=UUARBGPJ" /><link rel="alternate" title="Great Chapel Street Medical Centre" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=39322" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Great Chapel Street Medical Centre</s:name>
+
+                                  <s:address><s:addressLine>13 Great Chapel Street</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>England - Uk</s:addressLine><s:postcode>W1F 8FL</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7437 9360</s:telephone><s:email>info@greatchapelst.org.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.135099142789841</s:longitude>
+                                    <s:latitude>51.5148887634277</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.50487712207936</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13815</id><title type="text">Sir John Kirk Close Surgery</title><updated>2013-02-06T14:01:17Z</updated><link rel="self" title="Sir John Kirk Close Surgery" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/13815?apikey=UUARBGPJ" /><link rel="alternate" title="Sir John Kirk Close Surgery" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=39331" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Sir John Kirk Close Surgery</s:name>
+
+                                  <s:address><s:addressLine>Sir John Kirk Close Surgery</s:addressLine><s:addressLine>3 Sir John Kirk Close</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE5 0BB</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7703 2046</s:telephone><s:email>sou-pct.sjkcsurgery@nhs.net</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.100549310445786</s:longitude>
+                                    <s:latitude>51.4792633056641</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.68847949644475</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12161</id><title type="text">The Doctor Hickey Surgery</title><updated>2013-02-06T14:01:17Z</updated><link rel="self" title="The Doctor Hickey Surgery" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12161?apikey=UUARBGPJ" /><link rel="alternate" title="The Doctor Hickey Surgery" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=40342" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>The Doctor Hickey Surgery</s:name>
+
+                                  <s:address><s:addressLine>Cardinal Hume Centre (Homeless Patients Only)</s:addressLine><s:addressLine>3 Arneway Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SW1P 2BG</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7222 8593</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.131587088108063</s:longitude>
+                                    <s:latitude>51.4950485229492</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.69227089131223</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry>
+                                <entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12712</id><title type="text">RICHMOND ROAD PRACTICE</title><updated>2013-02-06T14:01:33Z</updated><link rel="self" title="RICHMOND ROAD PRACTICE" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12712?apikey=UUARBGPJ" /><link rel="alternate" title="RICHMOND ROAD PRACTICE" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=43960" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>RICHMOND ROAD PRACTICE</s:name>
+
+                                  <s:address><s:addressLine>136 Richmond Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E8 3HN</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7254-2298</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0661880597472191</s:longitude>
+                                    <s:latitude>51.5425491333008</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.73991041106555</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12654</id><title type="text">Mitchison Road Surgery</title><updated>2013-02-06T14:01:33Z</updated><link rel="self" title="Mitchison Road Surgery" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12654?apikey=UUARBGPJ" /><link rel="alternate" title="Mitchison Road Surgery" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=40482" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Mitchison Road Surgery</s:name>
+
+                                  <s:address><s:addressLine>2 Mitchison Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>N1 3NG</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7226 6016</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0877299830317497</s:longitude>
+                                    <s:latitude>51.5447006225586</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.75419057305164</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12729</id><title type="text">GROVE ROAD SURGERY</title><updated>2013-02-06T14:01:33Z</updated><link rel="self" title="GROVE ROAD SURGERY" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12729?apikey=UUARBGPJ" /><link rel="alternate" title="GROVE ROAD SURGERY" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=39390" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>GROVE ROAD SURGERY</s:name>
+
+                                  <s:address><s:addressLine>3 Ivanhoe House</s:addressLine><s:addressLine>130 Grove Road</s:addressLine><s:postcode>E3 5TW</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8980 1767</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0393475368618965</s:longitude>
+                                    <s:latitude>51.5295143127441</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.77853705230345</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12734</id><title type="text">WELL STREET SURGERY</title><updated>2013-02-06T14:01:33Z</updated><link rel="self" title="WELL STREET SURGERY" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12734?apikey=UUARBGPJ" /><link rel="alternate" title="WELL STREET SURGERY" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=39841" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>WELL STREET SURGERY</s:name>
+
+                                  <s:address><s:addressLine>28 Shore Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E9 7TA</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8985-2050</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0533713065087795</s:longitude>
+                                    <s:latitude>51.5387420654297</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.78369885557717</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12160</id><title type="text">Millbank Medical Centre</title><updated>2013-02-06T14:01:33Z</updated><link rel="self" title="Millbank Medical Centre" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12160?apikey=UUARBGPJ" /><link rel="alternate" title="Millbank Medical Centre" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=35425" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Millbank Medical Centre</s:name>
+
+                                  <s:address><s:addressLine>Medical Centre Building</s:addressLine><s:addressLine>20 Page Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SW1P 4EN</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7834 5502</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.131660580635071</s:longitude>
+                                    <s:latitude>51.4932518005371</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.79152695669667</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12728</id><title type="text">LIMEHOUSE PRACTICE</title><updated>2013-02-06T14:01:33Z</updated><link rel="self" title="LIMEHOUSE PRACTICE" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12728?apikey=UUARBGPJ" /><link rel="alternate" title="LIMEHOUSE PRACTICE" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=35945" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>LIMEHOUSE PRACTICE</s:name>
+
+                                  <s:address><s:addressLine>Gill Street Health Centre</s:addressLine><s:addressLine>11 Gill Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E14 8HQ</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7515-2211</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0300771687179804</s:longitude>
+                                    <s:latitude>51.5104751586914</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.81337608986667</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12687</id><title type="text">Somers Town Medical Centre</title><updated>2013-02-06T14:01:33Z</updated><link rel="self" title="Somers Town Medical Centre" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12687?apikey=UUARBGPJ" /><link rel="alternate" title="Somers Town Medical Centre" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=39662" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Somers Town Medical Centre</s:name>
+
+                                  <s:address><s:addressLine>77-83 Chalton Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>NW1 1HY</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7387 6855</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.131630092859268</s:longitude>
+                                    <s:latitude>51.529224395752</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.81781508029133</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/44456</id><title type="text">Aylesbury Partnership Commercial Way Surgery</title><updated>2013-02-06T14:01:33Z</updated><link rel="self" title="Aylesbury Partnership Commercial Way Surgery" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/44456?apikey=UUARBGPJ" /><link rel="alternate" title="Aylesbury Partnership Commercial Way Surgery" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=36724" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Aylesbury Partnership Commercial Way Surgery</s:name>
+
+                                  <s:address><s:addressLine>109 Commercial Way</s:addressLine><s:addressLine>Peckham</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE15 6DB</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>0844 375 6375</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0747202411293983</s:longitude>
+                                    <s:latitude>51.4770431518555</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.84954364477155</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12644</id><title type="text">Gower Place Practice</title><updated>2013-02-06T14:01:33Z</updated><link rel="self" title="Gower Place Practice" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12644?apikey=UUARBGPJ" /><link rel="alternate" title="Gower Place Practice" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=35439" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Gower Place Practice</s:name>
+
+                                  <s:address><s:addressLine>3 Gower Place</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>WC1E 6BN</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7387 6306</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.136135920882225</s:longitude>
+                                    <s:latitude>51.5247993469238</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.86735370089544</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12100</id><title type="text">South Westminster Centre</title><updated>2013-02-06T14:01:33Z</updated><link rel="self" title="South Westminster Centre" href="http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/12100?apikey=UUARBGPJ" /><link rel="alternate" title="South Westminster Centre" href="http://www.nhs.uk/Services/GP/Overview/DefaultView.aspx?id=42186" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>South Westminster Centre</s:name>
+
+                                  <s:address><s:addressLine>St. Georges House</s:addressLine><s:addressLine>82 Vincent Square</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SW1P 2PF</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8746 5704</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.134503170847893</s:longitude>
+                                    <s:latitude>51.494197845459</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.91264784673681</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry>
+
+</feed>

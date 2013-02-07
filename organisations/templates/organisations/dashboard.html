@@ -34,15 +34,17 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td><a href="">123</a></td>
-                    <td>Question</td>
-                    <td>09.23 12/01/13</td>
-                    <td>Joe Bloggs</td>
-                    <td><a href="{% url org-response-form %}">I am trying to find out how long it should take...</a></td>
-                    <td>In Progress</td>
-                    <td>4d 11hr</td>
-                </tr>
+                {% for issue in issues %}
+                    <tr>
+                        <td>{{ issue.id }}</td>
+                        <td>{{ issue.issue_type }}</td>
+                        <td>{{ issue.created }}</td>
+                        <td>{{ issue.reporter_name }}</td>
+                        <td><a href="{% url org-response-form cobrand=cobrand.name %}">{{ issue.summary }}</a></td>
+                        <td>TODO</td>
+                        <td>TODO</td>
+                    </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>

@@ -66,9 +66,13 @@ class ChoicesAPI():
             identifier = entry_element.find('{http://www.w3.org/2005/Atom}id').text
             organisation['choices_id'] = identifier.split('/')[-1]
             content = entry_element.find('{http://www.w3.org/2005/Atom}content')
-            summary = content.find("{http://syndication.nhschoices.nhs.uk/services}organisationSummary")
+            summary = content.find('{http://syndication.nhschoices.nhs.uk/services}organisationSummary')
             organisation['name'] = summary.find('{http://syndication.nhschoices.nhs.uk/services}name').text
             organisation['organisation_type'] = organisation_type
+            coordinates = summary.find('{http://syndication.nhschoices.nhs.uk/services}geographicCoordinates')
+            lon = float(coordinates.find('{http://syndication.nhschoices.nhs.uk/services}longitude').text)
+            lat = float(coordinates.find('{http://syndication.nhschoices.nhs.uk/services}latitude').text)
+            organisation['coordinates'] = {'lon':lon, 'lat':lat}
             organisations.append(organisation)
         return organisations
 
