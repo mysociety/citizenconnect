@@ -1,0 +1,1215 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns:s="http://syndication.nhschoices.nhs.uk/services" xmlns="http://www.w3.org/2005/Atom"><title type="text">NHS Choices - Hospitals Near Location - London - Within 50km</title><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/place/london/results?range=50</id><rights type="text">© Crown Copyright 2009</rights><updated>2013-02-06T12:12:50Z</updated><category term="Search" /><logo>http://www.nhs.uk/nhscwebservices/documents/logo1.jpg</logo><author><name>NHS Choices</name><uri>http://www.nhs.uk</uri><email>webservices@nhschoices.nhs.uk</email></author><link rel="self" type="application/xml" title="NHS Choices - Hospitals Near Location - London - Within 50km" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/place/London/results?apikey=UUARBGPJ&amp;range=50" /><link rel="first" type="application/xml" title="first" length="1000" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/place/London/results?apikey=UUARBGPJ&amp;range=50&amp;page=1" /><link rel="next" type="application/xml" title="next" length="1000" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/place/London/results?apikey=UUARBGPJ&amp;range=50&amp;page=2" /><link rel="last" type="application/xml" title="last" length="1000" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/place/London/results?apikey=UUARBGPJ&amp;range=50&amp;page=10" /><tracking xmlns="http://syndication.nhschoices.nhs.uk/services">&lt;img style="border: 0; width: 1px; height: 1px;" alt="" src="http://statse.webtrendslive.com/dcss9yzisf9xjyg74mgbihg8p_8d2u/njs.gif?dcsuri=/organisations%2fhospitals%2fplace%2fLondon%2fresults&amp;amp;wt.js=no&amp;amp;wt.cg_n=syndication"/&gt;</tracking><s:SearchCoords>51.511,-0.085</s:SearchCoords><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40918</id><title type="text">Guy's Hospital</title><updated>2013-02-06T12:12:50Z</updated><link rel="self" title="Guy's Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40918?apikey=UUARBGPJ" /><link rel="alternate" title="Guy's Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=2189" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Guy's Hospital</s:name>
+                                  <s:odsCode>RJ121</s:odsCode>
+                                  <s:address><s:addressLine>Great Maze Pond</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>SE1 9RT</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7188 7188</s:telephone><s:email>communications@gstt.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0894234478473663</s:longitude>
+                                    <s:latitude>51.5042610168457</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>0.806214130557835</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/39966</id><title type="text">St Bartholomew's Hospital</title><updated>2013-02-06T12:12:50Z</updated><link rel="self" title="St Bartholomew's Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/39966?apikey=UUARBGPJ" /><link rel="alternate" title="St Bartholomew's Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=46345" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>St Bartholomew's Hospital</s:name>
+                                  <s:odsCode>R1HM0</s:odsCode>
+                                  <s:address><s:addressLine>West Smithfield</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>EC1A 7BE</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 3416 5000</s:telephone><s:email>communications@bartshealth.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.101897552609444</s:longitude>
+                                    <s:latitude>51.5161552429199</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>1.30796508785859</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/46922</id><title type="text">St Bartholomews Hospital</title><updated>2013-02-06T12:12:50Z</updated><link rel="self" title="St Bartholomews Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/46922?apikey=UUARBGPJ" /><link rel="alternate" title="St Bartholomews Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=28459" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>St Bartholomews Hospital</s:name>
+                                  <s:odsCode>5C338</s:odsCode>
+                                  <s:address><s:addressLine>57b West Smithfield</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>EC1A 9DS</s:postcode></s:address>
+                                  <s:contact type="General"></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.100382439792156</s:longitude>
+                                    <s:latitude>51.5179290771484</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>1.31511322740219</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41412</id><title type="text">Moorfields Eye Hospital (City Road)</title><updated>2013-02-06T12:12:50Z</updated><link rel="self" title="Moorfields Eye Hospital (City Road)" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41412?apikey=UUARBGPJ" /><link rel="alternate" title="Moorfields Eye Hospital (City Road)" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1986" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Moorfields Eye Hospital (City Road)</s:name>
+                                  <s:odsCode>RP601</s:odsCode>
+                                  <s:address><s:addressLine>162 City Road</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>EC1V 2PD</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7253 3411</s:telephone><s:email>info@moorfields.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0899237766861916</s:longitude>
+                                    <s:latitude>51.5267524719238</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>1.79079503062246</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/39955</id><title type="text">The Royal London Hospital</title><updated>2013-02-06T12:12:50Z</updated><link rel="self" title="The Royal London Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/39955?apikey=UUARBGPJ" /><link rel="alternate" title="The Royal London Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=46339" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>The Royal London Hospital</s:name>
+                                  <s:odsCode>R1H12</s:odsCode>
+                                  <s:address><s:addressLine>Whitechapel</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E1 1BB</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 3416 5000</s:telephone><s:email>communications@bartshealth.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0585737861692905</s:longitude>
+                                    <s:latitude>51.5181427001953</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>1.99731166228531</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41403</id><title type="text">Great Ormond Street Hospital Central London Site</title><updated>2013-02-06T12:12:50Z</updated><link rel="self" title="Great Ormond Street Hospital Central London Site" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41403?apikey=UUARBGPJ" /><link rel="alternate" title="Great Ormond Street Hospital Central London Site" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1097" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Great Ormond Street Hospital Central London Site</s:name>
+                                  <s:odsCode>RP401</s:odsCode>
+                                  <s:address><s:addressLine>Great Ormond Street</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>WC1N 3JH</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>+44 (0)20 7405 9200</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.120400071144104</s:longitude>
+                                    <s:latitude>51.5218505859375</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.74026338965789</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/43093</id><title type="text">Eastman Dental Hospital</title><updated>2013-02-06T12:12:50Z</updated><link rel="self" title="Eastman Dental Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/43093?apikey=UUARBGPJ" /><link rel="alternate" title="Eastman Dental Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1905" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Eastman Dental Hospital</s:name>
+                                  <s:odsCode>RXH44</s:odsCode>
+                                  <s:address><s:addressLine>256 Gray's Inn Road</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>WC1X 8LD</s:postcode></s:address>
+                                  <s:contact type="General"></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.117370769381523</s:longitude>
+                                    <s:latitude>51.5253982543945</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.75964246776079</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41821</id><title type="text">The Eastman Dental Hospital</title><updated>2013-02-06T12:12:50Z</updated><link rel="self" title="The Eastman Dental Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41821?apikey=UUARBGPJ" /><link rel="alternate" title="The Eastman Dental Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1101" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>The Eastman Dental Hospital</s:name>
+                                  <s:odsCode>RRVE1</s:odsCode>
+                                  <s:address><s:addressLine>256 Gray's Inn Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>WC1X 8LD</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 3456 7899</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.117370769381523</s:longitude>
+                                    <s:latitude>51.5253982543945</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.75964246776079</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41807</id><title type="text">The Royal London Hospital For Integrated Medicine</title><updated>2013-02-06T12:12:50Z</updated><link rel="self" title="The Royal London Hospital For Integrated Medicine" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41807?apikey=UUARBGPJ" /><link rel="alternate" title="The Royal London Hospital For Integrated Medicine" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1820" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>The Royal London Hospital For Integrated Medicine</s:name>
+                                  <s:odsCode>RRV60</s:odsCode>
+                                  <s:address><s:addressLine>60 Great Ormond Street</s:addressLine><s:addressLine>60 Great Ormond Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>WC1N 3HR</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 3456 7890</s:telephone><s:email>rlhhpatients@uclh.org</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.121877573430538</s:longitude>
+                                    <s:latitude>51.5209732055664</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.79125096923429</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18444</id><title type="text">BMI The London Independent Hospital</title><updated>2013-02-06T12:12:50Z</updated><link rel="self" title="BMI The London Independent Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18444?apikey=UUARBGPJ" /><link rel="alternate" title="BMI The London Independent Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=57" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>BMI The London Independent Hospital</s:name>
+                                  <s:odsCode>NT422</s:odsCode>
+                                  <s:address><s:addressLine>1 Beaumont Square</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E1 4NL</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7780 2400</s:telephone><s:email>lih@bmihealthcare.co.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0469740852713585</s:longitude>
+                                    <s:latitude>51.5197486877441</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.81152562988091</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry>
+                                <entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40919</id><title type="text">St Thomas'</title><updated>2013-02-06T13:47:11Z</updated><link rel="self" title="St Thomas'" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40919?apikey=UUARBGPJ" /><link rel="alternate" title="St Thomas'" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=970" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>St Thomas'</s:name>
+                                  <s:odsCode>RJ122</s:odsCode>
+                                  <s:address><s:addressLine>Westminster Bridge Road</s:addressLine><s:addressLine>Westminster Bridge Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE1 7EH</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7188 7188</s:telephone><s:email>communications@gstt.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.119958683848381</s:longitude>
+                                    <s:latitude>51.4975624084473</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.84862138223456</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41822</id><title type="text">National Hospital For Neurology and Neurosurgery, Queen Square</title><updated>2013-02-06T13:47:11Z</updated><link rel="self" title="National Hospital For Neurology and Neurosurgery, Queen Square" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41822?apikey=UUARBGPJ" /><link rel="alternate" title="National Hospital For Neurology and Neurosurgery, Queen Square" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1107" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>National Hospital For Neurology and Neurosurgery, Queen Square</s:name>
+                                  <s:odsCode>RRVNQ</s:odsCode>
+                                  <s:address><s:addressLine>Queen Square</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>WC1N 3BG</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 3456 7890</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.123281136155128</s:longitude>
+                                    <s:latitude>51.5218963623047</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>2.92094047590302</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40076</id><title type="text">Royal National Throat, Nose &amp; Ear Hospital</title><updated>2013-02-06T13:47:11Z</updated><link rel="self" title="Royal National Throat, Nose &amp; Ear Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40076?apikey=UUARBGPJ" /><link rel="alternate" title="Royal National Throat, Nose &amp; Ear Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=409" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Royal National Throat, Nose &amp; Ear Hospital</s:name>
+                                  <s:odsCode>RAL16</s:odsCode>
+                                  <s:address><s:addressLine>330 Gray's Inn Road</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>WC1X 8DA</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7915 1300</s:telephone><s:email>pals@royalfree.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.120103992521763</s:longitude>
+                                    <s:latitude>51.5290374755859</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.15396346950999</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41824</id><title type="text">Royal National Throat, Nose and Ear Hospital</title><updated>2013-02-06T13:47:11Z</updated><link rel="self" title="Royal National Throat, Nose and Ear Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41824?apikey=UUARBGPJ" /><link rel="alternate" title="Royal National Throat, Nose and Ear Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=34834" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Royal National Throat, Nose and Ear Hospital</s:name>
+                                  <s:odsCode>RRVRN</s:odsCode>
+                                  <s:address><s:addressLine>330 Grays Inn Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>WC1X 8DA</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7915 1300</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.120103992521763</s:longitude>
+                                    <s:latitude>51.5290374755859</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.15396346950999</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/39957</id><title type="text">Mile End Hospital</title><updated>2013-02-06T13:47:11Z</updated><link rel="self" title="Mile End Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/39957?apikey=UUARBGPJ" /><link rel="alternate" title="Mile End Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=46340" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Mile End Hospital</s:name>
+                                  <s:odsCode>R1H13</s:odsCode>
+                                  <s:address><s:addressLine>Bancroft Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E1 4DG</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 3416 5000</s:telephone><s:email>communications@bartshealth.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0439007543027401</s:longitude>
+                                    <s:latitude>51.5241966247559</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.20867009388489</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/3</id><title type="text">Mile End Hospital</title><updated>2013-02-06T13:47:11Z</updated><link rel="self" title="Mile End Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/3?apikey=UUARBGPJ" /><link rel="alternate" title="Mile End Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=28463" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Mile End Hospital</s:name>
+                                  <s:odsCode>5C414</s:odsCode>
+                                  <s:address><s:addressLine>Bancroft Road</s:addressLine><s:addressLine>Bancroft Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E1 4DG</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7377 7000</s:telephone><s:email>feedback@bartsandthelondon.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0439007543027401</s:longitude>
+                                    <s:latitude>51.5241966247559</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.20867009388489</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/39958</id><title type="text">The London Chest Hospital</title><updated>2013-02-06T13:47:11Z</updated><link rel="self" title="The London Chest Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/39958?apikey=UUARBGPJ" /><link rel="alternate" title="The London Chest Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=46341" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>The London Chest Hospital</s:name>
+                                  <s:odsCode>R1H83</s:odsCode>
+                                  <s:address><s:addressLine>Bonner Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E2 9JX</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 3416 5000</s:telephone><s:email>communications@bartshealth.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0507964491844177</s:longitude>
+                                    <s:latitude>51.5315055847168</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.29210401067992</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41284</id><title type="text">The London Chest Hospital</title><updated>2013-02-06T13:47:11Z</updated><link rel="self" title="The London Chest Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41284?apikey=UUARBGPJ" /><link rel="alternate" title="The London Chest Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=2172" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>The London Chest Hospital</s:name>
+                                  <s:odsCode>RNJ83</s:odsCode>
+                                  <s:address><s:addressLine>The London Chest Hospital</s:addressLine><s:addressLine>Bonner Road</s:addressLine><s:addressLine>Bethnal Green</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E2 9JX</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7377 7000</s:telephone><s:email>enquiries@bartsandthelondon.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0507964491844177</s:longitude>
+                                    <s:latitude>51.5315055847168</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.29210401067992</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41820</id><title type="text">University College Hospital Macmillan Cancer Centre</title><updated>2013-02-06T13:47:11Z</updated><link rel="self" title="University College Hospital Macmillan Cancer Centre" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41820?apikey=UUARBGPJ" /><link rel="alternate" title="University College Hospital Macmillan Cancer Centre" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=34941" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>University College Hospital Macmillan Cancer Centre</s:name>
+                                  <s:odsCode>RRVCC</s:odsCode>
+                                  <s:address><s:addressLine>University College Hospital (UCH) Macmillan Cancer Centre</s:addressLine><s:addressLine>Huntley Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>WC1E 6AG</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 3456 7016</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.133364900946617</s:longitude>
+                                    <s:latitude>51.5220565795898</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.57720961985944</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41823</id><title type="text">Hospital For Tropical Diseases</title><updated>2013-02-06T13:47:11Z</updated><link rel="self" title="Hospital For Tropical Diseases" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41823?apikey=UUARBGPJ" /><link rel="alternate" title="Hospital For Tropical Diseases" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1796" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Hospital For Tropical Diseases</s:name>
+                                  <s:odsCode>RRVRH</s:odsCode>
+                                  <s:address><s:addressLine>Mortimer Market Centre</s:addressLine><s:addressLine>Mortimer Market</s:addressLine><s:addressLine>Off Capper Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>WC1E 6JD</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 3456 7891</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.136209309101105</s:longitude>
+                                    <s:latitude>51.5229988098145</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.79711309359397</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry>
+
+                                <entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41804</id><title type="text">University College Hospital</title><updated>2013-02-06T13:48:38Z</updated><link rel="self" title="University College Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41804?apikey=UUARBGPJ" /><link rel="alternate" title="University College Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1029" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>University College Hospital</s:name>
+                                  <s:odsCode>RRV03</s:odsCode>
+                                  <s:address><s:addressLine>University College Hospital</s:addressLine><s:addressLine>235 Euston Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>NW1 2BU</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 3456 7890</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.137576550245285</s:longitude>
+                                    <s:latitude>51.5248222351074</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.95935700466637</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41805</id><title type="text">University College Hospital Elizabeth Garrett Anderson Wing</title><updated>2013-02-06T13:48:38Z</updated><link rel="self" title="University College Hospital Elizabeth Garrett Anderson Wing" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41805?apikey=UUARBGPJ" /><link rel="alternate" title="University College Hospital Elizabeth Garrett Anderson Wing" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1152" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>University College Hospital Elizabeth Garrett Anderson Wing</s:name>
+                                  <s:odsCode>RRV11</s:odsCode>
+                                  <s:address><s:addressLine>235 Euston Road</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>NW1 2BU</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>0845 155 5000</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.137576550245285</s:longitude>
+                                    <s:latitude>51.5248222351074</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>3.95935700466637</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/46635</id><title type="text">BMI Fitzroy Square Hospital</title><updated>2013-02-06T13:48:38Z</updated><link rel="self" title="BMI Fitzroy Square Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/46635?apikey=UUARBGPJ" /><link rel="alternate" title="BMI Fitzroy Square Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=34364" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>BMI Fitzroy Square Hospital</s:name>
+                                  <s:odsCode>NT4BB</s:odsCode>
+                                  <s:address><s:addressLine>14 Fitzroy Square</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>W1T 6AH</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7388 4954</s:telephone><s:email>info@bmihealthcare.co.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.140531048178673</s:longitude>
+                                    <s:latitude>51.5230674743652</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>4.08298175467311</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/42192</id><title type="text">The Gordon Hospital</title><updated>2013-02-06T13:48:38Z</updated><link rel="self" title="The Gordon Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/42192?apikey=UUARBGPJ" /><link rel="alternate" title="The Gordon Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=2996" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>The Gordon Hospital</s:name>
+                                  <s:odsCode>RV346</s:odsCode>
+                                  <s:address><s:addressLine>Bloomburg Street</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>SW1V 2RH</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8746 8733</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.137492403388023</s:longitude>
+                                    <s:latitude>51.4915466308594</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>4.24177707637194</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40088</id><title type="text">Royal National Orthopaedic Hospital (Bolsover Street)</title><updated>2013-02-06T13:48:38Z</updated><link rel="self" title="Royal National Orthopaedic Hospital (Bolsover Street)" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40088?apikey=UUARBGPJ" /><link rel="alternate" title="Royal National Orthopaedic Hospital (Bolsover Street)" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=831" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Royal National Orthopaedic Hospital (Bolsover Street)</s:name>
+                                  <s:odsCode>RAN02</s:odsCode>
+                                  <s:address><s:addressLine>45-51 Bolsover Street</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>W1W 5AQ</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8954 2300</s:telephone><s:email>enquiries@rnoh.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.143448770046234</s:longitude>
+                                    <s:latitude>51.522216796875</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>4.24429670905668</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/46228</id><title type="text">St Pancras Hospital</title><updated>2013-02-06T13:48:38Z</updated><link rel="self" title="St Pancras Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/46228?apikey=UUARBGPJ" /><link rel="alternate" title="St Pancras Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=28514" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>St Pancras Hospital</s:name>
+                                  <s:odsCode>5K7Q8</s:odsCode>
+                                  <s:address><s:addressLine>4 St Pancras Way</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>NW1 0PE</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 3317 3500</s:telephone><s:email>pss@camdenpct.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.132776707410812</s:longitude>
+                                    <s:latitude>51.536434173584</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>4.35677642626592</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41806</id><title type="text">The Heart Hospital</title><updated>2013-02-06T13:48:38Z</updated><link rel="self" title="The Heart Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41806?apikey=UUARBGPJ" /><link rel="alternate" title="The Heart Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=2236" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>The Heart Hospital</s:name>
+                                  <s:odsCode>RRV30</s:odsCode>
+                                  <s:address><s:addressLine>The Heart Hospital</s:addressLine><s:addressLine>16-18 Westmoreland Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>W1G 8PH</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 3456 7898</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.150760814547539</s:longitude>
+                                    <s:latitude>51.5196342468262</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>4.6641462914796</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41042</id><title type="text">King's College Hospital (Denmark Hill)</title><updated>2013-02-06T13:48:38Z</updated><link rel="self" title="King's College Hospital (Denmark Hill)" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41042?apikey=UUARBGPJ" /><link rel="alternate" title="King's College Hospital (Denmark Hill)" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1214" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>King's College Hospital (Denmark Hill)</s:name>
+                                  <s:odsCode>RJZ01</s:odsCode>
+                                  <s:address><s:addressLine>Denmark Hill</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE5 9RS</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 3299 9000</s:telephone><s:email>kch-tr.pals@nhs.net</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0923642516136169</s:longitude>
+                                    <s:latitude>51.4683418273926</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>4.77815774852286</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/42211</id><title type="text">Maudsley Hospital</title><updated>2013-02-06T13:48:38Z</updated><link rel="self" title="Maudsley Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/42211?apikey=UUARBGPJ" /><link rel="alternate" title="Maudsley Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=2775" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Maudsley Hospital</s:name>
+                                  <s:odsCode>RV504</s:odsCode>
+                                  <s:address><s:addressLine>Denmark Hill</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE5 8AZ</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 3228 6000</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0923642516136169</s:longitude>
+                                    <s:latitude>51.4683418273926</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>4.77815774852286</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40963</id><title type="text">St George's At Kings College Hospital</title><updated>2013-02-06T13:48:38Z</updated><link rel="self" title="St George's At Kings College Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40963?apikey=UUARBGPJ" /><link rel="alternate" title="St George's At Kings College Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1960" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>St George's At Kings College Hospital</s:name>
+                                  <s:odsCode>RJ761</s:odsCode>
+                                  <s:address><s:addressLine>Denmark Hill</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>SE5 9RS</s:postcode></s:address>
+                                  <s:contact type="General"></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0923642516136169</s:longitude>
+                                    <s:latitude>51.4683418273926</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>4.77815774852286</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry>
+
+                                <entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/46909</id><title type="text">Homerton Hospital</title><updated>2013-02-06T13:49:25Z</updated><link rel="self" title="Homerton Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/46909?apikey=UUARBGPJ" /><link rel="alternate" title="Homerton Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=28457" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Homerton Hospital</s:name>
+                                  <s:odsCode>5C318</s:odsCode>
+                                  <s:address><s:addressLine>Homerton Row</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>E9 6SR</s:postcode></s:address>
+                                  <s:contact type="General"></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.047107171267271</s:longitude>
+                                    <s:latitude>51.5503273010254</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>5.10223485003284</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41569</id><title type="text">Homerton University Hospital</title><updated>2013-02-06T13:49:25Z</updated><link rel="self" title="Homerton University Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41569?apikey=UUARBGPJ" /><link rel="alternate" title="Homerton University Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1837" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Homerton University Hospital</s:name>
+                                  <s:odsCode>RQXM1</s:odsCode>
+                                  <s:address><s:addressLine>Homerton Row</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>E9 6SR</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8510 5555</s:telephone><s:email>enquiries@homerton.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.047107171267271</s:longitude>
+                                    <s:latitude>51.5503273010254</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>5.10223485003284</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/43804</id><title type="text">Western Eye Hospital</title><updated>2013-02-06T13:49:25Z</updated><link rel="self" title="Western Eye Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/43804?apikey=UUARBGPJ" /><link rel="alternate" title="Western Eye Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=987" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Western Eye Hospital</s:name>
+                                  <s:odsCode>RYJ07</s:odsCode>
+                                  <s:address><s:addressLine>153-173 Marylebone Road</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>NW1 5QH</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 3312 6666</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.1637252420187</s:longitude>
+                                    <s:latitude>51.5198364257813</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>5.55187347868253</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/42210</id><title type="text">The Lambeth Hospital</title><updated>2013-02-06T13:49:25Z</updated><link rel="self" title="The Lambeth Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/42210?apikey=UUARBGPJ" /><link rel="alternate" title="The Lambeth Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=2408" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>The Lambeth Hospital</s:name>
+                                  <s:odsCode>RV502</s:odsCode>
+                                  <s:address><s:addressLine>108 Landor Road</s:addressLine><s:addressLine>108 Landor Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SW9 9NU</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 3228 6000</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.124166183173656</s:longitude>
+                                    <s:latitude>51.4652557373047</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>5.76649843170626</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/43800</id><title type="text">St Mary's Hospital (HQ)</title><updated>2013-02-06T13:49:25Z</updated><link rel="self" title="St Mary's Hospital (HQ)" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/43800?apikey=UUARBGPJ" /><link rel="alternate" title="St Mary's Hospital (HQ)" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1672" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>St Mary's Hospital (HQ)</s:name>
+                                  <s:odsCode>RYJ01</s:odsCode>
+                                  <s:address><s:addressLine>Praed Street</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>W2 1NY</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 3312 6666</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.175392970442772</s:longitude>
+                                    <s:latitude>51.5164222717285</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>6.30374942248991</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/316</id><title type="text">St. Mary's Hospital</title><updated>2013-02-06T13:49:25Z</updated><link rel="self" title="St. Mary's Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/316?apikey=UUARBGPJ" /><link rel="alternate" title="St. Mary's Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=28542" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>St. Mary's Hospital</s:name>
+                                  <s:odsCode>5LA20</s:odsCode>
+                                  <s:address><s:addressLine>Praed Street</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>W2 1NY</s:postcode></s:address>
+                                  <s:contact type="General"></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.175392970442772</s:longitude>
+                                    <s:latitude>51.5164222717285</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>6.30374942248991</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41842</id><title type="text">Royal Brompton Hospital</title><updated>2013-02-06T13:49:25Z</updated><link rel="self" title="Royal Brompton Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41842?apikey=UUARBGPJ" /><link rel="alternate" title="Royal Brompton Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1523" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Royal Brompton Hospital</s:name>
+                                  <s:odsCode>RT302</s:odsCode>
+                                  <s:address><s:addressLine>Sydney Street</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>SW3 6NP</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7352 8121</s:telephone><s:email>webadmin@rbht.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.172150880098343</s:longitude>
+                                    <s:latitude>51.4893951416016</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>6.51147488069977</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41504</id><title type="text">The Royal Marsden Hospital (London)</title><updated>2013-02-06T13:49:25Z</updated><link rel="self" title="The Royal Marsden Hospital (London)" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41504?apikey=UUARBGPJ" /><link rel="alternate" title="The Royal Marsden Hospital (London)" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1416" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>The Royal Marsden Hospital (London)</s:name>
+                                  <s:odsCode>RPY01</s:odsCode>
+                                  <s:address><s:addressLine>Fulham Road</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>SW3 6JJ</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7352 8171</s:telephone><s:email>patientcentre@royalmarsden.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.173554509878159</s:longitude>
+                                    <s:latitude>51.4903144836426</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>6.56634220303442</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41078</id><title type="text">The Whittington Hospital</title><updated>2013-02-06T13:49:25Z</updated><link rel="self" title="The Whittington Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41078?apikey=UUARBGPJ" /><link rel="alternate" title="The Whittington Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1943" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>The Whittington Hospital</s:name>
+                                  <s:odsCode>RKEQ4</s:odsCode>
+                                  <s:address><s:addressLine>Magdala Avenue</s:addressLine><s:addressLine>Magdala Avenue</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>N19 5NF</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7272 3070</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.138771682977676</s:longitude>
+                                    <s:latitude>51.5662040710449</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>7.18585804225544</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40085</id><title type="text">The Whittington Hospital</title><updated>2013-02-06T13:49:25Z</updated><link rel="self" title="The Whittington Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40085?apikey=UUARBGPJ" /><link rel="alternate" title="The Whittington Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=219" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>The Whittington Hospital</s:name>
+                                  <s:odsCode>RALWH</s:odsCode>
+                                  <s:address><s:addressLine>Highgate Hill</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>N19 5NF</s:postcode></s:address>
+                                  <s:contact type="General"></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.138771682977676</s:longitude>
+                                    <s:latitude>51.5662040710449</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>7.18585804225544</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry>
+                                <entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41811</id><title type="text">Uclh Outreach: The Whittington Hospital</title><updated>2013-02-06T13:49:48Z</updated><link rel="self" title="Uclh Outreach: The Whittington Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41811?apikey=UUARBGPJ" /><link rel="alternate" title="Uclh Outreach: The Whittington Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=2035" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Uclh Outreach: The Whittington Hospital</s:name>
+                                  <s:odsCode>RRV91</s:odsCode>
+                                  <s:address><s:addressLine>Whittington Hospital</s:addressLine><s:addressLine>St. Marys Wing</s:addressLine><s:addressLine>Highgate Hill</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>N19 5NF</s:postcode></s:address>
+                                  <s:contact type="General"></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.138771682977676</s:longitude>
+                                    <s:latitude>51.5662040710449</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>7.18585804225544</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41546</id><title type="text">South Kensington &amp; Chelsea Mental Health Centre</title><updated>2013-02-06T13:49:48Z</updated><link rel="self" title="South Kensington &amp; Chelsea Mental Health Centre" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41546?apikey=UUARBGPJ" /><link rel="alternate" title="South Kensington &amp; Chelsea Mental Health Centre" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=30347" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>South Kensington &amp; Chelsea Mental Health Centre</s:name>
+                                  <s:odsCode>RQM01_DBA</s:odsCode>
+                                  <s:address><s:addressLine>1 Nightingale Place</s:addressLine><s:postcode>SW10 9NG</s:postcode></s:address>
+                                  <s:contact type="General"></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.181002795696259</s:longitude>
+                                    <s:latitude>51.4841384887695</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>7.30780455303904</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40073</id><title type="text">Royal Free Hospital</title><updated>2013-02-06T13:49:48Z</updated><link rel="self" title="Royal Free Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40073?apikey=UUARBGPJ" /><link rel="alternate" title="Royal Free Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=787" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Royal Free Hospital</s:name>
+                                  <s:odsCode>RAL01</s:odsCode>
+                                  <s:address><s:addressLine>Pond Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>NW3 2QG</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7794 0500</s:telephone><s:email>rfh.pals@nhs.net</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.166711166501045</s:longitude>
+                                    <s:latitude>51.5531578063965</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>7.36163528454722</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/315</id><title type="text">Chelsea &amp; Westminster Hospital</title><updated>2013-02-06T13:49:48Z</updated><link rel="self" title="Chelsea &amp; Westminster Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/315?apikey=UUARBGPJ" /><link rel="alternate" title="Chelsea &amp; Westminster Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=28541" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Chelsea &amp; Westminster Hospital</s:name>
+                                  <s:odsCode>5LA19</s:odsCode>
+                                  <s:address><s:addressLine>369 Fulham Road</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>SW10 9NH</s:postcode></s:address>
+                                  <s:contact type="General"></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.182442188262939</s:longitude>
+                                    <s:latitude>51.4841575622559</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>7.394583331456</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/42191</id><title type="text">Chelsea &amp; Westminster Hospital</title><updated>2013-02-06T13:49:48Z</updated><link rel="self" title="Chelsea &amp; Westminster Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/42191?apikey=UUARBGPJ" /><link rel="alternate" title="Chelsea &amp; Westminster Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=2500" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Chelsea &amp; Westminster Hospital</s:name>
+                                  <s:odsCode>RV331</s:odsCode>
+                                  <s:address><s:addressLine>369 Fulham Road</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>SW10 9NH</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8746 8000</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.182442188262939</s:longitude>
+                                    <s:latitude>51.4841575622559</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>7.394583331456</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41545</id><title type="text">Chelsea and Westminster Hospital</title><updated>2013-02-06T13:49:48Z</updated><link rel="self" title="Chelsea and Westminster Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41545?apikey=UUARBGPJ" /><link rel="alternate" title="Chelsea and Westminster Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1528" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Chelsea and Westminster Hospital</s:name>
+                                  <s:odsCode>RQM01</s:odsCode>
+                                  <s:address><s:addressLine>369 Fulham Road</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>SW10 9NH</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8746 8000</s:telephone><s:email>pals@chelwest.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.182442188262939</s:longitude>
+                                    <s:latitude>51.4841575622559</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>7.394583331456</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18819</id><title type="text">Bupa Cromwell Hospital</title><updated>2013-02-06T13:49:48Z</updated><link rel="self" title="Bupa Cromwell Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18819?apikey=UUARBGPJ" /><link rel="alternate" title="Bupa Cromwell Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=45961" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Bupa Cromwell Hospital</s:name>
+                                  <s:odsCode>NV7R1</s:odsCode>
+                                  <s:address><s:addressLine>162-174 Cromwell Road</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>SW5 0TU</s:postcode></s:address>
+                                  <s:contact type="General"></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.192126974463463</s:longitude>
+                                    <s:latitude>51.4942016601563</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>7.66977095403649</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41414</id><title type="text">Moorfields At St Ann's Hospital</title><updated>2013-02-06T13:49:48Z</updated><link rel="self" title="Moorfields At St Ann's Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41414?apikey=UUARBGPJ" /><link rel="alternate" title="Moorfields At St Ann's Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1461" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Moorfields At St Ann's Hospital</s:name>
+                                  <s:odsCode>RP603</s:odsCode>
+                                  <s:address><s:addressLine>St. Ann's Hospital</s:addressLine><s:addressLine>St. Ann's Road</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>N15 3TH</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7566 2841</s:telephone><s:email>info@moorfields.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0934707894921303</s:longitude>
+                                    <s:latitude>51.5798645019531</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>7.68821449324981</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41792</id><title type="text">St Anns</title><updated>2013-02-06T13:49:48Z</updated><link rel="self" title="St Anns" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41792?apikey=UUARBGPJ" /><link rel="alternate" title="St Anns" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=2566" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>St Anns</s:name>
+                                  <s:odsCode>RRP46</s:odsCode>
+                                  <s:address><s:addressLine>St. Ann's Road</s:addressLine><s:addressLine>St Anns Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>N15 3TH</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>0208 442 6000</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0934707894921303</s:longitude>
+                                    <s:latitude>51.5798645019531</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>7.68821449324981</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/16</id><title type="text">St. Ann's Hospital</title><updated>2013-02-06T13:49:48Z</updated><link rel="self" title="St. Ann's Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/16?apikey=UUARBGPJ" /><link rel="alternate" title="St. Ann's Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=28464" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>St. Ann's Hospital</s:name>
+                                  <s:odsCode>5C910</s:odsCode>
+                                  <s:address><s:addressLine>St. Ann's Road</s:addressLine><s:addressLine>Tottenham</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>N15 3TH</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8442 6000</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0934707894921303</s:longitude>
+                                    <s:latitude>51.5798645019531</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>7.68821449324981</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry>
+                                <entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/42213</id><title type="text">The Ladywell Unit</title><updated>2013-02-06T13:50:07Z</updated><link rel="self" title="The Ladywell Unit" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/42213?apikey=UUARBGPJ" /><link rel="alternate" title="The Ladywell Unit" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=2918" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>The Ladywell Unit</s:name>
+                                  <s:odsCode>RV509</s:odsCode>
+                                  <s:address><s:addressLine>University Hospital Lewisham</s:addressLine><s:addressLine>Lewisham High Street</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE13 6LH</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 3228 6000</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0181323178112507</s:longitude>
+                                    <s:latitude>51.4536209106445</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>7.89686535724825</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40922</id><title type="text">University Hospital Lewisham</title><updated>2013-02-06T13:50:07Z</updated><link rel="self" title="University Hospital Lewisham" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40922?apikey=UUARBGPJ" /><link rel="alternate" title="University Hospital Lewisham" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1335" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>University Hospital Lewisham</s:name>
+                                  <s:odsCode>RJ224</s:odsCode>
+                                  <s:address><s:addressLine>Lewisham High Street</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>SE13 6LH</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 - 8333 - 3000</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0181323178112507</s:longitude>
+                                    <s:latitude>51.4536209106445</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>7.89686535724825</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18782</id><title type="text">University Hospital Lewisham</title><updated>2013-02-06T13:50:07Z</updated><link rel="self" title="University Hospital Lewisham" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18782?apikey=UUARBGPJ" /><link rel="alternate" title="University Hospital Lewisham" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=30" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>University Hospital Lewisham</s:name>
+                                  <s:odsCode>NV133</s:odsCode>
+                                  <s:address><s:addressLine>Lewisham High Street</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>SE13 6LH</s:postcode></s:address>
+                                  <s:contact type="General"></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0181323178112507</s:longitude>
+                                    <s:latitude>51.4536209106445</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>7.89686535724825</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18428</id><title type="text">BMI The Blackheath Hospital</title><updated>2013-02-06T13:50:07Z</updated><link rel="self" title="BMI The Blackheath Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18428?apikey=UUARBGPJ" /><link rel="alternate" title="BMI The Blackheath Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=294" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>BMI The Blackheath Hospital</s:name>
+                                  <s:odsCode>NT406</s:odsCode>
+                                  <s:address><s:addressLine>40 - 42 Lee Terrace</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE3 9UD</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8318 7722</s:telephone><s:email>blackheath@bmihealthcare.co.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>0.0053133312612772</s:longitude>
+                                    <s:latitude>51.4631118774414</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>8.23125565738858</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41278</id><title type="text">Gateway Surgical Centre</title><updated>2013-02-06T13:50:07Z</updated><link rel="self" title="Gateway Surgical Centre" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41278?apikey=UUARBGPJ" /><link rel="alternate" title="Gateway Surgical Centre" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1668" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Gateway Surgical Centre</s:name>
+                                  <s:odsCode>RNH11</s:odsCode>
+                                  <s:address><s:addressLine>Glen Road</s:addressLine><s:addressLine>Plaistow</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E13 8SL</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7055 5550</s:telephone><s:email>comms@newhamhealth.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>0.0353257842361927</s:longitude>
+                                    <s:latitude>51.5228462219238</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>8.4549424325077</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41279</id><title type="text">Newham General Hospital</title><updated>2013-02-06T13:50:07Z</updated><link rel="self" title="Newham General Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41279?apikey=UUARBGPJ" /><link rel="alternate" title="Newham General Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1154" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Newham General Hospital</s:name>
+                                  <s:odsCode>RNHB1</s:odsCode>
+                                  <s:address><s:addressLine>Glen Road</s:addressLine><s:addressLine>Glen Road</s:addressLine><s:addressLine>Plaistow</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E13 8SL</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7476 4000</s:telephone><s:email>comms@newhamhealth.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>0.0353257842361927</s:longitude>
+                                    <s:latitude>51.5228462219238</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>8.4549424325077</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40642</id><title type="text">Newham General Hospital</title><updated>2013-02-06T13:50:07Z</updated><link rel="self" title="Newham General Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40642?apikey=UUARBGPJ" /><link rel="alternate" title="Newham General Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1095" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Newham General Hospital</s:name>
+                                  <s:odsCode>RGCNH</s:odsCode>
+                                  <s:address><s:addressLine>Glen Road</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>E13 8SL</s:postcode></s:address>
+                                  <s:contact type="General"></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>0.0353257842361927</s:longitude>
+                                    <s:latitude>51.5228462219238</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>8.4549424325077</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/39967</id><title type="text">Newham General Hospital</title><updated>2013-02-06T13:50:07Z</updated><link rel="self" title="Newham General Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/39967?apikey=UUARBGPJ" /><link rel="alternate" title="Newham General Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=46346" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Newham General Hospital</s:name>
+                                  <s:odsCode>R1HNH</s:odsCode>
+                                  <s:address><s:addressLine>Glen Road</s:addressLine><s:addressLine>Plaistow</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E13 8SL</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 7476 4000</s:telephone><s:email>communications@bartshealth.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>0.0353257842361927</s:longitude>
+                                    <s:latitude>51.5228462219238</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>8.4549424325077</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40950</id><title type="text">Bolingbroke Hospital</title><updated>2013-02-06T13:50:07Z</updated><link rel="self" title="Bolingbroke Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40950?apikey=UUARBGPJ" /><link rel="alternate" title="Bolingbroke Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1681" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Bolingbroke Hospital</s:name>
+                                  <s:odsCode>RJ706</s:odsCode>
+                                  <s:address><s:addressLine>Bolingbroke Grove</s:addressLine><s:addressLine>.</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>SW11 6HN</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8812 5370</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.169163972139359</s:longitude>
+                                    <s:latitude>51.4560775756836</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>8.4551532102907</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41077</id><title type="text">The Whittington Hospital At Hornsey Central</title><updated>2013-02-06T13:50:07Z</updated><link rel="self" title="The Whittington Hospital At Hornsey Central" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41077?apikey=UUARBGPJ" /><link rel="alternate" title="The Whittington Hospital At Hornsey Central" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=3111" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>The Whittington Hospital At Hornsey Central</s:name>
+                                  <s:odsCode>RKEHC</s:odsCode>
+                                  <s:address><s:addressLine>151 Park Road</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>N8 8JD</s:postcode></s:address>
+                                  <s:contact type="General"></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.130861654877663</s:longitude>
+                                    <s:latitude>51.5831642150879</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>8.63993336604922</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry>
+                                <entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40962</id><title type="text">St George's At St John's Therapy Centre</title><updated>2013-02-06T13:50:26Z</updated><link rel="self" title="St George's At St John's Therapy Centre" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40962?apikey=UUARBGPJ" /><link rel="alternate" title="St George's At St John's Therapy Centre" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=2083" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>St George's At St John's Therapy Centre</s:name>
+                                  <s:odsCode>RJ760</s:odsCode>
+                                  <s:address><s:addressLine>162 St. John's Hill</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>SW11 1SW</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8812 5385</s:telephone><s:email>communications@stgeorges.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.180529057979584</s:longitude>
+                                    <s:latitude>51.4598503112793</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>8.73811314593809</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18751</id><title type="text">Highgate Private Hospital</title><updated>2013-02-06T13:50:26Z</updated><link rel="self" title="Highgate Private Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18751?apikey=UUARBGPJ" /><link rel="alternate" title="Highgate Private Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=665" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Highgate Private Hospital</s:name>
+                                  <s:odsCode>NTY28</s:odsCode>
+                                  <s:address><s:addressLine>17-19 View Road</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>N6 4DJ</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8341 4182</s:telephone><s:email>info@highgatehospital.co.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.157117381691933</s:longitude>
+                                    <s:latitude>51.5763854980469</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>8.83036171412989</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/46932</id><title type="text">Whipps Cross Hospital</title><updated>2013-02-06T13:50:26Z</updated><link rel="self" title="Whipps Cross Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/46932?apikey=UUARBGPJ" /><link rel="alternate" title="Whipps Cross Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=28462" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Whipps Cross Hospital</s:name>
+                                  <s:odsCode>5C348</s:odsCode>
+                                  <s:address><s:addressLine>Whipps Cross Road</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>E11 1NR</s:postcode></s:address>
+                                  <s:contact type="General"></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>0.00171930924989283</s:longitude>
+                                    <s:latitude>51.5782814025879</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>9.60507112407444</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/39964</id><title type="text">Whipps Cross University Hospital</title><updated>2013-02-06T13:50:26Z</updated><link rel="self" title="Whipps Cross University Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/39964?apikey=UUARBGPJ" /><link rel="alternate" title="Whipps Cross University Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=46344" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Whipps Cross University Hospital</s:name>
+                                  <s:odsCode>R1HKH</s:odsCode>
+                                  <s:address><s:addressLine>Whipps Cross Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E11 1NR</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 3416 5000</s:telephone><s:email>communications@bartshealth.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>0.00171930924989283</s:longitude>
+                                    <s:latitude>51.5782814025879</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>9.60507112407444</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18870</id><title type="text">Whipps Cross University Hospital</title><updated>2013-02-06T13:50:26Z</updated><link rel="self" title="Whipps Cross University Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18870?apikey=UUARBGPJ" /><link rel="alternate" title="Whipps Cross University Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=3293" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Whipps Cross University Hospital</s:name>
+                                  <s:odsCode>NVT01</s:odsCode>
+                                  <s:address><s:addressLine>Whipps Cross Hospital</s:addressLine><s:addressLine>Whipps Cross Road</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>E11 1NR</s:postcode></s:address>
+                                  <s:contact type="General"></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>0.00171930924989283</s:longitude>
+                                    <s:latitude>51.5782814025879</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>9.60507112407444</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40638</id><title type="text">Whipps Cross University Hospital</title><updated>2013-02-06T13:50:26Z</updated><link rel="self" title="Whipps Cross University Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40638?apikey=UUARBGPJ" /><link rel="alternate" title="Whipps Cross University Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1737" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Whipps Cross University Hospital</s:name>
+                                  <s:odsCode>RGCKH</s:odsCode>
+                                  <s:address><s:addressLine>Whipps Cross Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>E11 1NR</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8539 5522</s:telephone><s:email>info@whippsx.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>0.00171930924989283</s:longitude>
+                                    <s:latitude>51.5782814025879</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>9.60507112407444</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/43801</id><title type="text">Charing Cross Hospital</title><updated>2013-02-06T13:50:26Z</updated><link rel="self" title="Charing Cross Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/43801?apikey=UUARBGPJ" /><link rel="alternate" title="Charing Cross Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1743" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Charing Cross Hospital</s:name>
+                                  <s:odsCode>RYJ02</s:odsCode>
+                                  <s:address><s:addressLine>Fulham Palace Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>W6 8RF</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 3311 1234</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.221236482262611</s:longitude>
+                                    <s:latitude>51.4865531921387</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>9.84232973228416</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/43865</id><title type="text">Queen Elizabeth Hospital Woolwich</title><updated>2013-02-06T13:50:26Z</updated><link rel="self" title="Queen Elizabeth Hospital Woolwich" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/43865?apikey=UUARBGPJ" /><link rel="alternate" title="Queen Elizabeth Hospital Woolwich" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=2229" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Queen Elizabeth Hospital Woolwich</s:name>
+                                  <s:odsCode>RYQ50</s:odsCode>
+                                  <s:address><s:addressLine>Stadium Road</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>SE18 4QH</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8836 6000</s:telephone><s:email>slh.communications@nhs.net</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>0.0477551966905594</s:longitude>
+                                    <s:latitude>51.4785652160645</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>9.89928929504679</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41571</id><title type="text">Springfield University Hospital</title><updated>2013-02-06T13:50:26Z</updated><link rel="self" title="Springfield University Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41571?apikey=UUARBGPJ" /><link rel="alternate" title="Springfield University Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=2984" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Springfield University Hospital</s:name>
+                                  <s:odsCode>RQY01</s:odsCode>
+                                  <s:address><s:addressLine>61 Glenburnie Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SW17 7DJ</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>0203 513 5000</s:telephone><s:email>web.editor@swlstg-tr.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.168552666902542</s:longitude>
+                                    <s:latitude>51.4353828430176</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>10.2199834529487</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/43802</id><title type="text">Hammersmith Hospital</title><updated>2013-02-06T13:50:26Z</updated><link rel="self" title="Hammersmith Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/43802?apikey=UUARBGPJ" /><link rel="alternate" title="Hammersmith Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1928" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Hammersmith Hospital</s:name>
+                                  <s:odsCode>RYJ03</s:odsCode>
+                                  <s:address><s:addressLine>Du Cane Road</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>W12 0HS</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 3313 1000</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.237366661429405</s:longitude>
+                                    <s:latitude>51.516471862793</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>10.5949428728132</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry>
+                                <entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/43803</id><title type="text">Queen Charlotte's Hospital</title><updated>2013-02-06T13:50:44Z</updated><link rel="self" title="Queen Charlotte's Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/43803?apikey=UUARBGPJ" /><link rel="alternate" title="Queen Charlotte's Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1340" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Queen Charlotte's Hospital</s:name>
+                                  <s:odsCode>RYJ04</s:odsCode>
+                                  <s:address><s:addressLine>Du Cane Road</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>W12 0HS</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 3313 1111</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.237366661429405</s:longitude>
+                                    <s:latitude>51.516471862793</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>10.5949428728132</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/45347</id><title type="text">Willesden Centre For Health and Care</title><updated>2013-02-06T13:50:44Z</updated><link rel="self" title="Willesden Centre For Health and Care" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/45347?apikey=UUARBGPJ" /><link rel="alternate" title="Willesden Centre For Health and Care" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=28510" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Willesden Centre For Health and Care</s:name>
+                                  <s:odsCode>5K504</s:odsCode>
+                                  <s:address><s:addressLine>Robson Avenue</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>NW10 3RY</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8438 7006</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.236359789967537</s:longitude>
+                                    <s:latitude>51.5425338745117</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>11.0735749071216</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18752</id><title type="text">Royal Hospital For Neuro-Disability</title><updated>2013-02-06T13:50:44Z</updated><link rel="self" title="Royal Hospital For Neuro-Disability" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18752?apikey=UUARBGPJ" /><link rel="alternate" title="Royal Hospital For Neuro-Disability" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=169" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Royal Hospital For Neuro-Disability</s:name>
+                                  <s:odsCode>NTY33</s:odsCode>
+                                  <s:address><s:addressLine>West Hill</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>SW15 3SW</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8780 4500</s:telephone><s:email>info@rhn.org.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.213968738913536</s:longitude>
+                                    <s:latitude>51.4513702392578</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>11.146276257245</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40959</id><title type="text">Bcs Endoscopy Unit St Georges Hospital</title><updated>2013-02-06T13:50:44Z</updated><link rel="self" title="Bcs Endoscopy Unit St Georges Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40959?apikey=UUARBGPJ" /><link rel="alternate" title="Bcs Endoscopy Unit St Georges Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=2098" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Bcs Endoscopy Unit St Georges Hospital</s:name>
+                                  <s:odsCode>RJ756</s:odsCode>
+                                  <s:address><s:addressLine>Blackshaw Road</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>SW17 0QT</s:postcode></s:address>
+                                  <s:contact type="General"></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.176099851727486</s:longitude>
+                                    <s:latitude>51.4265098571777</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>11.3338702483683</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41415</id><title type="text">Moorfields At St George's Hospital</title><updated>2013-02-06T13:50:44Z</updated><link rel="self" title="Moorfields At St George's Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41415?apikey=UUARBGPJ" /><link rel="alternate" title="Moorfields At St George's Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1810" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Moorfields At St George's Hospital</s:name>
+                                  <s:odsCode>RP604</s:odsCode>
+                                  <s:address><s:addressLine>St. Georges Hospital</s:addressLine><s:addressLine>Blackshaw Road</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>SW17 0QT</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8725 5877</s:telephone><s:email>info@moorfields.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.176099851727486</s:longitude>
+                                    <s:latitude>51.4265098571777</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>11.3338702483683</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40949</id><title type="text">St George's Hospital (Tooting)</title><updated>2013-02-06T13:50:44Z</updated><link rel="self" title="St George's Hospital (Tooting)" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40949?apikey=UUARBGPJ" /><link rel="alternate" title="St George's Hospital (Tooting)" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1334" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>St George's Hospital (Tooting)</s:name>
+                                  <s:odsCode>RJ701</s:odsCode>
+                                  <s:address><s:addressLine>Blackshaw Road</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>SW17 0QT</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>0208 672 1255</s:telephone><s:email>communications@stgeorges.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.176099851727486</s:longitude>
+                                    <s:latitude>51.4265098571777</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>11.3338702483683</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/46892</id><title type="text">North Middlesex Hospital</title><updated>2013-02-06T13:50:44Z</updated><link rel="self" title="North Middlesex Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/46892?apikey=UUARBGPJ" /><link rel="alternate" title="North Middlesex Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=28455" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>North Middlesex Hospital</s:name>
+                                  <s:odsCode>5C198</s:odsCode>
+                                  <s:address><s:addressLine>Sterling Way</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>N18 1QX</s:postcode></s:address>
+                                  <s:contact type="General"></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0747572928667068</s:longitude>
+                                    <s:latitude>51.6128311157227</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>11.3484179923868</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40091</id><title type="text">North Middlesex University Hospital</title><updated>2013-02-06T13:50:44Z</updated><link rel="self" title="North Middlesex University Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40091?apikey=UUARBGPJ" /><link rel="alternate" title="North Middlesex University Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=424" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>North Middlesex University Hospital</s:name>
+                                  <s:odsCode>RAPNM</s:odsCode>
+                                  <s:address><s:addressLine>Sterling Way</s:addressLine><s:addressLine>Sterling Way</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>N18 1QX</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>(020) 8887 2000</s:telephone><s:email>firstname.lastname@nmh.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0747572928667068</s:longitude>
+                                    <s:latitude>51.6128311157227</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>11.3484179923868</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/42312</id><title type="text">North Middlesex University Hospital Trust</title><updated>2013-02-06T13:50:44Z</updated><link rel="self" title="North Middlesex University Hospital Trust" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/42312?apikey=UUARBGPJ" /><link rel="alternate" title="North Middlesex University Hospital Trust" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1931" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>North Middlesex University Hospital Trust</s:name>
+                                  <s:odsCode>RVLC9</s:odsCode>
+                                  <s:address><s:addressLine>North Middlesex Hospital</s:addressLine><s:addressLine>Sterling Way</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>N18 1QX</s:postcode></s:address>
+                                  <s:contact type="General"></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0747572928667068</s:longitude>
+                                    <s:latitude>51.6128311157227</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>11.3484179923868</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41495</id><title type="text">Memorial Hospital (Greenwich)</title><updated>2013-02-06T13:50:44Z</updated><link rel="self" title="Memorial Hospital (Greenwich)" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41495?apikey=UUARBGPJ" /><link rel="alternate" title="Memorial Hospital (Greenwich)" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=2324" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Memorial Hospital (Greenwich)</s:name>
+                                  <s:odsCode>RPGAG</s:odsCode>
+                                  <s:address><s:addressLine>Shooters Hill</s:addressLine><s:addressLine>Woolwich</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SE18 3RG</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8836 8500</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>0.0645769387483597</s:longitude>
+                                    <s:latitude>51.4683799743652</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>11.4190904055905</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry>
+                                <entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18395</id><title type="text">Spire Roding Hospital</title><updated>2013-02-06T13:51:00Z</updated><link rel="self" title="Spire Roding Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18395?apikey=UUARBGPJ" /><link rel="alternate" title="Spire Roding Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=89" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Spire Roding Hospital</s:name>
+                                  <s:odsCode>NT314</s:odsCode>
+                                  <s:address><s:addressLine>Roding Lane South</s:addressLine><s:addressLine>Ilford</s:addressLine><s:addressLine>Essex</s:addressLine><s:postcode>IG4 5PZ</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8709 7878</s:telephone><s:email>spire.roding@nhs.net</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>0.0425032302737236</s:longitude>
+                                    <s:latitude>51.5865707397461</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>12.2053880653109</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry>
+                                <entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40077</id><title type="text">Finchley Memorial Hospital</title><updated>2013-02-06T13:51:00Z</updated><link rel="self" title="Finchley Memorial Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40077?apikey=UUARBGPJ" /><link rel="alternate" title="Finchley Memorial Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=638" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Finchley Memorial Hospital</s:name>
+                                  <s:odsCode>RAL22</s:odsCode>
+                                  <s:address><s:addressLine>Granville Road</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>N12 0JE</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8349 6300</s:telephone><s:email>pals@royalfree.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.177565291523933</s:longitude>
+                                    <s:latitude>51.6063804626465</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>12.4043998550119</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41777</id><title type="text">Finchley Memorial Hospital</title><updated>2013-02-06T13:51:00Z</updated><link rel="self" title="Finchley Memorial Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41777?apikey=UUARBGPJ" /><link rel="alternate" title="Finchley Memorial Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=2698" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Finchley Memorial Hospital</s:name>
+                                  <s:odsCode>RRP27</s:odsCode>
+                                  <s:address><s:addressLine>Granville Road</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>N12 0JE</s:postcode></s:address>
+                                  <s:contact type="General"></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.177565291523933</s:longitude>
+                                    <s:latitude>51.6063804626465</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>12.4043998550119</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/46851</id><title type="text">Finchley Memorial Hospital</title><updated>2013-02-06T13:51:00Z</updated><link rel="self" title="Finchley Memorial Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/46851?apikey=UUARBGPJ" /><link rel="alternate" title="Finchley Memorial Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=28451" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Finchley Memorial Hospital</s:name>
+                                  <s:odsCode>5A910</s:odsCode>
+                                  <s:address><s:addressLine>Granville Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>N12 0JE</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8349 7500</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.177565291523933</s:longitude>
+                                    <s:latitude>51.6063804626465</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>12.4043998550119</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40952</id><title type="text">Queen Mary Hospital (Roehampton)</title><updated>2013-02-06T13:51:00Z</updated><link rel="self" title="Queen Mary Hospital (Roehampton)" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40952?apikey=UUARBGPJ" /><link rel="alternate" title="Queen Mary Hospital (Roehampton)" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=29686" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Queen Mary Hospital (Roehampton)</s:name>
+                                  <s:odsCode>RJ731</s:odsCode>
+                                  <s:address><s:addressLine>Roehampton Lane</s:addressLine><s:postcode>SW15 5PN</s:postcode></s:address>
+                                  <s:contact type="General"></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.242598742246628</s:longitude>
+                                    <s:latitude>51.4554023742676</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>12.5745514942106</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40110</id><title type="text">Queen Mary's</title><updated>2013-02-06T13:51:00Z</updated><link rel="self" title="Queen Mary's" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/40110?apikey=UUARBGPJ" /><link rel="alternate" title="Queen Mary's" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=30660" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Queen Mary's</s:name>
+                                  <s:odsCode>RAX04</s:odsCode>
+                                  <s:address><s:addressLine>Roehampton Lane, London</s:addressLine><s:postcode>SW15 5PN</s:postcode></s:address>
+                                  <s:contact type="General"></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.242598742246628</s:longitude>
+                                    <s:latitude>51.4554023742676</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>12.5745514942106</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/1576</id><title type="text">Queen Mary's Hospital</title><updated>2013-02-06T13:51:00Z</updated><link rel="self" title="Queen Mary's Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/1576?apikey=UUARBGPJ" /><link rel="alternate" title="Queen Mary's Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=28760" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Queen Mary's Hospital</s:name>
+                                  <s:odsCode>5P52E</s:odsCode>
+                                  <s:address><s:addressLine>Roehampton Lane</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>SW15 5PN</s:postcode></s:address>
+                                  <s:contact type="General"></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.242598742246628</s:longitude>
+                                    <s:latitude>51.4554023742676</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>12.5745514942106</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41575</id><title type="text">Queen Mary's Hospital</title><updated>2013-02-06T13:51:00Z</updated><link rel="self" title="Queen Mary's Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41575?apikey=UUARBGPJ" /><link rel="alternate" title="Queen Mary's Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=2593" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Queen Mary's Hospital</s:name>
+                                  <s:odsCode>RQY07</s:odsCode>
+                                  <s:address><s:addressLine>Roehampton Lane</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>SW15 5PN</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8487 6000</s:telephone><s:email>web.editor@swlstg-tr.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.242598742246628</s:longitude>
+                                    <s:latitude>51.4554023742676</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>12.5745514942106</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/347</id><title type="text">Queen Marys Hospital (Roehampton)</title><updated>2013-02-06T13:51:00Z</updated><link rel="self" title="Queen Marys Hospital (Roehampton)" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/347?apikey=UUARBGPJ" /><link rel="alternate" title="Queen Marys Hospital (Roehampton)" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=28547" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Queen Marys Hospital (Roehampton)</s:name>
+                                  <s:odsCode>5LG01</s:odsCode>
+                                  <s:address><s:addressLine>Roehampton Lane</s:addressLine><s:addressLine>.</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SW15 5PN</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8487 6000</s:telephone><s:email>comms@wpct.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.242598742246628</s:longitude>
+                                    <s:latitude>51.4554023742676</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>12.5745514942106</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18459</id><title type="text">BMI The Sloane Hospital</title><updated>2013-02-06T13:51:00Z</updated><link rel="self" title="BMI The Sloane Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18459?apikey=UUARBGPJ" /><link rel="alternate" title="BMI The Sloane Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=750" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>BMI The Sloane Hospital</s:name>
+                                  <s:odsCode>NT437</s:odsCode>
+                                  <s:address><s:addressLine>Albemarle Road</s:addressLine><s:addressLine>Beckenham</s:addressLine><s:addressLine>Kent</s:addressLine><s:postcode>BR3 5HS</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8466 4002</s:telephone><s:email>sloane@bmihealthcare.co.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.00574616668745875</s:longitude>
+                                    <s:latitude>51.4075469970703</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>12.7647693736613</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry>
+                                <entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18781</id><title type="text">The Sloane Hospital</title><updated>2013-02-06T13:51:16Z</updated><link rel="self" title="The Sloane Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18781?apikey=UUARBGPJ" /><link rel="alternate" title="The Sloane Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=684" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>The Sloane Hospital</s:name>
+                                  <s:odsCode>NV131</s:odsCode>
+                                  <s:address><s:addressLine>125 Albemarle Road</s:addressLine><s:addressLine>Beckenham</s:addressLine><s:addressLine>Kent</s:addressLine><s:postcode>BR3 5HS</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>No telephone number available</s:telephone></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.00574616668745875</s:longitude>
+                                    <s:latitude>51.4075469970703</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>12.7647693736613</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18144</id><title type="text">The North London Clinic</title><updated>2013-02-06T13:51:16Z</updated><link rel="self" title="The North London Clinic" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18144?apikey=UUARBGPJ" /><link rel="alternate" title="The North London Clinic" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=30588" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>The North London Clinic</s:name>
+                                  <s:odsCode>NMV03</s:odsCode>
+                                  <s:address><s:addressLine>15 Church Street</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>N9 9DY</s:postcode></s:address>
+                                  <s:contact type="General"></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.0641184374690056</s:longitude>
+                                    <s:latitude>51.6252479553223</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>12.7880212917916</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18755</id><title type="text">Parkside Hospital</title><updated>2013-02-06T13:51:16Z</updated><link rel="self" title="Parkside Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18755?apikey=UUARBGPJ" /><link rel="alternate" title="Parkside Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=681" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Parkside Hospital</s:name>
+                                  <s:odsCode>NTY62</s:odsCode>
+                                  <s:address><s:addressLine>53 Parkside</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>SW19 5NX</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8971 8000</s:telephone><s:email>info@parkside-hospital.co.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.224664926528931</s:longitude>
+                                    <s:latitude>51.4353485107422</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>12.8492294674365</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18627</id><title type="text">Priory Hospital Roehampton</title><updated>2013-02-06T13:51:16Z</updated><link rel="self" title="Priory Hospital Roehampton" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18627?apikey=UUARBGPJ" /><link rel="alternate" title="Priory Hospital Roehampton" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=586" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Priory Hospital Roehampton</s:name>
+                                  <s:odsCode>NTN10</s:odsCode>
+                                  <s:address><s:addressLine>Priory Lane</s:addressLine><s:addressLine>Roehampton</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SW15 5JJ</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8876 8261</s:telephone><s:email>roehampton@priorygroup.com</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.252428263425827</s:longitude>
+                                    <s:latitude>51.461841583252</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>12.853567073619</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41573</id><title type="text">Barnes Hospital</title><updated>2013-02-06T13:51:16Z</updated><link rel="self" title="Barnes Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/41573?apikey=UUARBGPJ" /><link rel="alternate" title="Barnes Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=3042" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Barnes Hospital</s:name>
+                                  <s:odsCode>RQY05</s:odsCode>
+                                  <s:address><s:addressLine>South Worple Way</s:addressLine><s:addressLine>Barnes</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>SW14 8SU</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>0203 513 3600</s:telephone><s:email>web.editor@swlstg-tr.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.256573259830475</s:longitude>
+                                    <s:latitude>51.4664001464844</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>12.9088589489981</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18790</id><title type="text">The Huntercombe Hospital - Roehampton</title><updated>2013-02-06T13:51:16Z</updated><link rel="self" title="The Huntercombe Hospital - Roehampton" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18790?apikey=UUARBGPJ" /><link rel="alternate" title="The Huntercombe Hospital - Roehampton" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=723" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>The Huntercombe Hospital - Roehampton</s:name>
+                                  <s:odsCode>NV202</s:odsCode>
+                                  <s:address><s:addressLine>Holybourne Avenue</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>SW15 4JL</s:postcode></s:address>
+                                  <s:contact type="General"></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.241471037268639</s:longitude>
+                                    <s:latitude>51.4472923278809</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>12.9765983607533</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/42240</id><title type="text">Central Middlesex Hospital</title><updated>2013-02-06T13:51:16Z</updated><link rel="self" title="Central Middlesex Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/42240?apikey=UUARBGPJ" /><link rel="alternate" title="Central Middlesex Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1631" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Central Middlesex Hospital</s:name>
+                                  <s:odsCode>RV831</s:odsCode>
+                                  <s:address><s:addressLine>Acton Lane</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>NW10 7NS</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8965 5733</s:telephone><s:email>trust@nwlh.nhs.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.26995262503624</s:longitude>
+                                    <s:latitude>51.5313453674316</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>13.0344480772418</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/45349</id><title type="text">Central Middlesex Hospital</title><updated>2013-02-06T13:51:16Z</updated><link rel="self" title="Central Middlesex Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/45349?apikey=UUARBGPJ" /><link rel="alternate" title="Central Middlesex Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=28511" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Central Middlesex Hospital</s:name>
+                                  <s:odsCode>5K521</s:odsCode>
+                                  <s:address><s:addressLine>Acton Lane</s:addressLine><s:addressLine>London</s:addressLine><s:addressLine>Greater London</s:addressLine><s:postcode>NW10 7NS</s:postcode></s:address>
+                                  <s:contact type="General"></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.26995262503624</s:longitude>
+                                    <s:latitude>51.5313453674316</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>13.0344480772418</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18438</id><title type="text">BMI The Garden Hospital</title><updated>2013-02-06T13:51:16Z</updated><link rel="self" title="BMI The Garden Hospital" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18438?apikey=UUARBGPJ" /><link rel="alternate" title="BMI The Garden Hospital" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=695" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>BMI The Garden Hospital</s:name>
+                                  <s:odsCode>NT416</s:odsCode>
+                                  <s:address><s:addressLine>46-50 Sunny Gardens Road</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>NW4 1RP</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8457 4500</s:telephone><s:email>garden@bmihealthcare.co.uk</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.225719004869461</s:longitude>
+                                    <s:latitude>51.5936317443848</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>13.4060148600865</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry><entry><id>http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18632</id><title type="text">Priory Hospital North London</title><updated>2013-02-06T13:51:16Z</updated><link rel="self" title="Priory Hospital North London" href="http://v1.syndication.nhschoices.nhs.uk/organisations/hospitals/18632?apikey=UUARBGPJ" /><link rel="alternate" title="Priory Hospital North London" href="http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=212" /><content type="application/xml">
+                                <s:organisationSummary>
+                                  <s:name>Priory Hospital North London</s:name>
+                                  <s:odsCode>NTN15</s:odsCode>
+                                  <s:address><s:addressLine>Grovelands House</s:addressLine><s:addressLine>The Bourne</s:addressLine><s:addressLine>Southgate</s:addressLine><s:addressLine>London</s:addressLine><s:postcode>N14 6RA</s:postcode></s:address>
+                                  <s:contact type="General"><s:telephone>020 8882 8191</s:telephone><s:email>northlondon@priorygroup.com</s:email></s:contact>
+                                  <s:geographicCoordinates>
+                                    <s:longitude>-0.11875943094492</s:longitude>
+                                    <s:latitude>51.6315307617188</s:latitude>
+                                  </s:geographicCoordinates>
+                                  <s:Distance>13.6095117065635</s:Distance>
+                                </s:organisationSummary>
+                                </content></entry>
+
+</feed>

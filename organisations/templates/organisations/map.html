@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
 
 {% block title %}Outcomes Map{% endblock %}
 
@@ -10,20 +11,44 @@
 <!--[if lte IE 8]>
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.ie.css" />
 <![endif]-->
+<link rel="stylesheet" href="{% static 'css/MarkerCluster.css' %}">
+<link rel="stylesheet" href="{% static 'css/MarkerCluster.Default.css' %}">
+<!--[if lte IE 8]><link rel="stylesheet" href="https://raw.github.com/Leaflet/Leaflet.markercluster/master/dist/MarkerCluster.Default.ie.css" /><![endif]-->
 {% endblock %}
 {% block extra_js %}
 {{ block.super }}
 <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+<script src="{% static 'js/leaflet.markercluster.js' %}"></script>
+<script src="{% static 'js/hospitals.js' %}"></script>
+<script src="{% static 'js/gppractices.js' %}"></script>
 <script>
 
-    $(document).ready(
-        function(){
-            var map = L.map('public-map').setView([51.505, -0.09], 13);
+    $(document).ready(function(){
+            var providers = [],
+                map = new L.map('public-map').setView([51.505, -0.09], 13),
+                markers = new L.MarkerClusterGroup({
+                    disableClusteringAtZoom:14
+                });
+
+            // Tiles
             L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
                    maxZoom: 18
                }).addTo(map);
-           });
+
+            // Markers
+            providers = providers.concat(window.hospitals, window.gppractices);
+            $.each(providers, function(index, provider) {
+                var latLng = new L.LatLng(provider.coordinates.lat, provider.coordinates.lon);
+                var marker = new L.Marker(latLng, {
+                    title: provider.name
+                });
+                var type = provider.organisation_type === 'gppractices' ? 'GP' : 'Hospital';
+                marker.bindPopup("<strong>" + provider.name + "</strong><br/>Type: " + type);
+                markers.addLayer(marker);
+            });
+            map.addLayer(markers);
+    });
 </script>
 {% endblock %}
 {% block content %}
