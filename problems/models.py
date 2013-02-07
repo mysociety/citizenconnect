@@ -27,3 +27,18 @@ class Problem(AuditedModel):
     reporter_email = models.CharField(max_length=254, blank=True)
     public = models.BooleanField()
     public_reporter_name = models.BooleanField()
+
+    @property
+    def summary(self):
+        # TODO - make this a setting?
+        summary_length = 30
+        if len(self.description) > summary_length:
+            return self.description[:summary_length] + '...'
+        else:
+            return self.description
+
+    @property
+    def issue_type(self):
+        """Return the class name, eg: Problem, so that it can be printed"""
+        # TODO - this could be a custom template filter instead of a model property
+        return self.__class__.__name__
