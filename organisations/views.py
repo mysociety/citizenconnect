@@ -61,7 +61,7 @@ class PickProvider(FormView):
 class ProviderResults(OrganisationList):
     template_name = 'organisations/provider-results.html'
 
-class OrganisationSummary(TemplateView, OrganisationAwareViewMixin):
+class OrganisationSummary(OrganisationAwareViewMixin, TemplateView):
     template_name = 'organisations/organisation-summary.html'
 
 class Summary(TemplateView):

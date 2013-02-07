@@ -17,7 +17,7 @@ class PickProvider(FormView):
 class ProviderResults(OrganisationList):
     template_name = 'questions/provider-results.html'
 
-class QuestionForm(TemplateView, OrganisationAwareViewMixin):
+class QuestionForm(OrganisationAwareViewMixin, TemplateView):
     template_name = 'questions/question-form.html'
 
 class QuestionConfirm(TemplateView):
