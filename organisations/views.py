@@ -67,7 +67,7 @@ class OrganisationSummary(TemplateView, OrganisationAwareViewMixin):
 class Summary(TemplateView):
     template_name = 'organisations/summary.html'
 
-class OrganisationDashboard(TemplateView, OrganisationAwareViewMixin):
+class OrganisationDashboard(OrganisationAwareViewMixin, TemplateView):
     template_name = 'organisations/dashboard.html'
 
     def get_context_data(self, **kwargs):
