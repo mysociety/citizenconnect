@@ -18,7 +18,7 @@ class PickProvider(FormView):
 class ProviderResults(OrganisationList):
     template_name = 'problems/provider-results.html'
 
-class ProblemCreate(CreateView, OrganisationAwareViewMixin):
+class ProblemCreate(OrganisationAwareViewMixin, CreateView):
     model = Problem
     form_class = ProblemForm
 
