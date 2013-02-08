@@ -1,5 +1,5 @@
 # Django imports
-from django.views.generic import FormView, TemplateView, CreateView
+from django.views.generic import FormView, TemplateView, CreateView, DetailView
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 
@@ -38,5 +38,5 @@ class ProblemCreate(CreateView):
 class ProblemConfirm(TemplateView):
     template_name = 'problems/problem-confirm.html'
 
-class ProblemPublicView(TemplateView):
-    template_name = 'problems/public.html'
+class ProblemDetail(DetailView):
+    model = Problem
