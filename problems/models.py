@@ -1,12 +1,7 @@
 from django.db import models
 from django.conf import settings
 
-class AuditedModel(models.Model):
-    created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        abstract = True
+from citizenconnect.models import AuditedModel
 
 class Problem(AuditedModel):
     ORGANISATION_CHOICES = (
