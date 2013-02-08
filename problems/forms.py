@@ -37,7 +37,6 @@ class ProblemForm(forms.ModelForm):
 
         return cleaned_data
 
-
     class Meta:
         model = Problem
         widgets = {
