@@ -3,6 +3,7 @@ import uuid
 from django.test import TestCase
 
 from .models import Problem
+from .forms import ProblemForm
 
 class ProblemTests(TestCase):
 
@@ -18,7 +19,7 @@ class ProblemTests(TestCase):
             'reporter_name': self.uuid,
             'reporter_email': 'steve@mysociety.org',
             'reporter_phone': '01111 111 111',
-            'privacy': '0',
+            'privacy': ProblemForm.PRIVACY_PRIVATE,
             'preferred_contact_method': 'phone'
         }
 
@@ -42,7 +43,7 @@ class ProblemTests(TestCase):
         self.assertEqual(problem.preferred_contact_method, 'phone')
 
     def test_problem_form_respects_name_privacy(self):
-        self.test_problem['privacy'] = '1'
+        self.test_problem['privacy'] = ProblemForm.PRIVACY_PRIVATE_NAME
         resp = self.client.post('/choices/problem/problem-form/gppractices/12702', self.test_problem)
         # Check in db
         problem = Problem.objects.get(reporter_name=self.uuid)
@@ -50,7 +51,7 @@ class ProblemTests(TestCase):
         self.assertEqual(problem.public_reporter_name, False)
 
     def test_problem_form_respects_public_privacy(self):
-        self.test_problem['privacy'] = '2'
+        self.test_problem['privacy'] = ProblemForm.PRIVACY_PUBLIC
         resp = self.client.post('/choices/problem/problem-form/gppractices/12702', self.test_problem)
         # Check in db
         problem = Problem.objects.get(reporter_name=self.uuid)
