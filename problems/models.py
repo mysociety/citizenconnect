@@ -39,6 +39,8 @@ class Problem(AuditedModel):
 
     @property
     def issue_type(self):
-        """Return the class name, eg: Problem, so that it can be printed"""
+        """
+        Return the class name, eg: Problem, so that it can be printed
+        """
         # TODO - this could be a custom template filter instead of a model property
         return self.__class__.__name__
