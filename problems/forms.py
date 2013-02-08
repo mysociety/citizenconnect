@@ -31,6 +31,10 @@ class ProblemForm(forms.ModelForm):
             cleaned_data['public'] = True
             cleaned_data['public_reporter_name'] = True
 
+        # Check that one of phone or email is provided
+        if not cleaned_data['reporter_phone'] and not cleaned_data['reporter_email']:
+            raise forms.ValidationError('You must provide either a phone number or an email address')
+
         return cleaned_data
 
 
