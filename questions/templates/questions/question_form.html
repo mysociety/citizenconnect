@@ -12,8 +12,28 @@
     <p>Writing a message to <strong>{{ organisation_name }}</strong>
 </div>
 <div class="question-form">
-    <form action="{% url question-confirm cobrand=cobrand.name %}">
-        <div>
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="alert alert-error alert-block">
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+
+        {% for field in form.visible_fields %}
+            <div>
+                {{ field.label_tag }}
+                {{ field }}
+                {{ field.errors }}
+                {{ field.help_text }}
+            </div>
+        {% endfor %}
+        <!--<div>
             <textarea class="message-input" type="text" name="message" placeholder="Please write your question in this box, including as much information as possible to help us to help you"></textarea>
         </div>
         <div>
@@ -37,7 +57,7 @@
             <label>Keep all details private <input type="radio"></label>
             <label>Publish question and response but not my name <input type="radio"></label>
             <label>Publish question and response with my name <input type="radio"></label>
-        <div>
+        <div>-->
         <button type="submit">Submit</button>
     </form>
 </div>
