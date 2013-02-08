@@ -1,5 +1,5 @@
 # Django imports
-from django.views.generic import FormView, TemplateView, CreateView
+from django.views.generic import FormView, TemplateView, CreateView, DetailView
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 
@@ -41,5 +41,5 @@ class QuestionCreate(OrganisationAwareViewMixin, CreateView):
 class QuestionConfirm(TemplateView):
     template_name = 'questions/question-confirm.html'
 
-class QuestionPublicView(TemplateView):
-    template_name = 'questions/public.html'
+class QuestionDetail(DetailView):
+    model = Question

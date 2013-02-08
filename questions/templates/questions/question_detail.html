@@ -12,51 +12,63 @@
 <div class="meta-data">
 
     <div class="feature">
-        <p>Reference 5344</p>
+        <p>Reference: {{ object.id }}</p>
     </div>
 
     <div class="feature">
-        <p>Asked on: Jan 21 2013</p>
+        <p>Asked on: {{ object.created }}</p>
     </div>
 
-</div>
-
-<div class="provider">
-    <div class="feature">
-        <p>Provider:  A Hospital</p>
-    </div>
 </div>
 
 <div class="meta-data">
+    <div class="feature provider">
+        <p>Provider:  {{ object.get_organisation_type_display }} #{{ object.choices_id }}</p>
+    </div>
+
+    <div class="feature service">
+        <p>Service:  TODO</p>
+    </div>
+</div>
+
+
+<div class="meta-data">
     <div class="feature category">
-        <p>Category: Appointments</p>
+        <p>Category:  {{ object.get_category_display }}</p>
     </div>
 
     <div class="feature reporter">
-        <p>Asked by: Example User</p>
+        <p>Asked by:
+        {% if object.public_reporter_name %}
+            {{ object.reporter_name }}
+        {% else %}
+            Anonymous
+        {% endif %}
     </div>
 </div>
 
 <div class="details">
     <div class="feature">
-        <p>Question: How do I make a foot appointment?</p>
+        <h3>Details</h3>
+        <p>{{ object.description }}</p>
     </div>
 </div>
 
 <div class="response">
     <div class="feature">
-        <p>Answer</p>
+        <h3>Response</h3>
+        <p>TODO</p>
     </div>
 </div>
 
 <div class="status">
 
     <div class="feature provider-status">
-        <p>Status: Answered</p>
+        <p>Status: TODO</p>
     </div>
 
     <div class="feature user-status">
-        <p>User satisfied: Yes </p>
+        <p>User satisfied: TODO</p>
     </div>
 
 </div>
