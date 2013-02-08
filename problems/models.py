@@ -18,6 +18,10 @@ class Problem(AuditedModel):
         (u'staff', u'Staff'),
         (u'appointments', u'Appointments'),
     )
+    CONTACT_CHOICES = (
+        (u'email', u'By Email'),
+        (u'phone', u'By Phone')
+    )
     organisation_type = models.CharField(max_length=100, choices=ORGANISATION_CHOICES)
     choices_id = models.IntegerField(db_index=True)
     description = models.TextField()
@@ -27,6 +31,7 @@ class Problem(AuditedModel):
     reporter_email = models.CharField(max_length=254, blank=True)
     public = models.BooleanField()
     public_reporter_name = models.BooleanField()
+    preferred_contact_method = models.CharField(max_length=100, choices=CONTACT_CHOICES, default='email')
 
     @property
     def summary(self):

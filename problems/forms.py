@@ -47,5 +47,7 @@ class ProblemForm(forms.ModelForm):
             # Hide the privacy booleans because they're not very user-friendly
             # so we set them from the radio options in privacy instead
             'public': HiddenInput,
-            'public_reporter_name': HiddenInput
+            'public_reporter_name': HiddenInput,
+            # Make preferred contact method a radio button instead of a select
+            'preferred_contact_method': RadioSelect
         }

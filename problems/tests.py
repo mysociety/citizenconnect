@@ -18,7 +18,8 @@ class ProblemTests(TestCase):
             'reporter_name': self.uuid,
             'reporter_email': 'steve@mysociety.org',
             'reporter_phone': '01111 111 111',
-            'privacy': '0'
+            'privacy': '0',
+            'preferred_contact_method': 'phone'
         }
 
     def test_problem_form_exists(self):
@@ -38,6 +39,7 @@ class ProblemTests(TestCase):
         self.assertEqual(problem.description, 'This is a problem')
         self.assertEqual(problem.reporter_name, self.uuid)
         self.assertEqual(problem.reporter_email, 'steve@mysociety.org')
+        self.assertEqual(problem.preferred_contact_method, 'phone')
 
     def test_problem_form_respects_name_privacy(self):
         self.test_problem['privacy'] = '1'
