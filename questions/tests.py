@@ -15,7 +15,7 @@ class QuestionTests(TestCase):
         self.test_question = {
             'organisation_type': 'gppractices',
             'choices_id': 12702,
-            'question': 'This is a question',
+            'description': 'This is a question',
             'category': 'prescriptions',
             'reporter_name': self.uuid,
             'reporter_email': 'steve@mysociety.org',
@@ -38,7 +38,7 @@ class QuestionTests(TestCase):
         self.assertEqual(question.choices_id, 12702)
         self.assertEqual(question.public, False)
         self.assertEqual(question.public_reporter_name, False)
-        self.assertEqual(question.question, 'This is a question')
+        self.assertEqual(question.description, 'This is a question')
         self.assertEqual(question.reporter_name, self.uuid)
         self.assertEqual(question.reporter_email, 'steve@mysociety.org')
         self.assertEqual(question.preferred_contact_method, 'phone')
