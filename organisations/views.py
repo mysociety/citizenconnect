@@ -1,5 +1,7 @@
 # Standard imports
 from ukpostcodeutils import validation
+from itertools import chain
+from operator import attrgetter
 import re
 
 # Django imports
@@ -8,6 +10,8 @@ from django.views.generic import FormView, TemplateView
 # App imports
 from citizenconnect.shortcuts import render
 from problems.models import Problem
+from questions.models import Question
+
 from .forms import OrganisationFinderForm
 from .choices_api import ChoicesAPI
 
@@ -71,10 +75,19 @@ class OrganisationDashboard(OrganisationAwareViewMixin, TemplateView):
     template_name = 'organisations/dashboard.html'
 
     def get_context_data(self, **kwargs):
-        # Get all the problems
-        # TODO - One day get all the problems, questions and perhaps reviews
+        # Get all the problems and questions
         context = super(OrganisationDashboard, self).get_context_data(**kwargs)
-        context['issues'] = Problem.objects.all().filter(organisation_type=kwargs['organisation_type'], choices_id=kwargs['choices_id'])
+        # Get the models related to this organisation, and let the db sort them
+        problems = Problem.objects.all().filter(organisation_type=kwargs['organisation_type'], choices_id=kwargs['choices_id']).order_by('-created')
+        questions = Question.objects.all().filter(organisation_type=kwargs['organisation_type'], choices_id=kwargs['choices_id']).order_by('-created')
+        print questions
+        # Put them into one list, taken from http://stackoverflow.com/questions/431628/how-to-combine-2-or-more-querysets-in-a-django-view
+        issues = sorted(
+            chain(problems, questions),
+            key=attrgetter('created'),
+            reverse=True
+        )
+        context['issues'] = issues
         return context
 
 class ResponseForm(TemplateView):
