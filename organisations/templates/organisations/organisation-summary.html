@@ -163,24 +163,17 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>5344</td>
-                    <td>Jan 21 2013</td>
-                    <td>Acknowledged</td>
-                    <td>Cleanliness</td>
-                    <td>Foot Clinic</td>
-                    <td>Yes</td>
-                    <td><a href="{% url 'problem-view' cobrand=cobrand.name pk=1 %}">Some details...</a></td>
-                </tr>
-                <tr>
-                    <td>5344</td>
-                    <td>Jan 21 2013</td>
-                    <td>Acknowledged</td>
-                    <td>Cleanliness</td>
-                    <td>Foot Clinic</td>
-                    <td>Yes</td>
-                    <td><a href="{% url 'problem-view' cobrand=cobrand.name pk=1 %}">Some details...</a></td>
-                </tr>
+                {% for problem in problems %}
+                    <tr>
+                        <td>{{ problem.id }}</td>
+                        <td>{{ problem.created }}</td>
+                        <td>TODO</td>
+                        <td>{{ problem.get_category_display }}</td>
+                        <td>TODO</td>
+                        <td>TODO</td>
+                        <td><a href="{% url 'problem-view' cobrand=cobrand.name pk=problem.id %}">{{ problem.summary }}</a></td>
+                    </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
@@ -203,24 +196,18 @@
                 </tr>
             </thead>
             <tbody>
+                {% for question in questions %}
                 <tr>
-                    <td>5344</td>
-                    <td>Jan 21 2013</td>
-                    <td>Acknowledged</td>
-                    <td>Appointments</td>
-                    <td></td>
-                    <td>Yes</td>
-                    <td><a href="{% url 'question-view' cobrand=cobrand.name pk=1 %}">How do I...</a></td>
+                    <td>{{ question.id }}</td>
+                    <td>{{ question.created }}</td>
+                    <td>TODO</td>
+                    <td>{{ question.get_category_display }}</td>
+                    <td>TODO</td>
+                    <td>TODO</td>
+                    <td><a href="{% url 'question-view' cobrand=cobrand.name pk=question.id %}">{{ question.summary }}</a></td>
                 </tr>
-                <tr>
-                    <td>5344</td>
-                    <td>Jan 21 2013</td>
-                    <td>Acknowledged</td>
-                    <td>Appointments</td>
-                    <td></td>
-                    <td>Yes</td>
-                    <td><a href="{% url 'question-view' cobrand=cobrand.name pk=1 %}">How do I...</a></td>
-                </tr>
+                {% endfor %}
+
             </tbody>
         </table>
     </div>
