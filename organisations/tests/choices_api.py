@@ -56,12 +56,19 @@ class ChoicesAPIOrganisationsExampleFileTests(TestCase):
         self.assertEqual(results[0]['name'], 'The Gordon Hospital')
         self.assertEqual(results[-1]['name'], 'Western Eye Hospital')
 
-    def test_parses_organisation_ids(self):
+    def test_parses_choices_ids(self):
         results = self.parse_example_file('hospitals')
         first_expected_id = '42192'
         last_expected_id = '43804'
         self.assertEqual(results[0]['choices_id'], first_expected_id)
         self.assertEqual(results[-1]['choices_id'], last_expected_id)
+
+    def test_parses_ods_codes(self):
+        results = self.parse_example_file('hospitals')
+        first_expected_id = 'RV346'
+        last_expected_id = 'RYJ07'
+        self.assertEqual(results[0]['ods_code'], first_expected_id)
+        self.assertEqual(results[-1]['ods_code'], last_expected_id)
 
     def test_parses_organisation_types(self):
         results = self.parse_example_file('hospitals')

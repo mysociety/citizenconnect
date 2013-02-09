@@ -70,6 +70,7 @@ class ChoicesAPI():
             content = entry_element.find('%scontent' % atom_namespace)
             summary = content.find('%sorganisationSummary' % services_namespace)
             organisation['name'] = summary.find('%sname' % services_namespace).text
+            organisation['ods_code'] = summary.find('%sodsCode' % services_namespace).text
             organisation['organisation_type'] = organisation_type
             coordinates = summary.find('%sgeographicCoordinates' % services_namespace)
             lon = float(coordinates.find('%slongitude' % services_namespace).text)
