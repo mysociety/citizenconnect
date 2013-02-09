@@ -3,7 +3,6 @@ from ukpostcodeutils import validation
 from itertools import chain
 from operator import attrgetter
 import re
-from datetime import datetime, timedelta
 
 # Django imports
 from django.views.generic import FormView, TemplateView
@@ -15,6 +14,7 @@ from questions.models import Question
 
 from .forms import OrganisationFinderForm
 from .choices_api import ChoicesAPI
+from .lib import interval_counts
 
 class OrganisationFinderDemo(FormView):
     template_name = 'organisations/finder_demo.html'
@@ -97,18 +97,19 @@ class OrganisationSummary(OrganisationAwareViewMixin,
 
     def get_context_data(self, **kwargs):
         context = super(OrganisationSummary, self).get_context_data(**kwargs)
-        context['problem_categories'] = Problem.CATEGORY_CHOICES
-        context['question_categories'] = Question.CATEGORY_CHOICES
-        stats = {'problem': {}, 'question': {}}
-        now = datetime.now()
-        intervals = {'week': 7,
-                     'four_weeks': 28,
-                     'six_months': 365/12*6}
-        for interval_name, days_ago in intervals.items():
-            lower_bound = now - timedelta(days_ago)
-            stats['question'][interval_name] = context['questions'].filter(created__gte=lower_bound).count
-            stats['problem'][interval_name] = context['problems'].filter(created__gte=lower_bound).count
-        context['stats'] = stats
+        issue_types = {'problems': Problem,
+                       'questions': Question}
+
+        for issue_type, model_class in issue_types.items():
+            context['%s_categories' % issue_type] = model_class.CATEGORY_CHOICES
+            # Use the filters we already have from OrganisationIssuesAwareViewMixin
+            context['%s_total' % issue_type] = interval_counts(context[issue_type])
+            status_list = []
+            for status, description in model_class.STATUS_CHOICES:
+                status_counts = interval_counts(context[issue_type].filter(status=status))
+                status_counts['description'] = description
+                status_list.append(status_counts)
+            context['%s_by_status' % issue_type] = status_list
         return context
 
 class Summary(TemplateView):
