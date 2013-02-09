@@ -4,10 +4,13 @@ from django.test import TestCase
 
 from .models import Question
 from .forms import QuestionForm
+from organisations.tests import MockedChoicesAPITest
 
-class QuestionTests(TestCase):
+class QuestionTests(MockedChoicesAPITest):
 
     def setUp(self):
+
+        super(QuestionTests, self).setUp()
         # Create a unique name, to use in queries rather than relying
         # on primary key increments
         self.uuid = uuid.uuid4().hex
@@ -24,10 +27,15 @@ class QuestionTests(TestCase):
             'preferred_contact_method': 'phone'
         }
 
+
     def test_question_form_exists(self):
         resp = self.client.get(self.form_url)
         self.assertEqual(resp.status_code, 200)
         self.assertTrue('Ask your question' in resp.content)
+
+    def test_question_form_shows_provider_name(self):
+        resp = self.client.get(self.form_url)
+        self.assertTrue('Test Organisation Name' in resp.content)
 
     def test_question_form_happy_path(self):
         resp = self.client.post(self.form_url, self.test_question)

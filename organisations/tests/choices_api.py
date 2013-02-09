@@ -1,6 +1,6 @@
 # Standard imports
 import os.path
-from mock import MagicMock
+from mock import MagicMock, patch
 import urllib
 
 # Django imports
@@ -10,6 +10,16 @@ from django.test import TestCase
 import organisations
 from organisations.choices_api import ChoicesAPI
 
+# A test case which will mock out the ChoicesAPI
+class MockedChoicesAPITest(TestCase):
+
+    def setUp(self):
+        choices_api_patcher = patch('organisations.choices_api.ChoicesAPI')
+        mock_api = choices_api_patcher.start()
+        api_instance = mock_api.return_value
+        # Mock the 'get_organisation_name' method of any API instances
+        api_instance.get_organisation_name.return_value = 'Test Organisation Name'
+        self.addCleanup(choices_api_patcher.stop)
 
 class ChoicesAPIOrganisationsExampleFileTests(TestCase):
 
