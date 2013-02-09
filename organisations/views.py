@@ -94,6 +94,12 @@ class OrganisationSummary(OrganisationAwareViewMixin,
                           TemplateView):
     template_name = 'organisations/organisation-summary.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(OrganisationSummary, self).get_context_data(**kwargs)
+        context['problem_categories'] = Problem.CATEGORY_CHOICES
+        context['question_categories'] = Question.CATEGORY_CHOICES
+        return context
+
 class Summary(TemplateView):
     template_name = 'organisations/summary.html'
 
