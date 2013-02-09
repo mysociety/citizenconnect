@@ -55,6 +55,30 @@ class OrganisationAwareViewMixin(object):
         context['organisation_type'] = organisation_type
         return context
 
+class OrganisationIssuesAwareViewMixin(object):
+    """Mixin class for views which need to have reference to a particular organisation
+    and the issues that belong to it, such as provider dashboards, and public provider
+    pages"""
+
+    def get_context_data(self, **kwargs):
+        # Get all the problems and questions
+        context = super(OrganisationIssuesAwareViewMixin, self).get_context_data(**kwargs)
+        # Get the models related to this organisation, and let the db sort them
+        problems = Problem.objects.all().filter(organisation_type=kwargs['organisation_type'],
+                                                choices_id=kwargs['choices_id']).order_by('-created')
+        questions = Question.objects.all().filter(organisation_type=kwargs['organisation_type'],
+                                                  choices_id=kwargs['choices_id']).order_by('-created')
+        context['problems'] = problems
+        context['questions'] = questions
+        # Put them into one list, taken from http://stackoverflow.com/questions/431628/how-to-combine-2-or-more-querysets-in-a-django-view
+        issues = sorted(
+            chain(problems, questions),
+            key=attrgetter('created'),
+            reverse=True
+        )
+        context['issues'] = issues
+        return context
+
 class Map(TemplateView):
     template_name = 'organisations/map.html'
 
@@ -65,30 +89,18 @@ class PickProvider(FormView):
 class ProviderResults(OrganisationList):
     template_name = 'organisations/provider-results.html'
 
-class OrganisationSummary(OrganisationAwareViewMixin, TemplateView):
+class OrganisationSummary(OrganisationAwareViewMixin,
+                          OrganisationIssuesAwareViewMixin,
+                          TemplateView):
     template_name = 'organisations/organisation-summary.html'
 
 class Summary(TemplateView):
     template_name = 'organisations/summary.html'
 
-class OrganisationDashboard(OrganisationAwareViewMixin, TemplateView):
+class OrganisationDashboard(OrganisationAwareViewMixin,
+                            OrganisationIssuesAwareViewMixin,
+                            TemplateView):
     template_name = 'organisations/dashboard.html'
-
-    def get_context_data(self, **kwargs):
-        # Get all the problems and questions
-        context = super(OrganisationDashboard, self).get_context_data(**kwargs)
-        # Get the models related to this organisation, and let the db sort them
-        problems = Problem.objects.all().filter(organisation_type=kwargs['organisation_type'], choices_id=kwargs['choices_id']).order_by('-created')
-        questions = Question.objects.all().filter(organisation_type=kwargs['organisation_type'], choices_id=kwargs['choices_id']).order_by('-created')
-        print questions
-        # Put them into one list, taken from http://stackoverflow.com/questions/431628/how-to-combine-2-or-more-querysets-in-a-django-view
-        issues = sorted(
-            chain(problems, questions),
-            key=attrgetter('created'),
-            reverse=True
-        )
-        context['issues'] = issues
-        return context
 
 class ResponseForm(TemplateView):
     template_name = 'organisations/response-form.html'
