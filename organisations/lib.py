@@ -1,10 +1,11 @@
 from datetime import datetime, timedelta
+from django.utils.timezone import utc
 
 # Return counts for a model queryset for the last week, four week and six months
 # based on created date
 def interval_counts(queryset):
     counts = {}
-    now = datetime.now()
+    now = datetime.utcnow().replace(tzinfo=utc)
     intervals = {'week': 7,
                  'four_weeks': 28,
                  'six_months': 365/12*6}
