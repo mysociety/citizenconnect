@@ -42,7 +42,7 @@
                         <td>{{ issue.created }}</td>
                         <td>{{ issue.reporter_name }}</td>
                         <td><a href="{% url 'org-response-form' cobrand=cobrand.name %}">{{ issue.summary }}</a></td>
-                        <td>TODO</td>
+                        <td>{{ issue.get_status_display }}</td>
                         <td>TODO</td>
                     </tr>
                 {% endfor %}
