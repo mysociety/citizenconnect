@@ -3,6 +3,7 @@ from ukpostcodeutils import validation
 from itertools import chain
 from operator import attrgetter
 import re
+from datetime import datetime, timedelta
 
 # Django imports
 from django.views.generic import FormView, TemplateView
@@ -98,6 +99,16 @@ class OrganisationSummary(OrganisationAwareViewMixin,
         context = super(OrganisationSummary, self).get_context_data(**kwargs)
         context['problem_categories'] = Problem.CATEGORY_CHOICES
         context['question_categories'] = Question.CATEGORY_CHOICES
+        stats = {'problem': {}, 'question': {}}
+        now = datetime.now()
+        intervals = {'week': 7,
+                     'four_weeks': 28,
+                     'six_months': 365/12*6}
+        for interval_name, days_ago in intervals.items():
+            lower_bound = now - timedelta(days_ago)
+            stats['question'][interval_name] = context['questions'].filter(created__gte=lower_bound).count
+            stats['problem'][interval_name] = context['problems'].filter(created__gte=lower_bound).count
+        context['stats'] = stats
         return context
 
 class Summary(TemplateView):

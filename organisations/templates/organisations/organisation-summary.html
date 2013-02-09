@@ -59,9 +59,9 @@
             <tbody>
                 <tr>
                     <td class="heading separator">Total Problems Reported<br/><em>of which:</em></td>
-                    <td></td>
-                    <td></td>
-                    <td class="separator"></td>
+                    <td>{{ stats.problem.week }}</td>
+                    <td>{{ stats.problem.four_weeks }}</td>
+                    <td class="separator">{{ stats.problem.six_months }}</td>
                     <td></td>
                     <td class="separator"></td>
                     <td></td>
@@ -109,9 +109,9 @@
                 </tr>
                 <tr class="separator">
                     <td class="heading separator">Total Questions Sent<br/><em>of which:</em></td>
-                    <td></td>
-                    <td></td>
-                    <td class="separator"></td>
+                    <td>{{ stats.question.week }}</td>
+                    <td>{{ stats.question.four_weeks }}</td>
+                    <td class="separator">{{ stats.question.six_months }}</td>
                     <td></td>
                     <td class="separator"></td>
                     <td></td>
