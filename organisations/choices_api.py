@@ -9,6 +9,11 @@ from django.conf import settings
 
 class ChoicesAPI():
 
+    def __init__(self):
+        self.atom_namespace = '{http://www.w3.org/2005/Atom}'
+        self.services_namespace = '{http://syndication.nhschoices.nhs.uk/services}'
+        self.syndication_namespace = '{http://schemas.datacontract.org/2004/07/NHSChoices.Syndication.Resources}'
+
     def search_types(self):
         return ['postcode', 'name']
 
@@ -51,28 +56,34 @@ class ChoicesAPI():
         data = self._query_api(path_elements, {})
         return self.parse_organisation(data)
 
-
-        organisation = self.parse_organisation(urllib.urlopen(url))
-        return organisation
+    def get_organisation_services(self, organisation_type, choices_id):
+        path_elements = ['organisations',
+                         organisation_type,
+                         choices_id,
+                         'services.xml']
+        data = self._query_api(path_elements, {})
+        return self.parse_services(data)
 
     def parse_organisations(self, document, organisation_type):
         tree = ET.parse(document)
         organisations = []
-        atom_namespace = '{http://www.w3.org/2005/Atom}'
-        services_namespace = '{http://syndication.nhschoices.nhs.uk/services}'
 
-        for entry_element in tree.getiterator('%sentry' % atom_namespace):
+        for entry_element in tree.getiterator('%sentry' % self.atom_namespace):
             organisation = {}
-            identifier = entry_element.find('%sid' % atom_namespace).text
+            identifier = entry_element.find('%sid' % self.atom_namespace).text
             organisation['choices_id'] = identifier.split('/')[-1]
-            content = entry_element.find('%scontent' % atom_namespace)
-            summary = content.find('%sorganisationSummary' % services_namespace)
-            organisation['name'] = summary.find('%sname' % services_namespace).text
-            organisation['ods_code'] = summary.find('%sodsCode' % services_namespace).text
+            content = entry_element.find('%scontent' % self.atom_namespace)
+            summary = content.find('%sorganisationSummary' % self.services_namespace)
+            organisation['name'] = summary.find('%sname' % self.services_namespace).text
+            ods_element = summary.find('%sodsCode' % self.services_namespace)
+            if ods_element != None:
+                organisation['ods_code'] = ods_element.text
+            else:
+                organisation['ods_code'] = None
             organisation['organisation_type'] = organisation_type
-            coordinates = summary.find('%sgeographicCoordinates' % services_namespace)
-            lon = float(coordinates.find('%slongitude' % services_namespace).text)
-            lat = float(coordinates.find('%slatitude' % services_namespace).text)
+            coordinates = summary.find('%sgeographicCoordinates' % self.services_namespace)
+            lon = float(coordinates.find('%slongitude' % self.services_namespace).text)
+            lat = float(coordinates.find('%slatitude' % self.services_namespace).text)
             organisation['coordinates'] = {'lon':lon, 'lat':lat}
             organisations.append(organisation)
         return organisations
@@ -80,6 +91,6 @@ class ChoicesAPI():
     def parse_organisation(self, document):
         tree = ET.parse(document)
         organisation = tree.getroot()
-        link = organisation.find('{http://schemas.datacontract.org/2004/07/NHSChoices.Syndication.Resources}Link')
-        text = link.find('{http://schemas.datacontract.org/2004/07/NHSChoices.Syndication.Resources}Text')
+        link = organisation.find('%sLink' % self.syndication_namespace)
+        text = link.find('%sText' % self.syndication_namespace)
         return text.text
