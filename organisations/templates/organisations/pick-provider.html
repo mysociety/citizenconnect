@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load url from future %}
+
 
 {% block title %}Pick Provider{% endblock %}
 
@@ -9,7 +11,7 @@
     <h1>Pick a Provider</h1>
 </div>
 <div class="hero">
-    <form action="{% url org-provider-results cobrand=cobrand.name %}" method="get">
+    <form action="{% url 'org-provider-results' cobrand=cobrand.name %}" method="get">
     {{ form.as_p }}
     <input type="submit" value="Submit" />
     </form>

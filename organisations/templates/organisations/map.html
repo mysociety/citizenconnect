@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load url from future %}
+
 {% load staticfiles %}
 
 {% block title %}Outcomes Map{% endblock %}
@@ -57,10 +59,10 @@
 </div>
 <div class="hero">
     <div class="feature">
-        <p><a href="{% url org-pick-provider cobrand=cobrand.name %}">Look up the outcomes of an NHS care provider</a></p>
+        <p><a href="{% url 'org-pick-provider' cobrand=cobrand.name %}">Look up the outcomes of an NHS care provider</a></p>
     </div>
     <div class="feature">
-        <p><a href="{% url org-all-summary cobrand=cobrand.name %}">Look at the outcomes summary tables</a></p>
+        <p><a href="{% url 'org-all-summary' cobrand=cobrand.name %}">Look at the outcomes summary tables</a></p>
     </div>
 </div>
 <div class="map-options">

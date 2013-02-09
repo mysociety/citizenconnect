@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load url from future %}
 {% block title %}{{ organisation_name }} :: Outcomes Summary{% endblock %}
 
 {% block bodyclasses %}organisation-summary{% endblock %}
@@ -170,7 +170,7 @@
                     <td>Cleanliness</td>
                     <td>Foot Clinic</td>
                     <td>Yes</td>
-                    <td><a href="{% url problem-view cobrand=cobrand.name pk=1 %}">Some details...</a></td>
+                    <td><a href="{% url 'problem-view' cobrand=cobrand.name pk=1 %}">Some details...</a></td>
                 </tr>
                 <tr>
                     <td>5344</td>
@@ -179,7 +179,7 @@
                     <td>Cleanliness</td>
                     <td>Foot Clinic</td>
                     <td>Yes</td>
-                    <td><a href="{% url problem-view cobrand=cobrand.name pk=1 %}">Some details...</a></td>
+                    <td><a href="{% url 'problem-view' cobrand=cobrand.name pk=1 %}">Some details...</a></td>
                 </tr>
             </tbody>
         </table>
@@ -210,7 +210,7 @@
                     <td>Appointments</td>
                     <td></td>
                     <td>Yes</td>
-                    <td><a href="{% url question-view cobrand=cobrand.name pk=1 %}">How do I...</a></td>
+                    <td><a href="{% url 'question-view' cobrand=cobrand.name pk=1 %}">How do I...</a></td>
                 </tr>
                 <tr>
                     <td>5344</td>
@@ -219,7 +219,7 @@
                     <td>Appointments</td>
                     <td></td>
                     <td>Yes</td>
-                    <td><a href="{% url question-view cobrand=cobrand.name pk=1 %}">How do I...</a></td>
+                    <td><a href="{% url 'question-view' cobrand=cobrand.name pk=1 %}">How do I...</a></td>
                 </tr>
             </tbody>
         </table>
