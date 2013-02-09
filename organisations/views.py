@@ -100,6 +100,12 @@ class OrganisationSummary(OrganisationAwareViewMixin,
         issue_types = {'problems': Problem,
                        'questions': Question}
 
+        problem_type = self.request.GET.get('problem_type')
+        question_type = self.request.GET.get('question_type')
+        service = self.request.GET.get('service')
+        if problem_type in [value for (value, label) in Problem.CATEGORY_CHOICES]:
+            context['problems'] = context['problems'].filter(category=problem_type)
+
         for issue_type, model_class in issue_types.items():
             context['%s_categories' % issue_type] = model_class.CATEGORY_CHOICES
             # Use the filters we already have from OrganisationIssuesAwareViewMixin

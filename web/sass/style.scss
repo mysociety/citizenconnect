@@ -280,7 +280,10 @@ button, input[type=submit] {
         .feature {
             @include column-full();
             @include respond-min($tablet-width) {
-                @include column-third();
+                @include column-quarter();
+                input[type=submit] {
+                    float: left;
+                }
             }
         }
     }
