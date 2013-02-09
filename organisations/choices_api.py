@@ -20,39 +20,37 @@ class ChoicesAPI():
         organisations = self.parse_organisations(example_data, 'hospitals')
         return organisations
 
+    def _query_api(self, path_elements, parameters):
+        parameters['apikey'] = settings.NHS_CHOICES_API_KEY
+        path = '/'.join(path_elements)
+        querystring = urllib.urlencode(parameters)
+        url = "%(base_url)s%(path)s?%(querystring)s" % {'path' : path,
+                                                        'querystring': querystring,
+                                                        'base_url': settings.NHS_CHOICES_BASE_URL}
+        return urllib.urlopen(url)
+
     def find_organisations(self, search_type, search_value, organisation_type):
         if search_type not in self.search_types():
             raise ValueError("Unknown search type: %s" % (search_type))
         if organisation_type not in self.organisation_types():
             raise ValueError("Unknown organisation type: %s" % (organisation_type))
-
         path_elements = ['organisations',
                          organisation_type,
                          search_type,
                          search_value + '.xml']
-        path = '/'.join(path_elements)
-
-        parameters = {'apikey': settings.NHS_CHOICES_API_KEY}
+        parameters = {}
         if search_type == 'postcode':
             parameters['range'] = 5
-        querystring = urllib.urlencode(parameters)
-        url = "%(base_url)s%(path)s?%(querystring)s" % {'path' : path,
-                                                        'querystring': querystring,
-                                                        'base_url': settings.NHS_CHOICES_BASE_URL}
-        organisations = self.parse_organisations(urllib.urlopen(url), organisation_type)
-        return organisations
+        data = self._query_api(path_elements, parameters)
+        return self.parse_organisations(data, organisation_type)
 
     def get_organisation_name(self, organisation_type, choices_id):
         path_elements = ['organisations',
                          organisation_type,
                          choices_id + '.xml']
-        path = '/'.join(path_elements)
+        data = self._query_api(path_elements, {})
+        return self.parse_organisation(data)
 
-        parameters = {'apikey': settings.NHS_CHOICES_API_KEY}
-        querystring = urllib.urlencode(parameters)
-        url = "%(base_url)s%(path)s?%(querystring)s" % {'path' : path,
-                                                        'querystring': querystring,
-                                                        'base_url': settings.NHS_CHOICES_BASE_URL}
 
         organisation = self.parse_organisation(urllib.urlopen(url))
         return organisation
