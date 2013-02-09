@@ -10,7 +10,7 @@ from django.test import TestCase
 import organisations
 from organisations.choices_api import ChoicesAPI
 
-# A test case which will mock out the ChoicesAPI
+# A test case which will mock out the ChoicesAPI instance methods with some example values
 class MockedChoicesAPITest(TestCase):
 
     def setUp(self):
@@ -21,14 +21,14 @@ class MockedChoicesAPITest(TestCase):
         api_instance.get_organisation_name.return_value = 'Test Organisation Name'
         self.addCleanup(choices_api_patcher.stop)
 
-class ChoicesAPIOrganisationsExampleFileTests(TestCase):
+# A test case that uses a fixture file to mock the contents of the API urlopen call
+class ExampleFileAPITest(TestCase):
 
-    # Use a fixture file to mock the contents of the API url
     @classmethod
     def setUpClass(cls):
         cls._organisations_path = os.path.abspath(organisations.__path__[0])
         cls._api = ChoicesAPI()
-        cls._example_data = open(os.path.join(cls._organisations_path, 'fixtures', 'SW1A1AA.xml'))
+        cls._example_data = open(os.path.join(cls._organisations_path, 'fixtures', cls._example_file))
         urllib.urlopen = MagicMock(return_value=cls._example_data)
 
     # Reset the fixture file so that we can read it again
@@ -39,6 +39,14 @@ class ChoicesAPIOrganisationsExampleFileTests(TestCase):
     @classmethod
     def tearDownClass(cls):
         cls._example_data.close()
+
+
+class ChoicesAPIOrganisationsExampleFileTests(ExampleFileAPITest):
+
+    @classmethod
+    def setUpClass(cls):
+        cls._example_file = 'SW1A1AA.xml'
+        super(ChoicesAPIOrganisationsExampleFileTests, cls).setUpClass()
 
     def parse_example_file(self, organisation_type):
         results = self._api.parse_organisations(self._example_data, organisation_type)
@@ -100,29 +108,39 @@ class ChoicesAPIOrganisationsExampleFileTests(TestCase):
         expected = 'http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/postcode/SW1A.xml?range=5&apikey=OURKEY'
         urllib.urlopen.assert_called_once_with(expected)
 
-class ChoicesAPIOneOrganisationExampleFileTests(TestCase):
+class ChoicesAPIOneOrganisationExampleFileTests(ExampleFileAPITest):
 
-    # Use a fixture file to mock the contents of the API url
     @classmethod
     def setUpClass(cls):
-        cls._organisations_path = os.path.abspath(organisations.__path__[0])
-        cls._api = ChoicesAPI()
-        cls._example_data = open(os.path.join(cls._organisations_path, 'fixtures', '41265.xml'))
-        urllib.urlopen = MagicMock(return_value=cls._example_data)
-
-    # Reset the fixture file so that we can read it again
-    def tearDown(self):
-        self._example_data.seek(0)
-
-    # Close the fixture file
-    @classmethod
-    def tearDownClass(cls):
-        cls._example_data.close()
-
-    def parse_example_file(self):
-        results = self._api.parse_organisation(self._example_data)
-        return results
+        # Fixture for a particular organisation
+        cls._example_file = '41265.xml'
+        super(ChoicesAPIOneOrganisationExampleFileTests, cls).setUpClass()
 
     def test_parses_organisation_name(self):
-        result = self.parse_example_file()
+        result = self._api.parse_organisation(self._example_data)
         self.assertEqual('Darent Valley Hospital', result)
+
+class ChoicesAPIOrganisationServicesExampleFileTests(ExampleFileAPITest):
+
+    @classmethod
+    def setUpClass(cls):
+        cls._example_file = 'services.xml'
+        super(ChoicesAPIOrganisationServicesExampleFileTests, cls).setUpClass()
+
+    def test_parses_correct_number_of_results(self):
+        results = self._api.parse_services(self._example_data)
+        self.assertEqual(3, len(results))
+
+    def test_parses_service_ids(self):
+        results = self._api.parse_services(self._example_data)
+        first_expected = "SRV0017"
+        last_expected = "SRV0046"
+        self.assertEqual(first_expected, results[0]['service_code'])
+        self.assertEqual(last_expected, results[-1]['service_code'])
+
+    def test_parses_names(self):
+        results = self._api.parse_services(self._example_data)
+        first_expected = "Children's & Adolescent Services"
+        last_expected = "Genetics"
+        self.assertEqual(first_expected, results[0]['name'])
+        self.assertEqual(last_expected, results[-1]['name'])

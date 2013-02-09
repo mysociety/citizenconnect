@@ -64,6 +64,20 @@ class ChoicesAPI():
         data = self._query_api(path_elements, {})
         return self.parse_services(data)
 
+    def parse_services(self, document):
+        tree = ET.parse(document)
+        services = []
+        for entry_element in tree.getiterator('%sentry' % self.atom_namespace):
+            service = {}
+            content = entry_element.find('%scontent' % self.atom_namespace)
+            # print content
+            service_element = content.find('%sservicesummary' % self.services_namespace)
+            type_element = service_element.find('%stype' % self.services_namespace)
+            service['name'] = type_element.text
+            service['service_code'] = type_element.attrib['code']
+            services.append(service)
+        return services
+
     def parse_organisations(self, document, organisation_type):
         tree = ET.parse(document)
         organisations = []
