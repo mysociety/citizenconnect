@@ -1,1 +1,3 @@
-from organisations.tests.choices_api import *
+from .choices_api import *
+from .organisation_summary import *
+
