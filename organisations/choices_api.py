@@ -60,18 +60,20 @@ class ChoicesAPI():
     def parse_organisations(self, document, organisation_type):
         tree = ET.parse(document)
         organisations = []
+        atom_namespace = '{http://www.w3.org/2005/Atom}'
+        services_namespace = '{http://syndication.nhschoices.nhs.uk/services}'
 
-        for entry_element in tree.getiterator('{http://www.w3.org/2005/Atom}entry'):
+        for entry_element in tree.getiterator('%sentry' % atom_namespace):
             organisation = {}
-            identifier = entry_element.find('{http://www.w3.org/2005/Atom}id').text
+            identifier = entry_element.find('%sid' % atom_namespace).text
             organisation['choices_id'] = identifier.split('/')[-1]
-            content = entry_element.find('{http://www.w3.org/2005/Atom}content')
-            summary = content.find('{http://syndication.nhschoices.nhs.uk/services}organisationSummary')
-            organisation['name'] = summary.find('{http://syndication.nhschoices.nhs.uk/services}name').text
+            content = entry_element.find('%scontent' % atom_namespace)
+            summary = content.find('%sorganisationSummary' % services_namespace)
+            organisation['name'] = summary.find('%sname' % services_namespace).text
             organisation['organisation_type'] = organisation_type
-            coordinates = summary.find('{http://syndication.nhschoices.nhs.uk/services}geographicCoordinates')
-            lon = float(coordinates.find('{http://syndication.nhschoices.nhs.uk/services}longitude').text)
-            lat = float(coordinates.find('{http://syndication.nhschoices.nhs.uk/services}latitude').text)
+            coordinates = summary.find('%sgeographicCoordinates' % services_namespace)
+            lon = float(coordinates.find('%slongitude' % services_namespace).text)
+            lat = float(coordinates.find('%slatitude' % services_namespace).text)
             organisation['coordinates'] = {'lon':lon, 'lat':lat}
             organisations.append(organisation)
         return organisations
