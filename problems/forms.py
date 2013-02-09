@@ -5,6 +5,7 @@ from .models import Problem
 
 class ProblemForm(forms.ModelForm):
     # States of privacy
+
     PRIVACY_PRIVATE = '0'
     PRIVACY_PRIVATE_NAME = '1'
     PRIVACY_PUBLIC = '2'
@@ -39,6 +40,17 @@ class ProblemForm(forms.ModelForm):
 
     class Meta:
         model = Problem
+        fields = ['description',
+                  'category',
+                  'organisation_type',
+                  'choices_id',
+                  'reporter_name',
+                  'reporter_phone',
+                  'reporter_email',
+                  'preferred_contact_method',
+                  'public',
+                  'public_reporter_name']
+
         widgets = {
             # Hide these because they come from the url already
             'organisation_type': HiddenInput,

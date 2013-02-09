@@ -17,6 +17,16 @@ class Question(AuditedModel):
         (u'email', u'By Email'),
         (u'phone', u'By Phone')
     )
+
+    NEW = 0
+    ACKNOWLEDGED = 1
+    RESOLVED = 2
+
+    STATUS_CHOICES = (
+        (NEW, 'Received but not acknowledged'),
+        (ACKNOWLEDGED, 'Acknowledged but not answered'),
+        (RESOLVED, 'Question answered'),
+    )
     organisation_type = models.CharField(max_length=100, choices=ORGANISATION_CHOICES)
     choices_id = models.IntegerField(db_index=True)
     description = models.TextField()
@@ -27,6 +37,7 @@ class Question(AuditedModel):
     public = models.BooleanField()
     public_reporter_name = models.BooleanField()
     preferred_contact_method = models.CharField(max_length=100, choices=CONTACT_CHOICES, default='email')
+    status = models.IntegerField(default=NEW, choices=STATUS_CHOICES)
 
     @property
     def summary(self):

@@ -39,6 +39,17 @@ class QuestionForm(forms.ModelForm):
 
     class Meta:
         model = Question
+        fields = ['description',
+                  'category',
+                  'organisation_type',
+                  'choices_id',
+                  'reporter_name',
+                  'reporter_phone',
+                  'reporter_email',
+                  'preferred_contact_method',
+                  'public',
+                  'public_reporter_name']
+
         widgets = {
             # Hide these because they come from the url already
             'organisation_type': HiddenInput,
