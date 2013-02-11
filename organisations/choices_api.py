@@ -1,11 +1,14 @@
 # Standard imports
 import urllib
 import xml.etree.ElementTree as ET
+from xml.etree.ElementTree import ParseError
 import os
+import logging
 
 # Django imports
 from django.conf import settings
 
+logger = logging.getLogger(__name__)
 
 class ChoicesAPI():
 
@@ -65,46 +68,60 @@ class ChoicesAPI():
         return self.parse_services(data)
 
     def parse_services(self, document):
-        tree = ET.parse(document)
         services = []
-        for entry_element in tree.getiterator('%sentry' % self.atom_namespace):
-            service = {}
-            content = entry_element.find('%scontent' % self.atom_namespace)
-            # print content
-            service_element = content.find('%sservicesummary' % self.services_namespace)
-            type_element = service_element.find('%stype' % self.services_namespace)
-            service['name'] = type_element.text
-            service['service_code'] = type_element.attrib['code']
-            services.append(service)
+        try:
+            tree = ET.parse(document)
+            for entry_element in tree.getiterator('%sentry' % self.atom_namespace):
+                service = {}
+                content = entry_element.find('%scontent' % self.atom_namespace)
+                # print content
+                service_element = content.find('%sservicesummary' % self.services_namespace)
+                type_element = service_element.find('%stype' % self.services_namespace)
+                service['name'] = type_element.text
+                service['service_code'] = type_element.attrib['code']
+                services.append(service)
+        except ParseError as e:
+            logger.error("Error: {0}\nWhilst parsing document:\n{1}".format(e, document))
+
         return services
 
     def parse_organisations(self, document, organisation_type):
-        tree = ET.parse(document)
         organisations = []
 
-        for entry_element in tree.getiterator('%sentry' % self.atom_namespace):
-            organisation = {}
-            identifier = entry_element.find('%sid' % self.atom_namespace).text
-            organisation['choices_id'] = identifier.split('/')[-1]
-            content = entry_element.find('%scontent' % self.atom_namespace)
-            summary = content.find('%sorganisationSummary' % self.services_namespace)
-            organisation['name'] = summary.find('%sname' % self.services_namespace).text
-            ods_element = summary.find('%sodsCode' % self.services_namespace)
-            if ods_element != None:
-                organisation['ods_code'] = ods_element.text
-            else:
-                organisation['ods_code'] = None
-            organisation['organisation_type'] = organisation_type
-            coordinates = summary.find('%sgeographicCoordinates' % self.services_namespace)
-            lon = float(coordinates.find('%slongitude' % self.services_namespace).text)
-            lat = float(coordinates.find('%slatitude' % self.services_namespace).text)
-            organisation['coordinates'] = {'lon':lon, 'lat':lat}
-            organisations.append(organisation)
+        try:
+            tree = ET.parse(document)
+            for entry_element in tree.getiterator('%sentry' % self.atom_namespace):
+                organisation = {}
+                identifier = entry_element.find('%sid' % self.atom_namespace).text
+                organisation['choices_id'] = identifier.split('/')[-1]
+                content = entry_element.find('%scontent' % self.atom_namespace)
+                summary = content.find('%sorganisationSummary' % self.services_namespace)
+                organisation['name'] = summary.find('%sname' % self.services_namespace).text
+                ods_element = summary.find('%sodsCode' % self.services_namespace)
+                if ods_element != None:
+                    organisation['ods_code'] = ods_element.text
+                else:
+                    organisation['ods_code'] = None
+                organisation['organisation_type'] = organisation_type
+                coordinates = summary.find('%sgeographicCoordinates' % self.services_namespace)
+                lon = float(coordinates.find('%slongitude' % self.services_namespace).text)
+                lat = float(coordinates.find('%slatitude' % self.services_namespace).text)
+                organisation['coordinates'] = {'lon':lon, 'lat':lat}
+                organisations.append(organisation)
+        except ParseError as e:
+            logger.error("Error: {0}\nWhilst parsing document:\n{1}".format(e, document))
+
         return organisations
 
     def parse_organisation(self, document):
-        tree = ET.parse(document)
-        organisation = tree.getroot()
-        link = organisation.find('%sLink' % self.syndication_namespace)
-        text = link.find('%sText' % self.syndication_namespace)
-        return text.text
+        name = None
+        try:
+            tree = ET.parse(document)
+            organisation = tree.getroot()
+            link = organisation.find('%sLink' % self.syndication_namespace)
+            text = link.find('%sText' % self.syndication_namespace)
+            name = text.text
+        except ParseError as e:
+            logger.error("Error: {0} Whilst parsing document:\n{1}".format(e, document))
+
+        return name
