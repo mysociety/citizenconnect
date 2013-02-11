@@ -157,6 +157,11 @@ LOGGING = {
         }
     },
     'loggers': {
+        '': {
+            'handlers': [ 'mail_admins', 'console' ],
+            'level': 'WARN',
+            'propagate': True,
+        },
         'django.request': {
             'handlers': [ 'mail_admins', 'console' ],
             'level': 'WARN',
