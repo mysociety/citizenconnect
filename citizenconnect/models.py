@@ -1,4 +1,5 @@
 from django.db import models
+from organisations import choices_api
 
 class AuditedModel(models.Model):
     created = models.DateTimeField(auto_now_add=True)
@@ -16,6 +17,7 @@ class MessageModel(AuditedModel):
         (u'hospitals', u'Hospital'),
         (u'gppractices', u'GP'),
     )
+
     CONTACT_CHOICES = (
         (u'email', u'By Email'),
         (u'phone', u'By Phone')
@@ -32,6 +34,7 @@ class MessageModel(AuditedModel):
         (RESOLVED, 'Addressed - problem solved'),
         (NOT_RESOLVED, 'Addressed - unable to solve')
     )
+
     organisation_type = models.CharField(max_length=100, choices=ORGANISATION_CHOICES)
     choices_id = models.IntegerField(db_index=True)
     description = models.TextField()
@@ -59,6 +62,14 @@ class MessageModel(AuditedModel):
         """
         # TODO - this could be a custom template filter instead of a model property
         return self.__class__.__name__
+
+    @property
+    def organisation_name(self):
+        """
+        Lookup the organisation's name from the choices api
+        """
+        api = choices_api.ChoicesAPI()
+        return api.get_organisation_name(self.organisation_type, str(self.choices_id))
 
     class Meta:
         abstract = True
