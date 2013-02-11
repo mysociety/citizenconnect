@@ -2,6 +2,10 @@ from django import forms
 from django.forms.widgets import HiddenInput, RadioSelect
 
 class MessageModelForm(forms.ModelForm):
+    """
+    ModelForm implementation that does the basics for MessageModel model forms
+    """
+
     # States of privacy
     PRIVACY_PRIVATE = '0'
     PRIVACY_PRIVATE_NAME = '1'
@@ -10,8 +14,8 @@ class MessageModelForm(forms.ModelForm):
     # A more user-friendly field with which to present the privacy options
     privacy = forms.ChoiceField(
         choices=((PRIVACY_PRIVATE, "Keep all details private"),
-                 (PRIVACY_PRIVATE_NAME, "Publish problem and response but not my name"),
-                 (PRIVACY_PUBLIC, 'Publish problem and response with my name')),
+               (PRIVACY_PRIVATE_NAME, "Publish problem and response but not my name"),
+               (PRIVACY_PUBLIC, 'Publish problem and response with my name')),
         initial=0,
         widget=RadioSelect,
         required=True
@@ -37,15 +41,15 @@ class MessageModelForm(forms.ModelForm):
 
     class Meta:
         fields = ['description',
-                  'category',
-                  'organisation_type',
-                  'choices_id',
-                  'reporter_name',
-                  'reporter_phone',
-                  'reporter_email',
-                  'preferred_contact_method',
-                  'public',
-                  'public_reporter_name']
+                'category',
+                'organisation_type',
+                'choices_id',
+                'reporter_name',
+                'reporter_phone',
+                'reporter_email',
+                'preferred_contact_method',
+                'public',
+                'public_reporter_name']
 
         widgets = {
             # Hide these because they come from the url already
