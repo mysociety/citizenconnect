@@ -139,7 +139,10 @@ class OrganisationSummary(OrganisationAwareViewMixin,
                        'questions': Question}
 
         service = self.request.GET.get('service')
-
+        if 'private' in kwargs and kwargs['private'] == True:
+            context['private'] = True
+        else:
+            context['private'] = False
         # Use the filters we already have from OrganisationIssuesAwareViewMixin
         for issue_type, model_class in issue_types.items():
             category = self.request.GET.get('%s_category' % issue_type)
@@ -154,6 +157,7 @@ class OrganisationSummary(OrganisationAwareViewMixin,
                 status_counts['description'] = description
                 status_list.append(status_counts)
             context['%s_by_status' % issue_type] = status_list
+
         return context
 
 class Summary(TemplateView):

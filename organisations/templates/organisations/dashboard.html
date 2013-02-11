@@ -41,7 +41,7 @@
                         <td>{{ issue.issue_type }}</td>
                         <td>{{ issue.created }}</td>
                         <td>{{ issue.reporter_name }}</td>
-                        <td><a href="{% url 'org-response-form' %}">{{ issue.summary }}</a></td>
+                        <td><a href="{% url 'org-response-form' message_type=issue.issue_type.lower pk=issue.id %}">{{ issue.summary }}</a></td>
                         <td>{{ issue.get_status_display }}</td>
                         <td>TODO</td>
                     </tr>
