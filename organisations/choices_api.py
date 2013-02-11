@@ -1,7 +1,6 @@
 # Standard imports
 import urllib
 import xml.etree.ElementTree as ET
-from xml.etree.ElementTree import ParseError
 import os
 import logging
 
@@ -80,7 +79,7 @@ class ChoicesAPI():
                 service['name'] = type_element.text
                 service['service_code'] = type_element.attrib['code']
                 services.append(service)
-        except ParseError as e:
+        except ET.ParseError as e:
             logger.error("Error: {0}\nWhilst parsing document:\n{1}".format(e, document))
 
         return services
@@ -108,7 +107,7 @@ class ChoicesAPI():
                 lat = float(coordinates.find('%slatitude' % self.services_namespace).text)
                 organisation['coordinates'] = {'lon':lon, 'lat':lat}
                 organisations.append(organisation)
-        except ParseError as e:
+        except ET.ParseError as e:
             logger.error("Error: {0}\nWhilst parsing document:\n{1}".format(e, document))
 
         return organisations
@@ -121,7 +120,7 @@ class ChoicesAPI():
             link = organisation.find('%sLink' % self.syndication_namespace)
             text = link.find('%sText' % self.syndication_namespace)
             name = text.text
-        except ParseError as e:
+        except ET.ParseError as e:
             logger.error("Error: {0} Whilst parsing document:\n{1}".format(e, document))
 
         return name
