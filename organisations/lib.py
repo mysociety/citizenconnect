@@ -11,5 +11,5 @@ def interval_counts(queryset):
                  'six_months': 365/12*6}
     for interval_name, days_ago in intervals.items():
         lower_bound = now - timedelta(days_ago)
-        counts[interval_name] = queryset.filter(created__gte=lower_bound).count
+        counts[interval_name] = queryset.filter(created__gte=lower_bound).count()
     return counts

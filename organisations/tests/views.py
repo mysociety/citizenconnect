@@ -4,6 +4,7 @@ class OrganisationSummaryTests(MockedChoicesAPITest):
 
     def setUp(self):
         super(OrganisationSummaryTests, self).setUp()
+
         self.summary_url = '/choices/stats/summary/gppractices/12702'
 
     def test_summary_page_exists(self):
