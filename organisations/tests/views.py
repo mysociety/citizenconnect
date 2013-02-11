@@ -1,3 +1,7 @@
+# Django imports
+from django.test import TestCase
+
+# App imports
 from . import MockedChoicesAPITest
 from . import create_test_instance
 from problems.models import Problem
@@ -118,12 +122,30 @@ class OrganisationDashboardTests(MockedChoicesAPITest):
 
     def setUp(self):
         super(OrganisationDashboardTests, self).setUp()
-        self.summary_url = '/choices/stats/dashboard/gppractices/12702'
+        self.dashboard_url = '/private/dashboard/gppractices/12702'
 
     def test_dashboard_page_exists(self):
-        resp = self.client.get(self.summary_url)
+        resp = self.client.get(self.dashboard_url)
         self.assertEqual(resp.status_code, 200)
 
     def test_dashboard_page_shows_organisation_name(self):
-        resp = self.client.get(self.summary_url)
+        resp = self.client.get(self.dashboard_url)
         self.assertTrue('Test Organisation Name Dashboard' in resp.content)
+
+class ResponseFormTests(TestCase):
+
+    def setUp(self):
+        self.response_form_url = '/private/response'
+
+    def test_response_page_exists(self):
+        resp = self.client.get(self.response_form_url)
+        self.assertEqual(resp.status_code, 200)
+
+class ResponseConfirmTests(TestCase):
+
+    def setUp(self):
+        self.response_confirm_url = '/private/response-confirm'
+
+    def test_response_page_exists(self):
+        resp = self.client.get(self.response_confirm_url)
+        self.assertEqual(resp.status_code, 200)

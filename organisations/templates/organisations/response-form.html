@@ -32,7 +32,7 @@
     </div>
 </div>
 <div class="status-form">
-    <form action="{% url 'org-response-confirm' cobrand=cobrand.name %}">
+    <form action="{% url 'org-response-confirm' %}">
         <div class="feature">
             <select>
                 <option value="">Change status</option>
@@ -45,7 +45,7 @@
 </div>
 <div class="response-form">
     <div class="feature">
-        <form action="{% url 'org-response-confirm' cobrand=cobrand.name %}">
+        <form action="{% url 'org-response-confirm' %}">
             <div>
                 <textarea class="message-input" type="text" name="message" placeholder="Public Response (NB only appears when message has been published online)"></textarea>
             </div>
