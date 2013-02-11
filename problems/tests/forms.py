@@ -2,15 +2,16 @@ import uuid
 
 from django.test import TestCase
 
-from .models import Problem
-from .forms import ProblemForm
 from organisations.tests import MockedChoicesAPITest
 
-class ProblemTests(MockedChoicesAPITest):
+from ..models import Problem
+from ..forms import ProblemForm
+
+class CreateFormTests(MockedChoicesAPITest):
 
     def setUp(self):
 
-        super(ProblemTests, self).setUp()
+        super(CreateFormTests, self).setUp()
         # Create a unique name, to use in queries rather than relying
         # on primary key increments
         self.uuid = uuid.uuid4().hex

@@ -7,7 +7,6 @@ from django.template import RequestContext
 from citizenconnect.shortcuts import render
 from organisations.forms import OrganisationFinderForm
 from organisations.views import OrganisationList, OrganisationAwareViewMixin
-from organisations.choices_api import ChoicesAPI
 
 from .forms import ProblemForm
 from .models import Problem
@@ -41,10 +40,3 @@ class ProblemConfirm(TemplateView):
 
 class ProblemDetail(DetailView):
     model = Problem
-
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super(ProblemDetail, self).get_context_data(**kwargs)
-        api = ChoicesAPI()
-        context['organisation_name'] = api.get_organisation_name(self.object.organisation_type, str(self.object.choices_id))
-        return context

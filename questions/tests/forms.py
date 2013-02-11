@@ -2,9 +2,10 @@ import uuid
 
 from django.test import TestCase
 
-from .models import Question
-from .forms import QuestionForm
 from organisations.tests import MockedChoicesAPITest
+
+from ..models import Question
+from ..forms import QuestionForm
 
 class QuestionTests(MockedChoicesAPITest):
 
