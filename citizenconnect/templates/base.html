@@ -23,7 +23,7 @@
     </head>
 
     <body class="{% block bodyclasses %}{% endblock %}">
-        {% if settings.DEBUG %}
+        {% if settings.DEBUG == True %}
         <div id="staging_header">This is a staging site &ndash; any data saved here <strong>may be deleted</strong>.</div>
         {% endif %}
         <div id="container">
