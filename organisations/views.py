@@ -169,7 +169,19 @@ class OrganisationDashboard(OrganisationAwareViewMixin,
     template_name = 'organisations/dashboard.html'
 
 class ResponseForm(TemplateView):
+
     template_name = 'organisations/response-form.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ResponseForm, self).get_context_data(**kwargs)
+        message_type = self.kwargs['message_type']
+        if message_type == 'question':
+            context['message'] = Question.objects.get(id=self.kwargs['pk'])
+        elif message_type == 'problem':
+            context['message'] = Problem.objects.get(id=self.kwargs['pk'])
+        else:
+            raise ValueError("Unknown message type: %s" % message_type)
+        return context
 
 class ResponseConfirm(TemplateView):
     template_name = 'organisations/response-confirm.html'
