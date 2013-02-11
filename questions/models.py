@@ -9,4 +9,15 @@ class Question(MessageModel):
         (u'prescriptions', u'Prescriptions'),
         (u'general', u'General'),
     )
+
+    NEW = 0
+    ACKNOWLEDGED = 1
+    RESOLVED = 2
+
+    STATUS_CHOICES = (
+        (NEW, 'Received but not acknowledged'),
+        (ACKNOWLEDGED, 'Acknowledged but not answered'),
+        (RESOLVED, 'Question answered'),
+    )
     category = models.CharField(max_length=100, choices=CATEGORY_CHOICES)
+    status = models.IntegerField(default=NEW, choices=STATUS_CHOICES)
