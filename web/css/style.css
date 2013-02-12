@@ -943,6 +943,33 @@ button, input[type=submit] {
 .organisation-summary .problem-list {
   margin-top: 1em; }
 
+.organisation-dashboard .hero .feature {
+  float: left;
+  padding: 0 10px;
+  width: 100%; }
+  @media screen and (min-width: 45em) {
+    .organisation-dashboard .hero .feature {
+      float: left;
+      padding: 0 10px;
+      width: 33.33%; } }
+  .organisation-dashboard .hero .feature p {
+    min-height: 4em; }
+    @media screen and (min-width: 45em) {
+      .organisation-dashboard .hero .feature p {
+        min-height: 7em; } }
+    @media screen and (min-width: 60em) {
+      .organisation-dashboard .hero .feature p {
+        min-height: 4.5em; } }
+.organisation-dashboard .messages-table {
+  width: 100%; }
+  .organisation-dashboard .messages-table .feature {
+    float: left;
+    padding: 0 10px;
+    width: 100%; }
+  .organisation-dashboard .messages-table table, .organisation-dashboard .messages-table th, .organisation-dashboard .messages-table tr, .organisation-dashboard .messages-table td {
+    border: 2px solid #222222;
+    padding: 0.25em; }
+
 .problem-public .meta-data, .problem-public .status {
   width: 100%; }
   .problem-public .meta-data .feature, .problem-public .status .feature {
@@ -965,6 +992,7 @@ button, input[type=submit] {
     width: 100%; }
     .problem-public .details .feature p, .problem-public .response .feature p {
       height: 8em; }
+
 .question-public .meta-data, .question-public .status {
   width: 100%; }
   .question-public .meta-data .feature, .question-public .status .feature {
