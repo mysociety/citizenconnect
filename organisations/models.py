@@ -14,12 +14,6 @@ class Organisation(AuditedModel, models.Model):
 
     objects = models.GeoManager()
 
-    def __unicode__(self):
-        return self.name
-
-    class Meta:
-        verbose_name_plural = "organisations"
-
 class Service(AuditedModel):
     name = models.TextField()
     service_code = models.TextField()
