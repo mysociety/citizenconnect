@@ -17,5 +17,9 @@ class Organisation(AuditedModel, models.Model):
     def __unicode__(self):
         return self.name
 
+    @property
+    def open_issues(self):
+        return list(self.problem_set.open_problems()) + list(self.question_set.open_questions())
+
     class Meta:
         verbose_name_plural = "organisations"

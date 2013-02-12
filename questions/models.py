@@ -1,7 +1,17 @@
 from django.db import models
+from django.db.models import Q
 from django.conf import settings
 
 from citizenconnect.models import MessageModel
+
+class QuestionManager(models.Manager):
+    user_for_related_fields = True
+
+    def open_questions(self):
+        """
+        Return only open problems
+        """
+        return super(QuestionManager, self).objects.all().filter(Q(status=Question.NEW) | Q(status=Question.ACKNOWLEDGED))
 
 class Question(MessageModel):
     CATEGORY_CHOICES = (
