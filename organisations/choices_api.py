@@ -36,6 +36,21 @@ class ChoicesAPI():
                                                         'base_url': settings.NHS_CHOICES_BASE_URL}
         return urllib.urlopen(url)
 
+    def get_all_organisations(self, search_type, search_value):
+        """
+        Get all the organisations in the choices api for a given search
+        """
+        if search_type not in self.search_types():
+            raise ValueError("Unknown search type: %s" % (search_type))
+
+        organisations = []
+
+        for organisation_type in self.organisation_types():
+            results = self.find_organisations(search_type, search_value, organisation_type)
+            organisations.extend(results)
+
+        return organisations
+
     def find_organisations(self, search_type, search_value, organisation_type):
         if search_type not in self.search_types():
             raise ValueError("Unknown search type: %s" % (search_type))

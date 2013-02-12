@@ -27,9 +27,12 @@ class ExampleFileAPITest(TestCase):
     @classmethod
     def setUpClass(cls):
         cls._organisations_path = os.path.abspath(organisations.__path__[0])
-        cls._api = ChoicesAPI()
         cls._example_data = open(os.path.join(cls._organisations_path, 'fixtures', cls._example_file))
         urllib.urlopen = MagicMock(return_value=cls._example_data)
+
+    def setUp(self):
+        # Reset the api in case we modify it inside tests
+        self._api = ChoicesAPI()
 
     # Reset the fixture file so that we can read it again
     def tearDown(self):
@@ -107,6 +110,14 @@ class ChoicesAPIOrganisationsExampleFileTests(ExampleFileAPITest):
         self._api.find_organisations('postcode', 'SW1A', 'gppractices')
         expected = 'http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/postcode/SW1A.xml?range=5&apikey=OURKEY'
         urllib.urlopen.assert_called_once_with(expected)
+
+    def test_finds_all_organisations(self):
+        # Mock find_organisations to return a dummy result
+        self._api.find_organisations = MagicMock(return_value=[{'name':'Test Organisation'}])
+        # We expect it to be called once for each organisation type
+        expected_number_of_results = len(self._api.organisation_types())
+        organisations = self._api.get_all_organisations("postcode", "SW1A1AA")
+        self.assertEqual(len(organisations), expected_number_of_results)
 
 class ChoicesAPIOneOrganisationExampleFileTests(ExampleFileAPITest):
 
