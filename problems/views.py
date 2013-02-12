@@ -2,11 +2,13 @@
 from django.views.generic import FormView, TemplateView, CreateView, DetailView
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
+from django.shortcuts import get_object_or_404
 
 # App imports
 from citizenconnect.shortcuts import render
 from organisations.forms import OrganisationFinderForm
 from organisations.views import OrganisationList, OrganisationAwareViewMixin
+from organisations.models import Organisation
 
 from .forms import ProblemForm
 from .models import Problem
@@ -31,8 +33,7 @@ class ProblemCreate(OrganisationAwareViewMixin, CreateView):
     def get_initial(self):
         initial = super(ProblemCreate, self).get_initial()
         initial = initial.copy()
-        initial['organisation_type'] = self.kwargs['organisation_type']
-        initial['choices_id'] = self.kwargs['choices_id']
+        initial['organisation'] = get_object_or_404(Organisation, pk=self.kwargs['ods_code'])
         return initial
 
 class ProblemConfirm(TemplateView):

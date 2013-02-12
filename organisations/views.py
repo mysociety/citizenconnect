@@ -8,7 +8,6 @@ import json
 # Django imports
 from django.views.generic import FormView, TemplateView
 from django.template.defaultfilters import escape
-from django.db.models import Q
 
 # App imports
 from citizenconnect.shortcuts import render
@@ -18,6 +17,7 @@ from questions.models import Question
 from .forms import OrganisationFinderForm
 from .choices_api import ChoicesAPI
 from .lib import interval_counts
+from .models import Organisation
 
 class OrganisationFinderDemo(FormView):
     template_name = 'organisations/finder_demo.html'
@@ -51,12 +51,8 @@ class OrganisationAwareViewMixin(object):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(OrganisationAwareViewMixin, self).get_context_data(**kwargs)
-        organisation_type = self.kwargs['organisation_type']
-        choices_id = self.kwargs['choices_id']
-        api = ChoicesAPI()
-        context['organisation_name'] = api.get_organisation_name(organisation_type, choices_id)
-        context['choices_id'] = choices_id
-        context['organisation_type'] = organisation_type
+        ods_code = self.kwargs['ods_code']
+        context['organisation'] = Organisation.objects.get(ods_code=ods_code)
         return context
 
 class OrganisationIssuesAwareViewMixin(object):
@@ -68,10 +64,11 @@ class OrganisationIssuesAwareViewMixin(object):
         # Get all the problems and questions
         context = super(OrganisationIssuesAwareViewMixin, self).get_context_data(**kwargs)
         # Get the models related to this organisation, and let the db sort them
-        problems = Problem.objects.all().filter(organisation_type=kwargs['organisation_type'],
-                                                choices_id=kwargs['choices_id']).order_by('-created')
-        questions = Question.objects.all().filter(organisation_type=kwargs['organisation_type'],
-                                                  choices_id=kwargs['choices_id']).order_by('-created')
+        ods_code = self.kwargs['ods_code']
+        organisation = Organisation.objects.get(ods_code=ods_code)
+        problems = organisation.problem_set
+        questions = organisation.question_set
+        context['organisation'] = organisation
         context['problems'] = problems
         context['questions'] = questions
         # Put them into one list, taken from http://stackoverflow.com/questions/431628/how-to-combine-2-or-more-querysets-in-a-django-view
@@ -89,36 +86,11 @@ class Map(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(Map, self).get_context_data(**kwargs)
 
-        # Get all the organisations so that we can dump them as json into
-        # the page template
-
-        # TODO - All the following is inefficient and probably irrelevant when
-        # we have organisations cached in the local db and we can link issues
-        # to them directly.
-
-        api = ChoicesAPI()
-        organisations = api.find_all_organisations("name", "london")
-
-        # Get all the open problems and questions currently in the db
-        problems = Problem.objects.all().filter(Q(status=Problem.NEW) | Q(status=Problem.ACKNOWLEDGED)).order_by('choices_id')
-        questions = Question.objects.all().filter(Q(status=Question.NEW) | Q(status=Question.ACKNOWLEDGED)).order_by('choices_id')
-
-        # Munge them into one list, sorted by provider's id
-        issues = sorted(
-            chain(problems, questions),
-            key=attrgetter('choices_id'),
-            reverse=True
-        )
-
-        # Connect open issues to organisations
-        for organisation in organisations:
-            organisation['issues'] = []
-            for issue in issues:
-                if str(issue.choices_id) == organisation['choices_id']:
-                    organisation['issues'].append(escape(issue.description))
+        # TODO - Filter by location
+        organisations = Organisation.objects.all()
 
         # Make it into a JSON string
-        context['organisations'] = json.dumps(organisations)
+        context['organisations'] = json.dumps(list(organisations))
 
         return context
 
