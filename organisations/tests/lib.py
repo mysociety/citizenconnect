@@ -7,7 +7,7 @@ from django.test import TestCase
 # App imports
 from problems.models import Problem
 from questions.models import Question
-from organisations.lib import interval_counts
+from ..lib import interval_counts
 
 # Create a test instance of a Problem or Question model that will fill in
 # default values for attributes not specified.
