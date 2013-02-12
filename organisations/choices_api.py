@@ -43,12 +43,12 @@ class ChoicesAPI():
         organisations = []
 
         for organisation_type in settings.ORGANISATION_TYPES:
-            results = self.find_organisations(search_type, search_value, organisation_type)
+            results = self.find_organisations(organisation_type, search_type, search_value)
             organisations.extend(results)
 
         return organisations
 
-    def find_organisations(self, search_type, search_value, organisation_type):
+    def find_organisations(self, organisation_type, search_type, search_value):
         if search_type not in self.search_types():
             raise ValueError("Unknown search type: %s" % (search_type))
         if organisation_type not in settings.ORGANISATION_TYPES:

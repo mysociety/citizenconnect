@@ -97,18 +97,18 @@ class ChoicesAPIOrganisationsExampleFileTests(ExampleFileAPITest):
 
     def test_handles_unknown_search_type(self):
         with self.assertRaises(ValueError) as context_manager:
-            self._api.find_organisations('sometype', 'value', 'hospitals')
+            self._api.find_organisations('hospitals', 'sometype', 'value')
         exception = context_manager.exception
         self.assertEqual(str(exception), 'Unknown search type: sometype')
 
     def test_handles_unknown_provider_type(self):
         with self.assertRaises(ValueError) as context_manager:
-            self._api.find_organisations('name', 'value', 'someprovider')
+            self._api.find_organisations('someprovider', 'name', 'value')
         exception = context_manager.exception
         self.assertEqual(str(exception), 'Unknown organisation type: someprovider')
 
     def test_generates_api_url(self):
-        self._api.find_organisations('postcode', 'SW1A', 'gppractices')
+        self._api.find_organisations('gppractices', 'postcode', 'SW1A')
         expected = 'http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/postcode/SW1A.xml?range=5&apikey=OURKEY'
         urllib.urlopen.assert_called_once_with(expected)
 

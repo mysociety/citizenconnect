@@ -38,7 +38,7 @@ class OrganisationList(TemplateView):
             search_type = 'postcode'
         else:
             search_type = 'name'
-        organisations = api.find_organisations(search_type, location, organisation_type)
+        organisations = api.find_organisations(organisation_type, search_type, location)
         context['organisations'] = organisations
         return context
 
