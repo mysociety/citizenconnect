@@ -1,7 +1,10 @@
+import os
+
 # Django imports
 from django.test import TestCase
 
 # App imports
+import organisations
 from . import MockedChoicesAPITest
 from . import create_test_instance
 from problems.models import Problem
@@ -167,3 +170,42 @@ class ResponseConfirmTests(TestCase):
     def test_response_page_exists(self):
         resp = self.client.get(self.response_confirm_url)
         self.assertEqual(resp.status_code, 200)
+
+class OrganisationMapTests(MockedChoicesAPITest):
+
+    @classmethod
+    def setUpClass(cls):
+        cls._organisations_path = os.path.abspath(organisations.__path__[0])
+        cls._organisations_no_issues_json = open(os.path.join(cls._organisations_path, 'fixtures', 'map_expected_orgs_no_issues.json')).read()
+        cls._organisations_issues_json = open(os.path.join(cls._organisations_path, 'fixtures', 'map_expected_orgs_with_issues.json')).read()
+        cls._organisations_closed_issues_json = open(os.path.join(cls._organisations_path, 'fixtures', 'map_expected_orgs_with_closed_issues.json')).read()
+
+    def setUp(self):
+        self.map_url = '/choices/stats/map'
+
+    def test_map_page_exists(self):
+        resp = self.client.get(self.map_url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_organisations_json_displayed(self):
+        resp = self.client.get(self.map_url)
+        self.assertEqual(resp.context['organisations'], self._organisations_no_issues_json)
+
+    def test_problems_and_questions_in_json(self):
+        # Add some problem and questions into the db
+        create_test_instance(Problem, {'organisation_type': 'hospitals', 'choices_id': 18444})
+        create_test_instance(Problem, {'organisation_type': 'gppractices', 'choices_id': 12702})
+        create_test_instance(Question, {'organisation_type': 'gppractices', 'choices_id': 12702})
+        create_test_instance(Question, {'organisation_type': 'hospitals', 'choices_id': 18444})
+        resp = self.client.get(self.map_url)
+        self.assertEqual(resp.context['organisations'], self._organisations_issues_json)
+
+    def test_closed_problems_not_in_json(self):
+        create_test_instance(Problem, {'organisation_type': 'hospitals', 'choices_id': 18444})
+        create_test_instance(Problem, {'organisation_type': 'gppractices', 'choices_id': 12702, 'status': Problem.RESOLVED})
+        create_test_instance(Problem, {'organisation_type': 'gppractices', 'choices_id': 12702, 'status': Problem.NOT_RESOLVED})
+        create_test_instance(Question, {'organisation_type': 'gppractices', 'choices_id': 12702})
+        create_test_instance(Question, {'organisation_type': 'gppractices', 'choices_id': 12702, 'status':Question.RESOLVED})
+        resp = self.client.get(self.map_url)
+        self.assertEqual(resp.context['organisations'], self._organisations_closed_issues_json)
+

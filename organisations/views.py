@@ -8,6 +8,7 @@ import json
 # Django imports
 from django.views.generic import FormView, TemplateView
 from django.template.defaultfilters import escape
+from django.db.models import Q
 
 # App imports
 from citizenconnect.shortcuts import render
@@ -99,8 +100,8 @@ class Map(TemplateView):
         organisations = api.find_all_organisations("name", "london")
 
         # Get all the open problems and questions currently in the db
-        problems = Problem.objects.all().order_by('choices_id')
-        questions = Question.objects.all().order_by('choices_id')
+        problems = Problem.objects.all().filter(Q(status=Problem.NEW) | Q(status=Problem.ACKNOWLEDGED)).order_by('choices_id')
+        questions = Question.objects.all().filter(Q(status=Question.NEW) | Q(status=Question.ACKNOWLEDGED)).order_by('choices_id')
         # Munge them into one list, sorted by provider's id
         issues = sorted(
             chain(problems, questions),
@@ -116,7 +117,6 @@ class Map(TemplateView):
                     issues.remove(issue)
 
         # Make it into a JSON string
-        print organisations
         context['organisations'] = json.dumps(organisations)
 
         return context
