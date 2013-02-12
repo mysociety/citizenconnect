@@ -21,8 +21,7 @@ class MessageModel(AuditedModel):
         (u'phone', u'By Phone')
     )
 
-    organisation_type = models.CharField(max_length=100, choices=settings.ORGANISATION_CHOICES)
-    choices_id = models.IntegerField(db_index=True)
+    organisation = models.ForeignKey('organisations.Organisation')
     description = models.TextField()
     reporter_name = models.CharField(max_length=200, blank=True)
     reporter_phone = models.CharField(max_length=50, blank=True)
