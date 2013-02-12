@@ -8,6 +8,7 @@ class Organisation(AuditedModel, models.Model):
     name = models.TextField()
     organisation_type = models.CharField(max_length=100, choices=settings.ORGANISATION_CHOICES)
     choices_id = models.IntegerField(db_index=True)
+    ods_code = models.CharField(max_length=8, db_index=True)
     lon = models.FloatField()
     lat = models.FloatField()
 
