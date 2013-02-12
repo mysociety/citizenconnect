@@ -127,10 +127,16 @@ class ChoicesAPIOrganisationsExampleFileTests(ExampleFileAPITest):
         self.assertEqual(str(exception), 'Unknown organisation type: someprovider')
 
     @override_settings(NHS_CHOICES_API_KEY='OURKEY')
-    def test_generates_api_url(self):
+    def test_generates_api_url_for_postcode(self):
         self._api.find_organisations('gppractices', 'postcode', 'SW1A')
         expected = 'http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/postcode/SW1A.xml?range=5&apikey=OURKEY'
-        urllib.urlopen.assert_called_once_with(expected)
+        urllib.urlopen.assert_called_with(expected)
+
+    @override_settings(NHS_CHOICES_API_KEY='OURKEY')
+    def test_generates_api_url_for_all(self):
+        self._api.find_organisations('gppractices', 'all')
+        expected = 'http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/all.xml?apikey=OURKEY'
+        urllib.urlopen.assert_called_with(expected)
 
     def test_finds_all_organisations(self):
         # Mock find_organisations to return a dummy result
