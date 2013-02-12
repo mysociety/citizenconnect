@@ -49,6 +49,8 @@ class ExampleFileAPITest(TestCase):
         cls._organisations_path = os.path.abspath(organisations.__path__[0])
         cls._example_data = open(os.path.join(cls._organisations_path, 'fixtures', cls._example_file))
         urllib.urlopen = MagicMock(return_value=cls._example_data)
+        cls._real_api_key = settings.NHS_CHOICES_API_KEY
+        settings.NHS_CHOICES_API_KEY = 'OURKEY'
 
     def setUp(self):
         # Reset the api in case we modify it inside tests
@@ -62,6 +64,7 @@ class ExampleFileAPITest(TestCase):
     @classmethod
     def tearDownClass(cls):
         cls._example_data.close()
+        settings.NHS_CHOICES_API_KEY = cls._real_api_key
 
 
 class ChoicesAPIOrganisationsExampleFileTests(ExampleFileAPITest):
