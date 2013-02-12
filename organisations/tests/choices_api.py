@@ -6,6 +6,7 @@ import urllib
 # Django imports
 from django.test import TestCase
 from django.conf import settings
+from django.test.utils import override_settings
 
 # App imports
 import organisations
@@ -49,8 +50,6 @@ class ExampleFileAPITest(TestCase):
         cls._organisations_path = os.path.abspath(organisations.__path__[0])
         cls._example_data = open(os.path.join(cls._organisations_path, 'fixtures', cls._example_file))
         urllib.urlopen = MagicMock(return_value=cls._example_data)
-        cls._real_api_key = settings.NHS_CHOICES_API_KEY
-        settings.NHS_CHOICES_API_KEY = 'OURKEY'
 
     def setUp(self):
         # Reset the api in case we modify it inside tests
@@ -64,8 +63,6 @@ class ExampleFileAPITest(TestCase):
     @classmethod
     def tearDownClass(cls):
         cls._example_data.close()
-        settings.NHS_CHOICES_API_KEY = cls._real_api_key
-
 
 class ChoicesAPIOrganisationsExampleFileTests(ExampleFileAPITest):
 
@@ -129,6 +126,7 @@ class ChoicesAPIOrganisationsExampleFileTests(ExampleFileAPITest):
         exception = context_manager.exception
         self.assertEqual(str(exception), 'Unknown organisation type: someprovider')
 
+    @override_settings(NHS_CHOICES_API_KEY='OURKEY')
     def test_generates_api_url(self):
         self._api.find_organisations('gppractices', 'postcode', 'SW1A')
         expected = 'http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/postcode/SW1A.xml?range=5&apikey=OURKEY'
