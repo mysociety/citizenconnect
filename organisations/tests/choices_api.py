@@ -5,6 +5,7 @@ import urllib
 
 # Django imports
 from django.test import TestCase
+from django.conf import settings
 
 # App imports
 import organisations
@@ -115,7 +116,7 @@ class ChoicesAPIOrganisationsExampleFileTests(ExampleFileAPITest):
         # Mock find_organisations to return a dummy result
         self._api.find_organisations = MagicMock(return_value=[{'name':'Test Organisation'}])
         # We expect it to be called once for each organisation type
-        expected_number_of_results = len(self._api.organisation_types())
+        expected_number_of_results = len(settings.ORGANISATION_TYPES)
         organisations = self._api.get_all_organisations("postcode", "SW1A1AA")
         self.assertEqual(len(organisations), expected_number_of_results)
 

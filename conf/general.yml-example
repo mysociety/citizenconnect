@@ -33,3 +33,8 @@ NHS_CHOICES_BASE_URL: 'http://v1.syndication.nhschoices.nhs.uk/'
 ALLOWED_COBRANDS:
   - choices
   - myhealthlondon
+
+# Organisation choices
+ORGANISATION_CHOICES:
+  - ['gppractices', 'GP']
+  - ['hospitals', 'Hospital']

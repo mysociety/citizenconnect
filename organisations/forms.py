@@ -8,6 +8,6 @@ from django.conf import settings
 from .choices_api import ChoicesAPI
 
 class OrganisationFinderForm(forms.Form):
-    organisation_type = forms.ChoiceField(choices=[('gppractices', 'GP'), ('hospitals', 'Hospital')])
+    organisation_type = forms.ChoiceField(choices=settings.ORGANISATION_CHOICES)
     location = forms.CharField(required=True)
 

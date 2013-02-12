@@ -1,4 +1,7 @@
+
 from django.db import models
+from django.conf import settings
+
 from organisations import choices_api
 
 class AuditedModel(models.Model):
@@ -13,17 +16,12 @@ class MessageModel(AuditedModel):
     Abstract model for base functionality of messages sent to NHS Organisations
     """
 
-    ORGANISATION_CHOICES = (
-        (u'hospitals', u'Hospital'),
-        (u'gppractices', u'GP'),
-    )
-
     CONTACT_CHOICES = (
         (u'email', u'By Email'),
         (u'phone', u'By Phone')
     )
 
-    organisation_type = models.CharField(max_length=100, choices=ORGANISATION_CHOICES)
+    organisation_type = models.CharField(max_length=100, choices=settings.ORGANISATION_CHOICES)
     choices_id = models.IntegerField(db_index=True)
     description = models.TextField()
     reporter_name = models.CharField(max_length=200, blank=True)

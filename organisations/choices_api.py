@@ -19,9 +19,6 @@ class ChoicesAPI():
     def search_types(self):
         return ['postcode', 'name']
 
-    def organisation_types(self):
-        return ['hospitals', 'gppractices']
-
     def example_hospitals(self):
         example_data = open(os.path.join(settings.PROJECT_ROOT, 'organisations', 'fixtures', 'SW1A1AA.xml'))
         organisations = self.parse_organisations(example_data, 'hospitals')
@@ -45,7 +42,7 @@ class ChoicesAPI():
 
         organisations = []
 
-        for organisation_type in self.organisation_types():
+        for organisation_type in settings.ORGANISATION_TYPES:
             results = self.find_organisations(search_type, search_value, organisation_type)
             organisations.extend(results)
 
@@ -54,7 +51,7 @@ class ChoicesAPI():
     def find_organisations(self, search_type, search_value, organisation_type):
         if search_type not in self.search_types():
             raise ValueError("Unknown search type: %s" % (search_type))
-        if organisation_type not in self.organisation_types():
+        if organisation_type not in settings.ORGANISATION_TYPES:
             raise ValueError("Unknown organisation type: %s" % (organisation_type))
         path_elements = ['organisations',
                          organisation_type,
