@@ -49,6 +49,7 @@ class ChoicesAPI():
         return organisations
 
     def find_organisations(self, organisation_type, search_type, search_value=None):
+
         if search_type not in self.search_types():
             raise ValueError("Unknown search type: %s" % (search_type))
         if organisation_type not in settings.ORGANISATION_TYPES:
@@ -110,11 +111,12 @@ class ChoicesAPI():
             content = entry_element.find('%scontent' % self.atom_namespace)
             summary = content.find('%sorganisationSummary' % self.services_namespace)
             organisation['name'] = summary.find('%sname' % self.services_namespace).text
-            ods_element = summary.find('%sodsCode' % self.services_namespace)
-            if ods_element != None:
-                organisation['ods_code'] = ods_element.text
-            else:
-                organisation['ods_code'] = None
+            organisation['ods_code'] = None
+            ods_variants = ['odscode', 'odsCode']
+            for ods_variant in ods_variants:
+                ods_element = summary.find('%s%s' % (self.services_namespace, ods_variant))
+                if ods_element != None:
+                    organisation['ods_code'] = ods_element.text
             organisation['organisation_type'] = organisation_type
             coordinates = summary.find('%sgeographicCoordinates' % self.services_namespace)
             lon = float(coordinates.find('%slongitude' % self.services_namespace).text)

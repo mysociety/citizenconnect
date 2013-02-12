@@ -6,6 +6,7 @@ import urllib
 # Django imports
 from django.test import TestCase
 from django.conf import settings
+from django.test.utils import override_settings
 
 # App imports
 import organisations
@@ -48,13 +49,11 @@ class ExampleFileAPITest(TestCase):
     def setUpClass(cls):
         cls._organisations_path = os.path.abspath(organisations.__path__[0])
         cls._example_data = open(os.path.join(cls._organisations_path, 'fixtures', cls._example_file))
-        urllib.urlopen = MagicMock(return_value=cls._example_data)
-        cls._real_api_key = settings.NHS_CHOICES_API_KEY
-        settings.NHS_CHOICES_API_KEY = 'OURKEY'
 
     def setUp(self):
         # Reset the api in case we modify it inside tests
         self._api = ChoicesAPI()
+        urllib.urlopen = MagicMock(return_value=self._example_data)
 
     # Reset the fixture file so that we can read it again
     def tearDown(self):
@@ -64,15 +63,13 @@ class ExampleFileAPITest(TestCase):
     @classmethod
     def tearDownClass(cls):
         cls._example_data.close()
-        settings.NHS_CHOICES_API_KEY = cls._real_api_key
 
-
-class ChoicesAPIOrganisationsExampleFileTests(ExampleFileAPITest):
+class ChoicesAPIOrganisationsSearchResultExampleFileTests(ExampleFileAPITest):
 
     @classmethod
     def setUpClass(cls):
         cls._example_file = 'SW1A1AA.xml'
-        super(ChoicesAPIOrganisationsExampleFileTests, cls).setUpClass()
+        super(ChoicesAPIOrganisationsSearchResultExampleFileTests, cls).setUpClass()
 
     def parse_example_file(self, organisation_type):
         results = self._api.parse_organisations(self._example_data, organisation_type)
@@ -129,9 +126,16 @@ class ChoicesAPIOrganisationsExampleFileTests(ExampleFileAPITest):
         exception = context_manager.exception
         self.assertEqual(str(exception), 'Unknown organisation type: someprovider')
 
-    def test_generates_api_url(self):
+    @override_settings(NHS_CHOICES_API_KEY='OURKEY')
+    def test_generates_api_url_for_postcode(self):
         self._api.find_organisations('gppractices', 'postcode', 'SW1A')
         expected = 'http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/postcode/SW1A.xml?range=5&apikey=OURKEY'
+        urllib.urlopen.assert_called_once_with(expected)
+
+    @override_settings(NHS_CHOICES_API_KEY='OURKEY')
+    def test_generates_api_url_for_all(self):
+        self._api.find_organisations('gppractices', 'all')
+        expected = 'http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/all.xml?apikey=OURKEY'
         urllib.urlopen.assert_called_once_with(expected)
 
     def test_finds_all_organisations(self):
@@ -141,6 +145,22 @@ class ChoicesAPIOrganisationsExampleFileTests(ExampleFileAPITest):
         expected_number_of_results = len(settings.ORGANISATION_TYPES)
         organisations = self._api.find_all_organisations("postcode", "SW1A1AA")
         self.assertEqual(len(organisations), expected_number_of_results)
+
+class ChoicesAPIOrganisationsAllResultExampleFileTests(ExampleFileAPITest):
+
+    @classmethod
+    def setUpClass(cls):
+        # Fixture for a particular organisation
+        cls._example_file = 'gp_all_page.xml'
+        super(ChoicesAPIOrganisationsAllResultExampleFileTests, cls).setUpClass()
+
+    # ODS codes in a different format
+    def test_parses_ods_codes(self):
+        results = self._api.parse_organisations(self._example_data, 'gppractices')
+        first_expected_id = 'M85174'
+        last_expected_id = 'D81035'
+        self.assertEqual(results[0]['ods_code'], first_expected_id)
+        self.assertEqual(results[-1]['ods_code'], last_expected_id)
 
 class ChoicesAPIOneOrganisationExampleFileTests(ExampleFileAPITest):
 
