@@ -34,7 +34,7 @@ The provided script should work for Debian based hosts, see https://docs.djangop
 
 ### Create a postgres user and database from the template
     sudo -u postgres psql
-    postgres=### CREATE USER citizenconnect WITH password 'citizenconnect';
+    postgres=### CREATE USER citizenconnect WITH PASSWORD 'citizenconnect' CREATEDB;
     CREATE ROLE
     postgres=### CREATE DATABASE citizenconnect WITH TEMPLATE template_postgis OWNER citizenconnect;
     CREATE DATABASE
