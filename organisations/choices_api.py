@@ -48,15 +48,18 @@ class ChoicesAPI():
 
         return organisations
 
-    def find_organisations(self, organisation_type, search_type, search_value):
+    def find_organisations(self, organisation_type, search_type, search_value=None):
         if search_type not in self.search_types():
             raise ValueError("Unknown search type: %s" % (search_type))
         if organisation_type not in settings.ORGANISATION_TYPES:
             raise ValueError("Unknown organisation type: %s" % (organisation_type))
         path_elements = ['organisations',
                          organisation_type,
-                         search_type,
-                         search_value + '.xml']
+                         search_type]
+        if search_value:
+            path_elements.append(search_value)
+        # Add the format suffix to the last path element
+        path_elements[-1] =  path_elements[-1] + '.xml'
         parameters = {}
         if search_type == 'postcode':
             parameters['range'] = 5
