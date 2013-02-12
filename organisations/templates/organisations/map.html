@@ -21,12 +21,9 @@
 {{ block.super }}
 <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
 <script src="{% static 'js/leaflet.markercluster.js' %}"></script>
-<script src="{% static 'js/hospitals.js' %}"></script>
-<script src="{% static 'js/gppractices.js' %}"></script>
 <script>
-
     $(document).ready(function(){
-            var providers = [],
+            var providers = {{ organisations|safe }},
                 map = new L.map('public-map').setView([51.505, -0.09], 13),
                 markers = new L.MarkerClusterGroup({
                     disableClusteringAtZoom:14
@@ -39,14 +36,27 @@
                }).addTo(map);
 
             // Markers
-            providers = providers.concat(window.hospitals, window.gppractices);
             $.each(providers, function(index, provider) {
                 var latLng = new L.LatLng(provider.coordinates.lat, provider.coordinates.lon);
                 var marker = new L.Marker(latLng, {
-                    title: provider.name
+                    title: provider.name,
+                    issues_count: provider.issues.length
                 });
                 var type = provider.organisation_type === 'gppractices' ? 'GP' : 'Hospital';
-                marker.bindPopup("<strong>" + provider.name + "</strong><br/>Type: " + type);
+                var info = "<strong>" + provider.name + "</strong><br/>";
+                info += "Type: " + type + "<br/>";
+                if (provider.issues.length > 0) {
+                    info += provider.issues.length + " Open issues: </br>";
+                    info += "<ul>";
+                    for(var i = 0; i < provider.issues.length; i++) {
+                        info += "<li>" + provider.issues[i] + "</li>";
+                    }
+                    info += "</ul>"
+                }
+                else {
+                    info += "No Open issues"
+                }
+                marker.bindPopup(info);
                 markers.addLayer(marker);
             });
             map.addLayer(markers);

@@ -3,9 +3,11 @@ from ukpostcodeutils import validation
 from itertools import chain
 from operator import attrgetter
 import re
+import json
 
 # Django imports
 from django.views.generic import FormView, TemplateView
+from django.template.defaultfilters import escape
 
 # App imports
 from citizenconnect.shortcuts import render
@@ -82,6 +84,42 @@ class OrganisationIssuesAwareViewMixin(object):
 
 class Map(TemplateView):
     template_name = 'organisations/map.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(Map, self).get_context_data(**kwargs)
+
+        # Get all the organisations so that we can dump them as json into
+        # the page template
+
+        # TODO - All the following is inefficient and probably irrelevant when
+        # we have organisations cached in the local db and we can link issues
+        # to them directly.
+
+        api = ChoicesAPI()
+        organisations = api.get_all_organisations("name", "london")
+
+        # Get all the open problems and questions currently in the db
+        problems = Problem.objects.all().order_by('choices_id')
+        questions = Question.objects.all().order_by('choices_id')
+        # Munge them into one list, sorted by provider's id
+        issues = sorted(
+            chain(problems, questions),
+            key=attrgetter('choices_id'),
+            reverse=True
+        )
+        # Connect open issues to organisations
+        for organisation in organisations:
+            organisation['issues'] = []
+            for issue in issues:
+                if str(issue.choices_id) == organisation['choices_id']:
+                    organisation['issues'].append(escape(issue.description))
+                    issues.remove(issue)
+
+        # Make it into a JSON string
+        print organisations
+        context['organisations'] = json.dumps(organisations)
+
+        return context
 
 class PickProvider(FormView):
     template_name = 'organisations/pick-provider.html'
