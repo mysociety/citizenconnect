@@ -117,7 +117,7 @@ class ChoicesAPIOrganisationsExampleFileTests(ExampleFileAPITest):
         self._api.find_organisations = MagicMock(return_value=[{'name':'Test Organisation'}])
         # We expect it to be called once for each organisation type
         expected_number_of_results = len(settings.ORGANISATION_TYPES)
-        organisations = self._api.get_all_organisations("postcode", "SW1A1AA")
+        organisations = self._api.find_all_organisations("postcode", "SW1A1AA")
         self.assertEqual(len(organisations), expected_number_of_results)
 
 class ChoicesAPIOneOrganisationExampleFileTests(ExampleFileAPITest):

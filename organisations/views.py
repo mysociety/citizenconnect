@@ -96,7 +96,7 @@ class Map(TemplateView):
         # to them directly.
 
         api = ChoicesAPI()
-        organisations = api.get_all_organisations("name", "london")
+        organisations = api.find_all_organisations("name", "london")
 
         # Get all the open problems and questions currently in the db
         problems = Problem.objects.all().order_by('choices_id')

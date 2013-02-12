@@ -33,9 +33,9 @@ class ChoicesAPI():
                                                         'base_url': settings.NHS_CHOICES_BASE_URL}
         return urllib.urlopen(url)
 
-    def get_all_organisations(self, search_type, search_value):
+    def find_all_organisations(self, search_type, search_value=None):
         """
-        Get all the organisations in the choices api for a given search
+        Find all the organisations in the choices api for a given search
         """
         if search_type not in self.search_types():
             raise ValueError("Unknown search type: %s" % (search_type))
