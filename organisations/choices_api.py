@@ -17,7 +17,7 @@ class ChoicesAPI():
         self.syndication_namespace = '{http://schemas.datacontract.org/2004/07/NHSChoices.Syndication.Resources}'
 
     def search_types(self):
-        return ['postcode', 'name']
+        return ['postcode', 'name', 'all']
 
     def example_hospitals(self):
         example_data = open(os.path.join(settings.PROJECT_ROOT, 'organisations', 'fixtures', 'SW1A1AA.xml'))
