@@ -11,3 +11,10 @@ python-virtualenv
 postgresql
 python-psycopg2
 libpq-dev
+
+# Geo Django stuff
+binutils
+gdal-bin
+libproj-dev
+postgresql-9.1-postgis
+postgresql-server-dev-9.1
