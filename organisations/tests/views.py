@@ -1,4 +1,6 @@
 import os
+from mock import patch
+import json
 
 # Django imports
 from django.test import TestCase
@@ -189,8 +191,14 @@ class OrganisationMapTests(MockedChoicesAPITest):
         self.assertEqual(resp.status_code, 200)
 
     def test_organisations_json_displayed(self):
+        # Set some dummy data
         resp = self.client.get(self.map_url)
-        self.assertEqual(resp.context['organisations'], self._organisations_no_issues_json)
+        response_json = json.loads(resp.context['organisations'])
+        self.assertEqual(len(response_json), 2)
+        self.assertEqual(response_json[0]['choices_id'], "18444")
+        self.assertEqual(response_json[0]['issues'], [])
+        self.assertEqual(response_json[1]['choices_id'], "12702")
+        self.assertEqual(response_json[1]['issues'], [])
 
     def test_problems_and_questions_in_json(self):
         # Add some problem and questions into the db
@@ -199,7 +207,9 @@ class OrganisationMapTests(MockedChoicesAPITest):
         create_test_instance(Question, {'organisation_type': 'gppractices', 'choices_id': 12702})
         create_test_instance(Question, {'organisation_type': 'hospitals', 'choices_id': 18444})
         resp = self.client.get(self.map_url)
-        self.assertEqual(resp.context['organisations'], self._organisations_issues_json)
+        response_json = json.loads(resp.context['organisations'])
+        self.assertEqual(len(response_json[0]['issues']), 2)
+        self.assertEqual(len(response_json[1]['issues']), 2)
 
     def test_closed_problems_not_in_json(self):
         create_test_instance(Problem, {'organisation_type': 'hospitals', 'choices_id': 18444})
@@ -208,5 +218,7 @@ class OrganisationMapTests(MockedChoicesAPITest):
         create_test_instance(Question, {'organisation_type': 'gppractices', 'choices_id': 12702})
         create_test_instance(Question, {'organisation_type': 'gppractices', 'choices_id': 12702, 'status':Question.RESOLVED})
         resp = self.client.get(self.map_url)
-        self.assertEqual(resp.context['organisations'], self._organisations_closed_issues_json)
+        response_json = json.loads(resp.context['organisations'])
+        self.assertEqual(len(response_json[0]['issues']), 1)
+        self.assertEqual(len(response_json[1]['issues']), 1)
 

@@ -102,19 +102,20 @@ class Map(TemplateView):
         # Get all the open problems and questions currently in the db
         problems = Problem.objects.all().filter(Q(status=Problem.NEW) | Q(status=Problem.ACKNOWLEDGED)).order_by('choices_id')
         questions = Question.objects.all().filter(Q(status=Question.NEW) | Q(status=Question.ACKNOWLEDGED)).order_by('choices_id')
+
         # Munge them into one list, sorted by provider's id
         issues = sorted(
             chain(problems, questions),
             key=attrgetter('choices_id'),
             reverse=True
         )
+
         # Connect open issues to organisations
         for organisation in organisations:
             organisation['issues'] = []
             for issue in issues:
                 if str(issue.choices_id) == organisation['choices_id']:
                     organisation['issues'].append(escape(issue.description))
-                    issues.remove(issue)
 
         # Make it into a JSON string
         context['organisations'] = json.dumps(organisations)
