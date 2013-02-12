@@ -20,6 +20,25 @@ class MockedChoicesAPITest(TestCase):
         api_instance = mock_api.return_value
         # Mock the 'get_organisation_name' method of any API instances
         api_instance.get_organisation_name.return_value = 'Test Organisation Name'
+        # Mock the 'find_all_organisations' method of any API Instances
+        api_instance.find_all_organisations.return_value = [
+            {
+                "organisation_type": "hospitals",
+                "name": "Test Hospital Name",
+                "coordinates": {
+                    "lat": 51.5197486877441, "lon": -0.0469740852713585
+                },
+                "choices_id": "18444",
+            },
+            {
+                "organisation_type": "gppractices",
+                "name": "Test GP Name",
+                "coordinates": {
+                    "lat": 51.5197486877441, "lon": -0.0469740852713585
+                },
+                "choices_id": "12702",
+            }
+        ]
         self.addCleanup(choices_api_patcher.stop)
 
 # A test case that uses a fixture file to mock the contents of the API urlopen call
