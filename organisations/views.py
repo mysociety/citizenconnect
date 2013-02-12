@@ -168,6 +168,8 @@ class Summary(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(Summary, self).get_context_data(**kwargs)
         context['organisations'] = Organisation.objects.all()
+        context['problems_categories'] = Problem.CATEGORY_CHOICES
+        context['questions_categories'] = Question.CATEGORY_CHOICES
         return context
 
 class OrganisationDashboard(OrganisationAwareViewMixin,
