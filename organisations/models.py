@@ -19,3 +19,8 @@ class Organisation(AuditedModel, models.Model):
 
     class Meta:
         verbose_name_plural = "organisations"
+
+class Service(AuditedModel):
+    name = models.TextField()
+    service_code = models.TextField()
+    organisation = models.ForeignKey(Organisation, related_name='services')
