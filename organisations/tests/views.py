@@ -181,6 +181,7 @@ class OrganisationMapTests(MockedChoicesAPITest):
         cls._organisations_closed_issues_json = open(os.path.join(cls._organisations_path, 'fixtures', 'map_expected_orgs_with_closed_issues.json')).read()
 
     def setUp(self):
+        super(OrganisationMapTests, self).setUp()
         self.map_url = '/choices/stats/map'
 
     def test_map_page_exists(self):
