@@ -10,7 +10,7 @@ TEMPLATE_DEBUG = DEBUG
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': config.get('CITIZENCONNECT_DB_NAME'),
         'USER': config.get('CITIZENCONNECT_DB_USER'),
         'PASSWORD': config.get('CITIZENCONNECT_DB_PASS'),

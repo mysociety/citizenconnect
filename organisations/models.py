@@ -1,10 +1,13 @@
-from django.db import models
+from django.contrib.gis.db import models
+from citizenconnect.models import AuditedModel
 
 # Create your models here.
-class Organisation(models.Model):
-    created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
+class Organisation(AuditedModel, models.Model):
     name = models.TextField(help_text='The name of the organisation')
+    lon = models.FloatField()
+    lat = models.FloatField()
+
+    objects = models.GeoManager()
 
     def __unicode__(self):
         return self.name

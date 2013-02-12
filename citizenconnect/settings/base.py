@@ -128,6 +128,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django.contrib.admin',
     'django.contrib.admindocs',
+    'django.contrib.gis',
     'south',
     'pagination',
     'organisations',
