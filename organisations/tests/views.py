@@ -175,13 +175,6 @@ class ResponseConfirmTests(TestCase):
 
 class OrganisationMapTests(MockedChoicesAPITest):
 
-    @classmethod
-    def setUpClass(cls):
-        cls._organisations_path = os.path.abspath(organisations.__path__[0])
-        cls._organisations_no_issues_json = open(os.path.join(cls._organisations_path, 'fixtures', 'map_expected_orgs_no_issues.json')).read()
-        cls._organisations_issues_json = open(os.path.join(cls._organisations_path, 'fixtures', 'map_expected_orgs_with_issues.json')).read()
-        cls._organisations_closed_issues_json = open(os.path.join(cls._organisations_path, 'fixtures', 'map_expected_orgs_with_closed_issues.json')).read()
-
     def setUp(self):
         super(OrganisationMapTests, self).setUp()
         self.map_url = '/choices/stats/map'
