@@ -49,11 +49,11 @@ class ExampleFileAPITest(TestCase):
     def setUpClass(cls):
         cls._organisations_path = os.path.abspath(organisations.__path__[0])
         cls._example_data = open(os.path.join(cls._organisations_path, 'fixtures', cls._example_file))
-        urllib.urlopen = MagicMock(return_value=cls._example_data)
 
     def setUp(self):
         # Reset the api in case we modify it inside tests
         self._api = ChoicesAPI()
+        urllib.urlopen = MagicMock(return_value=self._example_data)
 
     # Reset the fixture file so that we can read it again
     def tearDown(self):
@@ -130,13 +130,13 @@ class ChoicesAPIOrganisationsExampleFileTests(ExampleFileAPITest):
     def test_generates_api_url_for_postcode(self):
         self._api.find_organisations('gppractices', 'postcode', 'SW1A')
         expected = 'http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/postcode/SW1A.xml?range=5&apikey=OURKEY'
-        urllib.urlopen.assert_called_with(expected)
+        urllib.urlopen.assert_called_once_with(expected)
 
     @override_settings(NHS_CHOICES_API_KEY='OURKEY')
     def test_generates_api_url_for_all(self):
         self._api.find_organisations('gppractices', 'all')
         expected = 'http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/all.xml?apikey=OURKEY'
-        urllib.urlopen.assert_called_with(expected)
+        urllib.urlopen.assert_called_once_with(expected)
 
     def test_finds_all_organisations(self):
         # Mock find_organisations to return a dummy result
