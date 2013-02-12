@@ -64,12 +64,12 @@ class ExampleFileAPITest(TestCase):
     def tearDownClass(cls):
         cls._example_data.close()
 
-class ChoicesAPIOrganisationsExampleFileTests(ExampleFileAPITest):
+class ChoicesAPIOrganisationsSearchResultExampleFileTests(ExampleFileAPITest):
 
     @classmethod
     def setUpClass(cls):
         cls._example_file = 'SW1A1AA.xml'
-        super(ChoicesAPIOrganisationsExampleFileTests, cls).setUpClass()
+        super(ChoicesAPIOrganisationsSearchResultExampleFileTests, cls).setUpClass()
 
     def parse_example_file(self, organisation_type):
         results = self._api.parse_organisations(self._example_data, organisation_type)
@@ -145,6 +145,22 @@ class ChoicesAPIOrganisationsExampleFileTests(ExampleFileAPITest):
         expected_number_of_results = len(settings.ORGANISATION_TYPES)
         organisations = self._api.find_all_organisations("postcode", "SW1A1AA")
         self.assertEqual(len(organisations), expected_number_of_results)
+
+class ChoicesAPIOrganisationsAllResultExampleFileTests(ExampleFileAPITest):
+
+    @classmethod
+    def setUpClass(cls):
+        # Fixture for a particular organisation
+        cls._example_file = 'gp_all_page.xml'
+        super(ChoicesAPIOrganisationsAllResultExampleFileTests, cls).setUpClass()
+
+    # ODS codes in a different format
+    def test_parses_ods_codes(self):
+        results = self._api.parse_organisations(self._example_data, 'gppractices')
+        first_expected_id = 'M85174'
+        last_expected_id = 'D81035'
+        self.assertEqual(results[0]['ods_code'], first_expected_id)
+        self.assertEqual(results[-1]['ods_code'], last_expected_id)
 
 class ChoicesAPIOneOrganisationExampleFileTests(ExampleFileAPITest):
 
