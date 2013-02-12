@@ -32,7 +32,7 @@
         <table>
             <thead>
                 <tr>
-                    <th class="heading separator">Message Type</th>
+                    <th class="heading separator">Provider Name</th>
                     <th>Last 7 days</th>
                     <th>Last 4 weeks</th>
                     <th class="separator">Last 6 months</th>
@@ -43,8 +43,9 @@
                 </tr>
             </thead>
             <tbody>
+                {% for organisation in organisations %}
                 <tr>
-                    <td class="heading separator">Hospital A</em></td>
+                    <td class="heading separator">{{ organisation.name }}</em></td>
                     <td></td>
                     <td></td>
                     <td class="separator"></td>
@@ -53,6 +54,7 @@
                     <td></td>
                     <td></td>
                 </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>

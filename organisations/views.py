@@ -15,6 +15,7 @@ from citizenconnect.shortcuts import render
 from problems.models import Problem
 from questions.models import Question
 
+from .models import Organisation
 from .forms import OrganisationFinderForm
 from .choices_api import ChoicesAPI
 from .lib import interval_counts
@@ -163,6 +164,11 @@ class OrganisationSummary(OrganisationAwareViewMixin,
 
 class Summary(TemplateView):
     template_name = 'organisations/summary.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(Summary, self).get_context_data(**kwargs)
+        context['organisations'] = Organisation.objects.all()
+        return context
 
 class OrganisationDashboard(OrganisationAwareViewMixin,
                             OrganisationIssuesAwareViewMixin,

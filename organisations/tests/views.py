@@ -215,3 +215,12 @@ class OrganisationMapTests(MockedChoicesAPITest):
         self.assertEqual(len(response_json[0]['issues']), 1)
         self.assertEqual(len(response_json[1]['issues']), 1)
 
+def SummaryTests(TestCase):
+
+    def setUp(self):
+        super(SummaryTests, self).setUp()
+        self.summary_url = '/choices/stats/summary'
+
+    def test_summary_page_exists(self):
+        resp = self.client.get(self.summary_url)
+        self.assertEqual(resp.status_code, 200)
