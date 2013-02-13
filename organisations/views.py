@@ -15,7 +15,7 @@ from problems.models import Problem
 from questions.models import Question
 
 from .forms import OrganisationFinderForm
-from .choices_api import ChoicesAPI
+import choices_api
 from .lib import interval_counts
 from .models import Organisation
 
@@ -33,7 +33,7 @@ class OrganisationList(TemplateView):
         location = self.request.GET.get('location')
         organisation_type = self.request.GET.get('organisation_type')
         context['location'] = location
-        api = ChoicesAPI()
+        api = choices_api.ChoicesAPI()
         postcode = re.sub('\s+', '', location.upper())
         if validation.is_valid_postcode(postcode) or validation.is_valid_partial_postcode(postcode):
             search_type = 'postcode'
