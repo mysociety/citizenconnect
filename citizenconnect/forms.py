@@ -40,21 +40,21 @@ class MessageModelForm(forms.ModelForm):
         return cleaned_data
 
     class Meta:
-        fields = ['description',
-                'category',
-                'organisation_type',
-                'choices_id',
-                'reporter_name',
-                'reporter_phone',
-                'reporter_email',
-                'preferred_contact_method',
-                'public',
-                'public_reporter_name']
+        fields = [
+            'organisation',
+            'description',
+            'category',
+            'reporter_name',
+            'reporter_phone',
+            'reporter_email',
+            'preferred_contact_method',
+            'public',
+            'public_reporter_name'
+        ]
 
         widgets = {
-            # Hide these because they come from the url already
-            'organisation_type': HiddenInput,
-            'choices_id': HiddenInput,
+            # Hide this because it comes from the url already
+            'organisation': HiddenInput,
             # Hide the privacy booleans because they're not very user-friendly
             # so we set them from the radio options in privacy instead
             'public': HiddenInput,

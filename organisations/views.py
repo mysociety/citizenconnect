@@ -8,7 +8,6 @@ import json
 # Django imports
 from django.views.generic import FormView, TemplateView
 from django.template.defaultfilters import escape
-from django.db.models import Q
 
 # App imports
 from citizenconnect.shortcuts import render
@@ -17,8 +16,9 @@ from questions.models import Question
 
 from .models import Organisation
 from .forms import OrganisationFinderForm
-from .choices_api import ChoicesAPI
+import choices_api
 from .lib import interval_counts
+from .models import Organisation
 
 
 class OrganisationList(TemplateView):
@@ -31,7 +31,7 @@ class OrganisationList(TemplateView):
         location = self.request.GET.get('location')
         organisation_type = self.request.GET.get('organisation_type')
         context['location'] = location
-        api = ChoicesAPI()
+        api = choices_api.ChoicesAPI()
         postcode = re.sub('\s+', '', location.upper())
         if validation.is_valid_postcode(postcode) or validation.is_valid_partial_postcode(postcode):
             search_type = 'postcode'
@@ -49,12 +49,8 @@ class OrganisationAwareViewMixin(object):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(OrganisationAwareViewMixin, self).get_context_data(**kwargs)
-        organisation_type = self.kwargs['organisation_type']
-        choices_id = self.kwargs['choices_id']
-        api = ChoicesAPI()
-        context['organisation_name'] = api.get_organisation_name(organisation_type, choices_id)
-        context['choices_id'] = choices_id
-        context['organisation_type'] = organisation_type
+        ods_code = self.kwargs['ods_code']
+        context['organisation'] = Organisation.objects.get(ods_code=ods_code)
         return context
 
 class OrganisationIssuesAwareViewMixin(object):
@@ -66,10 +62,11 @@ class OrganisationIssuesAwareViewMixin(object):
         # Get all the problems and questions
         context = super(OrganisationIssuesAwareViewMixin, self).get_context_data(**kwargs)
         # Get the models related to this organisation, and let the db sort them
-        problems = Problem.objects.all().filter(organisation_type=kwargs['organisation_type'],
-                                                choices_id=kwargs['choices_id']).order_by('-created')
-        questions = Question.objects.all().filter(organisation_type=kwargs['organisation_type'],
-                                                  choices_id=kwargs['choices_id']).order_by('-created')
+        ods_code = self.kwargs['ods_code']
+        organisation = Organisation.objects.get(ods_code=ods_code)
+        problems = organisation.problem_set.all()
+        questions = organisation.question_set.all()
+        context['organisation'] = organisation
         context['problems'] = problems
         context['questions'] = questions
         # Put them into one list, taken from http://stackoverflow.com/questions/431628/how-to-combine-2-or-more-querysets-in-a-django-view
@@ -87,36 +84,32 @@ class Map(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(Map, self).get_context_data(**kwargs)
 
-        # Get all the organisations so that we can dump them as json into
-        # the page template
+        # TODO - Filter by location
+        organisations = Organisation.objects.all()
 
-        # TODO - All the following is inefficient and probably irrelevant when
-        # we have organisations cached in the local db and we can link issues
-        # to them directly.
-
-        api = ChoicesAPI()
-        organisations = api.find_all_organisations("name", "london")
-
-        # Get all the open problems and questions currently in the db
-        problems = Problem.objects.all().filter(Q(status=Problem.NEW) | Q(status=Problem.ACKNOWLEDGED)).order_by('choices_id')
-        questions = Question.objects.all().filter(Q(status=Question.NEW) | Q(status=Question.ACKNOWLEDGED)).order_by('choices_id')
-
-        # Munge them into one list, sorted by provider's id
-        issues = sorted(
-            chain(problems, questions),
-            key=attrgetter('choices_id'),
-            reverse=True
-        )
-
-        # Connect open issues to organisations
+        # TODO - should be able to serialize the organisations list directly
+        # but that'll need some jiggling with the serializers to get the
+        # open issues in too
+        organisations_list = []
         for organisation in organisations:
-            organisation['issues'] = []
-            for issue in issues:
-                if str(issue.choices_id) == organisation['choices_id']:
-                    organisation['issues'].append(escape(issue.description))
+            organisation_dict = {}
+            organisation_dict['ods_code'] = organisation.ods_code
+            organisation_dict['name'] = organisation.name
+            organisation_dict['lon'] = organisation.lon
+            organisation_dict['lat'] = organisation.lat
+            if organisation.organisation_type == 'gppractices':
+                organisation_dict['type'] = "GP"
+            elif organisation.organisation_type == 'hospitals':
+                organisation_dict['type'] = "Hospital"
+            else :
+                organisation_dict['type'] = "Unknown"
+            organisation_dict['issues'] = []
+            for issue in organisation.open_issues:
+                organisation_dict['issues'].append(escape(issue.description))
+            organisations_list.append(organisation_dict)
 
         # Make it into a JSON string
-        context['organisations'] = json.dumps(organisations)
+        context['organisations'] = json.dumps(organisations_list)
 
         return context
 

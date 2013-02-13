@@ -19,7 +19,7 @@
     <div class="feature">
         <ul>
             {% for organisation in organisations %}
-                <li><a href="{% url 'question-form' cobrand=cobrand.name organisation_type=organisation.organisation_type choices_id=organisation.choices_id  %}">{{ organisation.name }}</a></li>
+                <li><a href="{% url 'question-form' cobrand=cobrand.name ods_code=organisation.ods_code %}">{{ organisation.name }}</a></li>
             {% endfor %}
 
         </ul>

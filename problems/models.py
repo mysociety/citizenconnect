@@ -1,9 +1,22 @@
 from django.db import models
+from django.db.models import Q
 from django.conf import settings
 
 from citizenconnect.models import MessageModel
 
+class ProblemManager(models.Manager):
+    use_for_related_fields = True
+
+    def open_problems(self):
+        """
+        Return only open problems
+        """
+        return super(ProblemManager, self).all().filter(Q(status=Problem.NEW) | Q(status=Problem.ACKNOWLEDGED))
+
 class Problem(MessageModel):
+    # Custom manager
+    objects = ProblemManager()
+
     CATEGORY_CHOICES = (
         (u'cleanliness', u'Cleanliness'),
         (u'staff', u'Staff'),
