@@ -37,14 +37,13 @@
 
             // Markers
             $.each(providers, function(index, provider) {
-                var latLng = new L.LatLng(provider.coordinates.lat, provider.coordinates.lon);
+                var latLng = new L.LatLng(provider.lat, provider.lon);
                 var marker = new L.Marker(latLng, {
                     title: provider.name,
                     issues_count: provider.issues.length
                 });
-                var type = provider.organisation_type === 'gppractices' ? 'GP' : 'Hospital';
                 var info = "<strong>" + provider.name + "</strong><br/>";
-                info += "Type: " + type + "<br/>";
+                info += "Type: " + provider.type + "<br/>";
                 if (provider.issues.length > 0) {
                     info += provider.issues.length + " Open issues: </br>";
                     info += "<ul>";

@@ -89,8 +89,29 @@ class Map(TemplateView):
         # TODO - Filter by location
         organisations = Organisation.objects.all()
 
+        # TODO - should be able to serialize the organisations list directly
+        # but that'll need some jiggling with the serializers to get the
+        # open issues in too
+        organisations_list = []
+        for organisation in organisations:
+            organisation_dict = {}
+            organisation_dict['ods_code'] = organisation.ods_code
+            organisation_dict['name'] = organisation.name
+            organisation_dict['lon'] = organisation.lon
+            organisation_dict['lat'] = organisation.lat
+            if organisation.organisation_type == 'gppractices':
+                organisation_dict['type'] = "GP"
+            elif organisation.organisation_type == 'hospitals':
+                organisation_dict['type'] = "Hospital"
+            else :
+                organisation_dict['type'] = "Unknown"
+            organisation_dict['issues'] = []
+            for issue in organisation.open_issues:
+                organisation_dict['issues'].append(escape(issue.description))
+            organisations_list.append(organisation_dict)
+
         # Make it into a JSON string
-        context['organisations'] = json.dumps(list(organisations))
+        context['organisations'] = json.dumps(organisations_list)
 
         return context
 
