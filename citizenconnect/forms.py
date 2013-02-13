@@ -40,14 +40,17 @@ class MessageModelForm(forms.ModelForm):
         return cleaned_data
 
     class Meta:
-        fields = ['description',
-                'category',
-                'reporter_name',
-                'reporter_phone',
-                'reporter_email',
-                'preferred_contact_method',
-                'public',
-                'public_reporter_name']
+        fields = [
+            'organisation',
+            'description',
+            'category',
+            'reporter_name',
+            'reporter_phone',
+            'reporter_email',
+            'preferred_contact_method',
+            'public',
+            'public_reporter_name'
+        ]
 
         widgets = {
             # Hide this because it comes from the url already
