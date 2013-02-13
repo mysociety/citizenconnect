@@ -22,6 +22,7 @@ class MessageModel(AuditedModel):
     )
 
     organisation = models.ForeignKey('organisations.Organisation')
+    service = models.ForeignKey('organisations.Service', null=True, blank=True)
     description = models.TextField()
     reporter_name = models.CharField(max_length=200, blank=True)
     reporter_phone = models.CharField(max_length=50, blank=True)

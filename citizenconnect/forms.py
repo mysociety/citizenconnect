@@ -42,6 +42,7 @@ class MessageModelForm(forms.ModelForm):
     class Meta:
         fields = [
             'organisation',
+            'service',
             'description',
             'category',
             'reporter_name',

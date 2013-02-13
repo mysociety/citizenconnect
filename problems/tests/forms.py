@@ -2,7 +2,7 @@ import uuid
 
 from django.test import TestCase
 
-from organisations.tests import create_test_organisation
+from organisations.tests import create_test_organisation, create_test_service
 
 from ..models import Problem
 from ..forms import ProblemForm
@@ -10,13 +10,17 @@ from ..forms import ProblemForm
 class CreateFormTests(TestCase):
 
     def setUp(self):
-        self.test_organisation = create_test_organisation()
+        self.test_organisation = create_test_organisation({'ods_code': '11111'})
+        self.other_organisation = create_test_organisation({'ods_code': '22222'})
+        self.test_service = create_test_service({'organisation': self.test_organisation})
+        self.other_service = create_test_service({'organisation': self.other_organisation})
         # Create a unique name, to use in queries rather than relying
         # on primary key increments
         self.uuid = uuid.uuid4().hex
         self.form_url = '/choices/problem/problem-form/%s' % self.test_organisation.ods_code
         self.test_problem = {
             'organisation': self.test_organisation.id,
+            'service': self.test_service.id,
             'description': 'This is a problem',
             'category': 'cleanliness',
             'reporter_name': self.uuid,
@@ -41,6 +45,7 @@ class CreateFormTests(TestCase):
         # Check in db
         problem = Problem.objects.get(reporter_name=self.uuid)
         self.assertEqual(problem.organisation, self.test_organisation)
+        self.assertEqual(problem.service, self.test_service)
         self.assertEqual(problem.public, False)
         self.assertEqual(problem.public_reporter_name, False)
         self.assertEqual(problem.description, 'This is a problem')

@@ -9,7 +9,7 @@ from problems.models import Problem
 from questions.models import Question
 
 from ..lib import interval_counts
-from ..models import Organisation
+from ..models import Organisation, Service
 
 def create_test_organisation(attributes={}):
     # Make an organisation
@@ -23,6 +23,17 @@ def create_test_organisation(attributes={}):
     }
     default_attributes.update(attributes)
     instance = Organisation(**dict((k,v) for (k,v) in default_attributes.items() if '__' not in k))
+    instance.save()
+    return instance
+
+def create_test_service(attributes={}):
+    # Make a service
+    default_attributes = {
+        'name': 'Test Service',
+        'service_code': 'SRV111',
+    }
+    default_attributes.update(attributes)
+    instance = Service(**dict((k,v) for (k,v) in default_attributes.items() if '__' not in k))
     instance.save()
     return instance
 

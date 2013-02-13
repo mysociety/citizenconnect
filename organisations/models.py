@@ -22,3 +22,6 @@ class Service(AuditedModel):
     name = models.TextField()
     service_code = models.TextField()
     organisation = models.ForeignKey(Organisation, related_name='services')
+
+    def __unicode__(self):
+        return self.name
