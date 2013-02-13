@@ -6,18 +6,20 @@ import json
 from django.test import TestCase
 
 # App imports
-import organisations
-from . import MockedChoicesAPITest
-from . import create_test_instance
 from problems.models import Problem
 from questions.models import Question
 
-class OrganisationSummaryTests(MockedChoicesAPITest):
+import organisations
+from ..models import Organisation
+from . import MockedChoicesAPITest
+from . import create_test_instance, create_test_organisation
+
+class OrganisationSummaryTests(TestCase):
 
     def setUp(self):
-        super(OrganisationSummaryTests, self).setUp()
-        atts = {'organisation_type': 'gppractices',
-                'choices_id' : 12702}
+        # Make an organisation
+        self.organisation = create_test_organisation()
+        atts = {'organisation': self.organisation}
         atts.update({'category': 'cleanliness'})
         self.cleanliness_problem = create_test_instance(Problem, atts)
         atts.update({'category': 'staff'})
@@ -26,8 +28,8 @@ class OrganisationSummaryTests(MockedChoicesAPITest):
         self.services_question = create_test_instance(Question, atts)
         atts.update({'category': 'general'})
         self.general_question = create_test_instance(Question, atts)
-        self.public_summary_url = '/choices/stats/summary/gppractices/12702'
-        self.private_summary_url = '/private/summary/gppractices/12702'
+        self.public_summary_url = '/choices/stats/summary/%s' % self.organisation.ods_code
+        self.private_summary_url = '/private/summary/%s' % self.organisation.ods_code
         self.urls = [self.public_summary_url, self.private_summary_url]
 
     def test_summary_page_exists(self):
@@ -38,7 +40,7 @@ class OrganisationSummaryTests(MockedChoicesAPITest):
     def test_summary_page_shows_organisation_name(self):
         for url in self.urls:
             resp = self.client.get(url)
-            self.assertTrue('Test Organisation Name Outcomes' in resp.content)
+            self.assertTrue(self.organisation.name in resp.content)
 
     def test_summary_page_has_problems(self):
         for url in self.urls:
@@ -140,11 +142,12 @@ class OrganisationSummaryTests(MockedChoicesAPITest):
         resp = self.client.get(self.private_summary_url)
         self.assertTrue('/private/response' in resp.content)
 
-class OrganisationDashboardTests(MockedChoicesAPITest):
+class OrganisationDashboardTests(TestCase):
 
     def setUp(self):
-        super(OrganisationDashboardTests, self).setUp()
-        self.dashboard_url = '/private/dashboard/gppractices/12702'
+        # Make an organisation
+        self.organisation = create_test_organisation()
+        self.dashboard_url = '/private/dashboard/%s' % self.organisation.ods_code
 
     def test_dashboard_page_exists(self):
         resp = self.client.get(self.dashboard_url)
@@ -152,7 +155,7 @@ class OrganisationDashboardTests(MockedChoicesAPITest):
 
     def test_dashboard_page_shows_organisation_name(self):
         resp = self.client.get(self.dashboard_url)
-        self.assertTrue('Test Organisation Name Dashboard' in resp.content)
+        self.assertTrue(self.organisation.name in resp.content)
 
 class ResponseFormTests(TestCase):
 
@@ -173,10 +176,15 @@ class ResponseConfirmTests(TestCase):
         resp = self.client.get(self.response_confirm_url)
         self.assertEqual(resp.status_code, 200)
 
-class OrganisationMapTests(MockedChoicesAPITest):
+class OrganisationMapTests(TestCase):
 
     def setUp(self):
-        super(OrganisationMapTests, self).setUp()
+        self.hospital = create_test_organisation({
+            'organisation_type': 'hospitals',
+            'choices_id': 18444,
+            'ods_code': 'DEF456'
+        })
+        self.gp = create_test_organisation({'organisation_type':'gppractices'})
         self.map_url = '/choices/stats/map'
 
     def test_map_page_exists(self):
@@ -188,28 +196,28 @@ class OrganisationMapTests(MockedChoicesAPITest):
         resp = self.client.get(self.map_url)
         response_json = json.loads(resp.context['organisations'])
         self.assertEqual(len(response_json), 2)
-        self.assertEqual(response_json[0]['choices_id'], "18444")
+        self.assertEqual(response_json[0]['ods_code'], self.hospital.ods_code)
         self.assertEqual(response_json[0]['issues'], [])
-        self.assertEqual(response_json[1]['choices_id'], "12702")
+        self.assertEqual(response_json[1]['ods_code'], self.gp.ods_code)
         self.assertEqual(response_json[1]['issues'], [])
 
     def test_problems_and_questions_in_json(self):
         # Add some problem and questions into the db
-        create_test_instance(Problem, {'organisation_type': 'hospitals', 'choices_id': 18444})
-        create_test_instance(Problem, {'organisation_type': 'gppractices', 'choices_id': 12702})
-        create_test_instance(Question, {'organisation_type': 'gppractices', 'choices_id': 12702})
-        create_test_instance(Question, {'organisation_type': 'hospitals', 'choices_id': 18444})
+        create_test_instance(Problem, {'organisation': self.hospital})
+        create_test_instance(Problem, {'organisation': self.gp})
+        create_test_instance(Question, {'organisation': self.gp})
+        create_test_instance(Question, {'organisation': self.hospital})
         resp = self.client.get(self.map_url)
         response_json = json.loads(resp.context['organisations'])
         self.assertEqual(len(response_json[0]['issues']), 2)
         self.assertEqual(len(response_json[1]['issues']), 2)
 
     def test_closed_problems_not_in_json(self):
-        create_test_instance(Problem, {'organisation_type': 'hospitals', 'choices_id': 18444})
-        create_test_instance(Problem, {'organisation_type': 'gppractices', 'choices_id': 12702, 'status': Problem.RESOLVED})
-        create_test_instance(Problem, {'organisation_type': 'gppractices', 'choices_id': 12702, 'status': Problem.NOT_RESOLVED})
-        create_test_instance(Question, {'organisation_type': 'gppractices', 'choices_id': 12702})
-        create_test_instance(Question, {'organisation_type': 'gppractices', 'choices_id': 12702, 'status':Question.RESOLVED})
+        create_test_instance(Problem, {'organisation': self.hospital})
+        create_test_instance(Problem, {'organisation': self.gp, 'status': Problem.RESOLVED})
+        create_test_instance(Problem, {'organisation': self.gp, 'status': Problem.NOT_RESOLVED})
+        create_test_instance(Question, {'organisation': self.gp})
+        create_test_instance(Question, {'organisation': self.gp, 'status':Question.RESOLVED})
         resp = self.client.get(self.map_url)
         response_json = json.loads(resp.context['organisations'])
         self.assertEqual(len(response_json[0]['issues']), 1)
