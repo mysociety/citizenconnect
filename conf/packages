@@ -16,5 +16,6 @@ libpq-dev
 binutils
 gdal-bin
 libproj-dev
-postgresql-9.1-postgis
-postgresql-server-dev-9.1
+# Adjust these to match the postgres version you are using
+# postgresql-9.1-postgis
+# postgresql-server-dev-9.1

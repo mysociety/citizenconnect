@@ -13,9 +13,7 @@ up:
     git clone https://github.com/mysociety/citizenconnect.git
 
 ### Install the required software packages
-Assuming you're on a debian/ubuntu server:
-
-    sudo xargs -a conf/packages apt-get install
+Assuming you're on a debian/ubuntu server, you can look in `conf/packages` for a list, for other OSes, google to see what they're called on your system.
 
 ### Make sure you are using a UTF8 locale
     sudo update-locale LANG=en_GB.utf8
