@@ -27,7 +27,7 @@
     </div>
 
     <div class="feature service">
-        <p>Service:  {{ object.get_status_display }}</p>
+        <p>Service:  {{ object.service|default_if_none:"" }}</p>
     </div>
 </div>
 
@@ -64,7 +64,7 @@
 <div class="status">
 
     <div class="feature provider-status">
-        <p>Status: TODO</p>
+        <p>Status: {{ object.get_status_display }}</p>
     </div>
 
     <div class="feature user-status">
