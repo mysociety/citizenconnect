@@ -55,7 +55,7 @@
             <tbody>
                 {% for organisation in hospitals %}
                 <tr>
-                    <td class="heading separator"><a href="">{{ organisation.name }}</a></em></td>
+                    <td class="heading separator"><a href="{% url 'public-org-summary' ods_code=organisation.ods_code cobrand=cobrand.name %}">{{ organisation.name }}</a></em></td>
                     <td></td>
                     <td></td>
                     <td class="separator"></td>
@@ -110,7 +110,7 @@
             <tbody>
                 {% for organisation in gppractices %}
                 <tr>
-                    <td class="heading separator"><a href="">{{ organisation.name }}</a></em></td>
+                    <td class="heading separator"><a href="{% url 'public-org-summary' ods_code=organisation.ods_code cobrand=cobrand.name %}">{{ organisation.name }}</a></em></td>
                     <td></td>
                     <td></td>
                     <td class="separator"></td>
