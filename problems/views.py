@@ -6,19 +6,14 @@ from django.shortcuts import get_object_or_404
 
 # App imports
 from citizenconnect.shortcuts import render
-from organisations.forms import OrganisationFinderForm
-from organisations.views import OrganisationList, OrganisationAwareViewMixin
+from organisations.views import PickProviderBase, OrganisationAwareViewMixin
 from organisations.models import Organisation
 
 from .forms import ProblemForm
 from .models import Problem
 
-class PickProvider(FormView):
-    template_name = 'problems/pick-provider.html'
-    form_class = OrganisationFinderForm
-
-class ProviderResults(OrganisationList):
-    template_name = 'problems/provider-results.html'
+class PickProvider(PickProviderBase):
+    result_link_url_name = 'problem-form'
 
 class ProblemCreate(OrganisationAwareViewMixin, CreateView):
     model = Problem

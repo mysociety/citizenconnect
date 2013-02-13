@@ -20,11 +20,11 @@ class PublicViewTests(TestCase):
         resp = self.client.get("/choices/problem/{0}".format(self.test_problem.id))
         self.assertContains(resp, self.test_organisation.name, count=1, status_code=200)
 
-class ProviderResultsTests(MockedChoicesAPITest):
+class ProblemProviderPickerTests(MockedChoicesAPITest):
 
     def setUp(self):
-        super(ProviderResultsTests, self).setUp()
-        self.results_url = "/choices/problem/provider-results?organisation_type=gppractices&location=London"
+        super(ProblemProviderPickerTests, self).setUp()
+        self.results_url = "/choices/problem/pick-provider?organisation_type=gppractices&location=London"
 
     def test_results_page_exists(self):
         resp = self.client.get(self.results_url)

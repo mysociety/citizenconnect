@@ -9,9 +9,8 @@ from django.test import TestCase
 from problems.models import Problem
 from questions.models import Question
 
-import organisations
 from ..models import Organisation
-from . import create_test_instance, create_test_organisation
+from . import MockedChoicesAPITest, create_test_instance, create_test_organisation
 
 class OrganisationSummaryTests(TestCase):
 
@@ -231,3 +230,17 @@ def SummaryTests(TestCase):
     def test_summary_page_exists(self):
         resp = self.client.get(self.summary_url)
         self.assertEqual(resp.status_code, 200)
+
+class ProviderPickerTests(MockedChoicesAPITest):
+
+    def setUp(self):
+        super(ProviderPickerTests, self).setUp()
+        self.results_url = "/choices/stats/pick-provider?organisation_type=gppractices&location=London"
+
+    def test_results_page_exists(self):
+        resp = self.client.get(self.results_url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_results_page_shows_organisations(self):
+        resp = self.client.get(self.results_url)
+        self.assertContains(resp, self.mock_gp_result['name'], count=1, status_code=200)

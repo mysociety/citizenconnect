@@ -3,15 +3,10 @@ from django.views.generic import FormView, TemplateView
 
 # App imports
 from citizenconnect.shortcuts import render
-from organisations.forms import OrganisationFinderForm
-from organisations.views import OrganisationList
+from organisations.views import PickProviderBase
 
-class PickProvider(FormView):
-    template_name = 'reviews/pick-provider.html'
-    form_class = OrganisationFinderForm
-
-class ProviderResults(OrganisationList):
-    template_name = 'reviews/provider-results.html'
+class PickProvider(PickProviderBase):
+    result_link_url_name = 'reviews-pick-provider'
 
 class ReviewForm(TemplateView):
     template_name = 'reviews/review-form.html'

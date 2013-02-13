@@ -20,27 +20,6 @@ import choices_api
 from .lib import interval_counts
 from .models import Organisation
 
-
-class OrganisationList(TemplateView):
-    template_name = 'organisations/list.html'
-
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super(OrganisationList, self).get_context_data(**kwargs)
-        # Get the location GET parameter
-        location = self.request.GET.get('location')
-        organisation_type = self.request.GET.get('organisation_type')
-        context['location'] = location
-        api = choices_api.ChoicesAPI()
-        postcode = re.sub('\s+', '', location.upper())
-        if validation.is_valid_postcode(postcode) or validation.is_valid_partial_postcode(postcode):
-            search_type = 'postcode'
-        else:
-            search_type = 'name'
-        organisations = api.find_organisations(organisation_type, search_type, location)
-        context['organisations'] = organisations
-        return context
-
 class OrganisationAwareViewMixin(object):
     """Mixin class for views which need to have a reference to a particular
     organisation, such as problem and question forms."""
@@ -113,12 +92,38 @@ class Map(TemplateView):
 
         return context
 
-class PickProvider(FormView):
-    template_name = 'organisations/pick-provider.html'
-    form_class = OrganisationFinderForm
+class PickProviderBase(TemplateView):
+    template_name = 'provider-results.html'
+    form_template_name = 'pick-provider.html'
+    result_link_url_name = 'public-org-summary'
 
-class ProviderResults(OrganisationList):
-    template_name = 'organisations/provider-results.html'
+    def get(self, *args, **kwargs):
+        super(PickProviderBase, self).get(*args, **kwargs)
+        if self.request.GET:
+            form = OrganisationFinderForm(self.request.GET)
+            if form.is_valid(): # All validation rules pass
+                location = self.request.GET.get('location')
+                organisation_type = self.request.GET.get('organisation_type')
+                context = { 'location': location }
+                api = choices_api.ChoicesAPI()
+                postcode = re.sub('\s+', '', location.upper())
+                if validation.is_valid_postcode(postcode) or validation.is_valid_partial_postcode(postcode):
+                    search_type = 'postcode'
+                else:
+                    search_type = 'name'
+                organisations = api.find_organisations(organisation_type, search_type, location)
+                context['organisations'] = organisations
+                context['result_link_url_name'] = self.result_link_url_name
+                return render(self.request, self.template_name, context)
+            else:
+
+                return render(self.request, self.form_template_name, {
+                    'form': form,
+                })
+        else:
+              return render(self.request, self.form_template_name, {
+                    'form': OrganisationFinderForm(),
+                })
 
 class OrganisationSummary(OrganisationAwareViewMixin,
                           OrganisationIssuesAwareViewMixin,

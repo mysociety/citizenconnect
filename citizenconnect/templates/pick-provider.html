@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load url from future %}
+
+
+{% block title %}Pick Provider{% endblock %}
+
+{% block bodyclasses %}pick-provider{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1>Pick a Provider</h1>
+</div>
+<div class="hero">
+    <form action="" method="get">
+        {% if form.non_field_errors %}
+        <div class="alert alert-error alert-block">
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+
+        {% for field in form.visible_fields %}
+            <div>
+                {{ field.label_tag }}
+                {{ field }}
+                {{ field.errors }}
+                {{ field.help_text }}
+            </div>
+        {% endfor %}
+    <input type="submit" value="Submit" />
+    </form>
+</div>
+{% endblock %}

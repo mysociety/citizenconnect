@@ -5,7 +5,6 @@ from .views import *
 urlpatterns = patterns('',
     url(r'^ask-question$', AskQuestion.as_view(), name='ask-question'),
     url(r'^pick-provider$', PickProvider.as_view(), name='questions-pick-provider'),
-    url(r'^provider-results$', ProviderResults.as_view(), name='questions-provider-results'),
     url(r'^question-form/(?P<ods_code>\w+)$', QuestionCreate.as_view(), name='question-form'),
     url(r'^question-confirm$', QuestionConfirm.as_view(), name='question-confirm'),
     url(r'^(?P<pk>\d+)$', QuestionDetail.as_view(), name='question-view')

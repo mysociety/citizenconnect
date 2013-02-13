@@ -6,8 +6,7 @@ from django.shortcuts import get_object_or_404
 
 # App imports
 from citizenconnect.shortcuts import render
-from organisations.forms import OrganisationFinderForm
-from organisations.views import OrganisationList, OrganisationAwareViewMixin
+from organisations.views import PickProviderBase, OrganisationAwareViewMixin
 from organisations.models import Organisation
 
 from .models import Question
@@ -16,12 +15,8 @@ from .forms import QuestionForm
 class AskQuestion(TemplateView):
     template_name = 'questions/ask-question.html'
 
-class PickProvider(FormView):
-    template_name = 'questions/pick-provider.html'
-    form_class = OrganisationFinderForm
-
-class ProviderResults(OrganisationList):
-    template_name = 'questions/provider-results.html'
+class PickProvider(PickProviderBase):
+    result_link_url_name = 'question-form'
 
 class QuestionCreate(OrganisationAwareViewMixin, CreateView):
     model = Question
