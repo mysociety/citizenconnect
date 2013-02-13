@@ -14,12 +14,11 @@ class Organisation(AuditedModel, models.Model):
 
     objects = models.GeoManager()
 
-    def __unicode__(self):
-        return self.name
-
     @property
     def open_issues(self):
         return list(self.problem_set.open_problems()) + list(self.question_set.open_questions())
 
-    class Meta:
-        verbose_name_plural = "organisations"
+class Service(AuditedModel):
+    name = models.TextField()
+    service_code = models.TextField()
+    organisation = models.ForeignKey(Organisation, related_name='services')

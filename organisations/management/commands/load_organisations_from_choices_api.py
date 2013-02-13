@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 
 from ...choices_api import ChoicesAPI
-from ...models import Organisation
+from ...models import Organisation, Service
 
 class Command(BaseCommand):
     help = 'Load organisations from the Choices API'
@@ -21,3 +21,13 @@ class Command(BaseCommand):
 
             organisation.save()
             self.stdout.write('Created organisation %s\n' % organisation.name)
+            if organisation.organisation_type == 'hospitals':
+                service_info_list = api.get_organisation_services(organisation.organisation_type,
+                                                                  organisation.choices_id)
+                for service_info in service_info_list:
+                    service = Service(organisation=organisation,
+                                      name=service_info['name'],
+                                      service_code=service_info['service_code'])
+                    service.save()
+                    self.stdout.write('Created service %s for %s\n' % (service.name, organisation.name))
+
