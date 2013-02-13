@@ -3,7 +3,7 @@ from django.conf.urls.static import static
 from django.conf.urls import patterns, include, url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
-from .views import Home, CobrandChoice
+from .views import Home, CobrandChoice, About
 # Admin section
 from django.contrib import admin
 admin.autodiscover()
@@ -15,6 +15,7 @@ urlpatterns = patterns('',
     # Examples:
     url(r'^$', CobrandChoice.as_view(), name='cobrand-choice'),
     url(r'^' + cobrand_pattern + r'/?$', Home.as_view(), name='home'),
+    url(r'^' + cobrand_pattern + r'/about$', About.as_view(), name='about'),
 
     url(r'^' + cobrand_pattern + r'/question/', include('questions.urls')),
     url(r'^' + cobrand_pattern + r'/problem/', include('problems.urls')),
