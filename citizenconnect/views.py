@@ -8,3 +8,6 @@ class Home(TemplateView):
 
 class CobrandChoice(TemplateView):
     template_name = 'cobrand_choice.html'
+
+class About(TemplateView):
+    template_name = 'about.html'
