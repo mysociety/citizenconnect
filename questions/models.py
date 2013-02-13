@@ -5,15 +5,18 @@ from django.conf import settings
 from citizenconnect.models import MessageModel
 
 class QuestionManager(models.Manager):
-    user_for_related_fields = True
+    use_for_related_fields = True
 
     def open_questions(self):
         """
         Return only open problems
         """
-        return super(QuestionManager, self).objects.all().filter(Q(status=Question.NEW) | Q(status=Question.ACKNOWLEDGED))
+        return super(QuestionManager, self).all().filter(Q(status=Question.NEW) | Q(status=Question.ACKNOWLEDGED))
 
 class Question(MessageModel):
+    # Custom manager
+    objects = QuestionManager()
+
     CATEGORY_CHOICES = (
         (u'services', u'Services'),
         (u'prescriptions', u'Prescriptions'),

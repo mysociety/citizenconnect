@@ -5,13 +5,13 @@ from django.conf import settings
 from citizenconnect.models import MessageModel
 
 class ProblemManager(models.Manager):
-    user_for_related_fields = True
+    use_for_related_fields = True
 
     def open_problems(self):
         """
         Return only open problems
         """
-        return super(ProblemManager, self).objects.all().filter(Q(status=Problem.NEW) | Q(status=Problem.ACKNOWLEDGED))
+        return super(ProblemManager, self).all().filter(Q(status=Problem.NEW) | Q(status=Problem.ACKNOWLEDGED))
 
 class Problem(MessageModel):
     # Custom manager
