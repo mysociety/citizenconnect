@@ -48,13 +48,5 @@ class MessageModel(AuditedModel):
         # TODO - this could be a custom template filter instead of a model property
         return self.__class__.__name__
 
-    @property
-    def organisation_name(self):
-        """
-        Lookup the organisation's name from the choices api
-        """
-        api = choices_api.ChoicesAPI()
-        return api.get_organisation_name(self.organisation_type, str(self.choices_id))
-
     class Meta:
         abstract = True
