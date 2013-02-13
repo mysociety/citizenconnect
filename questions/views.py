@@ -36,7 +36,7 @@ class QuestionCreate(OrganisationAwareViewMixin, CreateView):
     def get_initial(self):
         initial = super(QuestionCreate, self).get_initial()
         initial = initial.copy()
-        initial['organisation'] = get_object_or_404(Organisation, pk=self.kwargs['ods_code'])
+        initial['organisation'] = get_object_or_404(Organisation, ods_code=self.kwargs['ods_code'])
         return initial
 
 class QuestionConfirm(TemplateView):
