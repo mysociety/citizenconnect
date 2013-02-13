@@ -20,9 +20,6 @@ from .forms import OrganisationFinderForm
 from .choices_api import ChoicesAPI
 from .lib import interval_counts
 
-class OrganisationFinderDemo(FormView):
-    template_name = 'organisations/finder_demo.html'
-    form_class = OrganisationFinderForm
 
 class OrganisationList(TemplateView):
     template_name = 'organisations/list.html'
