@@ -1,8 +1,6 @@
 # Standard imports
-from ukpostcodeutils import validation
 from itertools import chain
 from operator import attrgetter
-import re
 import json
 
 # Django imports
@@ -102,28 +100,14 @@ class PickProviderBase(TemplateView):
         if self.request.GET:
             form = OrganisationFinderForm(self.request.GET)
             if form.is_valid(): # All validation rules pass
-                location = self.request.GET.get('location')
-                organisation_type = self.request.GET.get('organisation_type')
-                context = { 'location': location }
-                api = choices_api.ChoicesAPI()
-                postcode = re.sub('\s+', '', location.upper())
-                if validation.is_valid_postcode(postcode) or validation.is_valid_partial_postcode(postcode):
-                    search_type = 'postcode'
-                else:
-                    search_type = 'name'
-                organisations = api.find_organisations(organisation_type, search_type, location)
-                context['organisations'] = organisations
-                context['result_link_url_name'] = self.result_link_url_name
+                context = {'location': form.cleaned_data['location'],
+                           'organisations': form.cleaned_data['organisations'],
+                           'result_link_url_name': self.result_link_url_name }
                 return render(self.request, self.template_name, context)
             else:
-
-                return render(self.request, self.form_template_name, {
-                    'form': form,
-                })
+                return render(self.request, self.form_template_name, {'form': form})
         else:
-              return render(self.request, self.form_template_name, {
-                    'form': OrganisationFinderForm(),
-                })
+              return render(self.request, self.form_template_name, {'form': OrganisationFinderForm()})
 
 class OrganisationSummary(OrganisationAwareViewMixin,
                           OrganisationIssuesAwareViewMixin,

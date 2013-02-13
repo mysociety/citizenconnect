@@ -47,7 +47,10 @@ class MockedChoicesAPITest(TestCase):
         # Mock the 'find_organisations' method of any API instances
         def find_organisations_side_effect(organisation_type, search_type, location):
             if organisation_type == 'gppractices':
-                return [self.mock_gp_result]
+                if location == 'non-existent':
+                    return []
+                else:
+                    return [self.mock_gp_result]
             elif organisation_type == 'hospitals':
                 return [self.mock_hospital_result]
             else:

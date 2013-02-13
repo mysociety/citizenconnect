@@ -235,7 +235,8 @@ class ProviderPickerTests(MockedChoicesAPITest):
 
     def setUp(self):
         super(ProviderPickerTests, self).setUp()
-        self.results_url = "/choices/stats/pick-provider?organisation_type=gppractices&location=London"
+        self.base_url = "/choices/stats/pick-provider"
+        self.results_url = "%s?organisation_type=gppractices&location=London" % self.base_url
 
     def test_results_page_exists(self):
         resp = self.client.get(self.results_url)
@@ -244,3 +245,11 @@ class ProviderPickerTests(MockedChoicesAPITest):
     def test_results_page_shows_organisations(self):
         resp = self.client.get(self.results_url)
         self.assertContains(resp, self.mock_gp_result['name'], count=1, status_code=200)
+
+    def test_validates_location_present(self):
+        resp = self.client.get("%s?organisation_type=gppractives&location=" % self.base_url)
+        self.assertContains(resp, 'Please enter a location', count=1, status_code=200)
+
+    def test_shows_message_on_no_results(self):
+        resp = self.client.get("%s?organisation_type=gppractices&location=non-existent" % self.base_url)
+        self.assertContains(resp, "We couldn&#39;t find any matches", count=1, status_code=200)
