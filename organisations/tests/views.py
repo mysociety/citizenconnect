@@ -11,7 +11,6 @@ from questions.models import Question
 
 import organisations
 from ..models import Organisation
-from . import MockedChoicesAPITest
 from . import create_test_instance, create_test_organisation
 
 class OrganisationSummaryTests(TestCase):
