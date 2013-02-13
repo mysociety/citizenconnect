@@ -2,23 +2,21 @@ import uuid
 
 from django.test import TestCase
 
-from organisations.tests import MockedChoicesAPITest
+from organisations.tests import create_test_organisation
 
 from ..models import Problem
 from ..forms import ProblemForm
 
-class CreateFormTests(MockedChoicesAPITest):
+class CreateFormTests(TestCase):
 
     def setUp(self):
-
-        super(CreateFormTests, self).setUp()
+        self.test_organisation = create_test_organisation()
         # Create a unique name, to use in queries rather than relying
         # on primary key increments
         self.uuid = uuid.uuid4().hex
-        self.form_url = '/choices/problem/problem-form/gppractices/12702'
+        self.form_url = '/choices/problem/problem-form/%s' % self.test_organisation.ods_code
         self.test_problem = {
-            'organisation_type': 'gppractices',
-            'choices_id': 12702,
+            'organisation': self.test_organisation.id,
             'description': 'This is a problem',
             'category': 'cleanliness',
             'reporter_name': self.uuid,
@@ -35,15 +33,14 @@ class CreateFormTests(MockedChoicesAPITest):
 
     def test_problem_form_shows_provider_name(self):
         resp = self.client.get(self.form_url)
-        self.assertTrue('Test Organisation Name' in resp.content)
+        self.assertTrue(self.test_organisation.name in resp.content)
 
     def test_problem_form_happy_path(self):
         resp = self.client.post(self.form_url, self.test_problem)
         self.assertRedirects(resp, '/choices/problem/problem-confirm')
         # Check in db
         problem = Problem.objects.get(reporter_name=self.uuid)
-        self.assertEqual(problem.organisation_type, 'gppractices')
-        self.assertEqual(problem.choices_id, 12702)
+        self.assertEqual(problem.organisation, self.test_organisation)
         self.assertEqual(problem.public, False)
         self.assertEqual(problem.public_reporter_name, False)
         self.assertEqual(problem.description, 'This is a problem')
