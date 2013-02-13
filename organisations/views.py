@@ -66,8 +66,8 @@ class OrganisationIssuesAwareViewMixin(object):
         # Get the models related to this organisation, and let the db sort them
         ods_code = self.kwargs['ods_code']
         organisation = Organisation.objects.get(ods_code=ods_code)
-        problems = organisation.problem_set
-        questions = organisation.question_set
+        problems = organisation.problem_set.all()
+        questions = organisation.question_set.all()
         context['organisation'] = organisation
         context['problems'] = problems
         context['questions'] = questions
