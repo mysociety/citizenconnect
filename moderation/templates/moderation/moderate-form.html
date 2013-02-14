@@ -10,7 +10,28 @@
 </div>
 <div class="hero">
     <div class="feature">
-        <p>Form goes here.</p>
+        <p>{{ message.issue_type }}<br>
+            Reference number: <strong>{{ message.id }}</strong></br>
+            Received: <strong>{{ message.created }}</strong></br>
+            Sent to: <strong>{{ message.organisation.name }}</strong> {{ message.service|default_if_none:"" }}
+        </p>
+    </div>
+</div>
+<div class="message-details">
+    <div class="feature">
+        <h3>Message</h3>
+        <p>From: {{ message.reporter_name }}</p>
+        <p>{{ message.description }}</p>
+        <h3>Response</h3>
+        <p>TODO</p>
+    </div>
+</div>
+<div class="moderate-form">
+    <div class="feature">
+        <p><a href="{% url 'moderate-confirm' cobrand=cobrand.name %}">Publish/Update Online</a></p>
+    </div>
+    <div class="feature">
+        <p><a href="{% url 'moderate-confirm' cobrand=cobrand.name %}">Not Suitable/Keep Private</a></p>
     </div>
 </div>
 {% endblock %}
