@@ -134,7 +134,8 @@ INSTALLED_APPS = (
     'organisations',
     'questions',
     'problems',
-    'reviews'
+    'reviews',
+    'moderation'
 )
 
 # Log WARN and above to stderr; ERROR and above by email when DEBUG is False.
