@@ -1,13 +1,12 @@
-from citizenconnect.shortcuts import render
-from django.core.urlresolvers import reverse
-
 # Django imports
 from django.views.generic import TemplateView
 from django.shortcuts import get_object_or_404
 from django.forms.widgets import HiddenInput
 from django.template import RequestContext
+from django.core.urlresolvers import reverse
 
 # App imports
+from citizenconnect.shortcuts import render
 from organisations.models import Organisation, Service
 
 class Home(TemplateView):
