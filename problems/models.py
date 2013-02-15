@@ -37,3 +37,11 @@ class Problem(MessageModel):
 
     category = models.CharField(max_length=100, choices=CATEGORY_CHOICES)
     status = models.IntegerField(default=NEW, choices=STATUS_CHOICES)
+
+    @property
+    def prefix(self):
+        return 'P'
+
+    @property
+    def reference_number(self):
+        return '{0}{1}'.format(self.prefix, self.id)

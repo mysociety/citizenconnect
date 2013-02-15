@@ -89,3 +89,12 @@ class ModerateFormViewTests(BaseModerateViewTestCase):
         self.assertContains(resp, self.test_problem.reporter_name)
         self.assertContains(resp, self.test_problem.description)
         self.assertContains(resp, self.test_problem.organisation)
+
+class LookupViewTests(BaseModerateViewTestCase):
+
+    def setUp(self):
+        super(LookupViewTests, self).setUp()
+
+    def test_problem_in_context(self):
+        resp = self.client.get(self.problem_form_url)
+        self.assertEqual(resp.context['message'], self.test_problem)

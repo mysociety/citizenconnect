@@ -130,7 +130,7 @@
             <tbody>
                 {% for problem in problems %}
                     <tr>
-                        <td>{{ problem.id }}</td>
+                        <td>{{ problem.reference_number }}</td>
                         <td>{{ problem.created }}</td>
                         <td>{{ problem.get_status_display }}</td>
                         <td>{{ problem.get_category_display }}</td>
@@ -163,7 +163,7 @@
             <tbody>
                 {% for question in questions %}
                 <tr>
-                    <td>{{ question.id }}</td>
+                    <td>{{ question.reference_number }}</td>
                     <td>{{ question.created }}</td>
                     <td>{{ question.get_status_display }}</td>
                     <td>{{ question.get_category_display }}</td>
