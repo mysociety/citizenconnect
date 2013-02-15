@@ -13,7 +13,7 @@ from problems.models import Problem
 from questions.models import Question
 
 from .models import Organisation
-from .forms import OrganisationFinderForm
+from .forms import OrganisationFinderForm, QuestionResponseForm, ProblemResponseForm
 import choices_api
 from .lib import interval_counts
 from .models import Organisation
@@ -157,9 +157,21 @@ class OrganisationDashboard(OrganisationAwareViewMixin,
                             TemplateView):
     template_name = 'organisations/dashboard.html'
 
-class ResponseForm(TemplateView):
+class ResponseForm(FormView):
 
     template_name = 'organisations/response-form.html'
+
+    def get_form_class(self):
+        """
+        Return the right form class depending on what we're responding to
+        """
+        message_type = self.kwargs['message_type']
+        if message_type == 'question':
+            return QuestionResponseForm
+        elif message_type == 'problem':
+            return ProblemResponseForm
+        else:
+            raise ValueError("Unknown message type: %s" % message_type)
 
     def get_context_data(self, **kwargs):
         context = super(ResponseForm, self).get_context_data(**kwargs)
@@ -171,6 +183,7 @@ class ResponseForm(TemplateView):
         else:
             raise ValueError("Unknown message type: %s" % message_type)
         return context
+
 
 class ResponseConfirm(TemplateView):
     template_name = 'organisations/response-confirm.html'

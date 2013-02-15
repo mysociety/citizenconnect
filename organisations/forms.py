@@ -8,6 +8,9 @@ from django.conf import settings
 
 # App imports
 from citizenconnect.forms import MessageResponseForm
+from problems.models import Problem
+from questions.models import Question
+
 import choices_api
 
 class OrganisationFinderForm(forms.Form):
@@ -35,7 +38,11 @@ class OrganisationFinderForm(forms.Form):
         return cleaned_data
 
 class QuestionResponseForm(MessageResponseForm):
-    model = question
+
+    class Meta(MessageResponseForm.Meta):
+        model = Question
 
 class ProblemResponseForm(MessageResponseForm):
-    mode = problem
+
+    class Meta(MessageResponseForm.Meta):
+        model = Problem
