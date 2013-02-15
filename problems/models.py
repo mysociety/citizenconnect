@@ -13,9 +13,15 @@ class ProblemManager(models.Manager):
         """
         return super(ProblemManager, self).all().filter(Q(status=Problem.NEW) | Q(status=Problem.ACKNOWLEDGED))
 
+class OpenProblemManager(models.Manager):
+
+    def get_query_set(self):
+        return super(OpenProblemManager, self).get_query_set().filter(Q(status=Problem.NEW) | Q(status=Problem.ACKNOWLEDGED))
+
 class Problem(MessageModel):
-    # Custom manager
+    # Custom managers
     objects = ProblemManager()
+    open_objects = OpenProblemManager()
 
     CATEGORY_CHOICES = (
         (u'cleanliness', u'Cleanliness'),

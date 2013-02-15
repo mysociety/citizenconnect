@@ -13,9 +13,15 @@ class QuestionManager(models.Manager):
         """
         return super(QuestionManager, self).all().filter(Q(status=Question.NEW) | Q(status=Question.ACKNOWLEDGED))
 
+class OpenQuestionManager(models.Manager):
+
+    def get_query_set(self):
+        return super(OpenQuestionManager, self).get_query_set().filter(Q(status=Question.NEW) | Q(status=Question.ACKNOWLEDGED))
+
 class Question(MessageModel):
     # Custom manager
     objects = QuestionManager()
+    open_objects = OpenQuestionManager()
 
     CATEGORY_CHOICES = (
         (u'services', u'Services'),
