@@ -170,10 +170,18 @@ class ResponseFormTests(TestCase):
         test_form_values = {
             'description': updated_description
         }
-        resp = self.client.get(self.response_form_url)
-        self.assertEqual(resp.status_code, 200)
+        resp = self.client.post(self.response_form_url)
         problem = Problem.objects.get(pk=self.problem.id)
         self.assertNotEqual(problem.description, updated_description)
+
+    def test_happy_path(self):
+        response = 'This problem is solved'
+        test_form_values = {
+            'response': response
+        }
+        resp = self.client.post(self.response_form_url)
+        problem = Problem.objects.get(pk=self.problem.id)
+        self.assertEqual(problem.response, response)
 
 class ResponseConfirmTests(TestCase):
 

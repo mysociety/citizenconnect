@@ -74,5 +74,6 @@ class MessageResponseForm(forms.ModelForm):
 
     class Meta:
         fields = [
+            'status',
             'response'
         ]
