@@ -1,11 +1,11 @@
-from django.test import TestCase
+from django.test import TransactionTestCase
 
 from organisations.models import Organisation
 from organisations.tests.lib import create_test_instance, create_test_organisation
 from problems.models import Problem
 from questions.models import Question
 
-class BaseModerateViewTests(object):
+class BaseModerateViewTestCase(TransactionTestCase):
 
     def setUp(self):
         # Add some issues
@@ -18,7 +18,7 @@ class BaseModerateViewTests(object):
         self.question_form_url = '/choices/moderate/question/%d' % self.test_question.id
         self.confirm_url = '/choices/moderate/confirm'
 
-class BasicViewTests(BaseModerateViewTests, TestCase):
+class BasicViewTests(BaseModerateViewTestCase):
 
     def setUp(self):
         super(BasicViewTests, self).setUp()
@@ -42,12 +42,12 @@ class BasicViewTests(BaseModerateViewTests, TestCase):
         resp = self.client.get(self.confirm_url)
         self.assertEqual(resp.status_code, 200)
 
-class HomeViewTests(BaseModerateViewTests, TestCase):
+class HomeViewTests(BaseModerateViewTestCase):
 
     def setUp(self):
         super(HomeViewTests, self).setUp()
-        self.closed_problem = create_test_instance(Question, {'organisation':self.test_organisation, 'status': Problem.RESOLVED})
-        self.closed_problem2 = create_test_instance(Question, {'organisation':self.test_organisation, 'status': Problem.NOT_RESOLVED})
+        self.closed_problem = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.RESOLVED})
+        self.closed_problem2 = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.NOT_RESOLVED})
         self.closed_question = create_test_instance(Question, {'organisation':self.test_organisation, 'status': Question.RESOLVED})
 
     def test_issues_in_context(self):
@@ -66,14 +66,11 @@ class HomeViewTests(BaseModerateViewTests, TestCase):
         self.assertContains(resp, self.test_question.summary)
 
     def test_issues_link_to_moderate_form(self):
-        expected_problem_url = 'choices/moderate/problem/%d' % self.test_problem.id
-        expected_question_url = 'choices/moderate/question/%d' % self.test_question.id
-
         resp = self.client.get(self.home_url)
-        self.assertContains(resp, expected_problem_url)
-        self.assertContains(resp, expected_question_url)
+        self.assertContains(resp, self.problem_form_url)
+        self.assertContains(resp, self.question_form_url)
 
-class ModerateFormViewTests(BaseModerateViewTests, TestCase):
+class ModerateFormViewTests(BaseModerateViewTestCase):
 
     def setUp(self):
         super(ModerateFormViewTests, self).setUp()
