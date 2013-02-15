@@ -31,6 +31,8 @@ class MessageModel(AuditedModel):
     public_reporter_name = models.BooleanField()
     preferred_contact_method = models.CharField(max_length=100, choices=CONTACT_CHOICES, default='email')
 
+    response = models.TextField(blank=True)
+
     @property
     def summary(self):
         # TODO - make this a setting?
