@@ -63,3 +63,16 @@ class MessageModelForm(forms.ModelForm):
             # Make preferred contact method a radio button instead of a select
             'preferred_contact_method': RadioSelect
         }
+
+class MessageResponseForm(forms.ModelForm):
+    """
+    Base form class for creating/editing responses to Questions and Problems.
+
+    Since these are just fields, this is basically another MessageModelForm,
+    but with only the response field in it.
+    """
+
+    class Meta:
+        fields = [
+            'response'
+        ]
