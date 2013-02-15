@@ -1,24 +1,10 @@
-from django.test import TransactionTestCase
-
-from organisations.models import Organisation
 from organisations.tests.lib import create_test_instance, create_test_organisation
 from problems.models import Problem
 from questions.models import Question
 
-class BaseModerateViewTestCase(TransactionTestCase):
+from .lib import BaseModerationTestCase
 
-    def setUp(self):
-        # Add some issues
-        self.test_organisation = create_test_organisation()
-        self.test_problem = create_test_instance(Problem, {'organisation':self.test_organisation})
-        self.test_question = create_test_instance(Question, {'organisation':self.test_organisation})
-        self.home_url = '/choices/moderate/'
-        self.lookup_url = '/choices/moderate/lookup'
-        self.problem_form_url = '/choices/moderate/problem/%d' % self.test_problem.id
-        self.question_form_url = '/choices/moderate/question/%d' % self.test_question.id
-        self.confirm_url = '/choices/moderate/confirm'
-
-class BasicViewTests(BaseModerateViewTestCase):
+class BasicViewTests(BaseModerationTestCase):
 
     def setUp(self):
         super(BasicViewTests, self).setUp()
@@ -42,7 +28,7 @@ class BasicViewTests(BaseModerateViewTestCase):
         resp = self.client.get(self.confirm_url)
         self.assertEqual(resp.status_code, 200)
 
-class HomeViewTests(BaseModerateViewTestCase):
+class HomeViewTests(BaseModerationTestCase):
 
     def setUp(self):
         super(HomeViewTests, self).setUp()
@@ -70,7 +56,7 @@ class HomeViewTests(BaseModerateViewTestCase):
         self.assertContains(resp, self.problem_form_url)
         self.assertContains(resp, self.question_form_url)
 
-class ModerateFormViewTests(BaseModerateViewTestCase):
+class ModerateFormViewTests(BaseModerationTestCase):
 
     def setUp(self):
         super(ModerateFormViewTests, self).setUp()
@@ -89,12 +75,3 @@ class ModerateFormViewTests(BaseModerateViewTestCase):
         self.assertContains(resp, self.test_problem.reporter_name)
         self.assertContains(resp, self.test_problem.description)
         self.assertContains(resp, self.test_problem.organisation)
-
-class LookupViewTests(BaseModerateViewTestCase):
-
-    def setUp(self):
-        super(LookupViewTests, self).setUp()
-
-    def test_problem_in_context(self):
-        resp = self.client.get(self.problem_form_url)
-        self.assertEqual(resp.context['message'], self.test_problem)
