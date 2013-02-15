@@ -155,7 +155,7 @@ class OrganisationDashboardTests(TestCase):
         resp = self.client.get(self.dashboard_url)
         self.assertTrue(self.organisation.name in resp.content)
 
-class ResponseFormTests(TestCase):
+class ResponseFormViewTests(TestCase):
 
     def setUp(self):
         self.problem = create_test_instance(Problem, {})
@@ -165,23 +165,14 @@ class ResponseFormTests(TestCase):
         resp = self.client.get(self.response_form_url)
         self.assertEqual(resp.status_code, 200)
 
-    def test_response_form_doesnt_update_message(self):
-        updated_description = "{0} updated", format(self.problem.description)
-        test_form_values = {
-            'description': updated_description
-        }
-        resp = self.client.post(self.response_form_url)
-        problem = Problem.objects.get(pk=self.problem.id)
-        self.assertNotEqual(problem.description, updated_description)
-
-    def test_happy_path(self):
-        response = 'This problem is solved'
-        test_form_values = {
-            'response': response
-        }
-        resp = self.client.post(self.response_form_url)
-        problem = Problem.objects.get(pk=self.problem.id)
-        self.assertEqual(problem.response, response)
+    def test_response_form_contains_message_data(self):
+        resp = self.client.get(self.response_form_url)
+        self.assertContains(resp, self.problem.reference_number)
+        self.assertContains(resp, self.problem.issue_type)
+        self.assertContains(resp, self.problem.reporter_name)
+        self.assertContains(resp, self.problem.reporter_phone)
+        self.assertContains(resp, self.problem.reporter_email)
+        self.assertContains(resp, self.problem.description)
 
 class ResponseConfirmTests(TestCase):
 

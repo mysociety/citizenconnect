@@ -21,36 +21,44 @@
 </div>
 <div class="message-details">
     <div class="feature">
-        <p>Institution name</p>
-        <p>Department</p>
-        <p>Message category</p>
-        <p>User Name <em>Anonimity selected</em></p>
-        <p>User phone <em>Preferred contact method</em></p>
-        <p>User Email</p>
-        <p>Message details...</p>
-        <p>Status</p>
+        <p>Institution name: {{ message.organisation.name }}</p>
+        {% if message.service %}
+            <p>Department {{message.service.name }}</p>
+        {% endif %}
+        <p>Message category: {{ message.issue_type }}</p>
+        <p>User Name: {{ message.reporter_name }} {% if message.private_reporter_name %}<em>Anonimity selected</em><{% endif %}</p>
+        {% if message.reporter_phone %}
+            <p>User phone: {{ message.reporter_phone }} {% if message.preferred_contact_method == 'phone' %}<em>Preferred contact method</em>{% endif %}</p>
+        {% endif %}
+        {% if message.reporter_email %}
+            <p>User email: {{ message.reporter_email }} {% if message.preferred_contact_method == 'email' %}<em>Preferred contact method</em>{% endif %}</p>
+        {% endif %}
+        <p>{{ message.description }}</p>
     </div>
 </div>
-<div class="status-form">
-    <form action="{% url 'org-response-confirm' %}">
-        <div class="feature">
-            <select>
-                <option value="">Change status</option>
-            </select>
+<div class="form">
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="alert alert-error alert-block">
+            {{ form.non_field_errors }}
         </div>
-        <div class="feature">
-            <button type="submit">Submit Status Change</button>
-        </div>
-    </form>
-</div>
-<div class="response-form">
-    <div class="feature">
-        <form action="{% url 'org-response-confirm' %}">
+        {% endif %}
+
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+
+        {% for field in form.visible_fields %}
             <div>
-                <textarea class="message-input" type="text" name="message" placeholder="Public Response (NB only appears when message has been published online)"></textarea>
+                {{ field.label_tag }}
+                {{ field }}
+                {{ field.errors }}
+                {{ field.help_text }}
             </div>
-            <button type="submit">Publish Online</button>
-        </form>
-    </div>
+        {% endfor %}
+        <button type="submit">Publish</button>
+    </form>
 </div>
 {% endblock %}

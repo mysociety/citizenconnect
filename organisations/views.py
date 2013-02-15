@@ -4,8 +4,10 @@ from operator import attrgetter
 import json
 
 # Django imports
-from django.views.generic import FormView, TemplateView
+from django.views.generic import FormView, TemplateView, UpdateView
 from django.template.defaultfilters import escape
+from django.core.urlresolvers import reverse
+from django.template import RequestContext
 
 # App imports
 from citizenconnect.shortcuts import render
@@ -157,9 +159,15 @@ class OrganisationDashboard(OrganisationAwareViewMixin,
                             TemplateView):
     template_name = 'organisations/dashboard.html'
 
-class ResponseForm(FormView):
+class ResponseForm(UpdateView):
 
     template_name = 'organisations/response-form.html'
+
+    # Standardise the context_object's name
+    context_object_name = 'message'
+
+    def get_success_url(self):
+        return reverse('org-response-confirm')
 
     def get_form_class(self):
         """
@@ -173,17 +181,17 @@ class ResponseForm(FormView):
         else:
             raise ValueError("Unknown message type: %s" % message_type)
 
-    def get_context_data(self, **kwargs):
-        context = super(ResponseForm, self).get_context_data(**kwargs)
+    def get_queryset(self):
+        """
+        Override get_queryset to determine it dynamically based on the message_type
+        """
         message_type = self.kwargs['message_type']
         if message_type == 'question':
-            context['message'] = Question.objects.get(id=self.kwargs['pk'])
+            return Question.objects.all()
         elif message_type == 'problem':
-            context['message'] = Problem.objects.get(id=self.kwargs['pk'])
+            return Problem.objects.all()
         else:
             raise ValueError("Unknown message type: %s" % message_type)
-        return context
-
 
 class ResponseConfirm(TemplateView):
     template_name = 'organisations/response-confirm.html'
