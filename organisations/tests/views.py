@@ -165,6 +165,16 @@ class ResponseFormTests(TestCase):
         resp = self.client.get(self.response_form_url)
         self.assertEqual(resp.status_code, 200)
 
+    def test_response_form_doesnt_update_message(self):
+        updated_description = "{0} updated", format(self.problem.description)
+        test_form_values = {
+            'description': updated_description
+        }
+        resp = self.client.get(self.response_form_url)
+        self.assertEqual(resp.status_code, 200)
+        problem = Problem.objects.get(pk=self.problem.id)
+        self.assertNotEqual(problem.description, updated_description)
+
 class ResponseConfirmTests(TestCase):
 
     def setUp(self):
