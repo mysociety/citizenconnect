@@ -71,7 +71,7 @@ class ModerateFormViewTests(BaseModerationTestCase):
 
     def test_message_data_displayed(self):
         resp = self.client.get(self.problem_form_url)
-        self.assertContains(resp, self.test_problem.id)
+        self.assertContains(resp, self.test_problem.reference_number)
         self.assertContains(resp, self.test_problem.reporter_name)
         self.assertContains(resp, self.test_problem.description)
-        self.assertContains(resp, self.test_problem.organisation)
+        self.assertContains(resp, self.test_problem.organisation.name)

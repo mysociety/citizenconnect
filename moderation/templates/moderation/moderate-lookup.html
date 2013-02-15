@@ -13,4 +13,29 @@
         <p>To find a message or response that required further moderation or review, please input the reference number in the box below and hit submit.</p>
     </div>
 </div>
+<div class="form">
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="alert alert-error alert-block">
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+
+        {% for field in form.visible_fields %}
+            <div>
+                {{ field.label_tag }}
+                {{ field }}
+                {{ field.errors }}
+                {{ field.help_text }}
+            </div>
+        {% endfor %}
+        <button type="submit">Submit</button>
+    </form>
+</div>
 {% endblock %}

@@ -3,10 +3,16 @@ from operator import attrgetter
 
 # Django imports
 from django.views.generic import TemplateView, UpdateView
+from django.views.generic.edit import FormView
+from django.template import RequestContext
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 
 # App imports
 from problems.models import Problem
 from questions.models import Question
+
+from .forms import LookupForm
 
 class ModerateHome(TemplateView):
     template_name = 'moderation/moderate-home.html'
@@ -28,11 +34,23 @@ class ModerateHome(TemplateView):
         context['issues'] = issues
         return context
 
-class ModerateLookup(TemplateView):
+class ModerateLookup(FormView):
     template_name = 'moderation/moderate-lookup.html'
+    form_class = LookupForm
+
+    def form_valid(self, form):
+        # Calculate the url
+        context = RequestContext(self.request)
+        moderate_url = reverse("moderate-form", kwargs={'cobrand':context["cobrand"]["name"],
+                                                        'message_type': form.cleaned_data['model_type'],
+                                                        'pk': form.cleaned_data['model_id']})
+        # Redirect to the url we calculated
+        return HttpResponseRedirect(moderate_url)
+
 
 class ModerateForm(UpdateView):
     model = Problem
+    template_name = 'moderation/moderate-form.html'
 
     def get_context_data(self, **kwargs):
         context = super(ModerateForm, self).get_context_data(**kwargs)
