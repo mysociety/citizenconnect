@@ -1,8 +1,9 @@
 from datetime import datetime, timedelta
-from django.utils.timezone import utc
 
 # Django imports
 from django.test import TestCase
+from django.conf import settings
+from django.utils.timezone import utc
 
 # App imports
 from problems.models import Problem
@@ -13,15 +14,18 @@ from ..models import Organisation, Service
 
 def create_test_organisation(attributes={}):
     # Make an organisation
+    coords = {'lat': -0.06213,
+              'lon': 51.536}
     default_attributes = {
         'name':'Test Organisation',
         'organisation_type':'gppractices',
         'choices_id':'12702',
         'ods_code':'F84021',
-        'lon':-0.0621318891644478,
-        'lat':51.536190032959
+        'lon': coords['lat'],
+        'lat': coords['lon'],
+        'point': 'SRID=4326;POINT (0.0 51.0)'
     }
-    default_attributes.update(attributes)
+    # default_attributes.update(attributes)
     instance = Organisation(**dict((k,v) for (k,v) in default_attributes.items() if '__' not in k))
     instance.save()
     return instance

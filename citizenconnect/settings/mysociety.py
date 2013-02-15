@@ -31,3 +31,7 @@ ALLOWED_COBRANDS = config.get('ALLOWED_COBRANDS')
 ORGANISATION_CHOICES = config.get('ORGANISATION_CHOICES')
 
 ORGANISATION_TYPES = [organisation_type for organisation_type, label in ORGANISATION_CHOICES]
+
+MAPIT_BASE_URL = config.get('MAPIT_BASE_URL')
+
+WGS_84 = 4326
