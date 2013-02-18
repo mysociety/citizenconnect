@@ -27,6 +27,7 @@ class Problem(MessageModel):
         (u'cleanliness', u'Cleanliness'),
         (u'staff', u'Staff'),
         (u'appointments', u'Appointments'),
+        (u'other', u'Other'),
     )
 
     NEW = 0
@@ -43,7 +44,7 @@ class Problem(MessageModel):
 
     PREFIX = 'P'
 
-    category = models.CharField(max_length=100, choices=CATEGORY_CHOICES)
+    category = models.CharField(max_length=100, choices=CATEGORY_CHOICES, default='other')
     status = models.IntegerField(default=NEW, choices=STATUS_CHOICES)
 
     @property

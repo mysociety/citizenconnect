@@ -41,7 +41,7 @@ class Question(MessageModel):
 
     PREFIX = 'Q'
 
-    category = models.CharField(max_length=100, choices=CATEGORY_CHOICES)
+    category = models.CharField(max_length=100, choices=CATEGORY_CHOICES, default='general')
     status = models.IntegerField(default=NEW, choices=STATUS_CHOICES)
 
     @property

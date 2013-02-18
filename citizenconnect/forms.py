@@ -61,7 +61,8 @@ class MessageModelForm(forms.ModelForm):
             'public': HiddenInput,
             'public_reporter_name': HiddenInput,
             # Make preferred contact method a radio button instead of a select
-            'preferred_contact_method': RadioSelect
+            'preferred_contact_method': RadioSelect,
+            'category': RadioSelect,
         }
 
 class MessageResponseForm(forms.ModelForm):
