@@ -1,10 +1,14 @@
 # Standard imports
 import re
 from ukpostcodeutils import validation
+import json
+import urllib
 
 # Django imports
 from django import forms
 from django.conf import settings
+from django.contrib.gis.geos import Point
+from django.contrib.gis.measure import Distance
 
 # App imports
 from citizenconnect.forms import MessageResponseForm
@@ -12,10 +16,23 @@ from problems.models import Problem
 from questions.models import Question
 
 import choices_api
+from .models import Organisation
 
 class OrganisationFinderForm(forms.Form):
     organisation_type = forms.ChoiceField(choices=settings.ORGANISATION_CHOICES)
     location = forms.CharField(required=True, error_messages={'required': 'Please enter a location'})
+
+    def organisations_from_postcode(self, postcode, partial=False):
+        path_elements = ['postcode']
+        if partial:
+            path_elements.append('partial')
+        path_elements.append(urllib.quote(postcode))
+        query_path = '/'.join(path_elements)
+        url = "%(base_url)s%(query_path)s" % {'base_url': settings.MAPIT_BASE_URL,
+                                              'query_path': query_path}
+        point_data = json.load(urllib.urlopen(url))
+        point = Point(point_data["wgs84_lon"], point_data["wgs84_lat"])
+        return Organisation.objects.filter(point__distance_lt=(point, Distance(mi=5)))
 
     def clean(self):
         cleaned_data = super(OrganisationFinderForm, self).clean()
@@ -24,11 +41,12 @@ class OrganisationFinderForm(forms.Form):
         if location and organisation_type:
             api = choices_api.ChoicesAPI()
             postcode = re.sub('\s+', '', location.upper())
-            if validation.is_valid_postcode(postcode) or validation.is_valid_partial_postcode(postcode):
-                search_type = 'postcode'
+            if validation.is_valid_postcode(postcode):
+                organisations = self.organisations_from_postcode(postcode)
+            elif validation.is_valid_partial_postcode(postcode):
+                organisations = self.organisations_from_postcode(postcode, partial=True)
             else:
-                search_type = 'name'
-            organisations = api.find_organisations(organisation_type, search_type, location)
+                organisations = Organisation.objects.filter(name__icontains=location)
             if len(organisations) == 0:
                 validation_message = "We couldn't find any matches for '%s'. Please try again." % (location)
                 raise forms.ValidationError(validation_message)
