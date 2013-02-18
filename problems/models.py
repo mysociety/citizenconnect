@@ -44,7 +44,7 @@ class Problem(MessageModel):
 
     PREFIX = 'P'
 
-    category = models.CharField(max_length=100, choices=CATEGORY_CHOICES, default='other')
+    category = models.CharField(max_length=100, choices=CATEGORY_CHOICES, default='other', verbose_name='Please select the category that best describes your problem')
     status = models.IntegerField(default=NEW, choices=STATUS_CHOICES)
 
     @property
