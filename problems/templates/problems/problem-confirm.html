@@ -10,7 +10,16 @@
 </div>
 <div class="hero">
     <div class="feature">
-        <p>Thank you for reporting your problem. If you have chosen for your problem (and the response) to be made publicly available online this will be available (subject to NHS privacy and moderation conditions) within 24 hours.</p>
+        <p>Thank you for reporting your problem.
+Your unique reference number is {{ object.reference_number }}.
+{% if object.reporter_phone %}
+    You entered your phone number as {{ object.reporter_phone }}.
+{% endif %}
+{% if object.reporter_email %}
+    You entered your email address as {{ object.reporter_email }}.
+{% endif %}
+
+             If you have chosen for your problem (and the response) to be made publicly available online this will be available (subject to NHS privacy and moderation conditions) within 24 hours.</p>
     </div>
 </div>
 {% endblock %}

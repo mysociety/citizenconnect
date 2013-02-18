@@ -22,11 +22,11 @@ class About(TemplateView):
 
 class MessageCreateViewMixin(object):
 
-    def get_success_url(self):
-        # Get the request context (ie: run our context processors)
-        # So that we know what cobrand to use
+    def form_valid(self, form):
+        self.object = form.save()
         context = RequestContext(self.request)
-        return reverse(self.confirm_url, kwargs={'cobrand':context["cobrand"]["name"]})
+        context['object'] = self.object
+        return render(self.request, self.confirm_template, context)
 
     def get_initial(self):
         initial = super(MessageCreateViewMixin, self).get_initial()

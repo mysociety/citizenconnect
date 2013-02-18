@@ -38,9 +38,9 @@ class CreateFormTests(TestCase):
 
     def test_question_form_happy_path(self):
         resp = self.client.post(self.form_url, self.test_question)
-        self.assertRedirects(resp, '/choices/question/question-confirm')
         # Check in db
         question = Question.objects.get(reporter_name=self.uuid)
+        self.assertContains(resp, question.reference_number, count=1, status_code=200)
         self.assertEqual(question.organisation, self.test_organisation)
         self.assertEqual(question.public, False)
         self.assertEqual(question.public_reporter_name, False)

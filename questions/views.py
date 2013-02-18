@@ -18,10 +18,7 @@ class PickProvider(PickProviderBase):
 class QuestionCreate(OrganisationAwareViewMixin, MessageCreateViewMixin, CreateView):
     model = Question
     form_class = QuestionForm
-    confirm_url = 'question-confirm'
-
-class QuestionConfirm(TemplateView):
-    template_name = 'questions/question-confirm.html'
+    confirm_template = 'questions/question-confirm.html'
 
 class QuestionDetail(DetailView):
     model = Question

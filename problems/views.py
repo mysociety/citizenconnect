@@ -15,10 +15,7 @@ class PickProvider(PickProviderBase):
 class ProblemCreate(OrganisationAwareViewMixin, MessageCreateViewMixin, CreateView):
     model = Problem
     form_class = ProblemForm
-    confirm_url = 'problem-confirm'
-
-class ProblemConfirm(TemplateView):
-    template_name = 'problems/problem-confirm.html'
+    confirm_template = 'problems/problem-confirm.html'
 
 class ProblemDetail(DetailView):
     model = Problem
