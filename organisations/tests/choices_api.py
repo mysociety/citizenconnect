@@ -68,7 +68,10 @@ class ExampleFileAPITest(TestCase):
     @classmethod
     def setUpClass(cls):
         cls._organisations_path = os.path.abspath(organisations.__path__[0])
-        cls._example_data = open(os.path.join(cls._organisations_path, 'fixtures', cls._example_file))
+        cls._example_data = open(os.path.join(cls._organisations_path,
+                                              'fixtures',
+                                              'choices_api',
+                                              cls._example_file))
 
     def setUp(self):
         # Reset the api in case we modify it inside tests
