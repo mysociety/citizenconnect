@@ -26,6 +26,9 @@ urlpatterns = patterns('',
     url(r'^private/', include('organisations.urls.private')),
     url(r'^private/moderate/', include('moderation.urls')),
 
+    # api urls
+    url(r'^api/v0.1/', include('api.urls')),
+
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
 )
