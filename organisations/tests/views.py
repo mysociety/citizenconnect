@@ -1,5 +1,5 @@
 import os
-from mock import MagicMock, patch
+from mock import Mock, MagicMock, patch
 import json
 import urllib
 
@@ -245,13 +245,21 @@ def SummaryTests(TestCase):
 
 class ProviderPickerTests(TestCase):
 
+    def mock_api_response(self, data, response_code):
+        mock_response = MagicMock()
+        urllib.urlopen = mock_response
+        instance = mock_response.return_value
+        instance.read.return_value = data
+        instance.getcode.return_value = response_code
+
     def setUp(self):
         self._organisations_path = os.path.abspath(organisations.__path__[0])
-        mapit_example = open(os.path.join(self._organisations_path,
+        self.mapit_example = open(os.path.join(self._organisations_path,
                                           'fixtures',
                                           'mapit_api',
-                                          'SW1A1AA.json'))
-        urllib.urlopen = MagicMock(return_value=mapit_example)
+                                          'SW1A1AA.json')).read()
+
+        self. mock_api_response(self.mapit_example, 200)
         self.nearby_gp = create_test_organisation({
             'name': 'Nearby GP',
             'organisation_type': 'gppractices',
@@ -292,3 +300,34 @@ class ProviderPickerTests(TestCase):
     def test_shows_message_on_no_results(self):
         resp = self.client.get("%s?organisation_type=gppractices&location=non-existent" % self.base_url)
         self.assertContains(resp, "We couldn&#39;t find any matches", count=1, status_code=200)
+
+    def test_handles_the_case_where_the_mapit_api_cannot_be_connected_to(self):
+        urllib.urlopen = MagicMock(side_effect=IOError('foo'))
+        resp = self.client.get(self.results_url)
+        expected_message = 'Sorry, our postcode lookup service is temporarily unavailable. Please try later or search by provider name'
+        self.assertContains(resp, expected_message, count=1, status_code=200)
+
+    def test_handes_the_case_where_the_mapit_api_returns_an_error_code(self):
+        self.mock_api_response(self.mapit_example, 500)
+        resp = self.client.get(self.results_url)
+        expected_message = "Sorry, our postcode lookup service is temporarily unavailable. Please try later or search by provider name"
+        self.assertContains(resp, expected_message, count=1, status_code=200)
+
+    def test_handles_the_case_where_mapit_does_not_recognize_the_postcode_as_valid(self):
+        self.mock_api_response(self.mapit_example, 400)
+        resp = self.client.get(self.results_url)
+        expected_message = "Sorry, that doesn&#39;t seem to be a valid postcode."
+        self.assertContains(resp, expected_message, count=1, status_code=200)
+
+    def test_handles_the_case_where_mapit_does_not_have_the_postcode(self):
+        self.mock_api_response(self.mapit_example, 404)
+        resp = self.client.get(self.results_url)
+        expected_message = "Sorry, no postcode matches that query."
+        self.assertContains(resp, expected_message, count=1, status_code=200)
+
+    def test_shows_message_when_no_results_for_postcode(self):
+        Organisation.objects.filter = MagicMock(return_value=[])
+        resp = self.client.get(self.results_url)
+        expected_message = 'Sorry, there are no matches within 5 miles of SW1A 1AA. Please try again'
+        self.assertContains(resp, expected_message, count=1, status_code=200)
+
