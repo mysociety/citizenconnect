@@ -12,55 +12,6 @@ from django.test.utils import override_settings
 import organisations
 from organisations.choices_api import ChoicesAPI
 
-# A test case which will mock out the ChoicesAPI instance methods with some example values
-class MockedChoicesAPITest(TestCase):
-
-    def setUp(self):
-        choices_api_patcher = patch('organisations.choices_api.ChoicesAPI')
-        mock_api = choices_api_patcher.start()
-        api_instance = mock_api.return_value
-
-        # Mock the 'get_organisation_name' method of any API instances
-        api_instance.get_organisation_name.return_value = 'Test Organisation Name'
-
-        # Setup some mock results for different queries
-        self.mock_gp_result = {
-            "organisation_type": "gppractices",
-            "name": "Test GP Name",
-            "coordinates": {
-                "lat": 51.5197486877441, "lon": -0.0469740852713585
-            },
-            "choices_id": "12702",
-            "ods_code": 'ABC123'
-        }
-
-        self.mock_hospital_result = {
-            "organisation_type": "hospitals",
-            "name": "Test Hospital Name",
-            "coordinates": {
-                "lat": 51.5197486877441, "lon": -0.0469740852713585
-            },
-            "choices_id": "18444",
-            "ods_code": 'DEF456'
-        }
-
-        # Mock the 'find_organisations' method of any API instances
-        def find_organisations_side_effect(organisation_type, search_type, location):
-            if organisation_type == 'gppractices':
-                if location == 'non-existent':
-                    return []
-                else:
-                    return [self.mock_gp_result]
-            elif organisation_type == 'hospitals':
-                return [self.mock_hospital_result]
-            else:
-                return []
-        api_instance.find_organisations.side_effect = find_organisations_side_effect
-
-        # Mock the 'find_all_organisations' method of any API Instances
-        api_instance.find_all_organisations.return_value = [self.mock_hospital_result, self.mock_gp_result]
-
-        self.addCleanup(choices_api_patcher.stop)
 
 # A test case that uses a fixture file to mock the contents of the API urlopen call
 class ExampleFileAPITest(TestCase):
@@ -68,7 +19,10 @@ class ExampleFileAPITest(TestCase):
     @classmethod
     def setUpClass(cls):
         cls._organisations_path = os.path.abspath(organisations.__path__[0])
-        cls._example_data = open(os.path.join(cls._organisations_path, 'fixtures', cls._example_file))
+        cls._example_data = open(os.path.join(cls._organisations_path,
+                                              'fixtures',
+                                              'choices_api',
+                                              cls._example_file))
 
     def setUp(self):
         # Reset the api in case we modify it inside tests

@@ -1,16 +1,19 @@
 import os
-from mock import patch
+from mock import Mock, MagicMock, patch
 import json
+import urllib
 
 # Django imports
 from django.test import TestCase
+from django.contrib.gis.geos import Point
 
 # App imports
 from problems.models import Problem
 from questions.models import Question
+import organisations
 
 from ..models import Organisation
-from . import MockedChoicesAPITest, create_test_instance, create_test_organisation
+from . import create_test_instance, create_test_organisation
 
 class OrganisationSummaryTests(TestCase):
 
@@ -240,25 +243,91 @@ def SummaryTests(TestCase):
         resp = self.client.get(self.summary_url)
         self.assertEqual(resp.status_code, 200)
 
-class ProviderPickerTests(MockedChoicesAPITest):
+class ProviderPickerTests(TestCase):
+
+    def mock_api_response(self, data, response_code):
+        mock_response = MagicMock()
+        urllib.urlopen = mock_response
+        instance = mock_response.return_value
+        instance.read.return_value = data
+        instance.getcode.return_value = response_code
 
     def setUp(self):
-        super(ProviderPickerTests, self).setUp()
+        self._organisations_path = os.path.abspath(organisations.__path__[0])
+        self.mapit_example = open(os.path.join(self._organisations_path,
+                                          'fixtures',
+                                          'mapit_api',
+                                          'SW1A1AA.json')).read()
+
+        self. mock_api_response(self.mapit_example, 200)
+        self.nearby_gp = create_test_organisation({
+            'name': 'Nearby GP',
+            'organisation_type': 'gppractices',
+            'point': Point(-0.13, 51.5)
+        })
+        self.faraway_gp = create_test_organisation({
+            'name': 'Far GP',
+            'organisation_type': 'gppractices',
+            'point': Point(-0.15, 51.4)
+        })
         self.base_url = "/choices/stats/pick-provider"
-        self.results_url = "%s?organisation_type=gppractices&location=London" % self.base_url
+        self.results_url = "%s?organisation_type=gppractices&location=SW1A+1AA" % self.base_url
 
     def test_results_page_exists(self):
         resp = self.client.get(self.results_url)
         self.assertEqual(resp.status_code, 200)
 
-    def test_results_page_shows_organisations(self):
+    def test_results_page_shows_nearby_organisation(self):
         resp = self.client.get(self.results_url)
-        self.assertContains(resp, self.mock_gp_result['name'], count=1, status_code=200)
+        self.assertContains(resp, self.nearby_gp.name, count=1, status_code=200)
+
+    def test_results_page_does_not_show_far_away_organisation(self):
+        resp = self.client.get(self.results_url)
+        self.assertNotContains(resp, self.faraway_gp.name, status_code=200)
+
+    def test_results_page_shows_organisation_by_name(self):
+        resp = self.client.get("%s?organisation_type=gppractices&location=nearby" % self.base_url)
+        self.assertContains(resp, self.nearby_gp.name, count=1, status_code=200)
+
+    def test_results_page_does_not_show_organisation_with_other_name(self):
+        resp = self.client.get("%s?organisation_type=gppractices&location=nearby" % self.base_url)
+        self.assertNotContains(resp, self.faraway_gp.name, status_code=200)
 
     def test_validates_location_present(self):
-        resp = self.client.get("%s?organisation_type=gppractives&location=" % self.base_url)
+        resp = self.client.get("%s?organisation_type=gppractices&location=" % self.base_url)
         self.assertContains(resp, 'Please enter a location', count=1, status_code=200)
 
     def test_shows_message_on_no_results(self):
         resp = self.client.get("%s?organisation_type=gppractices&location=non-existent" % self.base_url)
         self.assertContains(resp, "We couldn&#39;t find any matches", count=1, status_code=200)
+
+    def test_handles_the_case_where_the_mapit_api_cannot_be_connected_to(self):
+        urllib.urlopen = MagicMock(side_effect=IOError('foo'))
+        resp = self.client.get(self.results_url)
+        expected_message = 'Sorry, our postcode lookup service is temporarily unavailable. Please try later or search by provider name'
+        self.assertContains(resp, expected_message, count=1, status_code=200)
+
+    def test_handes_the_case_where_the_mapit_api_returns_an_error_code(self):
+        self.mock_api_response(self.mapit_example, 500)
+        resp = self.client.get(self.results_url)
+        expected_message = "Sorry, our postcode lookup service is temporarily unavailable. Please try later or search by provider name"
+        self.assertContains(resp, expected_message, count=1, status_code=200)
+
+    def test_handles_the_case_where_mapit_does_not_recognize_the_postcode_as_valid(self):
+        self.mock_api_response(self.mapit_example, 400)
+        resp = self.client.get(self.results_url)
+        expected_message = "Sorry, that doesn&#39;t seem to be a valid postcode."
+        self.assertContains(resp, expected_message, count=1, status_code=200)
+
+    def test_handles_the_case_where_mapit_does_not_have_the_postcode(self):
+        self.mock_api_response(self.mapit_example, 404)
+        resp = self.client.get(self.results_url)
+        expected_message = "Sorry, no postcode matches that query."
+        self.assertContains(resp, expected_message, count=1, status_code=200)
+
+    def test_shows_message_when_no_results_for_postcode(self):
+        Organisation.objects.filter = MagicMock(return_value=[])
+        resp = self.client.get(self.results_url)
+        expected_message = 'Sorry, there are no matches within 5 miles of SW1A 1AA. Please try again'
+        self.assertContains(resp, expected_message, count=1, status_code=200)
+
