@@ -1,5 +1,5 @@
 from django import forms
-from django.forms.widgets import HiddenInput, RadioSelect
+from django.forms.widgets import HiddenInput, RadioSelect, Textarea, TextInput
 
 class MessageModelForm(forms.ModelForm):
     """
@@ -56,13 +56,20 @@ class MessageModelForm(forms.ModelForm):
         widgets = {
             # Hide this because it comes from the url already
             'organisation': HiddenInput,
+            # Add placeholder for description
+            'description': Textarea({'placeholder': 'Please write the details of your problem in this box, including as much information as possible to help us to help you'}),
+            'category': RadioSelect,
+            'reporter_name': TextInput(attrs={'placeholder': 'Your Name (This is optional - you can report problems anonymously)'}),
+            # Add placeholder for phone
+            'reporter_phone': TextInput(attrs={'placeholder': 'Your Contact Number (you must enter a contact number OR email address)'}),
+            # Add placeholder for email
+            'reporter_email': TextInput(attrs={'placeholder': 'Your Email Address (you must enter a contact number OR email address)'}),
+            # Make preferred contact method a radio button instead of a select
+            'preferred_contact_method': RadioSelect,
             # Hide the privacy booleans because they're not very user-friendly
             # so we set them from the radio options in privacy instead
             'public': HiddenInput,
             'public_reporter_name': HiddenInput,
-            # Make preferred contact method a radio button instead of a select
-            'preferred_contact_method': RadioSelect,
-            'category': RadioSelect,
         }
 
 class MessageResponseForm(forms.ModelForm):
