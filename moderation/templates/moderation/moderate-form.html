@@ -21,10 +21,10 @@
 <div class="message-details">
     <div class="feature">
         <h3>Message</h3>
-        <p>From: {{ message.reporter_name }}</p>
+        <p>From: {{ message.reporter_name }} {% if message.private_reporter_name %}<em>Anonimity selected</em><{% endif %}</p>
         <p>{{ message.description }}</p>
         <h3>Response</h3>
-        <p>TODO</p>
+        <p>{{ message.response }}</p>
     </div>
 </div>
 <div class="moderate-form">

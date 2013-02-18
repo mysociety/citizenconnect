@@ -70,8 +70,13 @@ class ModerateFormViewTests(BaseModerationTestCase):
         self.assertEqual(resp.context['message'], self.test_question)
 
     def test_message_data_displayed(self):
+        # Add a response to the message too
+        self.test_problem.response = "Test response"
+        self.test_problem.save()
+
         resp = self.client.get(self.problem_form_url)
         self.assertContains(resp, self.test_problem.reference_number)
         self.assertContains(resp, self.test_problem.reporter_name)
         self.assertContains(resp, self.test_problem.description)
         self.assertContains(resp, self.test_problem.organisation.name)
+        self.assertContains(resp, self.test_problem.response)
