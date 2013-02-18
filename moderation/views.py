@@ -9,10 +9,11 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 
 # App imports
+from citizenconnect.views import PrivateMessageEditViewMixin
 from problems.models import Problem
 from questions.models import Question
 
-from .forms import LookupForm
+from .forms import LookupForm, QuestionModerationForm, ProblemModerationForm
 
 class ModerateHome(TemplateView):
     template_name = 'moderation/moderate-home.html'
@@ -47,21 +48,13 @@ class ModerateLookup(FormView):
         return HttpResponseRedirect(moderate_url)
 
 
-class ModerateForm(UpdateView):
-    model = Problem
-    template_name = 'moderation/moderate-form.html'
+class ModerateForm(PrivateMessageEditViewMixin,
+                   UpdateView):
 
-    def get_context_data(self, **kwargs):
-        context = super(ModerateForm, self).get_context_data(**kwargs)
-        # Get the problem or question
-        message_type = self.kwargs['message_type']
-        if message_type == 'question':
-            context['message'] = Question.objects.get(id=self.kwargs['pk'])
-        elif message_type == 'problem':
-            context['message'] = Problem.objects.get(id=self.kwargs['pk'])
-        else:
-            raise ValueError("Unknown message type: %s" % message_type)
-        return context
+    template_name = 'moderation/moderate-form.html'
+    confirm_url = 'moderate-confirm'
+    problem_form_class = ProblemModerationForm
+    question_form_class = QuestionModerationForm
 
 class ModerateConfirm(TemplateView):
     template_name = 'moderation/moderate-confirm.html'
