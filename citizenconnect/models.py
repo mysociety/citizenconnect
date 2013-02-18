@@ -16,9 +16,22 @@ class MessageModel(AuditedModel):
     Abstract model for base functionality of messages sent to NHS Organisations
     """
 
+    CONTACT_PHONE = 'phone'
+    CONTACT_EMAIL = 'email'
+
     CONTACT_CHOICES = (
-        (u'email', u'By Email'),
-        (u'phone', u'By Phone')
+        (CONTACT_EMAIL, u'By Email'),
+        (CONTACT_PHONE, u'By Phone')
+    )
+
+    SOURCE_PHONE = 'phone'
+    SOURCE_EMAIL = 'email'
+    SOURCE_SMS = 'sms'
+
+    SOURCE_CHOICES = (
+        (SOURCE_EMAIL, 'Email'),
+        (SOURCE_PHONE, 'Phone'),
+        (SOURCE_SMS, 'SMS')
     )
 
     organisation = models.ForeignKey('organisations.Organisation')
@@ -29,9 +42,9 @@ class MessageModel(AuditedModel):
     reporter_email = models.CharField(max_length=254, blank=True)
     public = models.BooleanField()
     public_reporter_name = models.BooleanField()
-    preferred_contact_method = models.CharField(max_length=100, choices=CONTACT_CHOICES, default='email')
-
+    preferred_contact_method = models.CharField(max_length=100, choices=CONTACT_CHOICES, default=CONTACT_EMAIL)
     response = models.TextField(blank=True)
+    source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True)
 
     @property
     def summary(self):
