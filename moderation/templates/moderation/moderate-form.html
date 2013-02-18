@@ -21,18 +21,35 @@
 <div class="message-details">
     <div class="feature">
         <h3>Message</h3>
-        <p>From: {{ message.reporter_name }}</p>
+        <p>From: {{ message.reporter_name }} {% if message.private_reporter_name %}<em>Anonimity selected</em><{% endif %}</p>
         <p>{{ message.description }}</p>
         <h3>Response</h3>
-        <p>TODO</p>
+        <p>{{ message.response }}</p>
     </div>
 </div>
 <div class="moderate-form">
-    <div class="feature">
-        <p><a href="{% url 'moderate-confirm' cobrand=cobrand.name %}">Publish/Update Online</a></p>
-    </div>
-    <div class="feature">
-        <p><a href="{% url 'moderate-confirm' cobrand=cobrand.name %}">Not Suitable/Keep Private</a></p>
-    </div>
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="alert alert-error alert-block">
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+
+        {% for field in form.visible_fields %}
+            <div>
+                {{ field.label_tag }}
+                {{ field }}
+                {{ field.errors }}
+                {{ field.help_text }}
+            </div>
+        {% endfor %}
+        <button type="submit">Update</button>
+    </form>
 </div>
 {% endblock %}

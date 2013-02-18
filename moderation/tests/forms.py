@@ -1,4 +1,4 @@
-from django.test import TransactionTestCase
+from django.core.urlresolvers import reverse
 
 from organisations.models import Organisation
 from organisations.tests.lib import create_test_instance, create_test_organisation
@@ -45,3 +45,36 @@ class LookupFormTests(BaseModerationTestCase):
     def test_form_rejects_closed_questions(self):
         resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Question.PREFIX, self.closed_question.id)})
         self.assertFormError(resp, 'form', None, 'Sorry, there are no open problems or questions with that reference number')
+
+class ModerationFormTests(BaseModerationTestCase):
+
+    def setUp(self):
+        self.problem = create_test_instance(Problem, {})
+        self.moderation_form_url = '/private/moderate/problem/%s' % self.problem.id
+
+    def test_moderation_form_doesnt_update_message(self):
+        updated_description = "{0} updated".format(self.problem.description)
+        test_form_values = {
+            'status': self.problem.status,
+            'description': updated_description
+        }
+        resp = self.client.post(self.moderation_form_url)
+        problem = Problem.objects.get(pk=self.problem.id)
+        self.assertNotEqual(problem.description, updated_description)
+
+    def test_form_sets_status(self):
+        status = Problem.RESOLVED
+        test_form_values = {
+            'status': status
+        }
+        resp = self.client.post(self.moderation_form_url, test_form_values)
+        problem = Problem.objects.get(pk=self.problem.id)
+        self.assertEqual(problem.status, status)
+
+    def test_form_redirects_to_confirm_url(self):
+        status = Problem.RESOLVED
+        test_form_values = {
+            'status': status
+        }
+        resp = self.client.post(self.moderation_form_url, test_form_values)
+        self.assertRedirects(resp, reverse('moderate-confirm'))

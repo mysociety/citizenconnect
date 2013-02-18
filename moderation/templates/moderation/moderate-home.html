@@ -28,7 +28,7 @@
                         <td>{{ issue.issue_type }}</td>
                         <td>{{ issue.created }}</td>
                         <td>{{ issue.summary }}</td>
-                        <td><a href="{% url 'moderate-form' cobrand=cobrand.name message_type=issue.issue_type.lower pk=issue.id %}">Moderate</a></td>
+                        <td><a href="{% url 'moderate-form' message_type=issue.issue_type.lower pk=issue.id %}">Moderate</a></td>
                     </tr>
                 {% endfor %}
             </tbody>

@@ -21,10 +21,10 @@ urlpatterns = patterns('',
     url(r'^' + cobrand_pattern + r'/problem/', include('problems.urls')),
     url(r'^' + cobrand_pattern + r'/review/', include('reviews.urls')),
     url(r'^' + cobrand_pattern + r'/stats/', include('organisations.urls.public')),
-    url(r'^' + cobrand_pattern + r'/moderate/', include('moderation.urls')),
 
     # private is the namespace for NHS-staff only pages
     url(r'^private/', include('organisations.urls.private')),
+    url(r'^private/moderate/', include('moderation.urls')),
 
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),

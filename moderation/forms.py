@@ -1,6 +1,8 @@
 from django import forms
 from django.forms.widgets import HiddenInput
 
+from citizenconnect.forms import MessageModerationForm
+
 from problems.models import Problem
 from questions.models import Question
 
@@ -29,3 +31,13 @@ class LookupForm(forms.Form):
             self.cleaned_data['model_id'] = model.id
 
         return self.cleaned_data
+
+class QuestionModerationForm(MessageModerationForm):
+
+    class Meta(MessageModerationForm.Meta):
+        model = Question
+
+class ProblemModerationForm(MessageModerationForm):
+
+    class Meta(MessageModerationForm.Meta):
+        model = Problem

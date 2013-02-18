@@ -11,6 +11,7 @@ from django.template import RequestContext
 
 # App imports
 from citizenconnect.shortcuts import render
+from citizenconnect.views import PrivateMessageEditViewMixin
 from problems.models import Problem
 from questions.models import Question
 
@@ -159,39 +160,13 @@ class OrganisationDashboard(OrganisationAwareViewMixin,
                             TemplateView):
     template_name = 'organisations/dashboard.html'
 
-class ResponseForm(UpdateView):
+class ResponseForm(PrivateMessageEditViewMixin,
+                   UpdateView):
 
     template_name = 'organisations/response-form.html'
-
-    # Standardise the context_object's name
-    context_object_name = 'message'
-
-    def get_success_url(self):
-        return reverse('org-response-confirm')
-
-    def get_form_class(self):
-        """
-        Return the right form class depending on what we're responding to
-        """
-        message_type = self.kwargs['message_type']
-        if message_type == 'question':
-            return QuestionResponseForm
-        elif message_type == 'problem':
-            return ProblemResponseForm
-        else:
-            raise ValueError("Unknown message type: %s" % message_type)
-
-    def get_queryset(self):
-        """
-        Override get_queryset to determine it dynamically based on the message_type
-        """
-        message_type = self.kwargs['message_type']
-        if message_type == 'question':
-            return Question.objects.all()
-        elif message_type == 'problem':
-            return Problem.objects.all()
-        else:
-            raise ValueError("Unknown message type: %s" % message_type)
+    confirm_url = 'org-response-confirm'
+    question_form_class = QuestionResponseForm
+    problem_form_class = ProblemResponseForm
 
 class ResponseConfirm(TemplateView):
     template_name = 'organisations/response-confirm.html'
