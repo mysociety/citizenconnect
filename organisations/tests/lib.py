@@ -22,8 +22,6 @@ def create_test_organisation(attributes={}):
         'organisation_type':'gppractices',
         'choices_id':'12702',
         'ods_code':'F84021',
-        'lon': coords['lat'],
-        'lat': coords['lon'],
         'point': Point(coords['lon'], coords['lat'])
     }
     default_attributes.update(attributes)

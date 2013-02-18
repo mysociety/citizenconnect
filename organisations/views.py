@@ -74,8 +74,8 @@ class Map(TemplateView):
             organisation_dict = {}
             organisation_dict['ods_code'] = organisation.ods_code
             organisation_dict['name'] = organisation.name
-            organisation_dict['lon'] = organisation.lon
-            organisation_dict['lat'] = organisation.lat
+            organisation_dict['lon'] = organisation.point.coords[0]
+            organisation_dict['lat'] = organisation.point.coords[1]
             if organisation.organisation_type == 'gppractices':
                 organisation_dict['type'] = "GP"
             elif organisation.organisation_type == 'hospitals':
