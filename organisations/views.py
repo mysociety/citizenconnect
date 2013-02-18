@@ -165,8 +165,8 @@ class ResponseForm(PrivateMessageEditViewMixin,
 
     template_name = 'organisations/response-form.html'
     confirm_url = 'org-response-confirm'
-    question_form = QuestionResponseForm
-    problem_form = ProblemResponseForm
+    question_form_class = QuestionResponseForm
+    problem_form_class = ProblemResponseForm
 
 class ResponseConfirm(TemplateView):
     template_name = 'organisations/response-confirm.html'

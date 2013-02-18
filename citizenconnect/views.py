@@ -72,9 +72,9 @@ class PrivateMessageEditViewMixin(object):
         """
         message_type = self.kwargs['message_type']
         if message_type == 'question':
-            return self.question_form
+            return self.question_form_class
         elif message_type == 'problem':
-            return self.problem_form
+            return self.problem_form_class
         else:
             raise ValueError("Unknown message type: %s" % message_type)
 
