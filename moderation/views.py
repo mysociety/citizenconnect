@@ -41,8 +41,7 @@ class ModerateLookup(FormView):
     def form_valid(self, form):
         # Calculate the url
         context = RequestContext(self.request)
-        moderate_url = reverse("moderate-form", kwargs={'cobrand':context["cobrand"]["name"],
-                                                        'message_type': form.cleaned_data['model_type'],
+        moderate_url = reverse("moderate-form", kwargs={'message_type': form.cleaned_data['model_type'],
                                                         'pk': form.cleaned_data['model_id']})
         # Redirect to the url we calculated
         return HttpResponseRedirect(moderate_url)
