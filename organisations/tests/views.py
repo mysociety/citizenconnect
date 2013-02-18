@@ -293,6 +293,26 @@ class ProviderPickerTests(TestCase):
         resp = self.client.get("%s?organisation_type=gppractices&location=nearby" % self.base_url)
         self.assertNotContains(resp, self.faraway_gp.name, status_code=200)
 
+    def test_results_page_shows_paginator_for_over_ten_results(self):
+        for i in range(12):
+            create_test_organisation({
+                'name': 'Multi GP',
+                'organisation_type': 'gppractices',
+            })
+        resp = self.client.get("%s?organisation_type=gppractices&location=multi" % self.base_url)
+        self.assertContains(resp, 'Multi GP', count=10, status_code=200)
+        self.assertContains(resp, 'next', count=1)
+
+    def test_results_page_no_paginator_for_under_ten_results(self):
+        for i in range(3):
+            create_test_organisation({
+                'name': 'Multi GP',
+                'organisation_type': 'gppractices',
+            })
+        resp = self.client.get("%s?organisation_type=gppractices&location=multi" % self.base_url)
+        self.assertContains(resp, 'Multi GP', count=3, status_code=200)
+        self.assertNotContains(resp, 'next')
+
     def test_validates_location_present(self):
         resp = self.client.get("%s?organisation_type=gppractices&location=" % self.base_url)
         self.assertContains(resp, 'Please enter a location', count=1, status_code=200)

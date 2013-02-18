@@ -4,7 +4,7 @@ from operator import attrgetter
 import json
 
 # Django imports
-from django.views.generic import FormView, TemplateView, UpdateView
+from django.views.generic import FormView, TemplateView, UpdateView, ListView
 from django.template.defaultfilters import escape
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
@@ -93,10 +93,13 @@ class Map(TemplateView):
 
         return context
 
-class PickProviderBase(TemplateView):
+class PickProviderBase(ListView):
     template_name = 'provider-results.html'
     form_template_name = 'pick-provider.html'
     result_link_url_name = 'public-org-summary'
+    paginate_by = 10
+    model = Organisation
+    context_object_name = 'organisations'
 
     def get(self, *args, **kwargs):
         super(PickProviderBase, self).get(*args, **kwargs)
@@ -104,8 +107,20 @@ class PickProviderBase(TemplateView):
             form = OrganisationFinderForm(self.request.GET)
             if form.is_valid(): # All validation rules pass
                 context = {'location': form.cleaned_data['location'],
+                           'organisation_type': form.cleaned_data['organisation_type'],
                            'organisations': form.cleaned_data['organisations'],
-                           'result_link_url_name': self.result_link_url_name }
+                           'result_link_url_name': self.result_link_url_name,
+                           'paginator': None,
+                           'page_obj': None,
+                           'is_paginated': False}
+                self.queryset = form.cleaned_data['organisations']
+                page_size = self.get_paginate_by(self.queryset)
+                if page_size:
+                    paginator, page, queryset, is_paginated = self.paginate_queryset(self.queryset, page_size)
+                    context['paginator'] = paginator
+                    context['page_obj'] = page
+                    context['is_paginated'] = is_paginated
+                    context['organisations'] = queryset
                 return render(self.request, self.template_name, context)
             else:
                 return render(self.request, self.form_template_name, {'form': form})
