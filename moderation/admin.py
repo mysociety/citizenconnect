@@ -1,5 +1,5 @@
 from django.contrib import admin
-from moderation import models
+# from moderation import models
 
 # tweak to taste - simple at the top and more custom below
 
@@ -12,5 +12,5 @@ from moderation import models
 #     prepopulated_fields = {"slug": ["name"]}
 #     list_display  = [ 'slug', 'name', ]
 #     search_fields = ['name']
-# 
+#
 # admin.site.register( models.FooBar, FooBarAdmin )
