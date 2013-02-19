@@ -1,6 +1,7 @@
 from django.test import TestCase
 
 from organisations.tests import create_test_instance, create_test_organisation
+from responses.models import QuestionResponse
 
 from ..models import Question
 
@@ -17,6 +18,17 @@ class PublicViewTests(TestCase):
     def test_public_question_displays_organisation_name(self):
         resp = self.client.get("/choices/question/{0}".format(self.test_question.id))
         self.assertContains(resp, self.test_organisation.name, count=1, status_code=200)
+
+    def test_public_question_displays_responses(self):
+        response1 = QuestionResponse.objects.create(response="response 1", message=self.test_question)
+        response2 = QuestionResponse.objects.create(response="response 2", message=self.test_question)
+        resp = self.client.get("/choices/question/{0}".format(self.test_question.id))
+        self.assertContains(resp, response1.response, count=1, status_code=200)
+        self.assertContains(resp, response2.response, count=1, status_code=200)
+
+    def test_public_question_displays_empty_response_message(self):
+        resp = self.client.get("/choices/question/{0}".format(self.test_question.id))
+        self.assertContains(resp, "No responses", count=1, status_code=200)
 
 class QuestionProviderPickerTests(TestCase):
 
