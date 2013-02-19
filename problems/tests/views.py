@@ -3,9 +3,9 @@ from mock import patch
 from django.test import TestCase
 
 from organisations.tests import create_test_instance, create_test_organisation
-
-from ..models import Problem
 from responses.models import ProblemResponse
+
+from ..models import Proble
 
 class PublicViewTests(TestCase):
 
