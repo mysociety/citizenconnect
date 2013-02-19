@@ -14,7 +14,7 @@ class MessageResponse(AuditedModel):
         abstract = True
 
 class ProblemResponse(MessageResponse):
-    message = models.ForeignKey(Problem)
+    message = models.ForeignKey(Problem, related_name='responses')
 
 class QuestionResponse(MessageResponse):
-    message = models.ForeignKey(Question)
+    message = models.ForeignKey(Question, related_name='responses')
