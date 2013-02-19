@@ -86,9 +86,3 @@ class CreateFormTests(TestCase):
         resp = self.client.post(self.form_url, self.test_problem)
         problem = Problem.objects.get(reporter_name=self.uuid)
         self.assertIsNotNone(problem)
-
-    def test_problem_form_doesnt_accept_response(self):
-        self.test_problem['response'] = 'A test response'
-        resp = self.client.post(self.form_url, self.test_problem)
-        problem = Problem.objects.get(reporter_name=self.uuid)
-        self.assertEqual('', problem.response)
