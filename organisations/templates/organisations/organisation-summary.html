@@ -136,7 +136,7 @@
                         <td>{{ problem.get_category_display }}</td>
                         <td>{{ problem.service|default_if_none:"" }}</td>
                         <td>TODO</td>
-                        <td><a href="{% if private %}{% url 'org-response-form' message_type='problem' pk=problem.id %}{% else %}{% url 'problem-view' cobrand=cobrand.name pk=problem.id %}{% endif %}">{{ problem.summary }}</a></td>
+                        <td><a href="{% if private %}{% url 'response-form' message_type='problem' pk=problem.id %}{% else %}{% url 'problem-view' cobrand=cobrand.name pk=problem.id %}{% endif %}">{{ problem.summary }}</a></td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -169,7 +169,7 @@
                     <td>{{ question.get_category_display }}</td>
                     <td>{{ question.service|default_if_none:"" }}</td>
                     <td>TODO</td>
-                    <td><a href="{% if private %}{% url 'org-response-form' message_type='question' pk=question.id %}{% else %}{% url 'question-view' cobrand=cobrand.name pk=question.id %}{% endif %}">{{ question.summary }}</a></td>
+                    <td><a href="{% if private %}{% url 'response-form' message_type='question' pk=question.id %}{% else %}{% url 'question-view' cobrand=cobrand.name pk=question.id %}{% endif %}">{{ question.summary }}</a></td>
                 </tr>
                 {% endfor %}
 

@@ -158,34 +158,6 @@ class OrganisationDashboardTests(TestCase):
         resp = self.client.get(self.dashboard_url)
         self.assertTrue(self.organisation.name in resp.content)
 
-class ResponseFormViewTests(TestCase):
-
-    def setUp(self):
-        self.problem = create_test_instance(Problem, {})
-        self.response_form_url = '/private/response/problem/%s' % self.problem.id
-
-    def test_response_page_exists(self):
-        resp = self.client.get(self.response_form_url)
-        self.assertEqual(resp.status_code, 200)
-
-    def test_response_form_contains_message_data(self):
-        resp = self.client.get(self.response_form_url)
-        self.assertContains(resp, self.problem.reference_number)
-        self.assertContains(resp, self.problem.issue_type)
-        self.assertContains(resp, self.problem.reporter_name)
-        self.assertContains(resp, self.problem.reporter_phone)
-        self.assertContains(resp, self.problem.reporter_email)
-        self.assertContains(resp, self.problem.description)
-
-class ResponseConfirmTests(TestCase):
-
-    def setUp(self):
-        self.response_confirm_url = '/private/response-confirm'
-
-    def test_response_page_exists(self):
-        resp = self.client.get(self.response_confirm_url)
-        self.assertEqual(resp.status_code, 200)
-
 class OrganisationMapTests(TestCase):
 
     def setUp(self):

@@ -16,7 +16,7 @@ from problems.models import Problem
 from questions.models import Question
 
 from .models import Organisation
-from .forms import OrganisationFinderForm, QuestionResponseForm, ProblemResponseForm
+from .forms import OrganisationFinderForm
 import choices_api
 from .lib import interval_counts
 from .models import Organisation
@@ -174,14 +174,3 @@ class OrganisationDashboard(OrganisationAwareViewMixin,
                             OrganisationIssuesAwareViewMixin,
                             TemplateView):
     template_name = 'organisations/dashboard.html'
-
-class ResponseForm(PrivateMessageEditViewMixin,
-                   UpdateView):
-
-    template_name = 'organisations/response-form.html'
-    confirm_url = 'org-response-confirm'
-    question_form_class = QuestionResponseForm
-    problem_form_class = ProblemResponseForm
-
-class ResponseConfirm(TemplateView):
-    template_name = 'organisations/response-confirm.html'

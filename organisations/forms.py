@@ -11,7 +11,6 @@ from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import Distance
 
 # App imports
-from citizenconnect.forms import MessageResponseForm
 from problems.models import Problem
 from questions.models import Question
 
@@ -73,13 +72,3 @@ class OrganisationFinderForm(forms.Form):
             cleaned_data['organisations'] = organisations
 
         return cleaned_data
-
-class QuestionResponseForm(MessageResponseForm):
-
-    class Meta(MessageResponseForm.Meta):
-        model = Question
-
-class ProblemResponseForm(MessageResponseForm):
-
-    class Meta(MessageResponseForm.Meta):
-        model = Problem
