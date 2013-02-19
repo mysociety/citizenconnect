@@ -1,6 +1,7 @@
 from organisations.tests.lib import create_test_instance, create_test_organisation
 from problems.models import Problem
 from questions.models import Question
+from responses.models import ProblemResponse
 
 from .lib import BaseModerationTestCase
 
@@ -70,13 +71,14 @@ class ModerateFormViewTests(BaseModerationTestCase):
         self.assertEqual(resp.context['message'], self.test_question)
 
     def test_message_data_displayed(self):
-        # Add a response to the message too
-        self.test_problem.response = "Test response"
-        self.test_problem.save()
+        # Add some responses to the message too
+        response1 = ProblemResponse.objects.create(response="response 1", message=self.test_problem)
+        response2 = ProblemResponse.objects.create(response="response 2", message=self.test_problem)
 
         resp = self.client.get(self.problem_form_url)
         self.assertContains(resp, self.test_problem.reference_number)
         self.assertContains(resp, self.test_problem.reporter_name)
         self.assertContains(resp, self.test_problem.description)
         self.assertContains(resp, self.test_problem.organisation.name)
-        self.assertContains(resp, self.test_problem.response)
+        self.assertContains(resp, response1.response)
+        self.assertContains(resp, response2.response)

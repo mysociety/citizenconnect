@@ -23,8 +23,14 @@
         <h3>Message</h3>
         <p>From: {{ message.reporter_name }} {% if message.private_reporter_name %}<em>Anonimity selected</em><{% endif %}</p>
         <p>{{ message.description }}</p>
-        <h3>Response</h3>
-        <p>{{ message.response }}</p>
+        <h3>Responses</h3>
+        {% if message.responses.all|length > 0 %}
+            {% for response in message.responses.all %}
+                <p>{{ response.response }}</p>
+            {% endfor %}
+        {% else %}
+            <p>No responses</p>
+        {% endif %}
     </div>
 </div>
 <div class="moderate-form">
