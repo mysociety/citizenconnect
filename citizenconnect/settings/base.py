@@ -136,7 +136,8 @@ INSTALLED_APPS = (
     'problems',
     'reviews',
     'moderation',
-    'api'
+    'api',
+    'responses'
 )
 
 # Log WARN and above to stderr; ERROR and above by email when DEBUG is False.
