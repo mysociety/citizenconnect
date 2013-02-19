@@ -43,7 +43,6 @@ class MessageModel(AuditedModel):
     public = models.BooleanField()
     public_reporter_name = models.BooleanField()
     preferred_contact_method = models.CharField(max_length=100, choices=CONTACT_CHOICES, default=CONTACT_EMAIL)
-    response = models.TextField(blank=True)
     source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True)
 
     @property
