@@ -5,7 +5,7 @@ from django.test import TestCase
 from organisations.tests import create_test_instance, create_test_organisation
 from responses.models import ProblemResponse
 
-from ..models import Proble
+from ..models import Problem
 
 class PublicViewTests(TestCase):
 
