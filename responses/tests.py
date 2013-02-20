@@ -40,6 +40,28 @@ class ResponseFormTests(TestCase):
         self.assertEqual(self.test_question.responses.count(), 1)
         self.assertEqual(response.response, response_text)
 
+    def test_form_saves_problem_status(self):
+        response_text = 'This problem is solved'
+        test_form_values = {
+            'response': response_text,
+            'message': self.test_problem.id,
+            'message_status': Problem.RESOLVED
+        }
+        resp = self.client.post(self.problem_response_form_url, test_form_values)
+        self.test_problem = Problem.objects.get(pk=self.test_problem.id)
+        self.assertEqual(self.test_problem.status, Problem.RESOLVED)
+
+    def test_form_saves_question_status(self):
+        response_text = 'This question is solved'
+        test_form_values = {
+            'response': response_text,
+            'message': self.test_question.id,
+            'message_status': Question.RESOLVED
+        }
+        resp = self.client.post(self.question_response_form_url, test_form_values)
+        self.test_question = Question.objects.get(pk=self.test_question.id)
+        self.assertEqual(self.test_question.status, Question.RESOLVED)
+
 class ResponseFormViewTests(TestCase):
 
     def setUp(self):

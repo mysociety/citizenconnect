@@ -1,5 +1,6 @@
 from django.views.generic import CreateView, TemplateView
 from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 
 from problems.models import Problem
 from questions.models import Question
@@ -69,6 +70,19 @@ class ResponseForm(CreateView):
         else:
             raise ValueError("Unknown message type: %s" % message_type)
         return queryset
+
+
+    def form_valid(self, form):
+        # Process the message status field to actually change the message's
+        # status, because this form is a CreateView for a ProblemResponse
+        # or QuestionResponse, so will ignore that field.
+        self.object = form.save()
+
+        if 'message_status' in form.cleaned_data and form.cleaned_data['message_status']:
+            message = self.object.message
+            message.status = form.cleaned_data['message_status']
+            message.save()
+        return HttpResponseRedirect(self.get_success_url())
 
 class ResponseConfirm(TemplateView):
     template_name = 'responses/response-confirm.html'
