@@ -6,6 +6,8 @@ from problems.models import Problem
 from questions.models import Question
 from organisations.tests.lib import create_test_instance
 
+from .models import ProblemResponse, QuestionResponse
+
 class ResponseFormTests(TestCase):
 
     def setUp(self):
@@ -56,6 +58,18 @@ class ResponseFormViewTests(TestCase):
         self.assertContains(resp, self.problem.reporter_phone)
         self.assertContains(resp, self.problem.reporter_email)
         self.assertContains(resp, self.problem.description)
+
+    def test_response_form_display_no_responses_message(self):
+        resp = self.client.get(self.response_form_url)
+        self.assertContains(resp, 'No responses')
+
+    def test_response_form_displays_previous_responses(self):
+        # Add some responses
+        response1 = ProblemResponse.objects.create(response='response 1', message=self.problem)
+        response2 = ProblemResponse.objects.create(response='response 2', message=self.problem)
+        resp = self.client.get(self.response_form_url)
+        self.assertContains(resp, response1.response)
+        self.assertContains(resp, response2.response)
 
 class ResponseConfirmTests(TestCase):
 

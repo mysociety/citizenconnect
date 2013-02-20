@@ -37,6 +37,18 @@
         <p>Status: {{ message.get_status_display }}</p>
     </div>
 </div>
+<div class="responses">
+    <div class="feature">
+        <h3>Responses</h3>
+        {% if message.responses.all|length > 0 %}
+            {% for response in message.responses.all %}
+                <p>{{ response.response }}</p>
+            {% endfor %}
+        {% else %}
+            <p>No responses</p>
+        {% endif %}
+    </div>
+</div>
 <div class="form">
     <form method="post">
         {% csrf_token %}
