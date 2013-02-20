@@ -59,8 +59,10 @@
                     <th>Last 4 weeks</th>
                     <th>Last 6 months</th>
                     <th class="separator">All time</th>
-                    <th>% Acknowledged in time</th>
-                    <th class="separator">% Addressed in time</th>
+                    {% if organisation.has_time_limits %}
+                        <th>% Acknowledged in time</th>
+                        <th class="separator">% Addressed in time</th>
+                    {% endif %}
                     <th>% Happy with service</th>
                     <th>% Happy with outcome</th>
                 </tr>
@@ -72,8 +74,10 @@
                     <td>{{ problems_total.four_weeks }}</td>
                     <td>{{ problems_total.six_months }}</td>
                     <td class="separator">{{ problems_total.all_time }}</td>
-                    <td></td>
-                    <td class="separator"></td>
+                    {% if organisation.has_time_limits %}
+                        <td></td>
+                        <td class="separator"></td>
+                    {% endif %}
                     <td></td>
                     <td></td>
                 </tr>
@@ -85,8 +89,10 @@
                     <td>{{ status.four_weeks }}</td>
                     <td>{{ status.six_months }}</td>
                     <td class="separator">{{ status.all_time }}</td>
-                    <td></td>
-                    <td class="separator"></td>
+                    {% if organisation.has_time_limits %}
+                        <td></td>
+                        <td class="separator"></td>
+                    {% endif %}
                     <td></td>
                     <td></td>
                 </tr>
@@ -98,8 +104,10 @@
                     <td>{{ questions_total.four_weeks }}</td>
                     <td>{{ questions_total.six_months }}</td>
                     <td class="separator">{{ questions_total.all_time }}</td>
-                    <td></td>
-                    <td class="separator"></td>
+                    {% if organisation.has_time_limits %}
+                        <td></td>
+                        <td class="separator"></td>
+                    {% endif %}
                     <td></td>
                     <td></td>
                 </tr>
@@ -110,8 +118,10 @@
                     <td>{{ status.four_weeks}}</td>
                     <td>{{ status.six_months }}</td>
                     <td class="separator">{{ status.all_time }}</td>
-                    <td></td>
-                    <td class="separator"></td>
+                    {% if organisation.has_time_limits %}
+                        <td></td>
+                        <td class="separator"></td>
+                    {% endif %}
                     <td></td>
                     <td></td>
                 </tr>

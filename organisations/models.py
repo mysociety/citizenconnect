@@ -17,6 +17,12 @@ class Organisation(AuditedModel,geomodels.Model):
     def open_issues(self):
         return list(self.problem_set.open_problems()) + list(self.question_set.open_questions())
 
+    def has_time_limits(self):
+        if self.organisation_type == 'hospitals':
+            return True
+        else:
+            return False
+
 class Service(AuditedModel):
     name = models.TextField()
     service_code = models.TextField()
