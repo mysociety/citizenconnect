@@ -137,13 +137,21 @@ class OrganisationSummary(OrganisationAwareViewMixin,
         issue_types = {'problems': Problem,
                        'questions': Question}
 
-        service = self.request.GET.get('service')
+        organisation = context['organisation']
+        context['services'] = list(organisation.services.all().order_by('name'))
+        selected_service = self.request.GET.get('service')
+        if selected_service:
+            if int(selected_service) in [ service.id for service in context['services'] ]:
+                context['selected_service'] = int(selected_service)
+
         if 'private' in kwargs and kwargs['private'] == True:
             context['private'] = True
         else:
             context['private'] = False
         # Use the filters we already have from OrganisationIssuesAwareViewMixin
         for issue_type, model_class in issue_types.items():
+            if context.has_key('selected_service'):
+                context[issue_type] = context[issue_type].filter(service_id=context['selected_service'])
             category = self.request.GET.get('%s_category' % issue_type)
             if category in dict(model_class.CATEGORY_CHOICES):
                 context['%s_category' % issue_type] = category

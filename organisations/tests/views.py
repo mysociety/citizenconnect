@@ -13,22 +13,29 @@ from questions.models import Question
 import organisations
 
 from ..models import Organisation
-from . import create_test_instance, create_test_organisation
+from . import create_test_instance, create_test_organisation, create_test_service
 
 class OrganisationSummaryTests(TestCase):
 
     def setUp(self):
         # Make an organisation
         self.organisation = create_test_organisation()
+        self.service = create_test_service({'organisation': self.organisation})
         atts = {'organisation': self.organisation}
         atts.update({'category': 'cleanliness'})
         self.cleanliness_problem = create_test_instance(Problem, atts)
         atts.update({'category': 'staff'})
         self.staff_problem = create_test_instance(Problem, atts)
+        atts.update({'category': 'other', 'service_id' : self.service.id})
+        self.other_dept_problem = create_test_instance(Problem, atts)
+        atts = {'organisation': self.organisation}
         atts.update({'category': 'services'})
         self.services_question = create_test_instance(Question, atts)
         atts.update({'category': 'general'})
         self.general_question = create_test_instance(Question, atts)
+        atts.update({'category': 'appointments', 'service_id': self.service.id})
+        self.appointment_dept_question = create_test_instance(Question, atts)
+
         self.public_summary_url = '/choices/stats/summary/%s' % self.organisation.ods_code
         self.private_summary_url = '/private/summary/%s' % self.organisation.ods_code
         self.urls = [self.public_summary_url, self.private_summary_url]
@@ -46,15 +53,16 @@ class OrganisationSummaryTests(TestCase):
     def test_summary_page_has_problems(self):
         for url in self.urls:
             resp = self.client.get(url)
-            self.assertEqual(len(resp.context['problems']), 2)
-            self.assertEqual(resp.context['problems'][0].id, self.staff_problem.id)
-            self.assertEqual(resp.context['problems'][1].id, self.cleanliness_problem.id)
-            expected_total_counts = {'week': 2, 'four_weeks': 2, 'six_months': 2, 'all_time': 2}
+            self.assertEqual(len(resp.context['problems']), 3)
+            self.assertEqual(resp.context['problems'][0].id, self.other_dept_problem.id)
+            self.assertEqual(resp.context['problems'][1].id, self.staff_problem.id)
+            self.assertEqual(resp.context['problems'][2].id, self.cleanliness_problem.id)
+            expected_total_counts = {'week': 3, 'four_weeks': 3, 'six_months': 3, 'all_time': 3}
             self.assertEqual(resp.context['problems_total'], expected_total_counts)
-            expected_status_counts = [{'week': 2,
-                                       'four_weeks': 2,
-                                       'six_months': 2,
-                                       'all_time': 2,
+            expected_status_counts = [{'week': 3,
+                                       'four_weeks': 3,
+                                       'six_months': 3,
+                                       'all_time': 3,
                                        'description': 'Received but not acknowledged'},
                                       {'week': 0,
                                        'four_weeks': 0,
@@ -76,13 +84,14 @@ class OrganisationSummaryTests(TestCase):
     def test_summary_page_has_questions(self):
         for url in self.urls:
             resp = self.client.get(url)
-            self.assertEqual(len(resp.context['questions']), 2)
-            self.assertEqual(resp.context['questions'][0].id, self.general_question.id)
-            self.assertEqual(resp.context['questions'][1].id, self.services_question.id)
-            expected_status_counts = [{'week': 2,
-                                       'four_weeks': 2,
-                                       'six_months': 2,
-                                       'all_time': 2,
+            self.assertEqual(len(resp.context['questions']), 3)
+            self.assertEqual(resp.context['questions'][0].id, self.appointment_dept_question.id)
+            self.assertEqual(resp.context['questions'][1].id, self.general_question.id)
+            self.assertEqual(resp.context['questions'][2].id, self.services_question.id)
+            expected_status_counts = [{'week': 3,
+                                       'four_weeks': 3,
+                                       'six_months': 3,
+                                       'all_time': 3,
                                        'description': 'Received but not acknowledged'},
                                       {'week': 0,
                                        'four_weeks': 0,
@@ -149,6 +158,51 @@ class OrganisationSummaryTests(TestCase):
                                        'description': 'Question answered'}]
             self.assertEqual(resp.context['questions_by_status'], expected_status_counts)
 
+    def test_summary_page_applies_department_filter(self):
+        for url in self.urls:
+            resp = self.client.get(url + '?service=%s' % self.service.id)
+            self.assertEqual(resp.context['selected_service'], self.service.id)
+            self.assertEqual(len(resp.context['questions']), 1)
+            self.assertEqual(len(resp.context['problems']), 1)
+            self.assertEqual(resp.context['questions'][0].id, self.appointment_dept_question.id)
+            self.assertEqual(resp.context['problems'][0].id, self.other_dept_problem.id)
+            expected_question_status_counts = [{'week': 1,
+                                               'four_weeks': 1,
+                                               'six_months': 1,
+                                               'all_time': 1,
+                                               'description': 'Received but not acknowledged'},
+                                              {'week': 0,
+                                               'four_weeks': 0,
+                                               'six_months': 0,
+                                               'all_time': 0,
+                                               'description': 'Acknowledged but not answered'},
+                                              {'week': 0,
+                                               'four_weeks': 0,
+                                               'six_months': 0,
+                                               'all_time': 0,
+                                               'description': 'Question answered'}]
+            expected_problem_status_counts = [{'week': 1,
+                                              'four_weeks': 1,
+                                              'six_months': 1,
+                                              'all_time': 1,
+                                              'description': 'Received but not acknowledged'},
+                                             {'week': 0,
+                                              'four_weeks': 0,
+                                              'six_months': 0,
+                                              'all_time': 0,
+                                              'description': 'Acknowledged but not addressed'},
+                                             {'week': 0,
+                                              'four_weeks': 0,
+                                              'six_months': 0,
+                                              'all_time': 0,
+                                              'description': 'Addressed - problem solved'},
+                                             {'week': 0,
+                                              'four_weeks': 0,
+                                              'six_months': 0,
+                                              'all_time': 0,
+                                              'description': 'Addressed - unable to solve'}]
+            self.assertEqual(resp.context['questions_by_status'], expected_question_status_counts)
+            self.assertEqual(resp.context['problems_by_status'], expected_problem_status_counts)
 
     def test_public_summary_page_links_to_public_problems_and_questions(self):
         resp = self.client.get(self.public_summary_url)
