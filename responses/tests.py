@@ -4,7 +4,6 @@ from django.test import TestCase
 # App imports
 from problems.models import Problem
 from questions.models import Question
-
 from organisations.tests.lib import create_test_instance
 
 class ResponseFormTests(TestCase):
@@ -57,6 +56,12 @@ class ResponseFormViewTests(TestCase):
         self.assertContains(resp, self.problem.reporter_phone)
         self.assertContains(resp, self.problem.reporter_email)
         self.assertContains(resp, self.problem.description)
+
+    def test_form_gets_initial_data(self):
+        resp = self.client.get(self.response_form_url)
+        print resp
+        self.assertEquals(resp.context['form']['message'], self.problem.id)
+        self.assertEquals(resp.context['form']['message_status'], self.problem.status)
 
 class ResponseConfirmTests(TestCase):
 

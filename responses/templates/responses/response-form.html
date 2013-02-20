@@ -34,7 +34,7 @@
             <p>User email: {{ message.reporter_email }} {% if message.preferred_contact_method == 'email' %}<em>Preferred contact method</em>{% endif %}</p>
         {% endif %}
         <p>{{ message.description }}</p>
-        <p>{{ message.status }}</p>
+        <p>Status: {{ message.get_status_display }}</p>
     </div>
 </div>
 <div class="form">

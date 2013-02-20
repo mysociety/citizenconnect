@@ -1,9 +1,11 @@
 from django.views.generic import CreateView, TemplateView
 from django.core.urlresolvers import reverse
 
-from .forms import QuestionResponseForm, ProblemResponseForm
 from problems.models import Problem
 from questions.models import Question
+
+from .forms import QuestionResponseForm, ProblemResponseForm
+from .models import ProblemResponse, QuestionResponse
 
 class ResponseForm(CreateView):
 
@@ -28,23 +30,28 @@ class ResponseForm(CreateView):
         initial = super(ResponseForm, self).get_initial()
         message_type = self.kwargs['message_type']
         if message_type == 'question':
-            initial['message'] = Question.objects.get(pk=self.kwargs['pk'])
+            message = Question.objects.get(pk=self.kwargs['pk'])
+            initial['message'] = message
+            initial['message_status'] = message.status
         elif message_type == 'problem':
-            initial['message'] = Problem.objects.get(pk=self.kwargs['pk'])
+            message = Problem.objects.get(pk=self.kwargs['pk'])
+            initial['message'] = message
+            initial['message_status'] = message.status
         else:
             raise ValueError("Unknown message type: %s" % message_type)
+        print initial
         return initial
 
     def get_context_data(self, form):
-        initial = super(ResponseForm, self).get_initial()
+        context = super(ResponseForm, self).get_context_data()
         message_type = self.kwargs['message_type']
         if message_type == 'question':
-            initial['message'] = Question.objects.get(pk=self.kwargs['pk'])
+            context['message'] = Question.objects.get(pk=self.kwargs['pk'])
         elif message_type == 'problem':
-            initial['message'] = Problem.objects.get(pk=self.kwargs['pk'])
+            context['message'] = Problem.objects.get(pk=self.kwargs['pk'])
         else:
             raise ValueError("Unknown message type: %s" % message_type)
-        return initial
+        return context
 
     def get_queryset(self):
         """
@@ -54,9 +61,9 @@ class ResponseForm(CreateView):
         """
         message_type = self.kwargs['message_type']
         if message_type == 'question':
-            return Question.objects.all()
+            return QuestionResponse.objects.all()
         elif message_type == 'problem':
-            return Problem.objects.all()
+            return ProblemResponse.objects.all()
         else:
             raise ValueError("Unknown message type: %s" % message_type)
 
