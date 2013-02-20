@@ -158,3 +158,15 @@ class APITests(TestCase):
         resp = self.client.post(self.problem_api_url, problem_with_service_id)
         problem = Problem.objects.get(reporter_name=self.problem_uuid)
         self.assertIsNone(problem.service)
+
+    def test_reporter_name_or_phone_is_required(self):
+        problem_with_no_contact_details = self.test_problem
+        del problem_with_no_contact_details['reporter_phone']
+        del problem_with_no_contact_details['reporter_email']
+
+        resp = self.client.post(self.problem_api_url, problem_with_no_contact_details)
+        self.assertEquals(resp.status_code, 400)
+
+        content_json = json.loads(resp.content)
+        errors = json.loads(content_json['errors'])
+        self.assertTrue(errors['__all__'], 'You must provide either a phone number or an email address.')
