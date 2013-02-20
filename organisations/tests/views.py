@@ -49,22 +49,27 @@ class OrganisationSummaryTests(TestCase):
             self.assertEqual(len(resp.context['problems']), 2)
             self.assertEqual(resp.context['problems'][0].id, self.staff_problem.id)
             self.assertEqual(resp.context['problems'][1].id, self.cleanliness_problem.id)
-            self.assertEqual(resp.context['problems_total'], {'week': 2, 'four_weeks': 2, 'six_months': 2})
+            expected_total_counts = {'week': 2, 'four_weeks': 2, 'six_months': 2, 'all_time': 2}
+            self.assertEqual(resp.context['problems_total'], expected_total_counts)
             expected_status_counts = [{'week': 2,
                                        'four_weeks': 2,
                                        'six_months': 2,
+                                       'all_time': 2,
                                        'description': 'Received but not acknowledged'},
                                       {'week': 0,
                                        'four_weeks': 0,
                                        'six_months': 0,
+                                       'all_time': 0,
                                        'description': 'Acknowledged but not addressed'},
                                       {'week': 0,
                                        'four_weeks': 0,
                                        'six_months': 0,
+                                       'all_time': 0,
                                        'description': 'Addressed - problem solved'},
                                       {'week': 0,
                                        'four_weeks': 0,
                                        'six_months': 0,
+                                       'all_time': 0,
                                        'description': 'Addressed - unable to solve'}]
             self.assertEqual(resp.context['problems_by_status'], expected_status_counts)
 
@@ -77,14 +82,17 @@ class OrganisationSummaryTests(TestCase):
             expected_status_counts = [{'week': 2,
                                        'four_weeks': 2,
                                        'six_months': 2,
+                                       'all_time': 2,
                                        'description': 'Received but not acknowledged'},
                                       {'week': 0,
                                        'four_weeks': 0,
                                        'six_months': 0,
+                                       'all_time': 0,
                                        'description': 'Acknowledged but not answered'},
                                       {'week': 0,
                                        'four_weeks': 0,
                                        'six_months': 0,
+                                       'all_time': 0,
                                        'description': 'Question answered'}]
             self.assertEqual(resp.context['questions_by_status'], expected_status_counts)
 
@@ -94,22 +102,27 @@ class OrganisationSummaryTests(TestCase):
             self.assertEqual(resp.context['problems_category'], 'cleanliness')
             self.assertEqual(len(resp.context['problems']), 1)
             self.assertEqual(resp.context['problems'][0].id, self.cleanliness_problem.id)
-            self.assertEqual(resp.context['problems_total'], {'week': 1, 'four_weeks': 1, 'six_months': 1})
+            expected_total_counts = {'week': 1, 'four_weeks': 1, 'six_months': 1, 'all_time': 1}
+            self.assertEqual(resp.context['problems_total'], expected_total_counts)
             expected_status_counts = [{'week': 1,
                                        'four_weeks': 1,
                                        'six_months': 1,
+                                       'all_time': 1,
                                        'description': 'Received but not acknowledged'},
                                       {'week': 0,
                                        'four_weeks': 0,
                                        'six_months': 0,
+                                       'all_time': 0,
                                        'description': 'Acknowledged but not addressed'},
                                       {'week': 0,
                                        'four_weeks': 0,
                                        'six_months': 0,
+                                       'all_time': 0,
                                        'description': 'Addressed - problem solved'},
                                       {'week': 0,
                                        'four_weeks': 0,
                                        'six_months': 0,
+                                       'all_time': 0,
                                        'description': 'Addressed - unable to solve'}]
             self.assertEqual(resp.context['problems_by_status'], expected_status_counts)
 
@@ -122,14 +135,17 @@ class OrganisationSummaryTests(TestCase):
             expected_status_counts = [{'week': 1,
                                        'four_weeks': 1,
                                        'six_months': 1,
+                                       'all_time': 1,
                                        'description': 'Received but not acknowledged'},
                                       {'week': 0,
                                        'four_weeks': 0,
                                        'six_months': 0,
+                                       'all_time': 0,
                                        'description': 'Acknowledged but not answered'},
                                       {'week': 0,
                                        'four_weeks': 0,
                                        'six_months': 0,
+                                       'all_time': 0,
                                        'description': 'Question answered'}]
             self.assertEqual(resp.context['questions_by_status'], expected_status_counts)
 

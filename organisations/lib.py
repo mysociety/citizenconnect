@@ -12,4 +12,5 @@ def interval_counts(queryset):
     for interval_name, days_ago in intervals.items():
         lower_bound = now - timedelta(days_ago)
         counts[interval_name] = queryset.filter(created__gte=lower_bound).count()
+    counts['all_time'] = queryset.count()
     return counts
