@@ -80,5 +80,6 @@ class IntervalCountsTest(TestCase):
         problems = Problem.objects.all()
         expected_counts = {'week': 3,
                            'four_weeks': 5,
-                           'six_months': 6}
+                           'six_months': 6,
+                           'all_time': 6}
         self.assertEqual(expected_counts, interval_counts(problems))
