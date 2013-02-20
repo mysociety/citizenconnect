@@ -9,17 +9,19 @@
 
 {% block extra_css %}
 {{ block.super }}
-<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
+<link rel="stylesheet" href="{% static 'css/leaflet.css' %}" />
 <!--[if lte IE 8]>
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.ie.css" />
+    <link rel="stylesheet" href="{% static 'css/leaflet.ie.css' %}" />
 <![endif]-->
 <link rel="stylesheet" href="{% static 'css/MarkerCluster.css' %}">
 <link rel="stylesheet" href="{% static 'css/MarkerCluster.Default.css' %}">
-<!--[if lte IE 8]><link rel="stylesheet" href="https://raw.github.com/Leaflet/Leaflet.markercluster/master/dist/MarkerCluster.Default.ie.css" /><![endif]-->
+<!--[if lte IE 8]>
+    <link rel="stylesheet" href="{% static 'css/MarkerCluster.Default.ie.css' %}" />
+<![endif]-->
 {% endblock %}
 {% block extra_js %}
 {{ block.super }}
-<script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+<script src="{% static 'js/leaflet.js' %}"></script>
 <script src="{% static 'js/leaflet.markercluster.js' %}"></script>
 <script>
     $(document).ready(function(){
