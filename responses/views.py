@@ -18,13 +18,15 @@ class ResponseForm(CreateView):
         """
         Return the right form class depending on what model we're editing.
         """
+        form_class = None
         message_type = self.kwargs['message_type']
         if message_type == 'question':
-            return QuestionResponseForm
+            form_class = QuestionResponseForm
         elif message_type == 'problem':
-            return ProblemResponseForm
+            form_class = ProblemResponseForm
         else:
             raise ValueError("Unknown message type: %s" % message_type)
+        return form_class
 
     def get_initial(self):
         initial = super(ResponseForm, self).get_initial()
@@ -39,11 +41,10 @@ class ResponseForm(CreateView):
             initial['message_status'] = message.status
         else:
             raise ValueError("Unknown message type: %s" % message_type)
-        print initial
         return initial
 
-    def get_context_data(self, form):
-        context = super(ResponseForm, self).get_context_data()
+    def get_context_data(self, **kwargs):
+        context = super(ResponseForm, self).get_context_data(**kwargs)
         message_type = self.kwargs['message_type']
         if message_type == 'question':
             context['message'] = Question.objects.get(pk=self.kwargs['pk'])
@@ -59,13 +60,15 @@ class ResponseForm(CreateView):
         This is another way of specifying the Model we're editing, but there isn't
         a get_model method to use for that, so we do this instead.
         """
+        queryset = None
         message_type = self.kwargs['message_type']
         if message_type == 'question':
-            return QuestionResponse.objects.all()
+            queryset = QuestionResponse.objects.all()
         elif message_type == 'problem':
-            return ProblemResponse.objects.all()
+            queryset = ProblemResponse.objects.all()
         else:
             raise ValueError("Unknown message type: %s" % message_type)
+        return queryset
 
 class ResponseConfirm(TemplateView):
     template_name = 'responses/response-confirm.html'

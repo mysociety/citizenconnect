@@ -57,12 +57,6 @@ class ResponseFormViewTests(TestCase):
         self.assertContains(resp, self.problem.reporter_email)
         self.assertContains(resp, self.problem.description)
 
-    def test_form_gets_initial_data(self):
-        resp = self.client.get(self.response_form_url)
-        print resp
-        self.assertEquals(resp.context['form']['message'], self.problem.id)
-        self.assertEquals(resp.context['form']['message_status'], self.problem.status)
-
 class ResponseConfirmTests(TestCase):
 
     def setUp(self):
