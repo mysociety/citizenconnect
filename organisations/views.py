@@ -11,7 +11,6 @@ from django.template import RequestContext
 
 # App imports
 from citizenconnect.shortcuts import render
-from citizenconnect.views import PrivateMessageEditViewMixin
 from problems.models import Problem
 from questions.models import Question
 
