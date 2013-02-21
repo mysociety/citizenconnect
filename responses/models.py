@@ -1,8 +1,7 @@
 from django.db import models
 
 from citizenconnect.models import AuditedModel
-from problems.models import Problem
-from questions.models import Question
+from issues.models import Problem, Question
 
 class MessageResponse(AuditedModel):
     """

@@ -1,8 +1,7 @@
 from django import forms
 from django.forms.widgets import HiddenInput
 
-from problems.models import Problem
-from questions.models import Question
+from issues.models import Problem, Question
 
 from .models import QuestionResponse, ProblemResponse
 
