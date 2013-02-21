@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 
 # App imports
-from citizenconnect.views import PrivateMessageEditViewMixin
+from citizenconnect.views import MessageDependentFormViewMixin
 from problems.models import Problem
 from questions.models import Question
 
@@ -48,13 +48,22 @@ class ModerateLookup(FormView):
         return HttpResponseRedirect(moderate_url)
 
 
-class ModerateForm(PrivateMessageEditViewMixin,
+class ModerateForm(MessageDependentFormViewMixin,
                    UpdateView):
 
     template_name = 'moderation/moderate-form.html'
-    confirm_url = 'moderate-confirm'
+
+    # Standardise the context_object's name
+    context_object_name = 'message'
+
+    # Parameters for MessageDependentFormViewMixin
     problem_form_class = ProblemModerationForm
     question_form_class = QuestionModerationForm
+    problem_queryset = Problem.objects.all()
+    question_queryset = Question.objects.all()
+
+    def get_success_url(self):
+        return reverse('moderate-confirm')
 
 class ModerateConfirm(TemplateView):
     template_name = 'moderation/moderate-confirm.html'

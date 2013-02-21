@@ -44,27 +44,41 @@ class MessageCreateViewMixin(object):
             form.fields['service'].queryset = services
         return form
 
-class PrivateMessageEditViewMixin(object):
+class MessageAwareViewMixin(object):
     """
-    Mixin for views which need to edit/update a message object on private urls.
-
-    Deals with some of the common functionality to save repeating yourself.
-
-    Three class attributes you should provide in your class:
-
-    confirm_url - The url name to redirect successful form submissions to
-    question_form - The form class to use for Question models
-    problem_form - The form class to use for Problem models
+    Mixin for views that are "aware" of a message, given via /problem/id or /question/id
+    url parameters, and placed into a "message" context object for the template
     """
 
-    # Standardise the context_object's name
-    context_object_name = 'message'
+    def get_context_data(self, **kwargs):
+        context = super(MessageAwareViewMixin, self).get_context_data(**kwargs)
+        message_type = self.kwargs['message_type']
+        if message_type == 'question':
+            context['message'] = Question.objects.get(pk=self.kwargs['pk'])
+        elif message_type == 'problem':
+            context['message'] = Problem.objects.get(pk=self.kwargs['pk'])
+        else:
+            raise ValueError("Unknown message type: %s" % message_type)
+        return context
 
-    def get_success_url(self):
-        """
-        Return a confirmation url for the form to redirect to.
-        """
-        return reverse(self.confirm_url)
+
+class MessageDependentFormViewMixin(object):
+    """
+    Mixin for form views which deal with either messages themselves or other objects,
+    like responses to messages, which are basically the same but change some stuff
+    based on whether the message is a Question or Problem.
+
+    This works by dealing with the repetitive "is the message a problem or question"
+    code in all the places where it would happen and the doing the right thing.
+
+    To make it work you need to provide class attributes for each option:
+
+    question_form_class - The form class to use when the message is a Question
+    problem_form_class - The form class to use when the message is a Problem
+
+    question_queryset - The queryset to use when the message is a Question
+    problem_queryset - The queryset to use when the message is a Problem
+    """
 
     def get_form_class(self):
         """
@@ -86,8 +100,8 @@ class PrivateMessageEditViewMixin(object):
         """
         message_type = self.kwargs['message_type']
         if message_type == 'question':
-            return Question.objects.all()
+            return self.question_queryset
         elif message_type == 'problem':
-            return Problem.objects.all()
+            return self.problem_queryset
         else:
             raise ValueError("Unknown message type: %s" % message_type)
