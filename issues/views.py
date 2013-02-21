@@ -1,3 +1,4 @@
+from django.views.generic import TemplateView, CreateView, DetailView
 from django.shortcuts import get_object_or_404
 from django.forms.widgets import HiddenInput
 from django.template import RequestContext
