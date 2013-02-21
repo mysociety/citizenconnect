@@ -2,8 +2,7 @@ from django import forms
 from django.forms.widgets import HiddenInput
 
 from organisations.models import Organisation, Service
-from problems.models import Problem
-from questions.models import Question
+from issues.models import Problem, Question
 
 class APIMessageModelForm(forms.ModelForm):
     """

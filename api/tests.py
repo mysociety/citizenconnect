@@ -4,8 +4,7 @@ from django.test import TestCase
 from django.utils import simplejson as json
 
 from organisations.tests.lib import create_test_organisation, create_test_service
-from problems.models import Problem
-from questions.models import Question
+from issues.models import Problem, Question
 
 class APITests(TestCase):
 
