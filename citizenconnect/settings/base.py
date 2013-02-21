@@ -132,12 +132,11 @@ INSTALLED_APPS = (
     'south',
     'pagination',
     'organisations',
-    'questions',
-    'problems',
     'reviews',
     'moderation',
     'api',
-    'responses'
+    'responses',
+    'issues'
 )
 
 # Log WARN and above to stderr; ERROR and above by email when DEBUG is False.
