@@ -11,8 +11,7 @@ from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import Distance
 
 # App imports
-from problems.models import Problem
-from questions.models import Question
+from issues.models import Problem, Question
 
 import choices_api
 from .models import Organisation
