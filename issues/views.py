@@ -7,10 +7,8 @@ from citizenconnect.shortcuts import render
 from organisations.models import Organisation, Service
 from organisations.views import PickProviderBase, OrganisationAwareViewMixin
 
-from .models import Question
-from .models import Problem
-from .forms import QuestionForm
-from .forms import ProblemForm
+from .models import Question, Problem
+from .forms import QuestionForm, ProblemForm
 
 class MessageCreateViewMixin(object):
 
