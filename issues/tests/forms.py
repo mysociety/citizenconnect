@@ -83,6 +83,8 @@ class ProblemCreateFormTests(TestCase):
 
     def test_problem_form_accepts_email_only(self):
         del self.test_problem['reporter_phone']
+        # Set the preferred contact method to email, else the validation will fail
+        self.test_problem['preferred_contact_method'] = Problem.CONTACT_EMAIL
         resp = self.client.post(self.form_url, self.test_problem)
         problem = Problem.objects.get(reporter_name=self.uuid)
         self.assertIsNotNone(problem)
@@ -159,6 +161,8 @@ class QuestionCreateFormTests(TestCase):
 
     def test_question_form_accepts_email_only(self):
         del self.test_question['reporter_phone']
+        # Set the preferred contact method to email, else the validation will fail
+        self.test_question['preferred_contact_method'] = Question.CONTACT_EMAIL
         resp = self.client.post(self.form_url, self.test_question)
         question = Question.objects.get(reporter_name=self.uuid)
         self.assertIsNotNone(question)

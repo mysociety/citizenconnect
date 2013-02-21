@@ -30,10 +30,14 @@ class ProblemModelTests(TestCase):
     def test_validates_phone_or_email_present(self):
         # Remove reporter email, should be fine as phone is set
         self.test_problem.reporter_email = None
+        # Set the preferred contact method to phone, else the validation will fail
+        self.test_problem.preferred_contact_method = Problem.CONTACT_PHONE
         self.test_problem.clean()
 
         # Add email back in and remove phone, should also be fine
         self.test_problem.reporter_email = 'reporter@example.com'
+        # Set the preferred contact method to email, else the validation will fail
+        self.test_problem.preferred_contact_method = Problem.CONTACT_EMAIL
         self.test_problem.reporter_phone = None
         self.test_problem.clean()
 
@@ -42,7 +46,28 @@ class ProblemModelTests(TestCase):
         self.test_problem.reporter_email = None
         with self.assertRaises(ValidationError) as context_manager:
             self.test_problem.clean()
-        self.assertIsNotNone(context_manager.exception)
+
+        self.assertEqual(context_manager.exception.messages[0], 'You must provide either a phone number or an email address')
+
+    def test_validates_contact_method_given(self):
+        # Remove email and set preferred contact method to email
+        self.test_problem.reporter_email = None
+        self.test_problem.preferred_contact_method = Problem.CONTACT_EMAIL
+
+        with self.assertRaises(ValidationError) as context_manager:
+            self.test_problem.clean()
+
+        self.assertEqual(context_manager.exception.messages[0], 'You must provide an email address if you prefer to be contacted by email')
+
+        # Remove phone and set preferred contact method to phone
+        self.test_problem.reporter_email = 'reporter@example.com'
+        self.test_problem.reporter_phone = None
+        self.test_problem.preferred_contact_method = Problem.CONTACT_PHONE
+
+        with self.assertRaises(ValidationError) as context_manager:
+            self.test_problem.clean()
+
+        self.assertEqual(context_manager.exception.messages[0], 'You must provide a phone number if you prefer to be contacted by phone')
 
 class QuestionModelTests(TestCase):
 
@@ -69,10 +94,14 @@ class QuestionModelTests(TestCase):
     def test_validates_phone_or_email_present(self):
         # Remove reporter email, should be fine as phone is set
         self.test_question.reporter_email = None
+        # Set the preferred contact method to phone, else the validation will fail
+        self.test_question.preferred_contact_method = Question.CONTACT_PHONE
         self.test_question.clean()
 
         # Add email back in and remove phone, should also be fine
         self.test_question.reporter_email = 'reporter@example.com'
+        # Set the preferred contact method to email, else the validation will fail
+        self.test_question.preferred_contact_method = Question.CONTACT_EMAIL
         self.test_question.reporter_phone = None
         self.test_question.clean()
 
@@ -81,4 +110,25 @@ class QuestionModelTests(TestCase):
         self.test_question.reporter_email = None
         with self.assertRaises(ValidationError) as context_manager:
             self.test_question.clean()
-        self.assertIsNotNone(context_manager.exception)
+
+        self.assertEqual(context_manager.exception.messages[0], 'You must provide either a phone number or an email address')
+
+    def test_validates_contact_method_given(self):
+        # Remove email and set preferred contact method to email
+        self.test_question.reporter_email = None
+        self.test_question.preferred_contact_method = Problem.CONTACT_EMAIL
+
+        with self.assertRaises(ValidationError) as context_manager:
+            self.test_question.clean()
+
+        self.assertEqual(context_manager.exception.messages[0], 'You must provide an email address if you prefer to be contacted by email')
+
+        # Remove phone and set preferred contact method to phone
+        self.test_question.reporter_email = 'reporter@example.com'
+        self.test_question.reporter_phone = None
+        self.test_question.preferred_contact_method = Problem.CONTACT_PHONE
+
+        with self.assertRaises(ValidationError) as context_manager:
+            self.test_question.clean()
+
+        self.assertEqual(context_manager.exception.messages[0], 'You must provide a phone number if you prefer to be contacted by phone')
