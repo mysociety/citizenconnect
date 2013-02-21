@@ -10,8 +10,7 @@ from django.http import HttpResponseRedirect
 
 # App imports
 from citizenconnect.views import MessageDependentFormViewMixin
-from problems.models import Problem
-from questions.models import Question
+from issues.models import Problem, Question
 
 from .forms import LookupForm, QuestionModerationForm, ProblemModerationForm
 

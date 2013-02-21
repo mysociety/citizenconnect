@@ -3,8 +3,7 @@ from django.forms.widgets import HiddenInput
 
 from citizenconnect.forms import MessageModerationForm
 
-from problems.models import Problem
-from questions.models import Question
+from issues.models import Problem, Question
 
 class LookupForm(forms.Form):
     reference_number = forms.CharField(required=True)
