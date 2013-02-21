@@ -2,8 +2,7 @@ from django.test import TransactionTestCase
 
 from organisations.models import Organisation
 from organisations.tests.lib import create_test_instance, create_test_organisation
-from problems.models import Problem
-from questions.models import Question
+from issues.models import Problem, Question
 
 class BaseModerationTestCase(TransactionTestCase):
 

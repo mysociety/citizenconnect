@@ -18,4 +18,4 @@ class Migration(SchemaMigration):
         
     }
 
-    complete_apps = ['questions']
+    complete_apps = ['issues']

@@ -1,14 +1,13 @@
 # Django imports
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
 
 # App imports
-from problems.models import Problem
-from questions.models import Question
+from issues.models import Problem, Question
 from organisations.tests.lib import create_test_instance, create_test_organisation
 
 from .models import ProblemResponse, QuestionResponse
 
-class ResponseFormTests(TestCase):
+class ResponseFormTests(TransactionTestCase):
 
     def setUp(self):
         self.test_organisation = create_test_organisation()

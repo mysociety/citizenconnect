@@ -1,6 +1,9 @@
 from django import forms
 from django.forms.widgets import HiddenInput, RadioSelect, Textarea, TextInput
 
+from .models import Question
+from .models import Problem
+
 class MessageModelForm(forms.ModelForm):
     """
     ModelForm implementation that does the basics for MessageModel model forms
@@ -72,15 +75,12 @@ class MessageModelForm(forms.ModelForm):
             'public_reporter_name': HiddenInput,
         }
 
-class MessageModerationForm(forms.ModelForm):
-    """
-    Base form class for moderating to Questions and Problems.
+class QuestionForm(MessageModelForm):
 
-    Since these are just fields, this is basically another MessageModelForm,
-    but with only the status field in it.
-    """
+    class Meta(MessageModelForm.Meta):
+        model = Question
 
-    class Meta:
-        fields = [
-            'status'
-        ]
+class ProblemForm(MessageModelForm):
+
+    class Meta(MessageModelForm.Meta):
+        model = Problem

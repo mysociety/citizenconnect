@@ -8,10 +8,9 @@ from django.test import TestCase
 from django.contrib.gis.geos import Point
 
 # App imports
-from problems.models import Problem
-from questions.models import Question
-import organisations
+from issues.models import Problem, Question
 
+import organisations
 from ..models import Organisation
 from . import create_test_instance, create_test_organisation, create_test_service
 
