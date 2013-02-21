@@ -2,7 +2,7 @@ from django.views.generic import CreateView, TemplateView
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 
-from citizenconnect.views import MessageAwareViewMixin, MessageDependentFormViewMixin
+from issues.views import MessageAwareViewMixin, MessageDependentFormViewMixin
 from issues.models import Problem, Question
 
 from .forms import QuestionResponseForm, ProblemResponseForm
