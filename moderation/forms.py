@@ -1,9 +1,17 @@
 from django import forms
 from django.forms.widgets import HiddenInput
 
-from citizenconnect.forms import MessageModerationForm
-
 from issues.models import Problem, Question
+
+class MessageModerationForm(forms.ModelForm):
+    """
+    Base form class for moderating to Questions and Problems.
+    """
+
+    class Meta:
+        fields = [
+            'status'
+        ]
 
 class LookupForm(forms.Form):
     reference_number = forms.CharField(required=True)
