@@ -1,0 +1,80 @@
+/**
+ *   Styles for use  in the docs
+ */
+
+ body.docs{
+     text-align:left !important;
+     max-width: 30em;
+     margin:auto;
+     padding:30px 0px;
+     
+     
+     h2{
+         padding: 3em 0 1em 0;
+     }
+ 
+     ol.contents{
+         list-style-type: decimal;
+     }
+     
+     
+     // COLOURS
+     dl,dd,dt{
+         margin:0;padding:0;text-indent:0;display:block;text-align:left;
+     }
+     dl{ width: 100%;margin:auto;padding:1em;background-color: #ccc;}
+    #colours-primary dd,
+    #colours-secondary dd,
+    #colours-tints dd
+     {
+         display:block;
+         height: 1.5em;
+         margin-bottom: 1em;
+     }
+    #colours-primary dt,
+    #colours-secondary dt,
+    #colours-tints dt
+     {
+         display:block;
+         height: 1.5em;
+         color: #fff;
+     }
+     #colours-primary dt.c-white{ color: $c-black; }
+
+    // Primary Colours
+    .c-nhs_blue{ background-color: $c-nhs_blue; }
+    .c-black{ background-color: $c-black; }
+    .c-white{ background-color: $c-white; }
+ 
+    // Secondary Colours
+    .c-nhs_darkgreen{ background-color: $c-nhs_darkgreen; }
+    .c-nhs_green{ background-color: $c-nhs_green; }
+    .c-nhs_lightgreen{ background-color: $c-nhs_lightgreen; }
+    .c-nhs_aquagreen{ background-color: $c-nhs_aquagreen; }
+
+    .c-nhs_aquablue{ background-color: $c-nhs_aquablue; }
+    .c-nhs_lightblue{ background-color: $c-nhs_lightblue; }
+    .c-nhs_darkblue{ background-color: $c-nhs_darkblue; }
+
+    .c-nhs_purple{ background-color: $c-nhs_purple; }
+    .c-nhs_darkpink{ background-color: $c-nhs_darkpink; }
+    .c-nhs_darkred{ background-color: $c-nhs_darkred; }
+
+    .c-nhs_red{ background-color: $c-nhs_red; }
+    .c-nhs_orange{ background-color: $c-nhs_orange; }
+    .c-nhs_yellow{ background-color: $c-nhs_yellow; }
+
+    .c-nhs_blue-tint_100 { background-color: mix($c-nhs_blue, $c-white, 100%);}
+    .c-nhs_blue-tint_90  { background-color: mix($c-nhs_blue, $c-white, 90%); }
+    .c-nhs_blue-tint_80  { background-color: mix($c-nhs_blue, $c-white, 80%); }
+    .c-nhs_blue-tint_70  { background-color: mix($c-nhs_blue, $c-white, 70%); }
+    .c-nhs_blue-tint_60  { background-color: mix($c-nhs_blue, $c-white, 60%); }
+    .c-nhs_blue-tint_50  { background-color: mix($c-nhs_blue, $c-white, 50%); }
+    .c-nhs_blue-tint_40  { background-color: mix($c-nhs_blue, $c-white, 40%); }
+    .c-nhs_blue-tint_30  { background-color: mix($c-nhs_blue, $c-white, 30%); }
+    .c-nhs_blue-tint_20  { background-color: mix($c-nhs_blue, $c-white, 20%); }
+    .c-nhs_blue-tint_10  { background-color: mix($c-nhs_blue, $c-white, 10%); }
+     
+ }
+
+ 

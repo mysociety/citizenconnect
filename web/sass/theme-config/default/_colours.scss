@@ -1,0 +1,60 @@
+/**
+ * Colours
+ * ----------------
+ * This is the descriptive name of the colour e.g. $c-green
+ * Colour Assignment is in _colour-assignment.scss
+ */
+ 
+ /*
+ 
+ Where possible assign colours to another variable rather than using them directly. This keeps the colour names descriptive and the assignment logical. For example:
+ 
+ $link-colour: $c-nhs_blue;
+ a{
+ color: $link-colour;
+ }
+
+ Now if we wanted to change the colour of links to green we can just change the assignment without ending up with a $c-nhs_blue that is actually green.
+ 
+ $link-colour: $c-nhs_green;
+ a{
+ color: $link-colour;
+ } 
+ 
+ */
+ 
+ 
+ 
+ 
+ 
+// -----------------------------
+//  NHS Palette
+// -----------------------------
+
+// Primary Colours
+$c-nhs_blue: rgb(0,114,198);
+$c-black: #222222;
+$c-white: #ffffff;
+ 
+// Secondary Colours
+$c-nhs_darkgreen: rgb(0,107,84);
+$c-nhs_green: rgb(0,158,73);
+$c-nhs_lightgreen: rgb(91,191,33);
+$c-nhs_aquagreen: rgb(0,170,158);
+
+$c-nhs_aquablue: rgb(0,173,198);
+$c-nhs_lightblue: rgb(0,145,201);
+$c-nhs_darkblue: rgb(0,56,147);
+
+$c-nhs_purple: rgb(86,0,140);
+$c-nhs_darkpink: rgb(160,0,84);
+$c-nhs_darkred: rgb(147,22,56);
+
+$c-nhs_red: rgb(216,30,5);
+$c-nhs_orange: rgb(226,140,5);
+$c-nhs_yellow: rgb(247,226,20);
+
+// Tints should be in 10% steps
+// eg:
+//      lighten($c-nhs_red, 10%);
+//      lighten($c-nhs_red, 20%);
