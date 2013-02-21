@@ -27,6 +27,23 @@ class ProblemModelTests(TestCase):
     def test_has_reference_number_property(self):
         self.assertEqual(self.test_problem.reference_number, 'P{0}'.format(self.test_problem.id))
 
+    def test_validates_phone_or_email_present(self):
+        # Remove reporter email, should be fine as phone is set
+        self.test_problem.reporter_email = None
+        self.test_problem.clean()
+
+        # Add email back in and remove phone, should also be fine
+        self.test_problem.reporter_email = 'reporter@example.com'
+        self.test_problem.reporter_phone = None
+        self.test_problem.clean()
+
+        # Remove both, it should error
+        self.test_problem.reporter_phone = None
+        self.test_problem.reporter_email = None
+        with self.assertRaises(ValidationError) as context_manager:
+            self.test_problem.clean()
+        self.assertIsNotNone(context_manager.exception)
+
 class QuestionModelTests(TestCase):
 
     def setUp(self):
@@ -48,3 +65,20 @@ class QuestionModelTests(TestCase):
 
     def test_has_reference_number_property(self):
         self.assertEqual(self.test_question.reference_number, 'Q{0}'.format(self.test_question.id))
+
+    def test_validates_phone_or_email_present(self):
+        # Remove reporter email, should be fine as phone is set
+        self.test_question.reporter_email = None
+        self.test_question.clean()
+
+        # Add email back in and remove phone, should also be fine
+        self.test_question.reporter_email = 'reporter@example.com'
+        self.test_question.reporter_phone = None
+        self.test_question.clean()
+
+        # Remove both, it should error
+        self.test_question.reporter_phone = None
+        self.test_question.reporter_email = None
+        with self.assertRaises(ValidationError) as context_manager:
+            self.test_question.clean()
+        self.assertIsNotNone(context_manager.exception)

@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import Q
 from django.conf import settings
+from django.core.exceptions import ValidationError
 
 from citizenconnect.models import AuditedModel
 
@@ -54,6 +55,15 @@ class MessageModel(AuditedModel):
         """
         # TODO - this could be a custom template filter instead of a model property
         return self.__class__.__name__
+
+    def clean(self):
+        """
+        Custom model validation
+        """
+
+        # Check that one of phone or email is provided
+        if not self.reporter_phone and not self.reporter_email:
+            raise ValidationError('You must provide either a phone number or an email address')
 
     class Meta:
         abstract = True
