@@ -14,7 +14,7 @@ class Migration(SchemaMigration):
             ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
             ('response', self.gf('django.db.models.fields.TextField')()),
-            ('message', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['questions.Question'])),
+            ('message', self.gf('django.db.models.fields.related.ForeignKey')(related_name='responses', to=orm['issues.Question'])),
         ))
         db.send_create_signal('responses', ['QuestionResponse'])
 
@@ -24,7 +24,7 @@ class Migration(SchemaMigration):
             ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
             ('response', self.gf('django.db.models.fields.TextField')()),
-            ('message', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['problems.Problem'])),
+            ('message', self.gf('django.db.models.fields.related.ForeignKey')(related_name='responses', to=orm['issues.Problem'])),
         ))
         db.send_create_signal('responses', ['ProblemResponse'])
 
@@ -38,27 +38,7 @@ class Migration(SchemaMigration):
 
 
     models = {
-        'organisations.organisation': {
-            'Meta': {'object_name': 'Organisation'},
-            'choices_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True'}),
-            'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'name': ('django.db.models.fields.TextField', [], {}),
-            'ods_code': ('django.db.models.fields.CharField', [], {'max_length': '8', 'db_index': 'True'}),
-            'organisation_type': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'point': ('django.contrib.gis.db.models.fields.PointField', [], {})
-        },
-        'organisations.service': {
-            'Meta': {'object_name': 'Service'},
-            'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'name': ('django.db.models.fields.TextField', [], {}),
-            'organisation': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'services'", 'to': "orm['organisations.Organisation']"}),
-            'service_code': ('django.db.models.fields.TextField', [], {})
-        },
-        'problems.problem': {
+        'issues.problem': {
             'Meta': {'object_name': 'Problem'},
             'category': ('django.db.models.fields.CharField', [], {'default': "'other'", 'max_length': '100'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
@@ -76,7 +56,7 @@ class Migration(SchemaMigration):
             'source': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
             'status': ('django.db.models.fields.IntegerField', [], {'default': '0'})
         },
-        'questions.question': {
+        'issues.question': {
             'Meta': {'object_name': 'Question'},
             'category': ('django.db.models.fields.CharField', [], {'default': "'general'", 'max_length': '100'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
@@ -94,11 +74,31 @@ class Migration(SchemaMigration):
             'source': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
             'status': ('django.db.models.fields.IntegerField', [], {'default': '0'})
         },
+        'organisations.organisation': {
+            'Meta': {'object_name': 'Organisation'},
+            'choices_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True'}),
+            'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
+            'name': ('django.db.models.fields.TextField', [], {}),
+            'ods_code': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '8', 'db_index': 'True'}),
+            'organisation_type': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'point': ('django.contrib.gis.db.models.fields.PointField', [], {})
+        },
+        'organisations.service': {
+            'Meta': {'unique_together': "(('service_code', 'organisation'),)", 'object_name': 'Service'},
+            'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
+            'name': ('django.db.models.fields.TextField', [], {}),
+            'organisation': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'services'", 'to': "orm['organisations.Organisation']"}),
+            'service_code': ('django.db.models.fields.TextField', [], {})
+        },
         'responses.problemresponse': {
             'Meta': {'object_name': 'ProblemResponse'},
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'message': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['problems.Problem']"}),
+            'message': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'responses'", 'to': "orm['issues.Problem']"}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
             'response': ('django.db.models.fields.TextField', [], {})
         },
@@ -106,7 +106,7 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'QuestionResponse'},
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'message': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['questions.Question']"}),
+            'message': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'responses'", 'to': "orm['issues.Question']"}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
             'response': ('django.db.models.fields.TextField', [], {})
         }
