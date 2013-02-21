@@ -72,9 +72,10 @@ class IntervalCountsTest(TestCase):
         # Create a spread of problems over time
         now = datetime.utcnow().replace(tzinfo=utc)
         problem_ages = [3, 4, 5, 21, 22, 45]
+        test_organisation = create_test_organisation()
         for age in problem_ages:
             created = now - timedelta(age)
-            problem = create_test_instance(Problem, {'created': created})
+            problem = create_test_instance(Problem, {'created': created, 'organisation': test_organisation})
 
     def test_interval_counts(self):
         problems = Problem.objects.all()

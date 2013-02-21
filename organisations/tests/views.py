@@ -305,11 +305,13 @@ class ProviderPickerTests(TestCase):
         self.nearby_gp = create_test_organisation({
             'name': 'Nearby GP',
             'organisation_type': 'gppractices',
+            'ods_code':'ABC123',
             'point': Point(-0.13, 51.5)
         })
         self.faraway_gp = create_test_organisation({
             'name': 'Far GP',
             'organisation_type': 'gppractices',
+            'ods_code':'DEF456',
             'point': Point(-0.15, 51.4)
         })
         self.base_url = "/choices/stats/pick-provider"
@@ -340,6 +342,7 @@ class ProviderPickerTests(TestCase):
             create_test_organisation({
                 'name': 'Multi GP',
                 'organisation_type': 'gppractices',
+                'ods_code':'ABC{0}'.format(i)
             })
         resp = self.client.get("%s?organisation_type=gppractices&location=multi" % self.base_url)
         self.assertContains(resp, 'Multi GP', count=10, status_code=200)
@@ -350,6 +353,7 @@ class ProviderPickerTests(TestCase):
             create_test_organisation({
                 'name': 'Multi GP',
                 'organisation_type': 'gppractices',
+                'ods_code': 'DEF{0}'.format(i)
             })
         resp = self.client.get("%s?organisation_type=gppractices&location=multi" % self.base_url)
         self.assertContains(resp, 'Multi GP', count=3, status_code=200)

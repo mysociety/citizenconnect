@@ -4,15 +4,16 @@ from django.test import TestCase
 # App imports
 from problems.models import Problem
 from questions.models import Question
-from organisations.tests.lib import create_test_instance
+from organisations.tests.lib import create_test_instance, create_test_organisation
 
 from .models import ProblemResponse, QuestionResponse
 
 class ResponseFormTests(TestCase):
 
     def setUp(self):
-        self.test_problem = create_test_instance(Problem, {})
-        self.test_question = create_test_instance(Question, {})
+        self.test_organisation = create_test_organisation()
+        self.test_problem = create_test_instance(Problem, {'organisation':self.test_organisation})
+        self.test_question = create_test_instance(Question, {'organisation':self.test_organisation})
         self.problem_response_form_url = '/private/response/problem/%s' % self.test_problem.id
         self.question_response_form_url = '/private/response/question/%s' % self.test_problem.id
 
