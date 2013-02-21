@@ -30,3 +30,6 @@ class Service(AuditedModel):
 
     def __unicode__(self):
         return self.name
+
+    class Meta:
+        unique_together = (("service_code", "organisation"),)
