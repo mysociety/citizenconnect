@@ -17,6 +17,8 @@ class Command(BaseCommand):
 
         new_issues = list(new_problems) + list(new_questions)
 
+        self.stdout.write('{0} New issues to email'.format(len(new_issues)))
+
         if len(new_issues) > 0:
             # Get the template
             message_template = get_template('organisations/new_message_email.txt')
