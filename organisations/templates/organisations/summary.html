@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load url from future %}
-
+{% load render_table from django_tables2 %}
 {% block title %}Outcomes Summary{% endblock %}
 
 {% block bodyclasses %}organisation-summary{% endblock %}
@@ -14,13 +14,18 @@
 </div>
 <div class="outcomes-options">
     <form class="" action="{{ request.path }}">
+        {% if services %}
         <div class="feature">
-            <select name="department">
-                <option>Department</option>
+            <select name="service">
+                <option value="">Department</option>
+                {% for service in services %}
+                <option value="{{ service.id }}" {% if selected_service == service.id %}selected{% endif %}>{{ service.name }}</option>
+                {% endfor %}
             </select>
         </div>
+        {% endif %}
         <div class="feature">
-            <select name="problem-type">
+            <select name="problems_category">
                 <option value="">Problem type</option>
                 {% for value, display_value in problems_categories %}
                 <option value="{{ value }}" {% if problems_category == value %}selected{% endif %}>{{ display_value }}</option>
@@ -28,100 +33,40 @@
             </select>
         </div>
         <div class="feature">
-            <select name="department">
+            <select name="questions_category">
                 <option value="">Question type</option>
                  {% for value, display_value in questions_categories %}
                     <option value="{{ value }}" {% if questions_category == value %}selected{% endif %}>{{ display_value }}</option>
                 {% endfor %}
             </select>
         </div>
-    </form>
-</div>
-<div class="outcomes-table">
-    <div class="feature">
-        <table>
-            <thead>
-                <tr>
-                    <th class="heading separator">Provider Name</th>
-                    <th>Last 7 days</th>
-                    <th>Last 4 weeks</th>
-                    <th class="separator">Last 6 months</th>
-                    <th>% Acknowledged in time</th>
-                    <th class="separator">% Addressed in time</th>
-                    <th>% Happy with service</th>
-                    <th>% Happy with outcome</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for organisation in hospitals %}
-                <tr>
-                    <td class="heading separator"><a href="{% url 'public-org-summary' ods_code=organisation.ods_code cobrand=cobrand.name %}">{{ organisation.name }}</a></em></td>
-                    <td></td>
-                    <td></td>
-                    <td class="separator"></td>
-                    <td></td>
-                    <td class="separator"></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
-<div class="header">
-    <h2>GPs</h2>
-</div>
-<div class="outcomes-options">
-    <form class="" action="{{ request.path }}">
         <div class="feature">
-            <select name="problem-type">
-                <option value="">Problem type</option>
-                {% for value, display_value in problems_categories %}
-                <option value="{{ value }}" {% if problems_category == value %}selected{% endif %}>{{ display_value }}</option>
+            <select name="organisation_type">
+                <option value="">Provider type</option>
+                 {% for value, display_value in organisation_types %}
+                    <option value="{{ value }}" {% if organisation_type == value %}selected{% endif %}>{{ display_value }}</option>
                 {% endfor %}
             </select>
         </div>
         <div class="feature">
-            <select name="department">
-                <option value="">Question type</option>
-                 {% for value, display_value in questions_categories %}
-                    <option value="{{ value }}" {% if questions_category == value %}selected{% endif %}>{{ display_value }}</option>
+            <select name="issue_type">
+                <option value="">Issue type</option>
+                 {% for value, display_value in issue_types %}
+                    <option value="{{ value }}" {% if issue_type == value %}selected{% endif %}>{{ display_value }}</option>
                 {% endfor %}
             </select>
         </div>
+        <div class="feature">
+            <input type="submit" value="Filter">
+        </div>
     </form>
 </div>
+{% if organisations_table %}
 <div class="outcomes-table">
     <div class="feature">
-        <table>
-            <thead>
-                <tr>
-                    <th class="heading separator">Provider Name</th>
-                    <th>Last 7 days</th>
-                    <th>Last 4 weeks</th>
-                    <th class="separator">Last 6 months</th>
-                    <th>% Acknowledged in time</th>
-                    <th class="separator">% Addressed in time</th>
-                    <th>% Happy with service</th>
-                    <th>% Happy with outcome</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for organisation in gppractices %}
-                <tr>
-                    <td class="heading separator"><a href="{% url 'public-org-summary' ods_code=organisation.ods_code cobrand=cobrand.name %}">{{ organisation.name }}</a></em></td>
-                    <td></td>
-                    <td></td>
-                    <td class="separator"></td>
-                    <td></td>
-                    <td class="separator"></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        {% render_table organisations_table %}
     </div>
 </div>
+{% endif %}
+
 {% endblock %}

@@ -8,6 +8,8 @@ from django.views.generic import FormView, TemplateView, UpdateView, ListView
 from django.template.defaultfilters import escape
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
+from django_tables2 import RequestConfig
+from django.conf import settings
 
 # App imports
 from citizenconnect.shortcuts import render
@@ -18,6 +20,7 @@ from .forms import OrganisationFinderForm
 import choices_api
 from .lib import interval_counts
 from .models import Organisation
+from .tables  import NationalSummaryTable
 
 class OrganisationAwareViewMixin(object):
     """Mixin class for views which need to have a reference to a particular
@@ -179,11 +182,27 @@ class Summary(TemplateView):
     template_name = 'organisations/summary.html'
 
     def get_context_data(self, **kwargs):
+        issue_types = {'problems': Problem,
+                       'questions': Question}
+
         context = super(Summary, self).get_context_data(**kwargs)
-        context['gppractices'] = Organisation.objects.filter(organisation_type='gppractices')
-        context['hospitals'] = Organisation.objects.filter(organisation_type='hospitals')
         context['problems_categories'] = Problem.CATEGORY_CHOICES
         context['questions_categories'] = Question.CATEGORY_CHOICES
+        context['organisation_types'] = settings.ORGANISATION_CHOICES
+        context['issue_types'] = [(key, key) for key in issue_types]
+
+        issue_type = self.request.GET.get('issue_type')
+        if not issue_type in issue_types.keys():
+            issue_type = 'problems'
+        context['issue_type'] = issue_type
+        organisation_rows = interval_counts(issue_type=issue_types[issue_type])
+        # Add cobrand to rows so we can create links in the table
+        for organisation_row in organisation_rows:
+            organisation_row['cobrand'] = kwargs['cobrand']
+        organisations_table = NationalSummaryTable(organisation_rows)
+        RequestConfig(self.request).configure(organisations_table)
+        context['organisations_table'] = organisations_table
+
         return context
 
 class OrganisationDashboard(OrganisationAwareViewMixin,
