@@ -69,6 +69,9 @@ class ProblemModelTests(TestCase):
 
         self.assertEqual(context_manager.exception.messages[0], 'You must provide a phone number if you prefer to be contacted by phone')
 
+    def test_defaults_to_not_mailed(self):
+        self.assertFalse(self.test_problem.mailed)
+
 class QuestionModelTests(TestCase):
 
     def setUp(self):
@@ -132,3 +135,6 @@ class QuestionModelTests(TestCase):
             self.test_question.clean()
 
         self.assertEqual(context_manager.exception.messages[0], 'You must provide a phone number if you prefer to be contacted by phone')
+
+    def test_defaults_to_not_mailed(self):
+        self.assertFalse(self.test_question.mailed)
