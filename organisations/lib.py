@@ -51,6 +51,14 @@ def interval_counts(issue_type, filters={}, sort='name', organisation_id=None):
             criteria_clauses.append("organisations_service.service_code = %s")
             params.append(service_code)
 
+    organisation_type = filters.get('organisation_type')
+    if organisation_type != None:
+        if organisation_id:
+             raise NotImplementedError("Filtering for an organisation type is unnecessary for a single organisation")
+        else:
+             criteria_clauses.append("organisations_organisation.organisation_type = %s")
+             params.append(organisation_type)
+
     # Group by clauses to go with the non-aggregate selects
     group_by_clauses = ["""organisations_organisation.id""",
                         """organisations_organisation.name""",

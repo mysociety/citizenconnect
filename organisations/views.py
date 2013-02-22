@@ -206,13 +206,17 @@ class Summary(TemplateView):
         selected_service = self.request.GET.get('service')
         if selected_service in [service_code for service_code, name in context['services']]:
             filters['service_code'] = selected_service
-            context['selected_service'] = selected_service
 
         # Category filter
         category = self.request.GET.get('%s_category' % issue_type)
         if category in dict(model_class.CATEGORY_CHOICES):
-            context['%s_category' % issue_type] = category
+            filters['%s_category' % issue_type] = category
             filters['category'] = category
+
+        # Organisation type
+        organisation_type = self.request.GET.get('organisation_type')
+        if organisation_type in settings.ORGANISATION_TYPES:
+            filters['organisation_type'] = organisation_type
 
         organisation_rows = interval_counts(issue_type=model_class, filters=filters)
         # Add cobrand to rows so we can create links in the table
@@ -221,7 +225,7 @@ class Summary(TemplateView):
         organisations_table = NationalSummaryTable(organisation_rows)
         RequestConfig(self.request).configure(organisations_table)
         context['organisations_table'] = organisations_table
-
+        context['filters'] = filters
         return context
 
 class OrganisationDashboard(OrganisationAwareViewMixin,
