@@ -1,4 +1,4 @@
-from django.core.mail import send_mail
+from django.core import mail
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from django.template.loader import get_template
@@ -30,8 +30,8 @@ class Command(BaseCommand):
                     issue.save()
                     transaction.commit()
                 except Exception as e:
-                    print e
-                    print "Error mailing message: {reference_number}".format(issue.reference_number)
+                    self.stdout.write('{0}'.format(e))
+                    self.stdout.write('Error mailing message: {0}'.format(issue.reference_number))
                     transaction.rollback()
 
     def send_message(self, template, issue):
@@ -39,7 +39,7 @@ class Command(BaseCommand):
         self.stdout.write('Emailing message reference number: {0}'.format(issue.reference_number))
         # TODO - from_email should be a setting?
         # TODO - recipient list should come from the organisation
-        send_mail(subject='Care Connect: New {0}'.format(issue.issue_type),
+        mail.send_mail(subject='Care Connect: New {0}'.format(issue.issue_type),
                   message=template.render(context),
                   from_email='no-reply@citizenconnect.mysociety.org',
                   recipient_list=['steve@mysociety.org'],

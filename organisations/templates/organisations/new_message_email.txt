@@ -3,10 +3,10 @@ You have receieved a new {{ message.issue_type }} on Care Connect.
 
 Sender:
 {{ message.reporter_name }}
-{% if message.preferred_contact_method == 'phone' %}
-Phone number: {{ message.reporter_phone }}
-{% elif message.preferred_contact_method == 'email' %}
-Email address: {{ message.reporter_email }}
+{% if message.preferred_contact_method == "phone" %}
+    Phone number: {{ message.reporter_phone }}
+{% elif message.preferred_contact_method == "email" %}
+    Email address: {{ message.reporter_email }}
 {% endif %}
 
 Category: {{ message.category }}
