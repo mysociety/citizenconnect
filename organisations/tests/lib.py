@@ -67,7 +67,7 @@ def create_test_instance(model, attributes):
 
 class IntervalCountsTest(TestCase):
 
-    def create_problem(self, organisation, age):
+    def create_problem(self, organisation, age, attributes={}):
         now = datetime.utcnow().replace(tzinfo=utc)
         created = now - timedelta(age)
         return create_test_instance(Problem, {'created': created,
@@ -75,15 +75,16 @@ class IntervalCountsTest(TestCase):
 
     def setUp(self):
         # Create a spread of problems over time
-        problem_ages = [3, 4, 5, 21, 22, 45]
+        problem_ages = {3: {}, 4: {}, 5: {}, 21: {}, 22: {}, 45: {}}
+
         self.test_organisation = create_test_organisation()
         self.other_test_organisation = create_test_organisation({'ods_code': 'ABC222',
                                                                  'name': 'Other Test Organisation'})
-        for age in problem_ages:
-            self.create_problem(self.test_organisation, age)
-        other_problem_ages = [1, 2, 20, 65, 70]
-        for age in other_problem_ages:
-            self.create_problem(self.other_test_organisation, age)
+        for age, attributes in problem_ages.items():
+            self.create_problem(self.test_organisation, age, attributes)
+        other_problem_ages = {1: {}, 2: {}, 20: {}, 65: {}, 70: {}}
+        for age, attributes in other_problem_ages.items():
+            self.create_problem(self.other_test_organisation, age, attributes)
 
     def test_organisation_interval_counts(self):
         expected_counts = {'week': 3,
