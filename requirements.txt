@@ -11,6 +11,7 @@ uk-postcode-utils
 Django
 South
 django-pagination
+django-tables2
 
 ### Testing
 mock
