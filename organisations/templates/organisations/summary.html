@@ -16,8 +16,8 @@
         <div class="feature">
             <select name="service">
                 <option value="">Department</option>
-                {% for service in services %}
-                <option value="{{ service.id }}" {% if selected_service == service.id %}selected{% endif %}>{{ service.name }}</option>
+                {% for service_code, service_name in services %}
+                <option value="{{ service_code }}" {% if selected_service == service_code %}selected{% endif %}>{{ service_name }}</option>
                 {% endfor %}
             </select>
         </div>

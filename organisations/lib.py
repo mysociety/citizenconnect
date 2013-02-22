@@ -18,6 +18,7 @@ def interval_counts(issue_type, filters={}, sort='name', organisation_id=None):
                  'four_weeks': now - timedelta(28),
                  'six_months': now - timedelta(365/12*6)}
     params = []
+    extra_tables = []
 
     # organisation identifying info
     select_clauses = ["""organisations_organisation.id as id""",
@@ -40,6 +41,15 @@ def interval_counts(issue_type, filters={}, sort='name', organisation_id=None):
             criteria_clauses.append(issue_table + "." + criteria + " = %s""")
             params.append(value)
 
+    service_code = filters.get('service_code')
+    if service_code != None:
+        if organisation_id:
+            raise NotImplementedError("Filtering for service on a single organisation uses service_id, not service_code")
+        else:
+            extra_tables.append('organisations_service')
+            criteria_clauses.append("organisations_service.id = %s.service_id" % issue_table)
+            criteria_clauses.append("organisations_service.service_code = %s")
+            params.append(service_code)
 
     # Group by clauses to go with the non-aggregate selects
     group_by_clauses = ["""organisations_organisation.id""",
@@ -58,14 +68,15 @@ def interval_counts(issue_type, filters={}, sort='name', organisation_id=None):
         params.append(organisation_id)
     # For multiple organisations we want whatever meets the filter criteria
     else:
-        from_text = "FROM organisations_organisation, %s" % issue_table
+        from_text = "FROM organisations_organisation, %s " % issue_table
+        if extra_tables:
+            from_text += ", " + ", ".join(extra_tables)
         criteria_text = "WHERE %s" % " AND ".join(criteria_clauses)
 
     group_text = "GROUP BY %s" % ', '.join(group_by_clauses)
     sort_text = "ORDER BY %s" % sort
     query = "%s %s %s %s %s" % (select_text, from_text, criteria_text, group_text, sort_text)
     cursor.execute(query, params)
-
     desc = cursor.description
     # Return a list of dictionaries
     counts = [ dict(zip([col[0] for col in desc], row)) for row in cursor.fetchall() ]

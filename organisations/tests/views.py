@@ -375,7 +375,6 @@ def SummaryTests(TestCase):
         resp = self.client.get(self.summary_url)
         self.assertEqual(resp.status_code, 200)
 
-
 class ProviderPickerTests(TestCase):
 
     def mock_api_response(self, data, response_code):

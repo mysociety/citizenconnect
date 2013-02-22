@@ -70,19 +70,39 @@ class IntervalCountsTest(TestCase):
     def create_problem(self, organisation, age, attributes={}):
         now = datetime.utcnow().replace(tzinfo=utc)
         created = now - timedelta(age)
-        return create_test_instance(Problem, {'created': created,
-                                              'organisation': organisation})
+        default_atts = {'created': created,
+                        'organisation': organisation}
+        default_atts.update(attributes)
+        return create_test_instance(Problem, default_atts)
 
     def setUp(self):
-        # Create a spread of problems over time
-        problem_ages = {3: {}, 4: {}, 5: {}, 21: {}, 22: {}, 45: {}}
-
         self.test_organisation = create_test_organisation()
         self.other_test_organisation = create_test_organisation({'ods_code': 'ABC222',
                                                                  'name': 'Other Test Organisation'})
+        self.test_org_injuries = create_test_service({"service_code": 'ABC123',
+                                                      "organisation_id": self.test_organisation.id})
+        self.test_org_emergencies = create_test_service({"service_code": 'DEF456',
+                                                         "organisation_id": self.test_organisation.id})
+        self.other_org_injuries = create_test_service({"service_code": 'ABC123',
+                                                       "organisation_id": self.other_test_organisation.id})
+        self.other_org_emergencies = create_test_service({"service_code": 'DEF456',
+                                                          "organisation_id": self.other_test_organisation.id})
+
+        # Create a spread of problems over time for two organisations
+        problem_ages = {3: {},
+                        4: {},
+                        5: {'service_id': self.test_org_emergencies.id},
+                        21: {},
+                        22: {'service_id': self.test_org_injuries.id},
+                        45: {}}
+
         for age, attributes in problem_ages.items():
             self.create_problem(self.test_organisation, age, attributes)
-        other_problem_ages = {1: {}, 2: {}, 20: {}, 65: {}, 70: {}}
+        other_problem_ages = {1: {'service_id': self.other_org_injuries.id },
+                              2: {'service_id': self.other_org_emergencies.id },
+                              20: {},
+                              65: {},
+                              70: {}}
         for age, attributes in other_problem_ages.items():
             self.create_problem(self.other_test_organisation, age, attributes)
 
@@ -116,3 +136,22 @@ class IntervalCountsTest(TestCase):
                            'all_time': 6}]
         self.assertEqual(expected_counts, interval_counts(issue_type=Problem,
                                                           filters={}))
+
+    def test_filter_by_service_code(self):
+        filters = {'service_code': 'ABC123'}
+        expected_counts = [{'week': 1,
+                            'four_weeks': 1,
+                            'id': self.other_test_organisation.id,
+                            'name': 'Other Test Organisation',
+                            'ods_code': 'ABC222',
+                            'six_months': 1,
+                            'all_time': 1},
+                           {'week': 0,
+                           'four_weeks': 1,
+                           'id': self.test_organisation.id,
+                           'name': 'Test Organisation',
+                           'ods_code': 'F84021',
+                           'six_months': 1,
+                           'all_time': 1}]
+        self.assertEqual(expected_counts, interval_counts(issue_type=Problem,
+                                                          filters=filters))

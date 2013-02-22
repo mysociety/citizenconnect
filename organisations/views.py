@@ -15,7 +15,7 @@ from django.conf import settings
 from citizenconnect.shortcuts import render
 from issues.models import Problem, Question
 
-from .models import Organisation
+from .models import Organisation, Service
 from .forms import OrganisationFinderForm
 import choices_api
 from .lib import interval_counts
@@ -192,6 +192,7 @@ class Summary(TemplateView):
         context['questions_categories'] = Question.CATEGORY_CHOICES
         context['organisation_types'] = settings.ORGANISATION_CHOICES
         context['issue_types'] = [(key, key) for key in issue_types]
+        context['services'] = Service.service_codes()
         filters = {}
         issue_type = self.request.GET.get('issue_type')
 
@@ -200,6 +201,14 @@ class Summary(TemplateView):
             issue_type = 'problems'
         context['issue_type'] = issue_type
         model_class = issue_types[issue_type]
+
+        # Service code filter
+        selected_service = self.request.GET.get('service')
+        if selected_service in [service_code for service_code, name in context['services']]:
+            filters['service_code'] = selected_service
+            context['selected_service'] = selected_service
+
+        # Category filter
         category = self.request.GET.get('%s_category' % issue_type)
         if category in dict(model_class.CATEGORY_CHOICES):
             context['%s_category' % issue_type] = category
