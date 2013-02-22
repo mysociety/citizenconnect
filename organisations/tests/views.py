@@ -105,6 +105,14 @@ class OrganisationSummaryTests(TestCase):
             self.assertEqual(resp.context['questions'][0].id, self.appointment_dept_question.id)
             self.assertEqual(resp.context['questions'][1].id, self.general_question.id)
             self.assertEqual(resp.context['questions'][2].id, self.services_question.id)
+            expected_total_counts = {'all_time': 3,
+                                     'four_weeks': 3,
+                                     'id': self.organisation.id,
+                                     'name': 'Test Organisation',
+                                     'ods_code': 'F84021',
+                                     'six_months': 3,
+                                     'week': 3}
+            self.assertEqual(resp.context['problems_total'], expected_total_counts)
             expected_status_counts = [{'week': 3,
                                        'four_weeks': 3,
                                        'six_months': 3,
@@ -366,6 +374,7 @@ def SummaryTests(TestCase):
     def test_summary_page_exists(self):
         resp = self.client.get(self.summary_url)
         self.assertEqual(resp.status_code, 200)
+
 
 class ProviderPickerTests(TestCase):
 
