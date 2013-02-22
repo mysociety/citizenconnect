@@ -193,7 +193,7 @@ class Summary(TemplateView):
         context['questions_categories'] = Question.CATEGORY_CHOICES
         context['questions_statuses'] = Question.STATUS_CHOICES
         context['organisation_types'] = settings.ORGANISATION_CHOICES
-        context['issue_types'] = [(key, key) for key in issue_types]
+        context['issue_types'] = [(value, model_type.__name__) for value, model_type  in issue_types.items()]
         context['services'] = Service.service_codes()
         filters = {}
         issue_type = self.request.GET.get('issue_type')
