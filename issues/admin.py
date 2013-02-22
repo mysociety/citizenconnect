@@ -1,5 +1,5 @@
 from django.contrib import admin
-from problems import models
+from issues import models
 
 # tweak to taste - simple at the top and more custom below
 

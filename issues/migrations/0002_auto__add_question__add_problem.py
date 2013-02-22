@@ -8,33 +8,53 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'QuestionResponse'
-        db.create_table('responses_questionresponse', (
+        # Adding model 'Question'
+        db.create_table('issues_question', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-            ('response', self.gf('django.db.models.fields.TextField')()),
-            ('message', self.gf('django.db.models.fields.related.ForeignKey')(related_name='responses', to=orm['issues.Question'])),
+            ('organisation', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['organisations.Organisation'])),
+            ('service', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['organisations.Service'], null=True, blank=True)),
+            ('description', self.gf('django.db.models.fields.TextField')()),
+            ('reporter_name', self.gf('django.db.models.fields.CharField')(max_length=200, blank=True)),
+            ('reporter_phone', self.gf('django.db.models.fields.CharField')(max_length=50, blank=True)),
+            ('reporter_email', self.gf('django.db.models.fields.CharField')(max_length=254, blank=True)),
+            ('public', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('public_reporter_name', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('preferred_contact_method', self.gf('django.db.models.fields.CharField')(default='email', max_length=100)),
+            ('source', self.gf('django.db.models.fields.CharField')(max_length=50, blank=True)),
+            ('category', self.gf('django.db.models.fields.CharField')(default='general', max_length=100)),
+            ('status', self.gf('django.db.models.fields.IntegerField')(default=0)),
         ))
-        db.send_create_signal('responses', ['QuestionResponse'])
+        db.send_create_signal('issues', ['Question'])
 
-        # Adding model 'ProblemResponse'
-        db.create_table('responses_problemresponse', (
+        # Adding model 'Problem'
+        db.create_table('issues_problem', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-            ('response', self.gf('django.db.models.fields.TextField')()),
-            ('message', self.gf('django.db.models.fields.related.ForeignKey')(related_name='responses', to=orm['issues.Problem'])),
+            ('organisation', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['organisations.Organisation'])),
+            ('service', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['organisations.Service'], null=True, blank=True)),
+            ('description', self.gf('django.db.models.fields.TextField')()),
+            ('reporter_name', self.gf('django.db.models.fields.CharField')(max_length=200, blank=True)),
+            ('reporter_phone', self.gf('django.db.models.fields.CharField')(max_length=50, blank=True)),
+            ('reporter_email', self.gf('django.db.models.fields.CharField')(max_length=254, blank=True)),
+            ('public', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('public_reporter_name', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('preferred_contact_method', self.gf('django.db.models.fields.CharField')(default='email', max_length=100)),
+            ('source', self.gf('django.db.models.fields.CharField')(max_length=50, blank=True)),
+            ('category', self.gf('django.db.models.fields.CharField')(default='other', max_length=100)),
+            ('status', self.gf('django.db.models.fields.IntegerField')(default=0)),
         ))
-        db.send_create_signal('responses', ['ProblemResponse'])
+        db.send_create_signal('issues', ['Problem'])
 
 
     def backwards(self, orm):
-        # Deleting model 'QuestionResponse'
-        db.delete_table('responses_questionresponse')
+        # Deleting model 'Question'
+        db.delete_table('issues_question')
 
-        # Deleting model 'ProblemResponse'
-        db.delete_table('responses_problemresponse')
+        # Deleting model 'Problem'
+        db.delete_table('issues_problem')
 
 
     models = {
@@ -93,23 +113,7 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.TextField', [], {}),
             'organisation': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'services'", 'to': "orm['organisations.Organisation']"}),
             'service_code': ('django.db.models.fields.TextField', [], {})
-        },
-        'responses.problemresponse': {
-            'Meta': {'object_name': 'ProblemResponse'},
-            'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'message': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'responses'", 'to': "orm['issues.Problem']"}),
-            'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'response': ('django.db.models.fields.TextField', [], {})
-        },
-        'responses.questionresponse': {
-            'Meta': {'object_name': 'QuestionResponse'},
-            'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'message': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'responses'", 'to': "orm['issues.Question']"}),
-            'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'response': ('django.db.models.fields.TextField', [], {})
         }
     }
 
-    complete_apps = ['responses']
+    complete_apps = ['issues']

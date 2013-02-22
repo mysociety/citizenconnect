@@ -17,8 +17,7 @@ urlpatterns = patterns('',
     url(r'^' + cobrand_pattern + r'/?$', Home.as_view(), name='home'),
     url(r'^' + cobrand_pattern + r'/about$', About.as_view(), name='about'),
 
-    url(r'^' + cobrand_pattern + r'/question/', include('questions.urls')),
-    url(r'^' + cobrand_pattern + r'/problem/', include('problems.urls')),
+    url(r'^' + cobrand_pattern + r'/', include('issues.urls')),
     url(r'^' + cobrand_pattern + r'/review/', include('reviews.urls')),
     url(r'^' + cobrand_pattern + r'/stats/', include('organisations.urls.public')),
 

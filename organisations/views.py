@@ -11,8 +11,7 @@ from django.template import RequestContext
 
 # App imports
 from citizenconnect.shortcuts import render
-from problems.models import Problem
-from questions.models import Question
+from issues.models import Problem, Question
 
 from .models import Organisation
 from .forms import OrganisationFinderForm

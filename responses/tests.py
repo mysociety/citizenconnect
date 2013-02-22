@@ -1,14 +1,14 @@
 # Django imports
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
+from django.core.urlresolvers import reverse
 
 # App imports
-from problems.models import Problem
-from questions.models import Question
+from issues.models import Problem, Question
 from organisations.tests.lib import create_test_instance, create_test_organisation
 
 from .models import ProblemResponse, QuestionResponse
 
-class ResponseFormTests(TestCase):
+class ResponseFormTests(TransactionTestCase):
 
     def setUp(self):
         self.test_organisation = create_test_organisation()
@@ -63,6 +63,17 @@ class ResponseFormTests(TestCase):
         self.test_question = Question.objects.get(pk=self.test_question.id)
         self.assertEqual(self.test_question.status, Question.RESOLVED)
 
+    def test_form_shows_confirmation_with_link(self):
+        response_text = 'This problem is solved'
+        test_form_values = {
+            'response': response_text,
+            'message': self.test_problem.id
+        }
+        resp = self.client.post(self.problem_response_form_url, test_form_values)
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "Message sent")
+        self.assertContains(resp, reverse('org-dashboard', kwargs={'ods_code':self.test_organisation.ods_code}))
+
 class ResponseFormViewTests(TestCase):
 
     def setUp(self):
@@ -93,12 +104,3 @@ class ResponseFormViewTests(TestCase):
         resp = self.client.get(self.response_form_url)
         self.assertContains(resp, response1.response)
         self.assertContains(resp, response2.response)
-
-class ResponseConfirmTests(TestCase):
-
-    def setUp(self):
-        self.response_confirm_url = '/private/response/confirm'
-
-    def test_response_page_exists(self):
-        resp = self.client.get(self.response_confirm_url)
-        self.assertEqual(resp.status_code, 200)

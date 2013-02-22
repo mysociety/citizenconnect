@@ -9,9 +9,8 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 
 # App imports
-from citizenconnect.views import MessageDependentFormViewMixin
-from problems.models import Problem
-from questions.models import Question
+from issues.views import MessageDependentFormViewMixin
+from issues.models import Problem, Question
 
 from .forms import LookupForm, QuestionModerationForm, ProblemModerationForm
 

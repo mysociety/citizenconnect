@@ -7,8 +7,7 @@ from django.utils.timezone import utc
 from django.contrib.gis.geos import Point
 
 # App imports
-from problems.models import Problem
-from questions.models import Question
+from issues.models import Problem, Question
 
 from ..lib import interval_counts
 from ..models import Organisation, Service

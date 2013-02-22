@@ -1,6 +1,5 @@
 from organisations.tests.lib import create_test_instance, create_test_organisation
-from problems.models import Problem
-from questions.models import Question
+from issues.models import Problem, Question
 from responses.models import ProblemResponse
 
 from .lib import BaseModerationTestCase
