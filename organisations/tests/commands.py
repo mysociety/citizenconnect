@@ -1,3 +1,4 @@
+import logging
 from mock import patch
 
 from django.test import TestCase
@@ -85,6 +86,8 @@ class EmailIssuesToProviderTests(TestCase):
         self.assertTrue(self.test_question.reporter_email in second_mail.body)
 
     def test_handles_errors_in_sending_mails(self):
+        # Quiet logging for this test
+        logging.disable(logging.CRITICAL)
         # Make send_mail throw an exception for the first call
         old_send_mail = mail.send_mail
         with patch.object(mail, 'send_mail') as mock_send_mail:

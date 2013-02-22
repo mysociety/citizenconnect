@@ -1,3 +1,5 @@
+import logging
+
 from django.core import mail
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
@@ -6,6 +8,8 @@ from django.template import Context
 from django.conf import settings
 
 from issues.models import Question, Problem
+
+logger = logging.getLogger(__name__)
 
 @transaction.commit_manually
 class Command(BaseCommand):
@@ -17,7 +21,7 @@ class Command(BaseCommand):
 
         new_issues = list(new_problems) + list(new_questions)
 
-        self.stdout.write('{0} New issues to email'.format(len(new_issues)))
+        logger.info('{0} New issues to email'.format(len(new_issues)))
 
         if len(new_issues) > 0:
             # Get the template
@@ -30,13 +34,13 @@ class Command(BaseCommand):
                     issue.save()
                     transaction.commit()
                 except Exception as e:
-                    self.stdout.write('{0}'.format(e))
-                    self.stdout.write('Error mailing message: {0}'.format(issue.reference_number))
+                    logger.error('{0}'.format(e))
+                    logger.error('Error mailing message: {0}'.format(issue.reference_number))
                     transaction.rollback()
 
     def send_message(self, template, issue):
         context = Context({ 'message': issue, 'site_base_url': settings.SITE_BASE_URL })
-        self.stdout.write('Emailing message reference number: {0}'.format(issue.reference_number))
+        logger.info('Emailing message reference number: {0}'.format(issue.reference_number))
         # TODO - from_email should be a setting?
         # TODO - recipient list should come from the organisation
         mail.send_mail(subject='Care Connect: New {0}'.format(issue.issue_type),
