@@ -186,16 +186,26 @@ class Summary(TemplateView):
                        'questions': Question}
 
         context = super(Summary, self).get_context_data(**kwargs)
+
+        # Set up the data for the filters
         context['problems_categories'] = Problem.CATEGORY_CHOICES
         context['questions_categories'] = Question.CATEGORY_CHOICES
         context['organisation_types'] = settings.ORGANISATION_CHOICES
         context['issue_types'] = [(key, key) for key in issue_types]
-
+        filters = {}
         issue_type = self.request.GET.get('issue_type')
+
+        # Default to showing problems
         if not issue_type in issue_types.keys():
             issue_type = 'problems'
         context['issue_type'] = issue_type
-        organisation_rows = interval_counts(issue_type=issue_types[issue_type])
+        model_class = issue_types[issue_type]
+        category = self.request.GET.get('%s_category' % issue_type)
+        if category in dict(model_class.CATEGORY_CHOICES):
+            context['%s_category' % issue_type] = category
+            filters['category'] = category
+
+        organisation_rows = interval_counts(issue_type=model_class, filters=filters)
         # Add cobrand to rows so we can create links in the table
         for organisation_row in organisation_rows:
             organisation_row['cobrand'] = kwargs['cobrand']
