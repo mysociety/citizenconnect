@@ -189,7 +189,9 @@ class Summary(TemplateView):
 
         # Set up the data for the filters
         context['problems_categories'] = Problem.CATEGORY_CHOICES
+        context['problems_statuses'] = Problem.STATUS_CHOICES
         context['questions_categories'] = Question.CATEGORY_CHOICES
+        context['questions_statuses'] = Question.STATUS_CHOICES
         context['organisation_types'] = settings.ORGANISATION_CHOICES
         context['issue_types'] = [(key, key) for key in issue_types]
         context['services'] = Service.service_codes()
@@ -204,7 +206,7 @@ class Summary(TemplateView):
 
         # Service code filter
         selected_service = self.request.GET.get('service')
-        if selected_service in [service_code for service_code, name in context['services']]:
+        if selected_service in dict(context['services']):
             filters['service_code'] = selected_service
 
         # Category filter
@@ -217,6 +219,12 @@ class Summary(TemplateView):
         organisation_type = self.request.GET.get('organisation_type')
         if organisation_type in settings.ORGANISATION_TYPES:
             filters['organisation_type'] = organisation_type
+
+        # Status
+        status = self.request.GET.get('%s_status' % issue_type)
+        if int(status) in dict(model_class.STATUS_CHOICES):
+            filters['%s_status' % issue_type] = int(status)
+            filters['status'] = int(status)
 
         organisation_rows = interval_counts(issue_type=model_class, filters=filters)
         # Add cobrand to rows so we can create links in the table
