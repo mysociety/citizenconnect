@@ -36,9 +36,4 @@ MAPIT_BASE_URL = config.get('MAPIT_BASE_URL')
 
 WGS_84 = 4326
 
-# Emails - smtp on the proper server, console when we're debugging
-# so that no emails get sent from dev/staging sites to anyone important
-if DEBUG:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
 SITE_BASE_URL = config.get('SITE_BASE_URL')
