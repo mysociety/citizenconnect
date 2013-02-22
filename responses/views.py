@@ -1,7 +1,8 @@
 from django.views.generic import CreateView, TemplateView
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from django.template import RequestContext
 
+from citizenconnect.shortcuts import render
 from issues.views import MessageAwareViewMixin, MessageDependentFormViewMixin
 from issues.models import Problem, Question
 
@@ -13,6 +14,7 @@ class ResponseForm(MessageAwareViewMixin,
                    CreateView):
 
     template_name = 'responses/response-form.html'
+    confirm_template = 'responses/response-confirm.html'
 
     # Parameters for MessageDependentFormViewMixin
     problem_form_class = ProblemResponseForm
@@ -50,7 +52,8 @@ class ResponseForm(MessageAwareViewMixin,
             message = self.object.message
             message.status = form.cleaned_data['message_status']
             message.save()
-        return HttpResponseRedirect(self.get_success_url())
 
-class ResponseConfirm(TemplateView):
-    template_name = 'responses/response-confirm.html'
+        # Show the confirmation page, and give it the response object to use
+        context = RequestContext(self.request)
+        context['response'] = self.object
+        return render(self.request, self.confirm_template, context)
