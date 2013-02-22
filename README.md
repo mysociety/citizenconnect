@@ -58,5 +58,9 @@ just remember the details you choose!
 
     ./manage.py migrate
 
+### To reload the initial data
+
+    ./manage.py flush
+
 ### Gather all the static files in one place
     ./manage.py collectstatic --noinput
