@@ -1,0 +1,20 @@
+{% load url from future %}
+You have receieved a new {{ message.issue_type }} on Care Connect.
+
+Sender:
+{{ message.reporter_name }}
+{% if message.preferred_contact_method == "phone" %}
+    Phone number: {{ message.reporter_phone }}
+{% elif message.preferred_contact_method == "email" %}
+    Email address: {{ message.reporter_email }}
+{% endif %}
+
+Category: {{ message.category }}
+
+Sent to: {{ message.organisation.name }} {{ message.service.name }}
+
+Message:
+
+{{ message.description }}
+
+To respond to this message, please visit your dashboard at: {{ site_base_url }}{% url 'org-dashboard' ods_code=message.organisation.ods_code %}
