@@ -40,3 +40,5 @@ WGS_84 = 4326
 # so that no emails get sent from dev/staging sites to anyone important
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+SITE_BASE_URL = config.get('SITE_BASE_URL')

@@ -3,6 +3,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from django.template.loader import get_template
 from django.template import Context
+from django.conf import settings
 
 from issues.models import Question, Problem
 
@@ -32,7 +33,7 @@ class Command(BaseCommand):
                     transaction.rollback()
 
     def send_message(self, template, issue):
-        context = Context({ 'message': issue })
+        context = Context({ 'message': issue, 'site_base_url': settings.SITE_BASE_URL })
         self.stdout.write('Emailing message reference number: {0}'.format(issue.reference_number))
         # TODO - from_email should be a setting?
         # TODO - recipient list should come from the organisation

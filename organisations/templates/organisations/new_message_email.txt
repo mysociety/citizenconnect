@@ -17,4 +17,4 @@ Message:
 
 {{ message.description }}
 
-To respond to this message, please visit your dashboard at: {"" url 'org-dashboard' ods_code=message.organisation.ods_code %}
+To respond to this message, please visit your dashboard at: {{ site_base_url }}{% url 'org-dashboard' ods_code=message.organisation.ods_code %}
