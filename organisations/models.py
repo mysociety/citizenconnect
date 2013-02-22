@@ -1,6 +1,7 @@
 from django.contrib.gis.db import models as geomodels
 from django.conf import settings
 from django.db import models
+from django.db import connection
 
 from citizenconnect.models import AuditedModel
 
@@ -30,6 +31,14 @@ class Service(AuditedModel):
 
     def __unicode__(self):
         return self.name
+
+    @classmethod
+    def service_codes(cls):
+        cursor = connection.cursor()
+        cursor.execute("""SELECT distinct service_code, name
+                          FROM organisations_service
+                          ORDER BY name""")
+        return cursor.fetchall()
 
     class Meta:
         unique_together = (("service_code", "organisation"),)
