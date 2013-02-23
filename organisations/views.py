@@ -222,7 +222,7 @@ class Summary(TemplateView):
 
         # Status
         status = self.request.GET.get('%s_status' % issue_type)
-        if status != 'all' and int(status) in dict(model_class.STATUS_CHOICES):
+        if status and status != 'all' and int(status) in dict(model_class.STATUS_CHOICES):
             filters['%s_status' % issue_type] = int(status)
             filters['status'] = int(status)
 
