@@ -1,6 +1,9 @@
 import django_tables2 as tables
 from django_tables2.utils import A
 
+from django.utils.safestring import mark_safe
+from django.core.urlresolvers import reverse
+
 from issues.models import Problem
 
 class SummaryTable(tables.Table):
@@ -9,11 +12,11 @@ class SummaryTable(tables.Table):
 
 class NationalSummaryTable(SummaryTable):
 
+    def __init__(self, *args, **kwargs):
+        self.cobrand = kwargs.pop('cobrand')
+        super(NationalSummaryTable, self).__init__(*args, **kwargs)
 
-    name = tables.LinkColumn('public-org-summary',
-                             kwargs={'ods_code': A("ods_code"),
-                                     'cobrand': A("cobrand")},
-                             verbose_name='Provider name',
+    name = tables.Column(verbose_name='Provider name',
                              attrs=SummaryTable.sep_atts)
     week = tables.Column(verbose_name='Last 7 days')
     four_weeks = tables.Column(verbose_name='Last 4 weeks')
@@ -23,6 +26,10 @@ class NationalSummaryTable(SummaryTable):
     percent_addressed = tables.Column(verbose_name='% Addressed in time', attrs=SummaryTable.sep_atts)
     percent_happy_service = tables.Column(verbose_name='% Happy with service')
     percent_happy_outcome = tables.Column(verbose_name='% Happy with outcome')
+
+    def render_name(self, record):
+        url = reverse("public-org-summary", kwargs={'ods_code': record['ods_code'], 'cobrand': self.cobrand})
+        return mark_safe('''<a href="%s">%s</a>''' % (url, record['name']))
 
     class Meta:
         order_by = ('name',)

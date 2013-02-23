@@ -248,10 +248,7 @@ class Summary(TemplateView):
             filters['status'] = int(status)
 
         organisation_rows = interval_counts(issue_type=model_class, filters=filters)
-        # Add cobrand to rows so we can create links in the table
-        for organisation_row in organisation_rows:
-            organisation_row['cobrand'] = kwargs['cobrand']
-        organisations_table = NationalSummaryTable(organisation_rows)
+        organisations_table = NationalSummaryTable(organisation_rows, cobrand=kwargs['cobrand'])
         RequestConfig(self.request).configure(organisations_table)
         context['organisations_table'] = organisations_table
         context['filters'] = filters
