@@ -39,6 +39,10 @@ class MessageModel(AuditedModel):
     preferred_contact_method = models.CharField(max_length=100, choices=CONTACT_CHOICES, default=CONTACT_EMAIL)
     source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True)
     mailed = models.BooleanField(default=False, blank=False)
+    happy_service = models.NullBooleanField()
+    happy_outcome = models.NullBooleanField()
+    acknowledged_in_time = models.NullBooleanField()
+    addressed_in_time = models.NullBooleanField()
 
     @property
     def summary(self):
