@@ -275,7 +275,21 @@ button, input[type=submit] {
 
 // Organisation summary page
 .organisation-summary, .summary {
+    .tab-menu {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        .tab {
+            @include column-full();
+            @include respond-min($tablet-width) {
+                @include column-quarter();
+            }
+            @include respond-min($desktop-width) {
+                @include column-quarter();
+            }
 
+        }
+    }
     .hero {
         .feature {
             @include column-half();

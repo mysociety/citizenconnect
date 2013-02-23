@@ -178,6 +178,14 @@ class OrganisationSummary(OrganisationAwareViewMixin,
 
         return context
 
+class OrganisationProblems(TemplateView):
+    pass
+
+class OrganisationQuestions(TemplateView):
+    pass
+
+class OrganisationReviews(TemplateView):
+    pass
 class Summary(TemplateView):
     template_name = 'organisations/summary.html'
 
