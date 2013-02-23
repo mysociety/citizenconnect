@@ -4,6 +4,7 @@ from django.forms.widgets import HiddenInput, RadioSelect, Textarea, TextInput
 from .models import Question
 from .models import Problem
 
+
 class MessageModelForm(forms.ModelForm):
     """
     ModelForm implementation that does the basics for MessageModel model forms
@@ -16,12 +17,10 @@ class MessageModelForm(forms.ModelForm):
 
     # A more user-friendly field with which to present the privacy options
     privacy = forms.ChoiceField(
-        choices=((PRIVACY_PRIVATE, "Keep all details private"),
-               (PRIVACY_PRIVATE_NAME, "Publish problem and response but not my name"),
-               (PRIVACY_PUBLIC, 'Publish problem and response with my name')),
-        initial=0,
-        widget=RadioSelect,
-        required=True
+       choices=(),
+       initial=0,
+       widget=RadioSelect,
+       required=True
     )
 
     def clean(self):
@@ -73,10 +72,24 @@ class MessageModelForm(forms.ModelForm):
 
 class QuestionForm(MessageModelForm):
 
+    def __init__(self, *args, **kwargs):
+        super(QuestionForm, self).__init__(*args, **kwargs)
+        self.PRIVACY_CHOICES = ((self.PRIVACY_PRIVATE, "Keep all details private"),
+                           (self.PRIVACY_PRIVATE_NAME, "Publish question and response but not my name"),
+                           (self.PRIVACY_PUBLIC, 'Publish question and response with my name'))
+        self.fields['privacy'].choices = self.PRIVACY_CHOICES
+
     class Meta(MessageModelForm.Meta):
         model = Question
 
 class ProblemForm(MessageModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(ProblemForm, self).__init__(*args, **kwargs)
+        self.PRIVACY_CHOICES = ((self.PRIVACY_PRIVATE, "Keep all details private"),
+                                (self.PRIVACY_PRIVATE_NAME, "Publish problem and response but not my name"),
+                                (self.PRIVACY_PUBLIC, 'Publish problem and response with my name'))
+        self.fields['privacy'].choices = self.PRIVACY_CHOICES
 
     class Meta(MessageModelForm.Meta):
         model = Problem
