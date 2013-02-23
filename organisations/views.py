@@ -216,6 +216,14 @@ class OrganisationReviews(OrganisationAwareViewMixin,
                           TemplateView):
     template_name = 'organisations/organisation-reviews.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(OrganisationReviews, self).get_context_data(**kwargs)
+        if 'private' in kwargs and kwargs['private'] == True:
+            context['private'] = True
+        else:
+            context['private'] = False
+        return context
+
 class Summary(TemplateView):
     template_name = 'organisations/summary.html'
 
