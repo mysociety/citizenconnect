@@ -24,6 +24,12 @@ class Organisation(AuditedModel,geomodels.Model):
         else:
             return False
 
+    def has_services(self):
+        if self.organisation_type == 'hospitals':
+            return True
+        else:
+            return False
+
 class Service(AuditedModel):
     name = models.TextField()
     service_code = models.TextField()

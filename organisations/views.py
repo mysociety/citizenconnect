@@ -20,7 +20,7 @@ from .forms import OrganisationFinderForm
 import choices_api
 from .lib import interval_counts
 from .models import Organisation
-from .tables  import NationalSummaryTable, MessageModelTable
+from .tables  import NationalSummaryTable, MessageModelTable, ExtendedMessageModelTable
 
 class OrganisationAwareViewMixin(object):
     """Mixin class for views which need to have a reference to a particular
@@ -70,12 +70,16 @@ class MessageListMixin(object):
         else:
             private = False
         context['private'] = private
-        table_args = { 'private': private,
-                       'message_type': self.message_type }
+        table_args = {'private': private,
+                      'message_type': self.message_type}
         if not private:
             table_args['cobrand'] = kwargs['cobrand']
-        context['organisation'] = Organisation.objects.get(ods_code=self.kwargs['ods_code'])
-        issue_table = MessageModelTable(self.get_issues(context['organisation']), **table_args)
+        organisation = Organisation.objects.get(ods_code=self.kwargs['ods_code'])
+        if organisation.has_services() and organisation.has_time_limits():
+            issue_table = ExtendedMessageModelTable(self.get_issues(organisation), **table_args)
+        else:
+            issue_table = MessageModelTable(self.get_issues(organisation), **table_args)
+        context['organisation'] = organisation
         RequestConfig(self.request).configure(issue_table)
         context['issue_table'] = issue_table
         return context

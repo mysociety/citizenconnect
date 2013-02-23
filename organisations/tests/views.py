@@ -281,26 +281,54 @@ class OrganisationSummaryTests(TestCase):
 class OrganisationProblemsTests(TestCase):
 
     def setUp(self):
-        self.organisation = create_test_organisation()
-        self.public_problems_url = '/choices/stats/problems/%s' % self.organisation.ods_code
-        self.private_problems_url = '/private/problems/%s' % self.organisation.ods_code
+        self.hospital = create_test_organisation({'organisation_type': 'hospitals',
+                                                  'ods_code': 'ABC123'})
+        self.gp = create_test_organisation({'organisation_type': 'gppractices',
+                                            'ods_code': 'DEF456'})
+        self.public_hospital_problems_url = '/choices/stats/problems/%s' % self.hospital.ods_code
+        self.private_hospital_problems_url = '/private/problems/%s' % self.hospital.ods_code
+        self.public_gp_problems_url = '/choices/stats/problems/%s' % self.gp.ods_code
+        self.private_gp_problems_url = '/private/problems/%s' % self.gp.ods_code
         self.staff_problem = create_test_instance(Problem, {'category': 'staff',
-                                                            'organisation': self.organisation})
+                                                            'organisation': self.hospital})
+
+    def test_shows_services_for_hospitals(self):
+        for url in [self.public_hospital_problems_url, self.private_hospital_problems_url]:
+            resp = self.client.get(url)
+            self.assertContains(resp, 'Department', count=1, status_code=200)
+
+    def test_shows_time_limits_for_hospitals(self):
+        for url in [self.public_hospital_problems_url, self.private_hospital_problems_url]:
+            resp = self.client.get(url)
+            self.assertContains(resp, 'Acknowledged In Time', count=1, status_code=200)
+            self.assertContains(resp, 'Addressed In Time', count=1, status_code=200)
+
+    def test_no_services_for_gps(self):
+        for url in [self.public_gp_problems_url, self.private_gp_problems_url]:
+            resp = self.client.get(url)
+            self.assertNotContains(resp, 'Department')
+
+
+    def test_no_time_limits_for_gps(self):
+        for url in [self.public_gp_problems_url, self.private_gp_problems_url]:
+            resp = self.client.get(url)
+            self.assertNotContains(resp, 'Acknowledged In Time')
+            self.assertNotContains(resp, 'Addressed In Time')
 
     def test_public_page_exists(self):
-        resp = self.client.get(self.public_problems_url)
+        resp = self.client.get(self.public_hospital_problems_url)
         self.assertEqual(resp.status_code, 200)
 
     def test_public_page_links_to_public_problems(self):
-        resp = self.client.get(self.public_problems_url)
+        resp = self.client.get(self.public_hospital_problems_url)
         self.assertContains(resp, '/choices/problem/%s' % self.staff_problem.id )
 
     def test_private_page_exists(self):
-        resp = self.client.get(self.private_problems_url)
+        resp = self.client.get(self.private_hospital_problems_url)
         self.assertEqual(resp.status_code, 200)
 
     def test_private_page_links_to_problems(self):
-        resp = self.client.get(self.private_problems_url)
+        resp = self.client.get(self.private_hospital_problems_url)
         self.assertTrue('/private/response/problem/%s' % self.staff_problem.id in resp.content)
 
 class OrganisationQuestionsTest(TestCase):
