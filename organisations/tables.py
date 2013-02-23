@@ -6,24 +6,23 @@ from django.core.urlresolvers import reverse
 
 from issues.models import Problem
 
-class SummaryTable(tables.Table):
-    sep_atts = {"th": {"class": "separator"},
-                "td": {"class": "separator"}}
 
-class NationalSummaryTable(SummaryTable):
+class NationalSummaryTable(tables.Table):
 
     def __init__(self, *args, **kwargs):
         self.cobrand = kwargs.pop('cobrand')
         super(NationalSummaryTable, self).__init__(*args, **kwargs)
 
+    sep_atts = {"th": {"class": "separator"},
+                "td": {"class": "separator"}}
     name = tables.Column(verbose_name='Provider name',
-                             attrs=SummaryTable.sep_atts)
+                             attrs=sep_atts)
     week = tables.Column(verbose_name='Last 7 days')
     four_weeks = tables.Column(verbose_name='Last 4 weeks')
     six_months = tables.Column(verbose_name='Last 6 months')
-    all_time = tables.Column(verbose_name='All time', attrs=SummaryTable.sep_atts)
+    all_time = tables.Column(verbose_name='All time', attrs=sep_atts)
     percent_acknowledged = tables.Column(verbose_name='% Acknowledged in time')
-    percent_addressed = tables.Column(verbose_name='% Addressed in time', attrs=SummaryTable.sep_atts)
+    percent_addressed = tables.Column(verbose_name='% Addressed in time', attrs=sep_atts)
     percent_happy_service = tables.Column(verbose_name='% Happy with service')
     percent_happy_outcome = tables.Column(verbose_name='% Happy with outcome')
 
@@ -34,7 +33,7 @@ class NationalSummaryTable(SummaryTable):
     class Meta:
         order_by = ('name',)
 
-class MessageModelTable(SummaryTable):
+class MessageModelTable(tables.Table):
 
     def __init__(self, *args, **kwargs):
         self.private = kwargs.pop('private')
