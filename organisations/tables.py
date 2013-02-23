@@ -34,7 +34,14 @@ class NationalSummaryTable(SummaryTable):
     class Meta:
         order_by = ('name',)
 
-class ProblemTable(SummaryTable):
+class MessageModelTable(SummaryTable):
+
+    def __init__(self, *args, **kwargs):
+        self.private = kwargs.pop('private')
+        self.message_type = kwargs.pop('message_type')
+        if not self.private:
+            self.cobrand = kwargs.pop('cobrand')
+        super(MessageModelTable, self).__init__(*args, **kwargs)
 
     reference_number = tables.Column(verbose_name="Ref.")
     created = tables.Column(verbose_name="Received")
@@ -44,6 +51,14 @@ class ProblemTable(SummaryTable):
     happy_service = tables.Column(verbose_name='Happy with service')
     happy_outcome = tables.Column(verbose_name='Happy with outcome')
     summary = tables.Column(verbose_name='Text snippet')
+
+    def render_summary(self, record):
+        if self.private:
+            url = reverse("response-form", kwargs={'message_type': self.message_type, 'pk': record.id})
+        else:
+            url = reverse('%s-view' % self.message_type, kwargs={'cobrand': self.cobrand, 'pk': record.id})
+        return mark_safe('''<a href="%s">%s</a>''' % (url, record.summary))
+
     class Meta:
-        order_by = ('-created')
+        order_by = ('-created',)
 

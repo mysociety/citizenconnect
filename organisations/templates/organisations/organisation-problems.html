@@ -12,10 +12,10 @@
 </div>
 {% include "organisations/includes/summary-tabs.html" with active_tab='problems' %}
 
-{% if problems_table %}
+{% if issue_table %}
 <div class="issue-list" id="problem-list">
     <div class="feature">
-        {% render_table problems_table %}
+        {% render_table issue_table %}
     </div>
 </div>
 {% endif %}

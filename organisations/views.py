@@ -20,7 +20,7 @@ from .forms import OrganisationFinderForm
 import choices_api
 from .lib import interval_counts
 from .models import Organisation
-from .tables  import NationalSummaryTable, ProblemTable
+from .tables  import NationalSummaryTable, MessageModelTable
 
 class OrganisationAwareViewMixin(object):
     """Mixin class for views which need to have a reference to a particular
@@ -58,6 +58,27 @@ class OrganisationIssuesAwareViewMixin(object):
             reverse=True
         )
         context['issues'] = issues
+        return context
+
+class MessageListMixin(object):
+    """Mixin class for views which need to display a list of issues belonging to an organisation
+       in either a public or private context"""
+
+    def get_context_data(self, **kwargs):
+        context = super(MessageListMixin, self).get_context_data(**kwargs)
+        if 'private' in kwargs and kwargs['private'] == True:
+            private = True
+        else:
+            private = False
+        context['private'] = private
+        table_args = { 'private': private,
+                       'message_type': self.message_type }
+        if not private:
+            table_args['cobrand'] = kwargs['cobrand']
+        context['organisation'] = Organisation.objects.get(ods_code=self.kwargs['ods_code'])
+        issue_table = MessageModelTable(self.get_issues(context['organisation']), **table_args)
+        RequestConfig(self.request).configure(issue_table)
+        context['issue_table'] = issue_table
         return context
 
 class Map(TemplateView):
@@ -136,6 +157,7 @@ class OrganisationSummary(OrganisationAwareViewMixin,
 
     def get_context_data(self, **kwargs):
         context = super(OrganisationSummary, self).get_context_data(**kwargs)
+
         issue_types = {'problems': Problem,
                        'questions': Question}
         organisation = context['organisation']
@@ -153,12 +175,10 @@ class OrganisationSummary(OrganisationAwareViewMixin,
         # Use the filters we already have from OrganisationIssuesAwareViewMixin
         for issue_type, model_class in issue_types.items():
             if context.has_key('selected_service'):
-                context[issue_type] = context[issue_type].filter(service_id=context['selected_service'])
                 count_filters['service_id'] = selected_service
             category = self.request.GET.get('%s_category' % issue_type)
             if category in dict(model_class.CATEGORY_CHOICES):
                 context['%s_category' % issue_type] = category
-                context[issue_type] = context[issue_type].filter(category=category)
                 count_filters['category'] = category
             context['%s_categories' % issue_type] = model_class.CATEGORY_CHOICES
             context['%s_total' % issue_type] = interval_counts(issue_type=issue_types[issue_type],
@@ -178,22 +198,21 @@ class OrganisationSummary(OrganisationAwareViewMixin,
 
         return context
 
-class OrganisationProblems(OrganisationAwareViewMixin,
-                           OrganisationIssuesAwareViewMixin,
+class OrganisationProblems(MessageListMixin,
                            TemplateView):
     template_name = 'organisations/organisation-problems.html'
+    message_type = 'problem'
 
-    def get_context_data(self, **kwargs):
-        context = super(OrganisationProblems, self).get_context_data(**kwargs)
-        organisation = context['organisation']
-        problems_table = ProblemTable(context['problems'])
-        RequestConfig(self.request).configure(problems_table)
-        context['problems_table'] = problems_table
-        return context
+    def get_issues(self, organisation):
+        return organisation.problem_set.all()
 
-class OrganisationQuestions(TemplateView):
-    pass
+class OrganisationQuestions(MessageListMixin,
+                            TemplateView):
+    template_name = 'organisations/organisation-questions.html'
+    message_type = 'question'
 
+    def get_issues(self, organisation):
+        return organisation.question_set.all()
 
 class OrganisationReviews(OrganisationAwareViewMixin,
                           TemplateView):

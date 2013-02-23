@@ -132,38 +132,4 @@
         </table>
     </div>
 </div>
-<div class="header">
-    <h2>Questions</h2>
-</div>
-<div class="question-list">
-    <div class="feature">
-         <table>
-            <thead>
-                <tr>
-                    <th>Ref</th>
-                    <th>Received</th>
-                    <th>Status</th>
-                    <th>Type</th>
-                    <th>Department</th>
-                    <th>User satisfied?</th>
-                    <th>Text snippet</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for question in questions %}
-                <tr>
-                    <td>{{ question.reference_number }}</td>
-                    <td>{{ question.created }}</td>
-                    <td>{{ question.get_status_display }}</td>
-                    <td>{{ question.get_category_display }}</td>
-                    <td>{{ question.service|default_if_none:"" }}</td>
-                    <td>TODO</td>
-                    <td><a href="{% if private %}{% url 'response-form' message_type='question' pk=question.id %}{% else %}{% url 'question-view' cobrand=cobrand.name pk=question.id %}{% endif %}">{{ question.summary }}</a></td>
-                </tr>
-                {% endfor %}
-
-            </tbody>
-        </table>
-    </div>
-</div>
 {% endblock %}

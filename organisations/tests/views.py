@@ -52,10 +52,6 @@ class OrganisationSummaryTests(TestCase):
     def test_summary_page_has_problems(self):
         for url in self.urls:
             resp = self.client.get(url)
-            self.assertEqual(len(resp.context['problems']), 3)
-            self.assertEqual(resp.context['problems'][0].id, self.other_dept_problem.id)
-            self.assertEqual(resp.context['problems'][1].id, self.staff_problem.id)
-            self.assertEqual(resp.context['problems'][2].id, self.cleanliness_problem.id)
             expected_total_counts = {'all_time': 3,
                                      'four_weeks': 3,
                                      'id': self.organisation.id,
@@ -101,10 +97,6 @@ class OrganisationSummaryTests(TestCase):
     def test_summary_page_has_questions(self):
         for url in self.urls:
             resp = self.client.get(url)
-            self.assertEqual(len(resp.context['questions']), 3)
-            self.assertEqual(resp.context['questions'][0].id, self.appointment_dept_question.id)
-            self.assertEqual(resp.context['questions'][1].id, self.general_question.id)
-            self.assertEqual(resp.context['questions'][2].id, self.services_question.id)
             expected_total_counts = {'all_time': 3,
                                      'four_weeks': 3,
                                      'id': self.organisation.id,
@@ -143,8 +135,6 @@ class OrganisationSummaryTests(TestCase):
         for url in self.urls:
             resp = self.client.get(url + '?problems_category=cleanliness')
             self.assertEqual(resp.context['problems_category'], 'cleanliness')
-            self.assertEqual(len(resp.context['problems']), 1)
-            self.assertEqual(resp.context['problems'][0].id, self.cleanliness_problem.id)
             expected_total_counts = {'all_time': 1,
                                      'four_weeks': 1,
                                      'week': 1,
@@ -191,8 +181,6 @@ class OrganisationSummaryTests(TestCase):
         for url in self.urls:
             resp = self.client.get(url + '?questions_category=services')
             self.assertEqual(resp.context['questions_category'], 'services')
-            self.assertEqual(len(resp.context['questions']), 1)
-            self.assertEqual(resp.context['questions'][0].id, self.services_question.id)
             expected_total_counts = {'all_time': 1,
                                      'four_weeks': 1,
                                      'week': 1,
@@ -231,10 +219,6 @@ class OrganisationSummaryTests(TestCase):
         for url in self.urls:
             resp = self.client.get(url + '?service=%s' % self.service.id)
             self.assertEqual(resp.context['selected_service'], self.service.id)
-            self.assertEqual(len(resp.context['questions']), 1)
-            self.assertEqual(len(resp.context['problems']), 1)
-            self.assertEqual(resp.context['questions'][0].id, self.appointment_dept_question.id)
-            self.assertEqual(resp.context['problems'][0].id, self.other_dept_problem.id)
             expected_question_status_counts = [{'week': 1,
                                                'four_weeks': 1,
                                                'six_months': 1,
@@ -294,14 +278,55 @@ class OrganisationSummaryTests(TestCase):
             self.assertEqual(resp.context['questions_by_status'], expected_question_status_counts)
             self.assertEqual(resp.context['problems_by_status'], expected_problem_status_counts)
 
-    def test_public_summary_page_links_to_public_problems_and_questions(self):
-        resp = self.client.get(self.public_summary_url)
-        self.assertContains(resp, '/choices/problem/%s' % self.staff_problem.id )
-        self.assertContains(resp, '/choices/question/%s' % self.general_question.id)
+class OrganisationProblemsTests(TestCase):
 
-    def test_private_summary_page_links_to_private_problems_and_questions(self):
-        resp = self.client.get(self.private_summary_url)
-        self.assertTrue('/private/response' in resp.content)
+    def setUp(self):
+        self.organisation = create_test_organisation()
+        self.public_problems_url = '/choices/stats/problems/%s' % self.organisation.ods_code
+        self.private_problems_url = '/private/problems/%s' % self.organisation.ods_code
+        self.staff_problem = create_test_instance(Problem, {'category': 'staff',
+                                                            'organisation': self.organisation})
+
+    def test_public_page_exists(self):
+        resp = self.client.get(self.public_problems_url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_public_page_links_to_public_problems(self):
+        resp = self.client.get(self.public_problems_url)
+        self.assertContains(resp, '/choices/problem/%s' % self.staff_problem.id )
+
+    def test_private_page_exists(self):
+        resp = self.client.get(self.private_problems_url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_private_page_links_to_problems(self):
+        resp = self.client.get(self.private_problems_url)
+        self.assertTrue('/private/response/problem/%s' % self.staff_problem.id in resp.content)
+
+class OrganisationQuestionsTest(TestCase):
+
+    def setUp(self):
+        self.organisation = create_test_organisation()
+        self.public_questions_url = '/choices/stats/questions/%s' % self.organisation.ods_code
+        self.private_questions_url = '/private/questions/%s' % self.organisation.ods_code
+        self.general_question = create_test_instance(Question, {'category': 'general',
+                                                            'organisation': self.organisation})
+
+    def test_public_page_exists(self):
+        resp = self.client.get(self.public_questions_url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_public_page_links_to_public_questions(self):
+        resp = self.client.get(self.public_questions_url)
+        self.assertContains(resp, '/choices/question/%s' % self.general_question.id )
+
+    def test_private_page_exists(self):
+        resp = self.client.get(self.private_questions_url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_private_page_links_to_questions(self):
+        resp = self.client.get(self.private_questions_url)
+        self.assertTrue('/private/response/question/%s' % self.general_question.id in resp.content)
 
 class OrganisationDashboardTests(TestCase):
 
@@ -477,7 +502,7 @@ class ProviderPickerTests(TestCase):
         expected_message = 'Sorry, our postcode lookup service is temporarily unavailable. Please try later or search by provider name'
         self.assertContains(resp, expected_message, count=1, status_code=200)
 
-    def test_handes_the_case_where_the_mapit_api_returns_an_error_code(self):
+    def test_handles_the_case_where_the_mapit_api_returns_an_error_code(self):
         self.mock_api_response(self.mapit_example, 500)
         resp = self.client.get(self.results_url)
         expected_message = "Sorry, our postcode lookup service is temporarily unavailable. Please try later or search by provider name"
