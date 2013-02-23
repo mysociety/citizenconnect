@@ -194,9 +194,10 @@ class OrganisationProblems(OrganisationAwareViewMixin,
 class OrganisationQuestions(TemplateView):
     pass
 
-class OrganisationReviews(TemplateView):
-    pass
 
+class OrganisationReviews(OrganisationAwareViewMixin,
+                          TemplateView):
+    template_name = 'organisations/organisation-reviews.html'
 
 class Summary(TemplateView):
     template_name = 'organisations/summary.html'
