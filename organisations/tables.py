@@ -62,3 +62,6 @@ class MessageModelTable(SummaryTable):
     class Meta:
         order_by = ('-created',)
 
+class MessageModelTableWithService(MessageModelTable):
+
+    service = tables.Column(verbose_name='Department')

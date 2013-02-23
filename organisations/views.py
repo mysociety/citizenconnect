@@ -150,7 +150,6 @@ class PickProviderBase(ListView):
               return render(self.request, self.form_template_name, {'form': OrganisationFinderForm()})
 
 class OrganisationSummary(OrganisationAwareViewMixin,
-                          OrganisationIssuesAwareViewMixin,
                           TemplateView):
     template_name = 'organisations/organisation-summary.html'
 
