@@ -4,7 +4,7 @@
 
  body.docs{
      text-align:left !important;
-     max-width: 30em;
+     //max-width: 30em;
      margin:auto;
      padding:30px 0px;
      
@@ -16,7 +16,9 @@
      ol.contents{
          list-style-type: decimal;
      }
-     
+     nav{
+         color: #ccc;
+     }
      
      // COLOURS
      dl,dd,dt{
@@ -74,7 +76,7 @@
     .c-nhs_blue-tint_30  { background-color: mix($c-nhs_blue, $c-white, 30%); }
     .c-nhs_blue-tint_20  { background-color: mix($c-nhs_blue, $c-white, 20%); }
     .c-nhs_blue-tint_10  { background-color: mix($c-nhs_blue, $c-white, 10%); }
-     
+    
  }
 
  
