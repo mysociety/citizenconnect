@@ -74,7 +74,8 @@
     </div>
 
     <div class="feature user-status">
-        <p>User satisfied: TODO</p>
+        <p>User satisfied with service: {{ object.happy_service|yesno:"yes,no," }}
+        <br>User satisfied with outcome: {{  object.happy_outcome|yesno:"yes,no,"}}</p>
     </div>
 
 </div>
