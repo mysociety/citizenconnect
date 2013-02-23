@@ -270,7 +270,6 @@ button, input[type=submit] {
     .tab-menu {
         @include row();
         list-style: none;
-        display: block;
         .tab {
             @include column-full();
             @include respond-min($tablet-width) {
@@ -279,7 +278,9 @@ button, input[type=submit] {
             @include respond-min($desktop-width) {
                 @include column-quarter();
             }
-
+        }
+        .tab.active {
+            background: $highlight-background-color;
         }
     }
 }

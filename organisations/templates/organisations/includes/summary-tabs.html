@@ -1,10 +1,10 @@
 {% load url from future %}
 
 <ul class="tab-menu">
-    <li class="{% if active_tab == 'summary' %} active{% endif %} tab"><a href="{% if private %}{% url 'private-org-summary' ods_code=organisation.ods_code %}{% else %}{% url 'public-org-summary' ods_code=organisation.ods_code cobrand=cobrand.name %}{% endif %}">Summary</a></li>
-    <li class="{% if active_tab == 'problems' %} active{% endif %} tab"><a href="{% if private %}{% url 'private-org-problems' ods_code=organisation.ods_code %}{% else %}{% url 'public-org-problems' ods_code=organisation.ods_code cobrand=cobrand.name %}{% endif %}">Problems</a></li>
-    <li class="{% if active_tab == 'questions' %} active{% endif %} tab"><a href="{% if private %}{% url 'private-org-questions' ods_code=organisation.ods_code %}{% else %}{% url 'public-org-questions' ods_code=organisation.ods_code cobrand=cobrand.name %}{% endif %}">Questions</a></li>
-    <li class="{% if active_tab == 'reviews' %} active{% endif %} tab"><a href="{% if private %}{% url 'private-org-reviews' ods_code=organisation.ods_code %}{% else %}{% url 'public-org-reviews' ods_code=organisation.ods_code cobrand=cobrand.name %}{% endif %}">Reviews</a></li>
+    <li class="{% if active_tab == 'summary' %}active {% endif %}tab">{% if active_tab != 'summary' %}<a href="{% if private %}{% url 'private-org-summary' ods_code=organisation.ods_code %}{% else %}{% url 'public-org-summary' ods_code=organisation.ods_code cobrand=cobrand.name %}{% endif %}">{% endif %}Summary{% if active_tab != 'summary' %}</a>{% endif %}</li>
+    <li class="{% if active_tab == 'problems' %} active{% endif %} tab">{% if active_tab != 'problems' %}<a href="{% if private %}{% url 'private-org-problems' ods_code=organisation.ods_code %}{% else %}{% url 'public-org-problems' ods_code=organisation.ods_code cobrand=cobrand.name %}{% endif %}">{% endif %}Problems{% if active_tab != 'problems' %}</a>{% endif %}</li>
+    <li class="{% if active_tab == 'questions' %} active{% endif %} tab">{% if active_tab != 'questions' %}<a href="{% if private %}{% url 'private-org-questions' ods_code=organisation.ods_code %}{% else %}{% url 'public-org-questions' ods_code=organisation.ods_code cobrand=cobrand.name %}{% endif %}">{% endif %}Questions{% if active_tab != 'questions' %}</a>{% endif %}</li>
+    <li class="{% if active_tab == 'reviews' %} active{% endif %} tab">{% if active_tab != 'reviews' %}<a href="{% if private %}{% url 'private-org-reviews' ods_code=organisation.ods_code %}{% else %}{% url 'public-org-reviews' ods_code=organisation.ods_code cobrand=cobrand.name %}{% endif %}">{% endif %}Reviews{% if active_tab != 'reviews' %}</a>{% endif %}</li>
 </ul>
 
 
