@@ -9,6 +9,7 @@
 @import 'boilerplate';
 @import 'utils';
 @import 'layout';
+@import 'tables';
 
 // Our styles
 
@@ -273,12 +274,12 @@ button, input[type=submit] {
 
 }
 
-// Organisation summary page
-.organisation-summary, .summary {
+// Tab menu for organisation pages
+.organisation-summary, .organisation-problems, .organisation-questions, .organisation-reviews {
     .tab-menu {
-        margin: 0;
-        padding: 0;
+        @include row();
         list-style: none;
+        display: block;
         .tab {
             @include column-full();
             @include respond-min($tablet-width) {
@@ -290,6 +291,9 @@ button, input[type=submit] {
 
         }
     }
+}
+// Organisation summary page and general summary
+.organisation-summary, .summary {
     .hero {
         .feature {
             @include column-half();
@@ -318,46 +322,31 @@ button, input[type=submit] {
             }
         }
     }
-    .outcomes-table, .problem-list, .question-list {
+    .outcomes-table {
         @include row();
         .feature {
             @include column-full()
         }
         table {
-            width: 100%;
-            border: 2px solid $font-color;
-            th {
-                font-size: $font-size * 0.85;
-                border-bottom: 2px solid $font-color;
-                &.heading {
-                    font-size: $font-size * 1.25;
-                }
-                &.separator {
-                    border-right: 2px solid $font-color;
-                }
-            }
-            tr {
-                border: 1px solid lighten($font-color, 75%);
-                &.separator {
-                    border-top: 2px solid $font-color;
-                }
-            }
-            td {
-                font-size: $font-size * 0.85;
-                border: 1px solid lighten($font-color, 75%);
-                text-align: center;
-                &.heading {
-                    width:25%;
-                }
-                &.separator {
-                    border-right: 2px solid $font-color;
-                }
-            }
+            @include data-table()
         }
 
     }
-    .problem-list {
+
+}
+
+// Organisation issues pages
+.organisation-questions, .organisation-problems {
+    .issue-list {
         margin-top: 1em;
+        @include row();
+        .feature {
+            @include column-full()
+        }
+        table {
+            @include data-table()
+        }
+
     }
 
 }

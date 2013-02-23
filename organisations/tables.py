@@ -1,6 +1,8 @@
 import django_tables2 as tables
 from django_tables2.utils import A
 
+from issues.models import Problem
+
 class SummaryTable(tables.Table):
     sep_atts = {"th": {"class": "separator"},
                 "td": {"class": "separator"}}
@@ -24,3 +26,17 @@ class NationalSummaryTable(SummaryTable):
 
     class Meta:
         order_by = ('name',)
+
+class ProblemTable(SummaryTable):
+
+    reference_number = tables.Column(verbose_name="Ref.")
+    created = tables.Column(verbose_name="Received")
+    status = tables.Column()
+    category = tables.Column(verbose_name='Category')
+    service = tables.Column(verbose_name='Department')
+    happy_service = tables.Column(verbose_name='Happy with service')
+    happy_outcome = tables.Column(verbose_name='Happy with outcome')
+    summary = tables.Column(verbose_name='Text snippet')
+    class Meta:
+        order_by = ('-created')
+

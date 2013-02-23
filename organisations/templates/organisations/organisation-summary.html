@@ -133,39 +133,6 @@
     </div>
 </div>
 <div class="header">
-    <h2>Problem reports</h2>
-</div>
-<div class="problem-list">
-    <div class="feature">
-         <table>
-            <thead>
-                <tr>
-                    <th>Ref</th>
-                    <th>Received</th>
-                    <th>Status</th>
-                    <th>Type</th>
-                    <th>Department</th>
-                    <th>User satisfied?</th>
-                    <th>Text snippet</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for problem in problems %}
-                    <tr>
-                        <td>{{ problem.reference_number }}</td>
-                        <td>{{ problem.created }}</td>
-                        <td>{{ problem.get_status_display }}</td>
-                        <td>{{ problem.get_category_display }}</td>
-                        <td>{{ problem.service|default_if_none:"" }}</td>
-                        <td>TODO</td>
-                        <td><a href="{% if private %}{% url 'response-form' message_type='problem' pk=problem.id %}{% else %}{% url 'problem-view' cobrand=cobrand.name pk=problem.id %}{% endif %}">{{ problem.summary }}</a></td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
-<div class="header">
     <h2>Questions</h2>
 </div>
 <div class="question-list">

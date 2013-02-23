@@ -20,7 +20,7 @@ from .forms import OrganisationFinderForm
 import choices_api
 from .lib import interval_counts
 from .models import Organisation
-from .tables  import NationalSummaryTable
+from .tables  import NationalSummaryTable, ProblemTable
 
 class OrganisationAwareViewMixin(object):
     """Mixin class for views which need to have a reference to a particular
@@ -50,6 +50,7 @@ class OrganisationIssuesAwareViewMixin(object):
         context['organisation'] = organisation
         context['problems'] = problems
         context['questions'] = questions
+
         # Put them into one list, taken from http://stackoverflow.com/questions/431628/how-to-combine-2-or-more-querysets-in-a-django-view
         issues = sorted(
             chain(problems, questions),
@@ -137,7 +138,6 @@ class OrganisationSummary(OrganisationAwareViewMixin,
         context = super(OrganisationSummary, self).get_context_data(**kwargs)
         issue_types = {'problems': Problem,
                        'questions': Question}
-
         organisation = context['organisation']
         context['services'] = list(organisation.services.all().order_by('name'))
         selected_service = self.request.GET.get('service')
@@ -178,14 +178,26 @@ class OrganisationSummary(OrganisationAwareViewMixin,
 
         return context
 
-class OrganisationProblems(TemplateView):
-    pass
+class OrganisationProblems(OrganisationAwareViewMixin,
+                           OrganisationIssuesAwareViewMixin,
+                           TemplateView):
+    template_name = 'organisations/organisation-problems.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(OrganisationProblems, self).get_context_data(**kwargs)
+        organisation = context['organisation']
+        problems_table = ProblemTable(context['problems'])
+        RequestConfig(self.request).configure(problems_table)
+        context['problems_table'] = problems_table
+        return context
 
 class OrganisationQuestions(TemplateView):
     pass
 
 class OrganisationReviews(TemplateView):
     pass
+
+
 class Summary(TemplateView):
     template_name = 'organisations/summary.html'
 
