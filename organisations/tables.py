@@ -43,12 +43,12 @@ class MessageModelTable(tables.Table):
         super(MessageModelTable, self).__init__(*args, **kwargs)
 
     reference_number = tables.Column(verbose_name="Ref.")
-    created = tables.Column(verbose_name="Received")
+    created = tables.DateTimeColumn(verbose_name="Received")
     status = tables.Column()
     category = tables.Column(verbose_name='Category')
     service = tables.Column(verbose_name='Department')
-    happy_service = tables.Column(verbose_name='Happy with service')
-    happy_outcome = tables.Column(verbose_name='Happy with outcome')
+    happy_service = tables.BooleanColumn(verbose_name='Happy with service')
+    happy_outcome = tables.BooleanColumn(verbose_name='Happy with outcome')
     summary = tables.Column(verbose_name='Text snippet')
 
     def render_summary(self, record):
