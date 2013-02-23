@@ -260,16 +260,7 @@ button, input[type=submit] {
 // National summary page
 .summary {
     table {
-        th.orderable > a {
-            padding-right: 20px;
-            background: url(../images/arrow-inactive-up.png) right center no-repeat;
-        }
-        th.orderable.asc > a {
-            background-image: url(../images/arrow-active-up.png);
-        }
-        th.orderable.desc > a {
-            background-image: url(../images/arrow-active-down.png);
-        }
+        @include sorted-table()
     }
 
 }
@@ -325,10 +316,10 @@ button, input[type=submit] {
     .outcomes-table {
         @include row();
         .feature {
-            @include column-full()
+            @include column-full();
         }
         table {
-            @include data-table()
+            @include data-table();
         }
 
     }
@@ -341,10 +332,11 @@ button, input[type=submit] {
         margin-top: 1em;
         @include row();
         .feature {
-            @include column-full()
+            @include column-full();
         }
         table {
-            @include data-table()
+            @include data-table();
+            @include sorted-table();
         }
 
     }

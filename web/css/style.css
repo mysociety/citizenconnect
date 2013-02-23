@@ -1003,6 +1003,13 @@ button, input[type=submit] {
         width: 25%; }
       .organisation-questions .issue-list table td.separator, .organisation-problems .issue-list table td.separator {
         border-right: 2px solid #222222; }
+    .organisation-questions .issue-list table th.orderable > a, .organisation-problems .issue-list table th.orderable > a {
+      padding-right: 20px;
+      background: url(../images/arrow-inactive-up.png) right center no-repeat; }
+    .organisation-questions .issue-list table th.orderable.asc > a, .organisation-problems .issue-list table th.orderable.asc > a {
+      background-image: url(../images/arrow-active-up.png); }
+    .organisation-questions .issue-list table th.orderable.desc > a, .organisation-problems .issue-list table th.orderable.desc > a {
+      background-image: url(../images/arrow-active-down.png); }
 
 .organisation-dashboard .hero .feature {
   float: left;
