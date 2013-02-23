@@ -30,8 +30,7 @@ class OrganisationAwareViewMixin(object):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(OrganisationAwareViewMixin, self).get_context_data(**kwargs)
-        ods_code = self.kwargs['ods_code']
-        context['organisation'] = Organisation.objects.get(ods_code=ods_code)
+        context['organisation'] = Organisation.objects.get(ods_code=self.kwargs['ods_code'])
         return context
 
 class OrganisationIssuesAwareViewMixin(object):
