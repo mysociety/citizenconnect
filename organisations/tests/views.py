@@ -365,7 +365,7 @@ class OrganisationMapTests(TestCase):
         self.assertEqual(len(response_json[0]['issues']), 1)
         self.assertEqual(len(response_json[1]['issues']), 1)
 
-def SummaryTests(TestCase):
+class SummaryTests(TestCase):
 
     def setUp(self):
         super(SummaryTests, self).setUp()
