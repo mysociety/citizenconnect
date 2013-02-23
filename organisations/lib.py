@@ -7,6 +7,8 @@ from .models import Organisation
 def _date_clause(issue_table, alias):
     return "sum(CASE WHEN "+ issue_table +".created > %s THEN 1 ELSE 0 END) as " + alias
 
+def _boolean_clause(issue_table, field, alias):
+    return "sum(CASE WHEN "+ issue_table +"."+ field +" = %s THEN 1 ELSE 0 END) as " + alias
 # Return counts for an organisation or a set of organisations for the last week, four week
 # and six months based on created date and filters
 def interval_counts(issue_type, filters={}, sort='name', organisation_id=None):
@@ -17,6 +19,9 @@ def interval_counts(issue_type, filters={}, sort='name', organisation_id=None):
     intervals = {'week': now - timedelta(7),
                  'four_weeks': now - timedelta(28),
                  'six_months': now - timedelta(365/12*6)}
+
+    boolean_counts = ['happy_service', 'happy_outcome', 'acknowledged_in_time', 'addressed_in_time']
+
     params = []
     extra_tables = []
 
@@ -31,6 +36,13 @@ def interval_counts(issue_type, filters={}, sort='name', organisation_id=None):
         params.append(intervals[interval])
     # Add an all time count
     select_clauses.append("""count(%s.id) as all_time""" % issue_table)
+
+    # Get some boolean counts for surveys and meeting time limits
+    for field in boolean_counts:
+        select_clauses.append(_boolean_clause(issue_table, field, "%s_true" % field))
+        params.append(True)
+        select_clauses.append(_boolean_clause(issue_table, field, "%s_false" % field))
+        params.append(False)
 
     criteria_clauses = ["""organisations_organisation.id = %s.organisation_id""" % issue_table]
 
