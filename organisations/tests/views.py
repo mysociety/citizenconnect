@@ -52,431 +52,117 @@ class OrganisationSummaryTests(TestCase):
     def test_summary_page_has_problems(self):
         for url in self.urls:
             resp = self.client.get(url)
-            expected_total_counts = {'all_time': 3,
-                                     'four_weeks': 3,
-                                     'id': self.organisation.id,
-                                     'name': 'Test Organisation',
-                                     'ods_code': 'F84021',
-                                     'six_months': 3,
-                                     'week': 3,
-                                     'happy_outcome_false': 0,
-                                     'happy_outcome_true': 0,
-                                     'happy_service_false': 0,
-                                     'happy_service_true': 0,
-                                     'acknowledged_in_time_true': 0,
-                                     'acknowledged_in_time_false': 0,
-                                     'addressed_in_time_true': 0,
-                                     'addressed_in_time_false': 0}
-            self.assertEqual(resp.context['problems_total'], expected_total_counts)
-            expected_status_counts = [{'week': 3,
-                                       'four_weeks': 3,
-                                       'six_months': 3,
-                                       'all_time': 3,
-                                       'id': self.organisation.id,
-                                       'name': 'Test Organisation',
-                                       'ods_code': 'F84021',
-                                       'description': 'Received but not acknowledged',
-                                       'happy_outcome_false': 0,
-                                       'happy_outcome_true': 0,
-                                       'happy_service_false': 0,
-                                       'happy_service_true': 0,
-                                       'acknowledged_in_time_true': 0,
-                                       'acknowledged_in_time_false': 0,
-                                       'addressed_in_time_true': 0,
-                                       'addressed_in_time_false': 0},
-                                      {'week': 0,
-                                       'four_weeks': 0,
-                                       'six_months': 0,
-                                       'all_time': 0,
-                                       'id': self.organisation.id,
-                                       'name': 'Test Organisation',
-                                       'ods_code': 'F84021',
-                                       'description': 'Acknowledged but not addressed',
-                                       'happy_outcome_false': 0,
-                                       'happy_outcome_true': 0,
-                                       'happy_service_false': 0,
-                                       'happy_service_true': 0,
-                                       'acknowledged_in_time_true': 0,
-                                       'acknowledged_in_time_false': 0,
-                                       'addressed_in_time_true': 0,
-                                       'addressed_in_time_false': 0},
-                                      {'week': 0,
-                                       'four_weeks': 0,
-                                       'six_months': 0,
-                                       'all_time': 0,
-                                       'id': self.organisation.id,
-                                       'name': 'Test Organisation',
-                                       'ods_code': 'F84021',
-                                       'description': 'Addressed - problem solved',
-                                       'happy_outcome_false': 0,
-                                       'happy_outcome_true': 0,
-                                       'happy_service_false': 0,
-                                       'happy_service_true': 0,
-                                       'acknowledged_in_time_true': 0,
-                                       'acknowledged_in_time_false': 0,
-                                       'addressed_in_time_true': 0,
-                                       'addressed_in_time_false': 0},
-                                      {'week': 0,
-                                       'four_weeks': 0,
-                                       'six_months': 0,
-                                       'all_time': 0,
-                                       'id': self.organisation.id,
-                                       'name': 'Test Organisation',
-                                       'ods_code': 'F84021',
-                                       'description': 'Addressed - unable to solve',
-                                       'happy_outcome_false': 0,
-                                       'happy_outcome_true': 0,
-                                       'happy_service_false': 0,
-                                       'happy_service_true': 0,
-                                       'acknowledged_in_time_true': 0,
-                                       'acknowledged_in_time_false': 0,
-                                       'addressed_in_time_true': 0,
-                                       'addressed_in_time_false': 0}]
-            self.assertEqual(resp.context['problems_by_status'], expected_status_counts)
+            total = resp.context['problems_total']
+            self.assertEqual(total['all_time'], 3)
+            self.assertEqual(total['week'], 3)
+            self.assertEqual(total['four_weeks'], 3)
+            self.assertEqual(total['six_months'], 3)
+
+            problems_by_status = resp.context['problems_by_status']
+            self.assertEqual(problems_by_status[0]['all_time'], 3)
+            self.assertEqual(problems_by_status[0]['week'], 3)
+            self.assertEqual(problems_by_status[0]['four_weeks'], 3)
+            self.assertEqual(problems_by_status[0]['six_months'], 3)
+            self.assertEqual(problems_by_status[0]['description'], 'Received but not acknowledged')
+
+            self.assertEqual(problems_by_status[1]['all_time'], 0)
+            self.assertEqual(problems_by_status[1]['week'], 0)
+            self.assertEqual(problems_by_status[1]['four_weeks'], 0)
+            self.assertEqual(problems_by_status[1]['six_months'], 0)
+            self.assertEqual(problems_by_status[1]['description'], 'Acknowledged but not addressed')
+
+            self.assertEqual(problems_by_status[2]['all_time'], 0)
+            self.assertEqual(problems_by_status[2]['week'], 0)
+            self.assertEqual(problems_by_status[2]['four_weeks'], 0)
+            self.assertEqual(problems_by_status[2]['six_months'], 0)
+            self.assertEqual(problems_by_status[2]['description'], 'Addressed - problem solved')
+
+            self.assertEqual(problems_by_status[3]['all_time'], 0)
+            self.assertEqual(problems_by_status[3]['week'], 0)
+            self.assertEqual(problems_by_status[3]['four_weeks'], 0)
+            self.assertEqual(problems_by_status[3]['six_months'], 0)
+            self.assertEqual(problems_by_status[3]['description'], 'Addressed - unable to solve')
 
     def test_summary_page_has_questions(self):
         for url in self.urls:
             resp = self.client.get(url)
-            expected_total_counts = {'all_time': 3,
-                                     'four_weeks': 3,
-                                     'id': self.organisation.id,
-                                     'name': 'Test Organisation',
-                                     'ods_code': 'F84021',
-                                     'six_months': 3,
-                                     'week': 3,
-                                     'happy_outcome_false': 0,
-                                     'happy_outcome_true': 0,
-                                     'happy_service_false': 0,
-                                     'happy_service_true': 0,
-                                     'acknowledged_in_time_true': 0,
-                                     'acknowledged_in_time_false': 0,
-                                     'addressed_in_time_true': 0,
-                                     'addressed_in_time_false': 0}
-            self.assertEqual(resp.context['problems_total'], expected_total_counts)
-            expected_status_counts = [{'week': 3,
-                                       'four_weeks': 3,
-                                       'six_months': 3,
-                                       'all_time': 3,
-                                       'id': self.organisation.id,
-                                       'name': 'Test Organisation',
-                                       'ods_code': 'F84021',
-                                       'description': 'Received but not acknowledged',
-                                       'happy_outcome_false': 0,
-                                       'happy_outcome_true': 0,
-                                       'happy_service_false': 0,
-                                       'happy_service_true': 0,
-                                       'acknowledged_in_time_true': 0,
-                                       'acknowledged_in_time_false': 0,
-                                       'addressed_in_time_true': 0,
-                                       'addressed_in_time_false': 0},
-                                      {'week': 0,
-                                       'four_weeks': 0,
-                                       'six_months': 0,
-                                       'all_time': 0,
-                                       'id': self.organisation.id,
-                                       'name': 'Test Organisation',
-                                       'ods_code': 'F84021',
-                                       'description': 'Acknowledged but not answered',
-                                       'happy_outcome_false': 0,
-                                       'happy_outcome_true': 0,
-                                       'happy_service_false': 0,
-                                       'happy_service_true': 0,
-                                       'acknowledged_in_time_true': 0,
-                                       'acknowledged_in_time_false': 0,
-                                       'addressed_in_time_true': 0,
-                                       'addressed_in_time_false': 0},
-                                      {'week': 0,
-                                       'four_weeks': 0,
-                                       'six_months': 0,
-                                       'all_time': 0,
-                                       'id': self.organisation.id,
-                                       'name': 'Test Organisation',
-                                       'ods_code': 'F84021',
-                                       'description': 'Question answered',
-                                       'happy_outcome_false': 0,
-                                       'happy_outcome_true': 0,
-                                       'happy_service_false': 0,
-                                       'happy_service_true': 0,
-                                       'acknowledged_in_time_true': 0,
-                                       'acknowledged_in_time_false': 0,
-                                       'addressed_in_time_true': 0,
-                                       'addressed_in_time_false': 0}]
-            self.assertEqual(resp.context['questions_by_status'], expected_status_counts)
+
+            total = resp.context['questions_total']
+            self.assertEqual(total['all_time'], 3)
+            self.assertEqual(total['week'], 3)
+            self.assertEqual(total['four_weeks'], 3)
+            self.assertEqual(total['six_months'], 3)
+
+            questions_by_status = resp.context['questions_by_status']
+            self.assertEqual(questions_by_status[0]['all_time'], 3)
+            self.assertEqual(questions_by_status[0]['week'], 3)
+            self.assertEqual(questions_by_status[0]['four_weeks'], 3)
+            self.assertEqual(questions_by_status[0]['six_months'], 3)
+            self.assertEqual(questions_by_status[0]['description'], 'Received but not acknowledged')
+
+            self.assertEqual(questions_by_status[1]['all_time'], 0)
+            self.assertEqual(questions_by_status[1]['week'], 0)
+            self.assertEqual(questions_by_status[1]['four_weeks'], 0)
+            self.assertEqual(questions_by_status[1]['six_months'], 0)
+            self.assertEqual(questions_by_status[1]['description'], 'Acknowledged but not answered')
+
+            self.assertEqual(questions_by_status[2]['all_time'], 0)
+            self.assertEqual(questions_by_status[2]['week'], 0)
+            self.assertEqual(questions_by_status[2]['four_weeks'], 0)
+            self.assertEqual(questions_by_status[2]['six_months'], 0)
+            self.assertEqual(questions_by_status[2]['description'], 'Question answered')
+
 
     def test_summary_page_applies_problem_category_filter(self):
         for url in self.urls:
             resp = self.client.get(url + '?problems_category=cleanliness')
             self.assertEqual(resp.context['problems_category'], 'cleanliness')
-            expected_total_counts = {'all_time': 1,
-                                     'four_weeks': 1,
-                                     'week': 1,
-                                     'id': self.organisation.id,
-                                     'name': 'Test Organisation',
-                                     'ods_code': 'F84021',
-                                     'six_months': 1,
-                                     'happy_outcome_false': 0,
-                                     'happy_outcome_true': 0,
-                                     'happy_service_false': 0,
-                                     'happy_service_true': 0,
-                                     'acknowledged_in_time_true': 0,
-                                     'acknowledged_in_time_false': 0,
-                                     'addressed_in_time_true': 0,
-                                     'addressed_in_time_false': 0}
-            self.assertEqual(resp.context['problems_total'], expected_total_counts)
-            expected_status_counts = [{'week': 1,
-                                       'four_weeks': 1,
-                                       'six_months': 1,
-                                       'all_time': 1,
-                                       'id': self.organisation.id,
-                                       'name': 'Test Organisation',
-                                       'ods_code': 'F84021',
-                                       'description': 'Received but not acknowledged',
-                                       'happy_outcome_false': 0,
-                                       'happy_outcome_true': 0,
-                                       'happy_service_false': 0,
-                                       'happy_service_true': 0,
-                                       'acknowledged_in_time_true': 0,
-                                       'acknowledged_in_time_false': 0,
-                                       'addressed_in_time_true': 0,
-                                       'addressed_in_time_false': 0},
-                                      {'week': 0,
-                                       'four_weeks': 0,
-                                       'six_months': 0,
-                                       'all_time': 0,
-                                       'id': self.organisation.id,
-                                       'name': 'Test Organisation',
-                                       'ods_code': 'F84021',
-                                       'description': 'Acknowledged but not addressed',
-                                       'happy_outcome_false': 0,
-                                       'happy_outcome_true': 0,
-                                       'happy_service_false': 0,
-                                       'happy_service_true': 0,
-                                       'acknowledged_in_time_true': 0,
-                                       'acknowledged_in_time_false': 0,
-                                       'addressed_in_time_true': 0,
-                                       'addressed_in_time_false': 0},
-                                      {'week': 0,
-                                       'four_weeks': 0,
-                                       'six_months': 0,
-                                       'all_time': 0,
-                                       'id': self.organisation.id,
-                                       'name': 'Test Organisation',
-                                       'ods_code': 'F84021',
-                                       'description': 'Addressed - problem solved',
-                                       'happy_outcome_false': 0,
-                                       'happy_outcome_true': 0,
-                                       'happy_service_false': 0,
-                                       'happy_service_true': 0,
-                                       'acknowledged_in_time_true': 0,
-                                       'acknowledged_in_time_false': 0,
-                                       'addressed_in_time_true': 0,
-                                       'addressed_in_time_false': 0},
-                                      {'week': 0,
-                                       'four_weeks': 0,
-                                       'six_months': 0,
-                                       'all_time': 0,
-                                       'id': self.organisation.id,
-                                       'name': 'Test Organisation',
-                                       'ods_code': 'F84021',
-                                       'description': 'Addressed - unable to solve',
-                                       'happy_outcome_false': 0,
-                                       'happy_outcome_true': 0,
-                                       'happy_service_false': 0,
-                                       'happy_service_true': 0,
-                                       'acknowledged_in_time_true': 0,
-                                       'acknowledged_in_time_false': 0,
-                                       'addressed_in_time_true': 0,
-                                       'addressed_in_time_false': 0}]
-            self.assertEqual(resp.context['problems_by_status'], expected_status_counts)
+            total = resp.context['problems_total']
+            self.assertEqual(total['all_time'], 1)
+            self.assertEqual(total['week'], 1)
+            self.assertEqual(total['four_weeks'], 1)
+            self.assertEqual(total['six_months'], 1)
+
+            problems_by_status = resp.context['problems_by_status']
+            self.assertEqual(problems_by_status[0]['all_time'], 1)
+            self.assertEqual(problems_by_status[0]['week'], 1)
+            self.assertEqual(problems_by_status[0]['four_weeks'], 1)
+            self.assertEqual(problems_by_status[0]['six_months'], 1)
 
     def test_summary_page_applies_question_category_filter(self):
         for url in self.urls:
             resp = self.client.get(url + '?questions_category=services')
             self.assertEqual(resp.context['questions_category'], 'services')
-            expected_total_counts = {'all_time': 1,
-                                     'four_weeks': 1,
-                                     'week': 1,
-                                     'id': self.organisation.id,
-                                     'name': 'Test Organisation',
-                                     'ods_code': 'F84021',
-                                     'six_months': 1,
-                                     'happy_outcome_false': 0,
-                                     'happy_outcome_true': 0,
-                                     'happy_service_false': 0,
-                                     'happy_service_true': 0,
-                                     'acknowledged_in_time_true': 0,
-                                     'acknowledged_in_time_false': 0,
-                                     'addressed_in_time_true': 0,
-                                     'addressed_in_time_false': 0}
-            self.assertEqual(resp.context['questions_total'], expected_total_counts)
-            expected_status_counts = [{'week': 1,
-                                       'four_weeks': 1,
-                                       'six_months': 1,
-                                       'all_time': 1,
-                                       'id': self.organisation.id,
-                                       'name': 'Test Organisation',
-                                       'ods_code': 'F84021',
-                                       'description': 'Received but not acknowledged',
-                                       'happy_outcome_false': 0,
-                                       'happy_outcome_true': 0,
-                                       'happy_service_false': 0,
-                                       'happy_service_true': 0,
-                                       'acknowledged_in_time_true': 0,
-                                       'acknowledged_in_time_false': 0,
-                                       'addressed_in_time_true': 0,
-                                       'addressed_in_time_false': 0},
-                                      {'week': 0,
-                                       'four_weeks': 0,
-                                       'six_months': 0,
-                                       'all_time': 0,
-                                       'id': self.organisation.id,
-                                       'name': 'Test Organisation',
-                                       'ods_code': 'F84021',
-                                       'description': 'Acknowledged but not answered',
-                                       'happy_outcome_false': 0,
-                                       'happy_outcome_true': 0,
-                                       'happy_service_false': 0,
-                                       'happy_service_true': 0,
-                                       'acknowledged_in_time_true': 0,
-                                       'acknowledged_in_time_false': 0,
-                                       'addressed_in_time_true': 0,
-                                       'addressed_in_time_false': 0},
-                                      {'week': 0,
-                                       'four_weeks': 0,
-                                       'six_months': 0,
-                                       'all_time': 0,
-                                       'id': self.organisation.id,
-                                       'name': 'Test Organisation',
-                                       'ods_code': 'F84021',
-                                       'description': 'Question answered',
-                                       'happy_outcome_false': 0,
-                                       'happy_outcome_true': 0,
-                                       'happy_service_false': 0,
-                                       'happy_service_true': 0,
-                                       'acknowledged_in_time_true': 0,
-                                       'acknowledged_in_time_false': 0,
-                                       'addressed_in_time_true': 0,
-                                       'addressed_in_time_false': 0}]
-            self.assertEqual(resp.context['questions_by_status'], expected_status_counts)
+
+            total = resp.context['questions_total']
+            self.assertEqual(total['all_time'], 1)
+            self.assertEqual(total['week'], 1)
+            self.assertEqual(total['four_weeks'], 1)
+            self.assertEqual(total['six_months'], 1)
+
+            questions_by_status = resp.context['questions_by_status']
+            self.assertEqual(questions_by_status[0]['all_time'], 1)
+            self.assertEqual(questions_by_status[0]['week'], 1)
+            self.assertEqual(questions_by_status[0]['four_weeks'], 1)
+            self.assertEqual(questions_by_status[0]['six_months'], 1)
+
 
     def test_summary_page_applies_department_filter(self):
         for url in self.urls:
             resp = self.client.get(url + '?service=%s' % self.service.id)
             self.assertEqual(resp.context['selected_service'], self.service.id)
-            expected_question_status_counts = [{'week': 1,
-                                               'four_weeks': 1,
-                                               'six_months': 1,
-                                               'all_time': 1,
-                                               'id': self.organisation.id,
-                                               'name': 'Test Organisation',
-                                               'ods_code': 'F84021',
-                                               'description': 'Received but not acknowledged',
-                                               'happy_outcome_false': 0,
-                                               'happy_outcome_true': 0,
-                                               'happy_service_false': 0,
-                                               'happy_service_true': 0,
-                                               'acknowledged_in_time_true': 0,
-                                               'acknowledged_in_time_false': 0,
-                                               'addressed_in_time_true': 0,
-                                               'addressed_in_time_false': 0},
-                                              {'week': 0,
-                                               'four_weeks': 0,
-                                               'six_months': 0,
-                                               'all_time': 0,
-                                               'id': self.organisation.id,
-                                               'name': 'Test Organisation',
-                                               'ods_code': 'F84021',
-                                               'description': 'Acknowledged but not answered',
-                                               'happy_outcome_false': 0,
-                                               'happy_outcome_true': 0,
-                                               'happy_service_false': 0,
-                                               'happy_service_true': 0,
-                                               'acknowledged_in_time_true': 0,
-                                               'acknowledged_in_time_false': 0,
-                                               'addressed_in_time_true': 0,
-                                               'addressed_in_time_false': 0},
-                                              {'week': 0,
-                                               'four_weeks': 0,
-                                               'six_months': 0,
-                                               'all_time': 0,
-                                               'id': self.organisation.id,
-                                               'name': 'Test Organisation',
-                                               'ods_code': 'F84021',
-                                               'description': 'Question answered',
-                                               'happy_outcome_false': 0,
-                                               'happy_outcome_true': 0,
-                                               'happy_service_false': 0,
-                                               'happy_service_true': 0,
-                                               'acknowledged_in_time_true': 0,
-                                               'acknowledged_in_time_false': 0,
-                                               'addressed_in_time_true': 0,
-                                               'addressed_in_time_false': 0}]
-            expected_problem_status_counts = [{'week': 1,
-                                              'four_weeks': 1,
-                                              'six_months': 1,
-                                              'all_time': 1,
-                                              'id': self.organisation.id,
-                                              'name': 'Test Organisation',
-                                              'ods_code': 'F84021',
-                                              'description': 'Received but not acknowledged',
-                                              'happy_outcome_false': 0,
-                                              'happy_outcome_true': 0,
-                                              'happy_service_false': 0,
-                                              'happy_service_true': 0,
-                                              'acknowledged_in_time_true': 0,
-                                              'acknowledged_in_time_false': 0,
-                                              'addressed_in_time_true': 0,
-                                              'addressed_in_time_false': 0},
-                                             {'week': 0,
-                                              'four_weeks': 0,
-                                              'six_months': 0,
-                                              'all_time': 0,
-                                              'id': self.organisation.id,
-                                              'name': 'Test Organisation',
-                                              'ods_code': 'F84021',
-                                              'description': 'Acknowledged but not addressed',
-                                              'happy_outcome_false': 0,
-                                              'happy_outcome_true': 0,
-                                              'happy_service_false': 0,
-                                              'happy_service_true': 0,
-                                              'acknowledged_in_time_true': 0,
-                                              'acknowledged_in_time_false': 0,
-                                              'addressed_in_time_true': 0,
-                                              'addressed_in_time_false': 0},
-                                             {'week': 0,
-                                              'four_weeks': 0,
-                                              'six_months': 0,
-                                              'all_time': 0,
-                                              'id': self.organisation.id,
-                                              'name': 'Test Organisation',
-                                              'ods_code': 'F84021',
-                                              'description': 'Addressed - problem solved',
-                                              'happy_outcome_false': 0,
-                                              'happy_outcome_true': 0,
-                                              'happy_service_false': 0,
-                                              'happy_service_true': 0,
-                                              'acknowledged_in_time_true': 0,
-                                              'acknowledged_in_time_false': 0,
-                                              'addressed_in_time_true': 0,
-                                              'addressed_in_time_false': 0},
-                                             {'week': 0,
-                                              'four_weeks': 0,
-                                              'six_months': 0,
-                                              'all_time': 0,
-                                              'id': self.organisation.id,
-                                              'name': 'Test Organisation',
-                                              'ods_code': 'F84021',
-                                              'description': 'Addressed - unable to solve',
-                                              'happy_outcome_false': 0,
-                                              'happy_outcome_true': 0,
-                                              'happy_service_false': 0,
-                                              'happy_service_true': 0,
-                                              'acknowledged_in_time_true': 0,
-                                              'acknowledged_in_time_false': 0,
-                                              'addressed_in_time_true': 0,
-                                              'addressed_in_time_false': 0}]
-            self.assertEqual(resp.context['questions_by_status'], expected_question_status_counts)
-            self.assertEqual(resp.context['problems_by_status'], expected_problem_status_counts)
+
+            questions_by_status = resp.context['questions_by_status']
+            self.assertEqual(questions_by_status[0]['all_time'], 1)
+            self.assertEqual(questions_by_status[0]['week'], 1)
+            self.assertEqual(questions_by_status[0]['four_weeks'], 1)
+            self.assertEqual(questions_by_status[0]['six_months'], 1)
+
+            problems_by_status = resp.context['problems_by_status']
+            self.assertEqual(problems_by_status[0]['all_time'], 1)
+            self.assertEqual(problems_by_status[0]['week'], 1)
+            self.assertEqual(problems_by_status[0]['four_weeks'], 1)
+            self.assertEqual(problems_by_status[0]['six_months'], 1)
 
 class OrganisationProblemsTests(TestCase):
 
