@@ -890,7 +890,8 @@ button, input[type=submit] {
 .organisation-summary .tab-menu, .organisation-problems .tab-menu, .organisation-questions .tab-menu, .organisation-reviews .tab-menu {
   width: 100%;
   padding: 0;
-  list-style: none; }
+  list-style: none;
+  display: block; }
   .organisation-summary .tab-menu .tab, .organisation-problems .tab-menu .tab, .organisation-questions .tab-menu .tab, .organisation-reviews .tab-menu .tab {
     float: left;
     padding: 0 10px;
@@ -901,8 +902,6 @@ button, input[type=submit] {
     float: left;
     padding: 0 10px;
     width: 25%; }
-  .organisation-summary .tab-menu .tab.active, .organisation-problems .tab-menu .tab.active, .organisation-questions .tab-menu .tab.active, .organisation-reviews .tab-menu .tab.active {
-    background: #cce2fd; }
 
 .organisation-summary .hero .feature, .summary .hero .feature {
   float: left;
