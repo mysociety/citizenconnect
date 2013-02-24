@@ -6,12 +6,15 @@ from django.core.urlresolvers import reverse
 
 from issues.models import Problem
 
+def percent(field_name):
+    return """{%% load organisation_extras %%}{{record|true_to_false_percent:'%s'}}""" % field_name
 
 class NationalSummaryTable(tables.Table):
 
     def __init__(self, *args, **kwargs):
         self.cobrand = kwargs.pop('cobrand')
         super(NationalSummaryTable, self).__init__(*args, **kwargs)
+
 
     sep_atts = {"th": {"class": "separator"},
                 "td": {"class": "separator"}}
@@ -21,10 +24,15 @@ class NationalSummaryTable(tables.Table):
     four_weeks = tables.Column(verbose_name='Last 4 weeks')
     six_months = tables.Column(verbose_name='Last 6 months')
     all_time = tables.Column(verbose_name='All time', attrs=sep_atts)
-    percent_acknowledged_in_time = tables.Column(verbose_name='% Acknowledged in time')
-    percent_addressed_in_time = tables.Column(verbose_name='% Addressed in time', attrs=sep_atts)
-    percent_happy_service = tables.Column(verbose_name='% Happy with service')
-    percent_happy_outcome = tables.Column(verbose_name='% Happy with outcome')
+    percent_acknowledged_in_time = tables.TemplateColumn(verbose_name='% Acknowledged in time',
+                                                         template_code=percent('acknowledged_in_time'))
+    percent_addressed_in_time = tables.TemplateColumn(verbose_name='% Addressed in time',
+                                              template_code=percent('addressed_in_time'),
+                                              attrs=sep_atts)
+    percent_happy_service = tables.TemplateColumn(verbose_name='% Happy with service',
+                                          template_code=percent('happy_service'))
+    percent_happy_outcome = tables.TemplateColumn(verbose_name='% Happy with outcome',
+                                          template_code=percent('happy_outcome'))
 
     def render_name(self, record):
         url = reverse("public-org-summary", kwargs={'ods_code': record['ods_code'], 'cobrand': self.cobrand})
