@@ -206,9 +206,19 @@ class OrganisationSummary(OrganisationAwareViewMixin,
                               'acknowledged_in_time',
                               'addressed_in_time']
         for attribute in summary_attributes:
-            for boolean_suffix in ['_true', '_false']:
-                key = attribute + boolean_suffix
-                issues_total[key] = context['problems_total'][key] + context['questions_total'][key]
+            # Calculate a weighted average of problems and questions
+            problem_average = context['problems_total'][attribute]
+            question_average = context['questions_total'][attribute]
+            problem_count = context['problems_total'][attribute+"_count"]
+            question_count = context['questions_total'][attribute+"_count"]
+            if problem_count != 0 and question_count != 0:
+                numerator = ((problem_average*problem_count) + (question_average*question_count))
+                denominator = (problem_count + question_count)
+                issues_total[attribute] = numerator / denominator
+            elif problem_count != 0:
+                issues_total[attribute] = problem_average
+            else:
+                issues_total[attribute] = question_average
         context['issues_total'] = issues_total
 
         return context

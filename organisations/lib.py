@@ -7,8 +7,18 @@ from .models import Organisation
 def _date_clause(issue_table, alias):
     return "sum(CASE WHEN "+ issue_table +".created > %s THEN 1 ELSE 0 END) as " + alias
 
-def _boolean_clause(issue_table, field, alias):
-    return "sum(CASE WHEN "+ issue_table +"."+ field +" = %s THEN 1 ELSE 0 END) as " + alias
+# Get fraction of true values over non-null values for boolean field
+def _boolean_clause(issue_table, field):
+    clause =  "sum(CASE WHEN "+ issue_table +"."+ field +" = %s THEN 1 ELSE 0 END)"
+    clause += " / "
+    clause += "NULLIF(sum(CASE WHEN "+ issue_table +"."+ field +" IS NOT NULL THEN 1 ELSE 0 END), 0)::float"
+    clause += " AS " + field
+    return clause
+
+# Return the count of non-null values for a boolean field
+def _count_clause(issue_table, field, alias):
+    return "sum(CASE WHEN "+ issue_table +"."+ field +" IS NOT NULL THEN 1 ELSE 0 END) AS " + alias
+
 # Return counts for an organisation or a set of organisations for the last week, four week
 # and six months based on created date and filters
 def interval_counts(issue_type, filters={}, sort='name', organisation_id=None):
@@ -37,12 +47,10 @@ def interval_counts(issue_type, filters={}, sort='name', organisation_id=None):
     # Add an all time count
     select_clauses.append("""count(%s.id) as all_time""" % issue_table)
 
-    # Get some boolean counts for surveys and meeting time limits
     for field in boolean_counts:
-        select_clauses.append(_boolean_clause(issue_table, field, "%s_true" % field))
+        select_clauses.append(_boolean_clause(issue_table,  field))
         params.append(True)
-        select_clauses.append(_boolean_clause(issue_table, field, "%s_false" % field))
-        params.append(False)
+        select_clauses.append(_count_clause(issue_table, field, '%s_count' % field))
 
     criteria_clauses = ["""organisations_organisation.id = %s.organisation_id""" % issue_table]
 

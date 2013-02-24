@@ -198,19 +198,16 @@ class OrganisationSummaryTests(TestCase):
         for url in self.urls:
             resp = self.client.get(url)
             issues_total = resp.context['issues_total']
-            self.assertEqual(issues_total['happy_service_true'], 3)
-            self.assertEqual(issues_total['happy_service_false'], 2)
-            self.assertEqual(issues_total['happy_outcome_true'], 4)
-            self.assertEqual(issues_total['happy_outcome_false'], 0)
+            self.assertEqual(issues_total['happy_service'], 0.6000000000000002)
+            self.assertEqual(issues_total['happy_outcome'], 1.0)
 
     def test_summary_page_gets_time_limit_data(self):
         for url in self.urls:
             resp = self.client.get(url)
             issues_total = resp.context['issues_total']
-            self.assertEqual(issues_total['acknowledged_in_time_true'], 2)
-            self.assertEqual(issues_total['acknowledged_in_time_false'], 1)
-            self.assertEqual(issues_total['addressed_in_time_true'], 3)
-            self.assertEqual(issues_total['addressed_in_time_false'], 0)
+            self.assertEqual(issues_total['acknowledged_in_time'], 0.66666666666666663)
+            self.assertEqual(issues_total['addressed_in_time'], 1.0)
+
 
 class OrganisationProblemsTests(TestCase):
 

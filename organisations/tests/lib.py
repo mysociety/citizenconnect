@@ -109,14 +109,14 @@ class IntervalCountsTest(TestCase):
                            'ods_code': 'XXX999',
                            'six_months': 6,
                            'all_time': 6,
-                           'happy_outcome_false': 1,
-                           'happy_outcome_true': 1,
-                           'happy_service_false': 0,
-                           'happy_service_true': 1,
-                           'acknowledged_in_time_true': 2,
-                           'acknowledged_in_time_false': 1,
-                           'addressed_in_time_true': 1,
-                           'addressed_in_time_false': 2}
+                           'happy_outcome': 0.5,
+                           'happy_outcome_count': 2,
+                           'happy_service': 1.0,
+                           'happy_service_count': 1,
+                           'acknowledged_in_time': 0.66666666666666696,
+                           'acknowledged_in_time_count': 3,
+                           'addressed_in_time': 0.33333333333333298,
+                           'addressed_in_time_count': 3}
 
         self.assertEqual(expected_counts, interval_counts(issue_type=Problem,
                                                           filters={},
@@ -130,14 +130,14 @@ class IntervalCountsTest(TestCase):
                             'ods_code': 'ABC222',
                             'six_months': 5,
                             'all_time': 5,
-                            'happy_outcome_false': 0,
-                            'happy_outcome_true': 0,
-                            'happy_service_false': 0,
-                            'happy_service_true': 0,
-                            'acknowledged_in_time_true': 0,
-                            'acknowledged_in_time_false': 0,
-                            'addressed_in_time_true': 0,
-                            'addressed_in_time_false': 0},
+                            'happy_outcome': None,
+                            'happy_outcome_count': 0,
+                            'happy_service': None,
+                            'happy_service_count': 0,
+                            'acknowledged_in_time': None,
+                            'acknowledged_in_time_count': 0,
+                            'addressed_in_time': None,
+                            'addressed_in_time_count': 0},
                            {'week': 3,
                            'four_weeks': 5,
                            'id': self.test_organisation.id,
@@ -145,16 +145,16 @@ class IntervalCountsTest(TestCase):
                            'ods_code': 'XXX999',
                            'six_months': 6,
                            'all_time': 6,
-                           'happy_outcome_false': 1,
-                           'happy_outcome_true': 1,
-                           'happy_service_false': 0,
-                           'happy_service_true': 1,
-                           'acknowledged_in_time_true': 2,
-                           'acknowledged_in_time_false': 1,
-                           'addressed_in_time_true': 1,
-                           'addressed_in_time_false': 2}]
-        self.assertEqual(expected_counts, interval_counts(issue_type=Problem,
-                                                          filters={}))
+                           'happy_outcome': 0.5,
+                           'happy_outcome_count': 2,
+                           'happy_service': 1.0,
+                           'happy_service_count': 1,
+                           'acknowledged_in_time': 0.66666666666666696,
+                           'acknowledged_in_time_count': 3,
+                           'addressed_in_time': 0.33333333333333298,
+                           'addressed_in_time_count': 3}]
+        actual = interval_counts(issue_type=Problem, filters={})
+        self.assertEqual(expected_counts, actual)
 
     def test_filter_by_service_code(self):
         filters = {'service_code': 'ABC123'}
@@ -165,14 +165,14 @@ class IntervalCountsTest(TestCase):
                            'ods_code': 'XXX999',
                            'six_months': 1,
                            'all_time': 1,
-                           'happy_outcome_false': 0,
-                           'happy_outcome_true': 0,
-                           'happy_service_false': 0,
-                           'happy_service_true': 0,
-                           'acknowledged_in_time_true': 0,
-                           'acknowledged_in_time_false': 0,
-                           'addressed_in_time_true': 0,
-                           'addressed_in_time_false': 0}]
+                           'happy_outcome': None,
+                           'happy_outcome_count': 0,
+                           'happy_service': None,
+                           'happy_service_count': 0,
+                           'acknowledged_in_time': None,
+                           'acknowledged_in_time_count': 0,
+                           'addressed_in_time': None,
+                           'addressed_in_time_count': 0}]
         self.assertEqual(expected_counts, interval_counts(issue_type=Problem,
                                                           filters=filters))
 
@@ -185,13 +185,13 @@ class IntervalCountsTest(TestCase):
                             'ods_code': 'ABC222',
                             'six_months': 5,
                             'all_time': 5,
-                            'happy_outcome_false': 0,
-                            'happy_outcome_true': 0,
-                            'happy_service_false': 0,
-                            'happy_service_true': 0,
-                            'acknowledged_in_time_true': 0,
-                            'acknowledged_in_time_false': 0,
-                            'addressed_in_time_true': 0,
-                            'addressed_in_time_false': 0}]
+                            'happy_outcome': None,
+                            'happy_outcome_count': 0,
+                            'happy_service': None,
+                            'happy_service_count': 0,
+                            'acknowledged_in_time': None,
+                            'acknowledged_in_time_count': 0,
+                            'addressed_in_time': None,
+                            'addressed_in_time_count': 0 }]
         self.assertEqual(expected_counts, interval_counts(issue_type=Problem,
                                                           filters=filters))

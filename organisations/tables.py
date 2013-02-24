@@ -6,8 +6,8 @@ from django.core.urlresolvers import reverse
 
 from issues.models import Problem
 
-def percent(field_name):
-    return """{%% load organisation_extras %%}{{record|true_to_false_percent:'%s'}}""" % field_name
+def percent():
+    return """{% load organisation_extras %}{{value|percent}}"""
 
 class NationalSummaryTable(tables.Table):
 
@@ -24,18 +24,19 @@ class NationalSummaryTable(tables.Table):
     four_weeks = tables.Column(verbose_name='Last 4 weeks')
     six_months = tables.Column(verbose_name='Last 6 months')
     all_time = tables.Column(verbose_name='All time', attrs=sep_atts)
-    percent_acknowledged_in_time = tables.TemplateColumn(verbose_name='% Acknowledged in time',
-                                                         template_code=percent('acknowledged_in_time'))
-    percent_addressed_in_time = tables.TemplateColumn(verbose_name='% Addressed in time',
-                                              template_code=percent('addressed_in_time'),
+    acknowledged_in_time = tables.TemplateColumn(verbose_name='% Acknowledged in time',
+                                                 template_code=percent())
+    addressed_in_time = tables.TemplateColumn(verbose_name='% Addressed in time',
+                                              template_code=percent(),
                                               attrs=sep_atts)
-    percent_happy_service = tables.TemplateColumn(verbose_name='% Happy with service',
-                                          template_code=percent('happy_service'))
-    percent_happy_outcome = tables.TemplateColumn(verbose_name='% Happy with outcome',
-                                          template_code=percent('happy_outcome'))
+    happy_service = tables.TemplateColumn(verbose_name='% Happy with service',
+                                          template_code=percent())
+    happy_outcome = tables.TemplateColumn(verbose_name='% Happy with outcome',
+                                          template_code=percent())
 
     def render_name(self, record):
-        url = reverse("public-org-summary", kwargs={'ods_code': record['ods_code'], 'cobrand': self.cobrand})
+        url = reverse("public-org-summary", kwargs={'ods_code': record['ods_code'],
+                                                    'cobrand': self.cobrand})
         return mark_safe('''<a href="%s">%s</a>''' % (url, record['name']))
 
     class Meta:

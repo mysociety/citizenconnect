@@ -12,43 +12,35 @@
 {% include "organisations/includes/summary-tabs.html" with active_tab='summary' %}
 
 <div class="hero">
-    {% if organisation.has_time_limits %}
+    {% if organisation.has_time_limits  %}
     <div class="feature">
-        {% with percent_acknowledged=issues_total|true_to_false_percent:'acknowledged_in_time' %}
-        {% if percent_acknowledged == '-' %}
-        <p>No data on messages acknowledged in time</p>
+        {% if issues_total.acknowledged_in_time != None %}
+            <p>{{ issues_total.acknowledged_in_time|percent }} of messages acknowledged in time</p>
         {% else %}
-        <p>{{ percent_acknowledged }} of messages acknowledged in time</p>
+            <p>No data on messages acknowledged in time</p>
         {% endif %}
-        {% endwith %}
     </div>
     <div class="feature">
-        {% with percent_addressed=issues_total|true_to_false_percent:'addressed_in_time' %}
-        {% if percent_addressed == '-' %}
-        <p>No data on messages addressed in time</p>
+        {% if issues_total.addressed_in_time != None %}
+            <p>{{ issues_total.addressed_in_time|percent }} of messages addressed in time</p>
         {% else %}
-        <p>{{ percent_addressed }} of messages addressed to in time</p>
+            <p>No data on messages addressed in time</p>
         {% endif %}
-        {% endwith %}
     </div>
     {% endif %}
     <div class="feature">
-        {% with percent_happy_service=issues_total|true_to_false_percent:'happy_service' %}
-        {% if percent_happy_service == '-' %}
-        <p>No data on users happy with service</p>
+        {% if issues_total.happy_service != None %}
+            <p class="brief">{{ issues_total.happy_service|percent }} of users happy with service</p>
         {% else %}
-        <p>{{ percent_happy_service }} of users happy with service</p>
+            <p>No data on users happy with service</p>
         {% endif %}
-        {% endwith %}
     </div>
     <div class="feature">
-        {% with percent_happy_outcome=issues_total|true_to_false_percent:'happy_outcome' %}
-        {% if percent_happy_outcome == '-' %}
-        <p>No data on users happy with outcome</p>
+        {% if issues_total.happy_outcome != None %}
+            <p class="brief">{{ issues_total.happy_outcome|percent }} of users happy with outcome</p>
         {% else %}
-        <p>{{ percent_happy_outcome }} of users happy with outcome</p>
+            <p>No data on users happy with outcome</p>
         {% endif %}
-        {% endwith %}
     </div>
 </div>
 <div class="outcomes-options">
@@ -110,12 +102,12 @@
                     <td>{{ problems_total.six_months }}</td>
                     <td class="separator">{{ problems_total.all_time }}</td>
                     {% if organisation.has_time_limits %}
-                        <td>{{ problems_total|true_to_false_percent:'acknowledged_in_time' }}</td>
-                        <td class="separator">{{ problems_total|true_to_false_percent:'addressed_in_time' }}</td>
+                        <td>{{ problems_total.acknowledged_in_time|percent }}</td>
+                        <td class="separator">{{ problems_total.addressed_in_time|percent }}</td>
                     {% endif %}
-                    <td>{{ problems_total|true_to_false_percent:'happy_service' }}
+                    <td>{{ problems_total.happy_service|percent }}
                     </td>
-                    <td>{{ problems_total|true_to_false_percent:'happy_outcome' }}
+                    <td>{{ problems_total.happy_outcome|percent }}
                     </td>
                 </tr>
                 {% for status in problems_by_status %}
@@ -127,11 +119,11 @@
                     <td>{{ status.six_months }}</td>
                     <td class="separator">{{ status.all_time }}</td>
                     {% if organisation.has_time_limits %}
-                        <td>{{ status|true_to_false_percent:'acknowledged_in_time' }}</td>
-                        <td class="separator">{{ status|true_to_false_percent:'addressed_in_time' }}</td>
+                        <td>{{ status.acknowledged_in_time|percent }}</td>
+                        <td class="separator">{{ status.addressed_in_time|percent }}</td>
                     {% endif %}
-                    <td>{{ status|true_to_false_percent:'happy_service' }}</td>
-                    <td>{{ status|true_to_false_percent:'happy_outcome' }}</td>
+                    <td>{{ status.happy_service|percent }}</td>
+                    <td>{{ status.happy_outcome|percent }}</td>
                 </tr>
                 {% endfor %}
 
@@ -142,11 +134,11 @@
                     <td>{{ questions_total.six_months }}</td>
                     <td class="separator">{{ questions_total.all_time }}</td>
                     {% if organisation.has_time_limits %}
-                        <td>{{ questions_total|true_to_false_percent:'acknowledged_in_time' }}</td>
-                        <td class="separator">{{ questions_total|true_to_false_percent:'addressed_in_time' }}</td>
+                        <td>{{ questions_total.acknowledged_in_time|percent }}</td>
+                        <td class="separator">{{ questions_total.addressed_in_time|percent }}</td>
                     {% endif %}
-                    <td>{{ questions_total|true_to_false_percent:'happy_service' }}</td>
-                    <td>{{ questions_total|true_to_false_percent:'happy_outcome' }}</td>
+                    <td>{{ questions_total.happy_service|percent }}</td>
+                    <td>{{ questions_total.happy_outcome|percent }}</td>
                 </tr>
                 {% for status in questions_by_status %}
                 <tr>
@@ -156,11 +148,11 @@
                     <td>{{ status.six_months }}</td>
                     <td class="separator">{{ status.all_time }}</td>
                     {% if organisation.has_time_limits %}
-                        <td>{{ status|true_to_false_percent:'acknowledged_in_time' }}</td>
-                        <td class="separator">{{ status|true_to_false_percent:'addressed_in_time' }}</td>
+                        <td>{{ status.acknowledged_in_time|percent }}</td>
+                        <td class="separator">{{ status.addressed_in_time|percent }}</td>
                     {% endif %}
-                    <td>{{ status|true_to_false_percent:'happy_service' }}</td>
-                    <td>{{ status|true_to_false_percent:'happy_outcome' }}</td>
+                    <td>{{ status.happy_service|percent }}</td>
+                    <td>{{ status.happy_outcome|percent }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
