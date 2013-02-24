@@ -12,11 +12,43 @@
 {% include "organisations/includes/summary-tabs.html" with active_tab='summary' %}
 
 <div class="hero">
+    {% if organisation.has_time_limits %}
     <div class="feature">
-        <p>96% of message responded to in time</p>
+        {% with percent_acknowledged=issues_total|true_to_false_percent:'acknowledged_in_time' %}
+        {% if percent_acknowledged == '-' %}
+        <p>No data on messages acknowledged in time</p>
+        {% else %}
+        <p>{{ percent_acknowledged }} of messages acknowledged in time</p>
+        {% endif %}
+        {% endwith %}
     </div>
     <div class="feature">
-        <p>82% of users happy with service</p>
+        {% with percent_addressed=issues_total|true_to_false_percent:'addressed_in_time' %}
+        {% if percent_addressed == '-' %}
+        <p>No data on messages addressed in time</p>
+        {% else %}
+        <p>{{ percent_addressed }} of messages addressed to in time</p>
+        {% endif %}
+        {% endwith %}
+    </div>
+    {% endif %}
+    <div class="feature">
+        {% with percent_happy_service=issues_total|true_to_false_percent:'happy_service' %}
+        {% if percent_happy_service == '-' %}
+        <p>No data on users happy with service</p>
+        {% else %}
+        <p>{{ percent_happy_service }} of users happy with service</p>
+        {% endif %}
+        {% endwith %}
+    </div>
+    <div class="feature">
+        {% with percent_happy_outcome=issues_total|true_to_false_percent:'happy_outcome' %}
+        {% if percent_happy_outcome == '-' %}
+        <p>No data on users happy with outcome</p>
+        {% else %}
+        <p>{{ percent_happy_outcome }} of users happy with outcome</p>
+        {% endif %}
+        {% endwith %}
     </div>
 </div>
 <div class="outcomes-options">

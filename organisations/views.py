@@ -183,6 +183,7 @@ class OrganisationSummary(OrganisationAwareViewMixin,
                 context['%s_category' % issue_type] = category
                 count_filters['category'] = category
             context['%s_categories' % issue_type] = model_class.CATEGORY_CHOICES
+
             context['%s_total' % issue_type] = interval_counts(issue_type=issue_types[issue_type],
                                                                filters=count_filters,
                                                                organisation_id=organisation.id)
@@ -197,6 +198,18 @@ class OrganisationSummary(OrganisationAwareViewMixin,
                 status_counts['description'] = description
                 status_list.append(status_counts)
             context['%s_by_status' % issue_type] = status_list
+        # Generate a dictionary of overall issue boolean counts to use in the summary
+        # statistics
+        issues_total = {}
+        summary_attributes = ['happy_service',
+                              'happy_outcome',
+                              'acknowledged_in_time',
+                              'addressed_in_time']
+        for attribute in summary_attributes:
+            for boolean_suffix in ['_true', '_false']:
+                key = attribute + boolean_suffix
+                issues_total[key] = context['problems_total'][key] + context['questions_total'][key]
+        context['issues_total'] = issues_total
 
         return context
 

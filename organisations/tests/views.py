@@ -20,19 +20,49 @@ class OrganisationSummaryTests(TestCase):
         # Make an organisation
         self.organisation = create_test_organisation()
         self.service = create_test_service({'organisation': self.organisation})
+
+        # Problems
         atts = {'organisation': self.organisation}
-        atts.update({'category': 'cleanliness'})
+        atts.update({'category': 'cleanliness',
+                     'happy_service': True,
+                     'happy_outcome': None,
+                     'acknowledged_in_time': True,
+                     'addressed_in_time': True})
         self.cleanliness_problem = create_test_instance(Problem, atts)
-        atts.update({'category': 'staff'})
+        atts.update({'category': 'staff',
+                     'happy_service': True,
+                     'happy_outcome': True,
+                     'acknowledged_in_time': None,
+                     'addressed_in_time': None})
         self.staff_problem = create_test_instance(Problem, atts)
-        atts.update({'category': 'other', 'service_id' : self.service.id})
+        atts.update({'category': 'other',
+                     'service_id' : self.service.id,
+                     'happy_service': False,
+                     'happy_outcome': True,
+                     'acknowledged_in_time': None,
+                     'addressed_in_time': None})
         self.other_dept_problem = create_test_instance(Problem, atts)
+
+        # Questions
         atts = {'organisation': self.organisation}
-        atts.update({'category': 'services'})
+        atts.update({'category': 'services',
+                     'happy_service': None,
+                     'happy_outcome': None,
+                     'acknowledged_in_time': False,
+                     'addressed_in_time': True})
         self.services_question = create_test_instance(Question, atts)
-        atts.update({'category': 'general'})
+        atts.update({'category': 'general',
+                     'happy_service': False,
+                     'happy_outcome': True,
+                     'acknowledged_in_time': True,
+                     'addressed_in_time': True})
         self.general_question = create_test_instance(Question, atts)
-        atts.update({'category': 'appointments', 'service_id': self.service.id})
+        atts.update({'category': 'appointments',
+                     'service_id': self.service.id,
+                     'happy_service': True,
+                     'happy_outcome': True,
+                     'acknowledged_in_time': None,
+                     'addressed_in_time': None})
         self.appointment_dept_question = create_test_instance(Question, atts)
 
         self.public_summary_url = '/choices/stats/summary/%s' % self.organisation.ods_code
@@ -163,6 +193,24 @@ class OrganisationSummaryTests(TestCase):
             self.assertEqual(problems_by_status[0]['week'], 1)
             self.assertEqual(problems_by_status[0]['four_weeks'], 1)
             self.assertEqual(problems_by_status[0]['six_months'], 1)
+
+    def test_summary_page_gets_survey_data(self):
+        for url in self.urls:
+            resp = self.client.get(url)
+            issues_total = resp.context['issues_total']
+            self.assertEqual(issues_total['happy_service_true'], 3)
+            self.assertEqual(issues_total['happy_service_false'], 2)
+            self.assertEqual(issues_total['happy_outcome_true'], 4)
+            self.assertEqual(issues_total['happy_outcome_false'], 0)
+
+    def test_summary_page_gets_time_limit_data(self):
+        for url in self.urls:
+            resp = self.client.get(url)
+            issues_total = resp.context['issues_total']
+            self.assertEqual(issues_total['acknowledged_in_time_true'], 2)
+            self.assertEqual(issues_total['acknowledged_in_time_false'], 1)
+            self.assertEqual(issues_total['addressed_in_time_true'], 3)
+            self.assertEqual(issues_total['addressed_in_time_false'], 0)
 
 class OrganisationProblemsTests(TestCase):
 
