@@ -32,14 +32,14 @@
         {% if issues_total.happy_service != None %}
             <p class="brief">{{ issues_total.happy_service|percent }} of users happy with service</p>
         {% else %}
-            <p>No data on users happy with service</p>
+            <p class="brief">No data on users happy with service</p>
         {% endif %}
     </div>
     <div class="feature">
         {% if issues_total.happy_outcome != None %}
             <p class="brief">{{ issues_total.happy_outcome|percent }} of users happy with outcome</p>
         {% else %}
-            <p>No data on users happy with outcome</p>
+            <p class="brief">No data on users happy with outcome</p>
         {% endif %}
     </div>
 </div>
