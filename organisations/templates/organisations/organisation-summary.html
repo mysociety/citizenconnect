@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load url from future %}
+{% load organisation_extras %}
 {% block title %}{{ organisation.name }} :: Outcomes Summary{% endblock %}
 
 {% block bodyclasses %}organisation-summary{% endblock %}
@@ -77,11 +78,13 @@
                     <td>{{ problems_total.six_months }}</td>
                     <td class="separator">{{ problems_total.all_time }}</td>
                     {% if organisation.has_time_limits %}
-                        <td></td>
-                        <td class="separator"></td>
+                        <td>{{ problems_total|true_to_false_percent:'acknowledged_in_time' }}</td>
+                        <td class="separator">{{ problems_total|true_to_false_percent:'addressed_in_time' }}</td>
                     {% endif %}
-                    <td></td>
-                    <td></td>
+                    <td>{{ problems_total|true_to_false_percent:'happy_service' }}
+                    </td>
+                    <td>{{ problems_total|true_to_false_percent:'happy_outcome' }}
+                    </td>
                 </tr>
                 {% for status in problems_by_status %}
                 <tr>
@@ -92,11 +95,11 @@
                     <td>{{ status.six_months }}</td>
                     <td class="separator">{{ status.all_time }}</td>
                     {% if organisation.has_time_limits %}
-                        <td></td>
-                        <td class="separator"></td>
+                        <td>{{ status|true_to_false_percent:'acknowledged_in_time' }}</td>
+                        <td class="separator">{{ status|true_to_false_percent:'addressed_in_time' }}</td>
                     {% endif %}
-                    <td></td>
-                    <td></td>
+                    <td>{{ status|true_to_false_percent:'happy_service' }}</td>
+                    <td>{{ status|true_to_false_percent:'happy_outcome' }}</td>
                 </tr>
                 {% endfor %}
 
@@ -107,11 +110,11 @@
                     <td>{{ questions_total.six_months }}</td>
                     <td class="separator">{{ questions_total.all_time }}</td>
                     {% if organisation.has_time_limits %}
-                        <td></td>
-                        <td class="separator"></td>
+                        <td>{{ questions_total|true_to_false_percent:'acknowledged_in_time' }}</td>
+                        <td class="separator">{{ questions_total|true_to_false_percent:'addressed_in_time' }}</td>
                     {% endif %}
-                    <td></td>
-                    <td></td>
+                    <td>{{ questions_total|true_to_false_percent:'happy_service' }}</td>
+                    <td>{{ questions_total|true_to_false_percent:'happy_outcome' }}</td>
                 </tr>
                 {% for status in questions_by_status %}
                 <tr>
@@ -121,11 +124,11 @@
                     <td>{{ status.six_months }}</td>
                     <td class="separator">{{ status.all_time }}</td>
                     {% if organisation.has_time_limits %}
-                        <td></td>
-                        <td class="separator"></td>
+                        <td>{{ status|true_to_false_percent:'acknowledged_in_time' }}</td>
+                        <td class="separator">{{ status|true_to_false_percent:'addressed_in_time' }}</td>
                     {% endif %}
-                    <td></td>
-                    <td></td>
+                    <td>{{ status|true_to_false_percent:'happy_service' }}</td>
+                    <td>{{ status|true_to_false_percent:'happy_outcome' }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
