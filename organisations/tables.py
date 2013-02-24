@@ -43,13 +43,13 @@ class NationalSummaryTable(tables.Table):
 
 class MessageModelTable(tables.Table):
 
-    reference_number = tables.Column(verbose_name="Ref.")
+    reference_number = tables.Column(verbose_name="Ref.", order_by=("id"))
     created = tables.DateTimeColumn(verbose_name="Received")
     status = tables.Column()
     category = tables.Column(verbose_name='Category')
     happy_service = tables.BooleanColumn(verbose_name='Happy with service')
     happy_outcome = tables.BooleanColumn(verbose_name='Happy with outcome')
-    summary = tables.Column(verbose_name='Text snippet')
+    summary = tables.Column(verbose_name='Text snippet', order_by=("description"))
 
     def __init__(self, *args, **kwargs):
 
