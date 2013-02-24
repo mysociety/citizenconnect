@@ -889,6 +889,7 @@ button, input[type=submit] {
 
 .organisation-summary .tab-menu, .organisation-problems .tab-menu, .organisation-questions .tab-menu, .organisation-reviews .tab-menu {
   width: 100%;
+  padding: 0;
   list-style: none; }
   .organisation-summary .tab-menu .tab, .organisation-problems .tab-menu .tab, .organisation-questions .tab-menu .tab, .organisation-reviews .tab-menu .tab {
     float: left;
@@ -909,7 +910,8 @@ button, input[type=submit] {
   width: 50%; }
   .organisation-summary .hero .feature p, .summary .hero .feature p {
     min-height: 7em;
-    min-height: 4.5em;
+    min-height: 4.5em; }
+  .organisation-summary .hero .feature p.brief, .summary .hero .feature p.brief {
     min-height: 3.5em; }
 .organisation-summary .outcomes-options, .summary .outcomes-options {
   width: 100%; }

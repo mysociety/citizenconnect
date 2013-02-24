@@ -269,6 +269,7 @@ button, input[type=submit] {
 .organisation-summary, .organisation-problems, .organisation-questions, .organisation-reviews {
     .tab-menu {
         @include row();
+        padding: 0;
         list-style: none;
         .tab {
             @include column-full();
@@ -296,9 +297,12 @@ button, input[type=submit] {
                 @include respond-min($tablet-width) {
                     min-height: 4.5em;
                 }
-                @include respond-min($desktop-width) {
+            }
+            p.brief {
+             @include respond-min($desktop-width) {
                     min-height: 3.5em;
                 }
+
             }
         }
     }
