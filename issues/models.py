@@ -117,8 +117,12 @@ class Question(MessageModel):
 
     PREFIX = 'Q'
 
-    category = models.CharField(max_length=100, choices=CATEGORY_CHOICES, default='general', verbose_name='Please select the category that best describes your problem')
-    status = models.IntegerField(default=NEW, choices=STATUS_CHOICES)
+    category = models.CharField(max_length=100,
+                                choices=CATEGORY_CHOICES,
+                                default='general',
+                                db_index=True,
+                                verbose_name='Please select the category that best describes your problem')
+    status = models.IntegerField(default=NEW, choices=STATUS_CHOICES, db_index=True)
 
     @property
     def reference_number(self):
@@ -164,8 +168,12 @@ class Problem(MessageModel):
 
     PREFIX = 'P'
 
-    category = models.CharField(max_length=100, choices=CATEGORY_CHOICES, default='other', verbose_name='Please select the category that best describes your problem')
-    status = models.IntegerField(default=NEW, choices=STATUS_CHOICES)
+    category = models.CharField(max_length=100,
+                                choices=CATEGORY_CHOICES,
+                                default='other',
+                                db_index=True,
+                                verbose_name='Please select the category that best describes your problem')
+    status = models.IntegerField(default=NEW, choices=STATUS_CHOICES, db_index=True)
 
     @property
     def reference_number(self):
