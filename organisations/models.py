@@ -32,7 +32,7 @@ class Organisation(AuditedModel,geomodels.Model):
 
 class Service(AuditedModel):
     name = models.TextField()
-    service_code = models.TextField()
+    service_code = models.TextField(db_index=True)
     organisation = models.ForeignKey(Organisation, related_name='services')
 
     def __unicode__(self):
