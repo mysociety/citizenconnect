@@ -1,0 +1,44 @@
+@mixin data-table {
+    width: 100%;
+    border: 2px solid $font-color;
+    th {
+        font-size: $font-size * 0.85;
+        border-bottom: 2px solid $font-color;
+        &.heading {
+            font-size: $font-size * 1.25;
+        }
+        &.separator {
+            border-right: 2px solid $font-color;
+        }
+    }
+    tr {
+        border: 1px solid lighten($font-color, 75%);
+        &.separator {
+            border-top: 2px solid $font-color;
+        }
+    }
+    td {
+        font-size: $font-size * 0.85;
+        border: 1px solid lighten($font-color, 75%);
+        text-align: center;
+        &.heading {
+            width:25%;
+        }
+        &.separator {
+            border-right: 2px solid $font-color;
+        }
+    }
+}
+
+@mixin sorted-table {
+    th.orderable > a {
+        padding-right: 20px;
+        background: url(../images/arrow-inactive-up.png) right center no-repeat;
+    }
+    th.orderable.asc > a {
+        background-image: url(../images/arrow-active-up.png);
+    }
+    th.orderable.desc > a {
+        background-image: url(../images/arrow-active-down.png);
+    }
+}

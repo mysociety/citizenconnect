@@ -35,3 +35,5 @@ ORGANISATION_TYPES = [organisation_type for organisation_type, label in ORGANISA
 MAPIT_BASE_URL = config.get('MAPIT_BASE_URL')
 
 WGS_84 = 4326
+
+SITE_BASE_URL = config.get('SITE_BASE_URL')

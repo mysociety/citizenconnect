@@ -4,8 +4,7 @@ from django.test import TestCase
 from django.utils import simplejson as json
 
 from organisations.tests.lib import create_test_organisation, create_test_service
-from problems.models import Problem
-from questions.models import Question
+from issues.models import Problem, Question
 
 class APITests(TestCase):
 
@@ -94,7 +93,7 @@ class APITests(TestCase):
 
         content_json = json.loads(resp.content)
         errors = json.loads(content_json['errors'])
-        self.assertTrue(errors['source'], 'This field is required.')
+        self.assertEqual(errors['source'][0], 'This field is required.')
 
     def test_service_code_is_optional(self):
         problem_without_service = self.test_problem
@@ -106,7 +105,7 @@ class APITests(TestCase):
         expected_reference_number = '{0}{1}'.format(Problem.PREFIX, problem.id)
 
         content_json = json.loads(resp.content)
-        self.assertTrue(content_json['reference_number'], expected_reference_number)
+        self.assertEqual(content_json['reference_number'], expected_reference_number)
         self.assertIsNone(problem.service)
 
     def test_unknown_service_code_rejected(self):
@@ -117,7 +116,7 @@ class APITests(TestCase):
 
         content_json = json.loads(resp.content)
         errors = json.loads(content_json['errors'])
-        self.assertTrue(errors['service_code'], 'Sorry, that service is not recognised.')
+        self.assertEqual(errors['service_code'][0], 'Sorry, that service is not recognised.')
 
     def test_organisation_required(self):
         problem_without_organisation = self.test_problem
@@ -127,7 +126,7 @@ class APITests(TestCase):
 
         content_json = json.loads(resp.content)
         errors = json.loads(content_json['errors'])
-        self.assertTrue(errors['organisation'], 'This field is required.')
+        self.assertEqual(errors['organisation'][0], 'This field is required.')
 
     def test_unknown_organisation_rejected(self):
         problem_with_unknown_organisation = self.test_problem
@@ -137,7 +136,7 @@ class APITests(TestCase):
 
         content_json = json.loads(resp.content)
         errors = json.loads(content_json['errors'])
-        self.assertTrue(errors['organisation'], 'Sorry, that organisation is not recognised.')
+        self.assertEqual(errors['organisation'][0], 'Sorry, that organisation is not recognised.')
 
     def test_service_id_ignored(self):
         # Because we add an extra service_code field but don't exclude the
@@ -169,4 +168,4 @@ class APITests(TestCase):
 
         content_json = json.loads(resp.content)
         errors = json.loads(content_json['errors'])
-        self.assertTrue(errors['__all__'], 'You must provide either a phone number or an email address.')
+        self.assertEqual(errors['__all__'][0], 'You must provide either a phone number or an email address')

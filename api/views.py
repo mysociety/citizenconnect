@@ -2,8 +2,8 @@ from django.views.generic import CreateView
 from django.http import HttpResponse
 from django.utils import simplejson as json
 
-from problems.models import Problem
-from questions.models import Question
+from issues.models import Problem, Question
+
 from .forms import ProblemAPIForm, QuestionAPIForm
 
 class APIFormMixin(object):

@@ -7,8 +7,7 @@ from django.utils.timezone import utc
 from django.contrib.gis.geos import Point
 
 # App imports
-from problems.models import Problem
-from questions.models import Question
+from issues.models import Problem, Question
 
 from ..lib import interval_counts
 from ..models import Organisation, Service
@@ -68,17 +67,131 @@ def create_test_instance(model, attributes):
 
 class IntervalCountsTest(TestCase):
 
-    def setUp(self):
-        # Create a spread of problems over time
+    def create_problem(self, organisation, age, attributes={}):
         now = datetime.utcnow().replace(tzinfo=utc)
-        problem_ages = [3, 4, 5, 21, 22, 45]
-        for age in problem_ages:
-            created = now - timedelta(age)
-            problem = create_test_instance(Problem, {'created': created})
+        created = now - timedelta(age)
+        default_atts = {'created': created,
+                        'organisation': organisation}
+        default_atts.update(attributes)
+        return create_test_instance(Problem, default_atts)
 
-    def test_interval_counts(self):
-        problems = Problem.objects.all()
+    def setUp(self):
+        self.test_organisation = create_test_organisation({'ods_code': 'XXX999',
+                                                           'organisation_type': 'hospital'})
+        self.other_test_organisation = create_test_organisation({'ods_code': 'ABC222',
+                                                                 'name': 'Other Test Organisation',
+                                                                 'organisation_type': 'gppractices'})
+        self.test_org_injuries = create_test_service({"service_code": 'ABC123',
+                                                      "organisation_id": self.test_organisation.id})
+        # Create a spread of problems over time for two organisations
+        problem_ages = {3: {'acknowledged_in_time' : False, 'addressed_in_time': True},
+                        4: {'acknowledged_in_time' : True, 'addressed_in_time': False},
+                        5: {'happy_outcome': True, 'happy_service': True},
+                        21: {'happy_outcome': False},
+                        22: {'service_id': self.test_org_injuries.id},
+                        45: {'acknowledged_in_time' : True, 'addressed_in_time': False}}
+
+        for age, attributes in problem_ages.items():
+            self.create_problem(self.test_organisation, age, attributes)
+        other_problem_ages = {1: {},
+                              2: {},
+                              20: {},
+                              65: {},
+                              70: {}}
+        for age, attributes in other_problem_ages.items():
+            self.create_problem(self.other_test_organisation, age, attributes)
+
+    def test_organisation_interval_counts(self):
         expected_counts = {'week': 3,
                            'four_weeks': 5,
-                           'six_months': 6}
-        self.assertEqual(expected_counts, interval_counts(problems))
+                           'id': self.test_organisation.id,
+                           'name': 'Test Organisation',
+                           'ods_code': 'XXX999',
+                           'six_months': 6,
+                           'all_time': 6,
+                           'happy_outcome': 0.5,
+                           'happy_outcome_count': 2,
+                           'happy_service': 1.0,
+                           'happy_service_count': 1,
+                           'acknowledged_in_time': 0.66666666666666696,
+                           'acknowledged_in_time_count': 3,
+                           'addressed_in_time': 0.33333333333333298,
+                           'addressed_in_time_count': 3}
+
+        self.assertEqual(expected_counts, interval_counts(issue_type=Problem,
+                                                          filters={},
+                                                          organisation_id=self.test_organisation.id))
+
+    def test_overall_interval_counts(self):
+        expected_counts = [{'week': 2,
+                            'four_weeks': 3,
+                            'id': self.other_test_organisation.id,
+                            'name': 'Other Test Organisation',
+                            'ods_code': 'ABC222',
+                            'six_months': 5,
+                            'all_time': 5,
+                            'happy_outcome': None,
+                            'happy_outcome_count': 0,
+                            'happy_service': None,
+                            'happy_service_count': 0,
+                            'acknowledged_in_time': None,
+                            'acknowledged_in_time_count': 0,
+                            'addressed_in_time': None,
+                            'addressed_in_time_count': 0},
+                           {'week': 3,
+                           'four_weeks': 5,
+                           'id': self.test_organisation.id,
+                           'name': 'Test Organisation',
+                           'ods_code': 'XXX999',
+                           'six_months': 6,
+                           'all_time': 6,
+                           'happy_outcome': 0.5,
+                           'happy_outcome_count': 2,
+                           'happy_service': 1.0,
+                           'happy_service_count': 1,
+                           'acknowledged_in_time': 0.66666666666666696,
+                           'acknowledged_in_time_count': 3,
+                           'addressed_in_time': 0.33333333333333298,
+                           'addressed_in_time_count': 3}]
+        actual = interval_counts(issue_type=Problem, filters={})
+        self.assertEqual(expected_counts, actual)
+
+    def test_filter_by_service_code(self):
+        filters = {'service_code': 'ABC123'}
+        expected_counts = [{'week': 0,
+                           'four_weeks': 1,
+                           'id': self.test_organisation.id,
+                           'name': 'Test Organisation',
+                           'ods_code': 'XXX999',
+                           'six_months': 1,
+                           'all_time': 1,
+                           'happy_outcome': None,
+                           'happy_outcome_count': 0,
+                           'happy_service': None,
+                           'happy_service_count': 0,
+                           'acknowledged_in_time': None,
+                           'acknowledged_in_time_count': 0,
+                           'addressed_in_time': None,
+                           'addressed_in_time_count': 0}]
+        self.assertEqual(expected_counts, interval_counts(issue_type=Problem,
+                                                          filters=filters))
+
+    def test_filter_by_organisation_type(self):
+        filters = {'organisation_type': 'gppractices'}
+        expected_counts = [{'week': 2,
+                            'four_weeks': 3,
+                            'id': self.other_test_organisation.id,
+                            'name': 'Other Test Organisation',
+                            'ods_code': 'ABC222',
+                            'six_months': 5,
+                            'all_time': 5,
+                            'happy_outcome': None,
+                            'happy_outcome_count': 0,
+                            'happy_service': None,
+                            'happy_service_count': 0,
+                            'acknowledged_in_time': None,
+                            'acknowledged_in_time_count': 0,
+                            'addressed_in_time': None,
+                            'addressed_in_time_count': 0 }]
+        self.assertEqual(expected_counts, interval_counts(issue_type=Problem,
+                                                          filters=filters))

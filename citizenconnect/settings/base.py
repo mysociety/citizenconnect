@@ -129,14 +129,15 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.admindocs',
     'django.contrib.gis',
+    'django_tables2',
     'south',
     'pagination',
     'organisations',
-    'questions',
-    'problems',
+    'issues',
     'reviews',
     'moderation',
-    'api'
+    'api',
+    'responses'
 )
 
 # Log WARN and above to stderr; ERROR and above by email when DEBUG is False.

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load url from future %}
+{% load organisation_extras %}
 {% block title %}{{ organisation.name }} :: Outcomes Summary{% endblock %}
 
 {% block bodyclasses %}organisation-summary{% endblock %}
@@ -8,21 +9,52 @@
 <div class="header">
     <h1>{{ organisation.name }} Outcomes</h1>
 </div>
+{% include "organisations/includes/summary-tabs.html" with active_tab='summary' %}
+
 <div class="hero">
+    {% if organisation.has_time_limits  %}
     <div class="feature">
-        <p>96% of message responded to in time</p>
+        {% if issues_total.acknowledged_in_time != None %}
+            <p>{{ issues_total.acknowledged_in_time|percent }} of messages acknowledged in time</p>
+        {% else %}
+            <p>No data on messages acknowledged in time</p>
+        {% endif %}
     </div>
     <div class="feature">
-        <p>82% of users happy with service</p>
+        {% if issues_total.addressed_in_time != None %}
+            <p>{{ issues_total.addressed_in_time|percent }} of messages addressed in time</p>
+        {% else %}
+            <p>No data on messages addressed in time</p>
+        {% endif %}
+    </div>
+    {% endif %}
+    <div class="feature">
+        {% if issues_total.happy_service != None %}
+            <p class="brief">{{ issues_total.happy_service|percent }} of users happy with service</p>
+        {% else %}
+            <p class="brief">No data on users happy with service</p>
+        {% endif %}
+    </div>
+    <div class="feature">
+        {% if issues_total.happy_outcome != None %}
+            <p class="brief">{{ issues_total.happy_outcome|percent }} of users happy with outcome</p>
+        {% else %}
+            <p class="brief">No data on users happy with outcome</p>
+        {% endif %}
     </div>
 </div>
 <div class="outcomes-options">
     <form class="" action="{{ request.path }}">
+        {% if services %}
         <div class="feature">
             <select name="service">
-                <option>Department</option>
+                <option value="">Department</option>
+                {% for service in services %}
+                <option value="{{ service.id }}" {% if selected_service == service.id %}selected{% endif %}>{{ service.name }}</option>
+                {% endfor %}
             </select>
         </div>
+        {% endif %}
         <div class="feature">
             <select name="problems_category">
                 <option value="">Problem type</option>
@@ -52,9 +84,12 @@
                     <th class="heading separator">Message Type</th>
                     <th>Last 7 days</th>
                     <th>Last 4 weeks</th>
-                    <th class="separator">Last 6 months</th>
-                    <th>% Acknowledged in time</th>
-                    <th class="separator">% Addressed in time</th>
+                    <th>Last 6 months</th>
+                    <th class="separator">All time</th>
+                    {% if organisation.has_time_limits %}
+                        <th>% Acknowledged in time</th>
+                        <th class="separator">% Addressed in time</th>
+                    {% endif %}
                     <th>% Happy with service</th>
                     <th>% Happy with outcome</th>
                 </tr>
@@ -64,11 +99,16 @@
                     <td class="heading separator">Total Problems Reported<br/><em>of which:</em></td>
                     <td>{{ problems_total.week }}</td>
                     <td>{{ problems_total.four_weeks }}</td>
-                    <td class="separator">{{ problems_total.six_months }}</td>
-                    <td></td>
-                    <td class="separator"></td>
-                    <td></td>
-                    <td></td>
+                    <td>{{ problems_total.six_months }}</td>
+                    <td class="separator">{{ problems_total.all_time }}</td>
+                    {% if organisation.has_time_limits %}
+                        <td>{{ problems_total.acknowledged_in_time|percent }}</td>
+                        <td class="separator">{{ problems_total.addressed_in_time|percent }}</td>
+                    {% endif %}
+                    <td>{{ problems_total.happy_service|percent }}
+                    </td>
+                    <td>{{ problems_total.happy_outcome|percent }}
+                    </td>
                 </tr>
                 {% for status in problems_by_status %}
                 <tr>
@@ -76,11 +116,14 @@
                     <td class="heading separator">{{ status.description }}</td>
                     <td>{{ status.week }}</td>
                     <td>{{ status.four_weeks }}</td>
-                    <td class="separator">{{ status.six_months }}</td>
-                    <td></td>
-                    <td class="separator"></td>
-                    <td></td>
-                    <td></td>
+                    <td>{{ status.six_months }}</td>
+                    <td class="separator">{{ status.all_time }}</td>
+                    {% if organisation.has_time_limits %}
+                        <td>{{ status.acknowledged_in_time|percent }}</td>
+                        <td class="separator">{{ status.addressed_in_time|percent }}</td>
+                    {% endif %}
+                    <td>{{ status.happy_service|percent }}</td>
+                    <td>{{ status.happy_outcome|percent }}</td>
                 </tr>
                 {% endfor %}
 
@@ -88,91 +131,30 @@
                     <td class="heading separator">Total Questions Sent<br/><em>of which:</em></td>
                     <td>{{ questions_total.week }}</td>
                     <td>{{ questions_total.four_weeks }}</td>
-                    <td class="separator">{{ questions_total.six_months }}</td>
-                    <td></td>
-                    <td class="separator"></td>
-                    <td></td>
-                    <td></td>
+                    <td>{{ questions_total.six_months }}</td>
+                    <td class="separator">{{ questions_total.all_time }}</td>
+                    {% if organisation.has_time_limits %}
+                        <td>{{ questions_total.acknowledged_in_time|percent }}</td>
+                        <td class="separator">{{ questions_total.addressed_in_time|percent }}</td>
+                    {% endif %}
+                    <td>{{ questions_total.happy_service|percent }}</td>
+                    <td>{{ questions_total.happy_outcome|percent }}</td>
                 </tr>
                 {% for status in questions_by_status %}
                 <tr>
                     <td class="heading separator">{{ status.description }}</td>
                     <td>{{ status.week }}</td>
                     <td>{{ status.four_weeks}}</td>
-                    <td class="separator">{{ status.six_months }}</td>
-                    <td></td>
-                    <td class="separator"></td>
-                    <td></td>
-                    <td></td>
+                    <td>{{ status.six_months }}</td>
+                    <td class="separator">{{ status.all_time }}</td>
+                    {% if organisation.has_time_limits %}
+                        <td>{{ status.acknowledged_in_time|percent }}</td>
+                        <td class="separator">{{ status.addressed_in_time|percent }}</td>
+                    {% endif %}
+                    <td>{{ status.happy_service|percent }}</td>
+                    <td>{{ status.happy_outcome|percent }}</td>
                 </tr>
                 {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
-<div class="header">
-    <h2>Problem reports</h2>
-</div>
-<div class="problem-list">
-    <div class="feature">
-         <table>
-            <thead>
-                <tr>
-                    <th>Ref</th>
-                    <th>Received</th>
-                    <th>Status</th>
-                    <th>Type</th>
-                    <th>Department</th>
-                    <th>User satisfied?</th>
-                    <th>Text snippet</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for problem in problems %}
-                    <tr>
-                        <td>{{ problem.reference_number }}</td>
-                        <td>{{ problem.created }}</td>
-                        <td>{{ problem.get_status_display }}</td>
-                        <td>{{ problem.get_category_display }}</td>
-                        <td>{{ problem.service|default_if_none:"" }}</td>
-                        <td>TODO</td>
-                        <td><a href="{% if private %}{% url 'org-response-form' message_type='problem' pk=problem.id %}{% else %}{% url 'problem-view' cobrand=cobrand.name pk=problem.id %}{% endif %}">{{ problem.summary }}</a></td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
-<div class="header">
-    <h2>Questions</h2>
-</div>
-<div class="question-list">
-    <div class="feature">
-         <table>
-            <thead>
-                <tr>
-                    <th>Ref</th>
-                    <th>Received</th>
-                    <th>Status</th>
-                    <th>Type</th>
-                    <th>Department</th>
-                    <th>User satisfied?</th>
-                    <th>Text snippet</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for question in questions %}
-                <tr>
-                    <td>{{ question.reference_number }}</td>
-                    <td>{{ question.created }}</td>
-                    <td>{{ question.get_status_display }}</td>
-                    <td>{{ question.get_category_display }}</td>
-                    <td>{{ question.service|default_if_none:"" }}</td>
-                    <td>TODO</td>
-                    <td><a href="{% if private %}{% url 'org-response-form' message_type='question' pk=question.id %}{% else %}{% url 'question-view' cobrand=cobrand.name pk=question.id %}{% endif %}">{{ question.summary }}</a></td>
-                </tr>
-                {% endfor %}
-
             </tbody>
         </table>
     </div>
