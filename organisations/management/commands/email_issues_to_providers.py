@@ -46,7 +46,7 @@ class Command(BaseCommand):
         # problem and from a setting if it's a question
         mail.send_mail(subject='Care Connect: New {0}'.format(issue.issue_type),
                   message=template.render(context),
-                  from_email='no-reply@citizenconnect.mysociety.org',
+                  from_email=settings.DEFAULT_FROM_EMAIL,
                   recipient_list=['steve@mysociety.org'],
                   fail_silently=False)
 
