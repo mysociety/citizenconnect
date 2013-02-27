@@ -1,0 +1,33 @@
+/*
+==========================================
+  Island
+==========================================
+  
+A padded box with a grey background and rounded corners
+  
+------------------------------------------
+
+*/
+
+.island,
+.islet {
+    display: block;
+    clear: both;
+    background: $c-lightgrey;
+    @include vendor(border-radius, ($grid-gutter/2) + em);
+}
+.island {
+    padding: $grid-gutter + em;
+}
+    .island > :last-child,
+    .islet > :last-child {
+        margin-bottom: 0;
+    }
+
+
+/**
+ * Just like `.island`, only smaller.
+ */
+.islet {
+    padding: ($grid-gutter / 2) + em;
+}
