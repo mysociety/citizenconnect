@@ -36,7 +36,7 @@
     padding: ($grid-gutter/2) 0;
     
     @media( min-width: 60em ){
-        width: $page-width-max;
+        width: $page-width-max + em;
     }
 }
 
