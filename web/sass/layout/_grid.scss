@@ -50,6 +50,7 @@
      * The following declarations allow us to use the `.gw` class on lists.
      */
     list-style:none;
+    padding: 0;
     margin-bottom:0;
     @extend .cf;
 }
