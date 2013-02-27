@@ -10,3 +10,7 @@ $grid-gutter-pixel: 20px;
 $grid-gutter: $grid-gutter-pixel/$font-size-base;
 
 $grid-col_width:($page-width-max/$grid-column_count)-$grid-gutter;
+
+// responsive vars
+$lap-start:         481px;
+$desk-start:        1024px;
