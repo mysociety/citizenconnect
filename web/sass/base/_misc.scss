@@ -22,7 +22,7 @@ img {
 
 // Set box-sizing to border-box everywhere
 * {
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
+    @include vendor(box-sizing, border-box);
+    @include ie-7 { behavior: url(../boxsizing.htc); }
+    @include ie-8 { behavior: url(../boxsizing.htc); }
 }
