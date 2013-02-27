@@ -4,7 +4,7 @@
 
 fieldset {
     border: 0;
-    margin: 0;
+    margin: 0 0 ($grid-gutter * 2) + em 0;
     padding: 0;
 }
 
@@ -14,4 +14,29 @@ fieldset {
 
 textarea {
     resize: vertical;
+}
+
+
+/**
+ * force block all labels
+ */
+label,
+.label{
+    display:block;
+    font-weight: bold;
+}
+
+/**
+ * For use in side things like labels
+ */
+.additional {
+  font-weight: normal;
+}
+
+/**
+ * Text inputs
+ */
+.text-input,
+textarea {
+  width: 100%;
 }
