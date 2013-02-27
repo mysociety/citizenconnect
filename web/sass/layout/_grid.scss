@@ -1,147 +1,98 @@
-/*
-==========================================
-	Grid.scss 
-==========================================
-	
-	Desktop: 960px+
-	
-	a grid for screens large enough to show it.
-	
-	12 Columns of 5em/80px (with 0.625em/10px padding included, equivilant to a 1.25em/20px gutter).
-	Can be broken into 1,2,3,4,6,12 columns.
-	
-	16 Columns of 5em/80px (with 0.625em/10px padding included, equivilant to a 1.25em/20px gutter).
-	Can be broken into 1,2,3,4,6,12 columns.
-	
-	24 Columns of 5em/80px (with 0.625em/10px padding included, equivilant to a 1.25em/20px gutter).
-	Can be broken into 1,2,3,4,6,12 columns.
-	
-	use: @include grid-1-of-3   or   @include grid-container
-	
-------------------------------------------
+/*------------------------------------*\
+    $GRIDS
+\*------------------------------------*/
+/**
+ * From inuit.css (https://github.com/csswizardry/inuit.css/)
+ *
+ * Fluid and nestable grid system, e.g.:
+ *
+   <div class=gw>
 
-*/
+       <div class="g  one-third">
+           <p>One third grid</p>
+       </div>
 
-.grid-full{
-    width: 100%;
-    clear:both;
-    float:left;
-}
+       <div class="g  two-thirds">
+           <p>Two thirds grid</p>
+       </div>
 
-.grid-container{
-    margin: 0 auto;
-    clear:both;
-    width: 100%;
-    max-width:100%;
-    padding: ($grid-gutter/2) 0;
-    
-    @media( min-width: 60em ){
-        width: $page-width-max + em;
-    }
-}
+       <div class="g  one-half">
+           <p>One half grid</p>
+       </div>
 
-.grid{
-    display:block;
-    margin: 0;
-    float:left;
-    max-width:100%;
-    padding: $grid-gutter/2;
-}
-.grid-no_gutter{
-    padding: 0;
-}
-.grid-gutter_v{
-    padding: $grid-gutter/2 0;
-}
-.grid-gutter_h{
-    padding: 0 $grid-gutter/2;
-}
+       <div class="g  one-quarter">
+           <p>One quarter grid</p>
+       </div>
 
-$i: $grid-column_count;
-@while $i > 0 {
-    .grid-#{$i}-of-#{$grid-column_count}{
-        @extend .grid;
-        width: ($page-width-max / $grid-column_count) * $i;
-        
-    }
-    $i: $i - 1;
-}
+       <div class="g  one-quarter">
+           <p>One quarter grid</p>
+       </div>
 
-
-
-
-
-
+   </div>
+ *
+ * Demo: jsfiddle.net/inuitcss/CLYUC
+ *
+ */
 
 
 /**
- * Layout
- * Mixins to enable us to have a grid-like layout in the form that we want
-
-
-// Make sure they also divide evenly between your chosen number of columns
-$mobile-width: 25em !default;
-$tablet-width: 45em !default;
-$desktop-width: 60em !default;
-// Column padding added to left and right of columns
-$column-padding: 10px !default;
-
-
-// Grid wrapper
-@mixin grid() {
-    margin: 0 auto;
-
-    // Fix the max-width of the grid, to center it
-    max-width: $mobile-width;
-
-    @include respond-min($tablet-width) {
-        max-width: $tablet-width;
-    }
-
-    @include respond-min($desktop-width) {
-        max-width: $desktop-width;
-    }
-}
-
-// Row in a grid
-@mixin row {
-    @extend .clearfix;
-    width:100%;
-}
-
-@mixin column {
-    // Columns float
-    float: left;
-    padding:0 $column-padding;
-}
-
-// Full-width columns
-@mixin column-full {
-    @include column();
-    width: 100%;
-}
-
-// Half-width columns
-@mixin column-half {
-    @include column();
-    width: 50%;
-}
-
-// Third-width columns
-@mixin column-third {
-    @include column();
-    width: 33.33%;
-}
-
-// Two third-width columns
-@mixin column-two-thirds {
-    @include column();
-    width: 66.66%;
-}
-
-// Quarter-width columns
-@mixin column-quarter {
-    @include column();
-    width: 25%;
-}
+ * Grid wrapper
+ *
+ * Shorthand and verbose
  */
+.gw,
+.grid-wrapper{
+    /**
+     * Negative margin to negate the padding on the first grid child.
+     */
+    margin-left:-$grid-gutter-pixel;
+    /**
+     * The following declarations allow us to use the `.gw` class on lists.
+     */
+    list-style:none;
+    margin-bottom:0;
+    @extend .cf;
+}
+
+
+/**
+ * Reverse grid order
+ *
+   <div class="gw  gw--rev">
+
+       <div class="g  one-third">
+           <p>Appears on the right</p>
+       </div>
+
+       <div class="g  two-thirds">
+           <p>Appears on the left</p>
+       </div>
+
+   </div>
+ *
+ */
+.gw--rev .g,
+.grid-wrapper--rev .grid{
+    float:right;
+}
+
+
+    /**
+     * Very infrequently occuring grid wrappers as children of grid wrappers.
+     */
+    .gw > .gw,
+    .grid-wrapper > .grid-wrapper{
+        margin-left:0;
+    }
+
+
+    /**
+     * Grid
+     *
+     * Shorthand and verbose
+     */
+    .g,
+    .grid{
+        float:left;
+        padding-left:$grid-gutter-pixel;
+    }
