@@ -1,18 +1,17 @@
-/*
-==========================================
+/*------------------------------------*\
   Island
-==========================================
-  
-A padded box with a grey background and rounded corners
-  
-------------------------------------------
+\*------------------------------------*/
 
-*/
+/**
+ * From inuit.css (https://github.com/csswizardry/inuit.css/)
+ *
+ * A padded box with a grey background and rounded corners
+ */
 
 .island,
 .islet {
     display: block;
-    clear: both;
+    @extend .cf;
     background: $c-lightgrey;
     @include vendor(border-radius, ($grid-gutter/2) + em);
 }
