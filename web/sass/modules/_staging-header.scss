@@ -1,0 +1,8 @@
+#staging_header {
+  @extend .grid-container;
+  display: block;
+  padding: $grid-gutter + em;
+  background: $c-nhs_blue;
+  color: $c-white;
+  text-align: center;
+}
