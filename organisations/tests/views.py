@@ -6,6 +6,7 @@ import urllib
 # Django imports
 from django.test import TestCase
 from django.contrib.gis.geos import Point
+from django.core.urlresolvers import reverse
 
 # App imports
 from issues.models import Problem, Question
@@ -312,6 +313,7 @@ class OrganisationMapTests(TestCase):
         })
         self.gp = create_test_organisation({'organisation_type':'gppractices'})
         self.map_url = '/choices/stats/map'
+        self.private_map_url = '/private/map'
 
     def test_map_page_exists(self):
         resp = self.client.get(self.map_url)
@@ -323,9 +325,11 @@ class OrganisationMapTests(TestCase):
         response_json = json.loads(resp.context['organisations'])
         self.assertEqual(len(response_json), 2)
         self.assertEqual(response_json[0]['ods_code'], self.hospital.ods_code)
-        self.assertEqual(response_json[0]['issues'], [])
+        self.assertEqual(response_json[0]['questions'], [])
+        self.assertEqual(response_json[0]['problems'], [])
         self.assertEqual(response_json[1]['ods_code'], self.gp.ods_code)
-        self.assertEqual(response_json[1]['issues'], [])
+        self.assertEqual(response_json[1]['questions'], [])
+        self.assertEqual(response_json[1]['problems'], [])
 
     def test_problems_and_questions_in_json(self):
         # Add some problem and questions into the db
@@ -335,19 +339,53 @@ class OrganisationMapTests(TestCase):
         create_test_instance(Question, {'organisation': self.hospital})
         resp = self.client.get(self.map_url)
         response_json = json.loads(resp.context['organisations'])
-        self.assertEqual(len(response_json[0]['issues']), 2)
-        self.assertEqual(len(response_json[1]['issues']), 2)
+
+        self.assertEqual(len(response_json[0]['questions']), 1)
+        self.assertEqual(len(response_json[0]['problems']), 1)
+
+        self.assertEqual(len(response_json[1]['questions']), 1)
+        self.assertEqual(len(response_json[1]['problems']), 1)
 
     def test_closed_problems_not_in_json(self):
         create_test_instance(Problem, {'organisation': self.hospital})
+
         create_test_instance(Problem, {'organisation': self.gp, 'status': Problem.RESOLVED})
         create_test_instance(Problem, {'organisation': self.gp, 'status': Problem.NOT_RESOLVED})
         create_test_instance(Question, {'organisation': self.gp})
         create_test_instance(Question, {'organisation': self.gp, 'status':Question.RESOLVED})
+
         resp = self.client.get(self.map_url)
         response_json = json.loads(resp.context['organisations'])
-        self.assertEqual(len(response_json[0]['issues']), 1)
-        self.assertEqual(len(response_json[1]['issues']), 1)
+
+        self.assertEqual(len(response_json[0]['questions']), 0)
+        self.assertEqual(len(response_json[0]['problems']), 1)
+
+        self.assertEqual(len(response_json[1]['problems']), 0)
+        self.assertEqual(len(response_json[1]['questions']), 1)
+
+    def test_public_map_provider_urls_are_to_public_summary_pages(self):
+        expected_hospital_url = reverse('public-org-summary', kwargs={'ods_code':self.hospital.ods_code, 'cobrand':'choices'})
+        expected_gp_url = reverse('public-org-summary', kwargs={'ods_code':self.gp.ods_code, 'cobrand':'choices'})
+
+        resp = self.client.get(self.map_url)
+        response_json = json.loads(resp.context['organisations'])
+
+        self.assertEqual(response_json[0]['url'], expected_hospital_url)
+        self.assertEqual(response_json[1]['url'], expected_gp_url)
+
+    def test_private_map_page_exists(self):
+        resp = self.client.get(self.private_map_url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_private_map_provider_urls_are_to_private_dashboards(self):
+        expected_hospital_url = reverse('org-dashboard', kwargs={'ods_code':self.hospital.ods_code})
+        expected_gp_url = reverse('org-dashboard', kwargs={'ods_code':self.gp.ods_code})
+
+        resp = self.client.get(self.private_map_url)
+        response_json = json.loads(resp.context['organisations'])
+
+        self.assertEqual(response_json[0]['url'], expected_hospital_url)
+        self.assertEqual(response_json[1]['url'], expected_gp_url)
 
 class SummaryTests(TestCase):
 
