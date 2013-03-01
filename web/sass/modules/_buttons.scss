@@ -1,0 +1,16 @@
+.btn {
+    cursor: pointer;
+    border: 1px solid $c-black;
+    display: inline-block;
+    margin: 0;
+    line-height: 1;
+    padding: 0.5em;
+    text-decoration:none;
+    color: $c-white;
+    background: $c-aquablue;
+    @include vendor(border-radius, ($grid-gutter / 10) + em);
+    &:hover {
+        background: $c-lightaquablue;
+        color: $c-black;
+    }
+}

@@ -4,29 +4,29 @@
  * This is the descriptive name of the colour e.g. $c-green
  * Colour Assignment is in _colour-assignment.scss
  */
- 
+
  /*
- 
+
  Where possible assign colours to another variable rather than using them directly. This keeps the colour names descriptive and the assignment logical. For example:
- 
+
  $link-colour: $c-nhs_blue;
  a{
  color: $link-colour;
  }
 
  Now if we wanted to change the colour of links to green we can just change the assignment without ending up with a $c-nhs_blue that is actually green.
- 
+
  $link-colour: $c-nhs_green;
  a{
  color: $link-colour;
- } 
- 
+ }
+
  */
- 
- 
- 
- 
- 
+
+
+
+
+
 // -----------------------------
 //  NHS Palette
 // -----------------------------
@@ -36,7 +36,9 @@ $c-nhs_blue: rgb(0,114,198);
 $c-black: #222222;
 $c-white: #ffffff;
 $c-lightgrey: #f2f2f2;
- 
+$c-aquablue: #2f9aa8;
+$c-lightaquablue: #badde2;
+
 // Secondary Colours
 $c-nhs_darkgreen: rgb(0,107,84);
 $c-nhs_green: rgb(0,158,73);
