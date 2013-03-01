@@ -23,9 +23,15 @@
 }
 
 
+// for horizontal scrolling tables on mobile
+.table-wrapper { overflow: auto; }
+
+
 .outcomes-table {
   width: 100%;
   margin-bottom: ($grid-gutter * 2) + em;
+  // force table to be 960px wide on mobile, as inside the table-wrapper
+  @include media-query(palm){ width: $page-width-max + em; }
   tr {
     &.outcomes-table__heading { font-weight: bold; }
     &.outcomes-table__footer td { border-bottom: $c-grey solid 2px; }
