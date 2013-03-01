@@ -82,16 +82,22 @@
         font-size: 14px;
       }
     }
-
     address {
       font-size: 12px;
       width: 30%;
       float: left;
+      margin-top: 10px;
     }
     .results-list__more-link {
+      font-size: 44px;
       width: 10%;
       float: right;
       text-align: right;
+      text-decoration: none;
+      color: $c-grey;
+      &:hover {
+        color: $c-darkgrey;
+      }
     }
   }
 }
