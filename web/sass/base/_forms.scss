@@ -40,3 +40,35 @@ label,
 textarea {
   width: 100%;
 }
+
+
+
+/**
+ * Radio groups
+ */
+
+.big-radio-group {
+  display: table;
+  ul { display: table-row; }
+  li {
+    display: table-cell;
+    padding: 0;
+    background: $c-lightgrey;
+    border-left: ($grid-gutter / 2) + em solid $c-white;
+    width: 33%;
+    vertical-align: middle;
+    &.big-radio-group__first {
+      border-left: none;
+      @include vendor(border-radius, ($grid-gutter/2) + em 0 0 ($grid-gutter/2) + em);
+    }
+    &.big-radio-group__last {
+      @include vendor(border-radius, 0 ($grid-gutter/2) + em ($grid-gutter/2) + em 0);
+    }
+    &:hover {
+      background: $c-nhs_blue;
+      cursor: pointer;
+      label { cursor: pointer; }
+    }
+  }
+  label { padding: ($grid-gutter + em); }
+}
