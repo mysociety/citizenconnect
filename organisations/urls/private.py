@@ -21,4 +21,6 @@ urlpatterns = patterns('',
             name='private-org-reviews',
             kwargs={'private': True}),
 
+    url(r'^map$', Map.as_view(), name='private-map', kwargs={'private': True}),
+
 )

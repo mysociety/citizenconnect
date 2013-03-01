@@ -242,8 +242,8 @@ button, input[type=submit] {
     .map-container {
         @include row();
         @include column-full();
-        #public-map {
-            height: 400px;
+        #map {
+            height: 500px;
         }
     }
 

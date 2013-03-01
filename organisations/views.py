@@ -22,6 +22,20 @@ from .lib import interval_counts
 from .models import Organisation
 from .tables  import NationalSummaryTable, MessageModelTable, ExtendedMessageModelTable
 
+class PrivateViewMixin(object):
+    """
+    Mixin for views which live at both /private urls and other
+    urls, and need to know which is currently being requested.
+    """
+
+    def get_context_data(self, **kwargs):
+        context = super(PrivateViewMixin, self).get_context_data(**kwargs)
+        if 'private' in kwargs and kwargs['private'] == True:
+            context['private'] = True
+        else:
+            context['private'] = False
+        return context
+
 class OrganisationAwareViewMixin(object):
     """Mixin class for views which need to have a reference to a particular
     organisation, such as problem and question forms."""
@@ -59,20 +73,15 @@ class OrganisationIssuesAwareViewMixin(object):
         context['issues'] = issues
         return context
 
-class MessageListMixin(object):
+class MessageListMixin(PrivateViewMixin):
     """Mixin class for views which need to display a list of issues belonging to an organisation
        in either a public or private context"""
 
     def get_context_data(self, **kwargs):
         context = super(MessageListMixin, self).get_context_data(**kwargs)
-        if 'private' in kwargs and kwargs['private'] == True:
-            private = True
-        else:
-            private = False
-        context['private'] = private
-        table_args = {'private': private,
+        table_args = {'private': context['private'],
                       'message_type': self.message_type}
-        if not private:
+        if not context['private']:
             table_args['cobrand'] = kwargs['cobrand']
         organisation = Organisation.objects.get(ods_code=self.kwargs['ods_code'])
         if organisation.has_services() and organisation.has_time_limits():
@@ -84,7 +93,7 @@ class MessageListMixin(object):
         context['issue_table'] = issue_table
         return context
 
-class Map(TemplateView):
+class Map(PrivateViewMixin, TemplateView):
     template_name = 'organisations/map.html'
 
     def get_context_data(self, **kwargs):
@@ -93,9 +102,9 @@ class Map(TemplateView):
         # TODO - Filter by location
         organisations = Organisation.objects.all()
 
-        # TODO - should be able to serialize the organisations list directly
-        # but that'll need some jiggling with the serializers to get the
-        # open issues in too
+        # TODO - check the user has access to the map (ie: is a superuser)
+        # when the user accounts work is merged in (after the expo)
+
         organisations_list = []
         for organisation in organisations:
             organisation_dict = {}
@@ -103,15 +112,29 @@ class Map(TemplateView):
             organisation_dict['name'] = organisation.name
             organisation_dict['lon'] = organisation.point.coords[0]
             organisation_dict['lat'] = organisation.point.coords[1]
+
+            # If we're showing the private map, link to the organisation's dashboard
+            if context['private']:
+                organisation_dict['url'] = reverse('org-dashboard', kwargs={'ods_code':organisation.ods_code})
+            else :
+                organisation_dict['url'] = reverse('public-org-summary', kwargs={'ods_code':organisation.ods_code, 'cobrand':kwargs['cobrand']})
+
             if organisation.organisation_type == 'gppractices':
                 organisation_dict['type'] = "GP"
             elif organisation.organisation_type == 'hospitals':
                 organisation_dict['type'] = "Hospital"
             else :
                 organisation_dict['type'] = "Unknown"
-            organisation_dict['issues'] = []
-            for issue in organisation.open_issues:
-                organisation_dict['issues'].append(escape(issue.description))
+
+            # TODO - use context['private'] to filter issues to public or private only
+            # when we have that work merged in (after the expo)
+            organisation_dict['questions'] = []
+            for question in organisation.question_set.open_questions():
+                organisation_dict['questions'].append(escape(question.description))
+            organisation_dict['problems'] = []
+            for problem in organisation.problem_set.open_problems():
+                organisation_dict['problems'].append(escape(problem.description))
+
             organisations_list.append(organisation_dict)
 
         # Make it into a JSON string
