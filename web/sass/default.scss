@@ -1,5 +1,3 @@
-
-
 @import 'theme-config/default/default';
 
 @import 'helpers/helpers';
@@ -7,3 +5,45 @@
 @import 'layout/layout';
 @import 'modules/modules';
 @import 'print/print';
+
+
+.header {
+  border-bottom: $c-grey solid ($grid-gutter / 5) + em;
+  margin-bottom: $grid-gutter + em;
+  h1, h2 { margin-bottom: 0.25em; }
+}
+
+
+.filters {
+  border-top: $c-grey solid ($grid-gutter / 5) + em;
+  border-bottom: $c-grey solid ($grid-gutter / 5) + em;
+  padding: ($grid-gutter / 2) + em 0;
+  margin: ($grid-gutter * 2) + em 0;
+  p { margin: 0; }
+}
+
+
+.outcomes-table {
+  width: 100%;
+  margin-bottom: ($grid-gutter * 2) + em;
+  tr {
+    &.outcomes-table__heading { font-weight: bold; }
+    &.outcomes-table__footer td { border-bottom: $c-grey solid 2px; }
+  }
+  td {
+    text-align: center;
+    border-bottom: $c-grey solid 1px;
+    padding: 10px 0;
+    &.outcomes-table__label { text-align: left; }
+  }
+  th {
+    font-weight: normal;
+    padding: 20px 0;
+    border-bottom: $c-grey solid 2px;
+    &.outcomes-table__title {
+      font-weight: bold;
+      text-align: left;
+      font-size: $font-size-base * 1.3125; // 21px
+    }
+  }
+}

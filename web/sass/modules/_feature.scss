@@ -1,0 +1,18 @@
+/**
+ * Big number with small text
+ */
+.feature {
+  padding: 0 ($grid-gutter * 4) + em;
+  font-weight: bold;
+  .feature__num {
+    display: block;
+    float: left;
+    font-size: $font-size-base * 3.125;
+    margin-right: ($grid-gutter / 3.125) + em;
+    @include media-query(portable){ float: none; }
+  }
+  .feature__text {
+    display: block;
+    margin-top: ($grid-gutter / 1.5) + em;
+  }
+}
