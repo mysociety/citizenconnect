@@ -26,7 +26,17 @@
         {% if settings.DEBUG == True %}
         <div id="staging_header">This is a staging site &ndash; any data saved here <strong>may be deleted</strong>.</div>
         {% endif %}
+
+
         <div id="container">
+              {% if cobrand %}
+                  {% if cobrand.name == 'myhealthlondon' %}
+                 <div id="banner" >
+                     <a id="site-logo" href="http://www.myhealth.london.nhs.uk">MyHealthLondon</a>
+                 </div>
+                 {% endif %}
+              {% endif %}
+
             {% block content %}
             {% endblock %}
         </div>
