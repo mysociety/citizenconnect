@@ -26,40 +26,6 @@
 }
 
 
-// for horizontal scrolling tables on mobile
-.table-wrapper { overflow: auto; }
-
-
-.outcomes-table {
-  width: 100%;
-  margin-bottom: ($grid-gutter * 2) + em;
-  // force table to be 960px wide on mobile, as inside the table-wrapper
-  @include media-query(palm){ width: $page-width-max + em; }
-  tr {
-    &.outcomes-table__heading { font-weight: bold; }
-    &.outcomes-table__footer td { border-bottom: $c-grey solid 2px; }
-  }
-  td {
-    font-size: 0.75em; //12px
-    text-align: center;
-    border-bottom: $c-grey solid 1px;
-    padding: 10px 0;
-    &.outcomes-table__label { text-align: left; }
-  }
-  th {
-    font-size: 0.75em; //12px
-    font-weight: normal;
-    padding: 20px 10px;
-    border-bottom: $c-grey solid 2px;
-    &.outcomes-table__title {
-      font-weight: bold;
-      text-align: left;
-      padding-left: 0;
-      font-size: 1.3125em; // 21px
-    }
-  }
-}
-
 
 .results-list {
   list-style:none;
