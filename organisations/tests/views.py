@@ -263,31 +263,6 @@ class OrganisationProblemsTests(TestCase):
         resp = self.client.get(self.private_hospital_problems_url)
         self.assertTrue('/private/response/problem/%s' % self.staff_problem.id in resp.content)
 
-class OrganisationQuestionsTest(TestCase):
-
-    def setUp(self):
-        self.organisation = create_test_organisation()
-        self.public_questions_url = '/choices/stats/questions/%s' % self.organisation.ods_code
-        self.private_questions_url = '/private/questions/%s' % self.organisation.ods_code
-        self.general_question = create_test_instance(Question, {'category': 'general',
-                                                            'organisation': self.organisation})
-
-    def test_public_page_exists(self):
-        resp = self.client.get(self.public_questions_url)
-        self.assertEqual(resp.status_code, 200)
-
-    def test_public_page_links_to_public_questions(self):
-        resp = self.client.get(self.public_questions_url)
-        self.assertContains(resp, '/choices/question/%s' % self.general_question.id )
-
-    def test_private_page_exists(self):
-        resp = self.client.get(self.private_questions_url)
-        self.assertEqual(resp.status_code, 200)
-
-    def test_private_page_links_to_questions(self):
-        resp = self.client.get(self.private_questions_url)
-        self.assertTrue('/private/response/question/%s' % self.general_question.id in resp.content)
-
 class OrganisationDashboardTests(TestCase):
 
     def setUp(self):
@@ -347,7 +322,6 @@ class OrganisationMapTests(TestCase):
 
     def test_closed_problems_not_in_json(self):
         create_test_instance(Problem, {'organisation': self.hospital})
-
         create_test_instance(Problem, {'organisation': self.gp, 'status': Problem.RESOLVED})
         create_test_instance(Problem, {'organisation': self.gp, 'status': Problem.NOT_RESOLVED})
 

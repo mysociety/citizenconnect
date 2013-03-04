@@ -225,14 +225,6 @@ class OrganisationProblems(MessageListMixin,
     def get_issues(self, organisation):
         return organisation.problem_set.all()
 
-class OrganisationQuestions(MessageListMixin,
-                            TemplateView):
-    template_name = 'organisations/organisation-questions.html'
-    message_type = 'question'
-
-    def get_issues(self, organisation):
-        return organisation.question_set.all()
-
 class OrganisationReviews(OrganisationAwareViewMixin,
                           TemplateView):
     template_name = 'organisations/organisation-reviews.html'
