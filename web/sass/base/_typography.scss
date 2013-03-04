@@ -24,9 +24,11 @@ body {
 ::-moz-selection {
     background: $c-selection-color;
     text-shadow: none;
+    color: $c-body-text;
 }
 
 ::selection {
     background: $c-selection-color;
     text-shadow: none;
+    color: $c-body-text;
 }
