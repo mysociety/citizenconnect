@@ -15,14 +15,14 @@
     {% if organisation.has_time_limits  %}
     <div class="feature">
         {% if issues_total.average_time_to_acknowledge != None %}
-            <p>Average time to acknowledge: {{ issues_total.average_time_to_acknowledge }} </p>
+            <p>Average days to acknowledge: {{ issues_total.average_time_to_acknowledge|formatted_time_interval }} </p>
         {% else %}
             <p>No data on time taken to acknowledge problems</p>
         {% endif %}
     </div>
     <div class="feature">
         {% if issues_total.average_time_to_address != None %}
-            <p>Average time to address: {{ issues_total.average_time_to_address }} </p>
+            <p>Average days to address: {{ issues_total.average_time_to_address|formatted_time_interval }} </p>
         {% else %}
             <p>No data on time taken to address problems</p>
         {% endif %}
@@ -79,8 +79,8 @@
                     <th>Last 6 months</th>
                     <th class="separator">All time</th>
                     {% if organisation.has_time_limits %}
-                        <th>Average time to acknowledge</th>
-                        <th class="separator">Average time to address</th>
+                        <th>Average days to acknowledge</th>
+                        <th class="separator">Average days to address</th>
                     {% endif %}
                     <th>% Happy with service</th>
                     <th>% Happy with outcome</th>
@@ -94,8 +94,8 @@
                     <td>{{ problems_total.six_months }}</td>
                     <td class="separator">{{ problems_total.all_time }}</td>
                     {% if organisation.has_time_limits %}
-                        <td>{{ problems_total.average_time_to_acknowledge|default:"-" }}</td>
-                        <td class="separator">{{ problems_total.average_time_to_address|default:"-" }}</td>
+                        <td>{{ problems_total.average_time_to_acknowledge|formatted_time_interval }}</td>
+                        <td class="separator">{{ problems_total.average_time_to_address|formatted_time_interval }}</td>
                     {% endif %}
                     <td>{{ problems_total.happy_service|percent }}
                     </td>
@@ -111,8 +111,8 @@
                     <td>{{ status.six_months }}</td>
                     <td class="separator">{{ status.all_time }}</td>
                     {% if organisation.has_time_limits %}
-                        <td>{{ status.average_time_to_acknowledge|default:"-" }}</td>
-                        <td class="separator">{{ status.average_time_to_address|default:"-" }}</td>
+                        <td>{{ status.average_time_to_acknowledge|formatted_time_interval }}</td>
+                        <td class="separator">{{ status.average_time_to_address|formatted_time_interval }}</td>
                     {% endif %}
                     <td>{{ status.happy_service|percent }}</td>
                     <td>{{ status.happy_outcome|percent }}</td>

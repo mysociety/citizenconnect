@@ -9,6 +9,9 @@ from issues.models import Problem
 def percent():
     return """{% load organisation_extras %}{{value|percent}}"""
 
+def formatted_time_interval():
+    return """{% load organisation_extras %}{{value|formatted_time_interval}}"""
+
 class NationalSummaryTable(tables.Table):
 
     def __init__(self, *args, **kwargs):
@@ -24,8 +27,10 @@ class NationalSummaryTable(tables.Table):
     four_weeks = tables.Column(verbose_name='Last 4 weeks')
     six_months = tables.Column(verbose_name='Last 6 months')
     all_time = tables.Column(verbose_name='All time', attrs=sep_atts)
-    average_time_to_acknowledge = tables.Column(verbose_name='Average time to acknowledge')
-    average_time_to_address = tables.Column(verbose_name='Average time to address',
+    average_time_to_acknowledge = tables.TemplateColumn(verbose_name='Average time to acknowledge (days)',
+                                                template_code=formatted_time_interval())
+    average_time_to_address = tables.TemplateColumn(verbose_name='Average time to address (days)',
+                                            template_code=formatted_time_interval(),
                                             attrs=sep_atts)
     happy_service = tables.TemplateColumn(verbose_name='% Happy with service',
                                           template_code=percent())
@@ -73,8 +78,10 @@ class MessageModelTable(tables.Table):
 class ExtendedMessageModelTable(MessageModelTable):
 
     service = tables.Column(verbose_name='Department')
-    time_to_acknowledge = tables.BooleanColumn(verbose_name='Time to acknowledge')
-    time_to_address = tables.BooleanColumn(verbose_name='Time to address')
+    time_to_acknowledge = tables.TemplateColumn(verbose_name='Time to acknowledge (days)',
+                                                template_code=formatted_time_interval())
+    time_to_address = tables.TemplateColumn(verbose_name='Time to address (days)',
+                                            template_code=formatted_time_interval())
 
     class Meta:
         sequence = ('reference_number',
