@@ -86,6 +86,21 @@ textarea {
  * Radio groups
  */
 
+.radio-list {
+  @extend .gw;
+  li {
+    @extend .g;
+    width: 25%;
+    @include media-query(portable){ width: 33.333%; }
+    @include media-query(palm){ width: 50%; }
+    label {
+      font-weight: normal;
+      font-size: 0.875em; //14px
+      input { font-size: 1.14285714285714em; } //16px;
+    }
+  }
+}
+
 .big-radio-group {
   display: table;
   ul { display: table-row; }
