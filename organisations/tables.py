@@ -24,11 +24,9 @@ class NationalSummaryTable(tables.Table):
     four_weeks = tables.Column(verbose_name='Last 4 weeks')
     six_months = tables.Column(verbose_name='Last 6 months')
     all_time = tables.Column(verbose_name='All time', attrs=sep_atts)
-    acknowledged_in_time = tables.TemplateColumn(verbose_name='% Acknowledged in time',
-                                                 template_code=percent())
-    addressed_in_time = tables.TemplateColumn(verbose_name='% Addressed in time',
-                                              template_code=percent(),
-                                              attrs=sep_atts)
+    average_time_to_acknowledge = tables.Column(verbose_name='Average time to acknowledge')
+    average_time_to_address = tables.Column(verbose_name='Average time to address',
+                                            attrs=sep_atts)
     happy_service = tables.TemplateColumn(verbose_name='% Happy with service',
                                           template_code=percent())
     happy_outcome = tables.TemplateColumn(verbose_name='% Happy with outcome',
@@ -75,8 +73,8 @@ class MessageModelTable(tables.Table):
 class ExtendedMessageModelTable(MessageModelTable):
 
     service = tables.Column(verbose_name='Department')
-    acknowledged_in_time = tables.BooleanColumn(verbose_name='Acknowledged in time')
-    addressed_in_time = tables.BooleanColumn(verbose_name='Addressed in time')
+    time_to_acknowledge = tables.BooleanColumn(verbose_name='Time to acknowledge')
+    time_to_address = tables.BooleanColumn(verbose_name='Time to address')
 
     class Meta:
         sequence = ('reference_number',
@@ -84,8 +82,8 @@ class ExtendedMessageModelTable(MessageModelTable):
                     'status',
                     'category',
                     'service',
-                    'acknowledged_in_time',
-                    'addressed_in_time',
+                    'time_to_acknowledge',
+                    'time_to_address',
                     'happy_service',
                     'happy_outcome',
                     'summary')

@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from decimal import Decimal
 
 # Django imports
 from django.test import TestCase
@@ -85,12 +86,12 @@ class IntervalCountsTest(TestCase):
         self.test_org_injuries = create_test_service({"service_code": 'ABC123',
                                                       "organisation_id": self.test_organisation.id})
         # Create a spread of problems over time for two organisations
-        problem_ages = {3: {'acknowledged_in_time' : False, 'addressed_in_time': True},
-                        4: {'acknowledged_in_time' : True, 'addressed_in_time': False},
+        problem_ages = {3: {'time_to_acknowledge' : 24, 'time_to_address': 220},
+                        4: {'time_to_acknowledge' : 32, 'time_to_address': 102},
                         5: {'happy_outcome': True, 'happy_service': True},
                         21: {'happy_outcome': False},
                         22: {'service_id': self.test_org_injuries.id},
-                        45: {'acknowledged_in_time' : True, 'addressed_in_time': False}}
+                        45: {'time_to_acknowledge' : 12, 'time_to_address': 400}}
 
         for age, attributes in problem_ages.items():
             self.create_problem(self.test_organisation, age, attributes)
@@ -114,11 +115,8 @@ class IntervalCountsTest(TestCase):
                            'happy_outcome_count': 2,
                            'happy_service': 1.0,
                            'happy_service_count': 1,
-                           'acknowledged_in_time': 0.66666666666666696,
-                           'acknowledged_in_time_count': 3,
-                           'addressed_in_time': 0.33333333333333298,
-                           'addressed_in_time_count': 3}
-
+                           'average_time_to_acknowledge': Decimal('22.6666666666666667'),
+                           'average_time_to_address': Decimal('240.6666666666666667')}
         self.assertEqual(expected_counts, interval_counts(issue_type=Problem,
                                                           filters={},
                                                           organisation_id=self.test_organisation.id))
@@ -135,10 +133,8 @@ class IntervalCountsTest(TestCase):
                             'happy_outcome_count': 0,
                             'happy_service': None,
                             'happy_service_count': 0,
-                            'acknowledged_in_time': None,
-                            'acknowledged_in_time_count': 0,
-                            'addressed_in_time': None,
-                            'addressed_in_time_count': 0},
+                            'average_time_to_acknowledge': None,
+                            'average_time_to_address': None},
                            {'week': 3,
                            'four_weeks': 5,
                            'id': self.test_organisation.id,
@@ -150,10 +146,8 @@ class IntervalCountsTest(TestCase):
                            'happy_outcome_count': 2,
                            'happy_service': 1.0,
                            'happy_service_count': 1,
-                           'acknowledged_in_time': 0.66666666666666696,
-                           'acknowledged_in_time_count': 3,
-                           'addressed_in_time': 0.33333333333333298,
-                           'addressed_in_time_count': 3}]
+                           'average_time_to_acknowledge': Decimal('22.6666666666666667'),
+                           'average_time_to_address': Decimal('240.6666666666666667')}]
         actual = interval_counts(issue_type=Problem, filters={})
         self.assertEqual(expected_counts, actual)
 
@@ -170,10 +164,8 @@ class IntervalCountsTest(TestCase):
                            'happy_outcome_count': 0,
                            'happy_service': None,
                            'happy_service_count': 0,
-                           'acknowledged_in_time': None,
-                           'acknowledged_in_time_count': 0,
-                           'addressed_in_time': None,
-                           'addressed_in_time_count': 0}]
+                           'average_time_to_acknowledge': None,
+                           'average_time_to_address': None}]
         self.assertEqual(expected_counts, interval_counts(issue_type=Problem,
                                                           filters=filters))
 
@@ -190,9 +182,7 @@ class IntervalCountsTest(TestCase):
                             'happy_outcome_count': 0,
                             'happy_service': None,
                             'happy_service_count': 0,
-                            'acknowledged_in_time': None,
-                            'acknowledged_in_time_count': 0,
-                            'addressed_in_time': None,
-                            'addressed_in_time_count': 0 }]
+                            'average_time_to_acknowledge': None,
+                            'average_time_to_address': None }]
         self.assertEqual(expected_counts, interval_counts(issue_type=Problem,
                                                           filters=filters))

@@ -2,6 +2,7 @@ import os
 from mock import Mock, MagicMock, patch
 import json
 import urllib
+from decimal import Decimal
 
 # Django imports
 from django.test import TestCase
@@ -27,21 +28,21 @@ class OrganisationSummaryTests(TestCase):
         atts.update({'category': 'cleanliness',
                      'happy_service': True,
                      'happy_outcome': None,
-                     'acknowledged_in_time': True,
-                     'addressed_in_time': True})
+                     'time_to_acknowledge': 51,
+                     'time_to_address': 543})
         self.cleanliness_problem = create_test_instance(Problem, atts)
         atts.update({'category': 'staff',
                      'happy_service': True,
                      'happy_outcome': True,
-                     'acknowledged_in_time': None,
-                     'addressed_in_time': None})
+                     'time_to_acknowledge': None,
+                     'time_to_address': None})
         self.staff_problem = create_test_instance(Problem, atts)
         atts.update({'category': 'other',
                      'service_id' : self.service.id,
                      'happy_service': False,
                      'happy_outcome': True,
-                     'acknowledged_in_time': False,
-                     'addressed_in_time': None})
+                     'time_to_acknowledge': 71,
+                     'time_to_address': None})
         self.other_dept_problem = create_test_instance(Problem, atts)
 
         self.public_summary_url = '/choices/stats/summary/%s' % self.organisation.ods_code
@@ -130,8 +131,8 @@ class OrganisationSummaryTests(TestCase):
         for url in self.urls:
             resp = self.client.get(url)
             issues_total = resp.context['issues_total']
-            self.assertEqual(issues_total['acknowledged_in_time'], 0.5)
-            self.assertEqual(issues_total['addressed_in_time'], 1.0)
+            self.assertEqual(issues_total['average_time_to_acknowledge'], Decimal('61.0000000000000000'))
+            self.assertEqual(issues_total['average_time_to_address'], Decimal('543.0000000000000000000'))
 
 class OrganisationProblemsTests(TestCase):
 
@@ -155,8 +156,8 @@ class OrganisationProblemsTests(TestCase):
     def test_shows_time_limits_for_hospitals(self):
         for url in [self.public_hospital_problems_url, self.private_hospital_problems_url]:
             resp = self.client.get(url)
-            self.assertContains(resp, 'Acknowledged In Time', count=1, status_code=200)
-            self.assertContains(resp, 'Addressed In Time', count=1, status_code=200)
+            self.assertContains(resp, 'Time To Acknowledge', count=1, status_code=200)
+            self.assertContains(resp, 'Time To Address', count=1, status_code=200)
 
     def test_no_services_for_gps(self):
         for url in [self.public_gp_problems_url, self.private_gp_problems_url]:

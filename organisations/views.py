@@ -195,8 +195,8 @@ class OrganisationSummary(OrganisationAwareViewMixin,
         issues_total = {}
         summary_attributes = ['happy_service',
                               'happy_outcome',
-                              'acknowledged_in_time',
-                              'addressed_in_time']
+                              'average_time_to_acknowledge',
+                              'average_time_to_address']
         for attribute in summary_attributes:
             problem_average = context['problems_total'][attribute]
             issues_total[attribute] = problem_average
