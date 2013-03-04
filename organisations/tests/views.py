@@ -293,6 +293,7 @@ class OrganisationDashboardTests(TestCase):
     def setUp(self):
         # Make an organisation
         self.organisation = create_test_organisation()
+        self.problem = create_test_instance(Problem, {'organisation': self.organisation})
         self.dashboard_url = '/private/dashboard/%s' % self.organisation.ods_code
 
     def test_dashboard_page_exists(self):
@@ -302,6 +303,10 @@ class OrganisationDashboardTests(TestCase):
     def test_dashboard_page_shows_organisation_name(self):
         resp = self.client.get(self.dashboard_url)
         self.assertTrue(self.organisation.name in resp.content)
+
+    def test_dashboard_shows_problems(self):
+        resp = self.client.get(self.dashboard_url)
+        self.assertTrue(self.problem.summary in resp.content)
 
 class OrganisationMapTests(TestCase):
 

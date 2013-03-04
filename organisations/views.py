@@ -47,32 +47,6 @@ class OrganisationAwareViewMixin(object):
         context['organisation'] = Organisation.objects.get(ods_code=self.kwargs['ods_code'])
         return context
 
-class OrganisationIssuesAwareViewMixin(object):
-    """Mixin class for views which need to have reference to a particular organisation
-    and the issues that belong to it, such as provider dashboards, and public provider
-    pages"""
-
-    def get_context_data(self, **kwargs):
-        # Get all the problems and questions
-        context = super(OrganisationIssuesAwareViewMixin, self).get_context_data(**kwargs)
-        # Get the models related to this organisation, and let the db sort them
-        ods_code = self.kwargs['ods_code']
-        organisation = Organisation.objects.get(ods_code=ods_code)
-        problems = organisation.problem_set.all()
-        questions = organisation.question_set.all()
-        context['organisation'] = organisation
-        context['problems'] = problems
-        context['questions'] = questions
-
-        # Put them into one list, taken from http://stackoverflow.com/questions/431628/how-to-combine-2-or-more-querysets-in-a-django-view
-        issues = sorted(
-            chain(problems, questions),
-            key=attrgetter('created'),
-            reverse=True
-        )
-        context['issues'] = issues
-        return context
-
 class MessageListMixin(PrivateViewMixin):
     """Mixin class for views which need to display a list of issues belonging to an organisation
        in either a public or private context"""
@@ -327,6 +301,13 @@ class Summary(TemplateView):
         return context
 
 class OrganisationDashboard(OrganisationAwareViewMixin,
-                            OrganisationIssuesAwareViewMixin,
                             TemplateView):
     template_name = 'organisations/dashboard.html'
+
+    def get_context_data(self, **kwargs):
+        # Get all the problems and questions
+        context = super(OrganisationDashboard, self).get_context_data(**kwargs)
+        # Get the models related to this organisation, and let the db sort them
+        problems = context['organisation'].problem_set.all()
+        context['problems'] = problems
+        return context
