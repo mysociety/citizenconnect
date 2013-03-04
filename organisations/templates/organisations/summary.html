@@ -17,24 +17,16 @@
             <select name="service">
                 <option value="">Department</option>
                 {% for service_code, service_name in services %}
-                <option value="{{ service_code }}" {% if filters.service_code == service_code %}selected{% endif %}>{{ service_name }}</option>
+                    <option value="{{ service_code }}" {% if filters.service_code == service_code %}selected{% endif %}>{{ service_name }}</option>
                 {% endfor %}
             </select>
         </div>
         {% endif %}
         <div class="feature">
-            <select name="problems_category">
+            <select name="problem_category">
                 <option value="">Problem type</option>
-                {% for value, display_value in problems_categories %}
-                <option value="{{ value }}" {% if filters.problems_category == value %}selected{% endif %}>{{ display_value }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="feature">
-            <select name="questions_category">
-                <option value="">Question type</option>
-                 {% for value, display_value in questions_categories %}
-                    <option value="{{ value }}" {% if filters.questions_category == value %}selected{% endif %}>{{ display_value }}</option>
+                {% for value, display_value in problem_categories %}
+                    <option value="{{ value }}" {% if filters.problem_category == value %}selected{% endif %}>{{ display_value }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -47,27 +39,11 @@
             </select>
         </div>
         <div class="feature">
-            <select name="issue_type">
-                <option value="">Issue type</option>
-                 {% for value, display_value in issue_types %}
-                    <option value="{{ value }}" {% if issue_type == value %}selected{% endif %}>{{ display_value }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="feature">
-            <select name="problems_status">
+            <select name="problem_status">
                 <option value="all">Problem status</option>
-             {% for value, display_value in problems_statuses %}
-                <option value="{{ value }}" {% if filters.problems_status == value %}selected{% endif %}>{{ display_value }}</option>
-            {% endfor %}
-            </select>
-        </div>
-        <div class="feature">
-            <select name="questions_status">
-                <option value="all">Question status</option>
-             {% for value, display_value in questions_statuses %}
-                <option value="{{ value }}" {% if filters.questions_status == value %}selected{% endif %}>{{ display_value }}</option>
-            {% endfor %}
+                {% for value, display_value in problem_statuses %}
+                    <option value="{{ value }}" {% if filters.problem_status == value %}selected{% endif %}>{{ display_value }}</option>
+                {% endfor %}
             </select>
         </div>
         <div class="feature">

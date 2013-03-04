@@ -5,19 +5,35 @@ from responses.models import QuestionResponse, ProblemResponse
 
 from ..models import Question, Problem
 
+class AskQuestionViewTests(TestCase):
+    def setUp(self):
+        self.url = '/choices/question/ask-question'
+
+    def test_ask_question_page_exists(self):
+        resp = self.client.get(self.url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_ask_question_page_links_to_question_form(self):
+        resp = self.client.get(self.url)
+        self.assertContains(resp, '/choices/question/question-form')
+
 class QuestionPublicViewTests(TestCase):
 
     def setUp(self):
-        self.test_organisation = create_test_organisation()
-        self.test_question = create_test_instance(Question, {'organisation': self.test_organisation})
+        self.test_question = Question(description='A Test Question',
+                                    category='general',
+                                    reporter_name='Test User',
+                                    reporter_email='reporter@example.com',
+                                    reporter_phone='01111 111 111',
+                                    public=True,
+                                    public_reporter_name=True,
+                                    preferred_contact_method=Question.CONTACT_EMAIL,
+                                    status=Question.NEW)
+        self.test_question.save()
 
     def test_public_question_page_exists(self):
         resp = self.client.get("/choices/question/{0}".format(self.test_question.id))
         self.assertEqual(resp.status_code, 200)
-
-    def test_public_question_displays_organisation_name(self):
-        resp = self.client.get("/choices/question/{0}".format(self.test_question.id))
-        self.assertContains(resp, self.test_organisation.name, count=1, status_code=200)
 
     def test_public_question_displays_responses(self):
         response1 = QuestionResponse.objects.create(response="response 1", message=self.test_question)
@@ -29,16 +45,6 @@ class QuestionPublicViewTests(TestCase):
     def test_public_question_displays_empty_response_message(self):
         resp = self.client.get("/choices/question/{0}".format(self.test_question.id))
         self.assertContains(resp, "No responses", count=1, status_code=200)
-
-class QuestionProviderPickerTests(TestCase):
-
-    def setUp(self):
-        super(QuestionProviderPickerTests, self).setUp()
-        self.results_url = "/choices/question/pick-provider?organisation_type=gppractices&location=London"
-
-    def test_results_page_exists(self):
-        resp = self.client.get(self.results_url)
-        self.assertEqual(resp.status_code, 200)
 
 class ProblemPublicViewTests(TestCase):
 

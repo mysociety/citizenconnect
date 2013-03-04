@@ -12,13 +12,11 @@ urlpatterns = patterns('',
             OrganisationProblems.as_view(),
             name='private-org-problems',
             kwargs={'private': True}),
-    url(r'^questions/(?P<ods_code>\w+)$',
-            OrganisationQuestions.as_view(),
-            name='private-org-questions',
-            kwargs={'private': True}),
     url(r'^reviews/(?P<ods_code>\w+)$',
             OrganisationReviews.as_view(),
             name='private-org-reviews',
             kwargs={'private': True}),
+
+    url(r'^map$', Map.as_view(), name='private-map', kwargs={'private': True}),
 
 )

@@ -28,8 +28,6 @@ class MessageModel(AuditedModel):
         (SOURCE_SMS, 'SMS')
     )
 
-    organisation = models.ForeignKey('organisations.Organisation')
-    service = models.ForeignKey('organisations.Service', null=True, blank=True, verbose_name="Please select a department (optional)")
     description = models.TextField(verbose_name='')
     reporter_name = models.CharField(max_length=200, blank=True, verbose_name='')
     reporter_phone = models.CharField(max_length=50, blank=True, verbose_name='')
@@ -39,10 +37,6 @@ class MessageModel(AuditedModel):
     preferred_contact_method = models.CharField(max_length=100, choices=CONTACT_CHOICES, default=CONTACT_EMAIL)
     source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True)
     mailed = models.BooleanField(default=False, blank=False)
-    happy_service = models.NullBooleanField()
-    happy_outcome = models.NullBooleanField()
-    acknowledged_in_time = models.NullBooleanField()
-    addressed_in_time = models.NullBooleanField()
 
     @property
     def summary(self):
@@ -174,6 +168,12 @@ class Problem(MessageModel):
                                 db_index=True,
                                 verbose_name='Please select the category that best describes your problem')
     status = models.IntegerField(default=NEW, choices=STATUS_CHOICES, db_index=True)
+    organisation = models.ForeignKey('organisations.Organisation')
+    service = models.ForeignKey('organisations.Service', null=True, blank=True, verbose_name="Please select a department (optional)")
+    happy_service = models.NullBooleanField()
+    happy_outcome = models.NullBooleanField()
+    acknowledged_in_time = models.NullBooleanField()
+    addressed_in_time = models.NullBooleanField()
 
     @property
     def reference_number(self):

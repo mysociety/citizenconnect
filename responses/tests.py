@@ -13,7 +13,7 @@ class ResponseFormTests(TransactionTestCase):
     def setUp(self):
         self.test_organisation = create_test_organisation()
         self.test_problem = create_test_instance(Problem, {'organisation':self.test_organisation})
-        self.test_question = create_test_instance(Question, {'organisation':self.test_organisation})
+        self.test_question = create_test_instance(Question, {})
         self.problem_response_form_url = '/private/response/problem/%s' % self.test_problem.id
         self.question_response_form_url = '/private/response/question/%s' % self.test_problem.id
 

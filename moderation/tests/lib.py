@@ -10,7 +10,7 @@ class BaseModerationTestCase(TransactionTestCase):
         # Add some issues
         self.test_organisation = create_test_organisation()
         self.test_problem = create_test_instance(Problem, {'organisation':self.test_organisation})
-        self.test_question = create_test_instance(Question, {'organisation':self.test_organisation})
+        self.test_question = create_test_instance(Question, {})
         self.home_url = '/private/moderate/'
         self.lookup_url = '/private/moderate/lookup'
         self.problem_form_url = '/private/moderate/problem/%d' % self.test_problem.id

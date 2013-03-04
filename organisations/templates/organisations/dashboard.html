@@ -35,14 +35,14 @@
                 </tr>
             </thead>
             <tbody>
-                {% for issue in issues %}
+                {% for problem in problems %}
                     <tr>
-                        <td>{{ issue.reference_number }}</td>
-                        <td>{{ issue.issue_type }}</td>
-                        <td>{{ issue.created }}</td>
-                        <td>{{ issue.reporter_name }}</td>
-                        <td><a href="{% url 'response-form' message_type=issue.issue_type.lower pk=issue.id %}">{{ issue.summary }}</a></td>
-                        <td>{{ issue.get_status_display }}</td>
+                        <td>{{ problem.reference_number }}</td>
+                        <td>{{ problem.issue_type }}</td>
+                        <td>{{ problem.created }}</td>
+                        <td>{{ problem.reporter_name }}</td>
+                        <td><a href="{% url 'response-form' message_type=problem.issue_type.lower pk=problem.id %}">{{ problem.summary }}</a></td>
+                        <td>{{ problem.get_status_display }}</td>
                         <td>TODO</td>
                     </tr>
                 {% endfor %}

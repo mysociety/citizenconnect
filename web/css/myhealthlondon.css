@@ -1,0 +1,11 @@
+#banner {
+   min-height: 56px;
+}
+
+#site-logo {
+ background: url("/static/images/myhealthlondon.png") no-repeat;
+ height: 56px;
+ width: 232px;
+ display: block;
+ text-indent: -999999px;
+}

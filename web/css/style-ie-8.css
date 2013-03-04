@@ -870,8 +870,8 @@ button, input[type=submit] {
   float: left;
   padding: 0 10px;
   width: 100%; }
-  .outcomes-map .map-container #public-map {
-    height: 400px; }
+  .outcomes-map .map-container #map {
+    height: 500px; }
 .outcomes-map .map-instructions {
   width: 100%; }
   .outcomes-map .map-instructions .feature {
