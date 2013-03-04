@@ -14,7 +14,9 @@
         <p>{{ message.issue_type }}<br>
             Reference number: <strong>{{ message.reference_number }}</strong></br>
             Received: <strong>{{ message.created }}</strong></br>
-            Sent to: <strong>{{ message.organisation.name }}</strong> {{ message.service|default_if_none:"" }}
+            {% if message.issue_type == 'Problem' %}
+                Sent to: <strong>{{ message.organisation.name }}</strong> {{ message.service|default_if_none:"" }}
+            {% endif %}
         </p>
     </div>
 </div>
