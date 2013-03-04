@@ -172,8 +172,8 @@ class Problem(MessageModel):
     service = models.ForeignKey('organisations.Service', null=True, blank=True, verbose_name="Please select a department (optional)")
     happy_service = models.NullBooleanField()
     happy_outcome = models.NullBooleanField()
-    acknowledged_in_time = models.NullBooleanField()
-    addressed_in_time = models.NullBooleanField()
+    time_to_acknowledge = models.IntegerField(null=True)
+    time_to_address = models.IntegerField(null=True)
 
     @property
     def reference_number(self):
