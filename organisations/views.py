@@ -241,27 +241,15 @@ class Summary(TemplateView):
     template_name = 'organisations/summary.html'
 
     def get_context_data(self, **kwargs):
-        issue_types = {'problems': Problem,
-                       'questions': Question}
 
         context = super(Summary, self).get_context_data(**kwargs)
 
         # Set up the data for the filters
-        context['problems_categories'] = Problem.CATEGORY_CHOICES
-        context['problems_statuses'] = Problem.STATUS_CHOICES
-        context['questions_categories'] = Question.CATEGORY_CHOICES
-        context['questions_statuses'] = Question.STATUS_CHOICES
+        context['problem_categories'] = Problem.CATEGORY_CHOICES
+        context['problem_statuses'] = Problem.STATUS_CHOICES
         context['organisation_types'] = settings.ORGANISATION_CHOICES
-        context['issue_types'] = [(value, model_type.__name__) for value, model_type  in issue_types.items()]
         context['services'] = Service.service_codes()
         filters = {}
-        issue_type = self.request.GET.get('issue_type')
-
-        # Default to showing problems
-        if not issue_type in issue_types.keys():
-            issue_type = 'problems'
-        context['issue_type'] = issue_type
-        model_class = issue_types[issue_type]
 
         # Service code filter
         selected_service = self.request.GET.get('service')
@@ -269,23 +257,23 @@ class Summary(TemplateView):
             filters['service_code'] = selected_service
 
         # Category filter
-        category = self.request.GET.get('%s_category' % issue_type)
-        if category in dict(model_class.CATEGORY_CHOICES):
-            filters['%s_category' % issue_type] = category
+        category = self.request.GET.get('problem_category')
+        if category in dict(Problem.CATEGORY_CHOICES):
+            filters['problem_category'] = category
             filters['category'] = category
 
-        # Organisation type
+        # Organisation type filter
         organisation_type = self.request.GET.get('organisation_type')
         if organisation_type in settings.ORGANISATION_TYPES:
             filters['organisation_type'] = organisation_type
 
-        # Status
-        status = self.request.GET.get('%s_status' % issue_type)
-        if status and status != 'all' and int(status) in dict(model_class.STATUS_CHOICES):
-            filters['%s_status' % issue_type] = int(status)
+        # Status filter
+        status = self.request.GET.get('problem_status')
+        if status and status != 'all' and int(status) in dict(Problem.STATUS_CHOICES):
+            filters['problem_status'] = int(status)
             filters['status'] = int(status)
 
-        organisation_rows = interval_counts(issue_type=model_class, filters=filters)
+        organisation_rows = interval_counts(issue_type=Problem, filters=filters)
         organisations_table = NationalSummaryTable(organisation_rows, cobrand=kwargs['cobrand'])
         RequestConfig(self.request).configure(organisations_table)
         context['organisations_table'] = organisations_table
