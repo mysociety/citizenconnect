@@ -15,15 +15,14 @@
         <p>Responding to <strong>{{ message.issue_type.lower }}</strong><br/> Reference number: <strong>{{ message.reference_number }}</strong></br>
         Received: <strong>{{ message.created }}</strong></p>
     </div>
-    <div class="feature">
-        <p>FORMAL COMPLAINT</P>
-    </div>
 </div>
 <div class="message-details">
     <div class="feature">
-        <p>Institution name: {{ message.organisation.name }}</p>
-        {% if message.service %}
-            <p>Department {{message.service.name }}</p>
+        {% if message.issue_type == "Problem" %}
+            <p>Institution name: {{ message.organisation.name }}</p>
+            {% if message.service %}
+                <p>Department {{message.service.name }}</p>
+            {% endif %}
         {% endif %}
         <p>Message category: {{ message.issue_type }}</p>
         <p>User Name: {{ message.reporter_name }} {% if message.private_reporter_name %}<em>Anonimity selected</em><{% endif %}</p>
