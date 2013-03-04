@@ -102,3 +102,26 @@ textarea {
   }
   label { padding: ($grid-gutter + em); }
 }
+
+
+
+/**
+ * Search form
+ */
+.search-form {
+  margin-top: -0.25em;
+  width: 20em;
+  .text-input {
+    width: 16.7em;
+    height: 2em;
+    margin-bottom: 0;
+    float: left;
+  }
+  .btn {
+    padding-left: 0;
+    padding-right: 0;
+    height: 2em;
+    width: 2em;
+    float: left;
+  }
+}
