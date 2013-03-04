@@ -25,7 +25,7 @@ Instead of a list of all class selectors,
 you can use the generic selector below, but it's slower:
 [class*="icon-"]:before {
 */
-.icon-chevron-right:before, .icon-search:before, .icon-chevron-left:before {
+.icon-chevron-right:before, .icon-search:before, .icon-chevron-left:before, .icon-x:before, .icon-checkmark:before, .icon-circle:before {
   font-family: 'icomoon';
   speak: none;
   font-style: normal;
@@ -41,4 +41,13 @@ you can use the generic selector below, but it's slower:
 }
 .icon-chevron-left:before {
   content: "\e02c";
+}
+.icon-x:before {
+  content: "\e000";
+}
+.icon-checkmark:before {
+  content: "\e003";
+}
+.icon-circle:before {
+  content: "\f111";
 }

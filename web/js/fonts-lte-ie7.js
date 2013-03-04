@@ -8,7 +8,10 @@ window.onload = function() {
 	var icons = {
 			'icon-chevron-right' : '&#xe02d;',
 			'icon-search' : '&#xe035;',
-			'icon-chevron-left' : '&#xe02c;'
+			'icon-chevron-left' : '&#xe02c;',
+			'icon-x' : '&#xe000;',
+			'icon-checkmark' : '&#xe003;',
+			'icon-circle' : '&#xf111;'
 		},
 		els = document.getElementsByTagName('*'),
 		i, attr, html, c, el;
