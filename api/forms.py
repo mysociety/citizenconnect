@@ -4,11 +4,28 @@ from django.forms.widgets import HiddenInput
 from organisations.models import Organisation, Service
 from issues.models import Problem, Question
 
-class APIMessageModelForm(forms.ModelForm):
-    """
-    ModelForm implementation that does the basics for MessageModel model forms
-    when data is supplied via the api, taking an extra source field.
-    """
+class QuestionAPIForm(forms.ModelForm):
+
+    # Make source required
+    source = forms.CharField(required=True)
+
+    class Meta:
+        model = Question
+
+        fields = [
+            'description',
+            'category',
+            'reporter_name',
+            'reporter_phone',
+            'reporter_email',
+            'preferred_contact_method',
+            'public',
+            'public_reporter_name',
+            'source'
+        ]
+
+class ProblemAPIForm(forms.ModelForm):
+
     # Make organisation a char field so that we can supply ods_codes to it
     organisation = forms.CharField(required=True)
     # Likewise for services, except making it a separate field
@@ -33,7 +50,7 @@ class APIMessageModelForm(forms.ModelForm):
 
     def clean(self):
         # Run super class clean method
-        cleaned_data = super(APIMessageModelForm, self).clean()
+        cleaned_data = super(ProblemAPIForm, self).clean()
 
         # Pull out the service_code and turn it into a real service
         # This has to be done here rather than in clean_service becauase
@@ -54,6 +71,8 @@ class APIMessageModelForm(forms.ModelForm):
         return cleaned_data
 
     class Meta:
+        model = Problem
+
         fields = [
             'organisation',
             'service_code',
@@ -73,13 +92,3 @@ class APIMessageModelForm(forms.ModelForm):
             'service': HiddenInput,
             'organisation': HiddenInput
         }
-
-class QuestionAPIForm(APIMessageModelForm):
-
-    class Meta(APIMessageModelForm.Meta):
-        model = Question
-
-class ProblemAPIForm(APIMessageModelForm):
-
-    class Meta(APIMessageModelForm.Meta):
-        model = Problem
