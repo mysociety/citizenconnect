@@ -40,31 +40,9 @@ class OrganisationSummaryTests(TestCase):
                      'service_id' : self.service.id,
                      'happy_service': False,
                      'happy_outcome': True,
-                     'acknowledged_in_time': None,
+                     'acknowledged_in_time': False,
                      'addressed_in_time': None})
         self.other_dept_problem = create_test_instance(Problem, atts)
-
-        # Questions
-        atts = {'organisation': self.organisation}
-        atts.update({'category': 'services',
-                     'happy_service': None,
-                     'happy_outcome': None,
-                     'acknowledged_in_time': False,
-                     'addressed_in_time': True})
-        self.services_question = create_test_instance(Question, atts)
-        atts.update({'category': 'general',
-                     'happy_service': False,
-                     'happy_outcome': True,
-                     'acknowledged_in_time': True,
-                     'addressed_in_time': True})
-        self.general_question = create_test_instance(Question, atts)
-        atts.update({'category': 'appointments',
-                     'service_id': self.service.id,
-                     'happy_service': True,
-                     'happy_outcome': True,
-                     'acknowledged_in_time': None,
-                     'addressed_in_time': None})
-        self.appointment_dept_question = create_test_instance(Question, atts)
 
         self.public_summary_url = '/choices/stats/summary/%s' % self.organisation.ods_code
         self.private_summary_url = '/private/summary/%s' % self.organisation.ods_code
@@ -114,36 +92,6 @@ class OrganisationSummaryTests(TestCase):
             self.assertEqual(problems_by_status[3]['six_months'], 0)
             self.assertEqual(problems_by_status[3]['description'], 'Addressed - unable to solve')
 
-    def test_summary_page_has_questions(self):
-        for url in self.urls:
-            resp = self.client.get(url)
-
-            total = resp.context['questions_total']
-            self.assertEqual(total['all_time'], 3)
-            self.assertEqual(total['week'], 3)
-            self.assertEqual(total['four_weeks'], 3)
-            self.assertEqual(total['six_months'], 3)
-
-            questions_by_status = resp.context['questions_by_status']
-            self.assertEqual(questions_by_status[0]['all_time'], 3)
-            self.assertEqual(questions_by_status[0]['week'], 3)
-            self.assertEqual(questions_by_status[0]['four_weeks'], 3)
-            self.assertEqual(questions_by_status[0]['six_months'], 3)
-            self.assertEqual(questions_by_status[0]['description'], 'Received but not acknowledged')
-
-            self.assertEqual(questions_by_status[1]['all_time'], 0)
-            self.assertEqual(questions_by_status[1]['week'], 0)
-            self.assertEqual(questions_by_status[1]['four_weeks'], 0)
-            self.assertEqual(questions_by_status[1]['six_months'], 0)
-            self.assertEqual(questions_by_status[1]['description'], 'Acknowledged but not answered')
-
-            self.assertEqual(questions_by_status[2]['all_time'], 0)
-            self.assertEqual(questions_by_status[2]['week'], 0)
-            self.assertEqual(questions_by_status[2]['four_weeks'], 0)
-            self.assertEqual(questions_by_status[2]['six_months'], 0)
-            self.assertEqual(questions_by_status[2]['description'], 'Question answered')
-
-
     def test_summary_page_applies_problem_category_filter(self):
         for url in self.urls:
             resp = self.client.get(url + '?problems_category=cleanliness')
@@ -160,34 +108,10 @@ class OrganisationSummaryTests(TestCase):
             self.assertEqual(problems_by_status[0]['four_weeks'], 1)
             self.assertEqual(problems_by_status[0]['six_months'], 1)
 
-    def test_summary_page_applies_question_category_filter(self):
-        for url in self.urls:
-            resp = self.client.get(url + '?questions_category=services')
-            self.assertEqual(resp.context['questions_category'], 'services')
-
-            total = resp.context['questions_total']
-            self.assertEqual(total['all_time'], 1)
-            self.assertEqual(total['week'], 1)
-            self.assertEqual(total['four_weeks'], 1)
-            self.assertEqual(total['six_months'], 1)
-
-            questions_by_status = resp.context['questions_by_status']
-            self.assertEqual(questions_by_status[0]['all_time'], 1)
-            self.assertEqual(questions_by_status[0]['week'], 1)
-            self.assertEqual(questions_by_status[0]['four_weeks'], 1)
-            self.assertEqual(questions_by_status[0]['six_months'], 1)
-
-
     def test_summary_page_applies_department_filter(self):
         for url in self.urls:
             resp = self.client.get(url + '?service=%s' % self.service.id)
             self.assertEqual(resp.context['selected_service'], self.service.id)
-
-            questions_by_status = resp.context['questions_by_status']
-            self.assertEqual(questions_by_status[0]['all_time'], 1)
-            self.assertEqual(questions_by_status[0]['week'], 1)
-            self.assertEqual(questions_by_status[0]['four_weeks'], 1)
-            self.assertEqual(questions_by_status[0]['six_months'], 1)
 
             problems_by_status = resp.context['problems_by_status']
             self.assertEqual(problems_by_status[0]['all_time'], 1)
@@ -199,16 +123,15 @@ class OrganisationSummaryTests(TestCase):
         for url in self.urls:
             resp = self.client.get(url)
             issues_total = resp.context['issues_total']
-            self.assertEqual(issues_total['happy_service'], 0.6000000000000002)
+            self.assertEqual(issues_total['happy_service'], 0.666666666666667)
             self.assertEqual(issues_total['happy_outcome'], 1.0)
 
     def test_summary_page_gets_time_limit_data(self):
         for url in self.urls:
             resp = self.client.get(url)
             issues_total = resp.context['issues_total']
-            self.assertEqual(issues_total['acknowledged_in_time'], 0.66666666666666663)
+            self.assertEqual(issues_total['acknowledged_in_time'], 0.5)
             self.assertEqual(issues_total['addressed_in_time'], 1.0)
-
 
 class OrganisationProblemsTests(TestCase):
 

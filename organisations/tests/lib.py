@@ -42,11 +42,12 @@ def create_test_service(attributes={}):
 # Create a test instance of a Problem or Question model that will fill in
 # default values for attributes not specified.
 def create_test_instance(model, attributes):
-    if 'organisation' not in attributes:
+    # Problems need an organisations
+    if model == Problem and 'organisation' not in attributes:
         # Make a dummy organisation
         attributes['organisation'] = create_test_organisation()
+
     default_attributes = {
-        'organisation': None,
         'description': 'A test problem',
         'category': 'staff',
         'reporter_name': 'Test User',
@@ -59,7 +60,7 @@ def create_test_instance(model, attributes):
     default_attributes.update(attributes)
     instance = model(**dict((k,v) for (k,v) in default_attributes.items() if '__' not in k))
     instance.save()
-    # Override the created value to backdate the problem
+    # Override the created value to backdate the issue
     if 'created' in attributes:
         instance.created = attributes['created']
         instance.save()

@@ -13,7 +13,7 @@ from django.conf import settings
 
 # App imports
 from citizenconnect.shortcuts import render
-from issues.models import Problem, Question
+from issues.models import Problem
 
 from .models import Organisation, Service
 from .forms import OrganisationFinderForm
@@ -38,7 +38,7 @@ class PrivateViewMixin(object):
 
 class OrganisationAwareViewMixin(object):
     """Mixin class for views which need to have a reference to a particular
-    organisation, such as problem and question forms."""
+    organisation, such as problem forms."""
 
     # Get the organisation name
     def get_context_data(self, **kwargs):
@@ -154,8 +154,6 @@ class OrganisationSummary(OrganisationAwareViewMixin,
     def get_context_data(self, **kwargs):
         context = super(OrganisationSummary, self).get_context_data(**kwargs)
 
-        issue_types = {'problems': Problem,
-                       'questions': Question}
         organisation = context['organisation']
         context['services'] = list(organisation.services.all().order_by('name'))
         selected_service = self.request.GET.get('service')
@@ -167,31 +165,31 @@ class OrganisationSummary(OrganisationAwareViewMixin,
             context['private'] = True
         else:
             context['private'] = False
+
         count_filters = {}
-        # Use the filters we already have from OrganisationIssuesAwareViewMixin
-        for issue_type, model_class in issue_types.items():
-            if context.has_key('selected_service'):
-                count_filters['service_id'] = selected_service
-            category = self.request.GET.get('%s_category' % issue_type)
-            if category in dict(model_class.CATEGORY_CHOICES):
-                context['%s_category' % issue_type] = category
-                count_filters['category'] = category
-            context['%s_categories' % issue_type] = model_class.CATEGORY_CHOICES
+        if context.has_key('selected_service'):
+            count_filters['service_id'] = selected_service
+        category = self.request.GET.get('problems_category')
+        if category in dict(Problem.CATEGORY_CHOICES):
+            context['problems_category'] = category
+            count_filters['category'] = category
+        context['problems_categories'] = Problem.CATEGORY_CHOICES
 
-            context['%s_total' % issue_type] = interval_counts(issue_type=issue_types[issue_type],
-                                                               filters=count_filters,
-                                                               organisation_id=organisation.id)
-            status_list = []
+        context['problems_total'] = interval_counts(issue_type=Problem,
+                                                    filters=count_filters,
+                                                    organisation_id=organisation.id)
 
-            for status, description in model_class.STATUS_CHOICES:
-                count_filters['status'] = status
-                status_counts = interval_counts(issue_type=issue_types[issue_type],
-                                                filters=count_filters,
-                                                organisation_id=organisation.id)
-                del count_filters['status']
-                status_counts['description'] = description
-                status_list.append(status_counts)
-            context['%s_by_status' % issue_type] = status_list
+        status_list = []
+        for status, description in Problem.STATUS_CHOICES:
+            count_filters['status'] = status
+            status_counts = interval_counts(issue_type=Problem,
+                                            filters=count_filters,
+                                            organisation_id=organisation.id)
+            del count_filters['status']
+            status_counts['description'] = description
+            status_list.append(status_counts)
+        context['problems_by_status'] = status_list
+
         # Generate a dictionary of overall issue boolean counts to use in the summary
         # statistics
         issues_total = {}
@@ -200,19 +198,8 @@ class OrganisationSummary(OrganisationAwareViewMixin,
                               'acknowledged_in_time',
                               'addressed_in_time']
         for attribute in summary_attributes:
-            # Calculate a weighted average of problems and questions
             problem_average = context['problems_total'][attribute]
-            question_average = context['questions_total'][attribute]
-            problem_count = context['problems_total'][attribute+"_count"]
-            question_count = context['questions_total'][attribute+"_count"]
-            if problem_count != 0 and question_count != 0:
-                numerator = ((problem_average*problem_count) + (question_average*question_count))
-                denominator = (problem_count + question_count)
-                issues_total[attribute] = numerator / denominator
-            elif problem_count != 0:
-                issues_total[attribute] = problem_average
-            else:
-                issues_total[attribute] = question_average
+            issues_total[attribute] = problem_average
         context['issues_total'] = issues_total
 
         return context
@@ -285,7 +272,7 @@ class OrganisationDashboard(OrganisationAwareViewMixin,
     template_name = 'organisations/dashboard.html'
 
     def get_context_data(self, **kwargs):
-        # Get all the problems and questions
+        # Get all the problems
         context = super(OrganisationDashboard, self).get_context_data(**kwargs)
         # Get the models related to this organisation, and let the db sort them
         problems = context['organisation'].problem_set.all()
