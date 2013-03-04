@@ -12,7 +12,7 @@ class LookupFormTests(BaseModerationTestCase):
         super(LookupFormTests, self).setUp()
         self.closed_problem = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.RESOLVED})
         self.closed_problem2 = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.NOT_RESOLVED})
-        self.closed_question = create_test_instance(Question, {'organisation':self.test_organisation, 'status': Question.RESOLVED})
+        self.closed_question = create_test_instance(Question, {'status': Question.RESOLVED})
 
     def test_happy_path(self):
         resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.test_problem.id)})
