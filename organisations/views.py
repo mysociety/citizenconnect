@@ -128,9 +128,6 @@ class Map(PrivateViewMixin, TemplateView):
 
             # TODO - use context['private'] to filter issues to public or private only
             # when we have that work merged in (after the expo)
-            organisation_dict['questions'] = []
-            for question in organisation.question_set.open_questions():
-                organisation_dict['questions'].append(escape(question.description))
             organisation_dict['problems'] = []
             for problem in organisation.problem_set.open_problems():
                 organisation_dict['problems'].append(escape(problem.description))
