@@ -18,5 +18,9 @@ Message:
 
 {{ message.description }}
 
+{% if message.issue_type == "Problem" %}
 To respond to this message, please visit your dashboard at: {{ site_base_url }}{% url 'org-dashboard' ods_code=message.organisation.ods_code %}
+{% elif message.issue_type == "Question" %}
+To respond to this message, please use the response form at: {{ site_base_url }}{% url 'response-form' message_type='question' pk=message.id %}
+{% endif %}
 {% endautoescape %}

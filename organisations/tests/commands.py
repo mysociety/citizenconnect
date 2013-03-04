@@ -17,8 +17,15 @@ class EmailIssuesToProviderTests(TestCase):
         # Add some test data
         self.test_organisation = create_test_organisation()
         self.test_service = create_test_service({'organisation': self.test_organisation})
-        self.test_problem = create_test_instance(Problem, {'organisation': self.test_organisation, 'service': self.test_service})
-        self.test_question = create_test_instance(Question, {'organisation': self.test_organisation, 'service': self.test_service})
+        self.test_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
+                                                           'service': self.test_service,
+                                                           'reporter_name': 'Problem reporter',
+                                                           'reporter_email': 'problem@example.com',
+                                                           'reporter_phone': '123456789'})
+        self.test_question = create_test_instance(Question, {'reporter_name': 'Question reporter',
+                                                             'reporter_email': 'question@example.com',
+                                                             'reporter_phone': '910111213',
+                                                             'description': 'A Question'})
 
     def _call_command(self):
         args = []
@@ -49,8 +56,8 @@ class EmailIssuesToProviderTests(TestCase):
         self.assertTrue(self.test_question.reporter_email in second_mail.body)
         self.assertTrue(self.test_question.category in second_mail.body)
         self.assertTrue(self.test_question.description in second_mail.body)
-        dashboard_url = settings.SITE_BASE_URL + reverse('org-dashboard', kwargs={'ods_code':self.test_question.organisation.ods_code})
-        self.assertTrue(dashboard_url in second_mail.body)
+        response_url = settings.SITE_BASE_URL + reverse('response-form', kwargs={'message_type':'question', 'pk':self.test_question.id})
+        self.assertTrue(response_url in second_mail.body)
 
         # Check that messages were marked as mailed
         self.test_problem = Problem.objects.get(pk=self.test_problem.id)
