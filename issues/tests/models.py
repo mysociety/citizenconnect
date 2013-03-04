@@ -75,9 +75,7 @@ class ProblemModelTests(TestCase):
 class QuestionModelTests(TestCase):
 
     def setUp(self):
-        self.test_organisation = create_test_organisation()
-        self.test_question = Question(organisation=self.test_organisation,
-                                    description='A Test Question',
+        self.test_question = Question(description='A Test Question',
                                     category='general',
                                     reporter_name='Test User',
                                     reporter_email='reporter@example.com',

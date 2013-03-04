@@ -92,13 +92,11 @@ class ProblemCreateFormTests(TestCase):
 class QuestionCreateFormTests(TestCase):
 
     def setUp(self):
-        self.test_organisation = create_test_organisation()
         # Create a unique name, to use in queries rather than relying
         # on primary key increments
         self.uuid = uuid.uuid4().hex
-        self.form_url = '/choices/question/question-form/%s' % self.test_organisation.ods_code
+        self.form_url = '/choices/question/question-form'
         self.test_question = {
-            'organisation': self.test_organisation.id,
             'description': 'This is a question',
             'category': 'prescriptions',
             'reporter_name': self.uuid,
@@ -114,16 +112,11 @@ class QuestionCreateFormTests(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertTrue('Ask your question' in resp.content)
 
-    def test_question_form_shows_provider_name(self):
-        resp = self.client.get(self.form_url)
-        self.assertTrue(self.test_organisation.name in resp.content)
-
     def test_question_form_happy_path(self):
         resp = self.client.post(self.form_url, self.test_question)
         # Check in db
         question = Question.objects.get(reporter_name=self.uuid)
         self.assertContains(resp, question.reference_number, count=1, status_code=200)
-        self.assertEqual(question.organisation, self.test_organisation)
         self.assertEqual(question.public, False)
         self.assertEqual(question.public_reporter_name, False)
         self.assertEqual(question.description, 'This is a question')
