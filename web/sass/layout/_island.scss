@@ -30,3 +30,12 @@
 .islet {
     padding: ($grid-gutter / 2) + em;
 }
+
+
+/**
+ * Colour variants
+ */
+.island--aquablue {
+    background: $c-aquablue;
+    color: $c-white;
+}

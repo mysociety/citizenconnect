@@ -1,0 +1,33 @@
+.tab-nav {
+    list-style: none;
+    padding: 0;
+
+    margin: ($grid-gutter * 4) + em 0 ($grid-gutter * 2) + em 0;
+    border-bottom: $c-grey solid ($grid-gutter / 5) + em;
+    @extend .cf;
+    li {
+        display: block;
+        float: left;
+        margin-right: 1em;
+        a {
+            display: block;
+            background: $c-grey;
+            color: $c-black;
+            font-weight: bold;
+            text-decoration: none;
+            text-transform: uppercase;
+            padding: 1em 3em;
+            &:hover {
+                background: $c-darkgrey;
+                &.active { cursor: default; }
+            }
+            &.active {
+                background: $c-white;
+                border-top: $c-grey solid ($grid-gutter / 5) + em;
+                border-left: $c-grey solid ($grid-gutter / 5) + em;
+                border-right: $c-grey solid ($grid-gutter / 5) + em;
+                margin-bottom: -($grid-gutter / 5) + em ;
+            }
+        }
+    }
+}
