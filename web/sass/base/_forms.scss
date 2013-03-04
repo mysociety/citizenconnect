@@ -39,6 +39,36 @@ label,
 .text-input,
 textarea {
   width: 100%;
+  display: block;
+  margin: 0 0 $grid-gutter + em 0;
+  padding: 0.5em; //8px
+  border: 0;
+  color: $c-body-text;
+  outline: none;
+  @include vendor(box-shadow, inset 0px 0px 3px 1px $c-darkgrey);
+  @include vendor(border-radius, 2px);
+  &:focus { @include vendor(box-shadow, inset 0px 0px 3px 1px $c-aquablue); }
+}
+
+
+/**
+ * Placeholder styling
+ */
+::-webkit-input-placeholder {
+  color: $c-darkgrey;
+  font-style: italic;
+}
+:-moz-placeholder {
+  color: $c-darkgrey;
+  font-style: italic;
+}
+:-ms-placeholder {
+  color: $c-darkgrey;
+  font-style: italic;
+}
+.placeholder {
+  color: $c-darkgrey;
+  font-style: italic;
 }
 
 
