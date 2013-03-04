@@ -28,8 +28,6 @@ class MessageModel(AuditedModel):
         (SOURCE_SMS, 'SMS')
     )
 
-    organisation = models.ForeignKey('organisations.Organisation')
-    service = models.ForeignKey('organisations.Service', null=True, blank=True, verbose_name="Please select a department (optional)")
     description = models.TextField(verbose_name='')
     reporter_name = models.CharField(max_length=200, blank=True, verbose_name='')
     reporter_phone = models.CharField(max_length=50, blank=True, verbose_name='')
@@ -174,6 +172,8 @@ class Problem(MessageModel):
                                 db_index=True,
                                 verbose_name='Please select the category that best describes your problem')
     status = models.IntegerField(default=NEW, choices=STATUS_CHOICES, db_index=True)
+    organisation = models.ForeignKey('organisations.Organisation')
+    service = models.ForeignKey('organisations.Service', null=True, blank=True, verbose_name="Please select a department (optional)")
 
     @property
     def reference_number(self):
