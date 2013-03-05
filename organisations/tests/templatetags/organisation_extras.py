@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Django imports
 from django.test import TestCase
 from ...templatetags.organisation_extras import percent
@@ -14,4 +16,4 @@ class TrueToFalsePercentTests(TestCase):
 
     def test_returns_dash_for_divide_by_zero(self):
         formatted_percent = percent(None)
-        self.assertEqual(formatted_percent, '-')
+        self.assertEqual(formatted_percent, u'—')
