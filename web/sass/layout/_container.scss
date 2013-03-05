@@ -1,7 +1,25 @@
+/**
+ * Normal, 960px responsive container
+ */
 .container {
   width: $page-width-max + em;
   margin: 0 auto;
   @include media-query(portable){
+    width: 100%;
+    padding-left: $grid-gutter + em;
+    padding-right: $grid-gutter + em;
+  }
+}
+
+
+/**
+ * Smaller, 690px responsive container
+ */
+$width__container--small: (690px / $font-size-base);
+.container--small {
+  width: $width__container--small + em;
+  margin: 0 auto;
+  @media screen and (max-width: $width__container--small + ($grid-gutter*2)  + em) {
     width: 100%;
     padding-left: $grid-gutter + em;
     padding-right: $grid-gutter + em;
