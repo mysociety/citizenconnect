@@ -9,7 +9,7 @@
 {% block content %}
 
 <div class="header">
-    <form class="search-form  islet  fr">
+    <form action="{% url 'org-pick-provider' cobrand=cobrand.name %}" class="search-form  islet  fr">
         <input type="text" name="location" id="id_location"  class="text-input" placeholder="Search for a provider again" />
         <button type="submit" class="btn"><span class="icon-search" aria-hidden="true"></span><span class="hide-text">Find</span></button>
     </form>
