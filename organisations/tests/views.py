@@ -347,14 +347,6 @@ class ProviderPickerTests(TestCase):
         resp = self.client.get("%s?organisation_type=gppractices&location=nearby" % self.base_url)
         self.assertNotContains(resp, self.faraway_gp.name, status_code=200)
 
-    def test_results_filters_postcode_organisations_by_type(self):
-        resp = self.client.get(self.results_url)
-        self.assertNotContains(resp, self.nearby_hospital.name, status_code=200)
-
-    def test_results_filters_name_organisations_by_type(self):
-        resp = self.client.get("%s?organisation_type=gppractices&location=nearby" % self.base_url)
-        self.assertNotContains(resp, self.nearby_hospital.name, status_code=200)
-
     def test_results_page_shows_paginator_for_over_ten_results(self):
         for i in range(12):
             create_test_organisation({
