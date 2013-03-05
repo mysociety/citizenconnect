@@ -16,6 +16,12 @@ class Command(BaseCommand):
             dest='verbose',
             default=False,
             help='Show verbose output'),
+        ) + (
+        make_option('--clean',
+            action='store_true',
+            dest='clean',
+            default=False,
+            help='Delete existing organisations and services, and associated problems and questions'),
         )
 
     @transaction.commit_manually
@@ -24,6 +30,13 @@ class Command(BaseCommand):
         reader = csv.reader(open(filename), delimiter=',', quotechar='"')
         rownum = 0
         verbose = options['verbose']
+        clean = options['clean']
+
+        if clean:
+            if verbose:
+                self.stdout.write("Deleting existing organisations and services")
+            Service.objects.all().delete()
+            Organisation.objects.all().delete()
 
         type_mappings = {'HOS': 'hospitals',
                          'GP': 'gppractices'}
