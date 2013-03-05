@@ -28,18 +28,13 @@ label,
 }
 
 /**
- * For use in side things like labels
- */
-.additional {
-  font-weight: normal;
-}
-
-/**
  * Info text
  */
 .info {
   font-size: 0.875em; //14px
   font-style: italic;
+  font-weight: normal;
+  display: block;
 }
 
 /**
@@ -52,11 +47,11 @@ textarea {
   margin: 0 0 $grid-gutter + em 0;
   padding: 0.5em; //8px
   border: 0;
-  color: $c-body-text;
+  color: $c-text-input-color;
   outline: none;
-  @include vendor(box-shadow, inset 0px 0px 3px 1px $c-darkgrey);
+  @include vendor(box-shadow, inset 0px 0px 3px 1px $c-text-input-shadow);
   @include vendor(border-radius, 2px);
-  &:focus { @include vendor(box-shadow, inset 0px 0px 3px 1px $c-aquablue); }
+  &:focus { @include vendor(box-shadow, inset 0px 0px 3px 1px $c-text-input-shadow-focus); }
 }
 
 
@@ -64,19 +59,19 @@ textarea {
  * Placeholder styling
  */
 ::-webkit-input-placeholder {
-  color: $c-darkgrey;
+  color: $c-placeholder-color;
   font-style: italic;
 }
 :-moz-placeholder {
-  color: $c-darkgrey;
+  color: $c-placeholder-color;
   font-style: italic;
 }
 :-ms-placeholder {
-  color: $c-darkgrey;
+  color: $c-placeholder-color;
   font-style: italic;
 }
 .placeholder {
-  color: $c-darkgrey;
+  color: $c-placeholder-color;
   font-style: italic;
 }
 
@@ -106,9 +101,9 @@ textarea {
   ul { display: table-row; }
   li {
     display: table-cell;
-    padding: 0;
-    background: $c-lightgrey;
-    border-left: ($grid-gutter / 2) + em solid $c-white;
+    padding: ($grid-gutter + em);
+    background: $c-big-radio-group-bg;
+    border-left: ($grid-gutter / 2) + em solid $c-big-radio-group-border;
     width: 33%;
     vertical-align: middle;
     &.big-radio-group__first {
@@ -119,14 +114,45 @@ textarea {
       @include vendor(border-radius, 0 ($grid-gutter/2) + em ($grid-gutter/2) + em 0);
     }
     &:hover {
-      background: $c-nhs_blue;
+      background: $c-big-radio-group-bg-hover;
       cursor: pointer;
       label { cursor: pointer; }
     }
+    // make stuff table layout
+    .big-radio-group__table {
+      display: table;
+      width: 100%;
+      .big-radio-group__row {
+        display: table-row;
+        .big-radio-group__cell {
+          display: table-cell;
+          vertical-align: middle;
+        }
+      }
+    }
+    // added with js
+    .big-radio-group__radio {
+      display: block;
+      float: left;
+      margin-right: 1em;
+      width: 2em;
+      height: 2em;
+      background: $c-big-radio-group-radio-bg;
+      border: 0.25em solid $c-big-radio-group-radio-border;
+      @include vendor(border-radius, 1em);
+    }
+    &.big-radio-group--active {
+      .big-radio-group__radio { background: $c-big-radio-group-active-radio-bg; }
+      &.big-radio-group--green .big-radio-group__radio { background: $c-big-radio-group-active-green-radio-bg; }
+    }
   }
-  label { padding: ($grid-gutter + em); }
 }
 
+
+
+/******************/
+/* Specific forms */
+/******************/
 
 
 /**
@@ -148,4 +174,26 @@ textarea {
     width: 2em;
     float: left;
   }
+}
+
+
+/**
+ * Pick a provier page - big single input form
+ */
+.pick-provider-form {
+  input, button {
+    font-size: (24px / $font-size-base) + em;
+    @media screen and (max-width: $small-page-width-max + ($grid-gutter*2)  + em) {
+      font-size: (20px / $font-size-base) + em;
+    }
+    @include media-query(palm) {
+      font-size: (16px / $font-size-base) + em;
+    }
+  }
+  .btn {
+    width: 100%;
+    padding-left: 0.25em;
+    padding-right: 0.25em;
+  }
+  .icon-search { margin-left: 0.25em; }
 }

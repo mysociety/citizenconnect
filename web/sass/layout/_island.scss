@@ -12,7 +12,7 @@
 .islet {
     display: block;
     @extend .cf;
-    background: $c-lightgrey;
+    background: $c-island-bg;
     @include vendor(border-radius, ($grid-gutter/2) + em);
 }
 .island {
@@ -36,6 +36,6 @@
  * Colour variants
  */
 .island--aquablue {
-    background: $c-aquablue;
-    color: $c-white;
+    background: $c-island-aquablue-bg;
+    color: $c-island-aquablue-color;
 }
