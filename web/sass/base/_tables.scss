@@ -29,7 +29,67 @@ table {
       font-size: 1.3125em; // 21px
     }
   }
-  .icon-x { color: $c-nhs_red; }
-  .icon-checkmark { color: $c-nhs_green; }
-  .icon-circle { color: $c-darkgrey; }
+}
+
+
+
+
+/**
+ * Public Problem table
+ */
+.problem-table {
+  th, td {
+    text-align: left;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  // first cell
+  .reference_number {
+    font-weight: bold;
+    padding-left: 0;
+  }
+  // last cell
+  .summary { padding-right: 0; }
+
+
+  th a {
+    color: $c-black;
+    text-decoration: none;
+    &:hover { color: $c-aquablue; }
+  }
+
+  // up / down carats for srotable cols
+  th.sortable a {
+    &:after {
+      @extend .i;
+      margin-left: 0.5em;
+      content: "\f0d7";
+    }
+  }
+  th.asc a, th.desc a { color: $c-aquablue; }
+  th.asc a:after { content: "\f0d8"; }
+
+  td.created { color: $c-darkgrey; }
+  td.summary a {
+    display: block;
+    color: $c-darkgrey;
+    text-decoration: none;
+    &:hover { color: $c-black; }
+  }
+
+  // coloured icons
+  td.happy_service,
+  td.happy_outcome { text-align: center; }
+  .icon-x {
+    font-size: (22px / $font-size-base) + em;
+    color: $c-nhs_red;
+  }
+  .icon-checkmark {
+    font-size: (22px / $font-size-base) + em;
+    color: $c-nhs_green;
+  }
+  .icon-circle {
+    font-size: (22px / $font-size-base) + em;
+    color: $c-darkgrey;
+  }
 }
