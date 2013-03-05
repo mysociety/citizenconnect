@@ -11,7 +11,11 @@ window.onload = function() {
 			'icon-chevron-left' : '&#xe02c;',
 			'icon-x' : '&#xe000;',
 			'icon-checkmark' : '&#xe003;',
-			'icon-circle' : '&#xf111;'
+			'icon-circle' : '&#xf111;',
+			'icon-caret-up' : '&#xf0d8;',
+			'icon-caret-down' : '&#xf0d7;',
+			'icon-caret-right' : '&#xf0da;',
+			'icon-caret-left' : '&#xf0d9;'
 		},
 		els = document.getElementsByTagName('*'),
 		i, attr, html, c, el;
