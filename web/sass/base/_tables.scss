@@ -39,6 +39,7 @@ table {
  */
 .problem-table {
   th, td {
+    vertical-align: top;
     text-align: left;
     padding-left: 10px;
     padding-right: 10px;
@@ -79,7 +80,10 @@ table {
 
   // coloured icons
   td.happy_service,
-  td.happy_outcome { text-align: center; }
+  td.happy_outcome {
+    vertical-align: middle;
+    text-align: center;
+  }
   .icon-x {
     font-size: (22px / $font-size-base) + em;
     color: $c-nhs_red;
