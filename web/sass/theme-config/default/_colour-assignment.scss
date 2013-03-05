@@ -67,8 +67,8 @@ $c-island-aquablue-color: $c-white;
              $c-btn-hover-bg: $c-aquablue-tint;
            $c-back-btn-color: $c-darkgrey;
       $c-back-btn-span-color: $c-grey;
-     $c-back-btn-hover-color: $c-darkgrey / 1.2;
-$c-back-btn-span-hover-color: $c-grey / 1.2;
+     $c-back-btn-hover-color: $c-darkgrey-tint;
+$c-back-btn-span-hover-color: $c-grey-tint;
 
 
 /**
@@ -88,7 +88,7 @@ $c-header-border: $c-grey;
  */
                 $c-results-list-border: $c-grey;
       $c-results-list-title-link-color: $c-aquablue;
-$c-results-list-title-link-hover-color: $c-aquablue;
+$c-results-list-title-link-hover-color: $c-aquablue-tint;
                $c-results-list-title-p: $c-darkgrey;
          $c-results-list-address-color: $c-darkgrey;
        $c-results-list-more-link-color: $c-grey;
@@ -107,7 +107,7 @@ $c-staging-color: $c-white;
  * _tabs.scss
  */
         $c-tab-nav-link-color: $c-black;
-           $c-tab-nav-link-bg: $c-grey / 1.1;
+           $c-tab-nav-link-bg: $c-grey-tint;
      $c-tab-nav-link-hover-bg: $c-darkgrey;
     $c-tab-nav-link-active-bg: $c-white;
 $c-tab-nav-link-active-border: $c-grey;
