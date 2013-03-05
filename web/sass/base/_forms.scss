@@ -101,7 +101,7 @@ textarea {
   ul { display: table-row; }
   li {
     display: table-cell;
-    padding: 0;
+    padding: ($grid-gutter + em);
     background: $c-lightgrey;
     border-left: ($grid-gutter / 2) + em solid $c-white;
     width: 33%;
@@ -114,15 +114,36 @@ textarea {
       @include vendor(border-radius, 0 ($grid-gutter/2) + em ($grid-gutter/2) + em 0);
     }
     &:hover {
-      background: $c-nhs_blue;
+      background: $c-grey;
       cursor: pointer;
       label { cursor: pointer; }
     }
-    &.big-radio-group--active {
-      background: red;
+    // make the inner markup a table layout
+
+    .big-radio-group__table {
+      display: table;
+      width: 100%;
+      .big-radio-group__row {
+        display: table-row;
+        .big-radio-group__cell {
+          display: table-cell;
+          vertical-align: middle;
+        }
+      }
     }
+    // added with js
+    .big-radio-group__radio {
+      display: block;
+      float: left;
+      margin-right: 1em;
+      width: 2em;
+      height: 2em;
+      background: $c-grey;
+      border: 0.25em solid $c-white;
+      @include vendor(border-radius, 1em);
+    }
+    &.big-radio-group--active .big-radio-group__radio { background: $c-pink; }
   }
-  label { padding: ($grid-gutter + em); }
 }
 
 
