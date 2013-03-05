@@ -11,6 +11,13 @@ class Organisation(AuditedModel,geomodels.Model):
     organisation_type = models.CharField(max_length=100, choices=settings.ORGANISATION_CHOICES)
     choices_id = models.IntegerField(db_index=True)
     ods_code = models.CharField(max_length=8, db_index=True, unique=True)
+    address_line1 = models.CharField(max_length=255, blank=True)
+    address_line2 = models.CharField(max_length=255, blank=True)
+    address_line3 = models.CharField(max_length=255, blank=True)
+    city = models.CharField(max_length=50, blank=True)
+    county = models.CharField(max_length=50, blank=True)
+    postcode = models.CharField(max_length=10, blank=True)
+
     point =  geomodels.PointField()
     objects = geomodels.GeoManager()
 
