@@ -14,7 +14,7 @@
             <link rel="stylesheet" href="{% static "css/style-ie-8.css" %}">
         <![endif]-->
         <!--[if gt IE 8]><!-->
-            <link rel="stylesheet" href="{% static "css/style.css" %}">
+            <link rel="stylesheet" href="{% static "css/default.css" %}">
         <!--<![endif]-->
         {% if cobrand %}
         <link rel="stylesheet" href="{% static cobrand.stylesheet  %}">
@@ -28,7 +28,7 @@
         {% endif %}
 
 
-        <div id="container">
+        <div id="container" class="grid-container">
               {% if cobrand %}
                   {% if cobrand.name == 'myhealthlondon' %}
                  <div id="banner" >
