@@ -118,8 +118,7 @@ textarea {
       cursor: pointer;
       label { cursor: pointer; }
     }
-    // make the inner markup a table layout
-
+    // make stuff table layout
     .big-radio-group__table {
       display: table;
       width: 100%;
@@ -142,7 +141,10 @@ textarea {
       border: 0.25em solid $c-white;
       @include vendor(border-radius, 1em);
     }
-    &.big-radio-group--active .big-radio-group__radio { background: $c-pink; }
+    &.big-radio-group--active {
+      .big-radio-group__radio { background: $c-pink; }
+      &.big-radio-group--green .big-radio-group__radio { background: $c-nhs_green; }
+    }
   }
 }
 
