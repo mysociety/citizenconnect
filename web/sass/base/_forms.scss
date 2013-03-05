@@ -129,6 +129,11 @@ textarea {
 
 
 
+/******************/
+/* Specific forms */
+/******************/
+
+
 /**
  * Search form
  */
@@ -148,4 +153,26 @@ textarea {
     width: 2em;
     float: left;
   }
+}
+
+
+/**
+ * Pick a provier page - big single input form
+ */
+.pick-provider-form {
+  input, button {
+    font-size: (24px / $font-size-base) + em;
+    @media screen and (max-width: $small-page-width-max + ($grid-gutter*2)  + em) {
+      font-size: (20px / $font-size-base) + em;
+    }
+    @include media-query(palm) {
+      font-size: (16px / $font-size-base) + em;
+    }
+  }
+  .btn {
+    width: 100%;
+    padding-left: 0.25em;
+    padding-right: 0.25em;
+  }
+  .icon-search { margin-left: 0.25em; }
 }

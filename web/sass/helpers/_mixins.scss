@@ -45,6 +45,17 @@ $ie-7: false !default;
 }
 
 
+
+/**
+ * Sortcut method for making something an inline block
+ */
+@mixin inline-block {
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+}
+
+
 /**
  * From inuit.css (https://github.com/csswizardry/inuit.css/)
  *

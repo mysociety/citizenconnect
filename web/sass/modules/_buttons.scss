@@ -1,7 +1,7 @@
 .btn {
+    @include inline-block;
     cursor: pointer;
     border: 1px solid $c-black;
-    display: inline-block;
     margin: 0;
     line-height: 1;
     padding: 0.438em 1em; // 7px 16px
