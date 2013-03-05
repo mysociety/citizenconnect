@@ -26,7 +26,7 @@ you can use the generic selector below, but it's slower:
 [class*="icon-"]:before {
 */
 .i, // we add this here so we can extend it if need be to add a icon with just css
-.icon-chevron-right:before, .icon-search:before, .icon-chevron-left:before, .icon-x:before, .icon-checkmark:before, .icon-circle:before, .icon-caret-up:before, .icon-caret-down:before, .icon-caret-right:before, .icon-caret-left:before {
+.icon-search:before, .icon-x:before, .icon-checkmark:before, .icon-circle:before, .icon-caret-up:before, .icon-caret-down:before, .icon-caret-right:before, .icon-caret-left:before, .icon-chevron-right:before, .icon-double-chevron-right:before, .icon-chevron-left:before, .icon-double-chevron-left:before {
   font-family: 'icomoon';
   speak: none;
   font-style: normal;
@@ -34,14 +34,8 @@ you can use the generic selector below, but it's slower:
   line-height: 1;
   -webkit-font-smoothing: antialiased;
 }
-.icon-chevron-right:before {
-  content: "\e02d";
-}
 .icon-search:before {
   content: "\e035";
-}
-.icon-chevron-left:before {
-  content: "\e02c";
 }
 .icon-x:before {
   content: "\e000";
@@ -63,4 +57,16 @@ you can use the generic selector below, but it's slower:
 }
 .icon-caret-left:before {
   content: "\f0d9";
+}
+.icon-chevron-right:before {
+  content: "\e001";
+}
+.icon-double-chevron-right:before {
+  content: "\e002";
+}
+.icon-chevron-left:before {
+  content: "\e004";
+}
+.icon-double-chevron-left:before {
+  content: "\e005";
 }
