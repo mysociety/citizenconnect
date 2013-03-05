@@ -53,3 +53,45 @@
     }
   }
 }
+
+
+.results-list {
+  list-style:none;
+  padding: 0;
+  margin-bottom: ($grid-gutter * 2) + em;
+  border-bottom: $c-grey solid ($grid-gutter / 5) + em;
+  li {
+    border-bottom: $c-grey solid 1px;
+    padding: ($grid-gutter / 2) + em 0;
+    overflow: hidden;
+    &:last-child { border-bottom: none; }
+    .results-list__title {
+      width: 60%;
+      float: left;
+      h2 {
+        margin: 0;
+        font-weight: normal;
+        font-size: 18px;
+        a {
+          text-decoration: none;
+          color: $c-aquablue;
+        }
+      }
+      p {
+        margin: 0;
+        font-size: 14px;
+      }
+    }
+
+    address {
+      font-size: 12px;
+      width: 30%;
+      float: left;
+    }
+    .results-list__more-link {
+      width: 10%;
+      float: right;
+      text-align: right;
+    }
+  }
+}
