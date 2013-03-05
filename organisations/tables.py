@@ -73,6 +73,8 @@ class MessageModelTable(tables.Table):
 
     class Meta:
         order_by = ('-created',)
+        attrs = {"class": "table"}
+
 
 
 class ExtendedMessageModelTable(MessageModelTable):
@@ -84,6 +86,8 @@ class ExtendedMessageModelTable(MessageModelTable):
                                             template_code=formatted_time_interval())
 
     class Meta:
+        order_by = ('-created',)
+        attrs = {"class": "table"}
         sequence = ('reference_number',
                     'created',
                     'status',
