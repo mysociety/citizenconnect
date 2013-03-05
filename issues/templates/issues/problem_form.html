@@ -6,35 +6,95 @@
 
 {% block content %}
 <div class="header">
-    <h1>Report your problem</h1>
+    <a href="#" class="back-btn  fr"><span class="icon-chevron-left" aria-hidden="true"></span> Back to search results</a>
+    <h1>{% if organisation %}{{ organisation.name }}{% else %}Ask your question{% endif %}</h1>
 </div>
-<div class="hero">
-    <p>Writing a message to <strong>{{ organisation.name }}</strong>
-</div>
-<div class="problem-form">
-    <form method="post">
-        {% csrf_token %}
 
-        {% if form.non_field_errors %}
+<form method="post">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
         <div class="alert alert-error alert-block">
             {{ form.non_field_errors }}
         </div>
-        {% endif %}
+    {% endif %}
 
-        {% for hidden in form.hidden_fields %}
-            {{ hidden }}
-        {% endfor %}
+    {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+    {% endfor %}
 
-        {% for field in form.visible_fields %}
-            <div>
-                {{ field.label_tag }}
-                {{ field }}
-                {{ field.errors }}
-                {{ field.help_text }}
-            </div>
-        {% endfor %}
+    <fieldset class="island">
+        <ul class="gw">
+            <li class="g  one-whole">
+                {{ form.description }}
+                <p class="info">Including as much information as possible to help us to help you.</p>
+            </li>
+        </ul>
+    </fieldset>
 
-        <button type="submit">Submit</button>
-    </form>
-</div>
+    <fieldset class="island">
+        <label for="id_service">Category</label>
+
+        <p class="info">Please select the category that best describes your problem</p>
+
+        <ul class="radio-list">
+            {% for radio in form.category %}
+                <li>{{ radio }}</li>
+            {% endfor %}
+        </ul>
+    </fieldset>
+
+    <fieldset class="island">
+        <ul class="gw">
+            <li class="g  one-half  palm-one-whole">
+                <label for="id_reporter_name">Your Name <span class="additional">(This is optional - you can report problems anonymously)</span></label>
+                {{ form.reporter_name }}
+            </li>
+            <li class="g  one-half  palm-one-whole">
+                <label for="id_reporter_phone">Your Contact Number <span class="additional">(you must enter a contact number OR email address)</span></label>
+                {{ form.reporter_phone }}
+            </li>
+            <li class="g  one-half  palm-one-whole">
+                <label for="id_reporter_email">Your Email Address <span class="additional">(you must enter a contact number OR email address)</span></label>
+                {{ form.reporter_email }}
+            </li>
+            <li class="g  one-whole">
+                <label for="id_preferred_contact_method_0">Preferred contact method</label>
+                <ul class="radio-list">
+                    {% for radio in form.preferred_contact_method %}
+                        <li>{{ radio }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        </ul>
+    </fieldset>
+
+    <fieldset class="big-radio-group">
+        <!-- <label for="id_privacy_0">Privacy</label> -->
+        <ul>
+            <li class="big-radio-group__first">
+                <label for="id_privacy_0">
+                    <input checked="checked" type="radio" id="id_privacy_0" value="0" name="privacy" />
+                    &nbsp;Keep all details private
+                </label>
+            </li>
+            <li>
+                <label for="id_privacy_1">
+                    <input type="radio" id="id_privacy_1" value="1" name="privacy" />
+                    &nbsp;Publish problem and response but not my name
+                </label>
+            </li>
+            <li class="big-radio-group__last">
+                <label for="id_privacy_2">
+                    <input type="radio" id="id_privacy_2" value="2" name="privacy" />
+                    &nbsp;Publish problem and response with my name
+                </label>
+            </li>
+        </ul>
+    </fieldset>
+
+    <fieldset>
+        <button class="btn  fr" type="submit">Submit</button>
+    </fieldset>
+</form>
 {% endblock %}
