@@ -48,9 +48,9 @@ class Command(BaseCommand):
             name = row[1]
             organisation_type_text = row[2]
             url = row[3]
-            address1 = row[4]
-            address2 = row[5]
-            address3 = row[6]
+            address_line1 = row[4]
+            address_line2 = row[5]
+            address_line3 = row[6]
             city = row[7]
             county = row[8]
             lat = row[9]
@@ -72,7 +72,13 @@ class Command(BaseCommand):
             organisation_defaults = {'choices_id':choices_id,
                                      'name': name,
                                      'organisation_type': organisation_type,
-                                     'point': Point(float(lon), float(lat))}
+                                     'point': Point(float(lon), float(lat)),
+                                     'address_line1': address_line1,
+                                     'address_line2': address_line2,
+                                     'address_line3': address_line3,
+                                     'city': city,
+                                     'county': county,
+                                     'postcode': postcode}
             try:
                 organisation, organisation_created = Organisation.objects.get_or_create(ods_code=ods_code,
                                                                            defaults=organisation_defaults)
