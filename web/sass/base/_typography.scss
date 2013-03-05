@@ -1,4 +1,4 @@
-html{
+html {
     font-family: "Frutiger", "Frutiger Linotype", "Helvetica Neue", "Myriad Pro", Myriad, Arial, Calibri, Helvetica, sans-serif;
 }
 
@@ -7,7 +7,7 @@ button,
 input,
 select,
 textarea {
-    color: $c-body-text;
+    color: $c-body-text-color;
 }
 
 body {
@@ -22,13 +22,13 @@ body {
  */
 
 ::-moz-selection {
-    background: $c-selection-color;
+    background: $c-selection-bg;
     text-shadow: none;
-    color: $c-body-text;
+    color: $c-selection-color;
 }
 
 ::selection {
-    background: $c-selection-color;
+    background: $c-selection-bg;
     text-shadow: none;
-    color: $c-body-text;
+    color: $c-selection-color;
 }

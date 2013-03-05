@@ -8,12 +8,12 @@ table {
   @include media-query(palm){ width: $page-width-max + em; }
   tr {
     &.table__heading { font-weight: bold; }
-    &.table__footer td { border-bottom: $c-grey solid 2px; }
+    &.table__footer td { border-bottom: $c-table-border solid 2px; }
   }
   td {
     font-size: 0.75em; //12px
     text-align: center;
-    border-bottom: $c-grey solid 1px;
+    border-bottom: $c-table-border solid 1px;
     padding: 10px 0;
     &.table__label { text-align: left; }
   }
@@ -21,7 +21,7 @@ table {
     font-size: 0.75em; //12px
     font-weight: normal;
     padding: 20px 10px;
-    border-bottom: $c-grey solid 2px;
+    border-bottom: $c-table-border solid 2px;
     &.table__title {
       font-weight: bold;
       text-align: left;
@@ -54,9 +54,9 @@ table {
 
 
   th a {
-    color: $c-black;
+    color: $c-table-problem-heading-link-color;
     text-decoration: none;
-    &:hover { color: $c-aquablue; }
+    &:hover { color: $c-table-problem-heading-link-hover-color; }
   }
 
   // up / down carats for srotable cols
@@ -67,15 +67,15 @@ table {
       content: "\f0d7";
     }
   }
-  th.asc a, th.desc a { color: $c-aquablue; }
+  th.asc a, th.desc a { color: $c-table-problem-heading-link-active-color; }
   th.asc a:after { content: "\f0d8"; }
 
-  td.created { color: $c-darkgrey; }
+  td.created { color: $c-table-problem-created-color; }
   td.summary a {
     display: block;
-    color: $c-darkgrey;
+    color: $c-table-problem-summary-color;
     text-decoration: none;
-    &:hover { color: $c-black; }
+    &:hover { color: $c-table-problem-summary-hover-color; }
   }
 
   // coloured icons
@@ -86,14 +86,14 @@ table {
   }
   .icon-x {
     font-size: (22px / $font-size-base) + em;
-    color: $c-nhs_red;
+    color: $c-table-problem-icon-x-color;
   }
   .icon-checkmark {
     font-size: (22px / $font-size-base) + em;
-    color: $c-nhs_green;
+    color: $c-table-problem-icon-checkmark-color;
   }
   .icon-circle {
     font-size: (22px / $font-size-base) + em;
-    color: $c-darkgrey;
+    color: $c-table-problem-icon-circle-color;
   }
 }

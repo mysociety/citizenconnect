@@ -1,10 +1,113 @@
 /**
  * Colour Assignment
- * -------------------
  */
-
-$c-body-text: $c-black;
 $c-page-bg: $c-white;
 $c-body-bg: $c-white;
 
-$c-selection-color: $c-nhs_lightblue;
+
+/**
+ * _forms.scss
+ */
+                     $c-text-input-color: $c-black;
+                    $c-text-input-shadow: $c-darkgrey;
+              $c-text-input-shadow-focus: $c-aquablue;
+                    $c-placeholder-color: $c-darkgrey;
+                   $c-big-radio-group-bg: $c-lightgrey;
+             $c-big-radio-group-bg-hover: $c-grey;
+               $c-big-radio-group-border: $c-white;
+             $c-big-radio-group-radio-bg: $c-grey;
+         $c-big-radio-group-radio-border: $c-white;
+      $c-big-radio-group-active-radio-bg: $c-pink;
+$c-big-radio-group-active-green-radio-bg: $c-nhs_green;
+
+
+/**
+ * _misc.scss
+ */
+$c-hr-border: $c-grey;
+
+
+/**
+ * _tables.scss
+ */
+                           $c-table-border: $c-grey;
+       $c-table-problem-heading-link-color: $c-black;
+ $c-table-problem-heading-link-hover-color: $c-aquablue;
+$c-table-problem-heading-link-active-color: $c-aquablue;
+            $c-table-problem-created-color: $c-darkgrey;
+            $c-table-problem-summary-color: $c-darkgrey;
+      $c-table-problem-summary-hover-color: $c-black;
+             $c-table-problem-icon-x-color: $c-nhs_red;
+     $c-table-problem-icon-checkmark-color: $c-nhs_green;
+        $c-table-problem-icon-circle-color: $c-darkgrey;
+
+
+/**
+ * _typography.scss
+ */
+$c-body-text-color: $c-black;
+   $c-selection-bg: $c-nhs_lightblue;
+$c-selection-color: $c-black;
+
+
+/**
+ * _island.scss
+ */
+            $c-island-bg: $c-lightgrey;
+   $c-island-aquablue-bg: $c-aquablue;
+$c-island-aquablue-color: $c-white;
+
+
+/**
+ * _buttons.scss
+ */
+               $c-btn-border: $c-black;
+                $c-btn-color: $c-white;
+                   $c-btn-bg: $c-aquablue;
+             $c-btn-hover-bg: $c-aquablue-tint;
+           $c-back-btn-color: $c-darkgrey;
+      $c-back-btn-span-color: $c-grey;
+     $c-back-btn-hover-color: $c-darkgrey / 1.2;
+$c-back-btn-span-hover-color: $c-grey / 1.2;
+
+
+/**
+ * _filters.scss
+ */
+$c-filter-border: $c-grey;
+
+
+/**
+ * _header.scss
+ */
+$c-header-border: $c-grey;
+
+
+/**
+ * _results-list.scss
+ */
+                $c-results-list-border: $c-grey;
+      $c-results-list-title-link-color: $c-aquablue;
+$c-results-list-title-link-hover-color: $c-aquablue;
+               $c-results-list-title-p: $c-darkgrey;
+         $c-results-list-address-color: $c-darkgrey;
+       $c-results-list-more-link-color: $c-grey;
+ $c-results-list-more-link-hover-color: $c-darkgrey;
+
+
+/**
+ * _staging-header.scss
+ */
+
+   $c-staging-bg: $c-nhs_blue;
+$c-staging-color: $c-white;
+
+
+/**
+ * _tabs.scss
+ */
+        $c-tab-nav-link-color: $c-black;
+           $c-tab-nav-link-bg: $c-grey / 1.1;
+     $c-tab-nav-link-hover-bg: $c-darkgrey;
+    $c-tab-nav-link-active-bg: $c-white;
+$c-tab-nav-link-active-border: $c-grey;

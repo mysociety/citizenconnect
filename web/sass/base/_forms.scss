@@ -47,11 +47,11 @@ textarea {
   margin: 0 0 $grid-gutter + em 0;
   padding: 0.5em; //8px
   border: 0;
-  color: $c-body-text;
+  color: $c-text-input-color;
   outline: none;
-  @include vendor(box-shadow, inset 0px 0px 3px 1px $c-darkgrey);
+  @include vendor(box-shadow, inset 0px 0px 3px 1px $c-text-input-shadow);
   @include vendor(border-radius, 2px);
-  &:focus { @include vendor(box-shadow, inset 0px 0px 3px 1px $c-aquablue); }
+  &:focus { @include vendor(box-shadow, inset 0px 0px 3px 1px $c-text-input-shadow-focus); }
 }
 
 
@@ -59,19 +59,19 @@ textarea {
  * Placeholder styling
  */
 ::-webkit-input-placeholder {
-  color: $c-darkgrey;
+  color: $c-placeholder-color;
   font-style: italic;
 }
 :-moz-placeholder {
-  color: $c-darkgrey;
+  color: $c-placeholder-color;
   font-style: italic;
 }
 :-ms-placeholder {
-  color: $c-darkgrey;
+  color: $c-placeholder-color;
   font-style: italic;
 }
 .placeholder {
-  color: $c-darkgrey;
+  color: $c-placeholder-color;
   font-style: italic;
 }
 
@@ -102,8 +102,8 @@ textarea {
   li {
     display: table-cell;
     padding: ($grid-gutter + em);
-    background: $c-lightgrey;
-    border-left: ($grid-gutter / 2) + em solid $c-white;
+    background: $c-big-radio-group-bg;
+    border-left: ($grid-gutter / 2) + em solid $c-big-radio-group-border;
     width: 33%;
     vertical-align: middle;
     &.big-radio-group__first {
@@ -114,7 +114,7 @@ textarea {
       @include vendor(border-radius, 0 ($grid-gutter/2) + em ($grid-gutter/2) + em 0);
     }
     &:hover {
-      background: $c-grey;
+      background: $c-big-radio-group-bg-hover;
       cursor: pointer;
       label { cursor: pointer; }
     }
@@ -137,13 +137,13 @@ textarea {
       margin-right: 1em;
       width: 2em;
       height: 2em;
-      background: $c-grey;
-      border: 0.25em solid $c-white;
+      background: $c-big-radio-group-radio-bg;
+      border: 0.25em solid $c-big-radio-group-radio-border;
       @include vendor(border-radius, 1em);
     }
     &.big-radio-group--active {
-      .big-radio-group__radio { background: $c-pink; }
-      &.big-radio-group--green .big-radio-group__radio { background: $c-nhs_green; }
+      .big-radio-group__radio { background: $c-big-radio-group-active-radio-bg; }
+      &.big-radio-group--green .big-radio-group__radio { background: $c-big-radio-group-active-green-radio-bg; }
     }
   }
 }
