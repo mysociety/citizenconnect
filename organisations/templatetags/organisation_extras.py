@@ -24,6 +24,14 @@ def formatted_time_interval(time_in_minutes):
     time_in_days = "{0:.0f}".format(time_in_days)
     return time_in_days
 
+@register.filter(is_safe=True)
+def formatted_boolean(boolean):
+    if boolean == True:
+        return "True"
+    elif boolean == False:
+        return "False"
+    else:
+        return None
 
 def paginator(context, adjacent_pages=2):
     """

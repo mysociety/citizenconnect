@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 import django_tables2 as tables
 from django_tables2.utils import A
 
@@ -11,6 +13,19 @@ def percent():
 
 def formatted_time_interval():
     return """{% load organisation_extras %}{{value|formatted_time_interval}}"""
+
+def boolean():
+    return """{% load organisation_extras %}
+              {% if value|formatted_boolean == 'True' %}
+                <span class="icon-checkmark" aria-hidden="true"></span>
+                <span class="hide-text">yes</span>
+              {% elif value|formatted_boolean == 'False' %}
+                <span class="icon-x" aria-hidden="true"></span>
+                <span class="hide-text">no</span>
+              {% else %}
+                <span class="icon-circle" aria-hidden="true"></span>
+                <span class="hide-text">—</span>
+              {% endif %}"""
 
 class NationalSummaryTable(tables.Table):
 
@@ -51,8 +66,10 @@ class MessageModelTable(tables.Table):
     created = tables.DateTimeColumn(verbose_name="Received")
     status = tables.Column()
     category = tables.Column(verbose_name='Category')
-    happy_service = tables.BooleanColumn(verbose_name='Happy with service')
-    happy_outcome = tables.BooleanColumn(verbose_name='Happy with outcome')
+    happy_service = tables.TemplateColumn(verbose_name='Happy with service',
+                                         template_code=boolean())
+    happy_outcome = tables.TemplateColumn(verbose_name='Happy with outcome',
+                                         template_code=boolean())
     summary = tables.Column(verbose_name='Text snippet', order_by=("description"))
 
     def __init__(self, *args, **kwargs):
@@ -73,7 +90,7 @@ class MessageModelTable(tables.Table):
 
     class Meta:
         order_by = ('-created',)
-        attrs = {"class": "table"}
+        attrs = {"class": "problem-table"}
 
 
 
@@ -87,7 +104,7 @@ class ExtendedMessageModelTable(MessageModelTable):
 
     class Meta:
         order_by = ('-created',)
-        attrs = {"class": "table"}
+        attrs = {"class": "problem-table"}
         sequence = ('reference_number',
                     'created',
                     'status',
