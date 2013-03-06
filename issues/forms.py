@@ -16,8 +16,12 @@ class MessageModelForm(forms.ModelForm):
     PRIVACY_PUBLIC = '2'
 
     # A more user-friendly field with which to present the privacy options
+    # Note that the text is not used in the current templates, so this is
+    # just generic text to explain them.
     privacy = forms.ChoiceField(
-       choices=(),
+       choices=((PRIVACY_PRIVATE, "Keep all details private"),
+                (PRIVACY_PRIVATE_NAME, "Publish with response but not my name"),
+                (PRIVACY_PUBLIC, 'Publish with response and my name')),
        initial=0,
        widget=RadioSelect,
        required=True
@@ -39,13 +43,6 @@ class MessageModelForm(forms.ModelForm):
 
 class QuestionForm(MessageModelForm):
 
-    def __init__(self, *args, **kwargs):
-        super(QuestionForm, self).__init__(*args, **kwargs)
-        self.PRIVACY_CHOICES = ((self.PRIVACY_PRIVATE, "Keep all details private"),
-                           (self.PRIVACY_PRIVATE_NAME, "Publish question and response but not my name"),
-                           (self.PRIVACY_PUBLIC, 'Publish question and response with my name'))
-        self.fields['privacy'].choices = self.PRIVACY_CHOICES
-
     class Meta:
         model = Question
 
@@ -62,13 +59,13 @@ class QuestionForm(MessageModelForm):
 
         widgets = {
             # Add placeholder for description
-            'description': Textarea({'placeholder': 'Please write the details of your question in this box, including as much information as possible to help us to help you'}),
+            'description': Textarea({'placeholder': 'Please write the details of your question in this box.'}),
             'category': RadioSelect,
-            'reporter_name': TextInput(attrs={'placeholder': 'Your Name (This is optional - you can ask questions anonymously)'}),
+            'reporter_name': TextInput(attrs={'class': 'text-input'}),
             # Add placeholder for phone
-            'reporter_phone': TextInput(attrs={'placeholder': 'Your Contact Number (you must enter a contact number OR email address)'}),
+            'reporter_phone': TextInput(attrs={'class': 'text-input'}),
             # Add placeholder for email
-            'reporter_email': TextInput(attrs={'placeholder': 'Your Email Address (you must enter a contact number OR email address)'}),
+            'reporter_email': TextInput(attrs={'class': 'text-input'}),
             # Make preferred contact method a radio button instead of a select
             'preferred_contact_method': RadioSelect,
             # Hide the privacy booleans because they're not very user-friendly
@@ -78,13 +75,6 @@ class QuestionForm(MessageModelForm):
         }
 
 class ProblemForm(MessageModelForm):
-
-    def __init__(self, *args, **kwargs):
-        super(ProblemForm, self).__init__(*args, **kwargs)
-        self.PRIVACY_CHOICES = ((self.PRIVACY_PRIVATE, "Keep all details private"),
-                                (self.PRIVACY_PRIVATE_NAME, "Publish problem and response but not my name"),
-                                (self.PRIVACY_PUBLIC, 'Publish problem and response with my name'))
-        self.fields['privacy'].choices = self.PRIVACY_CHOICES
 
     class Meta:
         model = Problem
