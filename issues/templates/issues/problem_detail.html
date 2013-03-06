@@ -2,7 +2,7 @@
 
 {% block title %}Problem report{% endblock %}
 
-{% block bodyclasses %}problem-public{% endblock %}
+{% block bodyclasses %}problem-report{% endblock %}
 
 {% block content %}
 <div class="header">
@@ -14,9 +14,7 @@
     <div class="meta-data">
         <div class="gw">
             <p class="meta-data__title  g  one-whole">{{ object.organisation.name }}</p>
-            {% if object.service %}
-                <p class="meta-data__sub-title  g  one-half  palm-one-whole">{{ object.service }}</p>
-            {% endif %}
+            <p class="meta-data__sub-title  g  one-half  palm-one-whole">{{ object.service|default_if_none:"No particular service" }}</p>
             <p class="g  one-half  palm-one-whole  align-right--not-palm"><span class="meta-data-label">Category</span> {{ object.get_category_display }}</p>
         </div>
     </div>
@@ -43,9 +41,9 @@
                     {% else %}
                         <span class="icon-x" aria-hidden="true"><span class="hide-text">no</span></span>
                     {% endif %}
-                    <span class="meta-data-spacer"> </span>
                 {% endif %}
                 {% if object.happy_outcome != None %}
+                    <span class="meta-data-spacer"> </span>
                     <strong>Happy with Outcome</strong>&nbsp;
                     {% if object.happy_outcome %}
                         <span class="icon-checkmark" aria-hidden="true"><span class="hide-text">yes</span></span>

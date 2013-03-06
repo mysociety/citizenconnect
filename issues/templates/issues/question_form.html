@@ -54,21 +54,21 @@
         <fieldset class="island">
             <ul class="gw">
                 <li class="g  one-half  palm-one-whole">
-                    <label for="id_reporter_name">Your Name <span class="info">(This is optional - you can ask questions anonymously)</span></label>
+                    <label for="id_reporter_name">Your Name <span class="info">This is optional - you can ask questions anonymously</span></label>
                     {{ form.reporter_name }}
                     {% include "message-list.html" with messages=form.reporter_name.errors message_type='error' %}
                 </li>
                 <li class="g  one-half  palm-one-whole">
-                    <label for="id_reporter_phone">Your Contact Number <span class="info">(You must enter a contact number OR email address)</span></label>
+                    <label for="id_reporter_phone">Your Contact Number <span class="info">You must enter a contact number OR email address</span></label>
                     {{ form.reporter_phone }}
                     {% include "message-list.html" with messages=form.reporter_phone.errors message_type='error' %}
                 </li>
                 <li class="g  one-half  palm-one-whole">
-                    <label for="id_reporter_email">Your Email Address <span class="info">(You must enter a contact number OR email address)</span></label>
+                    <label for="id_reporter_email">Your Email Address <span class="info">You must enter a contact number OR email address</span></label>
                     {{ form.reporter_email }}
                     {% include "message-list.html" with messages=form.reporter_email.errors message_type='error' %}
                 </li>
-                <li class="g  one-whole">
+                <li class="g  one-half  pal-one-whole">
                     <label for="id_preferred_contact_method_0">Preferred contact method</label>
                     <ul class="radio-list">
                         {% for radio in form.preferred_contact_method %}
