@@ -32,7 +32,7 @@
       h2 {
         margin: 0;
         font-weight: normal;
-        font-size: 1.125em; //18px
+        font-size: (18px / $font-size-base) + em;
         a {
           text-decoration: none;
           color: $c-results-list-title-link-color;
@@ -41,19 +41,19 @@
       }
       p {
         margin: 0;
-        font-size: 0.875em; //14px
+        font-size: (14px / $font-size-base) + em;
         color: $c-results-list-title-p;
       }
     }
     address {
-      font-size: 0.75em; //12px
+      font-size: (12px / $font-size-base) + em;
       width: 30%;
       float: left;
       margin-top: 10px;
       color: $c-results-list-address-color;
     }
     .results-list__more-link {
-      font-size: 2.75em; //44px
+      font-size: (44px / $font-size-base) + em;
       width: 10%;
       float: right;
       text-align: right;

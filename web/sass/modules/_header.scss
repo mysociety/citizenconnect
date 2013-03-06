@@ -1,5 +1,24 @@
+/**
+ * Just a div to drop a border under (typically) the page title
+ *
+ * Also adjusts margins and has a pre heading, markup thus:
+ *
+<div class="header">
+  <h2 class="header__pre-heading">BMI The Hampshire Clinic</h2>
+  <h1>Problem report</h1>
+</div>
+ *
+ */
 .header {
   border-bottom: $c-header-border solid ($grid-gutter / 5) + em;
-  margin-bottom: $grid-gutter + em;
-  h1, h2, h3, h4, h5, h6 { margin-bottom: 0.25em; }
+  margin: $grid-gutter + em 0;
+
+  h1, h2, h3, h4, h5, h6 { line-height: 1.1; margin: 0 0 0.25em 0; }
+
+  .header__pre-heading {
+    font-size: (20px / $font-size-base) + em;
+    font-weight: normal;
+    color: $c-header-pre-heading-color;
+    margin-bottom: 0;
+  }
 }

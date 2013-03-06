@@ -51,8 +51,12 @@ class Command(BaseCommand):
             Service.objects.all().delete()
             Organisation.objects.all().delete()
 
+        if verbose:
+            processed = 0
+            skipped = 0
+
         type_mappings = {'HOS': 'hospitals',
-                         'GP': 'gppractices'}
+                         'GPB': 'gppractices'}
         for row in reader:
             rownum += 1
             if rownum == 1:
@@ -98,14 +102,16 @@ class Command(BaseCommand):
                 if update:
                     Organisation.objects.filter(id=organisation.id).update(**organisation_defaults)
                 service = None
-                if service_name and service_name != 'NULL':
-                    service_defaults = {'name': service_name }
-                    service, service_created = Service.objects.get_or_create(organisation=organisation,
-                                                                             service_code=service_code,
-                                                                             defaults=service_defaults)
+                # Only hospitals have services
+                if organisation_type == 'hospitals':
+                    if service_name and service_name != 'NULL':
+                        service_defaults = {'name': service_name }
+                        service, service_created = Service.objects.get_or_create(organisation=organisation,
+                                                                                 service_code=service_code,
+                                                                                 defaults=service_defaults)
 
-                    if update:
-                        Service.objects.filter(id=service.id).update(**service_defaults)
+                        if update:
+                            Service.objects.filter(id=service.id).update(**service_defaults)
                 if organisation_created:
                     self.stdout.write('Created organisation %s\n' % organisation.name)
                 elif verbose:
@@ -115,7 +121,17 @@ class Command(BaseCommand):
                         self.stdout.write('Created service %s\n' % service.name)
                     elif verbose:
                         self.stdout.write('Service %s for organisation %s')
+                if verbose:
+                    processed += 1
                 transaction.commit()
             except Exception as e:
+                if verbose:
+                    skipped += 1
                 self.stderr.write("Skipping %s %s (%s): %s" % (name, organisation_type, ods_code, e))
                 transaction.rollback()
+
+        if verbose:
+            # First row is a header, so ignore it in the count
+            self.stdout.write("Total records in file: {0}\n".format(rownum-1))
+            self.stdout.write("Processed {0} records\n".format(processed))
+            self.stdout.write("Skipped {0} records\n".format(skipped))

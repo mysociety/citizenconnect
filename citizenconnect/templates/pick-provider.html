@@ -13,16 +13,27 @@
 
 <p>To find the part of the NHS that you would like your question sent to please put either the name of the provider (e.g. Hospital name, GP practice name) the postcode of the provider or your postcode</p>
 
+{% if form.non_field_errors or form.errors.location %}
+<div class="island">
+    {% if form.errors.location %}
+        {% with messages=form.non_field_errors|add:form.errors.location %}
+            {% include "message-list.html" with messages=messages message_type='error' %}
+        {% endwith %}
+    {% else %}
+        {% include "message-list.html" with messages=form.non_field_errors message_type='error' %}
+    {% endif %}
+</div>
+{% endif %}
+
 <div class="island">
     <form action="" method="get" class="gw">
-        {% if form.non_field_errors or form.errors.location %}
-        <div class="alert alert-error alert-block">
-            {{ form.non_field_errors }} {{ form.errors.location }}
-        </div>
-        {% endif %}
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
         <input type="hidden" name="organisation_type" id="id_organisation_type" value="hospitals">
 
-        <label for="id_location" class="g  one-whole">Provider's name</label>
+        <label for="id_location" class="g  one-whole">Provider&CloseCurlyQuote;s name</label>
+
         <div class="g  three-quarters">
             <input type="text" name="location" id="id_location"  class="text-input  one-whole" placeholder="e.g. &OpenCurlyQuote;St Lukes Hospital&CloseCurlyQuote; or &OpenCurlyQuote;SW1P 3AZ&CloseCurlyQuote;" />
         </div>

@@ -117,6 +117,7 @@ class ProblemCreate(OrganisationAwareViewMixin, CreateView):
             form.fields['service'].widget = HiddenInput()
         else:
             form.fields['service'].queryset = services
+            form.fields['service'].empty_label = "None"
         return form
 
 class ProblemDetail(DetailView):

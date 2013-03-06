@@ -80,7 +80,8 @@ $c-filter-border: $c-grey;
 /**
  * _header.scss
  */
-$c-header-border: $c-grey;
+           $c-header-border: $c-grey;
+$c-header-pre-heading-color: $c-darkgrey;
 
 
 /**
@@ -109,5 +110,25 @@ $c-staging-color: $c-white;
         $c-tab-nav-link-color: $c-black;
            $c-tab-nav-link-bg: $c-grey-tint;
      $c-tab-nav-link-hover-bg: $c-darkgrey;
+  $c-tab-nav-link-hover-color: $c-white;
     $c-tab-nav-link-active-bg: $c-white;
 $c-tab-nav-link-active-border: $c-grey;
+
+
+/**
+ * _pagination.scss
+ */
+$c-pagination-link-color: $c-white;
+$c-pagination-link-bg: $c-grey;
+$c-pagination-link-hover-bg: $c-aquablue;
+$c-pagination-span-color: $c-grey;
+$c-pagination-current-span-bg: $c-darkgrey;
+$c-pagination-current-span-color: $c-white;
+
+
+/**
+ * _message-list.scss
+ */
+  $c-message-list-error-color: $c-nhs_red;
+$c-message-list-success-color: $c-nhs_lightgreen;
+   $c-message-list-icon-color: $c-darkgrey;

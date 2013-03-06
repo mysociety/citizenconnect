@@ -1,3 +1,6 @@
+/**
+ * General button style, can be used anywhere e.g. a, input, button etc
+ */
 .btn {
     @include inline-block;
     cursor: pointer;
@@ -10,21 +13,30 @@
     color: $c-btn-color;
     background: $c-btn-bg;
     @include vendor(border-radius, ($grid-gutter / 10) + em);
-    &:hover { background: $c-btn-hover-bg / 1.2; }
+    &:hover { background: $c-btn-hover-bg; }
 }
 
 
+/**
+ * Typically used within the .header div, markup something like this:
+ *
+<a href="/back/a/page/innit" class="back-btn  fr">
+    <span class="icon-chevron-left" aria-hidden="true"></span>
+    Back to search results
+</a>
+ *
+ */
 .back-btn {
     text-decoration: none;
     color: $c-back-btn-color;
-    font-size: 0.875em; //14px
+    font-size: (14px / $font-size-base) + em;
     line-height: 1;
-    margin-top: 1.5em;
+    margin-top: 1em;
     span {
         display: block;
         float: left;
-        font-size: 1.71428571428571em; //24px
-        margin-top: -5px;
+        font-size: (24px / 14px) + em;
+        margin-top: -7px;
         margin-right: 5px;
         color: $c-back-btn-span-color;
     }

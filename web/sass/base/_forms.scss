@@ -31,7 +31,7 @@ label,
  * Info text
  */
 .info {
-  font-size: 0.875em; //14px
+  font-size: (14px / $font-size-base) + em;
   font-style: italic;
   font-weight: normal;
   display: block;
@@ -90,8 +90,8 @@ textarea {
     @include media-query(palm){ width: 50%; }
     label {
       font-weight: normal;
-      font-size: 0.875em; //14px
-      input { font-size: 1.14285714285714em; } //16px;
+      font-size: (14px / $font-size-base) + em;
+      input { font-size: (16px / 14px) + em; }
     }
   }
 }
@@ -190,6 +190,7 @@ textarea {
       font-size: (16px / $font-size-base) + em;
     }
   }
+  input { margin-bottom: 0; }
   .btn {
     width: 100%;
     padding-left: 0.25em;
