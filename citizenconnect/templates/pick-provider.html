@@ -16,9 +16,11 @@
 {% if form.non_field_errors or form.errors.location %}
 <div class="island">
     {% if form.errors.location %}
-        {% include "errorlist.html" with errors=form.non_field_errors|add:form.errors.location %}
+        {% with messages=form.non_field_errors|add:form.errors.location %}
+            {% include "message-list.html" with messages=messages message_type='error' %}
+        {% endwith %}
     {% else %}
-        {% include "errorlist.html" with errors=form.non_field_errors %}
+        {% include "message-list.html" with messages=form.non_field_errors message_type='error' %}
     {% endif %}
 </div>
 {% endif %}
