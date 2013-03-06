@@ -1,5 +1,4 @@
 from django.db import models
-from django.db.models import Q
 from django.conf import settings
 from django.core.exceptions import ValidationError
 
@@ -87,12 +86,12 @@ class QuestionManager(models.Manager):
         """
         Return only open problems
         """
-        return super(QuestionManager, self).all().filter(Q(status=Question.NEW) | Q(status=Question.ACKNOWLEDGED))
+        return super(QuestionManager, self).all().filter(publication_status=Question.PUBLISHED)
 
 class OpenQuestionManager(models.Manager):
 
     def get_query_set(self):
-        return super(OpenQuestionManager, self).get_query_set().filter(Q(status=Question.NEW) | Q(status=Question.ACKNOWLEDGED))
+        return super(OpenQuestionManager, self).get_query_set().filter(publication_status=Question.PUBLISHED)
 
 class Question(MessageModel):
     # Custom manager
@@ -136,12 +135,12 @@ class ProblemManager(models.Manager):
         """
         Return only open problems
         """
-        return super(ProblemManager, self).all().filter(Q(status=Problem.NEW) | Q(status=Problem.ACKNOWLEDGED))
+        return super(ProblemManager, self).all().filter(publication_status=Problem.PUBLISHED)
 
 class OpenProblemManager(models.Manager):
 
     def get_query_set(self):
-        return super(OpenProblemManager, self).get_query_set().filter(Q(status=Problem.NEW) | Q(status=Problem.ACKNOWLEDGED))
+        return super(OpenProblemManager, self).get_query_set().filter(publication_status=Problem.PUBLISHED)
 
 class Problem(MessageModel):
     # Custom managers
