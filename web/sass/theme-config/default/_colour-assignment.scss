@@ -112,3 +112,22 @@ $c-staging-color: $c-white;
   $c-tab-nav-link-hover-color: $c-white;
     $c-tab-nav-link-active-bg: $c-white;
 $c-tab-nav-link-active-border: $c-grey;
+
+
+/**
+ * _pagination.scss
+ */
+$c-pagination-link-color: $c-white;
+$c-pagination-link-bg: $c-grey;
+$c-pagination-link-hover-bg: $c-aquablue;
+$c-pagination-span-color: $c-grey;
+$c-pagination-current-span-bg: $c-darkgrey;
+$c-pagination-current-span-color: $c-white;
+
+
+/**
+ * _errors.scss
+ */
+  $c-errorlist-error-color: $c-nhs_red;
+$c-errorlist-success-color: $c-nhs_lightgreen;
+   $c-errorlist-icon-color: $c-darkgrey;

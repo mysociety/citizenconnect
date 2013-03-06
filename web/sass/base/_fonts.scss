@@ -26,11 +26,13 @@ you can use the generic selector below, but it's slower:
 [class*="icon-"]:before {
 */
 .i, // we add this here so we can extend it if need be to add a icon with just css
-.icon-search:before, .icon-x:before, .icon-checkmark:before, .icon-circle:before, .icon-caret-up:before, .icon-caret-down:before, .icon-caret-right:before, .icon-caret-left:before, .icon-chevron-right:before, .icon-double-chevron-right:before, .icon-chevron-left:before, .icon-double-chevron-left:before {
+.icon-search:before, .icon-x:before, .icon-checkmark:before, .icon-circle:before, .icon-caret-up:before, .icon-caret-down:before, .icon-caret-right:before, .icon-caret-left:before, .icon-chevron-right:before, .icon-double-chevron-right:before, .icon-chevron-left:before, .icon-double-chevron-left:before, .icon-warning:before {
   font-family: 'icomoon';
   speak: none;
   font-style: normal;
   font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
   line-height: 1;
   -webkit-font-smoothing: antialiased;
 }
@@ -69,4 +71,7 @@ you can use the generic selector below, but it's slower:
 }
 .icon-double-chevron-left:before {
   content: "\e005";
+}
+.icon-warning:before {
+  content: "\e006";
 }
