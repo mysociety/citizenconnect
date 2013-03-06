@@ -132,3 +132,15 @@ $c-pagination-current-span-color: $c-white;
   $c-message-list-error-color: $c-nhs_red;
 $c-message-list-success-color: $c-nhs_lightgreen;
    $c-message-list-icon-color: $c-darkgrey;
+
+
+/**
+ * _meta-data.scss
+ */
+        $c-meta-data-border-color: $c-grey;
+     $c-meta-data-sub-title-color: $c-darkgrey;
+          $c-meta-data-foot-color: $c-darkgrey;
+        $c-meta-data-icon-x-color: $c-nhs_red;
+$c-meta-data-icon-checkmark-color: $c-nhs_lightgreen;
+         $c-meta-data-label-color: $c-darkgrey;
+  $c-meta-data-label-border-color: $c-grey;

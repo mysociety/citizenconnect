@@ -1,8 +1,8 @@
 /**
- *
+ * See problem-report.html for reference as to how this might be used.
  */
 .meta-data {
-  border-bottom: 1px solid $c-grey;
+  border-bottom: 1px solid $c-meta-data-border-color;
   margin: 0 0 ($grid-gutter / 2) + em 0;
   padding-bottom: ($grid-gutter / 2) + em;
 
@@ -18,27 +18,29 @@
 
   .meta-data__sub-title {
     font-size: $font-size-base;
-    color: $c-darkgrey;
+    color: $c-meta-data-sub-title-color;
   }
 
   .meta-data__foot {
     font-size: (12px / $font-size-base) + em;
-    color: $c-darkgrey;
+    color: $c-meta-data-foot-color;
   }
 
   .icon-x {
     margin-left: 0.25em;
-    color: $c-nhs_red;
+    color: $c-meta-data-icon-x-color;
   }
+
   .icon-checkmark {
     margin-left: 0.25em;
-    color: $c-nhs_lightgreen;
+    color: $c-meta-data-icon-checkmark-color;
   }
 }
   .meta-data--response {
     p { margin: 1em 0; }
     .meta-data__foot { margin: 0; }
   }
+
 
 .meta-data-wrap { margin: 1em 0 2em 0; }
 
@@ -47,9 +49,9 @@
   font-size: (11px / $font-size-base) + em;
   font-weight: normal;
   text-transform: uppercase;
-  color: $c-darkgrey;
+  color: $c-meta-data-label-color;
 }
-  .meta-data-label--bordered { border-bottom: 2px solid $c-grey; }
+  .meta-data-label--bordered { border-bottom: 2px solid $c-meta-data-label-border-color; }
 
 
 .meta-data-spacer {
