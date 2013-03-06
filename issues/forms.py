@@ -48,6 +48,7 @@ class QuestionForm(MessageModelForm):
 
         fields = [
             'description',
+            'postcode',
             'category',
             'reporter_name',
             'reporter_phone',
@@ -60,6 +61,7 @@ class QuestionForm(MessageModelForm):
         widgets = {
             # Add placeholder for description
             'description': Textarea({'placeholder': 'Please write the details of your question in this box.'}),
+            'postcode': TextInput(attrs={'class': 'text-input'}),
             'category': RadioSelect,
             'reporter_name': TextInput(attrs={'class': 'text-input'}),
             # Add placeholder for phone
