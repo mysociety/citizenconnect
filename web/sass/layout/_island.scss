@@ -1,0 +1,41 @@
+/*------------------------------------*\
+  Island
+\*------------------------------------*/
+
+/**
+ * From inuit.css (https://github.com/csswizardry/inuit.css/)
+ *
+ * A padded box with a grey background and rounded corners
+ */
+
+.island,
+.islet {
+    display: block;
+    @extend .cf;
+    background: $c-island-bg;
+    @include vendor(border-radius, ($grid-gutter/2) + em);
+}
+.island {
+    padding: $grid-gutter + em;
+}
+    .island > :last-child,
+    .islet > :last-child {
+        margin-bottom: 0;
+    }
+
+
+/**
+ * Just like `.island`, only smaller.
+ */
+.islet {
+    padding: ($grid-gutter / 2) + em;
+}
+
+
+/**
+ * Colour variants
+ */
+.island--aquablue {
+    background: $c-island-aquablue-bg;
+    color: $c-island-aquablue-color;
+}

@@ -7,30 +7,34 @@
 {% block bodyclasses %}pick-provider{% endblock %}
 
 {% block content %}
-<div class="header">
-    <h1>Pick a Provider</h1>
-</div>
-<div class="hero">
-    <form action="" method="get">
-        {% if form.non_field_errors %}
+
+
+<h1>Choose a Provider</h1>
+
+<p>To find the part of the NHS that you would like your question sent to please put either the name of the provider (e.g. Hospital name, GP practice name) the postcode of the provider or your postcode</p>
+
+<div class="island">
+    <form action="" method="get" class="gw">
+        {% if form.non_field_errors or form.errors.location %}
         <div class="alert alert-error alert-block">
-            {{ form.non_field_errors }}
+            {{ form.non_field_errors }} {{ form.errors.location }}
         </div>
         {% endif %}
-
         {% for hidden in form.hidden_fields %}
             {{ hidden }}
         {% endfor %}
+        <label for="id_location" class="g  one-whole">Provider's name</label>
 
-        {% for field in form.visible_fields %}
-            <div>
-                {{ field.label_tag }}
-                {{ field }}
-                {{ field.errors }}
-                {{ field.help_text }}
-            </div>
-        {% endfor %}
-    <input type="submit" value="Submit" />
+        <div class="g  three-quarters">
+            <input type="text" name="location" id="id_location"  class="text-input  one-whole" placeholder="e.g. &OpenCurlyQuote;St Lukes Hospital&CloseCurlyQuote; or &OpenCurlyQuote;SW1P 3AZ&CloseCurlyQuote;" />
+        </div>
+
+        <div class="g  one-quarter">
+            <input type="submit" value="Find" class="btn  one-whole" />
+        </div>
+
+        <p class="g  one-whole">If you have a general question about NHS services not related to a specific provider, please just type 111 into the box and hit &OpenCurlyQuote;Find&CloseCurlyQuote;</p>
     </form>
 </div>
+
 {% endblock %}

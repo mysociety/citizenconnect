@@ -1,0 +1,34 @@
+html {
+    font-family: "Frutiger", "Frutiger Linotype", "Helvetica Neue", "Myriad Pro", Myriad, Arial, Calibri, Helvetica, sans-serif;
+}
+
+html,
+button,
+input,
+select,
+textarea {
+    color: $c-body-text-color;
+}
+
+body {
+    font-size: $font-size-base;
+    line-height: 1.5;
+}
+
+/*
+ * Remove text-shadow in selection highlight: h5bp.com/i
+ * These selection declarations have to be separate.
+ * Customize the background color to match your design.
+ */
+
+::-moz-selection {
+    background: $c-selection-bg;
+    text-shadow: none;
+    color: $c-selection-color;
+}
+
+::selection {
+    background: $c-selection-bg;
+    text-shadow: none;
+    color: $c-selection-color;
+}

@@ -1,0 +1,35 @@
+.btn {
+    @include inline-block;
+    cursor: pointer;
+    border: 1px solid $c-btn-border;
+    margin: 0;
+    line-height: 1;
+    padding: 0.438em 1em; // 7px 16px
+    text-decoration:none;
+    text-align: center;
+    color: $c-btn-color;
+    background: $c-btn-bg;
+    @include vendor(border-radius, ($grid-gutter / 10) + em);
+    &:hover { background: $c-btn-hover-bg / 1.2; }
+}
+
+
+.back-btn {
+    text-decoration: none;
+    color: $c-back-btn-color;
+    font-size: 0.875em; //14px
+    line-height: 1;
+    margin-top: 1.5em;
+    span {
+        display: block;
+        float: left;
+        font-size: 1.71428571428571em; //24px
+        margin-top: -5px;
+        margin-right: 5px;
+        color: $c-back-btn-span-color;
+    }
+    &:hover {
+        color: $c-back-btn-hover-color;
+        span { color: $c-back-btn-span-hover-color;}
+    }
+}

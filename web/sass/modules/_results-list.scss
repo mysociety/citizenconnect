@@ -1,0 +1,65 @@
+/**
+ * A list of results using the following markup:
+ *
+<ul class="results-list">
+  <li>
+      <div class="results-list__title">
+          <h2><a href="#">Bampton Surgery</a></h2>
+          <p>Landells Bampton</p>
+      </div>
+      <address>Landells Bampton, Bampton<br>Oxford, OX18 2LJ</address>
+      <a href="#" class="results-list__more-link">
+        <span class="icon-chevron-right" aria-hidden="true"><span class="hide-text">More info</span></span>
+      </a>
+  </li>
+</ul>
+ *
+ */
+
+.results-list {
+  list-style:none;
+  padding: 0;
+  margin-bottom: ($grid-gutter * 2) + em;
+  border-bottom: $c-results-list-border solid ($grid-gutter / 5) + em;
+  li {
+    border-bottom: $c-results-list-border solid 1px;
+    padding: ($grid-gutter / 2) + em 0;
+    overflow: hidden;
+    &:last-child { border-bottom: none; }
+    .results-list__title {
+      width: 60%;
+      float: left;
+      h2 {
+        margin: 0;
+        font-weight: normal;
+        font-size: 1.125em; //18px
+        a {
+          text-decoration: none;
+          color: $c-results-list-title-link-color;
+          &:hover { color: $c-results-list-title-link-hover-color; }
+        }
+      }
+      p {
+        margin: 0;
+        font-size: 0.875em; //14px
+        color: $c-results-list-title-p;
+      }
+    }
+    address {
+      font-size: 0.75em; //12px
+      width: 30%;
+      float: left;
+      margin-top: 10px;
+      color: $c-results-list-address-color;
+    }
+    .results-list__more-link {
+      font-size: 2.75em; //44px
+      width: 10%;
+      float: right;
+      text-align: right;
+      text-decoration: none;
+      color: $c-results-list-more-link-color;
+      &:hover { color: $c-results-list-more-link-hover-color; }
+    }
+  }
+}

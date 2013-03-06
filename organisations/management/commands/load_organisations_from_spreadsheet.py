@@ -22,7 +22,19 @@ class Command(BaseCommand):
             dest='clean',
             default=False,
             help='Delete existing organisations and services, and associated problems and questions'),
+        ) + (
+        make_option('--update',
+            action='store_true',
+            dest='update',
+            default=False,
+            help='Update existing organisation and service attributes'),
         )
+
+    def clean_value(self, value):
+        if value == 'NULL':
+            return ''
+        else:
+            return value
 
     @transaction.commit_manually
     def handle(self, *args, **options):
@@ -31,6 +43,7 @@ class Command(BaseCommand):
         rownum = 0
         verbose = options['verbose']
         clean = options['clean']
+        update = options['update']
 
         if clean:
             if verbose:
@@ -48,15 +61,15 @@ class Command(BaseCommand):
             name = row[1]
             organisation_type_text = row[2]
             url = row[3]
-            address_line1 = row[4]
-            address_line2 = row[5]
-            address_line3 = row[6]
-            city = row[7]
-            county = row[8]
+            address_line1 = self.clean_value(row[4])
+            address_line2 = self.clean_value(row[5])
+            address_line3 = self.clean_value(row[6])
+            city = self.clean_value(row[7])
+            county = self.clean_value(row[8])
             lat = row[9]
             lon = row[10]
             last_updated = row[11]
-            postcode = row[12]
+            postcode = self.clean_value(row[12])
             ods_code = row[13]
             service_code = row[14]
             service_name = row[15]
@@ -82,7 +95,8 @@ class Command(BaseCommand):
             try:
                 organisation, organisation_created = Organisation.objects.get_or_create(ods_code=ods_code,
                                                                            defaults=organisation_defaults)
-
+                if update:
+                    Organisation.objects.filter(id=organisation.id).update(**organisation_defaults)
                 service = None
                 if service_name and service_name != 'NULL':
                     service_defaults = {'name': service_name }
@@ -90,6 +104,8 @@ class Command(BaseCommand):
                                                                              service_code=service_code,
                                                                              defaults=service_defaults)
 
+                    if update:
+                        Service.objects.filter(id=service.id).update(**service_defaults)
                 if organisation_created:
                     self.stdout.write('Created organisation %s\n' % organisation.name)
                 elif verbose:

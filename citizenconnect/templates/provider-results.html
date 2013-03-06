@@ -1,43 +1,45 @@
 {% extends 'base.html' %}
 {% load url from future %}
-
+{% load organisation_extras %}
 
 {% block title %}Provider Results{% endblock %}
 
-{% block bodyclasses %}provider-results{% endblock %}
+{% block bodyclasses %}pick-provider-results{% endblock %}
 
 {% block content %}
+
 <div class="header">
-    <h1>Provider Results for: '{{location }}'</h1>
+    <form action="{% url 'org-pick-provider' cobrand=cobrand.name %}" class="search-form  islet  fr">
+        <input type="text" name="location" id="id_location"  class="text-input" placeholder="Search for a provider again" />
+        <button type="submit" class="btn"><span class="icon-search" aria-hidden="true"></span><span class="hide-text">Find</span></button>
+    </form>
+    <h1>Results for &OpenCurlyQuote;{{ location }}&CloseCurlyQuote;</h1>
 </div>
-<div class="hero">
-    <div class="feature">
-        <p>Please select the provider you would like to see the outcomes of.</p>
-        <p>Can’t see the provider you are looking for? Then <a href="{{ request.path }}">SEARCH AGAIN</a></p>
-    </div>
-</div>
-<div class="results-list">
-    <div class="feature">
-        <ul>
-            {% for organisation in organisations %}
-                <li><a href="{% url result_link_url_name cobrand=cobrand.name  ods_code=organisation.ods_code  %}">{{ organisation.name }}</a></li>
-            {% endfor %}
-        </ul>
-    </div>
-</div>
+
+<ul class="results-list">
+    {% for organisation in organisations %}
+    <li>
+        <div class="results-list__title">
+            <h2><a href="{% url result_link_url_name cobrand=cobrand.name  ods_code=organisation.ods_code  %}">{{ organisation.name }}</a></h2>
+            <p>{{ organisation.city|default:"" }}</p>
+        </div>
+        <address>{% if organisation.address_line1 %}
+                    {{ organisation.address_line1|default:"" }} <br>
+                 {% endif %}
+                 {% if organisation.address_line2 %}
+                    {{ organisation.address_line2|default:"" }}<br>
+                 {% endif %}
+                 {% if organisation.address_line3 %}
+                     {{ organisation.address_line3|default:"" }}<br>
+                {% endif %}
+                {{ organisation.postcode|default:"" }}</address>
+        <a href="{% url result_link_url_name cobrand=cobrand.name  ods_code=organisation.ods_code  %}" class="results-list__more-link"><span class="icon-chevron-right" aria-hidden="true"></span></a>
+    </li>
+    {% endfor %}
+
+</ul>
+
 {% if is_paginated %}
-     <div class="pagination">
-         <span class="page-links">
-             {% if page_obj.has_previous %}
-                 <a href="?location={{ location }}&amp;organisation_type={{ organisation_type }}&amp;page={{ page_obj.previous_page_number }}">previous</a>
-             {% endif %}
-             <span class="page-current">
-                 Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-             </span>
-             {% if page_obj.has_next %}
-                 <a href="?location={{ location }}&amp;organisation_type={{ organisation_type }}&amp;page={{ page_obj.next_page_number }}">next</a>
-             {% endif %}
-         </span>
-     </div>
- {% endif %}
+{% paginator %}
+{% endif %}
 {% endblock %}
