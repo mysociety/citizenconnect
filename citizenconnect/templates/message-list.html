@@ -1,9 +1,11 @@
-<ul class="message-list">
-    {% for message in messages %}
-        {% if message_type == 'error' %}
-            <li class="message-list__error">{{ message }}</li>
-        {% else %}
-            <li class="message-list__success">{{ message }}</li>
-        {% endif %}
-    {% endfor %}
-</ul>
+{% if errors|length > 0 %}
+    <ul class="message-list">
+        {% for message in messages %}
+            {% if message_type == 'error' %}
+                <li class="message-list__error">{{ message }}</li>
+            {% else %}
+                <li class="message-list__success">{{ message }}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% endif %}
