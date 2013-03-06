@@ -3,9 +3,9 @@
  */
 
 fieldset {
-    border: 0;
-    margin: 0 0 ($grid-gutter * 2) + em 0;
-    padding: 0;
+  border: 0;
+  margin: 0 0 ($grid-gutter * 2) + em 0;
+  padding: 0;
 }
 
 /*
@@ -13,9 +13,16 @@ fieldset {
  */
 
 textarea {
-    resize: vertical;
+  resize: vertical;
 }
 
+
+/**
+ * Nudge down those select boxes
+ */
+select {
+  margin-top: 0.3125em; // 5px @ 16px base font size
+}
 
 /**
  * force block all labels
