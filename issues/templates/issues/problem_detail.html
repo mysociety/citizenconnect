@@ -6,77 +6,81 @@
 
 {% block content %}
 <div class="header">
+    <h2 class="header__pre-heading">{{ object.organisation.name }}</h2>
     <h1>Problem report</h1>
 </div>
 
-<div class="meta-data">
-
-    <div class="feature">
-        <p>Reference: {{ object.reference_number }}</p>
+<div class="meta-data-wrap">
+    <div class="meta-data">
+        <div class="gw">
+            <p class="meta-data__title  g  one-whole">{{ object.organisation.name }}</p>
+            {% if object.service %}
+                <p class="meta-data__sub-title  g  one-half  palm-one-whole">{{ object.service }}</p>
+            {% endif %}
+            <p class="g  one-half  palm-one-whole  align-right--not-palm"><span class="meta-data-label">Category</span> {{ object.get_category_display }}</p>
+        </div>
     </div>
 
-    <div class="feature">
-        <p>Reported on: {{ object.created }}</p>
-    </div>
+    <div class="meta-data">
+        <div class="gw">
+            <p class="g  one-half"><strong>{{ object.reference_number }}</strong></p>
 
+            <p class="g  one-half  align-right--not-palm"><span class="meta-data-label">Reported on</span> {{ object.created|date:"d M Y" }}<br> {{ object.created|date:"h:i a" }}</p>
+
+            {% if object.public_reporter_name %}
+                <p class="meta-data__space-below  g  one-whole"><span class="meta-data-label">Reported by</span> {{ object.reporter_name }}</p>
+            {% else %}
+                <p class="meta-data__space-below  g  one-whole"><span class="meta-data-label">Reported by</span> Anonymous</p>
+            {% endif %}
+
+            <p class="g  one-third  palm-one-whole">{{ object.get_status_display }}</p>
+
+            <p class="g  two-thirds  palm-one-whole  align-right--not-palm">
+                {% if object.happy_service != None %}
+                    <strong>Happy with Service</strong>&nbsp;
+                    {% if object.happy_service %}
+                        <span class="icon-checkmark" aria-hidden="true"><span class="hide-text">yes</span></span>
+                    {% else %}
+                        <span class="icon-x" aria-hidden="true"><span class="hide-text">no</span></span>
+                    {% endif %}
+                    <span class="meta-data-spacer"> </span>
+                {% endif %}
+                {% if object.happy_outcome != None %}
+                    <strong>Happy with Outcome</strong>&nbsp;
+                    {% if object.happy_outcome %}
+                        <span class="icon-checkmark" aria-hidden="true"><span class="hide-text">yes</span></span>
+                    {% else %}
+                        <span class="icon-x" aria-hidden="true"><span class="hide-text">no</span></span>
+                    {% endif %}
+                {% endif %}
+            </p>
+        </div>
+    </div>
 </div>
 
-<div class="meta-data">
-    <div class="feature provider">
-        <p>Provider:  {{ object.organisation.name }}</p>
-    </div>
 
-    <div class="feature service">
-        <p>Service:  {{ object.service|default_if_none:"" }}</p>
-    </div>
-</div>
-
-
-<div class="meta-data">
-    <div class="feature category">
-        <p>Category:  {{ object.get_category_display }}</p>
-    </div>
-
-    <div class="feature reporter">
-        <p>Reported by:
-        {% if object.public_reporter_name %}
-            {{ object.reporter_name }}
-        {% else %}
-            Anonymous
-        {% endif %}
-    </div>
-</div>
-
-<div class="details">
-    <div class="feature">
-        <h3>Details</h3>
+<div class="meta-data-wrap">
+    <h3 class="meta-data-label">Details</h3>
+    <div class="islet  islet--squared">
         <p>{{ object.description }}</p>
     </div>
 </div>
 
-<div class="response">
-    <div class="feature">
-        <h3>Responses</h3>
-        {% if object.responses.all|length > 0 %}
-            {% for response in object.responses.all %}
-                <p>{{ response.response }}</p>
-            {% endfor %}
-        {% else %}
-            <p>No responses</p>
-        {% endif %}
-    </div>
-</div>
-
-<div class="status">
-
-    <div class="feature provider-status">
-        <p>Status: {{ object.get_status_display }}</p>
-    </div>
-
-    <div class="feature user-status">
-        <p>User happy with service: {{ object.happy_service|yesno:"yes,no," }}
-        <br>User happy with outcome: {{  object.happy_outcome|yesno:"yes,no,"}}</p>
-    </div>
-
+<div class="meta-data-wrap">
+    <h3 class="meta-data-label  meta-data-label--bordered">Responses</h3>
+    {% for response in object.responses.all %}
+        <div class="meta-data  meta-data--response">
+            <p>{{ response.response }}</p>
+            <p class="meta-data__foot">
+                {{ object.organisation.name }}<span class="meta-data-spacer"> </span>
+                {{ response.created|date:"d.m.Y" }}<span class="meta-data-spacer"> </span>
+                {{ response.created|date:"h:i a" }}
+            </p>
+        </div>
+    {% empty %}
+        <div class="meta-data  meta-data--response">
+            <p>No responses.</p>
+        </div>
+    {% endfor %}
 </div>
 {% endblock %}
