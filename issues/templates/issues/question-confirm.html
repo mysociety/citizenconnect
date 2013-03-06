@@ -2,23 +2,36 @@
 
 {% block title %}Message sent{% endblock %}
 
-{% block bodyclasses %}question-confirm{% endblock %}
+{% block bodyclasses %}message-page{% endblock %}
 
 {% block content %}
+
 <div class="header">
-    <h1>Message sent</h1>
+  <h1>Your message has been sent</h1>
 </div>
-<div class="hero">
-    <div class="feature">
-        <p>Thank you for your question.
-Your unique reference number is {{ object.reference_number }}.
-{% if object.reporter_phone %}
-    You entered your phone number as {{ object.reporter_phone }}.
-{% endif %}
-{% if object.reporter_email %}
-    You entered your email address as {{ object.reporter_email }}.
-{% endif %}
-Someone will be in touch soon with an answer to your question. If you have chosen for your question (and answer) to be made publicly available online this will be available (subject to NHS privacy and moderation conditions) within 24 hours.</p>
+
+<div class="gw">
+    <div class="g  one-half  palm-one-whole">
+      <ul class="message-list">
+        <li class="message-list__success">Thank you for your question. </li>
+      </ul>
+      <p>Someone will be in touch soon with an answer to your question. If you have chosen for your question (and answer) to be made publicly available online this will be available (subject to NHS privacy and moderation conditions) within 24 hours.</p>
     </div>
+    <div class="g  one-half  palm-one-whole">
+      <div class="islet  islet--squared  mt">
+        <h3>Your unique reference number is  {{ object.reference_number }}</h3>
+        <p>
+          You entered the following details<br>
+          {% if object.reporter_phone %}
+          tel <strong>{{ object.reporter_phone }}</strong><br>
+          {% endif %}
+          {% if object.reporter_email %}
+          email <strong>{{ object.reporter_email }}</strong>
+          {% endif %}
+        </p>
+      </div>
+    </div>
+
 </div>
+
 {% endblock %}

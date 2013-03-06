@@ -45,17 +45,22 @@ $c-table-problem-heading-link-active-color: $c-aquablue;
 /**
  * _typography.scss
  */
-$c-body-text-color: $c-black;
-   $c-selection-bg: $c-nhs_lightblue;
-$c-selection-color: $c-black;
+          $c-body-text-color: $c-black;
+             $c-selection-bg: $c-nhs_lightblue;
+          $c-selection-color: $c-black;
+      $c-standout-link-color: $c-nhs_orange;
+$c-standout-link-hover-color: $c-nhs_orange-tint;
 
 
 /**
  * _island.scss
  */
-            $c-island-bg: $c-lightgrey;
-   $c-island-aquablue-bg: $c-aquablue;
-$c-island-aquablue-color: $c-white;
+                        $c-island-bg: $c-lightgrey;
+               $c-island-aquablue-bg: $c-aquablue;
+            $c-island-aquablue-color: $c-white;
+                  $c-island-white-bg: $c-white;
+        $c-island-white-border-color: $c-grey;
+$c-island-half-bordered-border-color: $c-grey;
 
 
 /**
@@ -69,6 +74,14 @@ $c-island-aquablue-color: $c-white;
       $c-back-btn-span-color: $c-grey;
      $c-back-btn-hover-color: $c-darkgrey-tint;
 $c-back-btn-span-hover-color: $c-grey-tint;
+           $c-btn-red-border: $c-nhs_darkred;
+            $c-btn-red-color: $c-white;
+               $c-btn-red-bg: $c-nhs_red;
+         $c-btn-red-hover-bg: $c-nhs_darkred;
+          $c-btn-blue-border: $c-nhs_darkblue;
+           $c-btn-blue-color: $c-white;
+              $c-btn-blue-bg: $c-nhs_blue;
+        $c-btn-blue-hover-bg: $c-nhs_darkblue;
 
 
 /**
@@ -118,11 +131,11 @@ $c-tab-nav-link-active-border: $c-grey;
 /**
  * _pagination.scss
  */
-$c-pagination-link-color: $c-white;
-$c-pagination-link-bg: $c-grey;
-$c-pagination-link-hover-bg: $c-aquablue;
-$c-pagination-span-color: $c-grey;
-$c-pagination-current-span-bg: $c-darkgrey;
+        $c-pagination-link-color: $c-white;
+           $c-pagination-link-bg: $c-grey;
+     $c-pagination-link-hover-bg: $c-aquablue;
+        $c-pagination-span-color: $c-grey;
+   $c-pagination-current-span-bg: $c-darkgrey;
 $c-pagination-current-span-color: $c-white;
 
 
@@ -132,3 +145,15 @@ $c-pagination-current-span-color: $c-white;
   $c-message-list-error-color: $c-nhs_red;
 $c-message-list-success-color: $c-nhs_lightgreen;
    $c-message-list-icon-color: $c-darkgrey;
+
+
+/**
+ * _meta-data.scss
+ */
+        $c-meta-data-border-color: $c-grey;
+     $c-meta-data-sub-title-color: $c-darkgrey;
+          $c-meta-data-foot-color: $c-darkgrey;
+        $c-meta-data-icon-x-color: $c-nhs_red;
+$c-meta-data-icon-checkmark-color: $c-nhs_lightgreen;
+         $c-meta-data-label-color: $c-darkgrey;
+  $c-meta-data-label-border-color: $c-grey;
