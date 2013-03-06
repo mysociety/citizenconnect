@@ -5,9 +5,9 @@
 {% block title %}Pick Provider{% endblock %}
 
 {% block bodyclasses %}pick-provider{% endblock %}
+{% block containerclasses %}container--small{% endblock %}
 
 {% block content %}
-
 
 <h1>Choose a Provider</h1>
 
@@ -24,17 +24,20 @@
         {% endif %}
     {% endif %}
 
-    <form action="" method="get" class="gw">
-        <input type="hidden" name="organisation_type" id="id_organisation_type" value="hospitals">
+    <form action="" method="get" class="gw pick-provider-form">
+        <div class="g  one-fifth  palm-one-whole">
+            <label>Provider type</label>
+            {{ form.organisation_type }}
+        </div>
+        <div class="g  three-fifths  palm-two-thirds">
 
-        <label for="id_location" class="g  one-whole">Provider&CloseCurlyQuote;s name</label>
+            <label for="id_location" class="g  one-whole">Provider&CloseCurlyQuote;s name</label>
 
-        <div class="g  three-quarters">
             <input type="text" name="location" id="id_location"  class="text-input  one-whole" placeholder="e.g. &OpenCurlyQuote;St Lukes Hospital&CloseCurlyQuote; or &OpenCurlyQuote;SW1P 3AZ&CloseCurlyQuote;" />
         </div>
 
-        <div class="g  one-quarter">
-            <input type="submit" value="Find" class="btn  one-whole" />
+        <div class="g  one-fifth  palm-one-third">
+            <input type="submit" value="Find" class="btn btn--no-label" />
         </div>
 
         <p class="g  one-whole">If you have a general question about NHS services not related to a specific provider, please just type 111 into the box and hit &OpenCurlyQuote;Find&CloseCurlyQuote;</p>
