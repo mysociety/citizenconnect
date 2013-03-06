@@ -117,6 +117,7 @@ class Question(MessageModel):
                                 db_index=True,
                                 verbose_name='Please select the category that best describes your problem')
     status = models.IntegerField(default=NEW, choices=STATUS_CHOICES, db_index=True)
+    postcode = models.CharField(max_length=25, blank=True)
 
     @property
     def reference_number(self):
