@@ -20,11 +20,9 @@
             {{ form.non_field_errors }} {{ form.errors.location }}
         </div>
         {% endif %}
-        {% for hidden in form.hidden_fields %}
-            {{ hidden }}
-        {% endfor %}
-        <label for="id_location" class="g  one-whole">Provider's name</label>
+        <input type="hidden" name="organisation_type" id="id_organisation_type" value="hospitals">
 
+        <label for="id_location" class="g  one-whole">Provider's name</label>
         <div class="g  three-quarters">
             <input type="text" name="location" id="id_location"  class="text-input  one-whole" placeholder="e.g. &OpenCurlyQuote;St Lukes Hospital&CloseCurlyQuote; or &OpenCurlyQuote;SW1P 3AZ&CloseCurlyQuote;" />
         </div>
