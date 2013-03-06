@@ -52,3 +52,16 @@ body {
     font-size: (14px / $font-size-base) + em;
     font-weight: bold;
 }
+
+
+/**
+ * A link that stands out
+ */
+.standout-link {
+    color: #ff6500;
+    font-weight: bold;
+    text-decoration: none;
+    &:hover {
+        color: #ff6500 / 1.1;
+    }
+}

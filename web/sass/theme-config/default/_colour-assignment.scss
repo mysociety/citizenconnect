@@ -45,9 +45,11 @@ $c-table-problem-heading-link-active-color: $c-aquablue;
 /**
  * _typography.scss
  */
-$c-body-text-color: $c-black;
-   $c-selection-bg: $c-nhs_lightblue;
-$c-selection-color: $c-black;
+          $c-body-text-color: $c-black;
+             $c-selection-bg: $c-nhs_lightblue;
+          $c-selection-color: $c-black;
+      $c-standout-link-color: $c-nhs_orange;
+$c-standout-link-hover-color: $c-nhs_orange-tint;
 
 
 /**
