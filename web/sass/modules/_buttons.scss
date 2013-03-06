@@ -10,21 +10,21 @@
     color: $c-btn-color;
     background: $c-btn-bg;
     @include vendor(border-radius, ($grid-gutter / 10) + em);
-    &:hover { background: $c-btn-hover-bg / 1.2; }
+    &:hover { background: $c-btn-hover-bg; }
 }
 
 
 .back-btn {
     text-decoration: none;
     color: $c-back-btn-color;
-    font-size: 0.875em; //14px
+    font-size: (14px / $font-size-base) + em;
     line-height: 1;
     margin-top: 1.5em;
     span {
         display: block;
         float: left;
-        font-size: 1.71428571428571em; //24px
-        margin-top: -5px;
+        font-size: (24px / 14px) + em;
+        margin-top: -7px;
         margin-right: 5px;
         color: $c-back-btn-span-color;
     }

@@ -18,7 +18,11 @@
             padding: 1em 3em;
             &:hover {
                 background: $c-tab-nav-link-hover-bg;
-                &.active { cursor: default; }
+                color: $c-tab-nav-link-hover-color;
+                &.active {
+                    color: $c-tab-nav-link-color;
+                    cursor: default;
+                }
             }
             &.active {
                 background: $c-tab-nav-link-active-bg;

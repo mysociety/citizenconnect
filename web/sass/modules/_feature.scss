@@ -9,7 +9,7 @@
     float: left;
     text-align: right;
     width: 150px;
-    font-size: $font-size-base * 3.125;
+    font-size: (50px / $font-size-base) + em;
     margin-right: ($grid-gutter / 3.125) + em;
     @include media-query(portable){
       float: none;

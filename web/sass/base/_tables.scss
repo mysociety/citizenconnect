@@ -11,14 +11,14 @@ table {
     &.table__footer td { border-bottom: $c-table-border solid 2px; }
   }
   td {
-    font-size: 0.75em; //12px
+    font-size: (12px / $font-size-base) + em;
     text-align: center;
     border-bottom: $c-table-border solid 1px;
     padding: 10px 0;
     &.table__label { text-align: left; }
   }
   th {
-    font-size: 0.75em; //12px
+    font-size: (12px / $font-size-base) + em;
     font-weight: normal;
     padding: 20px 10px;
     border-bottom: $c-table-border solid 2px;
@@ -26,7 +26,7 @@ table {
       font-weight: bold;
       text-align: left;
       padding-left: 0;
-      font-size: 1.3125em; // 21px
+      font-size: (21px / $font-size-base) + em;
     }
   }
 }
