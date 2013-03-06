@@ -1,17 +1,32 @@
 from django import forms
 from django.forms.widgets import HiddenInput
 
-from issues.models import Problem, Question
+from issues.models import MessageModel, Problem, Question
 
 class MessageModerationForm(forms.ModelForm):
     """
     Base form class for moderating to Questions and Problems.
     """
 
+    def clean_publication_status(self):
+        # Status is hidden, but if people click the "Publish" button, we should
+        # publish it, and vice versa if they click "Keep Private"
+        publication_status = self.cleaned_data['publication_status']
+        if 'publish' in self.data:
+            publication_status = MessageModel.PUBLISHED
+        elif 'keep_private' in self.data:
+            publication_status = MessageModel.HIDDEN
+        return publication_status
+
     class Meta:
         fields = [
-            'status'
+            'publication_status',
+            'description',
         ]
+
+        widgets = {
+            'publication_status': HiddenInput
+        }
 
 class LookupForm(forms.Form):
     reference_number = forms.CharField(required=True)

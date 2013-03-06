@@ -2,81 +2,14 @@
 
 {% block title %}Problem report{% endblock %}
 
-{% block bodyclasses %}problem-public{% endblock %}
+{% block bodyclasses %}problem-report{% endblock %}
 
 {% block content %}
 <div class="header">
+    <h2 class="header__pre-heading">{{ object.organisation.name }}</h2>
     <h1>Problem report</h1>
 </div>
 
-<div class="meta-data">
+{% include "issues/message_detail.html" with object=object %}
 
-    <div class="feature">
-        <p>Reference: {{ object.reference_number }}</p>
-    </div>
-
-    <div class="feature">
-        <p>Reported on: {{ object.created }}</p>
-    </div>
-
-</div>
-
-<div class="meta-data">
-    <div class="feature provider">
-        <p>Provider:  {{ object.organisation.name }}</p>
-    </div>
-
-    <div class="feature service">
-        <p>Service:  {{ object.service|default_if_none:"" }}</p>
-    </div>
-</div>
-
-
-<div class="meta-data">
-    <div class="feature category">
-        <p>Category:  {{ object.get_category_display }}</p>
-    </div>
-
-    <div class="feature reporter">
-        <p>Reported by:
-        {% if object.public_reporter_name %}
-            {{ object.reporter_name }}
-        {% else %}
-            Anonymous
-        {% endif %}
-    </div>
-</div>
-
-<div class="details">
-    <div class="feature">
-        <h3>Details</h3>
-        <p>{{ object.description }}</p>
-    </div>
-</div>
-
-<div class="response">
-    <div class="feature">
-        <h3>Responses</h3>
-        {% if object.responses.all|length > 0 %}
-            {% for response in object.responses.all %}
-                <p>{{ response.response }}</p>
-            {% endfor %}
-        {% else %}
-            <p>No responses</p>
-        {% endif %}
-    </div>
-</div>
-
-<div class="status">
-
-    <div class="feature provider-status">
-        <p>Status: {{ object.get_status_display }}</p>
-    </div>
-
-    <div class="feature user-status">
-        <p>User happy with service: {{ object.happy_service|yesno:"yes,no," }}
-        <br>User happy with outcome: {{  object.happy_outcome|yesno:"yes,no,"}}</p>
-    </div>
-
-</div>
 {% endblock %}

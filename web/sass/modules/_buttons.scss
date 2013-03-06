@@ -1,3 +1,6 @@
+/**
+ * General button style, can be used anywhere e.g. a, input, button etc
+ */
 .btn {
     @include inline-block;
     cursor: pointer;
@@ -10,21 +13,74 @@
     color: $c-btn-color;
     background: $c-btn-bg;
     @include vendor(border-radius, ($grid-gutter / 10) + em);
-    &:hover { background: $c-btn-hover-bg / 1.2; }
+    &:hover { background: $c-btn-hover-bg; }
 }
 
+    /**
+     * A big version
+     */
+    .btn--big {
+        width: 100%;
+        font-size: (24px / $font-size-base) + em;
+        font-weight: bold;
+        padding: 2em 1em;
+        @include vendor(border-radius, (6px / 24px) + em);
+        @include media-query(portable){ font-size: (21px / $font-size-base) + em; }
+    }
 
+    /**
+     * Remove borders
+     */
+    .btn--no-border {
+        border: none;
+    }
+
+
+    /**
+     * If there are labels with other form elements that are inline
+     * with this button, then use this class to pull the button down a bit
+     */
+    .btn--no-label {
+        margin-top: 1.6em;
+    }
+
+    /**
+     * Colour variants
+     */
+    .btn--red {
+        border-color: $c-btn-red-border;
+        color: $c-btn-red-color;
+        background: $c-btn-red-bg;
+        &:hover { background: $c-btn-red-hover-bg; }
+    }
+    .btn--blue {
+        border-color: $c-btn-blue-border;
+        color: $c-btn-blue-color;
+        background: $c-btn-blue-bg;
+        &:hover { background: $c-btn-blue-hover-bg; }
+    }
+
+
+/**
+ * Typically used within the .header div, markup something like this:
+ *
+<a href="/back/a/page/innit" class="back-btn  fr">
+    <span class="icon-chevron-left" aria-hidden="true"></span>
+    Back to search results
+</a>
+ *
+ */
 .back-btn {
     text-decoration: none;
     color: $c-back-btn-color;
-    font-size: 0.875em; //14px
+    font-size: (14px / $font-size-base) + em;
     line-height: 1;
-    margin-top: 1.5em;
+    margin-top: 1em;
     span {
         display: block;
         float: left;
-        font-size: 1.71428571428571em; //24px
-        margin-top: -5px;
+        font-size: (24px / 14px) + em;
+        margin-top: -7px;
         margin-right: 5px;
         color: $c-back-btn-span-color;
     }

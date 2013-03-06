@@ -3,9 +3,9 @@
  */
 
 fieldset {
-    border: 0;
-    margin: 0 0 ($grid-gutter * 2) + em 0;
-    padding: 0;
+  border: 0;
+  margin: 0 0 ($grid-gutter * 2) + em 0;
+  padding: 0;
 }
 
 /*
@@ -13,9 +13,18 @@ fieldset {
  */
 
 textarea {
-    resize: vertical;
+  resize: vertical;
 }
 
+
+/**
+ * Nudge down those select boxes
+ */
+select {
+  margin-top: 0.3125em; // 5px @ 16px base font size
+  margin-bottom: 0.5em;
+  width: 100%;
+}
 
 /**
  * force block all labels
@@ -31,7 +40,7 @@ label,
  * Info text
  */
 .info {
-  font-size: 0.875em; //14px
+  font-size: (14px / $font-size-base) + em;
   font-style: italic;
   font-weight: normal;
   display: block;
@@ -90,8 +99,8 @@ textarea {
     @include media-query(palm){ width: 50%; }
     label {
       font-weight: normal;
-      font-size: 0.875em; //14px
-      input { font-size: 1.14285714285714em; } //16px;
+      font-size: (14px / $font-size-base) + em;
+      input { font-size: (16px / 14px) + em; }
     }
   }
 }
@@ -182,13 +191,20 @@ textarea {
  */
 .pick-provider-form {
   input, button {
-    font-size: (24px / $font-size-base) + em;
+    font-size: (20px / $font-size-base) + em;
     @media screen and (max-width: $small-page-width-max + ($grid-gutter*2)  + em) {
-      font-size: (20px / $font-size-base) + em;
+      font-size: (18px / $font-size-base) + em;
+      &.btn--no-label { margin-top: 1.8em; }
     }
     @include media-query(palm) {
       font-size: (16px / $font-size-base) + em;
+      &.btn--no-label { margin-top: 2em; }
     }
+  }
+  input { margin-bottom: 0; }
+  select {
+    margin-top: 0.65em;
+    @media screen and (max-width: $small-page-width-max + ($grid-gutter*2)  + em) { margin-top: 0.55em; }
   }
   .btn {
     width: 100%;

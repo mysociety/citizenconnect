@@ -58,7 +58,7 @@ class ProblemPublicViewTests(TestCase):
 
     def test_public_problem_displays_organisation_name(self):
         resp = self.client.get("/choices/problem/{0}".format(self.test_problem.id))
-        self.assertContains(resp, self.test_organisation.name, count=1, status_code=200)
+        self.assertContains(resp, self.test_organisation.name, count=2, status_code=200)
 
     def test_public_problem_displays_responses(self):
         response1 = ProblemResponse.objects.create(response="response 1", message=self.test_problem)

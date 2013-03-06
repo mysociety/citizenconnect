@@ -1,7 +1,34 @@
+/**
+ * Hide text accessibly
+ */
 .hide-text {
-    font: 0/0 a;
-    color: transparent;
-    text-shadow: none;
-    background-color: transparent;
-    border: 0;
+  font: 0/0 a;
+  color: transparent;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
 }
+
+
+/**
+ * Text alignment
+ */
+.align-right {
+  text-align: right;
+}
+  .align-right--not-palm {
+    text-align: right;
+    @include media-query(palm) {
+      text-align: left;
+    }
+  }
+
+.align-center {
+  text-align: center;
+}
+  .align-center--not-palm {
+    text-align: center;
+    @include media-query(palm) {
+      text-align: left;
+    }
+  }

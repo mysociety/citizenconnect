@@ -7,15 +7,15 @@
 {% block content %}
 <div class="header">
     <a href="#" class="back-btn  fr"><span class="icon-chevron-left" aria-hidden="true"></span> Back to search results</a>
-    <h1>{% if organisation %}{{ organisation.name }}{% else %}Ask your question{% endif %}</h1>
+    <h1>{{ organisation.name }}</h1>
 </div>
 
 <form method="post">
     {% csrf_token %}
 
     {% if form.non_field_errors %}
-        <div class="alert alert-error alert-block">
-            {{ form.non_field_errors }}
+        <div class="island">
+            {% include "message-list.html" with messages=form.non_field_errors message_type='error' %}
         </div>
     {% endif %}
 
@@ -28,12 +28,30 @@
             <li class="g  one-whole">
                 {{ form.description }}
                 <p class="info">Including as much information as possible to help us to help you.</p>
+                {% include "message-list.html" with messages=form.description.errors message_type='error' %}
             </li>
         </ul>
     </fieldset>
 
+    {% if not form.service.is_hidden %}
+        <fieldset class="island">
+            <label for="id_service">Service</label>
+
+            <p class="info">If your problem relates to a particular service, you can select it here</p>
+
+            <ul class="radio-list">
+                {% for radio in form.service %}
+                    <li>{{ radio }}</li>
+                {% endfor %}
+            </ul>
+
+            {% include "message-list.html" with messages=form.service.errors message_type='error' %}
+
+        </fieldset>
+    {% endif %}
+
     <fieldset class="island">
-        <label for="id_service">Category</label>
+        <label for="id_category">Category</label>
 
         <p class="info">Please select the category that best describes your problem</p>
 
@@ -42,29 +60,35 @@
                 <li>{{ radio }}</li>
             {% endfor %}
         </ul>
+
+        {% include "message-list.html" with messages=form.category.errors message_type='error' %}
     </fieldset>
 
     <fieldset class="island">
         <ul class="gw">
             <li class="g  one-half  palm-one-whole">
-                <label for="id_reporter_name">Your Name <span class="info">(This is optional - you can report problems anonymously)</span></label>
+                <label for="id_reporter_name">Your Name <span class="info">This is optional - you can report problems anonymously</span></label>
                 {{ form.reporter_name }}
+                {% include "message-list.html" with messages=form.reporter_name.errors message_type='error' %}
             </li>
             <li class="g  one-half  palm-one-whole">
-                <label for="id_reporter_phone">Your Contact Number <span class="info">(you must enter a contact number OR email address)</span></label>
+                <label for="id_reporter_phone">Your Contact Number <span class="info">You must enter a contact number OR email address</span></label>
                 {{ form.reporter_phone }}
+                {% include "message-list.html" with messages=form.reporter_phone.errors message_type='error' %}
             </li>
             <li class="g  one-half  palm-one-whole">
-                <label for="id_reporter_email">Your Email Address <span class="info">(you must enter a contact number OR email address)</span></label>
+                <label for="id_reporter_email">Your Email Address <span class="info">You must enter a contact number OR email address</span></label>
                 {{ form.reporter_email }}
+                {% include "message-list.html" with messages=form.reporter_email.errors message_type='error' %}
             </li>
-            <li class="g  one-whole">
+            <li class="g  one-half  pal-one-whole">
                 <label for="id_preferred_contact_method_0">Preferred contact method</label>
                 <ul class="radio-list">
                     {% for radio in form.preferred_contact_method %}
                         <li>{{ radio }}</li>
                     {% endfor %}
                 </ul>
+                {% include "message-list.html" with messages=form.preferred_contact_method.errors message_type='error' %}
             </li>
         </ul>
     </fieldset>
@@ -97,6 +121,7 @@
                 </div>
             </li>
         </ul>
+        {% include "message-list.html" with messages=form.privacy.errors message_type='error' %}
     </fieldset>
 
     <fieldset>
