@@ -27,6 +27,34 @@ class MessageModel(AuditedModel):
         (SOURCE_SMS, 'SMS')
     )
 
+    CATEGORY_CHOICES = (
+        (u'staff', u'Staff Attitude'),
+        (u'access', u'Access to Service'),
+        (u'delays', u'Delays'),
+        (u'treatment', u'Your Treatment'),
+        (u'communication', u'Communication'),
+        (u'cleanliness', u'Cleanliness'),
+        (u'equipment', u'Equipment'),
+        (u'medicines', u'Medicines'),
+        (u'dignity', u'Dignity and Privacy'),
+        (u'parking', u'Parking'),
+        (u'lostproperty', u'Lost Property'),
+        (u'other', u'Other'),
+    )
+
+    CATEGORY_DESCRIPTIONS = {'staff': 'Bedside manner and attitude of staff',
+                             'access': 'Difficulty getting appointments, long waiting times',
+                             'delays': 'Delays in care, e.g. referrals and test results',
+                             'treatment': 'Wrong advice / unsafe care / refusal of treatment / consent',
+                             'communication': 'Communications and administration e.g. letters',
+                             'cleanliness': 'Cleanliness and facilities',
+                             'equipment': 'Problems with equipment, aids and devices',
+                             'medicines': 'Problems with medicines',
+                             'dignity': 'Privacy, dignity, confidentiality',
+                             'parking': 'Problems with parking / charges',
+                             'lostproperty': 'Lost property',
+                             'other': ''}
+
     HIDDEN = 0
     PUBLISHED = 1
 
@@ -98,12 +126,6 @@ class Question(MessageModel):
     objects = QuestionManager()
     open_objects = OpenQuestionManager()
 
-    CATEGORY_CHOICES = (
-        (u'services', u'Services'),
-        (u'prescriptions', u'Prescriptions'),
-        (u'general', u'General'),
-    )
-
     NEW = 0
     ACKNOWLEDGED = 1
     RESOLVED = 2
@@ -117,10 +139,10 @@ class Question(MessageModel):
     PREFIX = 'Q'
 
     category = models.CharField(max_length=100,
-                                choices=CATEGORY_CHOICES,
+                                choices=MessageModel.CATEGORY_CHOICES,
                                 default='general',
                                 db_index=True,
-                                verbose_name='Please select the category that best describes your problem')
+                                verbose_name='Please select the category that best describes your question')
     status = models.IntegerField(default=NEW, choices=STATUS_CHOICES, db_index=True)
     postcode = models.CharField(max_length=25, blank=True)
 
@@ -147,13 +169,6 @@ class Problem(MessageModel):
     objects = ProblemManager()
     open_objects = OpenProblemManager()
 
-    CATEGORY_CHOICES = (
-        (u'cleanliness', u'Cleanliness'),
-        (u'staff', u'Staff'),
-        (u'appointments', u'Appointments'),
-        (u'other', u'Other'),
-    )
-
     NEW = 0
     ACKNOWLEDGED = 1
     RESOLVED = 2
@@ -169,7 +184,7 @@ class Problem(MessageModel):
     PREFIX = 'P'
 
     category = models.CharField(max_length=100,
-                                choices=CATEGORY_CHOICES,
+                                choices=MessageModel.CATEGORY_CHOICES,
                                 default='other',
                                 db_index=True,
                                 verbose_name='Please select the category that best describes your problem')
