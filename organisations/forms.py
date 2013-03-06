@@ -16,9 +16,10 @@ from issues.models import Problem, Question
 from .models import Organisation
 
 class OrganisationFinderForm(forms.Form):
+    organisation_type = forms.ChoiceField(choices=settings.ORGANISATION_CHOICES)
     location = forms.CharField(required=True, error_messages={'required': 'Please enter a location'})
 
-    def organisations_from_postcode(self, postcode, partial=False):
+    def organisations_from_postcode(self, postcode, organisation_type, partial=False):
         path_elements = ['postcode']
         if partial:
             path_elements.append('partial')
@@ -35,7 +36,8 @@ class OrganisationFinderForm(forms.Form):
         if response_code == 200:
             point_data = json.load(point_response)
             point = Point(point_data["wgs84_lon"], point_data["wgs84_lat"])
-            return Organisation.objects.filter(point__distance_lt=(point, Distance(mi=5)))
+            return Organisation.objects.filter(point__distance_lt=(point, Distance(mi=5)),
+                                               organisation_type=organisation_type)
         elif response_code == 404:
             validation_message = 'Sorry, no postcode matches that query. Please try again, or try searching by provider name'
             raise forms.ValidationError(validation_message)
@@ -50,16 +52,18 @@ class OrganisationFinderForm(forms.Form):
     def clean(self):
         cleaned_data = super(OrganisationFinderForm, self).clean()
         location = cleaned_data.get('location', None)
-        if location:
+        organisation_type = cleaned_data.get('organisation_type', None)
+        if location and organisation_type:
             postcode = re.sub('\s+', '', location.upper())
             if validation.is_valid_postcode(postcode):
-                organisations = self.organisations_from_postcode(postcode)
+                organisations = self.organisations_from_postcode(postcode, organisation_type)
                 validation_message = "Sorry, there are no matches within 5 miles of %s. Please try again." % (location)
             elif validation.is_valid_partial_postcode(postcode):
-                organisations = self.organisations_from_postcode(postcode, partial=True)
+                organisations = self.organisations_from_postcode(postcode, organisation_type, partial=True)
                 validation_message = "Sorry, there are no matches within 5 miles of %s. Please try again." % (location)
             else:
-                organisations = Organisation.objects.filter(name__icontains=location)
+                organisations = Organisation.objects.filter(name__icontains=location,
+                                                            organisation_type=organisation_type)
                 validation_message = "We couldn't find any matches for '%s'. Please try again." % (location)
             if len(organisations) == 0:
                 raise forms.ValidationError(validation_message)
