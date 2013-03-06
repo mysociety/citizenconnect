@@ -81,7 +81,7 @@
                 {{ form.reporter_email }}
                 {% include "message-list.html" with messages=form.reporter_email.errors message_type='error' %}
             </li>
-            <li class="g  one-whole">
+            <li class="g  one-half  pal-one-whole">
                 <label for="id_preferred_contact_method_0">Preferred contact method</label>
                 <ul class="radio-list">
                     {% for radio in form.preferred_contact_method %}
