@@ -32,3 +32,12 @@ body {
     text-shadow: none;
     color: $c-selection-color;
 }
+
+
+/**
+ * A small title, used on homepage
+ */
+.small-title {
+    font-size: (14px / $font-size-base) + em;
+    font-weight: bold;
+}
