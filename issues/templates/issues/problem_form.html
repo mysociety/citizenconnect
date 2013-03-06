@@ -14,7 +14,7 @@
     {% csrf_token %}
 
     {% if form.non_field_errors %}
-        <div class="alert alert-error alert-block">
+        <div class="island">
             {{ form.non_field_errors }}
         </div>
     {% endif %}
@@ -26,6 +26,7 @@
     <fieldset class="island">
         <ul class="gw">
             <li class="g  one-whole">
+                {{ form.description.errors }}
                 {{ form.description }}
                 <p class="info">Including as much information as possible to help us to help you.</p>
             </li>
@@ -37,6 +38,8 @@
             <label for="id_service">Service</label>
 
             <p class="info">If your problem relates to a particular service, you can select it here</p>
+
+            {{ form.service.errors }}
 
             <ul class="radio-list">
                 {% for radio in form.service %}
@@ -52,6 +55,8 @@
 
         <p class="info">Please select the category that best describes your problem</p>
 
+        {{ form.category.errors }}
+
         <ul class="radio-list">
             {% for radio in form.category %}
                 <li>{{ radio }}</li>
@@ -63,18 +68,22 @@
         <ul class="gw">
             <li class="g  one-half  palm-one-whole">
                 <label for="id_reporter_name">Your Name <span class="info">(This is optional - you can report problems anonymously)</span></label>
+                {{ form.reporter_name.errors }}
                 {{ form.reporter_name }}
             </li>
             <li class="g  one-half  palm-one-whole">
                 <label for="id_reporter_phone">Your Contact Number <span class="info">(You must enter a contact number OR email address)</span></label>
+                {{ form.reporter_phone.errors }}
                 {{ form.reporter_phone }}
             </li>
             <li class="g  one-half  palm-one-whole">
                 <label for="id_reporter_email">Your Email Address <span class="info">(You must enter a contact number OR email address)</span></label>
+                {{ form.reporter_email.errors }}
                 {{ form.reporter_email }}
             </li>
             <li class="g  one-whole">
                 <label for="id_preferred_contact_method_0">Preferred contact method</label>
+                {{ form.preferred_contact_method.errors }}
                 <ul class="radio-list">
                     {% for radio in form.preferred_contact_method %}
                         <li>{{ radio }}</li>
@@ -86,6 +95,7 @@
 
     <fieldset class="big-radio-group">
         <!-- <label for="id_privacy_0">Privacy</label> -->
+        {{ form.privacy.errors }}
         <ul>
             <li class="big-radio-group__first  big-radio-group--green">
                 <div class="big-radio-group__table">

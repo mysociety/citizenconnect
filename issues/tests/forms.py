@@ -98,7 +98,7 @@ class QuestionCreateFormTests(TestCase):
         self.form_url = '/choices/question/question-form'
         self.test_question = {
             'description': 'This is a question',
-            'postcode': 'AB12 3CD',
+            'postcode': 'BS32 4NF',
             'category': 'prescriptions',
             'reporter_name': self.uuid,
             'reporter_email': 'steve@mysociety.org',
@@ -121,7 +121,7 @@ class QuestionCreateFormTests(TestCase):
         self.assertEqual(question.public, False)
         self.assertEqual(question.public_reporter_name, False)
         self.assertEqual(question.description, 'This is a question')
-        self.assertEqual(question.postcode, 'AB12 3CD')
+        self.assertEqual(question.postcode, 'BS324NF')
         self.assertEqual(question.reporter_name, self.uuid)
         self.assertEqual(question.reporter_email, 'steve@mysociety.org')
         self.assertEqual(question.preferred_contact_method, 'phone')
@@ -161,3 +161,8 @@ class QuestionCreateFormTests(TestCase):
         resp = self.client.post(self.form_url, self.test_question)
         question = Question.objects.get(reporter_name=self.uuid)
         self.assertIsNotNone(question)
+
+    def test_question_form_validates_postcode(self):
+        self.test_question['postcode'] = 'XXX'
+        resp = self.client.post(self.form_url, self.test_question)
+        self.assertFormError(resp, 'form', 'postcode', 'Sorry, that doesn\'t seem to be a valid postcode.')

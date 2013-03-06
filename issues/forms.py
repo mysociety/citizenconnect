@@ -1,9 +1,11 @@
+import re
+
+from ukpostcodeutils import validation
+
 from django import forms
 from django.forms.widgets import HiddenInput, RadioSelect, Textarea, TextInput
 
-from .models import Question
-from .models import Problem
-
+from .models import Question, Problem
 
 class MessageModelForm(forms.ModelForm):
     """
@@ -42,6 +44,15 @@ class MessageModelForm(forms.ModelForm):
         return cleaned_data
 
 class QuestionForm(MessageModelForm):
+
+    def clean_postcode(self):
+        # Check that the postcode is valid
+        postcode = self.cleaned_data['postcode']
+        if postcode and not postcode == '':
+            postcode = re.sub('\s+', '', postcode.upper())
+            if not validation.is_valid_postcode(postcode):
+                raise forms.ValidationError('Sorry, that doesn\'t seem to be a valid postcode.')
+        return postcode
 
     class Meta:
         model = Question
