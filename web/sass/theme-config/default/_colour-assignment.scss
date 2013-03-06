@@ -53,11 +53,12 @@ $c-selection-color: $c-black;
 /**
  * _island.scss
  */
-                $c-island-bg: $c-lightgrey;
-       $c-island-aquablue-bg: $c-aquablue;
-    $c-island-aquablue-color: $c-white;
-          $c-island-white-bg: $c-white;
-$c-island-white-border-color: $c-grey;
+                        $c-island-bg: $c-lightgrey;
+               $c-island-aquablue-bg: $c-aquablue;
+            $c-island-aquablue-color: $c-white;
+                  $c-island-white-bg: $c-white;
+        $c-island-white-border-color: $c-grey;
+$c-island-half-bordered-border-color: $c-grey;
 
 
 /**
@@ -71,6 +72,14 @@ $c-island-white-border-color: $c-grey;
       $c-back-btn-span-color: $c-grey;
      $c-back-btn-hover-color: $c-darkgrey-tint;
 $c-back-btn-span-hover-color: $c-grey-tint;
+           $c-btn-red-border: $c-nhs_darkred;
+            $c-btn-red-color: $c-white;
+               $c-btn-red-bg: $c-nhs_red;
+         $c-btn-red-hover-bg: $c-nhs_darkred;
+          $c-btn-blue-border: $c-nhs_darkblue;
+           $c-btn-blue-color: $c-white;
+              $c-btn-blue-bg: $c-nhs_blue;
+        $c-btn-blue-hover-bg: $c-nhs_darkblue;
 
 
 /**

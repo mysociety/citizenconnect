@@ -42,6 +42,16 @@
 
 
 /**
+ * Add a border to top and bottom
+ */
+.island--half-bordered,
+.islet--half-bordered {
+    border-top: ($grid-gutter/5) + em solid $c-island-half-bordered-border-color;
+    border-bottom: ($grid-gutter/5) + em solid $c-island-half-bordered-border-color;
+}
+
+
+/**
  * Colour variants
  */
 .island--aquablue,
