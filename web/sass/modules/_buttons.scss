@@ -16,6 +16,50 @@
     &:hover { background: $c-btn-hover-bg; }
 }
 
+    /**
+     * A big version
+     */
+    .btn--big {
+        width: 100%;
+        font-size: (24px / $font-size-base) + em;
+        font-weight: bold;
+        padding: 2em 1em;
+        @include vendor(border-radius, (6px / 24px) + em);
+        @include media-query(portable){ font-size: (21px / $font-size-base) + em; }
+    }
+
+    /**
+     * Remove borders
+     */
+    .btn--no-border {
+        border: none;
+    }
+
+
+    /**
+     * If there are labels with other form elements that are inline
+     * with this button, then use this class to pull the button down a bit
+     */
+    .btn--no-label {
+        margin-top: 1.6em;
+    }
+
+    /**
+     * Colour variants
+     */
+    .btn--red {
+        border-color: $c-btn-red-border;
+        color: $c-btn-red-color;
+        background: $c-btn-red-bg;
+        &:hover { background: $c-btn-red-hover-bg; }
+    }
+    .btn--blue {
+        border-color: $c-btn-blue-border;
+        color: $c-btn-blue-color;
+        background: $c-btn-blue-bg;
+        &:hover { background: $c-btn-blue-hover-bg; }
+    }
+
 
 /**
  * Typically used within the .header div, markup something like this:
