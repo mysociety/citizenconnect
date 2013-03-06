@@ -1,0 +1,15 @@
+/**
+ * Mainly used on summary pages, this is just some
+ * borders and margin/padding tweaks for a horizontal
+ * filter form made using the grid.
+ */
+.filters {
+  border-top: $c-filter-border solid ($grid-gutter / 5) + em;
+  border-bottom: $c-filter-border solid ($grid-gutter / 5) + em;
+  padding: ($grid-gutter / 2) + em 0;
+  margin: ($grid-gutter * 2) + em 0;
+  p {
+    margin: 0;
+    font-size: 1.25em; //20px
+  }
+}

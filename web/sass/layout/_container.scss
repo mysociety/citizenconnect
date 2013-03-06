@@ -1,0 +1,27 @@
+/**
+ * Normal, 960px responsive container
+ */
+.container {
+  width: $page-width-max + em;
+  margin: 0 auto;
+  @include media-query(portable){
+    width: 100%;
+    padding-left: $grid-gutter + em;
+    padding-right: $grid-gutter + em;
+  }
+}
+
+
+/**
+ * Smaller, 690px responsive container
+ */
+
+.container--small {
+  width: $small-page-width-max + em;
+  margin: 0 auto;
+  @media screen and (max-width: $small-page-width-max + ($grid-gutter*2)  + em) {
+    width: 100%;
+    padding-left: $grid-gutter + em;
+    padding-right: $grid-gutter + em;
+  }
+}

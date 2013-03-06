@@ -188,7 +188,7 @@ kbd,
 pre,
 samp {
   font-family: monospace, serif;
-  _font-family: "courier new", monospace;
+  _font-family: 'courier new', monospace;
   font-size: 1em; }
 
 /**
@@ -307,7 +307,7 @@ form {
  * Define consistent border, margin, and padding.
  */
 fieldset {
-  border: 1px solid silver;
+  border: 1px solid #c0c0c0;
   margin: 0 2px;
   padding: 0.35em 0.625em 0.75em; }
 
@@ -458,6 +458,9 @@ table {
 /**
  * Site-wide Variables
  */
+/**
+ * Colours
+ */
 /*
  * HTML5 Boilerplate
  *
@@ -501,7 +504,7 @@ hr {
   display: block;
   height: 1px;
   border: 0;
-  border-top: 1px solid #cccccc;
+  border-top: 1px solid #ccc;
   margin: 1em 0;
   padding: 0; }
 
@@ -652,7 +655,7 @@ textarea {
 @media print {
   * {
     background: transparent !important;
-    color: black !important;
+    color: #000 !important;
     /* Black prints faster: h5bp.com/s */
     box-shadow: none !important;
     text-shadow: none !important; }
@@ -677,7 +680,7 @@ textarea {
 
   pre,
   blockquote {
-    border: 1px solid #999999;
+    border: 1px solid #999;
     page-break-inside: avoid; }
 
   thead {
@@ -718,6 +721,96 @@ textarea {
   box-sizing: border-box; }
 
 /**
+ *   Styles for use  in the docs
+ */
+body.docs {
+  text-align: left !important;
+  max-width: 30em;
+  margin: auto;
+  padding: 30px 0px; }
+  body.docs h2 {
+    padding: 3em 0 1em 0; }
+  body.docs ol.contents {
+    list-style-type: decimal; }
+  body.docs dl, body.docs dd, body.docs dt {
+    margin: 0;
+    padding: 0;
+    text-indent: 0;
+    display: block;
+    text-align: left; }
+  body.docs dl {
+    width: 100%;
+    margin: auto;
+    padding: 1em;
+    background-color: #ccc; }
+  body.docs #colours-primary dd,
+  body.docs #colours-secondary dd,
+  body.docs #colours-tints dd {
+    display: block;
+    height: 1.5em;
+    margin-bottom: 1em; }
+  body.docs #colours-primary dt,
+  body.docs #colours-secondary dt,
+  body.docs #colours-tints dt {
+    display: block;
+    height: 1.5em;
+    color: #fff; }
+  body.docs #colours-primary dt.c-white {
+    color: #222222; }
+  body.docs .c-nhs_blue {
+    background-color: #0072c6; }
+  body.docs .c-black {
+    background-color: #222222; }
+  body.docs .c-white {
+    background-color: white; }
+  body.docs .c-nhs_darkgreen {
+    background-color: #006b54; }
+  body.docs .c-nhs_green {
+    background-color: #009e49; }
+  body.docs .c-nhs_lightgreen {
+    background-color: #5bbf21; }
+  body.docs .c-nhs_aquagreen {
+    background-color: #00aa9e; }
+  body.docs .c-nhs_aquablue {
+    background-color: #00adc6; }
+  body.docs .c-nhs_lightblue {
+    background-color: #0091c9; }
+  body.docs .c-nhs_darkblue {
+    background-color: #003893; }
+  body.docs .c-nhs_purple {
+    background-color: #56008c; }
+  body.docs .c-nhs_darkpink {
+    background-color: #a00054; }
+  body.docs .c-nhs_darkred {
+    background-color: #931638; }
+  body.docs .c-nhs_red {
+    background-color: #d81e05; }
+  body.docs .c-nhs_orange {
+    background-color: #e28c05; }
+  body.docs .c-nhs_yellow {
+    background-color: #f7e214; }
+  body.docs .c-nhs_blue-tint_100 {
+    background-color: #0072c6; }
+  body.docs .c-nhs_blue-tint_90 {
+    background-color: #1980cb; }
+  body.docs .c-nhs_blue-tint_80 {
+    background-color: #328ed1; }
+  body.docs .c-nhs_blue-tint_70 {
+    background-color: #4c9cd7; }
+  body.docs .c-nhs_blue-tint_60 {
+    background-color: #66aadc; }
+  body.docs .c-nhs_blue-tint_50 {
+    background-color: #7fb8e2; }
+  body.docs .c-nhs_blue-tint_40 {
+    background-color: #99c6e8; }
+  body.docs .c-nhs_blue-tint_30 {
+    background-color: #b2d4ed; }
+  body.docs .c-nhs_blue-tint_20 {
+    background-color: #cce2f3; }
+  body.docs .c-nhs_blue-tint_10 {
+    background-color: #e5f0f9; }
+
+/**
  * Basic and reused stuff
  */
 body {
@@ -748,7 +841,7 @@ textarea, input[type=text], select {
   width: 100%;
   padding: 4px 6px;
   border-radius: 4px;
-  border: 1px solid #cccccc;
+  border: 1px solid #ccc;
   margin: 10px;
   vertical-align: middle;
   text-align: left; }

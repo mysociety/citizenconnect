@@ -106,13 +106,13 @@ class ProblemForm(MessageModelForm):
             # Hide this because it comes from the url already
             'organisation': HiddenInput,
             # Add placeholder for description
-            'description': Textarea({'placeholder': 'Please write the details of your problem in this box, including as much information as possible to help us to help you'}),
+            'description': Textarea({'placeholder': 'Please write the details of your problem in this box'}),
             'category': RadioSelect,
-            'reporter_name': TextInput(attrs={'placeholder': 'Your Name (This is optional - you can report problems anonymously)'}),
+            'reporter_name': TextInput(attrs={'class': 'text-input'}),
             # Add placeholder for phone
-            'reporter_phone': TextInput(attrs={'placeholder': 'Your Contact Number (you must enter a contact number OR email address)'}),
+            'reporter_phone': TextInput(attrs={'class': 'text-input'}),
             # Add placeholder for email
-            'reporter_email': TextInput(attrs={'placeholder': 'Your Email Address (you must enter a contact number OR email address)'}),
+            'reporter_email': TextInput(attrs={'class': 'text-input'}),
             # Make preferred contact method a radio button instead of a select
             'preferred_contact_method': RadioSelect,
             # Hide the privacy booleans because they're not very user-friendly

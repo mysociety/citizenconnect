@@ -127,7 +127,6 @@ class PickProviderBase(ListView):
             form = OrganisationFinderForm(self.request.GET)
             if form.is_valid(): # All validation rules pass
                 context = {'location': form.cleaned_data['location'],
-                           'organisation_type': form.cleaned_data['organisation_type'],
                            'organisations': form.cleaned_data['organisations'],
                            'result_link_url_name': self.result_link_url_name,
                            'paginator': None,

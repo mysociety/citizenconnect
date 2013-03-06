@@ -1,0 +1,20 @@
+$font-size-base: 16px;
+
+// For document and form type pages where a max width makes sense.
+$page-width-max-pixel: 960px;
+$page-width-max: $page-width-max-pixel/$font-size-base;
+
+// Same as above, but smaller
+$small-page-width-max-pixel: 690px;
+$small-page-width-max: $small-page-width-max-pixel/$font-size-base;
+
+$grid-column_count: 12; // 12 16 or 24
+
+$grid-gutter-pixel: 20px;
+$grid-gutter: $grid-gutter-pixel/$font-size-base;
+
+$grid-col_width:($page-width-max/$grid-column_count)-$grid-gutter;
+
+// responsive vars
+$lap-start:         481px;
+$desk-start:        1024px;
