@@ -6,39 +6,71 @@
 {% block bodyclasses %}homepage{% endblock %}
 
 {% block content %}
-<div class="header">
-    <h1>NHS Care Connect: {{ cobrand.name }}</h1>
-</div>
-<div class="hero">
-    <div class="feature">
-        <p><a href="{% url 'problems-pick-provider' cobrand=cobrand.name %}">I've got a problem that needs solving</a></p>
+
+<div class="gw">
+    <div class="g  one-half  palm-one-whole">
+        <div class="islet  islet--white">
+            <a href="{% url 'problems-pick-provider' cobrand=cobrand.name %}" class="btn  btn--big  btn--red  btn--no-border">Got a problem?</a>
+            <p class="small-title  align-center">I&CloseCurlyQuote;ve got a problem with an NHS service I would like to report</p>
+        </div>
     </div>
-    <div class="feature">
-        <p><a href="http://www.nhs.uk/servicedirectories/Pages/HospitalCommentInput.aspx">I would like to leave a review of my NHS Experience</a></p>
-    </div>
-</div>
-<div class="questions">
-    <h2>I've got a question that needs answering</h2>
-    <div class="feature">
-        <p><a href="{% url 'ask-question' cobrand=cobrand.name %}">For London</a></p>
-    </div>
-    <div class="feature">
-        <p><a href="{% url 'ask-question' cobrand=cobrand.name %}">For Manchester</a></p>
+    <div class="g  one-half  palm-one-whole">
+        <div class="islet  islet--white">
+            <a href="http://www.nhs.uk/servicedirectories/Pages/HospitalCommentInput.aspx" class="btn  btn--big  btn--blue  btn--no-border">Leave a review?</a>
+            <p class="small-title  align-center">I&CloseCurlyQuote;d like to leave a review of an NHS Service</p>
+        </div>
     </div>
 </div>
-<div class="questions-more">
-    <div class="feature">
-        <p><a href="{% url 'org-map' cobrand=cobrand.name %}">See the maps!</a></p>
-    </div>
-    <div class="feature">
-        <p><a href="{% url 'about' cobrand=cobrand.name %}">Find out more</a></p>
+
+<h3 class="title  title--suck-up">Questions</h3>
+<h2>I&CloseCurlyQuote;ve got a general enquiry about NHS Services in&hellip;</h2>
+
+<div class="island  island--squared  island--half-bordered">
+    <div class="gw">
+        <div class="g  one-half">
+            <a href="{% url 'ask-question' cobrand=cobrand.name %}" class="btn  btn--big  btn--no-border">London</a>
+        </div>
+        <div class="g  one-half">
+            <a href="{% url 'ask-question' cobrand=cobrand.name %}" class="btn  btn--big  btn--no-border">the North East</a>
+        </div>
     </div>
 </div>
-<div class="problems">
-    <div class="feature">
-        <p><a href="{% url 'org-all-summary' cobrand=cobrand.name %}">I’d like to see what issues other people have been raising</a></p>
+
+<h3 class="title  title--suck-up">Data</h3>
+<h2>See how health services are responding to people&CloseCurlyQuote;s issues</h2>
+
+<div class="gw">
+    <div class="g  one-half  palm-one-whole">
+        <div class="islet  islet--white">
+            <a href="{% url 'org-map' cobrand=cobrand.name %}">
+                <img src="/web/img/homepage-map.png">
+                <span class="icon-search" aria-hidden="true"></span>
+            </a>
+            <h4>Live Map</h4>
+        </div>
+    </div>
+    <div class="g  one-half  palm-one-whole">
+        <div class="islet  islet--white">
+            <a href="{% url 'org-all-summary' cobrand=cobrand.name %}">
+                <img src="/web/img/homepage-summary-table.png">
+                <span class="icon-search" aria-hidden="true"></span>
+            </a>
+            <h4>Summary Table</h4>
+        </div>
     </div>
 </div>
-<h2 class="emergency">Emergency? Dial 999 NOW!</h2>
-<h2>Need urgent medical care but not life-threatening? Dial 111 now.</h2>
+
+<div class="break-bar">
+    <a href="{% url 'about' cobrand=cobrand.name %}" class="forward-btn  fr">About this service <span class="icon-chevron-right" aria-hidden="true"></span></a>
+</div>
+
+<div class="split-box">
+    <div class="split-box__left  split-box--red  one-third">
+        <h2 class="emergency">Emergency? Dial 999</h2>
+    </div>
+    <div class="split-box__right  two-thirds">
+        <h2>Need urgent medical care but not life-threatening? DIAL 111</h2>
+    </div>
+</div>
+
 {% endblock %}
