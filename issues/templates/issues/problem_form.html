@@ -7,7 +7,7 @@
 {% block content %}
 <div class="header">
     <a href="#" class="back-btn  fr"><span class="icon-chevron-left" aria-hidden="true"></span> Back to search results</a>
-    <h1>{% if organisation %}{{ organisation.name }}{% else %}Ask your question{% endif %}</h1>
+    <h1>{{ organisation.name }}</h1>
 </div>
 
 <form method="post">
@@ -32,8 +32,23 @@
         </ul>
     </fieldset>
 
+    {% if not form.service.is_hidden %}
+        <fieldset class="island">
+            <label for="id_service">Service</label>
+
+            <p class="info">If your problem relates to a particular service, you can select it here</p>
+
+            <ul class="radio-list">
+                {% for radio in form.service %}
+                    <li>{{ radio }}</li>
+                {% endfor %}
+            </ul>
+
+        </fieldset>
+    {% endif %}
+
     <fieldset class="island">
-        <label for="id_service">Category</label>
+        <label for="id_category">Category</label>
 
         <p class="info">Please select the category that best describes your problem</p>
 
@@ -51,11 +66,11 @@
                 {{ form.reporter_name }}
             </li>
             <li class="g  one-half  palm-one-whole">
-                <label for="id_reporter_phone">Your Contact Number <span class="info">(you must enter a contact number OR email address)</span></label>
+                <label for="id_reporter_phone">Your Contact Number <span class="info">(You must enter a contact number OR email address)</span></label>
                 {{ form.reporter_phone }}
             </li>
             <li class="g  one-half  palm-one-whole">
-                <label for="id_reporter_email">Your Email Address <span class="info">(you must enter a contact number OR email address)</span></label>
+                <label for="id_reporter_email">Your Email Address <span class="info">(You must enter a contact number OR email address)</span></label>
                 {{ form.reporter_email }}
             </li>
             <li class="g  one-whole">

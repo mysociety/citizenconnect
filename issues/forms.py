@@ -95,6 +95,8 @@ class ProblemForm(MessageModelForm):
         widgets = {
             # Hide this because it comes from the url already
             'organisation': HiddenInput,
+            # Make service a radio select
+            'service': RadioSelect,
             # Add placeholder for description
             'description': Textarea({'placeholder': 'Please write the details of your problem in this box'}),
             'category': RadioSelect,
