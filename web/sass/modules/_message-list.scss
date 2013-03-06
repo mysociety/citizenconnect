@@ -1,0 +1,22 @@
+/**
+ * A general message list style
+ */
+.message-list {
+  list-style: none;
+  padding: 0;
+  li {
+    &:before {
+      @extend .i;
+      margin-right: 0.5em;
+      color: $c-message-list-icon-color;
+    }
+    &.message-list__error {
+      color: $c-message-list-error-color;
+      &:before { content: "\e006"; }
+    }
+    &.message-list__success {
+      color: $c-message-list-success-color;
+      &:before { content: "\e003"; }
+    }
+  }
+}
