@@ -1,5 +1,4 @@
 from django.db import models
-from django.db.models import Q
 from django.conf import settings
 from django.core.exceptions import ValidationError
 
@@ -28,6 +27,11 @@ class MessageModel(AuditedModel):
         (SOURCE_SMS, 'SMS')
     )
 
+    HIDDEN = 0
+    PUBLISHED = 1
+
+    PUBLICATION_STATUS_CHOICES = ((HIDDEN, "Hidden"), (PUBLISHED, "Published"))
+
     description = models.TextField(verbose_name='')
     reporter_name = models.CharField(max_length=200, blank=True, verbose_name='')
     reporter_phone = models.CharField(max_length=50, blank=True, verbose_name='')
@@ -37,6 +41,7 @@ class MessageModel(AuditedModel):
     preferred_contact_method = models.CharField(max_length=100, choices=CONTACT_CHOICES, default=CONTACT_EMAIL)
     source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True)
     mailed = models.BooleanField(default=False, blank=False)
+    publication_status = models.IntegerField(default=HIDDEN, blank=False, choices=PUBLICATION_STATUS_CHOICES)
 
     @property
     def summary(self):
@@ -81,12 +86,12 @@ class QuestionManager(models.Manager):
         """
         Return only open problems
         """
-        return super(QuestionManager, self).all().filter(Q(status=Question.NEW) | Q(status=Question.ACKNOWLEDGED))
+        return super(QuestionManager, self).all().filter(publication_status=Question.PUBLISHED)
 
 class OpenQuestionManager(models.Manager):
 
     def get_query_set(self):
-        return super(OpenQuestionManager, self).get_query_set().filter(Q(status=Question.NEW) | Q(status=Question.ACKNOWLEDGED))
+        return super(OpenQuestionManager, self).get_query_set().filter(publication_status=Question.PUBLISHED)
 
 class Question(MessageModel):
     # Custom manager
@@ -130,12 +135,12 @@ class ProblemManager(models.Manager):
         """
         Return only open problems
         """
-        return super(ProblemManager, self).all().filter(Q(status=Problem.NEW) | Q(status=Problem.ACKNOWLEDGED))
+        return super(ProblemManager, self).all().filter(publication_status=Problem.PUBLISHED)
 
 class OpenProblemManager(models.Manager):
 
     def get_query_set(self):
-        return super(OpenProblemManager, self).get_query_set().filter(Q(status=Problem.NEW) | Q(status=Problem.ACKNOWLEDGED))
+        return super(OpenProblemManager, self).get_query_set().filter(publication_status=Problem.PUBLISHED)
 
 class Problem(MessageModel):
     # Custom managers
