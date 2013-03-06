@@ -33,9 +33,25 @@
 
 
 /**
+ * Take off border radius
+ */
+.island--squared,
+.islet--squared {
+    @include vendor(border-radius, 0);
+}
+
+
+/**
  * Colour variants
  */
-.island--aquablue {
+.island--aquablue,
+.islet--aquablue {
     background: $c-island-aquablue-bg;
     color: $c-island-aquablue-color;
+}
+
+.island--white,
+.islet--white {
+    background: $c-island-white-bg;
+    border: ($grid-gutter/5) + em solid $c-island-white-border-color;
 }
