@@ -15,6 +15,7 @@ from issues.models import Problem, Question
 import organisations
 from ..models import Organisation
 from . import create_test_instance, create_test_organisation, create_test_service
+from issues.models import MessageModel
 
 class OrganisationSummaryTests(TestCase):
 
@@ -233,16 +234,34 @@ class OrganisationMapTests(TestCase):
         self.assertEqual(response_json[1]['ods_code'], self.gp.ods_code)
         self.assertEqual(response_json[1]['problem_count'], 0)
 
-    def test_problem_counts_in_json(self):
-        # Add some problem and questions into the db
+    def test_public_map_doesnt_include_unmoderated_or_unpublished_problems(self):
         create_test_instance(Problem, {'organisation': self.hospital})
-        create_test_instance(Problem, {'organisation': self.gp})
+        create_test_instance(Problem, {'organisation': self.hospital,
+                                       'publication_status': MessageModel.HIDDEN,
+                                       'moderated': MessageModel.MODERATED})
+        create_test_instance(Problem, {'organisation': self.hospital,
+                                       'publication_status': MessageModel.PUBLISHED,
+                                       'moderated': MessageModel.MODERATED})
+
 
         resp = self.client.get(self.map_url)
         response_json = json.loads(resp.context['organisations'])
 
         self.assertEqual(response_json[0]['problem_count'], 1)
-        self.assertEqual(response_json[1]['problem_count'], 1)
+
+    def test_private_map_includes_unmoderated_and_unpublished_problems(self):
+        create_test_instance(Problem, {'organisation': self.hospital})
+        create_test_instance(Problem, {'organisation': self.hospital,
+                                       'publication_status': MessageModel.HIDDEN,
+                                       'moderated': MessageModel.MODERATED})
+        create_test_instance(Problem, {'organisation': self.hospital,
+                                       'publication_status': MessageModel.PUBLISHED,
+                                       'moderated': MessageModel.MODERATED})
+
+        resp = self.client.get(self.private_map_url)
+        response_json = json.loads(resp.context['organisations'])
+
+        self.assertEqual(response_json[0]['problem_count'], 3)
 
     def test_public_map_provider_urls_are_to_public_summary_pages(self):
         expected_hospital_url = reverse('public-org-summary', kwargs={'ods_code':self.hospital.ods_code, 'cobrand':'choices'})
