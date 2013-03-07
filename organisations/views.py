@@ -266,7 +266,7 @@ class Summary(TemplateView):
 
         organisation_rows = interval_counts(issue_type=Problem, filters=filters)
         organisations_table = NationalSummaryTable(organisation_rows, cobrand=kwargs['cobrand'])
-        RequestConfig(self.request).configure(organisations_table)
+        RequestConfig(self.request, paginate={"per_page": 8}).configure(organisations_table)
         context['organisations_table'] = organisations_table
         context['filters'] = filters
         return context
