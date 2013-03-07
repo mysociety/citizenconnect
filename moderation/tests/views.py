@@ -34,21 +34,24 @@ class HomeViewTests(BaseModerationTestCase):
 
     def setUp(self):
         super(HomeViewTests, self).setUp()
-        self.closed_problem = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.RESOLVED, 'moderated': MessageModel.MODERATED})
+
+        self.closed_problem = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.RESOLVED})
+        self.closed_problem2 = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.NOT_RESOLVED})
         self.moderated_problem = create_test_instance(Problem, {'organisation':self.test_organisation, 'moderated': MessageModel.MODERATED})
-        self.closed_problem2 = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.NOT_RESOLVED, 'moderated': MessageModel.MODERATED})
-        self.closed_question = create_test_instance(Question, {'status': Question.RESOLVED, 'moderated': MessageModel.MODERATED})
+
+        self.closed_question = create_test_instance(Question, {'status': Question.RESOLVED})
         self.moderated_question = create_test_instance(Question, {'moderated': MessageModel.MODERATED})
 
     def test_issues_in_context(self):
         resp = self.client.get(self.home_url)
-        self.assertEqual(resp.context['issues'], [self.test_question, self.test_problem])
+        self.assertTrue(self.test_problem in resp.context['issues'])
+        self.assertTrue(self.test_question in resp.context['issues'])
+        self.assertTrue(self.closed_problem in resp.context['issues'])
+        self.assertTrue(self.closed_problem2 in resp.context['issues'])
+        self.assertTrue(self.closed_question in resp.context['issues'])
 
-    def test_closed_and_moderated_issues_not_in_context(self):
+    def test_moderated_issues_not_in_context(self):
         resp = self.client.get(self.home_url)
-        self.assertTrue(self.closed_problem not in resp.context['issues'])
-        self.assertTrue(self.closed_problem2 not in resp.context['issues'])
-        self.assertTrue(self.closed_question not in resp.context['issues'])
         self.assertTrue(self.moderated_problem not in resp.context['issues'])
         self.assertTrue(self.moderated_question not in resp.context['issues'])
 
@@ -56,6 +59,9 @@ class HomeViewTests(BaseModerationTestCase):
         resp = self.client.get(self.home_url)
         self.assertContains(resp, self.test_problem.summary)
         self.assertContains(resp, self.test_question.summary)
+        self.assertContains(resp, self.closed_problem.summary)
+        self.assertContains(resp, self.closed_problem2.summary)
+        self.assertContains(resp, self.closed_question.summary)
 
     def test_issues_link_to_moderate_form(self):
         resp = self.client.get(self.home_url)
@@ -67,10 +73,11 @@ class ModerateFormViewTests(BaseModerationTestCase):
     def setUp(self):
         super(ModerateFormViewTests, self).setUp()
 
-        self.closed_problem = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.RESOLVED, 'moderated': MessageModel.MODERATED})
+        self.closed_problem = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.RESOLVED})
+        self.closed_problem2 = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.NOT_RESOLVED})
         self.moderated_problem = create_test_instance(Problem, {'organisation':self.test_organisation, 'moderated': MessageModel.MODERATED})
-        self.closed_problem2 = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.NOT_RESOLVED, 'moderated': MessageModel.MODERATED})
-        self.closed_question = create_test_instance(Question, {'status': Question.RESOLVED, 'moderated': MessageModel.MODERATED})
+
+        self.closed_question = create_test_instance(Question, {'status': Question.RESOLVED})
         self.moderated_question = create_test_instance(Question, {'moderated': MessageModel.MODERATED})
 
     def test_problem_in_context(self):
@@ -94,23 +101,24 @@ class ModerateFormViewTests(BaseModerationTestCase):
         self.assertContains(resp, response1.response)
         self.assertContains(resp, response2.response)
 
-    def test_closed_and_moderated_issues_rejected(self):
+    def test_moderated_issues_rejected(self):
         # Quiten down logging
         logging.disable(logging.CRITICAL)
 
-        resp = self.client.get('/private/moderate/problem/{0}'.format(self.closed_problem.id))
-        self.assertEqual(resp.status_code, 404)
-
-        resp = self.client.get('/private/moderate/problem/{0}'.format(self.closed_problem2.id))
-        self.assertEqual(resp.status_code, 404)
-
         resp = self.client.get('/private/moderate/problem/{0}'.format(self.moderated_problem.id))
-        self.assertEqual(resp.status_code, 404)
-
-        resp = self.client.get('/private/moderate/question/{0}'.format(self.closed_question.id))
         self.assertEqual(resp.status_code, 404)
 
         resp = self.client.get('/private/moderate/question/{0}'.format(self.moderated_question.id))
         self.assertEqual(resp.status_code, 404)
 
         logging.disable(logging.NOTSET)
+
+    def test_closed_issues_accepted(self):
+        resp = self.client.get('/private/moderate/problem/{0}'.format(self.closed_problem.id))
+        self.assertEqual(resp.status_code, 200)
+
+        resp = self.client.get('/private/moderate/problem/{0}'.format(self.closed_problem2.id))
+        self.assertEqual(resp.status_code, 200)
+
+        resp = self.client.get('/private/moderate/question/{0}'.format(self.closed_question.id))
+        self.assertEqual(resp.status_code, 200)

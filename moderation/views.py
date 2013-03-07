@@ -21,8 +21,8 @@ class ModerateHome(TemplateView):
         # Get all the problems and questions
         context = super(ModerateHome, self).get_context_data(**kwargs)
         # Get all the open problems and questions that need to be moderated
-        problems = Problem.objects.open_unmoderated_problems().order_by("created")
-        questions = Question.objects.open_unmoderated_questions().order_by("created")
+        problems = Problem.objects.unmoderated_problems().order_by("created")
+        questions = Question.objects.unmoderated_questions().order_by("created")
         context['problems'] = problems
         context['questions'] = questions
         # Put them into one list, taken from http://stackoverflow.com/questions/431628/how-to-combine-2-or-more-querysets-in-a-django-view
@@ -58,8 +58,8 @@ class ModerateForm(MessageDependentFormViewMixin,
     # Parameters for MessageDependentFormViewMixin
     problem_form_class = ProblemModerationForm
     question_form_class = QuestionModerationForm
-    problem_queryset = Problem.objects.open_unmoderated_problems()
-    question_queryset = Question.objects.open_unmoderated_questions()
+    problem_queryset = Problem.objects.unmoderated_problems()
+    question_queryset = Question.objects.unmoderated_questions()
 
     def get_success_url(self):
         return reverse('moderate-confirm')
