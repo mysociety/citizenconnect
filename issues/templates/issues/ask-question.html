@@ -9,39 +9,44 @@
 <div class="header">
     <h1>Ask a Question</h1>
 </div>
-<div class="hero">
-    <div class="feature">
-        <p><a href="{% url 'question-form' cobrand=cobrand.name %}">Click here to ask a question about any aspect of NHS services</a></p>
-    </div>
+
+<a href="{% url 'question-form' cobrand=cobrand.name %}" class="btn  btn--no-border  btn--big--fwd">
+    <span class="icon-chevron-right" aria-hidden="true"></span>
+    <span class="btn--big--fwd__text">Click here to ask a question about any aspect of NHS services</span>
+</a>
+
+<div class="header  mt--b">
+<h2>Frequently asked questions</h2>
 </div>
-<div class="frequently-asked-questions">
-    <div class="feature">
-        <p><a href="http://www.myhealth.london.nhs.uk/">I want to find out the address of my nearest GP</a></p>
-    </div>
-    <div class="feature">
-        <p><a href="http://www.myhealth.london.nhs.uk/">I want to find out the address of my nearest NHS Dentist</a></p>
-    </div>
-    <div class="feature">
-        <p><a href="http://www.myhealth.london.nhs.uk/">I want to find out the visiting hours of a hospital</a></p>
-    </div>
-    <div class="feature">
-        <p><a href="http://www.myhealth.london.nhs.uk/">I would like to book a GP appointment</a></p>
-    </div>
-    <div class="feature">
-        <p><a href="http://www.myhealth.london.nhs.uk/">I’ve got a dental emergency, who should I call?</a></p>
-    </div>
-    <div class="feature">
-        <p><a href="http://www.myhealth.london.nhs.uk/">What are the symptoms of meningitis?</a></p>
-    </div>
-    <div class="feature">
-        <p><a href="http://www.myhealth.london.nhs.uk/">I would like to find out the opening hours of my GP</a></p>
-    </div>
-    <div class="feature">
-        <p><a href="http://www.myhealth.london.nhs.uk/">What’s the out of hours phone number for my GP?</a></p>
-    </div>
-    <div class="feature">
-        <p><a href="http://www.myhealth.london.nhs.uk/">What are the facts about child immunisation?</a></p>
-    </div>
-</div>
+
+<ul class="gw  gridded-list">
+<li class="g  one-third  palm-one-whole">
+  <a href="http://www.nhs.uk/Service-Search/Hub/Hub" class="btn  btn--med  btn--no-border  btn--light-green">I need the contact details for my local GP</a>
+</li>
+<li class="g  one-third  palm-one-whole">
+  <a href="http://www.nhs.uk/Service-Search/Hub/Hub" class="btn  btn--med  btn--no-border  btn--red">Where is my nearest hospital?</a>
+</li>
+<li class="g  one-third  palm-one-whole">
+  <a href="http://www.nhs.uk/Conditions/Pages/hub.aspx" class="btn  btn--med  btn--no-border  btn--purple">What could my symptoms be?</a>
+</li>
+<li class="g  one-third  palm-one-whole  cl">
+  <a href="http://www.nhs.uk/nhsengland/healthcareabroad/ehic/pages/about-the-ehic.aspx" class="btn  btn--med  btn--no-border  btn--dark-pink">How do I get an EHIC health travel card?</a>
+</li>
+<li class="g  one-third  palm-one-whole ">
+  <a href="http://www.nhs.uk/nhsengland/healthcareabroad/ehic/pages/about-the-ehic.aspx" class="btn  btn--med  btn--no-border">Why do dentists charge for NHS services?</a>
+</li>
+<li class="g  one-third  palm-one-whole">
+  <a href="http://www.nhs.uk/tools/pages/healthyweightcalculator.aspx" class="btn  btn--med  btn--no-border  btn--dark-green">Am I a healthy weight? Calculate my BMI</a>
+</li>
+<li class="g  one-third  palm-one-whole  cl">
+  <a href="http://www.nhs.uk/conditions/pregnancy-and-baby/pages/pregnancy-and-baby-care.aspx" class="btn  btn--med  btn--no-border  btn--blue">I want pregnancy advice</a>
+</li>
+<li class="g  one-third  palm-one-whole">
+  <a href="http://www.nhs.uk/conditions/pregnancy-and-baby/pages/pregnancy-and-baby-care.aspx" class="btn  btn--med  btn--no-border  btn--dark-blue">I want advice for my baby&CloseCurlyQuote;s health</a>
+</li>
+<li class="g  one-third  palm-one-whole">
+  <a href="http://www.nhs.uk/conditions/chickenpox/pages/introduction.aspx" class="btn  btn--med  btn--no-border  btn--dark-red">How long is chickenpox contagious?</a>
+</li>
+</ul>
 
 {% endblock %}
