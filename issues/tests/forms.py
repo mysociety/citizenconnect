@@ -43,7 +43,7 @@ class ProblemCreateFormTests(TestCase):
         resp = self.client.post(self.form_url, self.test_problem)
         # Check in db
         problem = Problem.objects.get(reporter_name=self.uuid)
-        self.assertContains(resp, problem.reference_number, count=1, status_code=200)
+        self.assertContains(resp, problem.reference_number, count=2, status_code=200)
         self.assertEqual(problem.organisation, self.test_organisation)
         self.assertEqual(problem.service, self.test_service)
         self.assertEqual(problem.public, False)

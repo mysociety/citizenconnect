@@ -12,9 +12,5 @@
 </div>
 {% include "organisations/includes/summary-tabs.html" with active_tab='problems' %}
 
-{% if issue_table %}
-<div class="table-wrapper">
-    {% render_table issue_table %}
-</div>
-{% endif %}
+{% render_table table 'organisations/includes/summary-table.html' %}
 {% endblock %}
