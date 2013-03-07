@@ -1,5 +1,5 @@
 {% load django_tables2 %}
-
+{% if page_obj.has_next or page_obj.has_previous %}
 <ul class="pagination">
     <li class="pagination__first">
         <a href="{% querystring table.prefixed_page_field=1 %}"><span class="icon-double-chevron-left" aria-hidden="true"></span></a>
@@ -49,3 +49,4 @@
         <a href="{% querystring table.prefixed_page_field=paginator.num_pages %}"><span class="icon-double-chevron-right" aria-hidden="true"></span></a>
     </li>
 </ul>
+{% endif %}
