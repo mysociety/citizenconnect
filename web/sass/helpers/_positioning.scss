@@ -4,5 +4,34 @@
 .cr { clear: right; }
 .cl { clear: left; }
 
+
+/**
+ * Add margins
+ */
 .mt { margin-top: $grid-gutter + em; }
 .mb { margin-bottom: $grid-gutter + em; }
+  .mt--s { margin-top: ($grid-gutter / 2) + em; }
+  .mb--s { margin-bottom: ($grid-gutter / 2) + em; }
+  .mt--b { margin-top: ($grid-gutter * 2) + em; }
+  .mb--b { margin-bottom: ($grid-gutter * 2) + em; }
+
+@include media-query(palm) {
+  .mt__palm { margin-top: $grid-gutter + em; }
+  .mb__palm { margin-bottom: $grid-gutter + em; }
+    .mt__palm--s { margin-top: ($grid-gutter / 2) + em; }
+    .mb__palm--s { margin-bottom: ($grid-gutter / 2) + em; }
+    .mt__palm--b { margin-top: ($grid-gutter * 2) + em; }
+    .mb__palm--b { margin-bottom: ($grid-gutter * 2) + em; }
+}
+
+
+/**
+ * Remove margins
+ */
+.mt--n { margin-top: 0; }
+.mb--n { margin-bottom: 0; }
+
+@include media-query(palm) {
+  .mt__palm--n { margin-top: 0; }
+  .mb__palm--n { margin-bottom: 0; }
+}
