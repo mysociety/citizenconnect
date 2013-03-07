@@ -165,3 +165,14 @@ $c-meta-data-icon-checkmark-color: $c-nhs_lightgreen;
       $c-icon-overlay-hover-icon-color: $c-darkgrey;
       $c-icon-overlay-light-icon-color: $c-grey;
 $c-icon-overlay-light-hover-icon-color: $c-darkgrey;
+
+
+/**
+ * _split-box.scss
+ */
+      $c-split-box-default-bg: $c-darkgrey;
+   $c-split-box-default-color: $c-white;
+  $c-split-box-default-border: $c-white;
+$c-split-box-hover-default-bg: $c-darkgrey-tint;
+      $c-split-box-excited-bg: $c-nhs_red;
+$c-split-box-hover-excited-bg: $c-nhs_red-tint;

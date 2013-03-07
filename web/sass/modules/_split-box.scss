@@ -25,17 +25,17 @@
   .split-box__right {
     display: table-cell;
     vertical-align: middle;
-    background: $c-darkgrey;
+    background: $c-split-box-default-bg;
     text-align: center;
     text-decoration: none;
     padding: 1em;
-    color: $c-white;
+    color: $c-split-box-default-color;
     @include media-query(palm) { display: block; }
     h2 {
       font-weight: normal;
       line-height: 1.3;
     }
-    &:hover { background: $c-darkgrey-tint; }
+    &:hover { background: $c-split-box-hover-default-bg; }
   }
   .split-box__left {
     @include vendor(border-radius, ($grid-gutter/2) + em 0 0 ($grid-gutter/2) + em);
@@ -44,11 +44,11 @@
     }
   }
   .split-box__right {
-    border-left: ($grid-gutter / 4) + em solid $c-white;
+    border-left: ($grid-gutter / 4) + em solid $c-split-box-default-border;
     @include vendor(border-radius, 0 ($grid-gutter/2) + em ($grid-gutter/2) + em 0);
     @include media-query(palm) {
       border-left: none;
-      border-top: ($grid-gutter / 4) + em solid $c-white;
+      border-top: ($grid-gutter / 4) + em solid $c-split-box-default-border;
       @include vendor(border-radius, 0 0 ($grid-gutter/2) + em ($grid-gutter/2) + em);
     }
   }
@@ -57,7 +57,7 @@
    * Red colour variant
    */
   .split-box--red {
-    background: $c-nhs_red;
-    &:hover { background: $c-nhs_red-tint; }
+    background: $c-split-box-excited-bg;
+    &:hover { background: $c-split-box-hover-excited-bg; }
   }
 }
