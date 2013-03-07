@@ -66,6 +66,10 @@
         padding: 2.5em 1em;
         @include vendor(border-radius, (6px / 18px) + em);
         @include media-query(portable){ font-size: $font-size-base; }
+        @include media-query(palm){
+            padding: 1em;
+            text-align: left;
+        }
     }
 
 

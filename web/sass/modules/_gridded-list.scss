@@ -4,7 +4,10 @@
  */
 .gridded-list {
   li {
-    @extend .mb;
+    margin-bottom: $grid-gutter + em;
+    @include media-query(palm){
+      margin-bottom: ($grid-gutter / 2) + em;
+    }
     .btn--med {
       @media only screen and (min-width:$lap-start) and (max-width:790px) {
         min-height: ($grid-gutter * 7) + em;
