@@ -11,7 +11,6 @@ class LookupFormTests(BaseModerationTestCase):
     def setUp(self):
         super(LookupFormTests, self).setUp()
         self.closed_problem = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.RESOLVED})
-        self.closed_problem2 = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.NOT_RESOLVED})
         self.moderated_problem = create_test_instance(Problem, {'organisation':self.test_organisation, 'moderated': MessageModel.MODERATED})
         self.closed_question = create_test_instance(Question, {'status': Question.RESOLVED})
         self.moderated_question = create_test_instance(Question, {'moderated': MessageModel.MODERATED})
@@ -46,9 +45,6 @@ class LookupFormTests(BaseModerationTestCase):
     def test_form_allows_closed_issues(self):
         resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.closed_problem.id)})
         self.assertRedirects(resp, '/private/moderate/problem/{0}'.format(self.closed_problem.id))
-
-        resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.closed_problem2.id)})
-        self.assertRedirects(resp, '/private/moderate/problem/{0}'.format(self.closed_problem2.id))
 
         resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Question.PREFIX, self.closed_question.id)})
         self.assertRedirects(resp, '/private/moderate/question/{0}'.format(self.closed_question.id))

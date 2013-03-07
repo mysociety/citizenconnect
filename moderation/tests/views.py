@@ -36,7 +36,6 @@ class HomeViewTests(BaseModerationTestCase):
         super(HomeViewTests, self).setUp()
 
         self.closed_problem = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.RESOLVED})
-        self.closed_problem2 = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.NOT_RESOLVED})
         self.moderated_problem = create_test_instance(Problem, {'organisation':self.test_organisation, 'moderated': MessageModel.MODERATED})
 
         self.closed_question = create_test_instance(Question, {'status': Question.RESOLVED})
@@ -47,7 +46,6 @@ class HomeViewTests(BaseModerationTestCase):
         self.assertTrue(self.test_problem in resp.context['issues'])
         self.assertTrue(self.test_question in resp.context['issues'])
         self.assertTrue(self.closed_problem in resp.context['issues'])
-        self.assertTrue(self.closed_problem2 in resp.context['issues'])
         self.assertTrue(self.closed_question in resp.context['issues'])
 
     def test_moderated_issues_not_in_context(self):
@@ -60,7 +58,6 @@ class HomeViewTests(BaseModerationTestCase):
         self.assertContains(resp, self.test_problem.summary)
         self.assertContains(resp, self.test_question.summary)
         self.assertContains(resp, self.closed_problem.summary)
-        self.assertContains(resp, self.closed_problem2.summary)
         self.assertContains(resp, self.closed_question.summary)
 
     def test_issues_link_to_moderate_form(self):
@@ -74,7 +71,6 @@ class ModerateFormViewTests(BaseModerationTestCase):
         super(ModerateFormViewTests, self).setUp()
 
         self.closed_problem = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.RESOLVED})
-        self.closed_problem2 = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.NOT_RESOLVED})
         self.moderated_problem = create_test_instance(Problem, {'organisation':self.test_organisation, 'moderated': MessageModel.MODERATED})
 
         self.closed_question = create_test_instance(Question, {'status': Question.RESOLVED})
@@ -115,9 +111,6 @@ class ModerateFormViewTests(BaseModerationTestCase):
 
     def test_closed_issues_accepted(self):
         resp = self.client.get('/private/moderate/problem/{0}'.format(self.closed_problem.id))
-        self.assertEqual(resp.status_code, 200)
-
-        resp = self.client.get('/private/moderate/problem/{0}'.format(self.closed_problem2.id))
         self.assertEqual(resp.status_code, 200)
 
         resp = self.client.get('/private/moderate/question/{0}'.format(self.closed_question.id))

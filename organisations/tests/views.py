@@ -74,25 +74,19 @@ class OrganisationSummaryTests(TestCase):
             self.assertEqual(problems_by_status[0]['week'], 3)
             self.assertEqual(problems_by_status[0]['four_weeks'], 3)
             self.assertEqual(problems_by_status[0]['six_months'], 3)
-            self.assertEqual(problems_by_status[0]['description'], 'Received but not acknowledged')
+            self.assertEqual(problems_by_status[0]['description'], 'Open')
 
             self.assertEqual(problems_by_status[1]['all_time'], 0)
             self.assertEqual(problems_by_status[1]['week'], 0)
             self.assertEqual(problems_by_status[1]['four_weeks'], 0)
             self.assertEqual(problems_by_status[1]['six_months'], 0)
-            self.assertEqual(problems_by_status[1]['description'], 'Acknowledged but not addressed')
+            self.assertEqual(problems_by_status[1]['description'], 'In Progress')
 
             self.assertEqual(problems_by_status[2]['all_time'], 0)
             self.assertEqual(problems_by_status[2]['week'], 0)
             self.assertEqual(problems_by_status[2]['four_weeks'], 0)
             self.assertEqual(problems_by_status[2]['six_months'], 0)
-            self.assertEqual(problems_by_status[2]['description'], 'Addressed - problem solved')
-
-            self.assertEqual(problems_by_status[3]['all_time'], 0)
-            self.assertEqual(problems_by_status[3]['week'], 0)
-            self.assertEqual(problems_by_status[3]['four_weeks'], 0)
-            self.assertEqual(problems_by_status[3]['six_months'], 0)
-            self.assertEqual(problems_by_status[3]['description'], 'Addressed - unable to solve')
+            self.assertEqual(problems_by_status[2]['description'], 'Resolved')
 
     def test_summary_page_applies_problem_category_filter(self):
         for url in self.urls:
@@ -242,10 +236,8 @@ class OrganisationDashboardTests(TestCase):
 
     def test_dashboard_doesnt_show_closed_problems(self):
         self.closed_problem = create_test_instance(Problem, {'organisation': self.organisation, 'status': Problem.RESOLVED})
-        self.closed_problem2 = create_test_instance(Problem, {'organisation': self.organisation, 'status': Problem.NOT_RESOLVED})
         resp = self.client.get(self.dashboard_url)
         self.assertTrue('/private/response/problem/%s' % self.closed_problem.id not in resp.content)
-        self.assertTrue('/private/response/problem/%s' % self.closed_problem2.id not in resp.content)
 
 class OrganisationMapTests(TestCase):
 
