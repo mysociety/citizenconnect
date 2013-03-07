@@ -441,7 +441,10 @@ class ProviderPickerTests(TestCase):
         self.assertContains(resp, expected_message, count=1, status_code=200)
 
     def test_shows_message_when_no_results_for_postcode(self):
-        Organisation.objects.filter = MagicMock(return_value=[])
+        mock_results = MagicMock()
+        ordered_results = mock_results.distance().order_by('distance')
+        ordered_results.return_value = []
+        Organisation.objects.filter = mock_results
         resp = self.client.get(self.results_url)
         expected_message = 'Sorry, there are no matches within 5 miles of SW1A 1AA. Please try again'
         self.assertContains(resp, expected_message, count=1, status_code=200)
