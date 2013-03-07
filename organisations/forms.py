@@ -37,7 +37,7 @@ class OrganisationFinderForm(forms.Form):
             point_data = json.load(point_response)
             point = Point(point_data["wgs84_lon"], point_data["wgs84_lat"])
             return Organisation.objects.filter(point__distance_lt=(point, Distance(mi=5)),
-                                               organisation_type=organisation_type)
+                                               organisation_type=organisation_type).distance(point).order_by('distance')
         elif response_code == 404:
             validation_message = 'Sorry, no postcode matches that query. Please try again, or try searching by provider name'
             raise forms.ValidationError(validation_message)
