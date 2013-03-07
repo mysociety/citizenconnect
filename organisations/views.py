@@ -63,8 +63,9 @@ class MessageListMixin(PrivateViewMixin):
         else:
             issue_table = MessageModelTable(self.get_issues(organisation, context['private']), **table_args)
         context['organisation'] = organisation
-        RequestConfig(self.request).configure(issue_table)
-        context['issue_table'] = issue_table
+        RequestConfig(self.request, paginate={'per_page': 8}).configure(issue_table)
+        context['table'] = issue_table
+        context['page_obj'] = issue_table.page
         return context
 
 class Map(PrivateViewMixin, TemplateView):
