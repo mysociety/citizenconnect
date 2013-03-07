@@ -70,3 +70,19 @@ def provider_paginator(context, adjacent_pages=2):
     return pagination_context
 
 register.inclusion_tag('provider-paginator.html', takes_context=True)(provider_paginator)
+
+def table_paginator(context, adjacent_pages=2):
+    """
+    Adds pagination context variables for use in displaying summary tables
+
+    Required context variables: page_obj: The Paginator.page() instance.
+                                table: the table
+                                request: the request context
+    """
+    pagination_context = paginator(context, adjacent_pages)
+    pagination_context['table'] = context['table']
+    # Pass through the request context so that we can update querystrings with pagination params
+    pagination_context['request'] = context['request']
+    return pagination_context
+
+register.inclusion_tag('organisations/includes/table-paginator.html', takes_context=True)(table_paginator)

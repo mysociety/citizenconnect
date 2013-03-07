@@ -1,0 +1,51 @@
+{% load django_tables2 %}
+
+<ul class="pagination">
+    <li class="pagination__first">
+        <a href="{% querystring table.prefixed_page_field=1 %}"><span class="icon-double-chevron-left" aria-hidden="true"></span></a>
+    </li>
+    {% if page_obj.has_previous %}
+        <li class="pagination__previous">
+            <a href="{% querystring table.prefixed_page_field=page_obj.previous_page_number %}"><span class="icon-chevron-left" aria-hidden="true"></span></a>
+        </li>
+    {% endif %}
+
+    {% if show_first %}
+       <li>
+           <a href="{% querystring table.prefixed_page_field=1 %}">1</a>
+       </li>
+       <li class="pagination__spacer">
+           <span>&hellip;</span>
+       </li>
+    {% endif %}
+
+    {% for page in page_numbers %}
+        {% if page == page_obj.number %}
+            <li class="pagination__current">
+                <span>{{ page }}</span>
+            </li>
+        {% else %}
+            <li>
+                <a href="{% querystring table.prefixed_page_field=page %}">{{ page }}</a>
+            </li>
+        {% endif %}
+    {% endfor %}
+
+    {% if show_last %}
+       <li class="pagination__spacer">
+           <span>&hellip;</span>
+       </li>
+       <li>
+           <a href="{% querystring table.prefixed_page_field=paginator.num_pages %}">{{ paginator.num_pages }}</a>
+       </li>
+    {% endif %}
+
+    {% if page_obj.has_next %}
+        <li class="pagination__next">
+              <a href="{% querystring table.prefixed_page_field=page_obj.next_page_number %}"><span class="icon-chevron-right" aria-hidden="true"></span></a>
+          </li>
+    {% endif %}
+    <li class="pagination__last">
+        <a href="{% querystring table.prefixed_page_field=paginator.num_pages %}"><span class="icon-double-chevron-right" aria-hidden="true"></span></a>
+    </li>
+</ul>
