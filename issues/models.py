@@ -123,15 +123,6 @@ class QuestionManager(models.Manager):
     def unmoderated_questions(self):
         return super(QuestionManager, self).all().filter(moderated=MessageModel.NOT_MODERATED)
 
-    def open_moderated_questions(self):
-        return self.open_questions().filter(moderated=MessageModel.MODERATED)
-
-    def open_moderated_published_questions(self):
-        return self.open_moderated_questions().filter(publication_status=MessageModel.PUBLISHED)
-
-    def open_moderated_published_public_questions(self):
-        return self.open_moderated_published_questions().filter(public=True)
-
 class Question(MessageModel):
     # Custom manager
     objects = QuestionManager()
@@ -171,9 +162,6 @@ class ProblemManager(models.Manager):
 
     def unmoderated_problems(self):
         return super(ProblemManager, self).all().filter(moderated=MessageModel.NOT_MODERATED)
-
-    def open_moderated_problems(self):
-        return self.open_problems().filter(moderated=MessageModel.MODERATED)
 
     def open_moderated_published_problems(self):
         return self.open_moderated_problems().filter(publication_status=MessageModel.PUBLISHED)

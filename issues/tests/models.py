@@ -271,9 +271,6 @@ class ProblemManagerTests(ManagerTest):
     def test_open_problems_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.open_problems(), self.open_problems)
 
-    def test_open_moderated_problems_returns_correct_problems(self):
-        self.compare_querysets(Problem.objects.open_moderated_problems(), self.open_moderated_problems)
-
     def test_unmoderated_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.unmoderated_problems(), self.unmoderated_problems)
 
@@ -391,19 +388,8 @@ class QuestionManagerTests(ManagerTest):
     def test_open_questions_returns_correct_questions(self):
         self.compare_querysets(Question.objects.open_questions(), self.open_questions)
 
-    def test_open_moderated_questions_returns_correct_questions(self):
-        self.compare_querysets(Question.objects.open_moderated_questions(), self.open_moderated_questions)
-
-    def test_unmoderated_returns_correct_questions(self):
+    def test_unmoderated_questions_returns_correct_questions(self):
         self.compare_querysets(Question.objects.unmoderated_questions(), self.unmoderated_questions)
-
-    def test_open_moderated_published_questions_returns_correct_questions(self):
-        self.compare_querysets(Question.objects.open_moderated_published_questions(),
-                               self.open_moderated_published_questions)
-
-    def test_open_moderated_published_public_questions_returns_correct_questions(self):
-        self.compare_querysets(Question.objects.open_moderated_published_public_questions(),
-                               self.open_moderated_published_public_questions)
 
     def test_all_questions_returns_correct_questions(self):
         self.compare_querysets(Question.objects.all(), self.all_questions)
