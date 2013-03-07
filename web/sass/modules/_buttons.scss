@@ -101,6 +101,42 @@
         background: $c-btn-blue-bg;
         &:hover { background: $c-btn-blue-hover-bg; }
     }
+    .btn--light-green {
+        border-color: $c-btn-lightgreen-border;
+        color: $c-btn-lightgreen-color;
+        background: $c-btn-lightgreen-bg;
+        &:hover { background: $c-btn-lightgreen-hover-bg; }
+    }
+    .btn--dark-green {
+        border-color: $c-btn-darkgreen-border;
+        color: $c-btn-darkgreen-color;
+        background: $c-btn-darkgreen-bg;
+        &:hover { background: $c-btn-darkgreen-hover-bg; }
+    }
+    .btn--purple {
+        border-color: $c-btn-purple-border;
+        color: $c-btn-purple-color;
+        background: $c-btn-purple-bg;
+        &:hover { background: $c-btn-purple-hover-bg; }
+    }
+    .btn--dark-pink {
+        border-color: $c-btn-darkpink-border;
+        color: $c-btn-darkpink-color;
+        background: $c-btn-darkpink-bg;
+        &:hover { background: $c-btn-darkpink-hover-bg; }
+    }
+    .btn--dark-blue {
+        border-color: $c-btn-darkblue-border;
+        color: $c-btn-darkblue-color;
+        background: $c-btn-darkblue-bg;
+        &:hover { background: $c-btn-darkblue-hover-bg; }
+    }
+    .btn--dark-red {
+        border-color: $c-btn-darkred-border;
+        color: $c-btn-darkred-color;
+        background: $c-btn-darkred-bg;
+        &:hover { background: $c-btn-darkred-hover-bg; }
+    }
 
 
 /**
