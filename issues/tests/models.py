@@ -210,7 +210,7 @@ class ProblemManagerTests(ManagerTest):
             'publication_status':MessageModel.PUBLISHED
         })
 
-        # Problems that have been closed
+        # Problems that have been closed and moderated
         self.closed_public_moderated_problem_hidden = create_test_instance(Problem, {
             'organisation': self.test_organisation,
             'public':True,
@@ -264,8 +264,9 @@ class ProblemManagerTests(ManagerTest):
                                                                     self.closed_public_moderated_problem_published,
                                                                     self.closed_private_moderated_problem_hidden,
                                                                     self.closed_private_moderated_problem_published]
-
         self.all_problems = self.open_problems + self.closed_problems
+
+        self.all_moderated_published_public_problems = self.open_moderated_published_public_problems + [self.closed_public_moderated_problem_published]
 
     def test_open_problems_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.open_problems(), self.open_problems)
@@ -286,6 +287,10 @@ class ProblemManagerTests(ManagerTest):
 
     def test_all_problems_returns_correct_questions(self):
         self.compare_querysets(Problem.objects.all(), self.all_problems)
+
+    def test_all_moderated_published_public_problems_returns_correct_questions(self):
+        self.compare_querysets(Problem.objects.all_moderated_published_public_problems(),
+                               self.all_moderated_published_public_problems)
 
 class QuestionManagerTests(ManagerTest):
 
