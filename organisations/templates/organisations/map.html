@@ -3,7 +3,7 @@
 
 {% load staticfiles %}
 
-{% block title %}Outcomes Map{% endblock %}
+{% block title %}Organisation performance data{% endblock %}
 
 {% block bodyclasses %}outcomes-map{% endblock %}
 
@@ -193,10 +193,10 @@
 {% if not private %}
     <div class="gw">
         <div class="g  one-half  palm-one-whole  mb__palm">
-            <a href="{% url 'org-pick-provider' cobrand=cobrand.name %}"  class="btn  btn--no-border  btn--big">Look up the outcomes<br>of an NHS care provider</a>
+            <a href="{% url 'org-pick-provider' cobrand=cobrand.name %}"  class="btn  btn--no-border  btn--big">Search to find the<br/>profile of an NHS service.</a>
         </div>
         <div class="g  one-half  palm-one-whole">
-            <a href="{% url 'org-all-summary' cobrand=cobrand.name %}"  class="btn  btn--no-border  btn--big">Look at the outcomes<br>summary tables</a>
+            <a href="{% url 'org-all-summary' cobrand=cobrand.name %}"  class="btn  btn--no-border  btn--big">View Tables of<br/>NHS Service Profiles</a>
         </div>
     </div>
 {% endif %}
@@ -210,5 +210,5 @@
     <div id="map" class="map"></div>
 </div>
 
-<p><small>Click to the see the outcomes of a provider or zoom in to see more detail</small></p>
+<p><small>Zoom into the map above and click on any NHS service shown to see their Care Connect profile.</small></p>
 {% endblock %}
