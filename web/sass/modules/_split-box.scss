@@ -1,0 +1,63 @@
+/**
+ * A simple split box that goes vertical on mobile
+ *
+<div class="split-box">
+  <div class="split-box__inner">
+    <a href="tel:999" class="split-box__left  split-box--red  one-third  palm-one-whole">
+      <h2 class="emergency">Emergency?<br><strong>DIAL 999</strong></h2>
+    </a>
+    <a href="tel:111" class="split-box__right  two-thirds  palm-one-whole">
+      <h2>Need urgent medical care but not life-threatening?<br><strong>DIAL 111</strong></h2>
+    </a>
+  </div>
+</div>
+ *
+ */
+.split-box {
+  display: table;
+  width: 100%;
+  @include media-query(palm) { display: block; }
+  .split-box__inner {
+    display: table-row;
+    @include media-query(palm) { display: block; }
+  }
+  .split-box__left,
+  .split-box__right {
+    display: table-cell;
+    vertical-align: middle;
+    background: $c-darkgrey;
+    text-align: center;
+    text-decoration: none;
+    padding: 1em;
+    color: $c-white;
+    @include media-query(palm) { display: block; }
+    h2 {
+      font-weight: normal;
+      line-height: 1.3;
+    }
+    &:hover { background: $c-darkgrey-tint; }
+  }
+  .split-box__left {
+    @include vendor(border-radius, ($grid-gutter/2) + em 0 0 ($grid-gutter/2) + em);
+    @include media-query(palm) {
+      @include vendor(border-radius, ($grid-gutter/2) + em ($grid-gutter/2) + em 0 0);
+    }
+  }
+  .split-box__right {
+    border-left: ($grid-gutter / 4) + em solid $c-white;
+    @include vendor(border-radius, 0 ($grid-gutter/2) + em ($grid-gutter/2) + em 0);
+    @include media-query(palm) {
+      border-left: none;
+      border-top: ($grid-gutter / 4) + em solid $c-white;
+      @include vendor(border-radius, 0 0 ($grid-gutter/2) + em ($grid-gutter/2) + em);
+    }
+  }
+
+  /**
+   * Red colour variant
+   */
+  .split-box--red {
+    background: $c-nhs_red;
+    &:hover { background: $c-nhs_red-tint; }
+  }
+}
