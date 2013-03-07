@@ -16,6 +16,9 @@
     <link rel="stylesheet" href="{% static 'css/leaflet.rrose.ie.css' %}" />
 <![endif]-->
 <style type="text/css">
+    #map{
+        height:500px;
+    }
     .marker_m1,
     .marker_m2,
     .marker_m3,
@@ -35,10 +38,11 @@
                 box-shadow: 0px 0px 6px 0px #000;
 
     }
-    .marker_m1:hover { background:#000;border-color: rgba(216,30,5,1);   }
-    .marker_m2:hover { background:#000;border-color: #ef4300;            }
-    .marker_m3:hover { background:#000;border-color: rgb(226,140,5);     }
-    .marker_m4:hover { background:#000;border-color: rgba(247,226,20,1); }
+    .marker_m1{ background-color: #1e91c9; }
+    .marker_m2{ background-color: #176d97; }
+    .marker_m3{ background-color: #176d97; }
+    .marker_m4{ background-color: #072432; }
+
     {
         border-color: rgba(0,0,0,0.8);
     }
@@ -51,10 +55,10 @@
         top: -5.8em;
         opacity:1;
     }
-    .marker_m1{ background-color: #1e91c9; }
-    .marker_m2{ background-color: #176d97; }
-    .marker_m3{ background-color: #176d97; }
-    .marker_m4{ background-color: #072432; }
+    .marker_m1{ background-color: rgba(216,30,5,1); }
+    .marker_m2{ background-color: #ef4300; }
+    .marker_m3{ background-color: rgb(226,140,5); }
+    .marker_m4{ background-color: rgba(247,226,20,1); }
 
     /* Rrose Tweaks */
     .leaflet-rrose{ pointer-events:none; }
@@ -84,101 +88,100 @@
 <script src="{% static 'js/underscore.min.js' %}"></script>
 <script src="{% static 'js/leaflet.js' %}"></script>
 <script src="{% static 'js/rrose-src.js' %}"></script>
+<script src="{% static 'js/wax.leaf.min.js' %}"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         var _getRandomInt = function(min, max){ return Math.floor(Math.random() * (max - min + 1)) + min; };
-        var _returnRandomArrayItem = function(thearray){ return thearray[_getRandomInt(1, thearray.length)-1]; };
-
+        var _returnRandomArrayItem = function(thearray){ return thearray[this._getRandomInt(1, thearray.length)-1]; };
         var providers = {{ organisations|safe }};
-        // TODO - when can we set this to false?
         var imageBasedMarkers = true;
-        var map = L.map('map');
-        var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-        var osmAttrib='Map data © OpenStreetMap contributors';
-        var osm = new L.TileLayer(osmUrl, {minZoom: 10, maxZoom: 16, attribution: osmAttrib});
 
-        if(imageBasedMarkers){
-            // Image Based: best for backwards compatibility
-            var nhsCentreIcon_1 = L.icon({
-                iconUrl: "{% static 'img/marker1.png' %}",
-                iconRetinaUrl: "{% static 'img/marker1@2x.png' %}",
-                iconSize: [16, 16],
-                popupAnchor: [-3, -76],
-                shadowUrl: "{% static 'img/shadow.png' %}",
-                shadowRetinaUrl: "{% static 'img/shadow@2x.png' %}",
-                shadowSize: [24, 24]
+        wax.tilejson('http://api.tiles.mapbox.com/v3/jedidiah.map-3lyys17i.jsonp', function(tilejson) {
+            var map = new L.Map('map')
+                .addLayer(new wax.leaf.connector(tilejson))
+                .setView(new L.LatLng(51, 0), 1);
+
+            if(imageBasedMarkers){
+                // Image Based: best for backwards compatibility
+                var nhsCentreIcon_1 = L.icon({
+                    iconUrl: "{% static 'img/marker1.png' %}",
+                    iconRetinaUrl: "{% static 'img/marker1@2x.png' %}",
+                    iconSize: [16, 16],
+                    popupAnchor: [-3, -76],
+                    shadowUrl: "{% static 'img/shadow.png' %}",
+                    shadowRetinaUrl: "{% static 'img/shadow@2x.png' %}",
+                    shadowSize: [24, 24]
+                });
+                var nhsCentreIcon_2 = L.icon({
+                    iconUrl: "{% static 'img/marker2.png' %}",
+                    iconRetinaUrl: "{% static 'img/marker2@2x.png' %}",
+                    iconSize: [16, 16],
+                    popupAnchor: [-3, -76],
+                    shadowUrl: "{% static 'img/shadow.png' %}",
+                    shadowRetinaUrl: "{% static 'img/shadow@2x.png' %}",
+                    shadowSize: [24, 24]
+                });
+                var nhsCentreIcon_3 = L.icon({
+                    iconUrl: "{% static 'img/marker3.png' %}",
+                    iconRetinaUrl: "{% static 'img/marker3@2x.png' %}",
+                    iconSize: [16, 16],
+                    popupAnchor: [-3, -76],
+                    shadowUrl: "{% static 'img/shadow.png' %}",
+                    shadowRetinaUrl: "{% static 'img/shadow@2x.png' %}",
+                    shadowSize: [24, 24]
+                });
+                var nhsCentreIcon_4 = L.icon({
+                    iconUrl: "{% static 'img/marker4.png' %}",
+                    iconRetinaUrl: "{% static 'img/marker4@2x.png' %}",
+                    iconSize: [16, 16],
+                    popupAnchor: [-3, -76],
+                    shadowUrl: "{% static 'img/shadow.png' %}",
+                    shadowRetinaUrl: "{% static 'img/shadow@2x.png' %}",
+                    shadowSize: [24, 24]
+                });
+            } else {
+                // Div Based: Prettier but not as compatible.
+                var nhsCentreIcon_1 = L.divIcon({className: 'marker_m1'});
+                var nhsCentreIcon_2 = L.divIcon({className: 'marker_m2'});
+                var nhsCentreIcon_3 = L.divIcon({className: 'marker_m3'});
+                var nhsCentreIcon_4 = L.divIcon({className: 'marker_m4'});
+            }
+
+            map.setView(new L.LatLng(51.505, -0.09),10);
+
+            providers.forEach(function(nhs_centre){
+
+                L.marker([nhs_centre.lat, nhs_centre.lon], {
+                    riseOnHover:true,
+                    // TODO - shouldn't be random, should it be a function of their issue count?
+                    icon: _returnRandomArrayItem([
+                        nhsCentreIcon_1,
+                        nhsCentreIcon_2,
+                        nhsCentreIcon_3,
+                        nhsCentreIcon_4
+                    ])
+                }).on('mouseover', function(e){
+                    var hover_bubble = new L.Rrose({
+                        offset: new L.Point(2,-4),
+                        closeButton: false,
+                        autoPan: false
+                    }).setContent(
+                        // TODO - if we have to have underscore on the page for debouncing, we should
+                        // use it's templating features to make this nicer
+                        "<strong>" + nhs_centre.name + "</a></strong>" +
+                        "<br><em>" + nhs_centre.problem_count + "</em> Open Problems<br>"
+                    )
+                    .setLatLng(e.target._latlng)
+                    .openOn(map);
+                }).on('mouseout', function(e){
+                    _.debounce(map.closePopup(), 300);
+                }).on('click', function(e) {
+                    // TODO - this feels dirty, but links in the popup don't work
+                    // because leaflet steals the click events and it's tricky to make
+                    // the popup stay up long enough
+                    window.location=nhs_centre.url
+                }).addTo(map);
             });
-            var nhsCentreIcon_2 = L.icon({
-                iconUrl: "{% static 'img/marker2.png' %}",
-                iconRetinaUrl: "{% static 'img/marker2@2x.png' %}",
-                iconSize: [16, 16],
-                popupAnchor: [-3, -76],
-                shadowUrl: "{% static 'img/shadow.png' %}",
-                shadowRetinaUrl: "{% static 'img/shadow@2x.png' %}",
-                shadowSize: [24, 24]
-            });
-            var nhsCentreIcon_3 = L.icon({
-                iconUrl: "{% static 'img/marker3.png' %}",
-                iconRetinaUrl: "{% static 'img/marker3@2x.png' %}",
-                iconSize: [16, 16],
-                popupAnchor: [-3, -76],
-                shadowUrl: "{% static 'img/shadow.png' %}",
-                shadowRetinaUrl: "{% static 'img/shadow@2x.png' %}",
-                shadowSize: [24, 24]
-            });
-            var nhsCentreIcon_4 = L.icon({
-                iconUrl: "{% static 'img/marker4.png' %}",
-                iconRetinaUrl: "{% static 'img/marker4@2x.png' %}",
-                iconSize: [16, 16],
-                popupAnchor: [-3, -76],
-                shadowUrl: "{% static 'img/shadow.png' %}",
-                shadowRetinaUrl: "{% static 'img/shadow@2x.png' %}",
-                shadowSize: [24, 24]
-            });
-        } else{
-            // Div Based: Prettier but not as compatible.
-            var nhsCentreIcon_1 = L.divIcon({className: 'marker_m1'});
-            var nhsCentreIcon_2 = L.divIcon({className: 'marker_m2'});
-            var nhsCentreIcon_3 = L.divIcon({className: 'marker_m3'});
-            var nhsCentreIcon_4 = L.divIcon({className: 'marker_m4'});
-        }
-
-        map.setView(new L.LatLng(51.505, -0.09),10);
-        map.addLayer(osm);
-
-        providers.forEach(function(nhs_centre){
-
-            L.marker([nhs_centre.lat, nhs_centre.lon], {
-                riseOnHover:true,
-                // TODO - shouldn't be random, should it be a function of their issue count?
-                icon: _returnRandomArrayItem([
-                    nhsCentreIcon_1,
-                    nhsCentreIcon_2,
-                    nhsCentreIcon_3,
-                    nhsCentreIcon_4
-                ])
-            }).on('mouseover', function(e){
-                var hover_bubble = new L.Rrose({
-                    offset: new L.Point(2,-4),
-                    closeButton: false,
-                    autoPan: false
-                }).setContent(
-                    // TODO - if we have to have underscore on the page for debouncing, we should
-                    // use it's templating features to make this nicer
-                    "<strong>" + nhs_centre.name + "</a></strong>" +
-                    "<br><em>" + nhs_centre.problem_count + "</em> Open Problems<br>"
-                )
-                .setLatLng(e.target._latlng)
-                .openOn(map);
-            }).on('mouseout', function(e){
-                _.debounce(map.closePopup(), 300);
-            }).on('click', function(e) {
-                // TODO - this feels dirty, but links in the popup don't work
-                // because leaflet steals the click events and it's tricky to make
-                // the popup stay up long enough
-                window.location=nhs_centre.url
-            }).addTo(map);
-
         });
     });
 </script>
