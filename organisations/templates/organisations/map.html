@@ -92,7 +92,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         var _getRandomInt = function(min, max){ return Math.floor(Math.random() * (max - min + 1)) + min; };
-        var _returnRandomArrayItem = function(thearray){ return thearray[this._getRandomInt(1, thearray.length)-1]; };
+        var _returnRandomArrayItem = function(thearray){ return thearray[_getRandomInt(1, thearray.length)-1]; };
         var providers = {{ organisations|safe }};
         var imageBasedMarkers = true;
 
@@ -188,33 +188,27 @@
 {% endblock %}
 {% block content %}
 <div class="header">
-    <h1>Outcomes Map</h1>
+    <h1>Organisation performance data</h1>
 </div>
 {% if not private %}
-<div class="hero">
-    <div class="feature">
-        <p><a href="{% url 'org-pick-provider' cobrand=cobrand.name %}">Look up the outcomes of an NHS care provider</a></p>
+    <div class="gw">
+        <div class="g  one-half  palm-one-whole  mb__palm">
+            <a href="{% url 'org-pick-provider' cobrand=cobrand.name %}"  class="btn  btn--no-border  btn--big">Look up the outcomes<br>of an NHS care provider</a>
+        </div>
+        <div class="g  one-half  palm-one-whole">
+            <a href="{% url 'org-all-summary' cobrand=cobrand.name %}"  class="btn  btn--no-border  btn--big">Look at the outcomes<br>summary tables</a>
+        </div>
     </div>
-    <div class="feature">
-        <p><a href="{% url 'org-all-summary' cobrand=cobrand.name %}">Look at the outcomes summary tables</a></p>
-    </div>
-</div>
 {% endif %}
-<div class="map-options">
-    <div class="feature">
-        <p><a href="">London</a></p>
-    </div>
-    <div class="feature">
-        <p><a href="">Manchester</a></p>
-    </div>
-</div>
+
+<ul class="tab-nav">
+    <li><a href="#" class="active">London</a></li>
+    <li><a href="#">The North East</a></li>
+</ul>
+
 <div class="map-container">
-    <div id="map" class="map">
-    </div>
+    <div id="map" class="map"></div>
 </div>
-<div class="map-instructions">
-    <div class="feature">
-        <p>Click to the see the outcomes of a provider or zoom in to see more detail</p>
-    </div>
-</div>
+
+<p><small>Click to the see the outcomes of a provider or zoom in to see more detail</small></p>
 {% endblock %}
