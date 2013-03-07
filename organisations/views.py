@@ -59,9 +59,9 @@ class MessageListMixin(PrivateViewMixin):
             table_args['cobrand'] = kwargs['cobrand']
         organisation = Organisation.objects.get(ods_code=self.kwargs['ods_code'])
         if organisation.has_services() and organisation.has_time_limits():
-            issue_table = ExtendedMessageModelTable(self.get_issues(organisation), **table_args)
+            issue_table = ExtendedMessageModelTable(self.get_issues(organisation, context['private']), **table_args)
         else:
-            issue_table = MessageModelTable(self.get_issues(organisation), **table_args)
+            issue_table = MessageModelTable(self.get_issues(organisation, context['private']), **table_args)
         context['organisation'] = organisation
         RequestConfig(self.request).configure(issue_table)
         context['issue_table'] = issue_table
@@ -210,8 +210,11 @@ class OrganisationProblems(MessageListMixin,
     template_name = 'organisations/organisation-problems.html'
     message_type = 'problem'
 
-    def get_issues(self, organisation):
-        return organisation.problem_set.all()
+    def get_issues(self, organisation, private):
+        if private:
+            return organisation.problem_set.all()
+        else:
+            return organisation.problem_set.all_moderated_published_public_problems()
 
 class OrganisationReviews(OrganisationAwareViewMixin,
                           TemplateView):
@@ -276,6 +279,6 @@ class OrganisationDashboard(OrganisationAwareViewMixin,
         # Get all the problems
         context = super(OrganisationDashboard, self).get_context_data(**kwargs)
         # Get the models related to this organisation, and let the db sort them
-        problems = context['organisation'].problem_set.all()
+        problems = context['organisation'].problem_set.open_problems()
         context['problems'] = problems
         return context

@@ -147,7 +147,9 @@ class OrganisationProblemsTests(TestCase):
         self.public_gp_problems_url = '/choices/stats/problems/%s' % self.gp.ods_code
         self.private_gp_problems_url = '/private/problems/%s' % self.gp.ods_code
         self.staff_problem = create_test_instance(Problem, {'category': 'staff',
-                                                            'organisation': self.hospital})
+                                                            'organisation': self.hospital,
+                                                            'moderated': MessageModel.MODERATED,
+                                                            'publication_status': MessageModel.PUBLISHED})
 
     def test_shows_services_for_hospitals(self):
         for url in [self.public_hospital_problems_url, self.private_hospital_problems_url]:
@@ -180,6 +182,21 @@ class OrganisationProblemsTests(TestCase):
         resp = self.client.get(self.public_hospital_problems_url)
         self.assertContains(resp, '/choices/problem/%s' % self.staff_problem.id )
 
+    def test_public_page_doesnt_show_hidden_private_or_unmoderated_problems(self):
+        # Add some problems which shouldn't show up
+        unmoderated_problem = create_test_instance(Problem, {'organisation': self.hospital})
+        hidden_problem = create_test_instance(Problem, {'organisation': self.hospital,
+                                       'moderated': MessageModel.MODERATED,
+                                       'publication_status': MessageModel.HIDDEN})
+        private_problem = create_test_instance(Problem, {'organisation': self.hospital,
+                                       'moderated': MessageModel.MODERATED,
+                                       'publication_status': MessageModel.PUBLISHED,
+                                       'public': False})
+        resp = self.client.get(self.public_hospital_problems_url)
+        self.assertTrue('/choices/problem/%s' % unmoderated_problem.id not in resp.content)
+        self.assertTrue('/choices/problem/%s' % hidden_problem.id not in resp.content)
+        self.assertTrue('/choices/problem/%s' % private_problem.id not in resp.content)
+
     def test_private_page_exists(self):
         resp = self.client.get(self.private_hospital_problems_url)
         self.assertEqual(resp.status_code, 200)
@@ -187,6 +204,21 @@ class OrganisationProblemsTests(TestCase):
     def test_private_page_links_to_problems(self):
         resp = self.client.get(self.private_hospital_problems_url)
         self.assertTrue('/private/response/problem/%s' % self.staff_problem.id in resp.content)
+
+    def test_private_page_shows_hidden_private_and_unmoderated_problems(self):
+        # Add some extra problems
+        unmoderated_problem = create_test_instance(Problem, {'organisation': self.hospital})
+        hidden_problem = create_test_instance(Problem, {'organisation': self.hospital,
+                                       'moderated': MessageModel.MODERATED,
+                                       'publication_status': MessageModel.HIDDEN})
+        private_problem = create_test_instance(Problem, {'organisation': self.hospital,
+                                       'moderated': MessageModel.MODERATED,
+                                       'publication_status': MessageModel.PUBLISHED,
+                                       'public': False})
+        resp = self.client.get(self.private_hospital_problems_url)
+        self.assertTrue('/private/response/problem/%s' % unmoderated_problem.id in resp.content)
+        self.assertTrue('/private/response/problem/%s' % hidden_problem.id in resp.content)
+        self.assertTrue('/private/response/problem/%s' % private_problem.id in resp.content)
 
 class OrganisationDashboardTests(TestCase):
 
@@ -206,7 +238,14 @@ class OrganisationDashboardTests(TestCase):
 
     def test_dashboard_shows_problems(self):
         resp = self.client.get(self.dashboard_url)
-        self.assertTrue(self.problem.summary in resp.content)
+        self.assertTrue('/private/response/problem/%s' % self.problem.id in resp.content)
+
+    def test_dashboard_doesnt_show_closed_problems(self):
+        self.closed_problem = create_test_instance(Problem, {'organisation': self.organisation, 'status': Problem.RESOLVED})
+        self.closed_problem2 = create_test_instance(Problem, {'organisation': self.organisation, 'status': Problem.NOT_RESOLVED})
+        resp = self.client.get(self.dashboard_url)
+        self.assertTrue('/private/response/problem/%s' % self.closed_problem.id not in resp.content)
+        self.assertTrue('/private/response/problem/%s' % self.closed_problem2.id not in resp.content)
 
 class OrganisationMapTests(TestCase):
 
