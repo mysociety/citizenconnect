@@ -51,10 +51,10 @@
         top: -5.8em;
         opacity:1;
     }
-    .marker_m1{ background-color: rgba(216,30,5,1); }
-    .marker_m2{ background-color: #ef4300; }
-    .marker_m3{ background-color: rgb(226,140,5); }
-    .marker_m4{ background-color: rgba(247,226,20,1); }
+    .marker_m1{ background-color: #1e91c9; }
+    .marker_m2{ background-color: #176d97; }
+    .marker_m3{ background-color: #176d97; }
+    .marker_m4{ background-color: #072432; }
 
     /* Rrose Tweaks */
     .leaflet-rrose{ pointer-events:none; }
@@ -166,7 +166,7 @@
                     // TODO - if we have to have underscore on the page for debouncing, we should
                     // use it's templating features to make this nicer
                     "<strong>" + nhs_centre.name + "</a></strong>" +
-                    "<br><em>" + nhs_centre.problems.length + "</em> Open Problems<br>"
+                    "<br><em>" + nhs_centre.problem_count + "</em> Open Problems<br>"
                 )
                 .setLatLng(e.target._latlng)
                 .openOn(map);
