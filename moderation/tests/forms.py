@@ -51,29 +51,45 @@ class ModerationFormTests(BaseModerationTestCase):
         self.problem = create_test_instance(Problem, {})
         self.moderation_form_url = '/private/moderate/problem/%s' % self.problem.id
 
-    def test_moderation_form_doesnt_update_message(self):
+    def test_moderation_form_updates_message(self):
         updated_description = "{0} updated".format(self.problem.description)
         test_form_values = {
-            'status': self.problem.status,
-            'description': updated_description
-        }
-        resp = self.client.post(self.moderation_form_url)
-        problem = Problem.objects.get(pk=self.problem.id)
-        self.assertNotEqual(problem.description, updated_description)
-
-    def test_form_sets_status(self):
-        status = Problem.RESOLVED
-        test_form_values = {
-            'status': status
+            'publication_status': self.problem.publication_status,
+            'description': updated_description,
+            'publish': ''
         }
         resp = self.client.post(self.moderation_form_url, test_form_values)
         problem = Problem.objects.get(pk=self.problem.id)
-        self.assertEqual(problem.status, status)
+        self.assertEqual(problem.description, updated_description)
+
+    def test_form_sets_publication_status_to_published(self):
+        expected_status = Problem.PUBLISHED
+        test_form_values = {
+            'publication_status': self.problem.publication_status,
+            'description': self.problem.description,
+            'publish': ''
+        }
+        resp = self.client.post(self.moderation_form_url, test_form_values)
+        problem = Problem.objects.get(pk=self.problem.id)
+        self.assertEqual(problem.publication_status, expected_status)
+
+    def test_form_sets_publication_status_to_private(self):
+        expected_status = Problem.HIDDEN
+        test_form_values = {
+            'publication_status': self.problem.publication_status,
+            'description': self.problem.description,
+            'keep_private': ''
+        }
+        resp = self.client.post(self.moderation_form_url, test_form_values)
+        problem = Problem.objects.get(pk=self.problem.id)
+        self.assertEqual(problem.publication_status, expected_status)
 
     def test_form_redirects_to_confirm_url(self):
         status = Problem.RESOLVED
         test_form_values = {
-            'status': status
+            'publication_status': self.problem.publication_status,
+            'description': self.problem.description,
+            'keep_private': ''
         }
         resp = self.client.post(self.moderation_form_url, test_form_values)
         self.assertRedirects(resp, reverse('moderate-confirm'))
