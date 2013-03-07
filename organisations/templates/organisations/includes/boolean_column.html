@@ -1,0 +1,11 @@
+{% load organisation_extras %}
+{% if value|formatted_boolean == 'True' %}
+    <span class="icon-checkmark" aria-hidden="true"></span>
+    <span class="hide-text">yes</span>
+{% elif value|formatted_boolean == 'False' %}
+    <span class="icon-x" aria-hidden="true"></span>
+    <span class="hide-text">no</span>
+{% else %}
+    <span class="icon-circle" aria-hidden="true"></span>
+    <span class="hide-text">—</span>
+{% endif %}

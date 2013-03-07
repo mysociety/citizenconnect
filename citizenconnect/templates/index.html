@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load url from future %}
+{% load staticfiles %}
 
 {% block title %}Home{% endblock %}
 
@@ -9,13 +10,13 @@
 
 <div class="gw">
     <div class="g  one-half  palm-one-whole">
-        <div class="islet  islet--white">
-            <a href="{% url 'problems-pick-provider' cobrand=cobrand.name %}" class="btn  btn--big  btn--red  btn--no-border">Got a problem?</a>
+        <div class="islet  islet--white  mt  mb  mb__palm--n">
+            <a href="{% url 'problems-pick-provider' cobrand=cobrand.name %}" class="btn  btn--big  btn--blue  btn--no-border">Log a non-urgent problem?</a>
             <p class="small-title  align-center">I&CloseCurlyQuote;ve got a problem with an NHS service I would like to report</p>
         </div>
     </div>
     <div class="g  one-half  palm-one-whole">
-        <div class="islet  islet--white">
+        <div class="islet  islet--white  mt  mb">
             <a href="http://www.nhs.uk/servicedirectories/Pages/HospitalCommentInput.aspx" class="btn  btn--big  btn--blue  btn--no-border">Leave a review?</a>
             <p class="small-title  align-center">I&CloseCurlyQuote;d like to leave a review of an NHS Service</p>
         </div>
@@ -23,39 +24,39 @@
 </div>
 
 <h3 class="title  title--suck-up">Questions</h3>
-<h2>I&CloseCurlyQuote;ve got a general enquiry about NHS Services in&hellip;</h2>
+<h2 class="title-bold">I&CloseCurlyQuote;ve got a question about NHS Services in&hellip;</h2>
 
-<div class="island  island--squared  island--half-bordered">
+<div class="island  island--squared  island--half-bordered  mb--b">
     <div class="gw">
-        <div class="g  one-half">
+        <div class="g  one-half  palm-one-whole  mb__palm">
             <a href="{% url 'ask-question' cobrand=cobrand.name %}" class="btn  btn--big  btn--no-border">London</a>
         </div>
-        <div class="g  one-half">
+        <div class="g  one-half  palm-one-whole">
             <a href="{% url 'ask-question' cobrand=cobrand.name %}" class="btn  btn--big  btn--no-border">the North East</a>
         </div>
     </div>
 </div>
 
 <h3 class="title  title--suck-up">Data</h3>
-<h2>See how health services are responding to people&CloseCurlyQuote;s issues</h2>
+<h2 class="title-bold">See how health services are responding to people&CloseCurlyQuote;s issues</h2>
 
 <div class="gw">
     <div class="g  one-half  palm-one-whole">
-        <div class="islet  islet--white">
-            <a href="{% url 'org-map' cobrand=cobrand.name %}">
-                <img src="/web/img/homepage-map.png">
+        <div class="islet  islet--white  mb__palm">
+            <a href="{% url 'org-map' cobrand=cobrand.name %}" class="icon-overlay  icon-overlay--light-bg">
+                <img src="{% static 'img/homepage-map.png' %}">
                 <span class="icon-search" aria-hidden="true"></span>
             </a>
-            <h4>Live Map</h4>
+            <h4 class="big-title  align-center  mt--s">Live Map</h4>
         </div>
     </div>
     <div class="g  one-half  palm-one-whole">
-        <div class="islet  islet--white">
-            <a href="{% url 'org-all-summary' cobrand=cobrand.name %}">
-                <img src="/web/img/homepage-summary-table.png">
+        <div class="islet  islet--white  mb__palm">
+            <a href="{% url 'org-all-summary' cobrand=cobrand.name %}" class="icon-overlay  icon-overlay--light-bg">
+                <img src="{% static 'img/homepage-summary-table.png' %}">
                 <span class="icon-search" aria-hidden="true"></span>
             </a>
-            <h4>Summary Table</h4>
+            <h4 class="big-title  align-center  mt--s">Summary Table</h4>
         </div>
     </div>
 </div>
@@ -64,12 +65,14 @@
     <a href="{% url 'about' cobrand=cobrand.name %}" class="forward-btn  fr">About this service <span class="icon-chevron-right" aria-hidden="true"></span></a>
 </div>
 
-<div class="split-box">
-    <div class="split-box__left  split-box--red  one-third">
-        <h2 class="emergency">Emergency? Dial 999</h2>
-    </div>
-    <div class="split-box__right  two-thirds">
-        <h2>Need urgent medical care but not life-threatening? DIAL 111</h2>
+<div class="split-box  mt">
+    <div class="split-box__inner">
+        <a href="tel:999" class="split-box__left  split-box--red  one-third  palm-one-whole">
+            <h2 class="emergency">Emergency?<br><strong>DIAL 999</strong></h2>
+        </a>
+        <a href="tel:111" class="split-box__right  two-thirds  palm-one-whole">
+            <h2>Need urgent medical care but not life-threatening?<br><strong>DIAL 111</strong></h2>
+        </a>
     </div>
 </div>
 

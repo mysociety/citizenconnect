@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.db.models import Q
 
 from citizenconnect.models import AuditedModel
 
@@ -60,6 +61,11 @@ class MessageModel(AuditedModel):
 
     PUBLICATION_STATUS_CHOICES = ((HIDDEN, "Hidden"), (PUBLISHED, "Published"))
 
+    NOT_MODERATED = 0
+    MODERATED = 1
+
+    MODERATED_STATUS_CHOICES = ((NOT_MODERATED, "Not moderated"), (MODERATED, "Moderated"))
+
     description = models.TextField(verbose_name='')
     reporter_name = models.CharField(max_length=200, blank=True, verbose_name='')
     reporter_phone = models.CharField(max_length=50, blank=True, verbose_name='')
@@ -70,6 +76,7 @@ class MessageModel(AuditedModel):
     source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True)
     mailed = models.BooleanField(default=False, blank=False)
     publication_status = models.IntegerField(default=HIDDEN, blank=False, choices=PUBLICATION_STATUS_CHOICES)
+    moderated = models.IntegerField(default=NOT_MODERATED, blank=False, choices=MODERATED_STATUS_CHOICES)
 
     @property
     def summary(self):
@@ -111,29 +118,23 @@ class QuestionManager(models.Manager):
     use_for_related_fields = True
 
     def open_questions(self):
-        """
-        Return only open problems
-        """
-        return super(QuestionManager, self).all().filter(publication_status=Question.PUBLISHED)
+        return super(QuestionManager, self).all().filter(Q(status=Question.NEW) | Q(status=Question.ACKNOWLEDGED))
 
-class OpenQuestionManager(models.Manager):
-
-    def get_query_set(self):
-        return super(OpenQuestionManager, self).get_query_set().filter(publication_status=Question.PUBLISHED)
+    def unmoderated_questions(self):
+        return super(QuestionManager, self).all().filter(moderated=MessageModel.NOT_MODERATED)
 
 class Question(MessageModel):
     # Custom manager
     objects = QuestionManager()
-    open_objects = OpenQuestionManager()
 
     NEW = 0
     ACKNOWLEDGED = 1
     RESOLVED = 2
 
     STATUS_CHOICES = (
-        (NEW, 'Received but not acknowledged'),
-        (ACKNOWLEDGED, 'Acknowledged but not answered'),
-        (RESOLVED, 'Question answered'),
+        (NEW, 'Open'),
+        (ACKNOWLEDGED, 'In Progress'),
+        (RESOLVED, 'Resolved'),
     )
 
     PREFIX = 'Q'
@@ -157,28 +158,32 @@ class ProblemManager(models.Manager):
         """
         Return only open problems
         """
-        return super(ProblemManager, self).all().filter(publication_status=Problem.PUBLISHED)
+        return super(ProblemManager, self).all().filter(Q(status=Problem.NEW) | Q(status=Problem.ACKNOWLEDGED))
 
-class OpenProblemManager(models.Manager):
+    def unmoderated_problems(self):
+        return super(ProblemManager, self).all().filter(moderated=MessageModel.NOT_MODERATED)
 
-    def get_query_set(self):
-        return super(OpenProblemManager, self).get_query_set().filter(publication_status=Problem.PUBLISHED)
+    def open_moderated_published_problems(self):
+        return self.open_problems().filter(moderated=MessageModel.MODERATED,
+                                           publication_status=MessageModel.PUBLISHED)
+
+    def all_moderated_published_public_problems(self):
+        return super(ProblemManager, self).all().filter(moderated=MessageModel.MODERATED,
+                                                        publication_status=MessageModel.PUBLISHED,
+                                                        public=True)
 
 class Problem(MessageModel):
-    # Custom managers
+    # Custom manager
     objects = ProblemManager()
-    open_objects = OpenProblemManager()
 
     NEW = 0
     ACKNOWLEDGED = 1
     RESOLVED = 2
-    NOT_RESOLVED = 3
 
     STATUS_CHOICES = (
-        (NEW, 'Received but not acknowledged'),
-        (ACKNOWLEDGED, 'Acknowledged but not addressed'),
-        (RESOLVED, 'Addressed - problem solved'),
-        (NOT_RESOLVED, 'Addressed - unable to solve')
+        (NEW, 'Open'),
+        (ACKNOWLEDGED, 'In Progress'),
+        (RESOLVED, 'Resolved')
     )
 
     PREFIX = 'P'

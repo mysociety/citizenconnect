@@ -8,49 +8,27 @@ from django.core.urlresolvers import reverse
 
 from issues.models import Problem
 
-def percent():
-    return """{% load organisation_extras %}{{value|percent}}"""
-
-def formatted_time_interval():
-    return """{% load organisation_extras %}{{value|formatted_time_interval}}"""
-
-def boolean():
-    return """{% load organisation_extras %}
-              {% if value|formatted_boolean == 'True' %}
-                <span class="icon-checkmark" aria-hidden="true"></span>
-                <span class="hide-text">yes</span>
-              {% elif value|formatted_boolean == 'False' %}
-                <span class="icon-x" aria-hidden="true"></span>
-                <span class="hide-text">no</span>
-              {% else %}
-                <span class="icon-circle" aria-hidden="true"></span>
-                <span class="hide-text">—</span>
-              {% endif %}"""
-
 class NationalSummaryTable(tables.Table):
 
     def __init__(self, *args, **kwargs):
         self.cobrand = kwargs.pop('cobrand')
         super(NationalSummaryTable, self).__init__(*args, **kwargs)
 
-
-    sep_atts = {"th": {"class": "separator"},
-                "td": {"class": "separator"}}
     name = tables.Column(verbose_name='Provider name',
-                             attrs=sep_atts)
+                             attrs={'th': {'class': 'table__first'},
+                                    'td': {'class': 'table__first'}})
     week = tables.Column(verbose_name='Last 7 days')
     four_weeks = tables.Column(verbose_name='Last 4 weeks')
     six_months = tables.Column(verbose_name='Last 6 months')
-    all_time = tables.Column(verbose_name='All time', attrs=sep_atts)
+    all_time = tables.Column(verbose_name='All time')
     average_time_to_acknowledge = tables.TemplateColumn(verbose_name='Average time to acknowledge (days)',
-                                                template_code=formatted_time_interval())
+                                                template_name='organisations/includes/time_interval_column.html')
     average_time_to_address = tables.TemplateColumn(verbose_name='Average time to address (days)',
-                                            template_code=formatted_time_interval(),
-                                            attrs=sep_atts)
+                                            template_name='organisations/includes/time_interval_column.html')
     happy_service = tables.TemplateColumn(verbose_name='% Happy with service',
-                                          template_code=percent())
+                                          template_name="organisations/includes/percent_column.html")
     happy_outcome = tables.TemplateColumn(verbose_name='% Happy with outcome',
-                                          template_code=percent())
+                                          template_name="organisations/includes/percent_column.html")
 
     def render_name(self, record):
         url = reverse("public-org-summary", kwargs={'ods_code': record['ods_code'],
@@ -67,9 +45,9 @@ class MessageModelTable(tables.Table):
     status = tables.Column()
     category = tables.Column(verbose_name='Category')
     happy_service = tables.TemplateColumn(verbose_name='Happy with service',
-                                         template_code=boolean())
+                                         template_name="organisations/includes/boolean_column.html")
     happy_outcome = tables.TemplateColumn(verbose_name='Happy with outcome',
-                                         template_code=boolean())
+                                         template_name="organisations/includes/boolean_column.html")
     summary = tables.Column(verbose_name='Text snippet', order_by=("description"))
 
     def __init__(self, *args, **kwargs):
@@ -98,9 +76,9 @@ class ExtendedMessageModelTable(MessageModelTable):
 
     service = tables.Column(verbose_name='Department')
     time_to_acknowledge = tables.TemplateColumn(verbose_name='Time to acknowledge (days)',
-                                                template_code=formatted_time_interval())
+                                                template_name='organisations/includes/time_interval_column.html')
     time_to_address = tables.TemplateColumn(verbose_name='Time to address (days)',
-                                            template_code=formatted_time_interval())
+                                            template_name='organisations/includes/time_interval_column.html')
 
     class Meta:
         order_by = ('-created',)

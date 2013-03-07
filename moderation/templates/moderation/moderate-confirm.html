@@ -9,9 +9,12 @@
 <div class="header">
     <h1>Message moderated</h1>
 </div>
-<div class="hero">
-    <div class="feature">
-        <p>Thank you, the message has been moderated. <a href="{% url 'moderate-home' %}">Return to the moderation queue</a></p>
+
+<div class="gw">
+    <div class="g  one-whole">
+      <ul class="message-list">
+        <li class="message-list__success">Thank you, the message has been moderated. <a href="{% url 'moderate-home' %}">Return to the moderation queue</a></li>
+      </ul>
     </div>
 </div>
 {% endblock %}

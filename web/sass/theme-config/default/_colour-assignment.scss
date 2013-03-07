@@ -30,16 +30,16 @@ $c-hr-border: $c-grey;
 /**
  * _tables.scss
  */
-                           $c-table-border: $c-grey;
-       $c-table-problem-heading-link-color: $c-black;
- $c-table-problem-heading-link-hover-color: $c-aquablue;
-$c-table-problem-heading-link-active-color: $c-aquablue;
-            $c-table-problem-created-color: $c-darkgrey;
-            $c-table-problem-summary-color: $c-darkgrey;
-      $c-table-problem-summary-hover-color: $c-black;
-             $c-table-problem-icon-x-color: $c-nhs_red;
-     $c-table-problem-icon-checkmark-color: $c-nhs_green;
-        $c-table-problem-icon-circle-color: $c-darkgrey;
+                   $c-table-border: $c-grey;
+       $c-table-heading-link-color: $c-black;
+ $c-table-heading-link-hover-color: $c-aquablue;
+$c-table-heading-link-active-color: $c-aquablue;
+            $c-table-created-color: $c-darkgrey;
+               $c-table-link-color: $c-darkgrey;
+         $c-table-link-hover-color: $c-black;
+             $c-table-icon-x-color: $c-nhs_red;
+     $c-table-icon-checkmark-color: $c-nhs_green;
+        $c-table-icon-circle-color: $c-darkgrey;
 
 
 /**
@@ -50,7 +50,7 @@ $c-table-problem-heading-link-active-color: $c-aquablue;
           $c-selection-color: $c-black;
       $c-standout-link-color: $c-nhs_orange;
 $c-standout-link-hover-color: $c-nhs_orange-tint;
-
+              $c-title-color: $c-darkgrey;
 
 /**
  * _island.scss
@@ -74,15 +74,38 @@ $c-island-half-bordered-border-color: $c-grey;
       $c-back-btn-span-color: $c-grey;
      $c-back-btn-hover-color: $c-darkgrey-tint;
 $c-back-btn-span-hover-color: $c-grey-tint;
-           $c-btn-red-border: $c-nhs_darkred;
+           $c-btn-red-border: $c-nhs_red-tint;
             $c-btn-red-color: $c-white;
                $c-btn-red-bg: $c-nhs_red;
-         $c-btn-red-hover-bg: $c-nhs_darkred;
-          $c-btn-blue-border: $c-nhs_darkblue;
+         $c-btn-red-hover-bg: $c-nhs_red-tint;
+          $c-btn-blue-border: $c-nhs_blue-tint;
            $c-btn-blue-color: $c-white;
               $c-btn-blue-bg: $c-nhs_blue;
-        $c-btn-blue-hover-bg: $c-nhs_darkblue;
-
+        $c-btn-blue-hover-bg: $c-nhs_blue-tint;
+    $c-btn-lightgreen-border: $c-nhs_lightgreen-tint;
+     $c-btn-lightgreen-color: $c-white;
+        $c-btn-lightgreen-bg: $c-nhs_lightgreen;
+  $c-btn-lightgreen-hover-bg: $c-nhs_lightgreen-tint;
+     $c-btn-darkgreen-border: $c-nhs_darkgreen-tint;
+      $c-btn-darkgreen-color: $c-white;
+         $c-btn-darkgreen-bg: $c-nhs_darkgreen;
+   $c-btn-darkgreen-hover-bg: $c-nhs_darkgreen-tint;
+        $c-btn-purple-border: $c-nhs_purple-tint;
+         $c-btn-purple-color: $c-white;
+            $c-btn-purple-bg: $c-nhs_purple;
+      $c-btn-purple-hover-bg: $c-nhs_purple-tint;
+      $c-btn-darkpink-border: $c-nhs_darkpink-tint;
+       $c-btn-darkpink-color: $c-white;
+          $c-btn-darkpink-bg: $c-nhs_darkpink;
+    $c-btn-darkpink-hover-bg: $c-nhs_darkpink-tint;
+      $c-btn-darkblue-border: $c-nhs_darkblue-tint;
+       $c-btn-darkblue-color: $c-white;
+          $c-btn-darkblue-bg: $c-nhs_darkblue;
+    $c-btn-darkblue-hover-bg: $c-nhs_darkblue-tint;
+       $c-btn-darkred-border: $c-nhs_darkred-tint;
+        $c-btn-darkred-color: $c-white;
+           $c-btn-darkred-bg: $c-nhs_darkred;
+     $c-btn-darkred-hover-bg: $c-nhs_darkred-tint;
 
 /**
  * _filters.scss
@@ -157,3 +180,22 @@ $c-message-list-success-color: $c-nhs_lightgreen;
 $c-meta-data-icon-checkmark-color: $c-nhs_lightgreen;
          $c-meta-data-label-color: $c-darkgrey;
   $c-meta-data-label-border-color: $c-grey;
+
+/**
+ * _icon-overlay.scss
+ */
+            $c-icon-overlay-icon-color: $c-white;
+      $c-icon-overlay-hover-icon-color: $c-darkgrey;
+      $c-icon-overlay-light-icon-color: $c-grey;
+$c-icon-overlay-light-hover-icon-color: $c-darkgrey;
+
+
+/**
+ * _split-box.scss
+ */
+      $c-split-box-default-bg: $c-darkgrey;
+   $c-split-box-default-color: $c-white;
+  $c-split-box-default-border: $c-white;
+$c-split-box-hover-default-bg: $c-darkgrey-tint;
+      $c-split-box-excited-bg: $c-nhs_red;
+$c-split-box-hover-excited-bg: $c-nhs_red-tint;

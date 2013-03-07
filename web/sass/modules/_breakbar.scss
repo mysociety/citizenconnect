@@ -1,0 +1,7 @@
+/**
+ * Simply a wrapping div with a clearfix and margins
+ */
+.break-bar {
+  @extend .cf;
+  margin: $grid-gutter + em 0 ($grid-gutter / 2) + em 0;
+}

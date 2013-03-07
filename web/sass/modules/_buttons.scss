@@ -28,6 +28,51 @@
         @include media-query(portable){ font-size: (21px / $font-size-base) + em; }
     }
 
+
+    /**
+     * Same sizing as btn--big but with a chevron
+     */
+    .btn--big--fwd {
+        width: 100%;
+        font-size: (24px / $font-size-base) + em;
+        line-height: 1.2;
+        text-align: left;
+        padding: 2em 1em 0.75em 1em;
+        @include vendor(border-radius, 0);
+        @media only screen and (max-width:830px){ padding: 1em 1em 0.5em 1em; }
+        @include media-query(palm){ padding: 1em; }
+        .icon-chevron-right {
+            float: right;
+            font-size: (72px / 24px) + em;
+            margin-top: -(24px / 72px) + em;
+            margin-left: (20px / 72px) + em;
+            @media only screen and (max-width:830px){ margin-top: -(12px / 72px) + em; }
+            @include media-query(palm){ margin-top: (14px / 72px) + em; }
+        }
+        .btn--big--fwd__text {
+            display: block;
+            width: 90%;
+        }
+    }
+
+
+    /**
+     * A medium version, basically like big but smaller...
+     */
+    .btn--med {
+        width: 100%;
+        font-size: (18px / $font-size-base) + em;
+        line-height: 1.3;
+        padding: 2.5em 1em;
+        @include vendor(border-radius, (6px / 18px) + em);
+        @include media-query(palm){
+            font-size: $font-size-base;
+            padding: 1em;
+            text-align: left;
+        }
+    }
+
+
     /**
      * Remove borders
      */
@@ -44,6 +89,7 @@
         margin-top: 1.6em;
     }
 
+
     /**
      * Colour variants
      */
@@ -58,6 +104,42 @@
         color: $c-btn-blue-color;
         background: $c-btn-blue-bg;
         &:hover { background: $c-btn-blue-hover-bg; }
+    }
+    .btn--light-green {
+        border-color: $c-btn-lightgreen-border;
+        color: $c-btn-lightgreen-color;
+        background: $c-btn-lightgreen-bg;
+        &:hover { background: $c-btn-lightgreen-hover-bg; }
+    }
+    .btn--dark-green {
+        border-color: $c-btn-darkgreen-border;
+        color: $c-btn-darkgreen-color;
+        background: $c-btn-darkgreen-bg;
+        &:hover { background: $c-btn-darkgreen-hover-bg; }
+    }
+    .btn--purple {
+        border-color: $c-btn-purple-border;
+        color: $c-btn-purple-color;
+        background: $c-btn-purple-bg;
+        &:hover { background: $c-btn-purple-hover-bg; }
+    }
+    .btn--dark-pink {
+        border-color: $c-btn-darkpink-border;
+        color: $c-btn-darkpink-color;
+        background: $c-btn-darkpink-bg;
+        &:hover { background: $c-btn-darkpink-hover-bg; }
+    }
+    .btn--dark-blue {
+        border-color: $c-btn-darkblue-border;
+        color: $c-btn-darkblue-color;
+        background: $c-btn-darkblue-bg;
+        &:hover { background: $c-btn-darkblue-hover-bg; }
+    }
+    .btn--dark-red {
+        border-color: $c-btn-darkred-border;
+        color: $c-btn-darkred-color;
+        background: $c-btn-darkred-bg;
+        &:hover { background: $c-btn-darkred-hover-bg; }
     }
 
 
@@ -80,12 +162,26 @@
         display: block;
         float: left;
         font-size: (24px / 14px) + em;
-        margin-top: -7px;
-        margin-right: 5px;
+        margin-top: -(6px / 24px) + em;
+        margin-right: (5px / 24px) + em;
         color: $c-back-btn-span-color;
     }
     &:hover {
         color: $c-back-btn-hover-color;
         span { color: $c-back-btn-span-hover-color;}
+    }
+}
+
+
+/**
+ * almost identical to the back button, just the other way around
+ */
+.forward-btn {
+    @extend .back-btn;
+    span {
+        float: right;
+        margin-left: (5px / 24px) + em;
+        margin-right: 0;
+        margin-top: -(19px / 24px) + em;
     }
 }
