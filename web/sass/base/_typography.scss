@@ -40,17 +40,26 @@ body {
 .title {
     font-size: (18px / $font-size-base) + em;
     font-weight: normal;
-    color: #acacac;
+    color: $c-title-color;
 }
     .title--suck-up { margin-bottom: -1.25em; }
 
 
 /**
- * A small title, used on homepage
+ * A small title
  */
 .small-title {
     font-size: (14px / $font-size-base) + em;
     font-weight: bold;
+}
+
+
+/**
+ * A bigger title, not bold
+ */
+.big-title {
+    font-size: (24px / $font-size-base) + em;
+    font-weight: normal;
 }
 
 
