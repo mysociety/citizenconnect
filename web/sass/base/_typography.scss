@@ -35,6 +35,12 @@ body {
 
 
 /**
+ * Modify defaults for h1/h2
+ */
+h1, h2 { font-weight: normal; }
+
+
+/**
  * A grey title
  */
 .title {
@@ -60,6 +66,14 @@ body {
 .big-title {
     font-size: (24px / $font-size-base) + em;
     font-weight: normal;
+}
+
+
+/**
+ * Add an option to add bold back on
+ */
+.title-bold {
+    font-weight: bold;
 }
 
 
