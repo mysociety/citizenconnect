@@ -30,16 +30,16 @@ $c-hr-border: $c-grey;
 /**
  * _tables.scss
  */
-                           $c-table-border: $c-grey;
-       $c-table-problem-heading-link-color: $c-black;
- $c-table-problem-heading-link-hover-color: $c-aquablue;
-$c-table-problem-heading-link-active-color: $c-aquablue;
-            $c-table-problem-created-color: $c-darkgrey;
-            $c-table-problem-summary-color: $c-darkgrey;
-      $c-table-problem-summary-hover-color: $c-black;
-             $c-table-problem-icon-x-color: $c-nhs_red;
-     $c-table-problem-icon-checkmark-color: $c-nhs_green;
-        $c-table-problem-icon-circle-color: $c-darkgrey;
+                   $c-table-border: $c-grey;
+       $c-table-heading-link-color: $c-black;
+ $c-table-heading-link-hover-color: $c-aquablue;
+$c-table-heading-link-active-color: $c-aquablue;
+            $c-table-created-color: $c-darkgrey;
+               $c-table-link-color: $c-darkgrey;
+         $c-table-link-hover-color: $c-black;
+             $c-table-icon-x-color: $c-nhs_red;
+     $c-table-icon-checkmark-color: $c-nhs_green;
+        $c-table-icon-circle-color: $c-darkgrey;
 
 
 /**

@@ -25,12 +25,12 @@ table {
     padding: 10px 0;
     a {
       display: block;
-      color: $c-table-problem-summary-color;
+      color: $c-table-link-color;
       text-decoration: none;
-      &:hover { color: $c-table-problem-summary-hover-color; }
+      &:hover { color: $c-table-link-hover-color; }
     }
     &.table__label { text-align: left; }
-    &.created { color: $c-table-problem-created-color; }
+    &.created { color: $c-table-created-color; }
     // coloured icons
     &.happy_service,
     &.happy_outcome {
@@ -50,9 +50,9 @@ table {
       font-size: (21px / $font-size-base) + em;
     }
     a {
-      color: $c-table-problem-heading-link-color;
+      color: $c-table-heading-link-color;
       text-decoration: none;
-      &:hover { color: $c-table-problem-heading-link-hover-color; }
+      &:hover { color: $c-table-heading-link-hover-color; }
     }
     // up / down carats for srotable cols
     &.sortable a {
@@ -62,24 +62,22 @@ table {
         content: "\f0d7";
       }
     }
-    &.asc a, &.desc a { color: $c-table-problem-heading-link-active-color; }
+    &.asc a, &.desc a { color: $c-table-heading-link-active-color; }
     &.asc a:after { content: "\f0d8"; }
   }
   .icon-x {
     font-size: (22px / $font-size-base) + em;
-    color: $c-table-problem-icon-x-color;
+    color: $c-table-icon-x-color;
   }
   .icon-checkmark {
     font-size: (22px / $font-size-base) + em;
-    color: $c-table-problem-icon-checkmark-color;
+    color: $c-table-icon-checkmark-color;
   }
   .icon-circle {
     font-size: (22px / $font-size-base) + em;
-    color: $c-table-problem-icon-circle-color;
+    color: $c-table-icon-circle-color;
   }
 }
-
-
 
 
 /**
