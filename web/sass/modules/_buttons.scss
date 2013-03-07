@@ -28,6 +28,47 @@
         @include media-query(portable){ font-size: (21px / $font-size-base) + em; }
     }
 
+
+    /**
+     * Same sizing as btn--big but with a chevron
+     */
+    .btn--big--fwd {
+        width: 100%;
+        font-size: (24px / $font-size-base) + em;
+        line-height: 1.2;
+        text-align: left;
+        padding: 2em 1em 0.75em 1em;
+        @include vendor(border-radius, 0);
+        @media only screen and (max-width:830px){ padding: 1em 1em 0.5em 1em; }
+        @include media-query(palm){ padding: 1em; }
+        .icon-chevron-right {
+            float: right;
+            font-size: (72px / 24px) + em;
+            margin-top: -(24px / 72px) + em;
+            margin-left: (20px / 72px) + em;
+            @media only screen and (max-width:830px){ margin-top: -(12px / 72px) + em; }
+            @include media-query(palm){ margin-top: (14px / 72px) + em; }
+        }
+        .btn--big--fwd__text {
+            display: block;
+            width: 90%;
+        }
+    }
+
+
+    /**
+     * A medium version, basically like big but smaller...
+     */
+    .btn--med {
+        width: 100%;
+        font-size: (18px / $font-size-base) + em;
+        line-height: 1.3;
+        padding: 2.5em 1em;
+        @include vendor(border-radius, (6px / 18px) + em);
+        @include media-query(portable){ font-size: $font-size-base; }
+    }
+
+
     /**
      * Remove borders
      */
@@ -43,6 +84,7 @@
     .btn--no-label {
         margin-top: 1.6em;
     }
+
 
     /**
      * Colour variants
