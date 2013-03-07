@@ -33,20 +33,17 @@ class NationalSummaryTable(tables.Table):
         self.cobrand = kwargs.pop('cobrand')
         super(NationalSummaryTable, self).__init__(*args, **kwargs)
 
-
-    sep_atts = {"th": {"class": "separator"},
-                "td": {"class": "separator"}}
     name = tables.Column(verbose_name='Provider name',
-                             attrs=sep_atts)
+                             attrs={'th': {'class': 'table__first'},
+                                    'td': {'class': 'table__first'}})
     week = tables.Column(verbose_name='Last 7 days')
     four_weeks = tables.Column(verbose_name='Last 4 weeks')
     six_months = tables.Column(verbose_name='Last 6 months')
-    all_time = tables.Column(verbose_name='All time', attrs=sep_atts)
+    all_time = tables.Column(verbose_name='All time')
     average_time_to_acknowledge = tables.TemplateColumn(verbose_name='Average time to acknowledge (days)',
                                                 template_code=formatted_time_interval())
     average_time_to_address = tables.TemplateColumn(verbose_name='Average time to address (days)',
-                                            template_code=formatted_time_interval(),
-                                            attrs=sep_atts)
+                                            template_code=formatted_time_interval())
     happy_service = tables.TemplateColumn(verbose_name='% Happy with service',
                                           template_code=percent())
     happy_outcome = tables.TemplateColumn(verbose_name='% Happy with outcome',
