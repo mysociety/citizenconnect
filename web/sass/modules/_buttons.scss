@@ -80,12 +80,26 @@
         display: block;
         float: left;
         font-size: (24px / 14px) + em;
-        margin-top: -7px;
-        margin-right: 5px;
+        margin-top: -(6px / 24px) + em;
+        margin-right: (5px / 24px) + em;
         color: $c-back-btn-span-color;
     }
     &:hover {
         color: $c-back-btn-hover-color;
         span { color: $c-back-btn-span-hover-color;}
+    }
+}
+
+
+/**
+ * almost identical to the back button, just the other way around
+ */
+.forward-btn {
+    @extend .back-btn;
+    span {
+        float: right;
+        margin-left: (5px / 24px) + em;
+        margin-right: 0;
+        margin-top: -(19px / 24px) + em;
     }
 }
