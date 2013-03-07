@@ -19,7 +19,7 @@ from .models import Organisation, Service
 from .forms import OrganisationFinderForm
 import choices_api
 from .lib import interval_counts
-from .models import Organisation
+from .models import Organisation, CCG
 from .tables  import NationalSummaryTable, MessageModelTable, ExtendedMessageModelTable
 
 class PrivateViewMixin(object):
@@ -241,6 +241,7 @@ class Summary(TemplateView):
         context['problem_statuses'] = Problem.STATUS_CHOICES
         context['organisation_types'] = settings.ORGANISATION_CHOICES
         context['services'] = Service.service_codes()
+        context['ccgs'] = CCG.objects.all()
         filters = {}
 
         # Service code filter

@@ -5,7 +5,10 @@ from django.db import connection
 
 from citizenconnect.models import AuditedModel
 
-# Create your models here.
+class CCG(AuditedModel):
+    name = models.TextField()
+    code = models.CharField(max_length=8, db_index=True, unique=True)
+
 class Organisation(AuditedModel,geomodels.Model):
     name = models.TextField()
     organisation_type = models.CharField(max_length=100, choices=settings.ORGANISATION_CHOICES)
