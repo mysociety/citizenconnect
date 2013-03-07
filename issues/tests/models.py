@@ -258,15 +258,13 @@ class ProblemManagerTests(ManagerTest):
         self.open_moderated_published_problems = [self.new_public_moderated_problem_published,
                                         self.new_private_moderated_problem_published]
 
-        self.open_moderated_published_public_problems = [self.new_public_moderated_problem_published]
-
         self.closed_problems = self.closed_unmoderated_problems + [self.closed_public_moderated_problem_hidden,
                                                                     self.closed_public_moderated_problem_published,
                                                                     self.closed_private_moderated_problem_hidden,
                                                                     self.closed_private_moderated_problem_published]
         self.all_problems = self.open_problems + self.closed_problems
 
-        self.all_moderated_published_public_problems = self.open_moderated_published_public_problems + [self.closed_public_moderated_problem_published]
+        self.all_moderated_published_public_problems = [self.new_public_moderated_problem_published, self.closed_public_moderated_problem_published]
 
     def test_open_problems_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.open_problems(), self.open_problems)
@@ -277,10 +275,6 @@ class ProblemManagerTests(ManagerTest):
     def test_open_moderated_published_problems_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.open_moderated_published_problems(),
                                self.open_moderated_published_problems)
-
-    def test_open_moderated_published_public_problems_returns_correct_problems(self):
-        self.compare_querysets(Problem.objects.open_moderated_published_public_problems(),
-                               self.open_moderated_published_public_problems)
 
     def test_all_problems_returns_correct_questions(self):
         self.compare_querysets(Problem.objects.all(), self.all_problems)
@@ -375,8 +369,6 @@ class QuestionManagerTests(ManagerTest):
 
         self.open_moderated_published_questions = [self.new_public_moderated_question_published,
                                         self.new_private_moderated_question_published]
-
-        self.open_moderated_published_public_questions = [self.new_public_moderated_question_published]
 
         self.closed_questions = self.closed_unmoderated_questions + [self.closed_public_moderated_question_hidden,
                                                                     self.closed_public_moderated_question_published,

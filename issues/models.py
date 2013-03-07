@@ -167,9 +167,6 @@ class ProblemManager(models.Manager):
         return self.open_problems().filter(moderated=MessageModel.MODERATED,
                                            publication_status=MessageModel.PUBLISHED)
 
-    def open_moderated_published_public_problems(self):
-        return self.open_moderated_published_problems().filter(public=True)
-
     def all_moderated_published_public_problems(self):
         return super(ProblemManager, self).all().filter(moderated=MessageModel.MODERATED,
                                                         publication_status=MessageModel.PUBLISHED,
