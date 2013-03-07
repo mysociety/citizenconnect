@@ -1,0 +1,18 @@
+/**
+ * Simple gridded list that uses .btn--med inside.
+ * Used on faq page.
+ */
+.gridded-list {
+  li {
+    margin-bottom: $grid-gutter + em;
+    @include media-query(palm){
+      margin-bottom: ($grid-gutter / 2) + em;
+    }
+    .btn--med {
+      min-height: 136px;
+      @include media-query(palm){
+        min-height: auto;
+      }
+    }
+  }
+}
