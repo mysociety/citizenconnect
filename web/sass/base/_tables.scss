@@ -1,4 +1,5 @@
 // for horizontal scrolling tables on mobile
+.table-container,
 .table-wrapper { overflow: auto; }
 
 table {
@@ -10,12 +11,32 @@ table {
     &.table__heading { font-weight: bold; }
     &.table__footer td { border-bottom: $c-table-border solid 2px; }
   }
+  td, th {
+    &.table__first {
+      padding-left: 0;
+      text-align: left;
+    }
+    &.table__last { padding-right: 0; }
+  }
   td {
     font-size: (12px / $font-size-base) + em;
     text-align: center;
     border-bottom: $c-table-border solid 1px;
     padding: 10px 0;
+    a {
+      display: block;
+      color: $c-table-problem-summary-color;
+      text-decoration: none;
+      &:hover { color: $c-table-problem-summary-hover-color; }
+    }
     &.table__label { text-align: left; }
+    &.created { color: $c-table-problem-created-color; }
+    // coloured icons
+    &.happy_service,
+    &.happy_outcome {
+      vertical-align: middle;
+      text-align: center;
+    }
   }
   th {
     font-size: (12px / $font-size-base) + em;
@@ -28,6 +49,33 @@ table {
       padding-left: 0;
       font-size: (21px / $font-size-base) + em;
     }
+    a {
+      color: $c-table-problem-heading-link-color;
+      text-decoration: none;
+      &:hover { color: $c-table-problem-heading-link-hover-color; }
+    }
+    // up / down carats for srotable cols
+    &.sortable a {
+      &:after {
+        @extend .i;
+        margin-left: 0.5em;
+        content: "\f0d7";
+      }
+    }
+    &.asc a, &.desc a { color: $c-table-problem-heading-link-active-color; }
+    &.asc a:after { content: "\f0d8"; }
+  }
+  .icon-x {
+    font-size: (22px / $font-size-base) + em;
+    color: $c-table-problem-icon-x-color;
+  }
+  .icon-checkmark {
+    font-size: (22px / $font-size-base) + em;
+    color: $c-table-problem-icon-checkmark-color;
+  }
+  .icon-circle {
+    font-size: (22px / $font-size-base) + em;
+    color: $c-table-problem-icon-circle-color;
   }
 }
 
@@ -51,49 +99,4 @@ table {
   }
   // last cell
   .summary { padding-right: 0; }
-
-
-  th a {
-    color: $c-table-problem-heading-link-color;
-    text-decoration: none;
-    &:hover { color: $c-table-problem-heading-link-hover-color; }
-  }
-
-  // up / down carats for srotable cols
-  th.sortable a {
-    &:after {
-      @extend .i;
-      margin-left: 0.5em;
-      content: "\f0d7";
-    }
-  }
-  th.asc a, th.desc a { color: $c-table-problem-heading-link-active-color; }
-  th.asc a:after { content: "\f0d8"; }
-
-  td.created { color: $c-table-problem-created-color; }
-  td.summary a {
-    display: block;
-    color: $c-table-problem-summary-color;
-    text-decoration: none;
-    &:hover { color: $c-table-problem-summary-hover-color; }
-  }
-
-  // coloured icons
-  td.happy_service,
-  td.happy_outcome {
-    vertical-align: middle;
-    text-align: center;
-  }
-  .icon-x {
-    font-size: (22px / $font-size-base) + em;
-    color: $c-table-problem-icon-x-color;
-  }
-  .icon-checkmark {
-    font-size: (22px / $font-size-base) + em;
-    color: $c-table-problem-icon-checkmark-color;
-  }
-  .icon-circle {
-    font-size: (22px / $font-size-base) + em;
-    color: $c-table-problem-icon-circle-color;
-  }
 }
