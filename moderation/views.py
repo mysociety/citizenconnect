@@ -58,8 +58,8 @@ class ModerateForm(MessageDependentFormViewMixin,
     # Parameters for MessageDependentFormViewMixin
     problem_form_class = ProblemModerationForm
     question_form_class = QuestionModerationForm
-    problem_queryset = Problem.objects.all()
-    question_queryset = Question.objects.all()
+    problem_queryset = Problem.objects.unmoderated_problems()
+    question_queryset = Question.objects.unmoderated_questions()
 
     def get_success_url(self):
         return reverse('moderate-confirm')

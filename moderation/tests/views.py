@@ -1,3 +1,5 @@
+import logging
+
 from organisations.tests.lib import create_test_instance, create_test_organisation
 from issues.models import Problem, Question, MessageModel
 from responses.models import ProblemResponse
@@ -65,6 +67,12 @@ class ModerateFormViewTests(BaseModerationTestCase):
     def setUp(self):
         super(ModerateFormViewTests, self).setUp()
 
+        self.closed_problem = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.RESOLVED, 'moderated': MessageModel.MODERATED})
+        self.moderated_problem = create_test_instance(Problem, {'organisation':self.test_organisation, 'moderated': MessageModel.MODERATED})
+        self.closed_problem2 = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.NOT_RESOLVED, 'moderated': MessageModel.MODERATED})
+        self.closed_question = create_test_instance(Question, {'status': Question.RESOLVED, 'moderated': MessageModel.MODERATED})
+        self.moderated_question = create_test_instance(Question, {'moderated': MessageModel.MODERATED})
+
     def test_problem_in_context(self):
         resp = self.client.get(self.problem_form_url)
         self.assertEqual(resp.context['message'], self.test_problem)
@@ -85,3 +93,24 @@ class ModerateFormViewTests(BaseModerationTestCase):
         self.assertContains(resp, self.test_problem.organisation.name)
         self.assertContains(resp, response1.response)
         self.assertContains(resp, response2.response)
+
+    def test_closed_and_moderated_issues_rejected(self):
+        # Quiten down logging
+        logging.disable(logging.CRITICAL)
+
+        resp = self.client.get('/private/moderate/problem/{0}'.format(self.closed_problem.id))
+        self.assertEqual(resp.status_code, 404)
+
+        resp = self.client.get('/private/moderate/problem/{0}'.format(self.closed_problem2.id))
+        self.assertEqual(resp.status_code, 404)
+
+        resp = self.client.get('/private/moderate/problem/{0}'.format(self.moderated_problem.id))
+        self.assertEqual(resp.status_code, 404)
+
+        resp = self.client.get('/private/moderate/question/{0}'.format(self.closed_question.id))
+        self.assertEqual(resp.status_code, 404)
+
+        resp = self.client.get('/private/moderate/question/{0}'.format(self.moderated_question.id))
+        self.assertEqual(resp.status_code, 404)
+
+        logging.disable(logging.NOTSET)
