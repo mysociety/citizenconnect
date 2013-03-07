@@ -30,7 +30,7 @@ class APITests(TestCase):
         self.question_uuid = uuid.uuid4().hex
         self.test_question = {
             'description': 'This is a question',
-            'category': 'prescriptions',
+            'category': 'staff',
             'reporter_name': self.question_uuid,
             'reporter_email': 'steve@mysociety.org',
             'reporter_phone': '01111 111 111',

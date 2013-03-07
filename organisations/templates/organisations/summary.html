@@ -6,57 +6,52 @@
 {% block bodyclasses %}summary{% endblock %}
 
 {% block content %}
-<div class="header">
-    <h1>Outcomes</h1>
-</div>
 
-<div class="outcomes-options">
-    <form class="" action="{{ request.path }}">
-        {% if services %}
-        <div class="feature">
-            <select name="service">
-                <option value="">Department</option>
-                {% for service_code, service_name in services %}
-                    <option value="{{ service_code }}" {% if filters.service_code == service_code %}selected{% endif %}>{{ service_name }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        {% endif %}
-        <div class="feature">
-            <select name="problem_category">
-                <option value="">Problem type</option>
-                {% for value, display_value in problem_categories %}
-                    <option value="{{ value }}" {% if filters.problem_category == value %}selected{% endif %}>{{ display_value }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="feature">
-            <select name="organisation_type">
-                <option value="">Provider type</option>
-                 {% for value, display_value in organisation_types %}
-                    <option value="{{ value }}" {% if filters.organisation_type == value %}selected{% endif %}>{{ display_value }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="feature">
-            <select name="problem_status">
-                <option value="all">Problem status</option>
-                {% for value, display_value in problem_statuses %}
-                    <option value="{{ value }}" {% if filters.problem_status == value %}selected{% endif %}>{{ display_value }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="feature">
-            <input type="submit" value="Filter">
-        </div>
-    </form>
-</div>
-{% if organisations_table %}
-<div class="outcomes-table">
-    <div class="feature">
-        {% render_table organisations_table %}
-    </div>
-</div>
-{% endif %}
+  <h1>National Summary</h1>
+
+  <div class="filters">
+      <form class="gw" action="{{ request.path }}">
+          {% if services %}
+          <div class="g  one-fifth  palm-one-half">
+              <select name="service">
+                  <option value="">Department</option>
+                  {% for service_code, service_name in services %}
+                      <option value="{{ service_code }}" {% if filters.service_code == service_code %}selected{% endif %}>{{ service_name }}</option>
+                  {% endfor %}
+              </select>
+          </div>
+          {% endif %}
+
+          <div class="g  one-fifth  palm-one-half">
+              <select name="problem_category">
+                  <option value="">Problem type</option>
+                  {% for value, display_value in problem_categories %}
+                      <option value="{{ value }}" {% if filters.problem_category == value %}selected{% endif %}>{{ display_value }}</option>
+                  {% endfor %}
+              </select>
+          </div>
+          <div class="g  one-fifth  palm-one-half">
+              <select name="organisation_type">
+                  <option value="">Provider type</option>
+                   {% for value, display_value in organisation_types %}
+                      <option value="{{ value }}" {% if filters.organisation_type == value %}selected{% endif %}>{{ display_value }}</option>
+                  {% endfor %}
+              </select>
+          </div>
+          <div class="g  one-fifth  palm-one-half">
+              <select name="problem_status">
+                  <option value="all">Problem status</option>
+                  {% for value, display_value in problem_statuses %}
+                      <option value="{{ value }}" {% if filters.problem_status == value %}selected{% endif %}>{{ display_value }}</option>
+                  {% endfor %}
+              </select>
+          </div>
+          <div class="g  one-fifth  palm-one-whole">
+            <input type="submit" value="Filter" class="btn  fr  palm-one-whole">
+          </div>
+      </form>
+  </div>
+
+{% render_table table 'organisations/includes/summary-table.html' %}
 
 {% endblock %}

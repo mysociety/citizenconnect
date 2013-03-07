@@ -1,0 +1,7 @@
+{% load organisation_extras %}
+{% if value != None %}
+    {{value|percent}}
+{% else %}
+    <span class="icon-circle" aria-hidden="true"></span>
+    <span class="hide-text">—</span>
+{% endif %}

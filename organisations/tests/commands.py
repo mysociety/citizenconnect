@@ -108,5 +108,5 @@ class EmailIssuesToProviderTests(TestCase):
             # And that the successful one got marked as mailed
             self.test_question = Question.objects.get(pk=self.test_question.id)
             self.assertTrue(self.test_question.mailed)
-
+        logging.disable(logging.NOTSET)
 

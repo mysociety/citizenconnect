@@ -15,6 +15,7 @@ from issues.models import Problem, Question
 import organisations
 from ..models import Organisation
 from . import create_test_instance, create_test_organisation, create_test_service
+from issues.models import MessageModel
 
 class OrganisationSummaryTests(TestCase):
 
@@ -73,25 +74,19 @@ class OrganisationSummaryTests(TestCase):
             self.assertEqual(problems_by_status[0]['week'], 3)
             self.assertEqual(problems_by_status[0]['four_weeks'], 3)
             self.assertEqual(problems_by_status[0]['six_months'], 3)
-            self.assertEqual(problems_by_status[0]['description'], 'Received but not acknowledged')
+            self.assertEqual(problems_by_status[0]['description'], 'Open')
 
             self.assertEqual(problems_by_status[1]['all_time'], 0)
             self.assertEqual(problems_by_status[1]['week'], 0)
             self.assertEqual(problems_by_status[1]['four_weeks'], 0)
             self.assertEqual(problems_by_status[1]['six_months'], 0)
-            self.assertEqual(problems_by_status[1]['description'], 'Acknowledged but not addressed')
+            self.assertEqual(problems_by_status[1]['description'], 'In Progress')
 
             self.assertEqual(problems_by_status[2]['all_time'], 0)
             self.assertEqual(problems_by_status[2]['week'], 0)
             self.assertEqual(problems_by_status[2]['four_weeks'], 0)
             self.assertEqual(problems_by_status[2]['six_months'], 0)
-            self.assertEqual(problems_by_status[2]['description'], 'Addressed - problem solved')
-
-            self.assertEqual(problems_by_status[3]['all_time'], 0)
-            self.assertEqual(problems_by_status[3]['week'], 0)
-            self.assertEqual(problems_by_status[3]['four_weeks'], 0)
-            self.assertEqual(problems_by_status[3]['six_months'], 0)
-            self.assertEqual(problems_by_status[3]['description'], 'Addressed - unable to solve')
+            self.assertEqual(problems_by_status[2]['description'], 'Resolved')
 
     def test_summary_page_applies_problem_category_filter(self):
         for url in self.urls:
@@ -146,7 +141,9 @@ class OrganisationProblemsTests(TestCase):
         self.public_gp_problems_url = '/choices/stats/problems/%s' % self.gp.ods_code
         self.private_gp_problems_url = '/private/problems/%s' % self.gp.ods_code
         self.staff_problem = create_test_instance(Problem, {'category': 'staff',
-                                                            'organisation': self.hospital})
+                                                            'organisation': self.hospital,
+                                                            'moderated': MessageModel.MODERATED,
+                                                            'publication_status': MessageModel.PUBLISHED})
 
     def test_shows_services_for_hospitals(self):
         for url in [self.public_hospital_problems_url, self.private_hospital_problems_url]:
@@ -179,6 +176,21 @@ class OrganisationProblemsTests(TestCase):
         resp = self.client.get(self.public_hospital_problems_url)
         self.assertContains(resp, '/choices/problem/%s' % self.staff_problem.id )
 
+    def test_public_page_doesnt_show_hidden_private_or_unmoderated_problems(self):
+        # Add some problems which shouldn't show up
+        unmoderated_problem = create_test_instance(Problem, {'organisation': self.hospital})
+        hidden_problem = create_test_instance(Problem, {'organisation': self.hospital,
+                                       'moderated': MessageModel.MODERATED,
+                                       'publication_status': MessageModel.HIDDEN})
+        private_problem = create_test_instance(Problem, {'organisation': self.hospital,
+                                       'moderated': MessageModel.MODERATED,
+                                       'publication_status': MessageModel.PUBLISHED,
+                                       'public': False})
+        resp = self.client.get(self.public_hospital_problems_url)
+        self.assertTrue('/choices/problem/%s' % unmoderated_problem.id not in resp.content)
+        self.assertTrue('/choices/problem/%s' % hidden_problem.id not in resp.content)
+        self.assertTrue('/choices/problem/%s' % private_problem.id not in resp.content)
+
     def test_private_page_exists(self):
         resp = self.client.get(self.private_hospital_problems_url)
         self.assertEqual(resp.status_code, 200)
@@ -186,6 +198,21 @@ class OrganisationProblemsTests(TestCase):
     def test_private_page_links_to_problems(self):
         resp = self.client.get(self.private_hospital_problems_url)
         self.assertTrue('/private/response/problem/%s' % self.staff_problem.id in resp.content)
+
+    def test_private_page_shows_hidden_private_and_unmoderated_problems(self):
+        # Add some extra problems
+        unmoderated_problem = create_test_instance(Problem, {'organisation': self.hospital})
+        hidden_problem = create_test_instance(Problem, {'organisation': self.hospital,
+                                       'moderated': MessageModel.MODERATED,
+                                       'publication_status': MessageModel.HIDDEN})
+        private_problem = create_test_instance(Problem, {'organisation': self.hospital,
+                                       'moderated': MessageModel.MODERATED,
+                                       'publication_status': MessageModel.PUBLISHED,
+                                       'public': False})
+        resp = self.client.get(self.private_hospital_problems_url)
+        self.assertTrue('/private/response/problem/%s' % unmoderated_problem.id in resp.content)
+        self.assertTrue('/private/response/problem/%s' % hidden_problem.id in resp.content)
+        self.assertTrue('/private/response/problem/%s' % private_problem.id in resp.content)
 
 class OrganisationDashboardTests(TestCase):
 
@@ -205,7 +232,12 @@ class OrganisationDashboardTests(TestCase):
 
     def test_dashboard_shows_problems(self):
         resp = self.client.get(self.dashboard_url)
-        self.assertTrue(self.problem.summary in resp.content)
+        self.assertTrue('/private/response/problem/%s' % self.problem.id in resp.content)
+
+    def test_dashboard_doesnt_show_closed_problems(self):
+        self.closed_problem = create_test_instance(Problem, {'organisation': self.organisation, 'status': Problem.RESOLVED})
+        resp = self.client.get(self.dashboard_url)
+        self.assertTrue('/private/response/problem/%s' % self.closed_problem.id not in resp.content)
 
 class OrganisationMapTests(TestCase):
 
@@ -229,31 +261,38 @@ class OrganisationMapTests(TestCase):
         response_json = json.loads(resp.context['organisations'])
         self.assertEqual(len(response_json), 2)
         self.assertEqual(response_json[0]['ods_code'], self.hospital.ods_code)
-        self.assertEqual(response_json[0]['problems'], [])
+        self.assertEqual(response_json[0]['problem_count'], 0)
         self.assertEqual(response_json[1]['ods_code'], self.gp.ods_code)
-        self.assertEqual(response_json[1]['problems'], [])
+        self.assertEqual(response_json[1]['problem_count'], 0)
 
-    def test_problems_in_json(self):
-        # Add some problem and questions into the db
+    def test_public_map_doesnt_include_unmoderated_or_unpublished_problems(self):
         create_test_instance(Problem, {'organisation': self.hospital})
-        create_test_instance(Problem, {'organisation': self.gp})
+        create_test_instance(Problem, {'organisation': self.hospital,
+                                       'publication_status': MessageModel.HIDDEN,
+                                       'moderated': MessageModel.MODERATED})
+        create_test_instance(Problem, {'organisation': self.hospital,
+                                       'publication_status': MessageModel.PUBLISHED,
+                                       'moderated': MessageModel.MODERATED})
+
 
         resp = self.client.get(self.map_url)
         response_json = json.loads(resp.context['organisations'])
 
-        self.assertEqual(len(response_json[0]['problems']), 1)
-        self.assertEqual(len(response_json[1]['problems']), 1)
+        self.assertEqual(response_json[0]['problem_count'], 1)
 
-    def test_closed_problems_not_in_json(self):
+    def test_private_map_includes_unmoderated_and_unpublished_problems(self):
         create_test_instance(Problem, {'organisation': self.hospital})
-        create_test_instance(Problem, {'organisation': self.gp, 'status': Problem.RESOLVED})
-        create_test_instance(Problem, {'organisation': self.gp, 'status': Problem.NOT_RESOLVED})
+        create_test_instance(Problem, {'organisation': self.hospital,
+                                       'publication_status': MessageModel.HIDDEN,
+                                       'moderated': MessageModel.MODERATED})
+        create_test_instance(Problem, {'organisation': self.hospital,
+                                       'publication_status': MessageModel.PUBLISHED,
+                                       'moderated': MessageModel.MODERATED})
 
-        resp = self.client.get(self.map_url)
+        resp = self.client.get(self.private_map_url)
         response_json = json.loads(resp.context['organisations'])
 
-        self.assertEqual(len(response_json[0]['problems']), 1)
-        self.assertEqual(len(response_json[1]['problems']), 0)
+        self.assertEqual(response_json[0]['problem_count'], 3)
 
     def test_public_map_provider_urls_are_to_public_summary_pages(self):
         expected_hospital_url = reverse('public-org-summary', kwargs={'ods_code':self.hospital.ods_code, 'cobrand':'choices'})
@@ -402,7 +441,10 @@ class ProviderPickerTests(TestCase):
         self.assertContains(resp, expected_message, count=1, status_code=200)
 
     def test_shows_message_when_no_results_for_postcode(self):
-        Organisation.objects.filter = MagicMock(return_value=[])
+        mock_results = MagicMock()
+        ordered_results = mock_results.distance().order_by('distance')
+        ordered_results.return_value = []
+        Organisation.objects.filter = mock_results
         resp = self.client.get(self.results_url)
         expected_message = 'Sorry, there are no matches within 5 miles of SW1A 1AA. Please try again'
         self.assertContains(resp, expected_message, count=1, status_code=200)

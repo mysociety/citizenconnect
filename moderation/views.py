@@ -18,20 +18,9 @@ class ModerateHome(TemplateView):
     template_name = 'moderation/moderate-home.html'
 
     def get_context_data(self, **kwargs):
-        # Get all the problems and questions
+        # Get all the problems
         context = super(ModerateHome, self).get_context_data(**kwargs)
-        # Get all the open problems and questions
-        problems = Problem.objects.open_problems().order_by("created")
-        questions = Question.objects.open_questions().order_by("created")
-        context['problems'] = problems
-        context['questions'] = questions
-        # Put them into one list, taken from http://stackoverflow.com/questions/431628/how-to-combine-2-or-more-querysets-in-a-django-view
-        issues = sorted(
-            chain(problems, questions),
-            key=attrgetter('created'),
-            reverse=True
-        )
-        context['issues'] = issues
+        context['issues'] = Problem.objects.unmoderated_problems().order_by("created")
         return context
 
 class ModerateLookup(FormView):
@@ -58,8 +47,8 @@ class ModerateForm(MessageDependentFormViewMixin,
     # Parameters for MessageDependentFormViewMixin
     problem_form_class = ProblemModerationForm
     question_form_class = QuestionModerationForm
-    problem_queryset = Problem.objects.all()
-    question_queryset = Question.objects.all()
+    problem_queryset = Problem.objects.unmoderated_problems()
+    question_queryset = Question.objects.unmoderated_questions()
 
     def get_success_url(self):
         return reverse('moderate-confirm')

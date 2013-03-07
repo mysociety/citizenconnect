@@ -71,7 +71,7 @@ class ResponseFormTests(TransactionTestCase):
         }
         resp = self.client.post(self.problem_response_form_url, test_form_values)
         self.assertEqual(resp.status_code, 200)
-        self.assertContains(resp, "Message sent")
+        self.assertContains(resp, "response has been published online")
         self.assertContains(resp, reverse('org-dashboard', kwargs={'ods_code':self.test_organisation.ods_code}))
 
 class ResponseFormViewTests(TestCase):
@@ -89,8 +89,6 @@ class ResponseFormViewTests(TestCase):
         self.assertContains(resp, self.problem.reference_number)
         self.assertContains(resp, self.problem.issue_type)
         self.assertContains(resp, self.problem.reporter_name)
-        self.assertContains(resp, self.problem.reporter_phone)
-        self.assertContains(resp, self.problem.reporter_email)
         self.assertContains(resp, self.problem.description)
 
     def test_response_form_display_no_responses_message(self):

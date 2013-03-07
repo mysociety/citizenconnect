@@ -34,17 +34,8 @@ def formatted_boolean(boolean):
         return None
 
 def paginator(context, adjacent_pages=2):
-    """
-    Adds pagination context variables for use in displaying first, adjacent and
-    last page links in provider results
-
-    Required context variables: page_obj: The Paginator.page() instance.
-                                location: the provider location search
-                                organisation_type: the provider type
-    """
+    """Base function for an ellipsis-capable paginator"""
     page_obj = context['page_obj']
-    location = context['location']
-    organisation_type = context.get('organisation_type')
     paginator = page_obj.paginator
     start_page = max(page_obj.number - adjacent_pages, 1)
     if start_page <= 3: start_page = 1
@@ -54,8 +45,6 @@ def paginator(context, adjacent_pages=2):
             if n > 0 and n <= paginator.num_pages]
 
     return {
-        'location': location,
-        'organisation_type': organisation_type,
         'page_obj': page_obj,
         'paginator': paginator,
         'page_numbers': page_numbers,
@@ -63,4 +52,37 @@ def paginator(context, adjacent_pages=2):
         'show_last': paginator.num_pages not in page_numbers,
     }
 
-register.inclusion_tag('paginator.html', takes_context=True)(paginator)
+def provider_paginator(context, adjacent_pages=2):
+    """
+    Adds pagination context variables for use in displaying first, adjacent and
+    last page links in provider results
+
+    Required context variables: page_obj: The Paginator.page() instance.
+                                location: the provider location search
+                                organisation_type: the provider type
+    """
+    location = context['location']
+    organisation_type = context['organisation_type']
+    pagination_context = paginator(context, adjacent_pages)
+
+    pagination_context['location'] = location
+    pagination_context['organisation_type'] = organisation_type
+    return pagination_context
+
+register.inclusion_tag('provider-paginator.html', takes_context=True)(provider_paginator)
+
+def table_paginator(context, adjacent_pages=2):
+    """
+    Adds pagination context variables for use in displaying summary tables
+
+    Required context variables: page_obj: The Paginator.page() instance.
+                                table: the table
+                                request: the request context
+    """
+    pagination_context = paginator(context, adjacent_pages)
+    pagination_context['table'] = context['table']
+    # Pass through the request context so that we can update querystrings with pagination params
+    pagination_context['request'] = context['request']
+    return pagination_context
+
+register.inclusion_tag('organisations/includes/table-paginator.html', takes_context=True)(table_paginator)

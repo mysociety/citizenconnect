@@ -14,30 +14,41 @@
 
 <div class="gw">
     <div class="g  one-half  palm-one-whole">
-      <ul class="message-list">
-        <li class="message-list__success">Thank you for reporting your problem. </li>
-      </ul>
-      <p>If you have chosen for your problem (and the response) to be made publicly available online this will be available (subject to NHS privacy and moderation conditions) within 24 hours.</p>
+        <ul class="message-list">
+            <li class="message-list__success">Thank you for reporting your problem.</li>
+        </ul>
+        <p>It has been forwarded immediately to {{ object.organisation.name }} and you should receive a response from them directly using the contact details you included.</p>
+        <p>Your reference number for this is {{ object.reference_number }}. If you need to contact us or {{ object.organisation.name }} about this issue in the future, please quote this reference number.</p>
+
+        {% if not object.public and not object.public_reporter_name %}
+            <p>As you selected to keep all details of your problem private our live maps just show that an issue has been raised with this service under the category of &OpenCurlyDoubleQuote;{{ object.get_category_display }}&CloseCurlyDoubleQuote;.</p>
+        {% else %}
+            <p>Your problem has been added to the live map for {{ object.organisation.name }} under the category of &OpenCurlyDoubleQuote;{{ object.get_category_display }}&CloseCurlyDoubleQuote; and as you selected to allow the publishing of the details of your problem {% if not object.public_reporter_name %}(anonymously, without your name){% endif %} the additional message content will also appear on our live maps shortly, after it has gone through our moderation process.</p>
+            <p>Moderation is a standard process for websites that allow members of the public to submit comments. <a href="{% url 'about' cobrand=cobrand.name %}">See more information on our moderation process</a>.</p>
+        {% endif %}
     </div>
     <div class="g  one-half  palm-one-whole">
-      <div class="islet  islet--squared  mt">
-        <h3>Your unique reference number is  {{ object.reference_number }}</h3>
-        <p>
-          You entered the following details<br>
-          {% if object.reporter_phone %}
-          tel <strong>{{ object.reporter_phone }}</strong><br>
-          {% endif %}
-          {% if object.reporter_email %}
-          email <strong>{{ object.reporter_email }}</strong>
-          {% endif %}
-        </p>
-      </div>
+        <div class="islet  islet--squared  mt">
+            <h3>Your unique reference number is  {{ object.reference_number }}</h3>
+            <p>
+              You entered the following details<br>
+              {% if object.reporter_phone %}
+              tel <strong>{{ object.reporter_phone }}</strong><br>
+              {% endif %}
+              {% if object.reporter_email %}
+              email <strong>{{ object.reporter_email }}</strong>
+              {% endif %}
+            </p>
+        </div>
     </div>
 
 </div>
 
 <div class="break-bar">
-<p><a href="{% url 'public-org-summary' cobrand=cobrand.name ods_code=object.organisation.ods_code %}" class="standout-link">View more data</a> from {{ object.organisation.name }}</p>
+    <p>
+        <a href="{% url 'public-org-summary' cobrand=cobrand.name ods_code=object.organisation.ods_code %}" class="standout-link">See the summary page</a> for {{ object.organisation.name }} to see how they are responding to problems raised. {% if not object.private %}Once your message has completed the moderation process you will be able to see the details listed on this page, and view its status.
+        {% endif %}
+    </p>
 </div>
 
 
