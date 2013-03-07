@@ -118,28 +118,19 @@ class QuestionManager(models.Manager):
     use_for_related_fields = True
 
     def open_questions(self):
-        """
-        Return only open questions
-        """
         return super(QuestionManager, self).all().filter(Q(status=Question.NEW) | Q(status=Question.ACKNOWLEDGED))
 
-    def open_published_questions(self):
-        """
-        As open_questions, but with questions filtered to have publication_status set to PUBLISHED
-        """
-        return self.open_questions().filter(publication_status=MessageModel.PUBLISHED)
+    def open_moderated_questions(self):
+        return self.open_questions().filter(moderated=MessageModel.MODERATED)
 
-    def open_published_public_questions(self):
-        """
-        As open_published_questions, but also with only questions that have public set to True
-        """
-        return self.open_published_questions().filter(public=True)
+    def open_unmoderated_questions(self):
+        return self.open_questions().filter(moderated=MessageModel.NOT_MODERATED)
 
-    def unmoderated_questions(self):
-        """
-        Questions which have moderated set to False
-        """
-        return super(QuestionManager, self).all().filter(moderated=False)
+    def open_moderated_published_questions(self):
+        return self.open_moderated_questions().filter(publication_status=MessageModel.PUBLISHED)
+
+    def open_moderated_published_public_questions(self):
+        return self.open_moderated_published_questions().filter(public=True)
 
 class Question(MessageModel):
     # Custom manager
@@ -177,24 +168,17 @@ class ProblemManager(models.Manager):
         Return only open problems
         """
         return super(ProblemManager, self).all().filter(Q(status=Problem.NEW) | Q(status=Problem.ACKNOWLEDGED))
+    def open_moderated_problems(self):
+        return self.open_problems().filter(moderated=MessageModel.MODERATED)
 
-    def open_published_problems(self):
-        """
-        As open_problems, but with problems filtered to have publication_status set to PUBLISHED
-        """
-        return self.open_problems().filter(publication_status=MessageModel.PUBLISHED)
+    def open_unmoderated_problems(self):
+        return self.open_problems().filter(moderated=MessageModel.NOT_MODERATED)
 
-    def open_published_public_problems(self):
-        """
-        As open_published_problems, but also with only problems that have public set to True
-        """
-        return self.open_published_problems().filter(public=True)
+    def open_moderated_published_problems(self):
+        return self.open_moderated_problems().filter(publication_status=MessageModel.PUBLISHED)
 
-    def unmoderated_problems(self):
-        """
-        Problems which have moderated set to False
-        """
-        return super(ProblemManager, self).all().filter(moderated=False)
+    def open_moderated_published_public_problems(self):
+        return self.open_moderated_published_problems().filter(public=True)
 
 class Problem(MessageModel):
     # Custom manager
