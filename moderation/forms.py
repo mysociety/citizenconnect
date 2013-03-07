@@ -48,9 +48,9 @@ class LookupForm(forms.Form):
 
             try:
                 if prefix == Problem.PREFIX:
-                    model = Problem.objects.unmoderated_problems().get(pk=id)
+                    model = Problem.objects.open_unmoderated_problems().get(pk=id)
                 elif prefix == Question.PREFIX:
-                    model = Question.objects.unmoderated_questions().get(pk=id)
+                    model = Question.objects.open_unmoderated_questions().get(pk=id)
                 else:
                     raise forms.ValidationError('Sorry, that reference number is not recognised')
             except (Problem.DoesNotExist, Question.DoesNotExist):

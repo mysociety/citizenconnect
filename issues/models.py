@@ -120,11 +120,11 @@ class QuestionManager(models.Manager):
     def open_questions(self):
         return super(QuestionManager, self).all().filter(Q(status=Question.NEW) | Q(status=Question.ACKNOWLEDGED))
 
+    def unmoderated_questions(self):
+        return super(QuestionManager, self).all().filter(moderated=MessageModel.NOT_MODERATED)
+
     def open_moderated_questions(self):
         return self.open_questions().filter(moderated=MessageModel.MODERATED)
-
-    def open_unmoderated_questions(self):
-        return self.open_questions().filter(moderated=MessageModel.NOT_MODERATED)
 
     def open_moderated_published_questions(self):
         return self.open_moderated_questions().filter(publication_status=MessageModel.PUBLISHED)
@@ -168,11 +168,12 @@ class ProblemManager(models.Manager):
         Return only open problems
         """
         return super(ProblemManager, self).all().filter(Q(status=Problem.NEW) | Q(status=Problem.ACKNOWLEDGED))
+
+    def unmoderated_problems(self):
+        return super(ProblemManager, self).all().filter(moderated=MessageModel.NOT_MODERATED)
+
     def open_moderated_problems(self):
         return self.open_problems().filter(moderated=MessageModel.MODERATED)
-
-    def open_unmoderated_problems(self):
-        return self.open_problems().filter(moderated=MessageModel.NOT_MODERATED)
 
     def open_moderated_published_problems(self):
         return self.open_moderated_problems().filter(publication_status=MessageModel.PUBLISHED)
