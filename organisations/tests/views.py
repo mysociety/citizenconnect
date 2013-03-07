@@ -229,11 +229,11 @@ class OrganisationMapTests(TestCase):
         response_json = json.loads(resp.context['organisations'])
         self.assertEqual(len(response_json), 2)
         self.assertEqual(response_json[0]['ods_code'], self.hospital.ods_code)
-        self.assertEqual(response_json[0]['problems'], [])
+        self.assertEqual(response_json[0]['problem_count'], 0)
         self.assertEqual(response_json[1]['ods_code'], self.gp.ods_code)
-        self.assertEqual(response_json[1]['problems'], [])
+        self.assertEqual(response_json[1]['problem_count'], 0)
 
-    def test_problems_in_json(self):
+    def test_problem_counts_in_json(self):
         # Add some problem and questions into the db
         create_test_instance(Problem, {'organisation': self.hospital})
         create_test_instance(Problem, {'organisation': self.gp})
@@ -241,19 +241,8 @@ class OrganisationMapTests(TestCase):
         resp = self.client.get(self.map_url)
         response_json = json.loads(resp.context['organisations'])
 
-        self.assertEqual(len(response_json[0]['problems']), 1)
-        self.assertEqual(len(response_json[1]['problems']), 1)
-
-    def test_closed_problems_not_in_json(self):
-        create_test_instance(Problem, {'organisation': self.hospital})
-        create_test_instance(Problem, {'organisation': self.gp, 'status': Problem.RESOLVED})
-        create_test_instance(Problem, {'organisation': self.gp, 'status': Problem.NOT_RESOLVED})
-
-        resp = self.client.get(self.map_url)
-        response_json = json.loads(resp.context['organisations'])
-
-        self.assertEqual(len(response_json[0]['problems']), 1)
-        self.assertEqual(len(response_json[1]['problems']), 0)
+        self.assertEqual(response_json[0]['problem_count'], 1)
+        self.assertEqual(response_json[1]['problem_count'], 1)
 
     def test_public_map_provider_urls_are_to_public_summary_pages(self):
         expected_hospital_url = reverse('public-org-summary', kwargs={'ods_code':self.hospital.ods_code, 'cobrand':'choices'})

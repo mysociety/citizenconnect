@@ -100,11 +100,7 @@ class Map(PrivateViewMixin, TemplateView):
             else :
                 organisation_dict['type'] = "Unknown"
 
-            # TODO - use context['private'] to filter issues to public or private only
-            # when we have that work merged in (after the expo)
-            organisation_dict['problems'] = []
-            for problem in organisation.problem_set.open_problems():
-                organisation_dict['problems'].append(escape(problem.description))
+            organisation_dict['problem_count'] = organisation.problem_set.open_problems().count()
 
             organisations_list.append(organisation_dict)
 
