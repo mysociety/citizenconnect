@@ -89,8 +89,6 @@ class ResponseFormViewTests(TestCase):
         self.assertContains(resp, self.problem.reference_number)
         self.assertContains(resp, self.problem.issue_type)
         self.assertContains(resp, self.problem.reporter_name)
-        self.assertContains(resp, self.problem.reporter_phone)
-        self.assertContains(resp, self.problem.reporter_email)
         self.assertContains(resp, self.problem.description)
 
     def test_response_form_display_no_responses_message(self):
