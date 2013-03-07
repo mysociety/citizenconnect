@@ -2,7 +2,7 @@ from django.core.urlresolvers import reverse
 
 from organisations.models import Organisation
 from organisations.tests.lib import create_test_instance, create_test_organisation
-from issues.models import Problem, Question
+from issues.models import Problem, Question, MessageModel
 
 from .lib import BaseModerationTestCase
 
@@ -10,9 +10,11 @@ class LookupFormTests(BaseModerationTestCase):
 
     def setUp(self):
         super(LookupFormTests, self).setUp()
-        self.closed_problem = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.RESOLVED})
-        self.closed_problem2 = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.NOT_RESOLVED})
-        self.closed_question = create_test_instance(Question, {'status': Question.RESOLVED})
+        self.closed_problem = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.RESOLVED, 'moderated': MessageModel.MODERATED})
+        self.closed_problem2 = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.NOT_RESOLVED, 'moderated': MessageModel.MODERATED})
+        self.moderated_problem = create_test_instance(Problem, {'organisation':self.test_organisation, 'moderated': MessageModel.MODERATED})
+        self.closed_question = create_test_instance(Question, {'status': Question.RESOLVED, 'moderated': MessageModel.MODERATED})
+        self.moderated_question = create_test_instance(Question, {'moderated': MessageModel.MODERATED})
 
     def test_happy_path(self):
         resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.test_problem.id)})
@@ -34,15 +36,21 @@ class LookupFormTests(BaseModerationTestCase):
         resp = self.client.post(self.lookup_url, {'reference_number': '{0}12300'.format(Question.PREFIX)})
         self.assertFormError(resp, 'form', None, 'Sorry, there are no open problems or questions with that reference number')
 
-    def test_form_rejects_closed_problems(self):
+    def test_form_rejects_closed_and_moderated_problems(self):
         resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.closed_problem.id)})
         self.assertFormError(resp, 'form', None, 'Sorry, there are no open problems or questions with that reference number')
 
         resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.closed_problem2.id)})
         self.assertFormError(resp, 'form', None, 'Sorry, there are no open problems or questions with that reference number')
 
+        resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.moderated_problem.id)})
+        self.assertFormError(resp, 'form', None, 'Sorry, there are no open problems or questions with that reference number')
+
     def test_form_rejects_closed_questions(self):
         resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Question.PREFIX, self.closed_question.id)})
+        self.assertFormError(resp, 'form', None, 'Sorry, there are no open problems or questions with that reference number')
+
+        resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Question.PREFIX, self.moderated_question.id)})
         self.assertFormError(resp, 'form', None, 'Sorry, there are no open problems or questions with that reference number')
 
 class ModerationFormTests(BaseModerationTestCase):
@@ -51,11 +59,23 @@ class ModerationFormTests(BaseModerationTestCase):
         self.problem = create_test_instance(Problem, {})
         self.moderation_form_url = '/private/moderate/problem/%s' % self.problem.id
 
+    def test_moderation_form_sets_moderated(self):
+        test_form_values = {
+            'publication_status': self.problem.publication_status,
+            'description': self.problem.description,
+            'moderated': self.problem.moderated,
+            'publish': ''
+        }
+        resp = self.client.post(self.moderation_form_url, test_form_values)
+        problem = Problem.objects.get(pk=self.problem.id)
+        self.assertEqual(problem.moderated, MessageModel.MODERATED)
+
     def test_moderation_form_updates_message(self):
         updated_description = "{0} updated".format(self.problem.description)
         test_form_values = {
             'publication_status': self.problem.publication_status,
             'description': updated_description,
+            'moderated': self.problem.moderated,
             'publish': ''
         }
         resp = self.client.post(self.moderation_form_url, test_form_values)
@@ -67,6 +87,7 @@ class ModerationFormTests(BaseModerationTestCase):
         test_form_values = {
             'publication_status': self.problem.publication_status,
             'description': self.problem.description,
+            'moderated': self.problem.moderated,
             'publish': ''
         }
         resp = self.client.post(self.moderation_form_url, test_form_values)
@@ -78,6 +99,7 @@ class ModerationFormTests(BaseModerationTestCase):
         test_form_values = {
             'publication_status': self.problem.publication_status,
             'description': self.problem.description,
+            'moderated': self.problem.moderated,
             'keep_private': ''
         }
         resp = self.client.post(self.moderation_form_url, test_form_values)
@@ -89,6 +111,7 @@ class ModerationFormTests(BaseModerationTestCase):
         test_form_values = {
             'publication_status': self.problem.publication_status,
             'description': self.problem.description,
+            'moderated': self.problem.moderated,
             'keep_private': ''
         }
         resp = self.client.post(self.moderation_form_url, test_form_values)

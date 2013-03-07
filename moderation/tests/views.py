@@ -1,5 +1,5 @@
 from organisations.tests.lib import create_test_instance, create_test_organisation
-from issues.models import Problem, Question
+from issues.models import Problem, Question, MessageModel
 from responses.models import ProblemResponse
 
 from .lib import BaseModerationTestCase
@@ -32,19 +32,23 @@ class HomeViewTests(BaseModerationTestCase):
 
     def setUp(self):
         super(HomeViewTests, self).setUp()
-        self.closed_problem = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.RESOLVED})
-        self.closed_problem2 = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.NOT_RESOLVED})
-        self.closed_question = create_test_instance(Question, {'status': Question.RESOLVED})
+        self.closed_problem = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.RESOLVED, 'moderated': MessageModel.MODERATED})
+        self.moderated_problem = create_test_instance(Problem, {'organisation':self.test_organisation, 'moderated': MessageModel.MODERATED})
+        self.closed_problem2 = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.NOT_RESOLVED, 'moderated': MessageModel.MODERATED})
+        self.closed_question = create_test_instance(Question, {'status': Question.RESOLVED, 'moderated': MessageModel.MODERATED})
+        self.moderated_question = create_test_instance(Question, {'moderated': MessageModel.MODERATED})
 
     def test_issues_in_context(self):
         resp = self.client.get(self.home_url)
         self.assertEqual(resp.context['issues'], [self.test_question, self.test_problem])
 
-    def test_closed_issues_not_in_context(self):
+    def test_closed_and_moderated_issues_not_in_context(self):
         resp = self.client.get(self.home_url)
         self.assertTrue(self.closed_problem not in resp.context['issues'])
         self.assertTrue(self.closed_problem2 not in resp.context['issues'])
         self.assertTrue(self.closed_question not in resp.context['issues'])
+        self.assertTrue(self.moderated_problem not in resp.context['issues'])
+        self.assertTrue(self.moderated_question not in resp.context['issues'])
 
     def test_issues_displayed(self):
         resp = self.client.get(self.home_url)

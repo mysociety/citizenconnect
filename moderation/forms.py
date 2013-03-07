@@ -10,22 +10,29 @@ class MessageModerationForm(forms.ModelForm):
 
     def clean_publication_status(self):
         # Status is hidden, but if people click the "Publish" button, we should
-        # publish it, and vice versa if they click "Keep Private"
+        # publish it, and vice versa if they click "Keep Private", we default
+        # to HIDDEN regardless for security
         publication_status = self.cleaned_data['publication_status']
         if 'publish' in self.data:
             publication_status = MessageModel.PUBLISHED
-        elif 'keep_private' in self.data:
+        else:
             publication_status = MessageModel.HIDDEN
         return publication_status
+
+    def clean_moderated(self):
+        # If you are submitting the form, you have moderated it, so always return MODERATED
+        return MessageModel.MODERATED
 
     class Meta:
         fields = [
             'publication_status',
             'description',
+            'moderated'
         ]
 
         widgets = {
-            'publication_status': HiddenInput
+            'publication_status': HiddenInput,
+            'moderated': HiddenInput
         }
 
 class LookupForm(forms.Form):
@@ -41,9 +48,9 @@ class LookupForm(forms.Form):
 
             try:
                 if prefix == Problem.PREFIX:
-                    model = Problem.open_objects.get(pk=id)
+                    model = Problem.objects.unmoderated_problems().get(pk=id)
                 elif prefix == Question.PREFIX:
-                    model = Question.open_objects.get(pk=id)
+                    model = Question.objects.unmoderated_questions().get(pk=id)
                 else:
                     raise forms.ValidationError('Sorry, that reference number is not recognised')
             except (Problem.DoesNotExist, Question.DoesNotExist):
