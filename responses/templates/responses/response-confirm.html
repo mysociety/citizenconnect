@@ -1,17 +1,20 @@
 {% extends 'base.html' %}
 {% load url from future %}
 
-{% block title %}Message sent{% endblock %}
+{% block title %}Response sent{% endblock %}
 
 {% block bodyclasses %}response-confirm{% endblock %}
 
 {% block content %}
 <div class="header">
-    <h1>Message sent</h1>
+    <h1>Response sent</h1>
 </div>
-<div class="hero">
-    <div class="feature">
-        <p>Thank you, the response has been published online. {% if response.message.issue_type == "Problem" %}<a href="{% url 'org-dashboard' ods_code=response.message.organisation.ods_code %}">Return to your provider dashboard</a>{% endif %}</p>
+
+<div class="gw">
+    <div class="g  one-whole">
+      <ul class="message-list">
+        <li class="message-list__success">Thank you, the response has been published online. {% if response.message.issue_type == "Problem" %}<a href="{% url 'org-dashboard' ods_code=response.message.organisation.ods_code %}">Return to your provider dashboard</a>{% endif %}</li>
+      </ul>
     </div>
 </div>
 {% endblock %}
