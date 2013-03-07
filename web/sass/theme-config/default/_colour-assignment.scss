@@ -157,3 +157,11 @@ $c-message-list-success-color: $c-nhs_lightgreen;
 $c-meta-data-icon-checkmark-color: $c-nhs_lightgreen;
          $c-meta-data-label-color: $c-darkgrey;
   $c-meta-data-label-border-color: $c-grey;
+
+/**
+ * _icon-overlay.scss
+ */
+            $c-icon-overlay-icon-color: $c-white;
+      $c-icon-overlay-hover-icon-color: $c-darkgrey;
+      $c-icon-overlay-light-icon-color: $c-grey;
+$c-icon-overlay-light-hover-icon-color: $c-darkgrey;
