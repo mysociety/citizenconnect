@@ -2,13 +2,13 @@
 {% load url from future %}
 
 
-{% block title %}Respond to a message{% endblock %}
+{% block title %}Respond to a {{ message.issue_type }}{% endblock %}
 
 {% block bodyclasses %}response-form{% endblock %}
 
 {% block content %}
 <div class="header">
-    <h1>Respond to a message</h1>
+    <h1>Respond to a {{ message.issue_type }}</h1>
 </div>
 
 {% include "issues/message_detail.html" with object=message %}
