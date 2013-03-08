@@ -94,12 +94,14 @@
     $(document).ready(function () {
         var providers = {{ organisations|safe }};
         var imageBasedMarkers = true;
+        var londonCentre = new L.LatLng(51.505, -0.09);
+        var northEastCentre = new L.LatLng(54.95, -1.62);
+        var londonZoomLevel = 10;
+        var northEastZoomLevel = 8;
+        var map = new L.Map('map');
 
         wax.tilejson('http://api.tiles.mapbox.com/v3/jedidiah.map-3lyys17i.jsonp', function(tilejson) {
-            var map = new L.Map('map')
-                .addLayer(new wax.leaf.connector(tilejson))
-                .setView(new L.LatLng(51, 0), 1);
-
+            map.addLayer(new wax.leaf.connector(tilejson)).setView(londonCentre, 1);
             if(imageBasedMarkers){
                 // Image Based: best for backwards compatibility
                 var nhsCentreIcon_1 = L.icon({
@@ -146,7 +148,7 @@
                 var nhsCentreIcon_4 = L.divIcon({className: 'marker_m4'});
             }
 
-            map.setView(new L.LatLng(51.505, -0.09),10);
+            map.setView(londonCentre, londonZoomLevel);
 
             providers.forEach(function(nhs_centre){
 
@@ -191,6 +193,18 @@
                 }).addTo(map);
             });
         });
+
+        // Tabs
+        $('a#northeast').on('click', function(e) {
+            // recenter the map to The north east
+            map.setView(northEastCentre, northEastZoomLevel);
+            $('ul.tab-nav a').toggleClass('active');
+        });
+        $('a#london').on('click', function(e) {
+            // recenter the map to london
+            map.setView(londonCentre, londonZoomLevel);
+            $('ul.tab-nav a').toggleClass('active');
+        });
     });
 </script>
 {% endblock %}
@@ -210,8 +224,8 @@
 {% endif %}
 
 <ul class="tab-nav">
-    <li><a href="#" class="active">London</a></li>
-    <li><a href="#">The North East</a></li>
+    <li><a href="#" id="london" class="active">London</a></li>
+    <li><a href="#" id="northeast">The North East</a></li>
 </ul>
 
 <div class="map-container">
