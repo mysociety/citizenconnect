@@ -13,9 +13,9 @@
         {% csrf_token %}
 
         {% if form.non_field_errors %}
-            <div class="island">
+            <fieldset class="island">
                 {% include "message-list.html" with messages=form.non_field_errors message_type='error' %}
-            </div>
+            </fieldset>
         {% endif %}
 
         {% for hidden in form.hidden_fields %}
