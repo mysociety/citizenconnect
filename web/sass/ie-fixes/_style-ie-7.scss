@@ -1,9 +1,0 @@
-/**
- * From: http://jakearchibald.github.com/sass-ie/
- * Things from style.scss get put in here, but we turn on ie-7 and fix-mqs
- * in order to get IE7 specific rules and the desktop version of our site.
- */
-
-$ie-7: true;
-$fix-mqs: 65em;
-@import 'style';
