@@ -29,23 +29,24 @@
     </head>
 
     <body class="{% block bodyclasses %}{% endblock %}">
+
         {% if settings.DEBUG == True %}
         <div id="staging_header">This is a staging site &ndash; any data saved here <strong>may be deleted</strong>.</div>
         {% endif %}
 
 
+        {% if cobrand %}
+            {% include cobrand.header_template %}
+        {% endif %}
         <div id="container" class="{% block containerclasses %}container{% endblock %}">
-              {% if cobrand %}
-                  {% if cobrand.name == 'myhealthlondon' %}
-                 <div id="banner" >
-                     <a id="site-logo" href="http://www.myhealth.london.nhs.uk">MyHealthLondon</a>
-                 </div>
-                 {% endif %}
-              {% endif %}
 
             {% block content %}
             {% endblock %}
+
         </div>
+        {% if cobrand %}
+            {% include cobrand.footer_template %}
+        {% endif %}
     <!-- Scripts at the bottom, as per html5bp -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="{% static "js/jquery-1.9.0.min.js" %}"><\/script>')</script>
