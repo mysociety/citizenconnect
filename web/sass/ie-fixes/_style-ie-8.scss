@@ -1,9 +1,0 @@
-/**
- * From: http://jakearchibald.github.com/sass-ie/
- * Things from style.scss get put in here, but we turn on ie-8 and fix-mqs
- * to get ie-8 specific styles and force the 65em media query version of everything
- */
-
-$ie-8: true;
-$fix-mqs: 65em;
-@import 'style';

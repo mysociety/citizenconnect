@@ -1,4 +1,5 @@
 #myhealthlondon-header{
+
     @extend .cf;
     #myhealthlondon-logo h1 a {
         background: url(/static/img/myhealthlondon/myhealthlondon.png) no-repeat top left;
@@ -8,6 +9,14 @@
         font: 0/0 a;
         text-shadow: none;
         color: transparent;
+    }
+
+    #myhealthlondon-logo h1{
+    margin: 16px 0 0 29px;
+    }
+
+    #nhs-logo p {
+        margin: 25px 0 37px 37px;
     }
 
     #nhs-logo p a {

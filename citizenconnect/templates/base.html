@@ -10,16 +10,16 @@
         <meta name="MobileOptimized" content="320">
         {% block extra_headers %}{% endblock %}
         <!--[if lte IE 7]>
-            <link rel="stylesheet" href="{% static "css/style-ie-7.css" %}">
+            <link rel="stylesheet" href="{% static "css/default-ie7.css" %}">
         <![endif]-->
         <!--[if lte IE 8]>
-            <link rel="stylesheet" href="{% static "css/style-ie-8.css" %}">
+            <link rel="stylesheet" href="{% static "css/default-ie8.css" %}">
         <![endif]-->
         <!--[if gt IE 8]><!-->
             <link rel="stylesheet" href="{% static "css/default.css" %}">
         <!--<![endif]-->
         {% if cobrand %}
-          <link rel="stylesheet" href="{% static cobrand.stylesheet  %}">
+          {% include cobrand.styles_template %}
         {% endif %}
         {% block extra_css %}{% endblock %}
 
@@ -29,11 +29,6 @@
     </head>
 
     <body class="{% block bodyclasses %}{% endblock %}">
-
-        {% if settings.DEBUG == True %}
-        <div id="staging_header">This is a staging site &ndash; any data saved here <strong>may be deleted</strong>.</div>
-        {% endif %}
-
 
         {% if cobrand %}
             {% include cobrand.header_template %}
@@ -55,6 +50,10 @@
         var docEl = document.documentElement;
         docEl.className = docEl.className.replace(/\bno-js\b/,'') + ' js';
     </script>
+
+    {% if cobrand %}
+          {% include cobrand.scripts_template %}
+        {% endif %}
 
     {% block extra_js %}{% endblock %}
 

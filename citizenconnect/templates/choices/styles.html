@@ -1,0 +1,18 @@
+{% load staticfiles %}
+<link  rel="stylesheet" type="text/css" href="{% static "css/choices/base.css" %}" media="" />
+<!--[if !IE]>-->
+    <style type ="text/css">
+        @import url('{% static "css/choices/reset.css" %}') screen;
+        @import url('{% static "css/choices/screen.css" %}') screen;
+    </style>
+<!--<![endif]-->
+<!--[if IE 7]>
+    <link  rel="stylesheet" type="text/css" href="{% static "css/choices/reset-ie7.css" %}" media="screen" />
+    <link  rel="stylesheet" type="text/css" href="{% static "css/choices/screen.css" %}" media="screen" />
+    <link  rel="stylesheet" type="text/css" href="{% static "css/choices/if-ie7.css" %}" media="screen" />
+<![endif]-->
+<!--[if IE 8]>
+    <link  rel="stylesheet" type="text/css" href="{% static "css/choices/reset-ie8.css" %}" media="screen" />
+    <link  rel="stylesheet" type="text/css" href="{% static "css/choices/screen.css" %}" media="screen" />
+    <link  rel="stylesheet" type="text/css" href="{% static "css/choices/if-ie8.css" %}" media="screen" />
+<![endif]-->

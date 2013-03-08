@@ -20,7 +20,7 @@ class ModerateHome(TemplateView):
     def get_context_data(self, **kwargs):
         # Get all the problems
         context = super(ModerateHome, self).get_context_data(**kwargs)
-        context['issues'] = Problem.objects.unmoderated_problems().order_by("created")
+        context['issues'] = Problem.objects.unmoderated_problems().order_by("-created")
         return context
 
 class ModerateLookup(FormView):

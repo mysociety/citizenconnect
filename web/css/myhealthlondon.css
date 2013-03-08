@@ -1,8 +1,9 @@
 html{
         background-color: #ccc;
+        background: url("/static/img/myhealthlondon/bg-body.png") repeat-x scroll 0 0 transparent;
     }
 body{
-    max-width: 1060px;
+    max-width: 1034px;
     margin:auto;
     background-color: #fff;
     padding: 12px 37px 37px;

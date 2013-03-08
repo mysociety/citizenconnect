@@ -1,0 +1,12 @@
+{% load staticfiles %}
+<script type="text/javascript" src="{% static "js/choices/jquery-ui-1.8.22.custom.min.js" %}"></script>
+
+<script type="text/javascript">
+//<![CDATA[
+    function NhsUk_OnSubmit() {
+        var q=document.getElementById("q").value;
+        return q!="" && q!="Place, postcode or organisation";
+    }
+    //]]>
+</script>
+<script type="text/javascript" src="{% static "js/choices/choices.js" %}"></script>

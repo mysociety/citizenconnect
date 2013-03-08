@@ -11,16 +11,16 @@
     <h1>Respond to a {{ message.issue_type }}</h1>
 </div>
 
-{% include "issues/message_detail.html" with object=message %}
+{% include "issues/message_detail.html" with object=message private=1 %}
 
 <div class="response-form">
     <form method="post">
         {% csrf_token %}
 
         {% if form.non_field_errors %}
-            <div class="island">
+            <fieldset class="island">
                 {% include "message-list.html" with messages=form.non_field_errors message_type='error' %}
-            </div>
+            </fieldset>
         {% endif %}
 
         {% for hidden in form.hidden_fields %}
