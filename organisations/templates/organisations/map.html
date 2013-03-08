@@ -197,11 +197,13 @@
         // Tabs
         $('a#northeast').on('click', function(e) {
             // recenter the map to The north east
+            e.preventDefault();
             map.setView(northEastCentre, northEastZoomLevel);
             $('ul.tab-nav a').toggleClass('active');
         });
         $('a#london').on('click', function(e) {
             // recenter the map to london
+            e.preventDefault();
             map.setView(londonCentre, londonZoomLevel);
             $('ul.tab-nav a').toggleClass('active');
         });
