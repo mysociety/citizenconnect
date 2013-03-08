@@ -19,7 +19,7 @@
             <link rel="stylesheet" href="{% static "css/default.css" %}">
         <!--<![endif]-->
         {% if cobrand %}
-          <link rel="stylesheet" href="{% static cobrand.stylesheet  %}">
+          {% include cobrand.styles_template %}
         {% endif %}
         {% block extra_css %}{% endblock %}
 
@@ -55,6 +55,10 @@
         var docEl = document.documentElement;
         docEl.className = docEl.className.replace(/\bno-js\b/,'') + ' js';
     </script>
+
+    {% if cobrand %}
+          {% include cobrand.scripts_template %}
+        {% endif %}
 
     {% block extra_js %}{% endblock %}
 
