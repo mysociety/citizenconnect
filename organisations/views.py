@@ -284,4 +284,8 @@ class OrganisationDashboard(OrganisationAwareViewMixin,
         # Get the models related to this organisation, and let the db sort them
         problems = context['organisation'].problem_set.open_problems()
         context['problems'] = problems
+        context['problems_total'] = interval_counts(issue_type=Problem,
+                                                    filters={},
+                                                    organisation_id=context['organisation'].id)
+
         return context
