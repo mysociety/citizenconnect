@@ -1,7 +1,4 @@
-*, fieldset {padding:0; margin:0;}
-html {font-size:62.5%;}
-body {width:100%; font-size:1em;}
-input, textarea {font-size:1em;}
-fieldset {border:none;}
-img {border:none; display:block;}
-q:before, q:after {content: "";}
+.choices-bookends {font-size:62.5%;}
+.choices-bookends *{ padding:0;margin:0; }
+.choices-bookends input, .choices-bookends textarea {font-size:1em;}
+.choices-bookends fieldset {border:none;}
