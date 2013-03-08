@@ -22,7 +22,12 @@
                 <p class="meta-data__space-below  g  one-whole"><span class="meta-data-label">{% if object.issue_type == 'Problem' %}Reported{% else %}Asked{% endif %} by</span> Anonymous</p>
             {% endif %}
 
-            <p class="g  one-third  palm-one-whole">{{ object.get_status_display }}</p>
+            <p class="g  one-third  palm-one-whole">
+                {% if private %}
+                    {{ object.public|yesno:"Public,Private" }},&nbsp;
+                {% endif %}
+                {{ object.get_status_display }}
+            </p>
 
             <p class="g  two-thirds  palm-one-whole  align-right--not-palm">
                 {% if object.happy_service != None %}
