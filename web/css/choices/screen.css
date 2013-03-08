@@ -4,7 +4,7 @@ body {background-color:#e7e7e7;}
 .wrap {width:96em; margin:.5em auto; position:relative; z-index:0;}
 label {cursor:pointer;}
 
-.container{
+#container{
     padding-left: 1.25em;
     padding-right: 1.25em;
     padding-bottom: 1.25em;
