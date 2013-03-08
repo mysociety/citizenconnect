@@ -9,7 +9,6 @@
 
 {% block extra_css %}
 {{ block.super }}
-<link rel="stylesheet" href="{% static 'css/style.css' %}" />
 <link rel="stylesheet" href="{% static 'css/leaflet.css' %}" />
 <link rel="stylesheet" href="{% static 'css/leaflet.rrose.css' %}" />
 <!--[if lte IE 8]>
@@ -97,13 +96,13 @@
         var londonCentre = new L.LatLng(51.505, -0.09);
         var northEastCentre = new L.LatLng(54.95, -1.62);
         var londonZoomLevel = 10;
-        var northEastZoomLevel = 8;
-        var map = new L.Map('map');
+        var northEastZoomLevel = 10;
+        var map = new L.Map('map', {
+            minZoom: 10,
+            maxZoom: 16
+        });
 
         wax.tilejson('http://api.tiles.mapbox.com/v3/jedidiah.map-3lyys17i.jsonp', function(tilejson) {
-            map._layersMinZoom=10;
-            map._layersMaxZoom=16;
-            
             map.addLayer(new wax.leaf.connector(tilejson)).setView(londonCentre, 1);
             if(imageBasedMarkers){
                 // Image Based: best for backwards compatibility
