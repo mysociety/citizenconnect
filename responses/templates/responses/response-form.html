@@ -11,7 +11,7 @@
     <h1>Respond to a {{ message.issue_type }}</h1>
 </div>
 
-{% include "issues/message_detail.html" with object=message %}
+{% include "issues/message_detail.html" with object=message private=1 %}
 
 <div class="response-form">
     <form method="post">
