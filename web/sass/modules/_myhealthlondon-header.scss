@@ -1,0 +1,32 @@
+#myhealthlondon-header{
+    @extend .cf;
+    #myhealthlondon-logo h1 a {
+        background: url(/static/img/myhealthlondon/myhealthlondon.png) no-repeat top left;
+        display: block;
+        height: 56px;
+        width: 249px;
+        font: 0/0 a;
+        text-shadow: none;
+        color: transparent;
+    }
+
+    #nhs-logo p a {
+        background: url(/static/img/myhealthlondon/nhslogo.png) no-repeat top left;
+        display: block;
+        height: 35px;
+        width: 88px;
+        margin: 0;
+        font: 0/0 a;
+        text-shadow: none;
+        color: transparent;
+    }
+
+
+    #myhealthlondon-logo{
+        float:left;
+    }
+
+    #nhs-logo{
+        float:right;
+    }
+}
