@@ -1,67 +1,70 @@
 {% load staticfiles %}
-<div class="wrap">
-    <ul>
-        <li class="skip-link"><a href="#mainContent" accesskey="S"><span>Skip to main content</span></a></li>
-        <li class="skip-link"><a href="#main-navigation" accesskey="N"><span>Skip to main navigation</span></a></li>
-        <li class="skip-link"><a href="http://www.nhs.uk/accessibility/Pages/Accessibility.aspx"><span>Help with accessibility</span></a></li>
-    </ul>
-    <ul class="info-nav">
-        <li class="first"><a href="http://www.nhs.uk/Pages/HomePage.aspx" accesskey="1">Home</a></li>
-        <li><a href="http://www.nhs.uk/aboutNHSChoices/Pages/AboutNHSChoices.aspx">About</a></li>
-        <li><a href="http://www.nhs.uk/aboutNHSChoices/Pages/ContactUs.aspx" accesskey="9">Contact</a></li>
-        <li><a href="http://www.nhs.uk/tools/pages/toolslibrary.aspx">Tools</a></li>
-        <li><a href="http://www.nhs.uk/video/pages/MediaLibrary.aspx">Video</a></li>
-        <li><a href="http://www.chooseandbook.nhs.uk/">Choose and Book</a></li>
-        <li><a href="http://www.healthunlocked.com/nhschoices/">Communities</a></li>
-        <li class="last"><a href="http://www.nhs.uk/ipg/Pages/IPStart.aspx">IPS</a></li>
-    </ul>
-    <div class="tab-login anonymous-login">
-        <ul class="translate">
-            <li class="translate-item"><a href="http://www.nhs.uk/pages/languagehub.aspx" class="translate-text">Translate</a></li>
+<div id="choices-header" class="choices-bookends">
+    <div class="wrap">
+        <ul>
+            <li class="skip-link"><a href="#mainContent" accesskey="S"><span>Skip to main content</span></a></li>
+            <li class="skip-link"><a href="#main-navigation" accesskey="N"><span>Skip to main navigation</span></a></li>
+            <li class="skip-link"><a href="http://www.nhs.uk/accessibility/Pages/Accessibility.aspx"><span>Help with accessibility</span></a></li>
         </ul>
-        <ul class="personal-header clear">
-            <li class="logged-out"><span class="crnr tl"></span><a href="http://www.nhs.uk/Personalisation/Login.aspx">Log in</a>&nbsp;or</li>
-            <li class="create-account"><a href="http://www.nhs.uk/Personalisation/Registration.aspx">create an account</a><span class="crnr tr"></span></li>
+        <ul class="info-nav">
+            <li class="first"><a href="http://www.nhs.uk/Pages/HomePage.aspx" accesskey="1">Home</a></li>
+            <li><a href="http://www.nhs.uk/aboutNHSChoices/Pages/AboutNHSChoices.aspx">About</a></li>
+            <li><a href="http://www.nhs.uk/aboutNHSChoices/Pages/ContactUs.aspx" accesskey="9">Contact</a></li>
+            <li><a href="http://www.nhs.uk/tools/pages/toolslibrary.aspx">Tools</a></li>
+            <li><a href="http://www.nhs.uk/video/pages/MediaLibrary.aspx">Video</a></li>
+            <li><a href="http://www.chooseandbook.nhs.uk/">Choose and Book</a></li>
+            <li><a href="http://www.healthunlocked.com/nhschoices/">Communities</a></li>
+            <li class="last"><a href="http://www.nhs.uk/ipg/Pages/IPStart.aspx">IPS</a></li>
         </ul>
-    </div>
-    <div class="header">
-        <span class="crnr tl"></span>
-        <div class="heading">
-            <h1><img src="{% static "img/choices/choices-logo.gif" %}" alt="NHS Choices" width="212" height="35" /><span>Your health, your choices</span></h1>
-        </div>
-        <p class="hidden"><strong>Information navigation</strong></p>
-        <div class="searchbar">
-            <form id="gs" method="get" action="http://www.nhs.uk/Search/Pages/Results.aspx" onsubmit="return NhsUk_OnSubmit();">
-                <fieldset>
-                    <legend class="hidden">Search entire site</legend>
-                    <div class="search-inner" id="IdSearchBoxContainer">
-                        <div><span class="crnr tl"></span><span class="crnr tr"></span></div>
-                        <div id="search-results-container">
-                            <label for="q"><span class="hidden">Enter a search term: </span><input id="q" name="q" type="text" value="Enter a search term" accesskey="4" maxlength="500" /></label>
-                        </div>
-                        <div class="submit-container">
+        <!-- Don't think this bit should be here -->
+        <!-- <div class="tab-login anonymous-login">
+            <ul class="translate">
+                <li class="translate-item"><a href="http://www.nhs.uk/pages/languagehub.aspx" class="translate-text">Translate</a></li>
+            </ul>
+            <ul class="personal-header clear">
+                <li class="logged-out"><span class="crnr tl"></span><a href="http://www.nhs.uk/Personalisation/Login.aspx">Log in</a>&nbsp;or</li>
+                <li class="create-account"><a href="http://www.nhs.uk/Personalisation/Registration.aspx">create an account</a><span class="crnr tr"></span></li>
+            </ul>
+        </div> -->
+        <div class="header">
+            <span class="crnr tl"></span>
+            <div class="heading">
+                <h1><img src="{% static "img/choices/choices-logo.gif" %}" alt="NHS Choices" width="212" height="35" /><span>Your health, your choices</span></h1>
+            </div>
+            <p class="hidden"><strong>Information navigation</strong></p>
+            <div class="searchbar">
+                <form id="gs" method="get" action="http://www.nhs.uk/Search/Pages/Results.aspx" onsubmit="return NhsUk_OnSubmit();">
+                    <fieldset>
+                        <legend class="hidden">Search entire site</legend>
+                        <div class="search-inner" id="IdSearchBoxContainer">
                             <div><span class="crnr tl"></span><span class="crnr tr"></span></div>
-                            <div class="submit">
+                            <div id="search-results-container">
+                                <label for="q"><span class="hidden">Enter a search term: </span><input id="q" name="q" type="text" value="Enter a search term" accesskey="4" maxlength="500" /></label>
+                            </div>
+                            <div class="submit-container">
                                 <div><span class="crnr tl"></span><span class="crnr tr"></span></div>
-                                <input type="submit" value="Search" />
+                                <div class="submit">
+                                    <div><span class="crnr tl"></span><span class="crnr tr"></span></div>
+                                    <input type="submit" value="Search" />
+                                    <div><span class="crnr bl"></span><span class="crnr br"></span></div>
+                                </div>
                                 <div><span class="crnr bl"></span><span class="crnr br"></span></div>
                             </div>
-                            <div><span class="crnr bl"></span><span class="crnr br"></span></div>
+                            <span class="crnr bl"></span><span class="crnr br"></span>
                         </div>
-                        <span class="crnr bl"></span><span class="crnr br"></span>
-                    </div>
-                </fieldset>
-            </form>
-        </div>
-        <div class="main-nav clear" id="main-navigation">
-            <p class="hidden"><strong>Main navigation</strong></p>
-            <ul>
-                <li class="health-az" id="health-az-topnav"><a href="http://www.nhs.uk/Conditions/Pages/hub.aspx">Health A-Z</a></li>
-                <li class="livewell" id="livewell-topnav"><a href="http://www.nhs.uk/livewell/Pages/Livewellhub.aspx">Live Well</a></li>
-                <li class="carers" id="carers-topnav"><a href="http://www.nhs.uk/CarersDirect/Pages/CarersDirectHome.aspx">Carers Direct</a></li>
-                <li class="news" id="news-topnav"><a href="http://www.nhs.uk/News/Pages/NewsIndex.aspx">Health news</a></li>
-                <li class="find-services" id="find-services-topnav"><a href="http://www.nhs.uk/service-search">Health services near you</a></li>
-            </ul>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="main-nav clear" id="main-navigation">
+                <p class="hidden"><strong>Main navigation</strong></p>
+                <ul>
+                    <li class="health-az" id="health-az-topnav"><a href="http://www.nhs.uk/Conditions/Pages/hub.aspx">Health A-Z</a></li>
+                    <li class="livewell" id="livewell-topnav"><a href="http://www.nhs.uk/livewell/Pages/Livewellhub.aspx">Live Well</a></li>
+                    <li class="carers" id="carers-topnav"><a href="http://www.nhs.uk/CarersDirect/Pages/CarersDirectHome.aspx">Carers Direct</a></li>
+                    <li class="news" id="news-topnav"><a href="http://www.nhs.uk/News/Pages/NewsIndex.aspx">Health news</a></li>
+                    <li class="find-services" id="find-services-topnav"><a href="http://www.nhs.uk/service-search">Health services near you</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>
