@@ -2545,7 +2545,7 @@ body.docs {
     width: 100%; }
 
 #myhealthlondon-header #myhealthlondon-logo h1 a {
-  background: url(/img/myhealthlondon/myhealthlondon.png) no-repeat top left;
+  background: url(/static/img/myhealthlondon/myhealthlondon.png) no-repeat top left;
   display: block;
   height: 56px;
   width: 249px;
@@ -2553,7 +2553,7 @@ body.docs {
   text-shadow: none;
   color: transparent; }
 #myhealthlondon-header #nhs-logo p a {
-  background: url(/img/myhealthlondon/nhslogo.png) no-repeat top left;
+  background: url(/static/img/myhealthlondon/nhslogo.png) no-repeat top left;
   display: block;
   height: 35px;
   width: 88px;
