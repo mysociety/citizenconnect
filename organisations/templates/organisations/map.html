@@ -92,8 +92,6 @@
 <script src="{% static 'js/wax.leaf.min.js' %}"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        var _getRandomInt = function(min, max){ return Math.floor(Math.random() * (max - min + 1)) + min; };
-        var _returnRandomArrayItem = function(thearray){ return thearray[_getRandomInt(1, thearray.length)-1]; };
         var providers = {{ organisations|safe }};
         var imageBasedMarkers = true;
 
@@ -152,15 +150,24 @@
 
             providers.forEach(function(nhs_centre){
 
+                // Determine the icon colour based on issue count (crudely)
+                var icon_class;
+                if(nhs_centre.problem_count <= 3) {
+                    icon_class = nhsCentreIcon_4;
+                }
+                else if(nhs_centre.problem_count <= 6) {
+                    icon_class = nhsCentreIcon_3
+                }
+                else if(nhs_centre.problem_count <= 12) {
+                    icon_class = nhsCentreIcon_2
+                }
+                else {
+                    icon_class = nhsCentreIcon_1
+                }
+
                 L.marker([nhs_centre.lat, nhs_centre.lon], {
                     riseOnHover:true,
-                    // TODO - shouldn't be random, should it be a function of their issue count?
-                    icon: _returnRandomArrayItem([
-                        nhsCentreIcon_1,
-                        nhsCentreIcon_2,
-                        nhsCentreIcon_3,
-                        nhsCentreIcon_4
-                    ])
+                    icon: icon_class
                 }).on('mouseover', function(e){
                     var hover_bubble = new L.Rrose({
                         offset: new L.Point(2,-4),
