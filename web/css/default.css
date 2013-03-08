@@ -162,20 +162,20 @@
 /* mySociety change: rename to cf */
 .cf:before, .gw:before, .radio-list:before,
 .grid-wrapper:before, .island:before,
-.islet:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, #myhealthlondon-footer:before, .cf:after, .gw:after, .radio-list:after,
+.islet:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, #myhealthlondon-header:before, #myhealthlondon-footer:before, .cf:after, .gw:after, .radio-list:after,
 .grid-wrapper:after, .island:after,
-.islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, #myhealthlondon-footer:after {
+.islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, #myhealthlondon-header:after, #myhealthlondon-footer:after {
   content: "";
   display: table; }
 
 .cf:after, .gw:after, .radio-list:after,
 .grid-wrapper:after, .island:after,
-.islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, #myhealthlondon-footer:after {
+.islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, #myhealthlondon-header:after, #myhealthlondon-footer:after {
   clear: both; }
 
 .cf, .gw, .radio-list,
 .grid-wrapper, .island,
-.islet, .tab-nav, .pagination, .break-bar, .map-container, #myhealthlondon-footer {
+.islet, .tab-nav, .pagination, .break-bar, .map-container, #myhealthlondon-header, #myhealthlondon-footer {
   *zoom: 1; }
 
 /**
@@ -187,18 +187,18 @@
  */
 .cf, .gw, .radio-list,
 .grid-wrapper, .island,
-.islet, .tab-nav, .pagination, .break-bar, .map-container, #myhealthlondon-footer {
+.islet, .tab-nav, .pagination, .break-bar, .map-container, #myhealthlondon-header, #myhealthlondon-footer {
   zoom: 1; }
   .cf:before, .gw:before, .radio-list:before,
   .grid-wrapper:before, .island:before,
-  .islet:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, #myhealthlondon-footer:before, .cf:after, .gw:after, .radio-list:after,
+  .islet:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, #myhealthlondon-header:before, #myhealthlondon-footer:before, .cf:after, .gw:after, .radio-list:after,
   .grid-wrapper:after, .island:after,
-  .islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, #myhealthlondon-footer:after {
+  .islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, #myhealthlondon-header:after, #myhealthlondon-footer:after {
     content: " ";
     display: table; }
   .cf:after, .gw:after, .radio-list:after,
   .grid-wrapper:after, .island:after,
-  .islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, #myhealthlondon-footer:after {
+  .islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, #myhealthlondon-header:after, #myhealthlondon-footer:after {
     clear: both; }
 
 .fr {
