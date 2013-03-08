@@ -20,7 +20,8 @@ def add_cobrand( request ):
         return {
             'cobrand': {
                 'name': cobrand,
-                'stylesheet' : "css/%s.css" % cobrand,
+                'styles_template': "%s/styles.html" % cobrand,
+                'scripts_template': "%s/scripts.html" % cobrand,
                 'header_template' : "%s/header.html" % cobrand,
                 'footer_template' : "%s/footer.html" % cobrand
             }
