@@ -199,3 +199,13 @@ $c-icon-overlay-light-hover-icon-color: $c-darkgrey;
 $c-split-box-hover-default-bg: $c-darkgrey-tint;
       $c-split-box-excited-bg: $c-nhs_red;
 $c-split-box-hover-excited-bg: $c-nhs_red-tint;
+
+
+/**
+ * _nav.scss
+ */
+          $c-nav-bg: $c-lightgrey;
+       $c-nav-color: $c-darkergrey;
+    $c-nav-hover-bg: $c-grey;
+$c-nav-active-color: $c-white;
+   $c-nav-active-bg: $c-nhs_lightgreen;

@@ -18,23 +18,22 @@
       text-decoration: none;
       text-transform: uppercase;
       text-align: center;
-      background: $c-lightgrey;
-      color: $c-darkergrey;
+      background: $c-nav-bg;
+      color: $c-nav-color;
       padding: 0.75em;
       line-height: 1;
-      &:hover { background: $c-grey; }
+      &:hover { background: $c-nav-hover-bg; }
+      &.active {
+        cursor: default;
+        color: $c-nav-active-color;
+        background: $c-nav-active-bg;
+      }
       span {
         line-height: 1;
         font-size: (13px / 14px) + em;
       }
     }
-    &:first-child a {
-      // padding-left: 0.5em;
-      @include vendor(border-radius, 4px 0 0 4px);
-    }
-    &:last-child a {
-      // padding-right: 0.5em;
-      @include vendor(border-radius, 0 4px 4px 0);
-    }
+    &:first-child a { @include vendor(border-radius, (5px / 14px) + em 0 0 (5px / 14px) + em); }
+    &:last-child a { @include vendor(border-radius, 0 (5px / 14px) + em (5px / 14px) + em 0); }
   }
 }
