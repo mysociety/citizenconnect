@@ -27,7 +27,8 @@ class ProblemCreateFormTests(TestCase):
             'reporter_email': 'steve@mysociety.org',
             'reporter_phone': '01111 111 111',
             'privacy': ProblemForm.PRIVACY_PRIVATE,
-            'preferred_contact_method': 'phone'
+            'preferred_contact_method': 'phone',
+            'agree_to_terms': True
         }
 
     def test_problem_form_exists(self):
@@ -89,6 +90,11 @@ class ProblemCreateFormTests(TestCase):
         problem = Problem.objects.get(reporter_name=self.uuid)
         self.assertIsNotNone(problem)
 
+    def test_problem_form_requires_tandc_agreement(self):
+        self.test_problem['agree_to_terms'] = False
+        resp = self.client.post(self.form_url, self.test_problem)
+        self.assertFormError(resp, 'form', 'agree_to_terms', 'You must agree to the terms and conditions to use this service.')
+
 class QuestionCreateFormTests(TestCase):
 
     def setUp(self):
@@ -104,7 +110,8 @@ class QuestionCreateFormTests(TestCase):
             'reporter_email': 'steve@mysociety.org',
             'reporter_phone': '01111 111 111',
             'privacy': QuestionForm.PRIVACY_PRIVATE,
-            'preferred_contact_method': 'phone'
+            'preferred_contact_method': 'phone',
+            'agree_to_terms': True
         }
 
 
@@ -166,3 +173,8 @@ class QuestionCreateFormTests(TestCase):
         self.test_question['postcode'] = 'XXX'
         resp = self.client.post(self.form_url, self.test_question)
         self.assertFormError(resp, 'form', 'postcode', 'Sorry, that doesn\'t seem to be a valid postcode.')
+
+    def test_question_form_requires_tandc_agreement(self):
+        self.test_question['agree_to_terms'] = False
+        resp = self.client.post(self.form_url, self.test_question)
+        self.assertFormError(resp, 'form', 'agree_to_terms', 'You must agree to the terms and conditions to use this service.')
