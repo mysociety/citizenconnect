@@ -11,6 +11,7 @@ label {cursor:pointer;}
     padding-bottom: 1.25em;
     background-color: #fff;
     margin-bottom: -1.25em;
+    width: 60em;
 }
 
 /* Header skip links */
