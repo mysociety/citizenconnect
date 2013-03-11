@@ -1,0 +1,29 @@
+/**
+ * Top bar, usually with a nav and site message inside it
+ */
+.site-top-bar {
+  @extend .cf;
+  display: table;
+  width: 100%;
+  margin: ($grid-gutter * 2) + em 0;
+  .site-top-bar__row {
+    display: table-row;
+    .site-top-bar__cell {
+      display: table-cell;
+      vertical-align: top;
+      p {
+        font-size: (14px / $font-size-base) + em;
+        background: $c-lightgrey;
+        color: $c-nhs_red;
+        margin: 0;
+        padding: 0.5em 0.75em;
+        text-align: center;
+        @include vendor(border-radius, (5px / 14px) + em);
+      }
+    }
+    .site-top-bar__cell--nav {
+      width: 170px;
+      .nav { float: right; }
+    }
+  }
+}
