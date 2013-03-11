@@ -12,11 +12,11 @@
     }
     &.message-list__error {
       color: $c-message-list-error-color;
-      &:before { content: "\e006"; }
+      &:before { content: "\e00c"; }
     }
     &.message-list__success {
       color: $c-message-list-success-color;
-      &:before { content: "\e003"; }
+      &:before { content: "\e002"; }
     }
   }
 }

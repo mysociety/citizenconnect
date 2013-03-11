@@ -59,11 +59,11 @@ table {
       &:after {
         @extend .i;
         margin-left: 0.5em;
-        content: "\f0d7";
+        content: "\e005";
       }
     }
     &.asc a, &.desc a { color: $c-table-heading-link-active-color; }
-    &.asc a:after { content: "\f0d8"; }
+    &.asc a:after { content: "\e004"; }
   }
   .icon-x {
     font-size: (22px / $font-size-base) + em;
