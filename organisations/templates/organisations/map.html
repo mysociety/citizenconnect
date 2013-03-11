@@ -101,38 +101,38 @@
             minZoom: 10,
             maxZoom: 16
         });
-        
+
         var httpstilejson = {
-            "attribution": "maps by <a href='http://mapbox.com/about/maps' target='_blank'>MapBox</a>", 
+            "attribution": "maps by <a href='http://mapbox.com/about/maps' target='_blank'>MapBox</a>",
             "bounds": [
-                -180, 
-                -85, 
-                180, 
+                -180,
+                -85,
+                180,
                 85
-            ], 
+            ],
             "center": [
-                -0.10872747650145358, 
-                51.50436843041894, 
+                -0.10872747650145358,
+                51.50436843041894,
                 13
-            ], 
+            ],
             "data": [
                 "https://dnv9my2eseobd.cloudfront.net/v3/jedidiah.map-3lyys17i/markers.geojsonp"
-            ], 
-            "geocoder": "https://dnv9my2eseobd.cloudfront.net/v3/jedidiah.map-3lyys17i/geocode/{query}.jsonp", 
-            "id": "jedidiah.map-3lyys17i", 
-            "maxzoom": 17, 
-            "minzoom": 10, 
-            "name": "NHS", 
-            "private": true, 
-            "scheme": "xyz", 
-            "tilejson": "2.0.0", 
+            ],
+            "geocoder": "https://dnv9my2eseobd.cloudfront.net/v3/jedidiah.map-3lyys17i/geocode/{query}.jsonp",
+            "id": "jedidiah.map-3lyys17i",
+            "maxzoom": 17,
+            "minzoom": 10,
+            "name": "NHS",
+            "private": true,
+            "scheme": "xyz",
+            "tilejson": "2.0.0",
             "tiles": [
                 "https://dnv9my2eseobd.cloudfront.net/v3/jedidiah.map-3lyys17i/{z}/{x}/{y}.png"
-            ], 
+            ],
             "webpage": "http://tiles.mapbox.com/jedidiah/map/map-3lyys17i"
         }
-        
-        
+
+
         wax.tilejson('https://dnv9my2eseobd.cloudfront.net/v3/jedidiah.map-3lyys17i.jsonp', function(tilejson) {
             map.addLayer(new wax.leaf.connector(httpstilejson)).setView(londonCentre, 1);
             if(imageBasedMarkers){
@@ -212,7 +212,7 @@
                         // TODO - if we have to have underscore on the page for debouncing, we should
                         // use it's templating features to make this nicer
                         "<strong>" + nhs_centre.name + "</a></strong>" +
-                        "<br><em>" + nhs_centre.problem_count + "</em> Open Problems<br>"
+                        "<br><em>" + nhs_centre.problem_count + "</em> Unresolved Problems<br>"
                     )
                     .setLatLng(e.target._latlng)
                     .openOn(map);
