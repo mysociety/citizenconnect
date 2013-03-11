@@ -6,6 +6,7 @@
   text-align: center;
   li {
     @include inline-block;
+    margin: 0 0.125em;
     a, > span {
       font-size: (22px / $font-size-base) + em;
       display: block;
