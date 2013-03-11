@@ -9,6 +9,3 @@ class CobrandChoice(TemplateView):
 
 class About(TemplateView):
     template_name = 'about.html'
-
-class Terms(TemplateView):
-    template_name = 'terms.html'
