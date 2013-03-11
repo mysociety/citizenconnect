@@ -166,20 +166,20 @@
 /* mySociety change: rename to cf */
 .cf:before, .gw:before, .radio-list:before,
 .grid-wrapper:before, .island:before,
-.islet:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, #myhealthlondon-header:before, #myhealthlondon-footer:before, .nav-wrap:before, .nav:before, .cf:after, .gw:after, .radio-list:after,
+.islet:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, #myhealthlondon-header:before, #myhealthlondon-footer:before, .nav:before, .site-top-bar:before, .cf:after, .gw:after, .radio-list:after,
 .grid-wrapper:after, .island:after,
-.islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, #myhealthlondon-header:after, #myhealthlondon-footer:after, .nav-wrap:after, .nav:after {
+.islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, #myhealthlondon-header:after, #myhealthlondon-footer:after, .nav:after, .site-top-bar:after {
   content: "";
   display: table; }
 
 .cf:after, .gw:after, .radio-list:after,
 .grid-wrapper:after, .island:after,
-.islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, #myhealthlondon-header:after, #myhealthlondon-footer:after, .nav-wrap:after, .nav:after {
+.islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, #myhealthlondon-header:after, #myhealthlondon-footer:after, .nav:after, .site-top-bar:after {
   clear: both; }
 
 .cf, .gw, .radio-list,
 .grid-wrapper, .island,
-.islet, .tab-nav, .pagination, .break-bar, .map-container, #myhealthlondon-header, #myhealthlondon-footer, .nav-wrap, .nav {
+.islet, .tab-nav, .pagination, .break-bar, .map-container, #myhealthlondon-header, #myhealthlondon-footer, .nav, .site-top-bar {
   *zoom: 1; }
 
 /**
@@ -191,18 +191,18 @@
  */
 .cf, .gw, .radio-list,
 .grid-wrapper, .island,
-.islet, .tab-nav, .pagination, .break-bar, .map-container, #myhealthlondon-header, #myhealthlondon-footer, .nav-wrap, .nav {
+.islet, .tab-nav, .pagination, .break-bar, .map-container, #myhealthlondon-header, #myhealthlondon-footer, .nav, .site-top-bar {
   zoom: 1; }
   .cf:before, .gw:before, .radio-list:before,
   .grid-wrapper:before, .island:before,
-  .islet:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, #myhealthlondon-header:before, #myhealthlondon-footer:before, .nav-wrap:before, .nav:before, .cf:after, .gw:after, .radio-list:after,
+  .islet:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, #myhealthlondon-header:before, #myhealthlondon-footer:before, .nav:before, .site-top-bar:before, .cf:after, .gw:after, .radio-list:after,
   .grid-wrapper:after, .island:after,
-  .islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, #myhealthlondon-header:after, #myhealthlondon-footer:after, .nav-wrap:after, .nav:after {
+  .islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, #myhealthlondon-header:after, #myhealthlondon-footer:after, .nav:after, .site-top-bar:after {
     content: " ";
     display: table; }
   .cf:after, .gw:after, .radio-list:after,
   .grid-wrapper:after, .island:after,
-  .islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, #myhealthlondon-header:after, #myhealthlondon-footer:after, .nav-wrap:after, .nav:after {
+  .islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, #myhealthlondon-header:after, #myhealthlondon-footer:after, .nav:after, .site-top-bar:after {
     clear: both; }
 
 .fr {
@@ -2654,12 +2654,10 @@ body.docs {
 /**
  * Site nav - horizontal list
  */
-.nav-wrap {
-  margin: 0.625em 0; }
-
 .nav {
   list-style: none;
-  padding: 0; }
+  padding: 0;
+  margin: 0; }
   .nav li {
     display: block;
     float: left; }
@@ -2704,6 +2702,35 @@ body.docs {
       -ms-border-bottom-right-radius: 0.35714em;
       -o-border-bottom-right-radius: 0.35714em;
       border-bottom-right-radius: 0.35714em; }
+
+/**
+ * Top bar, usually with a nav and site message inside it
+ */
+.site-top-bar {
+  display: table;
+  width: 100%;
+  margin: 2.5em 0; }
+  .site-top-bar .site-top-bar__row {
+    display: table-row; }
+    .site-top-bar .site-top-bar__row .site-top-bar__cell {
+      display: table-cell;
+      vertical-align: top; }
+      .site-top-bar .site-top-bar__row .site-top-bar__cell p {
+        font-size: 0.875em;
+        background: #f2f2f2;
+        color: #d81e05;
+        margin: 0;
+        padding: 0.5em 0.75em;
+        text-align: center;
+        -webkit-border-radius: 0.35714em;
+        -moz-border-radius: 0.35714em;
+        -ms-border-radius: 0.35714em;
+        -o-border-radius: 0.35714em;
+        border-radius: 0.35714em; }
+    .site-top-bar .site-top-bar__row .site-top-bar__cell--nav {
+      width: 170px; }
+      .site-top-bar .site-top-bar__row .site-top-bar__cell--nav .nav {
+        float: right; }
 
 /* ==========================================================================
    Print styles.
