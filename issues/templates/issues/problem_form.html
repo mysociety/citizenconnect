@@ -28,7 +28,13 @@
         <ul class="gw">
             <li class="g  one-whole">
                 {{ form.description }}
-                <p class="info">Including as much information as possible to help us to help you.</p>
+                <p class="info">In order to enable us to resolve your problem as quickly and as effectively as possible, please provide as much detail as you can. For example:</p>
+                <ul>
+                    <li><span class="info">Date the problem occurred</span></li>
+                    <li><span class="info">Location/department</span></li>
+                    <li><span class="info">Members of staff involved</span></li>
+                    <li><span class="info">Name of patient (if not yourself)</span></li>
+                </ul>
                 {% include "message-list.html" with messages=form.description.errors message_type='error' %}
             </li>
         </ul>
