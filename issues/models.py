@@ -67,7 +67,7 @@ class MessageModel(AuditedModel):
     MODERATED_STATUS_CHOICES = ((NOT_MODERATED, "Not moderated"), (MODERATED, "Moderated"))
 
     description = models.TextField(verbose_name='')
-    reporter_name = models.CharField(max_length=200, blank=True, verbose_name='')
+    reporter_name = models.CharField(max_length=200, blank=False, verbose_name='')
     reporter_phone = models.CharField(max_length=50, blank=True, verbose_name='')
     reporter_email = models.CharField(max_length=254, blank=True, verbose_name='')
     public = models.BooleanField()
