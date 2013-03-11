@@ -35,12 +35,14 @@
         {% endif %}
         <div id="container" class="{% block containerclasses %}container{% endblock %}">
 
-            <div class="nav-wrap">
-                <ul class="nav  fr">
-                    <li><a href="{% if cobrand.name == 'choices' %}{% url 'home' cobrand=cobrand.name %}{% else %}http://www.nhslondon.lampuat64-1.rroom.net/{% endif %}" class="{% block nav-home-class %}{% endblock nav-home-class %}"><span class="icon-home" aria-hidden="true"></span>&nbsp;Home</a></li>
-                    <li><a href="{% url 'about' cobrand=cobrand.name %}" class="{% block nav-about-class %}{% endblock nav-about-class %}">About</a></li>
-                </ul>
-            </div>
+            {% if cobrand %}
+                <div class="nav-wrap">
+                    <ul class="nav  fr">
+                        <li><a href="{% if cobrand.name == 'choices' %}{% url 'home' cobrand=cobrand.name %}{% else %}http://www.nhslondon.lampuat64-1.rroom.net/{% endif %}" class="{% block nav-home-class %}{% endblock nav-home-class %}"><span class="icon-home" aria-hidden="true"></span>&nbsp;Home</a></li>
+                        <li><a href="{% url 'about' cobrand=cobrand.name %}" class="{% block nav-about-class %}{% endblock nav-about-class %}">About</a></li>
+                    </ul>
+                </div>
+            {% endif %}
 
             {% block content %}
             {% endblock %}
