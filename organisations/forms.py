@@ -16,7 +16,7 @@ from issues.models import Problem, Question
 from .models import Organisation
 
 class OrganisationFinderForm(forms.Form):
-    organisation_type = forms.ChoiceField(choices=settings.ORGANISATION_CHOICES)
+    organisation_type = forms.ChoiceField(choices=settings.ORGANISATION_CHOICES, initial='hospitals')
     location = forms.CharField(required=True, error_messages={'required': 'Please enter a location'})
 
     def organisations_from_postcode(self, postcode, organisation_type, partial=False):

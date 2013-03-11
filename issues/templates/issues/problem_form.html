@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load url from future %}
 
 {% block title %}Report your problem{% endblock %}
 
@@ -133,6 +134,15 @@
 
         <p class="info">Please be assured that if you choose to publish your message, either anonymously, or with your name, it will not have any negative impact at all on any NHS service you may experience in the future.</p>
 
+    </fieldset>
+
+    <fieldset class="island">
+        <ul class="gw">
+            <li class="g  one-whole">
+                <label for="id_agree_to_terms">{{ form.agree_to_terms }} I have read and agree to the <a href="{% url 'about' cobrand=cobrand.name %}">Terms and Conditions</a></label>
+                {% include "message-list.html" with messages=form.agree_to_terms.errors message_type='error' %}
+            </li>
+        </ul>
     </fieldset>
 
     <fieldset>
