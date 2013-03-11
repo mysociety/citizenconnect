@@ -1,0 +1,40 @@
+/**
+ * Site nav - horizontal list
+ */
+.nav-wrap {
+  @extend .cf;
+  margin: ($grid-gutter / 2) + em 0;
+}
+.nav {
+  @extend .cf;
+  list-style: none;
+  padding: 0;
+  li {
+    display: block;
+    float: left;
+    a {
+      display: block;
+      font-size: (14px / $font-size-base) + em;
+      text-decoration: none;
+      text-transform: uppercase;
+      text-align: center;
+      background: $c-lightgrey;
+      color: $c-darkergrey;
+      padding: 0.75em;
+      line-height: 1;
+      &:hover { background: $c-grey; }
+      span {
+        line-height: 1;
+        font-size: (13px / 14px) + em;
+      }
+    }
+    &:first-child a {
+      // padding-left: 0.5em;
+      @include vendor(border-radius, 4px 0 0 4px);
+    }
+    &:last-child a {
+      // padding-right: 0.5em;
+      @include vendor(border-radius, 0 4px 4px 0);
+    }
+  }
+}

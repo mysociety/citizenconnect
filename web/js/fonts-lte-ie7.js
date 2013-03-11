@@ -6,19 +6,20 @@ window.onload = function() {
 		el.innerHTML = '<span style="font-family: \'icomoon\'">' + entity + '</span>' + html;
 	}
 	var icons = {
-			'icon-search' : '&#xe035;',
-			'icon-x' : '&#xe000;',
-			'icon-checkmark' : '&#xe003;',
-			'icon-circle' : '&#xf111;',
-			'icon-caret-up' : '&#xf0d8;',
-			'icon-caret-down' : '&#xf0d7;',
-			'icon-caret-right' : '&#xf0da;',
-			'icon-caret-left' : '&#xf0d9;',
-			'icon-chevron-right' : '&#xe001;',
-			'icon-double-chevron-right' : '&#xe002;',
-			'icon-chevron-left' : '&#xe004;',
-			'icon-double-chevron-left' : '&#xe005;',
-			'icon-warning' : '&#xe006;'
+			'icon-search' : '&#xe000;',
+			'icon-x' : '&#xe001;',
+			'icon-checkmark' : '&#xe002;',
+			'icon-circle' : '&#xe003;',
+			'icon-caret-up' : '&#xe004;',
+			'icon-caret-down' : '&#xe005;',
+			'icon-caret-right' : '&#xe006;',
+			'icon-caret-left' : '&#xe007;',
+			'icon-chevron-right' : '&#xe008;',
+			'icon-double-chevron-right' : '&#xe009;',
+			'icon-chevron-left' : '&#xe00a;',
+			'icon-double-chevron-left' : '&#xe00b;',
+			'icon-warning' : '&#xe00c;',
+			'icon-home' : '&#xe00d;'
 		},
 		els = document.getElementsByTagName('*'),
 		i, attr, html, c, el;
