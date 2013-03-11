@@ -17,6 +17,14 @@
       text-decoration: none;
       background: $c-pagination-link-bg;
       &:hover { background: $c-pagination-link-hover-bg; }
+      > span {
+        @include inline-block;
+        line-height: 1;
+        // a little hack to make the double chevron's
+        // look like they are in a square box
+        &.icon-double-chevron-left,
+        &.icon-double-chevron-right { margin: 0 -0.2em; }
+      }
     }
     &.pagination__spacer > span {
       color: $c-pagination-span-color;
