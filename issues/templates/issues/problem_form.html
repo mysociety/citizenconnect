@@ -68,7 +68,7 @@
     <fieldset class="island">
         <ul class="gw">
             <li class="g  one-half  palm-one-whole">
-                <label for="id_reporter_name">Your Name <span class="info">You must enter your name, but you can choose not to display it publicly</span></label>
+                <label for="id_reporter_name">Your Name <span class="info">You must enter your name</span></label>
                 {{ form.reporter_name }}
                 {% include "message-list.html" with messages=form.reporter_name.errors message_type='error' %}
             </li>
