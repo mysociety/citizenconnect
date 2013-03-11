@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /**
  * Colours
  * ----------------
@@ -71,6 +72,9 @@
  */
 /**
  * _split-box.scss
+ */
+/**
+ * _nav.scss
  */
 /**
  * From: http://jakearchibald.github.com/sass-ie/
@@ -162,20 +166,20 @@
 /* mySociety change: rename to cf */
 .cf:before, .gw:before, .radio-list:before,
 .grid-wrapper:before, .island:before,
-.islet:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, #myhealthlondon-header:before, #myhealthlondon-footer:before, .cf:after, .gw:after, .radio-list:after,
+.islet:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, #myhealthlondon-header:before, #myhealthlondon-footer:before, .nav-wrap:before, .nav:before, .cf:after, .gw:after, .radio-list:after,
 .grid-wrapper:after, .island:after,
-.islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, #myhealthlondon-header:after, #myhealthlondon-footer:after {
+.islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, #myhealthlondon-header:after, #myhealthlondon-footer:after, .nav-wrap:after, .nav:after {
   content: "";
   display: table; }
 
 .cf:after, .gw:after, .radio-list:after,
 .grid-wrapper:after, .island:after,
-.islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, #myhealthlondon-header:after, #myhealthlondon-footer:after {
+.islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, #myhealthlondon-header:after, #myhealthlondon-footer:after, .nav-wrap:after, .nav:after {
   clear: both; }
 
 .cf, .gw, .radio-list,
 .grid-wrapper, .island,
-.islet, .tab-nav, .pagination, .break-bar, .map-container, #myhealthlondon-header, #myhealthlondon-footer {
+.islet, .tab-nav, .pagination, .break-bar, .map-container, #myhealthlondon-header, #myhealthlondon-footer, .nav-wrap, .nav {
   *zoom: 1; }
 
 /**
@@ -187,18 +191,18 @@
  */
 .cf, .gw, .radio-list,
 .grid-wrapper, .island,
-.islet, .tab-nav, .pagination, .break-bar, .map-container, #myhealthlondon-header, #myhealthlondon-footer {
+.islet, .tab-nav, .pagination, .break-bar, .map-container, #myhealthlondon-header, #myhealthlondon-footer, .nav-wrap, .nav {
   zoom: 1; }
   .cf:before, .gw:before, .radio-list:before,
   .grid-wrapper:before, .island:before,
-  .islet:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, #myhealthlondon-header:before, #myhealthlondon-footer:before, .cf:after, .gw:after, .radio-list:after,
+  .islet:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, #myhealthlondon-header:before, #myhealthlondon-footer:before, .nav-wrap:before, .nav:before, .cf:after, .gw:after, .radio-list:after,
   .grid-wrapper:after, .island:after,
-  .islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, #myhealthlondon-header:after, #myhealthlondon-footer:after {
+  .islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, #myhealthlondon-header:after, #myhealthlondon-footer:after, .nav-wrap:after, .nav:after {
     content: " ";
     display: table; }
   .cf:after, .gw:after, .radio-list:after,
   .grid-wrapper:after, .island:after,
-  .islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, #myhealthlondon-header:after, #myhealthlondon-footer:after {
+  .islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, #myhealthlondon-header:after, #myhealthlondon-footer:after, .nav-wrap:after, .nav:after {
     clear: both; }
 
 .fr {
@@ -1081,7 +1085,7 @@ you can use the generic selector below, but it's slower:
 [class*="icon-"]:before {
 */
 .i, table th.sortable a:after, .message-list li:before,
-.icon-search:before, .icon-x:before, .icon-checkmark:before, .icon-circle:before, .icon-caret-up:before, .icon-caret-down:before, .icon-caret-right:before, .icon-caret-left:before, .icon-chevron-right:before, .icon-double-chevron-right:before, .icon-chevron-left:before, .icon-double-chevron-left:before, .icon-warning:before {
+.icon-search:before, .icon-x:before, .icon-checkmark:before, .icon-circle:before, .icon-caret-up:before, .icon-caret-down:before, .icon-caret-right:before, .icon-caret-left:before, .icon-chevron-right:before, .icon-double-chevron-right:before, .icon-chevron-left:before, .icon-double-chevron-left:before, .icon-warning:before, .icon-home:before {
   font-family: 'icomoon';
   speak: none;
   font-style: normal;
@@ -1092,43 +1096,46 @@ you can use the generic selector below, but it's slower:
   -webkit-font-smoothing: antialiased; }
 
 .icon-search:before {
-  content: "\e035"; }
-
-.icon-x:before {
   content: "\e000"; }
 
-.icon-checkmark:before {
-  content: "\e003"; }
-
-.icon-circle:before {
-  content: "\f111"; }
-
-.icon-caret-up:before {
-  content: "\f0d8"; }
-
-.icon-caret-down:before {
-  content: "\f0d7"; }
-
-.icon-caret-right:before {
-  content: "\f0da"; }
-
-.icon-caret-left:before {
-  content: "\f0d9"; }
-
-.icon-chevron-right:before {
+.icon-x:before {
   content: "\e001"; }
 
-.icon-double-chevron-right:before {
+.icon-checkmark:before {
   content: "\e002"; }
 
-.icon-chevron-left:before {
+.icon-circle:before {
+  content: "\e003"; }
+
+.icon-caret-up:before {
   content: "\e004"; }
 
-.icon-double-chevron-left:before {
+.icon-caret-down:before {
   content: "\e005"; }
 
-.icon-warning:before {
+.icon-caret-right:before {
   content: "\e006"; }
+
+.icon-caret-left:before {
+  content: "\e007"; }
+
+.icon-chevron-right:before {
+  content: "\e008"; }
+
+.icon-double-chevron-right:before {
+  content: "\e009"; }
+
+.icon-chevron-left:before {
+  content: "\e00a"; }
+
+.icon-double-chevron-left:before {
+  content: "\e00b"; }
+
+.icon-warning:before {
+  content: "\e00c"; }
+
+.icon-home:before {
+  content: "\e00d"; }
 
 .table-container,
 .table-wrapper {
@@ -1184,11 +1191,11 @@ table {
         color: #2f9aa8; }
     table th.sortable a:after {
       margin-left: 0.5em;
-      content: "\f0d7"; }
+      content: "\e005"; }
     table th.asc a, table th.desc a {
       color: #2f9aa8; }
     table th.asc a:after {
-      content: "\f0d8"; }
+      content: "\e004"; }
   table .icon-x {
     font-size: 1.375em;
     color: #d81e05; }
@@ -2287,7 +2294,8 @@ body.docs {
   .pagination li {
     display: inline-block;
     *display: inline;
-    *zoom: 1; }
+    *zoom: 1;
+    margin: 0 0.125em; }
     .pagination li a, .pagination li > span {
       font-size: 1.375em;
       display: block;
@@ -2299,6 +2307,13 @@ body.docs {
       background: #dddddd; }
       .pagination li a:hover {
         background: #2f9aa8; }
+      .pagination li a > span {
+        display: inline-block;
+        *display: inline;
+        *zoom: 1;
+        line-height: 1; }
+        .pagination li a > span.icon-double-chevron-left, .pagination li a > span.icon-double-chevron-right {
+          margin: 0 -0.2em; }
     .pagination li.pagination__spacer > span {
       color: #dddddd; }
     .pagination li.pagination__current > span {
@@ -2324,11 +2339,11 @@ body.docs {
   .message-list li.message-list__error {
     color: #d81e05; }
     .message-list li.message-list__error:before {
-      content: "\e006"; }
+      content: "\e00c"; }
   .message-list li.message-list__success {
     color: #5bbf21; }
     .message-list li.message-list__success:before {
-      content: "\e003"; }
+      content: "\e002"; }
 
 /**
  * See problem-report.html for reference as to how this might be used.
@@ -2635,6 +2650,60 @@ body.docs {
       #myhealthlondon-footer .footer-links a {
         display: block;
         padding: 0.5em 1em; } }
+
+/**
+ * Site nav - horizontal list
+ */
+.nav-wrap {
+  margin: 0.625em 0; }
+
+.nav {
+  list-style: none;
+  padding: 0; }
+  .nav li {
+    display: block;
+    float: left; }
+    .nav li a {
+      display: block;
+      font-size: 0.875em;
+      text-decoration: none;
+      text-transform: uppercase;
+      text-align: center;
+      background: #f2f2f2;
+      color: #888888;
+      padding: 0.75em;
+      line-height: 1; }
+      .nav li a:hover {
+        background: #dddddd; }
+      .nav li a.active {
+        cursor: default;
+        color: white;
+        background: #5bbf21; }
+      .nav li a span {
+        line-height: 1;
+        font-size: 0.92857em; }
+    .nav li:first-child a {
+      -webkit-border-top-left-radius: 0.35714em;
+      -moz-border-top-left-radius: 0.35714em;
+      -ms-border-top-left-radius: 0.35714em;
+      -o-border-top-left-radius: 0.35714em;
+      border-top-left-radius: 0.35714em;
+      -webkit-border-bottom-left-radius: 0.35714em;
+      -moz-border-bottom-left-radius: 0.35714em;
+      -ms-border-bottom-left-radius: 0.35714em;
+      -o-border-bottom-left-radius: 0.35714em;
+      border-bottom-left-radius: 0.35714em; }
+    .nav li:last-child a {
+      -webkit-border-top-right-radius: 0.35714em;
+      -moz-border-top-right-radius: 0.35714em;
+      -ms-border-top-right-radius: 0.35714em;
+      -o-border-top-right-radius: 0.35714em;
+      border-top-right-radius: 0.35714em;
+      -webkit-border-bottom-right-radius: 0.35714em;
+      -moz-border-bottom-right-radius: 0.35714em;
+      -ms-border-bottom-right-radius: 0.35714em;
+      -o-border-bottom-right-radius: 0.35714em;
+      border-bottom-right-radius: 0.35714em; }
 
 /* ==========================================================================
    Print styles.
