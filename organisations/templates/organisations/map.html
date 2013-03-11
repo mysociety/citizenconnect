@@ -101,9 +101,40 @@
             minZoom: 10,
             maxZoom: 16
         });
-
-        wax.tilejson('http://api.tiles.mapbox.com/v3/jedidiah.map-3lyys17i.jsonp', function(tilejson) {
-            map.addLayer(new wax.leaf.connector(tilejson)).setView(londonCentre, 1);
+        
+        var httpstilejson = {
+            "attribution": "maps by <a href='http://mapbox.com/about/maps' target='_blank'>MapBox</a>", 
+            "bounds": [
+                -180, 
+                -85, 
+                180, 
+                85
+            ], 
+            "center": [
+                -0.10872747650145358, 
+                51.50436843041894, 
+                13
+            ], 
+            "data": [
+                "https://dnv9my2eseobd.cloudfront.net/v3/jedidiah.map-3lyys17i/markers.geojsonp"
+            ], 
+            "geocoder": "https://dnv9my2eseobd.cloudfront.net/v3/jedidiah.map-3lyys17i/geocode/{query}.jsonp", 
+            "id": "jedidiah.map-3lyys17i", 
+            "maxzoom": 17, 
+            "minzoom": 10, 
+            "name": "NHS", 
+            "private": true, 
+            "scheme": "xyz", 
+            "tilejson": "2.0.0", 
+            "tiles": [
+                "https://dnv9my2eseobd.cloudfront.net/v3/jedidiah.map-3lyys17i/{z}/{x}/{y}.png"
+            ], 
+            "webpage": "http://tiles.mapbox.com/jedidiah/map/map-3lyys17i"
+        }
+        
+        
+        wax.tilejson('https://dnv9my2eseobd.cloudfront.net/v3/jedidiah.map-3lyys17i.jsonp', function(tilejson) {
+            map.addLayer(new wax.leaf.connector(httpstilejson)).setView(londonCentre, 1);
             if(imageBasedMarkers){
                 // Image Based: best for backwards compatibility
                 var nhsCentreIcon_1 = L.icon({
