@@ -2552,6 +2552,10 @@ body.docs {
   font: 0/0 a;
   text-shadow: none;
   color: transparent; }
+#myhealthlondon-header #myhealthlondon-logo h1 {
+  margin: 16px 0 0 29px; }
+#myhealthlondon-header #nhs-logo p {
+  margin: 25px 0 37px 37px; }
 #myhealthlondon-header #nhs-logo p a {
   background: url(/static/img/myhealthlondon/nhslogo.png) no-repeat top left;
   display: block;
@@ -2568,7 +2572,6 @@ body.docs {
 
 #myhealthlondon-footer {
   clear: both;
-  max-width: 1060px;
   border-top: 1px solid #afda8e;
   clear: both;
   margin: 25px auto 30px auto;
