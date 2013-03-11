@@ -29,6 +29,10 @@ class MessageModelForm(forms.ModelForm):
        required=True
     )
 
+    # A check to make sure that people have read the T's & C's
+    agree_to_terms = forms.BooleanField(required=True,
+                                        error_messages={'required': 'You must agree to the terms and conditions to use this service.'})
+
     def clean(self):
         cleaned_data = self.cleaned_data
         # Set public and public_reporter_name based on what they chose in privacy

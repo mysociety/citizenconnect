@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load url from future %}
 
 {% block title %}Ask your question{% endblock %}
 
@@ -54,7 +55,7 @@
         <fieldset class="island">
             <ul class="gw">
                 <li class="g  one-half  palm-one-whole">
-                    <label for="id_reporter_name">Your Name <span class="info">This is optional - you can ask questions anonymously</span></label>
+                    <label for="id_reporter_name">Your Name <span class="info">You must enter your name, but you can choose not to display it publicly</span></label>
                     {{ form.reporter_name }}
                     {% include "message-list.html" with messages=form.reporter_name.errors message_type='error' %}
                 </li>
@@ -119,6 +120,15 @@
             {% include "message-list.html" with messages=form.privacy.errors message_type='error' %}
 
             <p class="info">Please be assured that if you choose to publish your message, either anonymously, or with your name, it will not have any negative impact at all on any NHS service you may experience in the future.</p>
+        </fieldset>
+
+        <fieldset class="island">
+            <ul class="gw">
+                <li class="g  one-whole">
+                    <label for="id_agree_to_terms">{{ form.agree_to_terms }} I have read and agree to the <a href="{% url 'about' cobrand=cobrand.name %}">Terms and Conditions</a></label>
+                    {% include "message-list.html" with messages=form.agree_to_terms.errors message_type='error' %}
+                </li>
+            </ul>
         </fieldset>
 
         <fieldset>
