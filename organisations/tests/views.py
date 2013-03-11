@@ -148,7 +148,7 @@ class OrganisationProblemsTests(TestCase):
     def test_shows_services_for_hospitals(self):
         for url in [self.public_hospital_problems_url, self.private_hospital_problems_url]:
             resp = self.client.get(url)
-            self.assertContains(resp, 'Department', count=1, status_code=200)
+            self.assertContains(resp, '<a href="?sort=service">Department</a>', count=1, status_code=200)
 
     def test_shows_time_limits_for_hospitals(self):
         for url in [self.public_hospital_problems_url, self.private_hospital_problems_url]:
@@ -159,8 +159,7 @@ class OrganisationProblemsTests(TestCase):
     def test_no_services_for_gps(self):
         for url in [self.public_gp_problems_url, self.private_gp_problems_url]:
             resp = self.client.get(url)
-            self.assertNotContains(resp, 'Department')
-
+            self.assertNotContains(resp, '<a href="?sort=service">Department</a>')
 
     def test_no_time_limits_for_gps(self):
         for url in [self.public_gp_problems_url, self.private_gp_problems_url]:
