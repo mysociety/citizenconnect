@@ -1,26 +1,27 @@
 from django.conf.urls import patterns, url
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 
 from organisations.views import *
 
 urlpatterns = patterns('',
-    url(r'^dashboard/(?P<ods_code>\w+)$', OrganisationDashboard.as_view(), name='org-dashboard'),
+    url(r'^dashboard/(?P<ods_code>\w+)$', login_required(OrganisationDashboard.as_view()), name='org-dashboard'),
     url(r'^summary/(?P<ods_code>\w+)$',
-            OrganisationSummary.as_view(),
+            login_required(OrganisationSummary.as_view()),
             name='private-org-summary',
             kwargs={'private': True}),
     url(r'^problems/(?P<ods_code>\w+)$',
-            OrganisationProblems.as_view(),
+            login_required(OrganisationProblems.as_view()),
             name='private-org-problems',
             kwargs={'private': True}),
     url(r'^reviews/(?P<ods_code>\w+)$',
-            OrganisationReviews.as_view(),
+            login_required(OrganisationReviews.as_view()),
             name='private-org-reviews',
             kwargs={'private': True}),
 
-    url(r'^map$', Map.as_view(), name='private-map', kwargs={'private': True}),
+    url(r'^map$', login_required(Map.as_view()), name='private-map', kwargs={'private': True}),
 
-    url(r'^choose-dashboard$', DashboardChoice.as_view(), name='dashboard-choice'),
+    url(r'^choose-dashboard$', login_required(DashboardChoice.as_view()), name='dashboard-choice'),
 
     # Authentication related urls
     url(r'^login$',

@@ -90,7 +90,10 @@ class Map(PrivateViewMixin, TemplateView):
         # TODO - Filter by location
         organisations = Organisation.objects.all()
 
-        # TODO - check the user has access to the map (ie: is a superuser)
+        # Check that the user is a superuser
+        if context['private']:
+            if not self.request.user.groups.filter(pk=Organisation.NHS_SUPERUSERS).exists():
+                raise PermissionDenied()
 
         organisations_list = []
         for organisation in organisations:

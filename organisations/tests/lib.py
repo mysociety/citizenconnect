@@ -9,6 +9,7 @@ from django.conf import settings
 from django.utils.timezone import utc
 from django.contrib.gis.geos import Point
 from django.contrib.auth.models import User, AnonymousUser, Group
+from django.core.urlresolvers import reverse
 
 # App imports
 from issues.models import Problem, Question
@@ -211,7 +212,7 @@ class AuthorizationTestCase(TestCase):
 
         # Organisations
         self.test_organisation = create_test_organisation()
-        self.other_test_organisation = create_test_organisation({'ods_code': 12345})
+        self.other_test_organisation = create_test_organisation({'ods_code': '12345'})
 
         providers_group = Group.objects.get(pk=Organisation.PROVIDERS)
 
@@ -279,6 +280,9 @@ class AuthorizationTestCase(TestCase):
 
         # Helpful lists for simpler testing
         self.users_who_can_access_everything = [self.superuser, self.test_nhs_superuser, self.test_moderator]
+
+        # Reference to the login url because lots of tests need it
+        self.login_url = reverse('login')
 
         # Turn off logging in the tests because almost every authorization test
         # creates noisy "Permission Denied" errors which will get printed
