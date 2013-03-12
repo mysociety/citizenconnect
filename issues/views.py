@@ -2,6 +2,7 @@ from django.views.generic import TemplateView, CreateView, DetailView
 from django.shortcuts import get_object_or_404
 from django.forms.widgets import HiddenInput
 from django.template import RequestContext
+from django.core.exceptions import PermissionDenied
 
 # App imports
 from citizenconnect.shortcuts import render
@@ -10,6 +11,10 @@ from organisations.views import PickProviderBase, OrganisationAwareViewMixin
 
 from .models import Question, Problem
 from .forms import QuestionForm, ProblemForm
+
+def _check_message_access(message, user):
+    if not message.can_be_accessed_by(user):
+        raise PermissionDenied()
 
 class MessageAwareViewMixin(object):
     """
@@ -72,6 +77,17 @@ class MessageDependentFormViewMixin(object):
         else:
             raise ValueError("Unknown message type: %s" % message_type)
 
+class MessageDetailViewMixin(DetailView):
+    """
+    Mixin for message detail views that checks access when getting the message
+    object out
+    """
+
+    def get_object(self, *args, **kwargs):
+        obj = super(MessageDetailViewMixin, self).get_object(*args, **kwargs)
+        _check_message_access(obj, self.request.user)
+        return obj
+
 class AskQuestion(TemplateView):
     template_name = 'issues/ask-question.html'
 
@@ -120,5 +136,5 @@ class ProblemCreate(OrganisationAwareViewMixin, CreateView):
             form.fields['service'].empty_label = "None"
         return form
 
-class ProblemDetail(DetailView):
+class ProblemDetail(MessageDetailViewMixin):
     model = Problem
