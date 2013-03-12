@@ -302,7 +302,16 @@ class OrganisationDashboard(OrganisationAwareViewMixin,
         context['problems_total'] = interval_counts(issue_type=Problem,
                                                     filters={},
                                                     organisation_id=context['organisation'].id)
+        return context
 
+class DashboardChoice(TemplateView):
+
+    template_name = 'organisations/dashboard-choice.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(DashboardChoice, self).get_context_data(**kwargs)
+        # Get all the organisations the user can see
+        context['organisations'] = self.request.user.organisations.all()
         return context
 
 @login_required
@@ -329,11 +338,10 @@ def login_redirect(request):
         if user.organisations.count() == 1:
             organisation = user.organisations.all()[0]
             return HttpResponseRedirect(reverse('org-dashboard', kwargs={'ods_code':organisation.ods_code}))
-
-        # TODO - Providers with more than one provider attached go to a homepage
-        # with links to dashboards for each provider
-        # elif user.organisation_set.count() > 1:
-        #     return HttpResponseRedirect(reverse('pals-home'))
+        # Providers with more than one provider attached
+        # go to a page to choose which one to see
+        elif user.organisations.count() > 1:
+            return HttpResponseRedirect(reverse('dashboard-choice'))
 
     # Anyone else goes to the normal homepage
     return HttpResponseRedirect(reverse('home', kwargs={'cobrand':'choices'}))

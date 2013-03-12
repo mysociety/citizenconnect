@@ -255,6 +255,7 @@ class AuthorizationTestCase(TestCase):
         self.test_pals_user = User.objects.create_user('Test Multiple Provider User',
                                                        'multipleprovideruser@example.com',
                                                        self.test_password)
+        self.test_pals_user.groups.add(providers_group)
         self.test_organisation.users.add(self.test_pals_user)
         self.test_organisation.save()
         self.other_test_organisation.users.add(self.test_pals_user)

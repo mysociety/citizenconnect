@@ -20,6 +20,8 @@ urlpatterns = patterns('',
 
     url(r'^map$', Map.as_view(), name='private-map', kwargs={'private': True}),
 
+    url(r'^choose-dashboard$', DashboardChoice.as_view(), name='dashboard-choice'),
+
     # Authentication related urls
     url(r'^login$',
         'django.contrib.auth.views.login',

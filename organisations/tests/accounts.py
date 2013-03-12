@@ -180,5 +180,8 @@ class LoginRedirectTests(AuthorizationTestCase):
         resp = self.client.get(self.login_redirect_url)
         self.assertRedirects(resp, expected_login_url)
 
-    # def test_pals_user_goes_to_pals_homepage(self):
-    #     pass
+    def test_multi_provider_user_goes_to_dashboard_choice_page(self):
+        pals_url = reverse('dashboard-choice')
+        self.login_as(self.test_pals_user)
+        resp = self.client.get(self.login_redirect_url)
+        self.assertRedirects(resp, pals_url)
