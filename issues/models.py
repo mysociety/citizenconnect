@@ -207,8 +207,8 @@ class Problem(MessageModel):
     def can_be_accessed_by(self, user):
         """
         Whether or not an issue is accessible to a given user.
-        In practice the issue is publically accessible to everyone
-        or it is private, so only people in the organisation it is assigned
-        to can access it.
+        In practice the issue is publically accessible to everyone if it's public
+        and has been moderated to be publically available, otherwise only people
+        with access to the organisation it is assigned to can access it.
         """
-        return self.public or self.organisation.can_be_accessed_by(user)
+        return (self.public and self.publication_status == MessageModel.PUBLISHED) or self.organisation.can_be_accessed_by(user)
