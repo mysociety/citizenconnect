@@ -99,6 +99,16 @@ class ResponseFormTests(TransactionTestCase):
         self.assertEqual(self.test_problem.responses.count(), 0)
         self.assertEqual(self.test_problem.status, Problem.RESOLVED)
 
+    def test_form_requires_text_for_responses(self):
+        response_text = ''
+        test_form_values = {
+            'response': response_text,
+            'message': self.test_problem.id,
+            'respond': ''
+        }
+        resp = self.client.post(self.problem_response_form_url, test_form_values)
+        self.assertFormError(resp, 'form', 'response', 'This field is required.')
+
     def test_form_shows_response_confirmation_with_link(self):
         response_text = 'This problem is solved'
         test_form_values = {
