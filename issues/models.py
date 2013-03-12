@@ -110,7 +110,6 @@ class MessageModel(AuditedModel):
         elif self.preferred_contact_method == self.CONTACT_PHONE and not self.reporter_phone:
             raise ValidationError('You must provide a phone number if you prefer to be contacted by phone')
 
-
     class Meta:
         abstract = True
 
@@ -204,3 +203,12 @@ class Problem(MessageModel):
     @property
     def reference_number(self):
         return '{0}{1}'.format(self.PREFIX, self.id)
+
+    def can_be_accessed_by(self, user):
+        """
+        Whether or not an issue is accessible to a given user.
+        In practice the issue is publically accessible to everyone if it's public
+        and has been moderated to be publically available, otherwise only people
+        with access to the organisation it is assigned to can access it.
+        """
+        return (self.public and self.publication_status == MessageModel.PUBLISHED) or self.organisation.can_be_accessed_by(user)

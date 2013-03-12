@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, url
+from django.conf import settings
 
 from organisations.views import *
 
@@ -18,5 +19,53 @@ urlpatterns = patterns('',
             kwargs={'private': True}),
 
     url(r'^map$', Map.as_view(), name='private-map', kwargs={'private': True}),
+
+    # Authentication related urls
+    url(r'^login$',
+        'django.contrib.auth.views.login',
+        name='login',
+        kwargs={'template_name': 'organisations/auth/login.html'}),
+
+    url(r'^logout$',
+        'django.contrib.auth.views.logout',
+        name='logout',
+        kwargs={'next_page': settings.LOGOUT_REDIRECT_URL}),
+
+    url(r'^password-reset$',
+        'django.contrib.auth.views.password_reset',
+        name='password_reset',
+        kwargs={
+            'template_name': 'organisations/auth/password_reset_form.html',
+            'email_template_name': 'organisations/auth/password_reset_email.txt',
+            'subject_template_name': 'organisations/auth/password_reset_subject.txt'
+        }),
+
+    url(r'^password-reset-done$',
+        'django.contrib.auth.views.password_reset_done',
+        name='password_reset_done',
+        kwargs={'template_name': 'organisations/auth/password_reset_done.html'}),
+
+    url(r'^password-reset-confirm/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)$',
+        'django.contrib.auth.views.password_reset_confirm',
+        name='password_reset_confirm',
+        kwargs={'template_name': 'organisations/auth/password_reset_confirm.html'}),
+
+    url(r'^password-reset-complete$',
+        'django.contrib.auth.views.password_reset_complete',
+        name='password_reset_complete',
+        kwargs={'template_name': 'organisations/auth/password_reset_complete.html'}),
+
+    url(r'^password-change$',
+        'django.contrib.auth.views.password_change',
+        name='password_change',
+        kwargs={'template_name': 'organisations/auth/password_change_form.html'}),
+
+    url(r'^password-change-done$',
+        'django.contrib.auth.views.password_change_done',
+        name='password_change_done',
+        kwargs={'template_name': 'organisations/auth/password_change_done.html'}),
+
+    # Page which redirects a user to the right place after logging in
+    url(r'^login-redirect$', login_redirect, name='login_redirect'),
 
 )

@@ -3,3 +3,5 @@ from .lib import *
 from .views import *
 from .commands import *
 from .templatetags import *
+from .models import *
+from .accounts import *

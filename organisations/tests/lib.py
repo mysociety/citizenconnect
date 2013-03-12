@@ -1,3 +1,5 @@
+import logging
+import re
 from datetime import datetime, timedelta
 from decimal import Decimal
 
@@ -6,6 +8,7 @@ from django.test import TestCase
 from django.conf import settings
 from django.utils.timezone import utc
 from django.contrib.gis.geos import Point
+from django.contrib.auth.models import User, AnonymousUser, Group
 
 # App imports
 from issues.models import Problem, Question
@@ -66,6 +69,17 @@ def create_test_instance(model, attributes):
         instance.created = attributes['created']
         instance.save()
     return instance
+
+# Auth helper methods
+
+def get_reset_url_from_email(email):
+    """
+    Read the reset your password email and get the url from it, because we need
+    the tokens it contains to check password resets properly
+    Taken from https://github.com/django/django/blob/1.4.2/django/contrib/auth/tests/views.py
+    """
+    urlmatch = re.search(r".*/password-reset-confirm/([0-9A-Za-z]+)-(.+)", email.body)
+    return urlmatch.groups()[0], urlmatch.groups()[1]
 
 class IntervalCountsTest(TestCase):
 
@@ -186,3 +200,93 @@ class IntervalCountsTest(TestCase):
                             'average_time_to_address': None }]
         self.assertEqual(expected_counts, interval_counts(issue_type=Problem,
                                                           filters=filters))
+
+class AuthorizationTestCase(TestCase):
+    """
+    A test case which sets up some dummy data useful for testing authorization
+    """
+
+    def setUp(self):
+        # Create some dummy Users and an Organisation they want to access
+
+        # Organisations
+        self.test_organisation = create_test_organisation()
+        self.other_test_organisation = create_test_organisation({'ods_code': 12345})
+
+        providers_group = Group.objects.get(pk=Organisation.PROVIDERS)
+
+        # A user that is allowed to access the organisation
+        self.test_password = 'password'
+        self.test_allowed_user = User.objects.create_user('Test User',
+                                                          'user@example.com',
+                                                          self.test_password)
+        self.test_allowed_user.groups.add(providers_group)
+        self.test_allowed_user.save()
+        # add the relation to the organisation
+        self.test_organisation.users.add(self.test_allowed_user)
+        self.test_organisation.save()
+
+        # A Django superuser
+        self.superuser = User.objects.create_superuser('Super User',
+                                                       'superuser@example.com',
+                                                       self.test_password)
+
+        # An anonymous user
+        self.anonymous_user = AnonymousUser()
+
+        # A provider user linked to no providers
+        self.test_no_provider_user = User.objects.create_user('Test No Provider User',
+                                                              'noprovideruser@example.com',
+                                                              self.test_password)
+        self.test_no_provider_user.groups.add(providers_group)
+        self.test_no_provider_user.save()
+
+        # A User linked to a different provider
+        self.test_other_provider_user = User.objects.create_user('Test Other Provider User',
+                                                                 'otherprovideruser@example.com',
+                                                                 self.test_password)
+        self.test_other_provider_user.groups.add(providers_group)
+        self.test_other_provider_user.save()
+        # add the relation to the other organisation
+        self.other_test_organisation.users.add(self.test_other_provider_user)
+        self.other_test_organisation.save()
+
+        # A user linked to multiple providers
+        self.test_pals_user = User.objects.create_user('Test Multiple Provider User',
+                                                       'multipleprovideruser@example.com',
+                                                       self.test_password)
+        self.test_organisation.users.add(self.test_pals_user)
+        self.test_organisation.save()
+        self.other_test_organisation.users.add(self.test_pals_user)
+        self.other_test_organisation.save()
+
+        # An NHS Superuser
+        self.test_nhs_superuser = User.objects.create_user('Test NHS Super User',
+                                                           'nhssuperuser@example.com',
+                                                           self.test_password)
+        nhs_superusers_group = Group.objects.get(pk=Organisation.NHS_SUPERUSERS)
+        self.test_nhs_superuser.groups.add(nhs_superusers_group)
+        self.test_nhs_superuser.save()
+
+        # A Moderator
+        self.test_moderator = User.objects.create_user('Test Moderator',
+                                                        'moderator@example.com',
+                                                        self.test_password)
+        moderators_group = Group.objects.get(pk=Organisation.MODERATORS)
+        self.test_moderator.groups.add(moderators_group)
+        self.test_moderator.save()
+
+        # Helpful lists for simpler testing
+        self.users_who_can_access_everything = [self.superuser, self.test_nhs_superuser, self.test_moderator]
+
+        # Turn off logging in the tests because almost every authorization test
+        # creates noisy "Permission Denied" errors which will get printed
+        logging.disable(logging.CRITICAL)
+
+    def tearDown(self):
+        # Turn logging back on
+        logging.disable(logging.NOTSET)
+
+    def login_as(self, user):
+        logged_in = self.client.login(username=user.username, password=self.test_password)
+        self.assertTrue(logged_in)

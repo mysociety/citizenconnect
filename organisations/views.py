@@ -7,9 +7,12 @@ import json
 from django.views.generic import FormView, TemplateView, UpdateView, ListView
 from django.template.defaultfilters import escape
 from django.core.urlresolvers import reverse
+from django.core.exceptions import PermissionDenied
 from django.template import RequestContext
 from django_tables2 import RequestConfig
 from django.conf import settings
+from django.http import HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
 
 # App imports
 from citizenconnect.shortcuts import render
@@ -21,6 +24,10 @@ import choices_api
 from .lib import interval_counts
 from .models import Organisation, CCG
 from .tables  import NationalSummaryTable, MessageModelTable, ExtendedMessageModelTable
+
+def _check_organisation_access(organisation, user):
+    if not organisation.can_be_accessed_by(user):
+        raise PermissionDenied()
 
 class PrivateViewMixin(object):
     """
@@ -36,7 +43,7 @@ class PrivateViewMixin(object):
             context['private'] = False
         return context
 
-class OrganisationAwareViewMixin(object):
+class OrganisationAwareViewMixin(PrivateViewMixin):
     """Mixin class for views which need to have a reference to a particular
     organisation, such as problem forms."""
 
@@ -47,22 +54,28 @@ class OrganisationAwareViewMixin(object):
         context['organisation'] = Organisation.objects.get(ods_code=self.kwargs['ods_code'])
         return context
 
-class MessageListMixin(PrivateViewMixin):
+class MessageListMixin(OrganisationAwareViewMixin):
     """Mixin class for views which need to display a list of issues belonging to an organisation
        in either a public or private context"""
 
     def get_context_data(self, **kwargs):
         context = super(MessageListMixin, self).get_context_data(**kwargs)
+
+        # Check that the user can access the organisation if this is private
+        if context['private']:
+            _check_organisation_access(context['organisation'], self.request.user)
+
         table_args = {'private': context['private'],
                       'message_type': self.message_type}
         if not context['private']:
             table_args['cobrand'] = kwargs['cobrand']
-        organisation = Organisation.objects.get(ods_code=self.kwargs['ods_code'])
-        if organisation.has_services() and organisation.has_time_limits():
-            issue_table = ExtendedMessageModelTable(self.get_issues(organisation, context['private']), **table_args)
+
+        issues = self.get_issues(context['organisation'], context['private'])
+        if context['organisation'].has_services() and context['organisation'].has_time_limits():
+            issue_table = ExtendedMessageModelTable(issues, **table_args)
         else:
-            issue_table = MessageModelTable(self.get_issues(organisation, context['private']), **table_args)
-        context['organisation'] = organisation
+            issue_table = MessageModelTable(issues, **table_args)
+
         RequestConfig(self.request, paginate={'per_page': 8}).configure(issue_table)
         context['table'] = issue_table
         context['page_obj'] = issue_table.page
@@ -78,7 +91,6 @@ class Map(PrivateViewMixin, TemplateView):
         organisations = Organisation.objects.all()
 
         # TODO - check the user has access to the map (ie: is a superuser)
-        # when the user accounts work is merged in (after the expo)
 
         organisations_list = []
         for organisation in organisations:
@@ -157,16 +169,16 @@ class OrganisationSummary(OrganisationAwareViewMixin,
         context = super(OrganisationSummary, self).get_context_data(**kwargs)
 
         organisation = context['organisation']
+
+        # Check that the user can access the organisation if this is private
+        if context['private']:
+            _check_organisation_access(context['organisation'], self.request.user)
+
         context['services'] = list(organisation.services.all().order_by('name'))
         selected_service = self.request.GET.get('service')
         if selected_service:
             if int(selected_service) in [ service.id for service in context['services'] ]:
                 context['selected_service'] = int(selected_service)
-
-        if 'private' in kwargs and kwargs['private'] == True:
-            context['private'] = True
-        else:
-            context['private'] = False
 
         count_filters = {}
         if context.has_key('selected_service'):
@@ -223,10 +235,9 @@ class OrganisationReviews(OrganisationAwareViewMixin,
 
     def get_context_data(self, **kwargs):
         context = super(OrganisationReviews, self).get_context_data(**kwargs)
-        if 'private' in kwargs and kwargs['private'] == True:
-            context['private'] = True
-        else:
-            context['private'] = False
+        # Check that the user can access the organisation if this is private
+        if context['private']:
+            _check_organisation_access(context['organisation'], self.request.user)
         return context
 
 class Summary(TemplateView):
@@ -281,6 +292,10 @@ class OrganisationDashboard(OrganisationAwareViewMixin,
     def get_context_data(self, **kwargs):
         # Get all the problems
         context = super(OrganisationDashboard, self).get_context_data(**kwargs)
+
+        # Check the user is allowed to access this organisation
+        _check_organisation_access(context['organisation'], self.request.user)
+
         # Get the models related to this organisation, and let the db sort them
         problems = context['organisation'].problem_set.open_problems()
         context['problems'] = problems
@@ -289,3 +304,36 @@ class OrganisationDashboard(OrganisationAwareViewMixin,
                                                     organisation_id=context['organisation'].id)
 
         return context
+
+@login_required
+def login_redirect(request):
+    """
+    View function to redirect a logged in user to the right url after logging in.
+    Allows users to have an effective "homepage" which they go to automatically
+    after logging in. Uses their user group to determine what is the right page.
+    """
+
+    user = request.user
+
+    # NHS Super users get a special map page
+    if user.groups.filter(pk=Organisation.NHS_SUPERUSERS).exists():
+        return HttpResponseRedirect(reverse('private-map'))
+
+    # Moderators go to the moderation queue
+    elif user.groups.filter(pk=Organisation.MODERATORS).exists():
+        return HttpResponseRedirect(reverse('moderate-home'))
+
+    # Providers
+    elif user.groups.filter(pk=Organisation.PROVIDERS).exists():
+        # Providers with only one organisation just go to that organisation's dashboard
+        if user.organisations.count() == 1:
+            organisation = user.organisations.all()[0]
+            return HttpResponseRedirect(reverse('org-dashboard', kwargs={'ods_code':organisation.ods_code}))
+
+        # TODO - Providers with more than one provider attached go to a homepage
+        # with links to dashboards for each provider
+        # elif user.organisation_set.count() > 1:
+        #     return HttpResponseRedirect(reverse('pals-home'))
+
+    # Anyone else goes to the normal homepage
+    return HttpResponseRedirect(reverse('home', kwargs={'cobrand':'choices'}))

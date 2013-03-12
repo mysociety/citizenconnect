@@ -1,14 +1,14 @@
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 
-from organisations.tests.lib import create_test_organisation, create_test_instance
+from organisations.tests.lib import create_test_organisation, create_test_instance, AuthorizationTestCase
 
 from ..models import Problem, Question, MessageModel
 
-class ProblemModelTests(TestCase):
+class ProblemModelTests(AuthorizationTestCase):
 
     def setUp(self):
-        self.test_organisation = create_test_organisation()
+        super(ProblemModelTests, self).setUp()
         self.test_problem = Problem(organisation=self.test_organisation,
                                     description='A Test Problem',
                                     category='cleanliness',
@@ -19,6 +19,28 @@ class ProblemModelTests(TestCase):
                                     public_reporter_name=True,
                                     preferred_contact_method=Problem.CONTACT_EMAIL,
                                     status=Problem.NEW)
+        self.test_moderated_problem = Problem(organisation=self.test_organisation,
+                                    description='A Test Problem',
+                                    category='cleanliness',
+                                    reporter_name='Test User',
+                                    reporter_email='reporter@example.com',
+                                    reporter_phone='01111 111 111',
+                                    public=True,
+                                    public_reporter_name=True,
+                                    preferred_contact_method=Problem.CONTACT_EMAIL,
+                                    status=Problem.NEW,
+                                    moderated=MessageModel.MODERATED,
+                                    publication_status=MessageModel.PUBLISHED)
+        self.test_private_problem = Problem(organisation=self.test_organisation,
+                                            description='A Test Private Problem',
+                                            category='cleanliness',
+                                            reporter_name='Test User',
+                                            reporter_email='reporter@example.com',
+                                            reporter_phone='01111 111 111',
+                                            public=False,
+                                            public_reporter_name=False,
+                                            preferred_contact_method=Problem.CONTACT_EMAIL,
+                                            status=Problem.NEW)
 
     def test_has_prefix_property(self):
         self.assertEqual(Problem.PREFIX, 'P')
@@ -78,6 +100,43 @@ class ProblemModelTests(TestCase):
     def test_defaults_to_unmoderated(self):
         self.assertEqual(self.test_problem.moderated, MessageModel.NOT_MODERATED)
 
+    def test_public_problem_accessible_to_everyone(self):
+        self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.test_allowed_user))
+        self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.superuser))
+        self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.anonymous_user))
+        self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.test_other_provider_user))
+
+    def test_private_problem_accessible_to_allowed_user(self):
+        self.assertTrue(self.test_private_problem.can_be_accessed_by(self.test_allowed_user))
+
+    def test_private_problem_inaccessible_to_anon_user(self):
+        self.assertFalse(self.test_private_problem.can_be_accessed_by(self.anonymous_user))
+
+    def test_private_problem_inaccessible_to_other_provider_user(self):
+        self.assertFalse(self.test_private_problem.can_be_accessed_by(self.test_other_provider_user))
+
+    def test_private_problem_accessible_to_superusers(self):
+        for user in self.users_who_can_access_everything:
+            self.assertTrue(self.test_private_problem.can_be_accessed_by(user))
+
+    def test_private_problem_accessible_to_pals_user(self):
+        self.assertTrue(self.test_private_problem.can_be_accessed_by(self.test_pals_user))
+
+    def test_unmoderated_problem_inaccessible_to_anon_user(self):
+        self.assertFalse(self.test_problem.can_be_accessed_by(self.anonymous_user))
+
+    def test_unmoderated_problem_inaccessible_to_other_provider_user(self):
+        self.assertFalse(self.test_problem.can_be_accessed_by(self.test_other_provider_user))
+
+    def test_unmoderated_problem_accessible_to_allowed_user(self):
+        self.assertTrue(self.test_problem.can_be_accessed_by(self.test_allowed_user))
+
+    def test_unmoderated_problem_accessible_to_superusers(self):
+        for user in self.users_who_can_access_everything:
+            self.assertTrue(self.test_problem.can_be_accessed_by(user))
+
+    def test_unmoderated_problem_accessible_to_pals_user(self):
+        self.assertTrue(self.test_problem.can_be_accessed_by(self.test_pals_user))
 
 class QuestionModelTests(TestCase):
 
