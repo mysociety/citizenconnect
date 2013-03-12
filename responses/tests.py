@@ -21,7 +21,8 @@ class ResponseFormTests(TransactionTestCase):
         response_text = 'This problem is solved'
         test_form_values = {
             'response': response_text,
-            'message': self.test_problem.id
+            'message': self.test_problem.id,
+            'respond': ''
         }
         resp = self.client.post(self.problem_response_form_url, test_form_values)
         self.test_problem = Problem.objects.get(pk=self.test_problem.id)
@@ -33,7 +34,8 @@ class ResponseFormTests(TransactionTestCase):
         response_text = 'This question is solved'
         test_form_values = {
             'response': response_text,
-            'message': self.test_question.id
+            'message': self.test_question.id,
+            'respond': ''
         }
         resp = self.client.post(self.question_response_form_url, test_form_values)
         self.test_question = Question.objects.get(pk=self.test_question.id)
@@ -41,37 +43,85 @@ class ResponseFormTests(TransactionTestCase):
         self.assertEqual(self.test_question.responses.count(), 1)
         self.assertEqual(response.response, response_text)
 
-    def test_form_saves_problem_status(self):
+    def test_form_creates_problem_response_and_saves_status(self):
         response_text = 'This problem is solved'
         test_form_values = {
             'response': response_text,
             'message': self.test_problem.id,
-            'message_status': Problem.RESOLVED
+            'message_status': Problem.RESOLVED,
+            'respond': ''
         }
         resp = self.client.post(self.problem_response_form_url, test_form_values)
         self.test_problem = Problem.objects.get(pk=self.test_problem.id)
+        response = self.test_problem.responses.all()[0]
+        self.assertEqual(self.test_problem.responses.count(), 1)
+        self.assertEqual(response.response, response_text)
         self.assertEqual(self.test_problem.status, Problem.RESOLVED)
 
-    def test_form_saves_question_status(self):
+    def test_form_creates_question_response_and_saves_status(self):
         response_text = 'This question is solved'
         test_form_values = {
             'response': response_text,
             'message': self.test_question.id,
-            'message_status': Question.RESOLVED
+            'message_status': Question.RESOLVED,
+            'respond': ''
         }
         resp = self.client.post(self.question_response_form_url, test_form_values)
         self.test_question = Question.objects.get(pk=self.test_question.id)
+        response = self.test_question.responses.all()[0]
+        self.assertEqual(self.test_question.responses.count(), 1)
+        self.assertEqual(response.response, response_text)
         self.assertEqual(self.test_question.status, Question.RESOLVED)
 
-    def test_form_shows_confirmation_with_link(self):
+    def test_form_allows_empty_response_for_status_change(self):
+        response_text = ''
+        test_form_values = {
+            'response': response_text,
+            'message': self.test_problem.id,
+            'message_status': Problem.RESOLVED,
+            'status': ''
+        }
+        resp = self.client.post(self.problem_response_form_url, test_form_values)
+        self.test_problem = Problem.objects.get(pk=self.test_problem.id)
+        self.assertEqual(self.test_problem.responses.count(), 0)
+        self.assertEqual(self.test_problem.status, Problem.RESOLVED)
+
+    def test_form_ignores_response_during_status_change(self):
+        response_text = 'I didn\'t mean to respond'
+        test_form_values = {
+            'response': response_text,
+            'message': self.test_problem.id,
+            'message_status': Problem.RESOLVED,
+            'status': ''
+        }
+        resp = self.client.post(self.problem_response_form_url, test_form_values)
+        self.test_problem = Problem.objects.get(pk=self.test_problem.id)
+        self.assertEqual(self.test_problem.responses.count(), 0)
+        self.assertEqual(self.test_problem.status, Problem.RESOLVED)
+
+    def test_form_shows_response_confirmation_with_link(self):
         response_text = 'This problem is solved'
         test_form_values = {
             'response': response_text,
-            'message': self.test_problem.id
+            'message': self.test_problem.id,
+            'respond': ''
         }
         resp = self.client.post(self.problem_response_form_url, test_form_values)
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, "response has been published online")
+        self.assertContains(resp, reverse('org-dashboard', kwargs={'ods_code':self.test_organisation.ods_code}))
+
+    def test_form_shows_message_confirmation_with_link(self):
+        response_text = ''
+        test_form_values = {
+            'response': response_text,
+            'message': self.test_problem.id,
+            'message_status': Problem.RESOLVED,
+            'status': ''
+        }
+        resp = self.client.post(self.problem_response_form_url, test_form_values)
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "the Problem status has been updated")
         self.assertContains(resp, reverse('org-dashboard', kwargs={'ods_code':self.test_organisation.ods_code}))
 
 class ResponseFormViewTests(TestCase):

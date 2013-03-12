@@ -43,17 +43,20 @@ class ResponseForm(MessageAwareViewMixin,
         return initial
 
     def form_valid(self, form):
+        context = RequestContext(self.request)
+
+        # Only save the response at all if it's not empty
+        if 'response' in form.cleaned_data and form.cleaned_data['response']:
+            self.object = form.save()
+            context['response'] = self.object
+
         # Process the message status field to actually change the message's
         # status, because this form is a CreateView for a ProblemResponse
         # or QuestionResponse, so will just ignore that field normally.
-        self.object = form.save()
-
         if 'message_status' in form.cleaned_data and form.cleaned_data['message_status']:
-            message = self.object.message
+            message = form.cleaned_data['message']
             message.status = form.cleaned_data['message_status']
             message.save()
+            context['message'] = message
 
-        # Show the confirmation page, and give it the response object to use
-        context = RequestContext(self.request)
-        context['response'] = self.object
         return render(self.request, self.confirm_template, context)
