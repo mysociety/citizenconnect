@@ -1,3 +1,5 @@
+import logging
+import re
 from datetime import datetime, timedelta
 from decimal import Decimal
 
@@ -67,6 +69,17 @@ def create_test_instance(model, attributes):
         instance.created = attributes['created']
         instance.save()
     return instance
+
+# Auth helper methods
+
+def get_reset_url_from_email(email):
+    """
+    Read the reset your password email and get the url from it, because we need
+    the tokens it contains to check password resets properly
+    Taken from https://github.com/django/django/blob/1.4.2/django/contrib/auth/tests/views.py
+    """
+    urlmatch = re.search(r".*/password-reset-confirm/([0-9A-Za-z]+)-(.+)", email.body)
+    return urlmatch.groups()[0], urlmatch.groups()[1]
 
 class IntervalCountsTest(TestCase):
 

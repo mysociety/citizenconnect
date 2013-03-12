@@ -10,6 +10,8 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django_tables2 import RequestConfig
 from django.conf import settings
+from django.http import HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
 
 # App imports
 from citizenconnect.shortcuts import render
@@ -289,3 +291,36 @@ class OrganisationDashboard(OrganisationAwareViewMixin,
                                                     organisation_id=context['organisation'].id)
 
         return context
+
+@login_required
+def login_redirect(request):
+    """
+    View function to redirect a logged in user to the right url after logging in.
+    Allows users to have an effective "homepage" which they go to automatically
+    after logging in. Uses their user group to determine what is the right page.
+    """
+
+    user = request.user
+
+    # NHS Super users get a special map page
+    if user.groups.filter(pk=Organisation.NHS_SUPERUSERS).exists():
+        return HttpResponseRedirect(reverse('private-map'))
+
+    # Moderators go to the moderation queue
+    elif user.groups.filter(pk=Organisation.MODERATORS).exists():
+        return HttpResponseRedirect(reverse('moderate-home'))
+
+    # Providers
+    elif user.groups.filter(pk=Organisation.PROVIDERS).exists():
+        # Providers with only one organisation just go to that organisation's dashboard
+        if user.organisations.count() == 1:
+            organisation = user.organisations.all()[0]
+            return HttpResponseRedirect(reverse('org-dashboard', kwargs={'ods_code':organisation.ods_code}))
+
+        # TODO - Providers with more than one provider attached go to a homepage
+        # with links to dashboards for each provider
+        # elif user.organisation_set.count() > 1:
+        #     return HttpResponseRedirect(reverse('pals-home'))
+
+    # Anyone else goes to the normal homepage
+    return HttpResponseRedirect(reverse('home', kwargs={'cobrand':'choices'}))

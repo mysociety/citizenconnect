@@ -180,5 +180,14 @@ PAGINATION_DEFAULT_WINDOW = 2
 PAGINATION_DEFAULT_ORPHANS = 2
 PAGINATION_INVALID_PAGE_RAISES_404 = True
 
+# Authentication related settings
+LOGIN_URL = '/private/login'
+# We have to set this to something otherwise Django will redirect
+# to /accounts/profile (which doesn't exist) if next is not specified
+# on any login_required urls
+LOGIN_REDIRECT_URL = '/private/login-redirect'
+# Makes sense to have this as a setting too
+LOGOUT_REDIRECT_URL = '/'
+
 # Now get the mySociety configuration
 from .mysociety import *
