@@ -22,7 +22,7 @@ from .models import Organisation, Service
 from .forms import OrganisationFinderForm
 import choices_api
 from .lib import interval_counts
-from .models import Organisation, CCG
+from .models import Organisation, CCG, SuperuserLogEntry
 from .tables  import NationalSummaryTable, MessageModelTable, ExtendedMessageModelTable
 
 def _check_organisation_access(organisation, user):
@@ -348,3 +348,16 @@ def login_redirect(request):
 
     # Anyone else goes to the normal homepage
     return HttpResponseRedirect(reverse('home', kwargs={'cobrand':'choices'}))
+
+class SuperuserLogs(TemplateView):
+
+    template_name = 'organisations/superuser-logs.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(SuperuserLogs, self).get_context_data(**kwargs)
+        # Only NHS superusers can see this page
+        if not self.request.user.groups.filter(pk=Organisation.NHS_SUPERUSERS).exists():
+            raise PermissionDenied()
+        else:
+            context['logs'] = SuperuserLogEntry.objects.all()
+        return context

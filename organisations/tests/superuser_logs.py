@@ -55,3 +55,43 @@ class SuperuserLogTests(AuthorizationTestCase):
                 # The following might 403 for some users, but it shouldn't affect the logging
                 resp = self.client.get(path)
                 self.assertEqual(SuperuserLogEntry.objects.all().filter(user=user, path=path).count(), 0)
+
+class SuperuserLogViewTests(AuthorizationTestCase):
+
+    def setUp(self):
+        super(SuperuserLogViewTests, self).setUp()
+        self.login_as(self.test_nhs_superuser)
+        self.logs_url = reverse('private-map')
+
+    def test_log_page_exists(self):
+        resp = self.client.get(reverse('superuser-logs'))
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "Superuser Logs")
+
+    def test_log_page_shows_logs(self):
+        # Go to a page so that it'll be logged
+        map_url = self.logs_url
+        self.client.get(map_url)
+
+        resp = self.client.get(reverse('superuser-logs'))
+
+        log_entry = SuperuserLogEntry.objects.get(user=self.test_nhs_superuser, path=map_url)
+
+        self.assertTrue(log_entry in resp.context['logs'])
+        self.assertContains(resp, self.test_nhs_superuser.username)
+        self.assertContains(resp, map_url)
+
+    def test_log_page_only_accessible_to_superusers(self):
+        non_superusers = [
+            self.test_allowed_user,
+            self.test_other_provider_user,
+            self.test_moderator,
+            self.superuser, # Django superuser
+            self.test_pals_user,
+            self.test_no_provider_user
+        ]
+
+        for user in non_superusers:
+            self.login_as(user)
+            resp = self.client.get(self.logs_url)
+            self.assertEqual(resp.status_code, 403)

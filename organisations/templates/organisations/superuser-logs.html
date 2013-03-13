@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load url from future %}
+
+{% block title %}Superuser Logs{% endblock %}
+
+{% block bodyclasses %}superuser-logs{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1>Superuser Logs</h1>
+</div>
+<div class="feature">
+    <ul>
+        {% for log in logs %}
+            <li>{{ log.user.username }} - <a href="{{ log.path }}">{{ log.path }}</a> - log.created</li>
+        {% empty %}
+            <li>There are no logs to display</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

@@ -23,6 +23,8 @@ urlpatterns = patterns('',
 
     url(r'^choose-dashboard$', login_required(DashboardChoice.as_view()), name='dashboard-choice'),
 
+    url(r'^access-logs$', login_required(SuperuserLogs.as_view()), name='superuser-logs'),
+
     # Authentication related urls
     url(r'^login$',
         'django.contrib.auth.views.login',
