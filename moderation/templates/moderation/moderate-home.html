@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load url from future %}
+{% load render_table from django_tables2 %}
 
 {% block title %}Moderation{% endblock %}
 
@@ -9,31 +10,8 @@
 <div class="header">
     <h1>Moderation</h1>
 </div>
-<div class="hero">
-    <div class="feature">
-        <table>
-            <thead>
-                <tr>
-                    <th>Ref</th>
-                    <th>Message Type</th>
-                    <th>Received</th>
-                    <th>Message snippet</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for issue in issues %}
-                    <tr>
-                        <td>{{ issue.reference_number }}</td>
-                        <td>{{ issue.issue_type }}</td>
-                        <td>{{ issue.created }}</td>
-                        <td>{{ issue.summary }}</td>
-                        <td><a href="{% url 'moderate-form' message_type=issue.issue_type.lower pk=issue.id %}">Moderate</a></td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
+
+{% render_table table 'organisations/includes/summary-table.html' %}
+
 {% endblock %}
 

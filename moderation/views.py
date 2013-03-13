@@ -9,12 +9,15 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
 
+from django_tables2 import RequestConfig
+
 # App imports
 from issues.views import MessageDependentFormViewMixin
 from issues.models import Problem, Question
 from organisations.models import Organisation
 
 from .forms import LookupForm, QuestionModerationForm, ProblemModerationForm
+from .tables import ModerationTable
 
 class ModeratorsOnlyMixin(object):
     """
@@ -35,6 +38,11 @@ class ModerateHome(ModeratorsOnlyMixin,
         # Get all the problems
         context = super(ModerateHome, self).get_context_data(**kwargs)
         context['issues'] = Problem.objects.unmoderated_problems().order_by("-created")
+        # Setup a table for the problems
+        issue_table = ModerationTable(context['issues'])
+        RequestConfig(self.request, paginate={'per_page': 25}).configure(issue_table)
+        context['table'] = issue_table
+        context['page_obj'] = context['table'].page
         return context
 
 class ModerateLookup(ModeratorsOnlyMixin,
