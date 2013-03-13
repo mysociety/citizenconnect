@@ -1,5 +1,7 @@
 import logging
 
+from django.core.urlresolvers import reverse
+
 from organisations.tests.lib import create_test_instance, create_test_organisation
 from issues.models import Problem, Question, MessageModel
 from responses.models import ProblemResponse
@@ -10,6 +12,7 @@ class BasicViewTests(BaseModerationTestCase):
 
     def setUp(self):
         super(BasicViewTests, self).setUp()
+        self.login_as(self.test_moderator)
 
     def test_home_view_exists(self):
         resp = self.client.get(self.home_url)
@@ -30,6 +33,25 @@ class BasicViewTests(BaseModerationTestCase):
         resp = self.client.get(self.confirm_url)
         self.assertEqual(resp.status_code, 200)
 
+    def test_views_require_login(self):
+        self.client.logout()
+
+        expected_login_url = "{0}?next={1}".format(self.login_url, self.home_url)
+        resp = self.client.get(self.home_url)
+        self.assertRedirects(resp, expected_login_url)
+
+        expected_login_url = "{0}?next={1}".format(self.login_url, self.lookup_url)
+        resp = self.client.get(self.lookup_url)
+        self.assertRedirects(resp, expected_login_url)
+
+        expected_login_url = "{0}?next={1}".format(self.login_url, self.problem_form_url)
+        resp = self.client.get(self.problem_form_url)
+        self.assertRedirects(resp, expected_login_url)
+
+        expected_login_url = "{0}?next={1}".format(self.login_url, self.confirm_url)
+        resp = self.client.get(self.confirm_url)
+        self.assertRedirects(resp, expected_login_url)
+
 class HomeViewTests(BaseModerationTestCase):
 
     def setUp(self):
@@ -37,6 +59,8 @@ class HomeViewTests(BaseModerationTestCase):
 
         self.closed_problem = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.RESOLVED})
         self.moderated_problem = create_test_instance(Problem, {'organisation':self.test_organisation, 'moderated': MessageModel.MODERATED})
+
+        self.login_as(self.test_moderator)
 
     def test_issues_in_context(self):
         resp = self.client.get(self.home_url)
@@ -66,6 +90,8 @@ class ModerateFormViewTests(BaseModerationTestCase):
 
         self.closed_question = create_test_instance(Question, {'status': Question.RESOLVED})
         self.moderated_question = create_test_instance(Question, {'moderated': MessageModel.MODERATED})
+
+        self.login_as(self.test_moderator)
 
     def test_problem_in_context(self):
         resp = self.client.get(self.problem_form_url)
