@@ -4,18 +4,19 @@ from django.core.urlresolvers import reverse
 
 # App imports
 from issues.models import Problem, Question
-from organisations.tests.lib import create_test_instance, create_test_organisation
+from organisations.tests.lib import create_test_instance, create_test_organisation, AuthorizationTestCase
 
 from .models import ProblemResponse, QuestionResponse
 
-class ResponseFormTests(TransactionTestCase):
+class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
 
     def setUp(self):
-        self.test_organisation = create_test_organisation()
+        super(ResponseFormTests, self).setUp()
         self.test_problem = create_test_instance(Problem, {'organisation':self.test_organisation})
         self.test_question = create_test_instance(Question, {})
         self.problem_response_form_url = '/private/response/problem/%s' % self.test_problem.id
         self.question_response_form_url = '/private/response/question/%s' % self.test_problem.id
+        self.login_as(self.test_allowed_user)
 
     def test_form_creates_problem_response(self):
         response_text = 'This problem is solved'
@@ -134,11 +135,13 @@ class ResponseFormTests(TransactionTestCase):
         self.assertContains(resp, "the Problem status has been updated")
         self.assertContains(resp, reverse('org-dashboard', kwargs={'ods_code':self.test_organisation.ods_code}))
 
-class ResponseFormViewTests(TestCase):
+class ResponseFormViewTests(AuthorizationTestCase):
 
     def setUp(self):
-        self.problem = create_test_instance(Problem, {})
+        super(ResponseFormViewTests, self).setUp()
+        self.problem = create_test_instance(Problem, {'organisation': self.test_organisation})
         self.response_form_url = '/private/response/problem/%s' % self.problem.id
+        self.login_as(self.test_allowed_user)
 
     def test_response_page_exists(self):
         resp = self.client.get(self.response_form_url)
@@ -162,3 +165,15 @@ class ResponseFormViewTests(TestCase):
         resp = self.client.get(self.response_form_url)
         self.assertContains(resp, response1.response)
         self.assertContains(resp, response2.response)
+
+    def test_response_form_requires_login(self):
+        self.client.logout()
+        expected_login_url = "{0}?next={1}".format(reverse('login'), self.response_form_url)
+        resp = self.client.get(self.response_form_url)
+        self.assertRedirects(resp, expected_login_url)
+
+    def test_other_providers_cant_respond(self):
+        self.client.logout()
+        self.login_as(self.test_other_provider_user)
+        resp = self.client.get(self.response_form_url)
+        self.assertEqual(resp.status_code, 403)

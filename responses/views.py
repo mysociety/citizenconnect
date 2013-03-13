@@ -1,5 +1,6 @@
 from django.views.generic import CreateView, TemplateView
 from django.core.urlresolvers import reverse
+from django.core.exceptions import PermissionDenied
 from django.template import RequestContext
 
 from citizenconnect.shortcuts import render
@@ -34,12 +35,17 @@ class ResponseForm(MessageAwareViewMixin,
             message = Question.objects.get(pk=self.kwargs['pk'])
             initial['message'] = message
             initial['message_status'] = message.status
+            # TODO: Who should be allowed to respond to questions?
         elif message_type == 'problem':
             message = Problem.objects.get(pk=self.kwargs['pk'])
             initial['message'] = message
             initial['message_status'] = message.status
+            # Check that the user has access to message before allowing them to respond
+            if not initial['message'].can_be_accessed_by(self.request.user):
+                raise PermissionDenied()
         else:
             raise ValueError("Unknown message type: %s" % message_type)
+
         return initial
 
     def form_valid(self, form):
