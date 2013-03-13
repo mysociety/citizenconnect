@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models import Q
 from django.db import connection
 from django.contrib.auth.models import User, Group
+from django.core.exceptions import ValidationError
 
 from citizenconnect.models import AuditedModel
 
@@ -90,3 +91,10 @@ class Service(AuditedModel):
 
     class Meta:
         unique_together = (("service_code", "organisation"),)
+
+class SuperuserLogEntry(AuditedModel):
+    """
+    Logs of when an NHS Superuser accesses a page
+    """
+    user = models.ForeignKey(User, related_name='superuser_access_logs')
+    path = models.TextField()

@@ -98,6 +98,7 @@ MIDDLEWARE_CLASSES = (
     'pagination.middleware.PaginationMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'organisations.middleware.SuperuserLogEntryMiddleware'
 )
 
 ROOT_URLCONF = 'citizenconnect.urls'
