@@ -6,15 +6,29 @@ from django.views.generic import TemplateView, UpdateView
 from django.views.generic.edit import FormView
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
 
 # App imports
 from issues.views import MessageDependentFormViewMixin
 from issues.models import Problem, Question
+from organisations.models import Organisation
 
 from .forms import LookupForm, QuestionModerationForm, ProblemModerationForm
 
-class ModerateHome(TemplateView):
+class ModeratorsOnlyMixin(object):
+    """
+    Mixin to protect views using the user_passes_test decorator
+    """
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.groups.filter(pk=Organisation.MODERATORS).exists():
+            raise PermissionDenied()
+        else:
+            return super(ModeratorsOnlyMixin, self).dispatch(request, *args, **kwargs)
+
+class ModerateHome(ModeratorsOnlyMixin,
+                   TemplateView):
     template_name = 'moderation/moderate-home.html'
 
     def get_context_data(self, **kwargs):
@@ -23,7 +37,8 @@ class ModerateHome(TemplateView):
         context['issues'] = Problem.objects.unmoderated_problems().order_by("-created")
         return context
 
-class ModerateLookup(FormView):
+class ModerateLookup(ModeratorsOnlyMixin,
+                     FormView):
     template_name = 'moderation/moderate-lookup.html'
     form_class = LookupForm
 
@@ -35,8 +50,8 @@ class ModerateLookup(FormView):
         # Redirect to the url we calculated
         return HttpResponseRedirect(moderate_url)
 
-
-class ModerateForm(MessageDependentFormViewMixin,
+class ModerateForm(ModeratorsOnlyMixin,
+                   MessageDependentFormViewMixin,
                    UpdateView):
 
     template_name = 'moderation/moderate-form.html'
@@ -53,5 +68,6 @@ class ModerateForm(MessageDependentFormViewMixin,
     def get_success_url(self):
         return reverse('moderate-confirm')
 
-class ModerateConfirm(TemplateView):
+class ModerateConfirm(ModeratorsOnlyMixin,
+                      TemplateView):
     template_name = 'moderation/moderate-confirm.html'

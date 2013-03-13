@@ -52,6 +52,22 @@ class BasicViewTests(BaseModerationTestCase):
         resp = self.client.get(self.confirm_url)
         self.assertRedirects(resp, expected_login_url)
 
+    def test_views_innacessible_to_providers(self):
+        self.client.logout()
+        self.login_as(self.test_allowed_user)
+
+        resp = self.client.get(self.home_url)
+        self.assertEqual(resp.status_code, 403)
+
+        resp = self.client.get(self.lookup_url)
+        self.assertEqual(resp.status_code, 403)
+
+        resp = self.client.get(self.problem_form_url)
+        self.assertEqual(resp.status_code, 403)
+
+        resp = self.client.get(self.confirm_url)
+        self.assertEqual(resp.status_code, 403)
+
 class HomeViewTests(BaseModerationTestCase):
 
     def setUp(self):
