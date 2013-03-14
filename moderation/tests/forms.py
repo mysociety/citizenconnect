@@ -30,18 +30,18 @@ class LookupFormTests(BaseModerationTestCase):
 
     def test_form_rejects_unknown_problems(self):
         resp = self.client.post(self.lookup_url, {'reference_number': '{0}12300'.format(Problem.PREFIX)})
-        self.assertFormError(resp, 'form', None, 'Sorry, there are no open problems or questions with that reference number')
+        self.assertFormError(resp, 'form', None, 'Sorry, there are no unmoderated issues with that reference number')
 
     def test_form_rejects_unknown_questions(self):
         resp = self.client.post(self.lookup_url, {'reference_number': '{0}12300'.format(Question.PREFIX)})
-        self.assertFormError(resp, 'form', None, 'Sorry, there are no open problems or questions with that reference number')
+        self.assertFormError(resp, 'form', None, 'Sorry, there are no unmoderated issues with that reference number')
 
     def test_form_rejects_moderated_issues(self):
         resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.moderated_problem.id)})
-        self.assertFormError(resp, 'form', None, 'Sorry, there are no open problems or questions with that reference number')
+        self.assertFormError(resp, 'form', None, 'Sorry, there are no unmoderated issues with that reference number')
 
         resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Question.PREFIX, self.moderated_question.id)})
-        self.assertFormError(resp, 'form', None, 'Sorry, there are no open problems or questions with that reference number')
+        self.assertFormError(resp, 'form', None, 'Sorry, there are no unmoderated issues with that reference number')
 
     def test_form_allows_closed_issues(self):
         resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.closed_problem.id)})

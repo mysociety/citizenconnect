@@ -54,7 +54,7 @@ class LookupForm(forms.Form):
                 else:
                     raise forms.ValidationError('Sorry, that reference number is not recognised')
             except (Problem.DoesNotExist, Question.DoesNotExist):
-                raise forms.ValidationError('Sorry, there are no open problems or questions with that reference number')
+                raise forms.ValidationError('Sorry, there are no unmoderated issues with that reference number')
 
             self.cleaned_data['model_type'] = model.issue_type.lower()
             self.cleaned_data['model_id'] = model.id
