@@ -12,7 +12,9 @@
 <div class="island inline-form">
 
     {% if form.errors %}
-        {% include "message-list.html" with messages=form.errors message_type='error' %}
+        <ul class="message-list">
+            <li class="message-list__error">Your username and password didn't match. Please try again.</li>
+        </ul>
     {% endif %}
 
     <form method="post" action="{% url 'django.contrib.auth.views.login' %}" class="gw">
