@@ -1,49 +1,51 @@
-<ul class="pagination"><!--
-    --><li class="pagination__first">
+{% spaceless %}
+<ul class="pagination">
+    <li class="pagination__first">
         <a href="?location={{ location }}&amp;organisation_type={{ organisation_type }}&amp;page=1"><span class="icon-double-chevron-left" aria-hidden="true"></span></a>
-    </li><!--
+    </li>
     {% if page_obj.has_previous %}
-        --><li class="pagination__previous">
+        <li class="pagination__previous">
             <a href="?location={{ location }}&amp;organisation_type={{ organisation_type }}&amp;page={{ page_obj.previous_page_number }}"><span class="icon-chevron-left" aria-hidden="true"></span></a>
-        </li><!--
+        </li>
     {% endif %}
 
     {% if show_first %}
-       --><li>
+       <li>
            <a href="?location={{ location }}&amp;organisation_type={{ organisation_type }}&amp;page=1">1</a>
-       </li><!--
-       --><li class="pagination__spacer">
+       </li>
+       <li class="pagination__spacer">
            <span>&hellip;</span>
-       </li><!--
+       </li>
     {% endif %}
 
     {% for page in page_numbers %}
         {% if page == page_obj.number %}
-            --><li class="pagination__current">
+            <li class="pagination__current">
                 <span>{{ page }}</span>
-            </li><!--
+            </li>
         {% else %}
-            --><li>
+            <li>
                 <a href="?location={{ location }}&amp;organisation_type={{ organisation_type }}&amp;page={{ page }}">{{ page }}</a>
-            </li><!--
+            </li>
         {% endif %}
     {% endfor %}
 
     {% if show_last %}
-       --><li class="pagination__spacer">
+       <li class="pagination__spacer">
            <span>&hellip;</span>
-       </li><!--
-       --><li>
+       </li>
+       <li>
            <a href="?location={{ location }}&amp;organisation_type={{ organisation_type }}&amp;page=last">{{ paginator.num_pages }}</a>
-       </li><!--
+       </li>
     {% endif %}
 
     {% if page_obj.has_next %}
-        --><li class="pagination__next">
+        <li class="pagination__next">
               <a href="?location={{ location }}&amp;organisation_type={{ organisation_type }}&amp;page={{ page_obj.next_page_number }}"><span class="icon-chevron-right" aria-hidden="true"></span></a>
-          </li><!--
+          </li>
     {% endif %}
-    --><li class="pagination__last">
+    <li class="pagination__last">
         <a href="?location={{ location }}&amp;organisation_type={{ organisation_type }}&amp;page={{ page_obj.paginator.num_pages }}"><span class="icon-double-chevron-right" aria-hidden="true"></span></a>
-    </li><!--
---></ul>
+    </li>
+</ul>
+{% endspaceless %}
