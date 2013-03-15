@@ -16,34 +16,6 @@ def _check_message_access(message, user):
     if not message.can_be_accessed_by(user):
         raise PermissionDenied()
 
-class MessageAwareViewMixin(object):
-    """
-    Mixin for views that are "aware" of a message, given via /problem/id or /question/id
-    url parameters, and placed into a "message" context object for the template
-    """
-
-    def get_context_data(self, **kwargs):
-        context = super(MessageAwareViewMixin, self).get_context_data(**kwargs)
-        message_type = self.kwargs['message_type']
-        if message_type == 'question':
-            context['message'] = Question.objects.get(pk=self.kwargs['pk'])
-        elif message_type == 'problem':
-            context['message'] = Problem.objects.get(pk=self.kwargs['pk'])
-        else:
-            raise ValueError("Unknown message type: %s" % message_type)
-        return context
-
-class MessageDetailViewMixin(DetailView):
-    """
-    Mixin for message detail views that checks access when getting the message
-    object out
-    """
-
-    def get_object(self, *args, **kwargs):
-        obj = super(MessageDetailViewMixin, self).get_object(*args, **kwargs)
-        _check_message_access(obj, self.request.user)
-        return obj
-
 class AskQuestion(TemplateView):
     template_name = 'issues/ask-question.html'
 
@@ -89,5 +61,11 @@ class ProblemCreate(OrganisationAwareViewMixin, CreateView):
             form.fields['service'].empty_label = "None"
         return form
 
-class ProblemDetail(MessageDetailViewMixin):
+class ProblemDetail(DetailView):
+
     model = Problem
+
+    def get_object(self, *args, **kwargs):
+        obj = super(ProblemDetail, self).get_object(*args, **kwargs)
+        _check_message_access(obj, self.request.user)
+        return obj
