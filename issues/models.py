@@ -56,27 +56,13 @@ class MessageModel(AuditedModel):
                              'lostproperty': 'Lost property',
                              'other': ''}
 
-    HIDDEN = 0
-    PUBLISHED = 1
-
-    PUBLICATION_STATUS_CHOICES = ((HIDDEN, "Hidden"), (PUBLISHED, "Published"))
-
-    NOT_MODERATED = 0
-    MODERATED = 1
-
-    MODERATED_STATUS_CHOICES = ((NOT_MODERATED, "Not moderated"), (MODERATED, "Moderated"))
-
     description = models.TextField(verbose_name='')
     reporter_name = models.CharField(max_length=200, blank=False, verbose_name='')
     reporter_phone = models.CharField(max_length=50, blank=True, verbose_name='')
     reporter_email = models.CharField(max_length=254, blank=True, verbose_name='')
-    public = models.BooleanField()
-    public_reporter_name = models.BooleanField()
     preferred_contact_method = models.CharField(max_length=100, choices=CONTACT_CHOICES, default=CONTACT_EMAIL)
     source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True)
     mailed = models.BooleanField(default=False, blank=False)
-    publication_status = models.IntegerField(default=HIDDEN, blank=False, choices=PUBLICATION_STATUS_CHOICES)
-    moderated = models.IntegerField(default=NOT_MODERATED, blank=False, choices=MODERATED_STATUS_CHOICES)
 
     @property
     def summary(self):
@@ -117,22 +103,17 @@ class QuestionManager(models.Manager):
     use_for_related_fields = True
 
     def open_questions(self):
-        return super(QuestionManager, self).all().filter(Q(status=Question.NEW) | Q(status=Question.ACKNOWLEDGED))
-
-    def unmoderated_questions(self):
-        return super(QuestionManager, self).all().filter(moderated=MessageModel.NOT_MODERATED)
+        return super(QuestionManager, self).all().filter(status=Question.NEW)
 
 class Question(MessageModel):
     # Custom manager
     objects = QuestionManager()
 
     NEW = 0
-    ACKNOWLEDGED = 1
-    RESOLVED = 2
+    RESOLVED = 1
 
     STATUS_CHOICES = (
         (NEW, 'Open'),
-        (ACKNOWLEDGED, 'In Progress'),
         (RESOLVED, 'Resolved'),
     )
 
@@ -160,15 +141,15 @@ class ProblemManager(models.Manager):
         return super(ProblemManager, self).all().filter(Q(status=Problem.NEW) | Q(status=Problem.ACKNOWLEDGED))
 
     def unmoderated_problems(self):
-        return super(ProblemManager, self).all().filter(moderated=MessageModel.NOT_MODERATED)
+        return super(ProblemManager, self).all().filter(moderated=Problem.NOT_MODERATED)
 
     def open_moderated_published_problems(self):
-        return self.open_problems().filter(moderated=MessageModel.MODERATED,
-                                           publication_status=MessageModel.PUBLISHED)
+        return self.open_problems().filter(moderated=Problem.MODERATED,
+                                           publication_status=Problem.PUBLISHED)
 
     def all_moderated_published_public_problems(self):
-        return super(ProblemManager, self).all().filter(moderated=MessageModel.MODERATED,
-                                                        publication_status=MessageModel.PUBLISHED,
+        return super(ProblemManager, self).all().filter(moderated=Problem.MODERATED,
+                                                        publication_status=Problem.PUBLISHED,
                                                         public=True)
 
 class Problem(MessageModel):
@@ -187,11 +168,23 @@ class Problem(MessageModel):
 
     PREFIX = 'P'
 
+    HIDDEN = 0
+    PUBLISHED = 1
+
+    PUBLICATION_STATUS_CHOICES = ((HIDDEN, "Hidden"), (PUBLISHED, "Published"))
+
+    NOT_MODERATED = 0
+    MODERATED = 1
+
+    MODERATED_STATUS_CHOICES = ((NOT_MODERATED, "Not moderated"), (MODERATED, "Moderated"))
+
     category = models.CharField(max_length=100,
                                 choices=MessageModel.CATEGORY_CHOICES,
                                 default='other',
                                 db_index=True,
                                 verbose_name='Please select the category that best describes your problem')
+    public = models.BooleanField()
+    public_reporter_name = models.BooleanField()
     status = models.IntegerField(default=NEW, choices=STATUS_CHOICES, db_index=True)
     organisation = models.ForeignKey('organisations.Organisation')
     service = models.ForeignKey('organisations.Service', null=True, blank=True, verbose_name="Please select a department (optional)")
@@ -199,6 +192,8 @@ class Problem(MessageModel):
     happy_outcome = models.NullBooleanField()
     time_to_acknowledge = models.IntegerField(null=True)
     time_to_address = models.IntegerField(null=True)
+    publication_status = models.IntegerField(default=HIDDEN, blank=False, choices=PUBLICATION_STATUS_CHOICES)
+    moderated = models.IntegerField(default=NOT_MODERATED, blank=False, choices=MODERATED_STATUS_CHOICES)
 
     @property
     def reference_number(self):
@@ -211,4 +206,4 @@ class Problem(MessageModel):
         and has been moderated to be publically available, otherwise only people
         with access to the organisation it is assigned to can access it.
         """
-        return (self.public and self.publication_status == MessageModel.PUBLISHED) or self.organisation.can_be_accessed_by(user)
+        return (self.public and self.publication_status == Problem.PUBLISHED) or self.organisation.can_be_accessed_by(user)

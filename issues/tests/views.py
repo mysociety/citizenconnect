@@ -1,9 +1,9 @@
 from django.test import TestCase
 
 from organisations.tests import create_test_instance, create_test_organisation, AuthorizationTestCase
-from responses.models import QuestionResponse, ProblemResponse
+from responses.models import ProblemResponse
 
-from ..models import Question, Problem, MessageModel
+from ..models import Question, Problem
 
 class AskQuestionViewTests(TestCase):
     def setUp(self):
@@ -17,48 +17,19 @@ class AskQuestionViewTests(TestCase):
         resp = self.client.get(self.url)
         self.assertContains(resp, '/choices/question/question-form')
 
-class QuestionPublicViewTests(TestCase):
-
-    def setUp(self):
-        self.test_question = Question(description='A Test Question',
-                                    category='general',
-                                    reporter_name='Test User',
-                                    reporter_email='reporter@example.com',
-                                    reporter_phone='01111 111 111',
-                                    public=True,
-                                    public_reporter_name=True,
-                                    preferred_contact_method=Question.CONTACT_EMAIL,
-                                    status=Question.NEW)
-        self.test_question.save()
-
-    def test_public_question_page_exists(self):
-        resp = self.client.get("/choices/question/{0}".format(self.test_question.id))
-        self.assertEqual(resp.status_code, 200)
-
-    def test_public_question_displays_responses(self):
-        response1 = QuestionResponse.objects.create(response="response 1", message=self.test_question)
-        response2 = QuestionResponse.objects.create(response="response 2", message=self.test_question)
-        resp = self.client.get("/choices/question/{0}".format(self.test_question.id))
-        self.assertContains(resp, response1.response, count=1, status_code=200)
-        self.assertContains(resp, response2.response, count=1, status_code=200)
-
-    def test_public_question_displays_empty_response_message(self):
-        resp = self.client.get("/choices/question/{0}".format(self.test_question.id))
-        self.assertContains(resp, "No responses", count=1, status_code=200)
-
 class ProblemPublicViewTests(AuthorizationTestCase):
 
     def setUp(self):
         super(ProblemPublicViewTests, self).setUp()
         self.test_moderated_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
-                                                                     'moderated': MessageModel.MODERATED,
-                                                                     'publication_status': MessageModel.PUBLISHED})
+                                                                     'moderated': Problem.MODERATED,
+                                                                     'publication_status': Problem.PUBLISHED})
         self.test_unmoderated_problem = create_test_instance(Problem, {'organisation': self.test_organisation})
         self.test_private_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
                                                                    'public':False,
                                                                    'public_reporter_name':False,
-                                                                   'moderated': MessageModel.MODERATED,
-                                                                   'publication_status': MessageModel.PUBLISHED})
+                                                                   'moderated': Problem.MODERATED,
+                                                                   'publication_status': Problem.PUBLISHED})
 
         self.test_moderated_problem_url = '/choices/problem/{0}'.format(self.test_moderated_problem.id)
         self.test_unmoderated_problem_url = '/choices/problem/{0}'.format(self.test_unmoderated_problem.id)
@@ -157,4 +128,3 @@ class ProblemProviderPickerTests(TestCase):
     def test_results_page_exists(self):
         resp = self.client.get(self.results_url)
         self.assertEqual(resp.status_code, 200)
-

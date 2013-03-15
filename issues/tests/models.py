@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 
 from organisations.tests.lib import create_test_organisation, create_test_instance, AuthorizationTestCase
 
-from ..models import Problem, Question, MessageModel
+from ..models import Problem, Question
 
 class ProblemModelTests(AuthorizationTestCase):
 
@@ -29,8 +29,8 @@ class ProblemModelTests(AuthorizationTestCase):
                                     public_reporter_name=True,
                                     preferred_contact_method=Problem.CONTACT_EMAIL,
                                     status=Problem.NEW,
-                                    moderated=MessageModel.MODERATED,
-                                    publication_status=MessageModel.PUBLISHED)
+                                    moderated=Problem.MODERATED,
+                                    publication_status=Problem.PUBLISHED)
         self.test_private_problem = Problem(organisation=self.test_organisation,
                                             description='A Test Private Problem',
                                             category='cleanliness',
@@ -95,10 +95,10 @@ class ProblemModelTests(AuthorizationTestCase):
         self.assertFalse(self.test_problem.mailed)
 
     def test_defaults_to_hidden(self):
-        self.assertEqual(self.test_problem.publication_status, MessageModel.HIDDEN)
+        self.assertEqual(self.test_problem.publication_status, Problem.HIDDEN)
 
     def test_defaults_to_unmoderated(self):
-        self.assertEqual(self.test_problem.moderated, MessageModel.NOT_MODERATED)
+        self.assertEqual(self.test_problem.moderated, Problem.NOT_MODERATED)
 
     def test_public_problem_accessible_to_everyone(self):
         self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.test_allowed_user))
@@ -146,8 +146,6 @@ class QuestionModelTests(TestCase):
                                     reporter_name='Test User',
                                     reporter_email='reporter@example.com',
                                     reporter_phone='01111 111 111',
-                                    public=True,
-                                    public_reporter_name=True,
                                     preferred_contact_method=Question.CONTACT_EMAIL,
                                     status=Question.NEW)
 
@@ -203,12 +201,6 @@ class QuestionModelTests(TestCase):
     def test_defaults_to_not_mailed(self):
         self.assertFalse(self.test_question.mailed)
 
-    def test_defaults_to_hidden(self):
-        self.assertEqual(self.test_question.publication_status, MessageModel.HIDDEN)
-
-    def test_defaults_to_unmoderated(self):
-        self.assertEqual(self.test_question.moderated, MessageModel.NOT_MODERATED)
-
 class ManagerTest(TestCase):
 
     def compare_querysets(self, actual, expected):
@@ -247,55 +239,55 @@ class ProblemManagerTests(ManagerTest):
         self.new_public_moderated_problem_hidden = create_test_instance(Problem, {
             'organisation': self.test_organisation,
             'public':True,
-            'moderated':MessageModel.MODERATED,
-            'publication_status':MessageModel.HIDDEN
+            'moderated':Problem.MODERATED,
+            'publication_status':Problem.HIDDEN
         })
         self.new_public_moderated_problem_published = create_test_instance(Problem, {
             'organisation': self.test_organisation,
             'public':True,
-            'moderated':MessageModel.MODERATED,
-            'publication_status':MessageModel.PUBLISHED
+            'moderated':Problem.MODERATED,
+            'publication_status':Problem.PUBLISHED
         })
         self.new_private_moderated_problem_hidden = create_test_instance(Problem, {
             'organisation': self.test_organisation,
             'public':False,
-            'moderated':MessageModel.MODERATED,
-            'publication_status':MessageModel.HIDDEN
+            'moderated':Problem.MODERATED,
+            'publication_status':Problem.HIDDEN
         })
         self.new_private_moderated_problem_published = create_test_instance(Problem, {
             'organisation': self.test_organisation,
             'public':False,
-            'moderated':MessageModel.MODERATED,
-            'publication_status':MessageModel.PUBLISHED
+            'moderated':Problem.MODERATED,
+            'publication_status':Problem.PUBLISHED
         })
 
         # Problems that have been closed and moderated
         self.closed_public_moderated_problem_hidden = create_test_instance(Problem, {
             'organisation': self.test_organisation,
             'public':True,
-            'moderated':MessageModel.MODERATED,
-            'publication_status':MessageModel.HIDDEN,
+            'moderated':Problem.MODERATED,
+            'publication_status':Problem.HIDDEN,
             'status': Problem.RESOLVED
         })
         self.closed_public_moderated_problem_published = create_test_instance(Problem, {
             'organisation': self.test_organisation,
             'public':True,
-            'moderated':MessageModel.MODERATED,
-            'publication_status':MessageModel.PUBLISHED,
+            'moderated':Problem.MODERATED,
+            'publication_status':Problem.PUBLISHED,
             'status': Problem.RESOLVED
         })
         self.closed_private_moderated_problem_hidden = create_test_instance(Problem, {
             'organisation': self.test_organisation,
             'public':False,
-            'moderated':MessageModel.MODERATED,
-            'publication_status':MessageModel.HIDDEN,
+            'moderated':Problem.MODERATED,
+            'publication_status':Problem.HIDDEN,
             'status': Problem.RESOLVED
         })
         self.closed_private_moderated_problem_published = create_test_instance(Problem, {
             'organisation': self.test_organisation,
             'public':False,
-            'moderated':MessageModel.MODERATED,
-            'publication_status':MessageModel.PUBLISHED,
+            'moderated':Problem.MODERATED,
+            'publication_status':Problem.PUBLISHED,
             'status': Problem.RESOLVED
         })
 
@@ -345,102 +337,17 @@ class ProblemManagerTests(ManagerTest):
 class QuestionManagerTests(ManagerTest):
 
     def setUp(self):
-        # Brand new questions
-        self.new_public_unmoderated_question = create_test_instance(Question, {
-            'public':True
-        })
-        self.new_private_unmoderated_question = create_test_instance(Question, {
-            'public':False
-        })
-
-        # Questions that have been closed before being moderated
-        self.closed_public_unmoderated_question = create_test_instance(Question, {
-            'public':True,
-            'status':Question.RESOLVED
-        })
-        self.closed_private_unmoderated_question = create_test_instance(Question, {
-            'public':False,
-            'status':Question.RESOLVED
-        })
-
-        # Questions that have been moderated
-        self.new_public_moderated_question_hidden = create_test_instance(Question, {
-            'public':True,
-            'moderated':MessageModel.MODERATED,
-            'publication_status':MessageModel.HIDDEN
-        })
-        self.new_public_moderated_question_published = create_test_instance(Question, {
-            'public':True,
-            'moderated':MessageModel.MODERATED,
-            'publication_status':MessageModel.PUBLISHED
-        })
-        self.new_private_moderated_question_hidden = create_test_instance(Question, {
-            'public':False,
-            'moderated':MessageModel.MODERATED,
-            'publication_status':MessageModel.HIDDEN
-        })
-        self.new_private_moderated_question_published = create_test_instance(Question, {
-            'public':False,
-            'moderated':MessageModel.MODERATED,
-            'publication_status':MessageModel.PUBLISHED
-        })
-
-        # Questions that have been closed
-        self.closed_public_moderated_question_hidden = create_test_instance(Question, {
-            'public':True,
-            'moderated':MessageModel.MODERATED,
-            'publication_status':MessageModel.HIDDEN,
-            'status': Question.RESOLVED
-        })
-        self.closed_public_moderated_question_published = create_test_instance(Question, {
-            'public':True,
-            'moderated':MessageModel.MODERATED,
-            'publication_status':MessageModel.PUBLISHED,
-            'status': Question.RESOLVED
-        })
-        self.closed_private_moderated_question_hidden = create_test_instance(Question, {
-            'public':False,
-            'moderated':MessageModel.MODERATED,
-            'publication_status':MessageModel.HIDDEN,
-            'status': Question.RESOLVED
-        })
-        self.closed_private_moderated_question_published = create_test_instance(Question, {
-            'public':False,
-            'moderated':MessageModel.MODERATED,
-            'publication_status':MessageModel.PUBLISHED,
+        self.open_question = create_test_instance(Question, {})
+        self.closed_question = create_test_instance(Question, {
             'status': Question.RESOLVED
         })
 
-        self.open_unmoderated_questions = [self.new_public_unmoderated_question,
-                                          self.new_private_unmoderated_question]
-
-        self.closed_unmoderated_questions = [self.closed_public_unmoderated_question,
-                                             self.closed_private_unmoderated_question]
-
-        self.unmoderated_questions = self.open_unmoderated_questions + self.closed_unmoderated_questions
-
-        self.open_moderated_questions = [self.new_public_moderated_question_hidden,
-                                         self.new_public_moderated_question_published,
-                                         self.new_private_moderated_question_hidden,
-                                         self.new_private_moderated_question_published]
-
-        self.open_questions = self.open_unmoderated_questions + self.open_moderated_questions
-
-        self.open_moderated_published_questions = [self.new_public_moderated_question_published,
-                                        self.new_private_moderated_question_published]
-
-        self.closed_questions = self.closed_unmoderated_questions + [self.closed_public_moderated_question_hidden,
-                                                                    self.closed_public_moderated_question_published,
-                                                                    self.closed_private_moderated_question_hidden,
-                                                                    self.closed_private_moderated_question_published]
-
+        self.open_questions = [self.open_question]
+        self.closed_questions = [self.closed_question]
         self.all_questions = self.open_questions + self.closed_questions
 
     def test_open_questions_returns_correct_questions(self):
         self.compare_querysets(Question.objects.open_questions(), self.open_questions)
-
-    def test_unmoderated_questions_returns_correct_questions(self):
-        self.compare_querysets(Question.objects.unmoderated_questions(), self.unmoderated_questions)
 
     def test_all_questions_returns_correct_questions(self):
         self.compare_querysets(Question.objects.all(), self.all_questions)

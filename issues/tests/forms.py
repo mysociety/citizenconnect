@@ -114,7 +114,6 @@ class QuestionCreateFormTests(TestCase):
             'reporter_name': self.uuid,
             'reporter_email': 'steve@mysociety.org',
             'reporter_phone': '01111 111 111',
-            'privacy': QuestionForm.PRIVACY_PRIVATE,
             'preferred_contact_method': 'phone',
             'agree_to_terms': True
         }
@@ -130,29 +129,11 @@ class QuestionCreateFormTests(TestCase):
         # Check in db
         question = Question.objects.get(reporter_name=self.uuid)
         self.assertContains(resp, question.reference_number, count=1, status_code=200)
-        self.assertEqual(question.public, False)
-        self.assertEqual(question.public_reporter_name, False)
         self.assertEqual(question.description, 'This is a question')
         self.assertEqual(question.postcode, 'BS324NF')
         self.assertEqual(question.reporter_name, self.uuid)
         self.assertEqual(question.reporter_email, 'steve@mysociety.org')
         self.assertEqual(question.preferred_contact_method, 'phone')
-
-    def test_question_form_respects_name_privacy(self):
-        self.test_question['privacy'] = QuestionForm.PRIVACY_PRIVATE_NAME
-        resp = self.client.post(self.form_url, self.test_question)
-        # Check in db
-        question = Question.objects.get(reporter_name=self.uuid)
-        self.assertEqual(question.public, True)
-        self.assertEqual(question.public_reporter_name, False)
-
-    def test_question_form_respects_public_privacy(self):
-        self.test_question['privacy'] = QuestionForm.PRIVACY_PUBLIC
-        resp = self.client.post(self.form_url, self.test_question)
-        # Check in db
-        question = Question.objects.get(reporter_name=self.uuid)
-        self.assertEqual(question.public, True)
-        self.assertEqual(question.public_reporter_name, True)
 
     def test_question_form_errors_without_email_or_phone(self):
         del self.test_question['reporter_email']

@@ -33,50 +33,6 @@ class MessageAwareViewMixin(object):
             raise ValueError("Unknown message type: %s" % message_type)
         return context
 
-class MessageDependentFormViewMixin(object):
-    """
-    Mixin for form views which deal with either messages themselves or other objects,
-    like responses to messages, which are basically the same but change some stuff
-    based on whether the message is a Question or Problem.
-
-    This works by dealing with the repetitive "is the message a problem or question"
-    code in all the places where it would happen and the doing the right thing.
-
-    To make it work you need to provide class attributes for each option:
-
-    question_form_class - The form class to use when the message is a Question
-    problem_form_class - The form class to use when the message is a Problem
-
-    question_queryset - The queryset to use when the message is a Question
-    problem_queryset - The queryset to use when the message is a Problem
-    """
-
-    def get_form_class(self):
-        """
-        Return the right form class depending on what model we're editing.
-        """
-        message_type = self.kwargs['message_type']
-        if message_type == 'question':
-            return self.question_form_class
-        elif message_type == 'problem':
-            return self.problem_form_class
-        else:
-            raise ValueError("Unknown message type: %s" % message_type)
-
-    def get_queryset(self):
-        """
-        Determine the queryset dynamically based on the message_type.
-        This is another way of specifying the Model we're editing, but there isn't
-        a get_model method to use for that, so we do this instead.
-        """
-        message_type = self.kwargs['message_type']
-        if message_type == 'question':
-            return self.question_queryset
-        elif message_type == 'problem':
-            return self.problem_queryset
-        else:
-            raise ValueError("Unknown message type: %s" % message_type)
-
 class MessageDetailViewMixin(DetailView):
     """
     Mixin for message detail views that checks access when getting the message
@@ -101,9 +57,6 @@ class QuestionCreate(CreateView):
         context = RequestContext(self.request)
         context['object'] = self.object
         return render(self.request, self.confirm_template, context)
-
-class QuestionDetail(DetailView):
-    model = Question
 
 class ProblemPickProvider(PickProviderBase):
     result_link_url_name = 'problem-form'
