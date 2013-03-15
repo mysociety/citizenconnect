@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from issues.models import Problem, MessageModel
+from issues.models import Problem
 
 from ..models import SuperuserLogEntry
 from .lib import AuthorizationTestCase, create_test_instance
@@ -16,11 +16,11 @@ class SuperuserLogTests(AuthorizationTestCase):
         self.private_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
                                                               'public':False,
                                                               'moderated': True,
-                                                              'publication_status': MessageModel.PUBLISHED})
+                                                              'publication_status': Problem.PUBLISHED})
         # Create a hidden problem
         self.hidden_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
                                                              'moderated': True,
-                                                             'publication_status': MessageModel.HIDDEN})
+                                                             'publication_status': Problem.HIDDEN})
         self.test_urls = [
             reverse('home', kwargs={'cobrand':'choices'}),
             reverse('private-map'),

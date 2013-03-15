@@ -61,7 +61,7 @@ class MessageModelTable(tables.Table):
 
     def render_summary(self, record):
         if self.private:
-            url = reverse("response-form", kwargs={'message_type': self.message_type, 'pk': record.id})
+            url = reverse("response-form", kwargs={'pk': record.id})
         else:
             url = reverse('%s-view' % self.message_type, kwargs={'cobrand': self.cobrand, 'pk': record.id})
         return mark_safe('''<a href="%s">%s</a>''' % (url, record.summary))

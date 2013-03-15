@@ -59,7 +59,7 @@
                         <td>{{ problem.issue_type }}</td>
                         <td>{{ problem.created }}</td>
                         <td>{{ problem.reporter_name }}</td>
-                        <td><a href="{% url 'response-form' message_type=problem.issue_type.lower pk=problem.id %}">{{ problem.summary }}</a></td>
+                        <td><a href="{% url 'response-form' pk=problem.id %}">{{ problem.summary }}</a></td>
                         <td>{{ problem.get_status_display }}</td>
                         <td>{% if problem.status == Problem.RESOLVED %}
                                 No

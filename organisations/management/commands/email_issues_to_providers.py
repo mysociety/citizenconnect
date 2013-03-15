@@ -41,7 +41,6 @@ class Command(BaseCommand):
     def send_message(self, template, issue):
         context = Context({ 'message': issue, 'site_base_url': settings.SITE_BASE_URL })
         logger.info('Emailing message reference number: {0}'.format(issue.reference_number))
-        # TODO - from_email should be a setting?
         # TODO - recipient list should come from the organisation if it's a
         # problem and from a setting if it's a question
         mail.send_mail(subject='Care Connect: New {0}'.format(issue.issue_type),

@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 
 # App imports
-from issues.models import Problem, Question, MessageModel
+from issues.models import Problem, Question
 
 import organisations
 from ..models import Organisation
@@ -176,8 +176,8 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         self.private_gp_problems_url = '/private/problems/%s' % self.gp.ods_code
         self.staff_problem = create_test_instance(Problem, {'category': 'staff',
                                                             'organisation': self.hospital,
-                                                            'moderated': MessageModel.MODERATED,
-                                                            'publication_status': MessageModel.PUBLISHED})
+                                                            'moderated': Problem.MODERATED,
+                                                            'publication_status': Problem.PUBLISHED})
 
         # Add some users to test access rights
         self.test_hospital_user = User.objects.create_user("Test hospital user", 'hospital@example.com', self.test_password)
@@ -239,11 +239,11 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         # Add some problems which shouldn't show up
         unmoderated_problem = create_test_instance(Problem, {'organisation': self.hospital})
         hidden_problem = create_test_instance(Problem, {'organisation': self.hospital,
-                                       'moderated': MessageModel.MODERATED,
-                                       'publication_status': MessageModel.HIDDEN})
+                                       'moderated': Problem.MODERATED,
+                                       'publication_status': Problem.HIDDEN})
         private_problem = create_test_instance(Problem, {'organisation': self.hospital,
-                                       'moderated': MessageModel.MODERATED,
-                                       'publication_status': MessageModel.PUBLISHED,
+                                       'moderated': Problem.MODERATED,
+                                       'publication_status': Problem.PUBLISHED,
                                        'public': False})
         resp = self.client.get(self.public_hospital_problems_url)
         self.assertTrue('/choices/problem/%s' % unmoderated_problem.id not in resp.content)
@@ -258,23 +258,23 @@ class OrganisationProblemsTests(AuthorizationTestCase):
     def test_private_page_links_to_problems(self):
         self.login_as(self.test_hospital_user)
         resp = self.client.get(self.private_hospital_problems_url)
-        self.assertTrue('/private/response/problem/%s' % self.staff_problem.id in resp.content)
+        self.assertTrue('/private/response/%s' % self.staff_problem.id in resp.content)
 
     def test_private_page_shows_hidden_private_and_unmoderated_problems(self):
         # Add some extra problems
         unmoderated_problem = create_test_instance(Problem, {'organisation': self.hospital})
         hidden_problem = create_test_instance(Problem, {'organisation': self.hospital,
-                                       'moderated': MessageModel.MODERATED,
-                                       'publication_status': MessageModel.HIDDEN})
+                                       'moderated': Problem.MODERATED,
+                                       'publication_status': Problem.HIDDEN})
         private_problem = create_test_instance(Problem, {'organisation': self.hospital,
-                                       'moderated': MessageModel.MODERATED,
-                                       'publication_status': MessageModel.PUBLISHED,
+                                       'moderated': Problem.MODERATED,
+                                       'publication_status': Problem.PUBLISHED,
                                        'public': False})
         self.login_as(self.test_hospital_user)
         resp = self.client.get(self.private_hospital_problems_url)
-        self.assertTrue('/private/response/problem/%s' % unmoderated_problem.id in resp.content)
-        self.assertTrue('/private/response/problem/%s' % hidden_problem.id in resp.content)
-        self.assertTrue('/private/response/problem/%s' % private_problem.id in resp.content)
+        self.assertTrue('/private/response/%s' % unmoderated_problem.id in resp.content)
+        self.assertTrue('/private/response/%s' % hidden_problem.id in resp.content)
+        self.assertTrue('/private/response/%s' % private_problem.id in resp.content)
 
     def test_private_page_is_inaccessible_to_anon_users(self):
         expected_login_url = "{0}?next={1}".format(self.login_url, self.private_hospital_problems_url)
@@ -356,13 +356,13 @@ class OrganisationDashboardTests(AuthorizationTestCase):
     def test_dashboard_shows_problems(self):
         self.login_as(self.test_allowed_user)
         resp = self.client.get(self.dashboard_url)
-        self.assertTrue('/private/response/problem/%s' % self.problem.id in resp.content)
+        self.assertTrue('/private/response/%s' % self.problem.id in resp.content)
 
     def test_dashboard_doesnt_show_closed_problems(self):
         self.closed_problem = create_test_instance(Problem, {'organisation': self.test_organisation, 'status': Problem.RESOLVED})
         self.login_as(self.test_allowed_user)
         resp = self.client.get(self.dashboard_url)
-        self.assertTrue('/private/response/problem/%s' % self.closed_problem.id not in resp.content)
+        self.assertTrue('/private/response/%s' % self.closed_problem.id not in resp.content)
 
     def test_dashboard_page_is_inaccessible_to_anon_users(self):
         expected_login_url = "{0}?next={1}".format(self.login_url, self.dashboard_url)
@@ -411,11 +411,11 @@ class OrganisationMapTests(AuthorizationTestCase):
     def test_public_map_doesnt_include_unmoderated_or_unpublished_problems(self):
         create_test_instance(Problem, {'organisation': self.other_gp})
         create_test_instance(Problem, {'organisation': self.other_gp,
-                                       'publication_status': MessageModel.HIDDEN,
-                                       'moderated': MessageModel.MODERATED})
+                                       'publication_status': Problem.HIDDEN,
+                                       'moderated': Problem.MODERATED})
         create_test_instance(Problem, {'organisation': self.other_gp,
-                                       'publication_status': MessageModel.PUBLISHED,
-                                       'moderated': MessageModel.MODERATED})
+                                       'publication_status': Problem.PUBLISHED,
+                                       'moderated': Problem.MODERATED})
 
 
         resp = self.client.get(self.map_url)
@@ -444,11 +444,11 @@ class OrganisationMapTests(AuthorizationTestCase):
         self.login_as(self.test_nhs_superuser)
         create_test_instance(Problem, {'organisation': self.other_gp})
         create_test_instance(Problem, {'organisation': self.other_gp,
-                                       'publication_status': MessageModel.HIDDEN,
-                                       'moderated': MessageModel.MODERATED})
+                                       'publication_status': Problem.HIDDEN,
+                                       'moderated': Problem.MODERATED})
         create_test_instance(Problem, {'organisation': self.other_gp,
-                                       'publication_status': MessageModel.PUBLISHED,
-                                       'moderated': MessageModel.MODERATED})
+                                       'publication_status': Problem.PUBLISHED,
+                                       'moderated': Problem.MODERATED})
 
         resp = self.client.get(self.private_map_url)
         response_json = json.loads(resp.context['organisations'])

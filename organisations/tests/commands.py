@@ -56,8 +56,6 @@ class EmailIssuesToProviderTests(TestCase):
         self.assertTrue(self.test_question.reporter_email in second_mail.body)
         self.assertTrue(self.test_question.category in second_mail.body)
         self.assertTrue(self.test_question.description in second_mail.body)
-        response_url = settings.SITE_BASE_URL + reverse('response-form', kwargs={'message_type':'question', 'pk':self.test_question.id})
-        self.assertTrue(response_url in second_mail.body)
 
         # Check that messages were marked as mailed
         self.test_problem = Problem.objects.get(pk=self.test_problem.id)

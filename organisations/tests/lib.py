@@ -47,18 +47,21 @@ def create_test_service(attributes={}):
 # Create a test instance of a Problem or Question model that will fill in
 # default values for attributes not specified.
 def create_test_instance(model, attributes):
-    # Problems need an organisations
-    if model == Problem and 'organisation' not in attributes:
-        # Make a dummy organisation
-        attributes['organisation'] = create_test_organisation()
+    # Problems need more attributes
+    if model == Problem:
+        if 'public' not in attributes:
+            attributes['public'] = True
+        if 'public_reporter_name' not in attributes:
+            attributes['public_reporter_name'] = True
+        if 'organisation' not in attributes:
+            # Make a dummy organisation
+            attributes['organisation'] = create_test_organisation()
 
     default_attributes = {
         'description': 'A test problem',
         'category': 'staff',
         'reporter_name': 'Test User',
         'reporter_email': 'reporter@example.com',
-        'public': True,
-        'public_reporter_name': True,
         'preferred_contact_method': 'email',
         'status': model.NEW
     }
