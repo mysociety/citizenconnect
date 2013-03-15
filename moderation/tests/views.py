@@ -3,7 +3,7 @@ import logging
 from django.core.urlresolvers import reverse
 
 from organisations.tests.lib import create_test_instance, create_test_organisation
-from issues.models import Problem, Question, MessageModel
+from issues.models import Problem, Question
 from responses.models import ProblemResponse
 
 from .lib import BaseModerationTestCase
@@ -24,9 +24,6 @@ class BasicViewTests(BaseModerationTestCase):
 
     def test_form_views_exist(self):
         resp = self.client.get(self.problem_form_url)
-        self.assertEqual(resp.status_code, 200)
-
-        resp = self.client.get(self.question_form_url)
         self.assertEqual(resp.status_code, 200)
 
     def test_confirm_view_exists(self):
@@ -73,8 +70,10 @@ class HomeViewTests(BaseModerationTestCase):
     def setUp(self):
         super(HomeViewTests, self).setUp()
 
-        self.closed_problem = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.RESOLVED})
-        self.moderated_problem = create_test_instance(Problem, {'organisation':self.test_organisation, 'moderated': MessageModel.MODERATED})
+        self.closed_problem = create_test_instance(Problem, {'organisation':self.test_organisation,
+                                                             'status': Problem.RESOLVED})
+        self.moderated_problem = create_test_instance(Problem, {'organisation':self.test_organisation,
+                                                                'moderated': Problem.MODERATED})
 
         self.login_as(self.test_moderator)
 
@@ -101,21 +100,16 @@ class ModerateFormViewTests(BaseModerationTestCase):
     def setUp(self):
         super(ModerateFormViewTests, self).setUp()
 
-        self.closed_problem = create_test_instance(Problem, {'organisation':self.test_organisation, 'status': Problem.RESOLVED})
-        self.moderated_problem = create_test_instance(Problem, {'organisation':self.test_organisation, 'moderated': MessageModel.MODERATED})
-
-        self.closed_question = create_test_instance(Question, {'status': Question.RESOLVED})
-        self.moderated_question = create_test_instance(Question, {'moderated': MessageModel.MODERATED})
+        self.closed_problem = create_test_instance(Problem, {'organisation':self.test_organisation,
+                                                             'status': Problem.RESOLVED})
+        self.moderated_problem = create_test_instance(Problem, {'organisation':self.test_organisation,
+                                                                'moderated': Problem.MODERATED})
 
         self.login_as(self.test_moderator)
 
     def test_problem_in_context(self):
         resp = self.client.get(self.problem_form_url)
         self.assertEqual(resp.context['message'], self.test_problem)
-
-    def test_question_in_context(self):
-        resp = self.client.get(self.question_form_url)
-        self.assertEqual(resp.context['message'], self.test_question)
 
     def test_message_data_displayed(self):
         # Add some responses to the message too
@@ -134,17 +128,11 @@ class ModerateFormViewTests(BaseModerationTestCase):
         # Quiten down logging
         logging.disable(logging.CRITICAL)
 
-        resp = self.client.get('/private/moderate/problem/{0}'.format(self.moderated_problem.id))
-        self.assertEqual(resp.status_code, 404)
-
-        resp = self.client.get('/private/moderate/question/{0}'.format(self.moderated_question.id))
+        resp = self.client.get('/private/moderate/{0}'.format(self.moderated_problem.id))
         self.assertEqual(resp.status_code, 404)
 
         logging.disable(logging.NOTSET)
 
     def test_closed_issues_accepted(self):
-        resp = self.client.get('/private/moderate/problem/{0}'.format(self.closed_problem.id))
-        self.assertEqual(resp.status_code, 200)
-
-        resp = self.client.get('/private/moderate/question/{0}'.format(self.closed_question.id))
+        resp = self.client.get('/private/moderate/{0}'.format(self.closed_problem.id))
         self.assertEqual(resp.status_code, 200)

@@ -1,12 +1,29 @@
 from django import forms
 from django.forms.widgets import HiddenInput
 
-from issues.models import MessageModel, Problem, Question
+from issues.models import Problem
 
-class MessageModerationForm(forms.ModelForm):
-    """
-    Base form class for moderating to Questions and Problems.
-    """
+class LookupForm(forms.Form):
+    reference_number = forms.CharField(required=True)
+    model_id = forms.CharField(widget=HiddenInput(), required=False)
+
+    # TODO - this is a bit of hangover from when problems and questions
+    # could be moderated, but now it's only problems
+    def clean(self):
+        if 'reference_number' in self.cleaned_data:
+            prefix = self.cleaned_data['reference_number'][:1]
+            id = self.cleaned_data['reference_number'][1:]
+            try:
+                if prefix == Problem.PREFIX:
+                    problem = Problem.objects.unmoderated_problems().get(pk=id)
+                    self.cleaned_data['model_id'] = problem.id
+                else:
+                    raise forms.ValidationError('Sorry, that reference number is not recognised')
+            except Problem.DoesNotExist:
+                raise forms.ValidationError('Sorry, there are no unmoderated problems with that reference number')
+        return self.cleaned_data
+
+class ProblemModerationForm(forms.ModelForm):
 
     def clean_publication_status(self):
         # Status is hidden, but if people click the "Publish" button, we should
@@ -14,16 +31,18 @@ class MessageModerationForm(forms.ModelForm):
         # to HIDDEN regardless for security
         publication_status = self.cleaned_data['publication_status']
         if 'publish' in self.data:
-            publication_status = MessageModel.PUBLISHED
+            publication_status = Problem.PUBLISHED
         else:
-            publication_status = MessageModel.HIDDEN
+            publication_status = Problem.HIDDEN
         return publication_status
 
     def clean_moderated(self):
         # If you are submitting the form, you have moderated it, so always return MODERATED
-        return MessageModel.MODERATED
+        return Problem.MODERATED
 
     class Meta:
+        model = Problem
+
         fields = [
             'publication_status',
             'description',
@@ -34,39 +53,3 @@ class MessageModerationForm(forms.ModelForm):
             'publication_status': HiddenInput,
             'moderated': HiddenInput
         }
-
-class LookupForm(forms.Form):
-    reference_number = forms.CharField(required=True)
-    model_type = forms.CharField(widget=HiddenInput(), required=False)
-    model_id = forms.CharField(widget=HiddenInput(), required=False)
-
-    def clean(self):
-        if 'reference_number' in self.cleaned_data:
-            prefix = self.cleaned_data['reference_number'][:1]
-            id = self.cleaned_data['reference_number'][1:]
-            model = None
-
-            try:
-                if prefix == Problem.PREFIX:
-                    model = Problem.objects.unmoderated_problems().get(pk=id)
-                elif prefix == Question.PREFIX:
-                    model = Question.objects.unmoderated_questions().get(pk=id)
-                else:
-                    raise forms.ValidationError('Sorry, that reference number is not recognised')
-            except (Problem.DoesNotExist, Question.DoesNotExist):
-                raise forms.ValidationError('Sorry, there are no unmoderated issues with that reference number')
-
-            self.cleaned_data['model_type'] = model.issue_type.lower()
-            self.cleaned_data['model_id'] = model.id
-
-        return self.cleaned_data
-
-class QuestionModerationForm(MessageModerationForm):
-
-    class Meta(MessageModerationForm.Meta):
-        model = Question
-
-class ProblemModerationForm(MessageModerationForm):
-
-    class Meta(MessageModerationForm.Meta):
-        model = Problem

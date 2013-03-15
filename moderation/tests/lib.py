@@ -13,6 +13,5 @@ class BaseModerationTestCase(AuthorizationTestCase, TransactionTestCase):
         self.test_question = create_test_instance(Question, {})
         self.home_url = '/private/moderate/'
         self.lookup_url = '/private/moderate/lookup'
-        self.problem_form_url = '/private/moderate/problem/%d' % self.test_problem.id
-        self.question_form_url = '/private/moderate/question/%d' % self.test_question.id
+        self.problem_form_url = '/private/moderate/%d' % self.test_problem.id
         self.confirm_url = '/private/moderate/confirm'

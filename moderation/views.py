@@ -12,11 +12,10 @@ from django.http import HttpResponseRedirect
 from django_tables2 import RequestConfig
 
 # App imports
-from issues.views import MessageDependentFormViewMixin
-from issues.models import Problem, Question
+from issues.models import Problem
 from organisations.models import Organisation
 
-from .forms import LookupForm, QuestionModerationForm, ProblemModerationForm
+from .forms import LookupForm, ProblemModerationForm
 from .tables import ModerationTable
 
 class ModeratorsOnlyMixin(object):
@@ -53,25 +52,19 @@ class ModerateLookup(ModeratorsOnlyMixin,
     def form_valid(self, form):
         # Calculate the url
         context = RequestContext(self.request)
-        moderate_url = reverse("moderate-form", kwargs={'message_type': form.cleaned_data['model_type'],
-                                                        'pk': form.cleaned_data['model_id']})
+        moderate_url = reverse("moderate-form", kwargs={'pk': form.cleaned_data['model_id']})
         # Redirect to the url we calculated
         return HttpResponseRedirect(moderate_url)
 
 class ModerateForm(ModeratorsOnlyMixin,
-                   MessageDependentFormViewMixin,
                    UpdateView):
 
+    queryset = Problem.objects.unmoderated_problems().all()
     template_name = 'moderation/moderate-form.html'
+    form_class = ProblemModerationForm
 
     # Standardise the context_object's name
     context_object_name = 'message'
-
-    # Parameters for MessageDependentFormViewMixin
-    problem_form_class = ProblemModerationForm
-    question_form_class = QuestionModerationForm
-    problem_queryset = Problem.objects.unmoderated_problems()
-    question_queryset = Question.objects.unmoderated_questions()
 
     def get_success_url(self):
         return reverse('moderate-confirm')

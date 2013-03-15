@@ -1,2 +1,2 @@
 {% load url from future %}
-<a href="{% url 'moderate-form' message_type=record.issue_type.lower pk=record.id %}">Moderate</a>
+<a href="{% url 'moderate-form' pk=record.id %}">Moderate</a>
