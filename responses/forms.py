@@ -1,16 +1,16 @@
 from django import forms
 from django.forms.widgets import HiddenInput, Textarea
 
-from issues.models import Problem, Question
+from issues.models import Problem
 
-from .models import QuestionResponse, ProblemResponse
+from .models import ProblemResponse
 
-class MessageResponseForm(forms.ModelForm):
-    """
-    Base form class for creating/editing responses to Questions and Problems.
-    """
+
+class ProblemResponseForm(forms.ModelForm):
 
     response = forms.CharField(required=False, widget=Textarea())
+    message_status = forms.ChoiceField(choices=Problem.STATUS_CHOICES,
+                                       required=False)
 
     def clean_response(self):
         response = self.cleaned_data['response']
@@ -26,6 +26,8 @@ class MessageResponseForm(forms.ModelForm):
         return response
 
     class Meta:
+        model = ProblemResponse
+
         fields = [
             'response',
             'message'
@@ -34,21 +36,3 @@ class MessageResponseForm(forms.ModelForm):
         widgets = {
             'message': HiddenInput
         }
-
-class QuestionResponseForm(MessageResponseForm):
-
-    # Add a status field which will actually change the message this is
-    # connected to
-    message_status = forms.ChoiceField(choices=Question.STATUS_CHOICES,
-                                       required=False)
-
-    class Meta(MessageResponseForm.Meta):
-        model = QuestionResponse
-
-class ProblemResponseForm(MessageResponseForm):
-
-    message_status = forms.ChoiceField(choices=Problem.STATUS_CHOICES,
-                                       required=False)
-
-    class Meta(MessageResponseForm.Meta):
-        model = ProblemResponse

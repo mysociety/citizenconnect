@@ -6,16 +6,14 @@ from django.core.urlresolvers import reverse
 from issues.models import Problem, Question
 from organisations.tests.lib import create_test_instance, create_test_organisation, AuthorizationTestCase
 
-from .models import ProblemResponse, QuestionResponse
+from .models import ProblemResponse
 
 class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
 
     def setUp(self):
         super(ResponseFormTests, self).setUp()
         self.test_problem = create_test_instance(Problem, {'organisation':self.test_organisation})
-        self.test_question = create_test_instance(Question, {})
-        self.problem_response_form_url = '/private/response/problem/%s' % self.test_problem.id
-        self.question_response_form_url = '/private/response/question/%s' % self.test_problem.id
+        self.problem_response_form_url = '/private/response/%s' % self.test_problem.id
         self.login_as(self.test_allowed_user)
 
     def test_form_creates_problem_response(self):
@@ -29,19 +27,6 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         self.test_problem = Problem.objects.get(pk=self.test_problem.id)
         response = self.test_problem.responses.all()[0]
         self.assertEqual(self.test_problem.responses.count(), 1)
-        self.assertEqual(response.response, response_text)
-
-    def test_form_creates_question_response(self):
-        response_text = 'This question is solved'
-        test_form_values = {
-            'response': response_text,
-            'message': self.test_question.id,
-            'respond': ''
-        }
-        resp = self.client.post(self.question_response_form_url, test_form_values)
-        self.test_question = Question.objects.get(pk=self.test_question.id)
-        response = self.test_question.responses.all()[0]
-        self.assertEqual(self.test_question.responses.count(), 1)
         self.assertEqual(response.response, response_text)
 
     def test_form_creates_problem_response_and_saves_status(self):
@@ -58,21 +43,6 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         self.assertEqual(self.test_problem.responses.count(), 1)
         self.assertEqual(response.response, response_text)
         self.assertEqual(self.test_problem.status, Problem.RESOLVED)
-
-    def test_form_creates_question_response_and_saves_status(self):
-        response_text = 'This question is solved'
-        test_form_values = {
-            'response': response_text,
-            'message': self.test_question.id,
-            'message_status': Question.RESOLVED,
-            'respond': ''
-        }
-        resp = self.client.post(self.question_response_form_url, test_form_values)
-        self.test_question = Question.objects.get(pk=self.test_question.id)
-        response = self.test_question.responses.all()[0]
-        self.assertEqual(self.test_question.responses.count(), 1)
-        self.assertEqual(response.response, response_text)
-        self.assertEqual(self.test_question.status, Question.RESOLVED)
 
     def test_form_allows_empty_response_for_status_change(self):
         response_text = ''
@@ -140,7 +110,7 @@ class ResponseFormViewTests(AuthorizationTestCase):
     def setUp(self):
         super(ResponseFormViewTests, self).setUp()
         self.problem = create_test_instance(Problem, {'organisation': self.test_organisation})
-        self.response_form_url = '/private/response/problem/%s' % self.problem.id
+        self.response_form_url = '/private/response/%s' % self.problem.id
         self.login_as(self.test_allowed_user)
 
     def test_response_page_exists(self):
