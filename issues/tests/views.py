@@ -17,6 +17,22 @@ class AskQuestionViewTests(TestCase):
         resp = self.client.get(self.url)
         self.assertContains(resp, '/choices/question/question-form')
 
+    def test_ask_question_page_links_to_question_provider_picker(self):
+        resp = self.client.get(self.url)
+        self.assertContains(resp, '/choices/question/pick-provider')
+
+class QuestionCreateViewTests(TestCase):
+
+    def setUp(self):
+        self.test_organisation = create_test_organisation();
+        self.url = '/choices/question/question-form'
+        self.organisation_url = '/choices/question/question-form/{0}'.format(self.test_organisation.ods_code)
+
+    def test_organisation_name_shown(self):
+        resp = self.client.get(self.organisation_url)
+        self.assertContains(resp, self.test_organisation.name)
+
+
 class ProblemPublicViewTests(AuthorizationTestCase):
 
     def setUp(self):

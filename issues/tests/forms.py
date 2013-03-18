@@ -107,6 +107,7 @@ class QuestionCreateFormTests(TestCase):
         # on primary key increments
         self.uuid = uuid.uuid4().hex
         self.form_url = '/choices/question/question-form'
+        self.test_organisation = create_test_organisation({'ods_code': '11111'})
         self.test_question = {
             'description': 'This is a question',
             'postcode': 'BS32 4NF',
@@ -169,3 +170,9 @@ class QuestionCreateFormTests(TestCase):
         del self.test_question['reporter_name']
         resp = self.client.post(self.form_url, self.test_question)
         self.assertFormError(resp, 'form', 'reporter_name', 'This field is required.')
+
+    def test_organisation_is_accepted(self):
+        self.test_question['organisation'] = self.test_organisation.id
+        resp = self.client.post(self.form_url, self.test_question)
+        question = Question.objects.get(reporter_name=self.uuid)
+        self.assertEqual(question.organisation, self.test_organisation)
