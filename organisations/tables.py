@@ -70,8 +70,6 @@ class MessageModelTable(tables.Table):
         order_by = ('-created',)
         attrs = {"class": "problem-table"}
 
-
-
 class ExtendedMessageModelTable(MessageModelTable):
 
     service = tables.Column(verbose_name='Department')
