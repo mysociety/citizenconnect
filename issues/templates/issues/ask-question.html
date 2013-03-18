@@ -10,10 +10,18 @@
     <h1>Ask a Question</h1>
 </div>
 
-<a href="{% url 'question-form' cobrand=cobrand.name %}" class="btn  btn--no-border  btn--big--fwd">
-    <span class="icon-chevron-right" aria-hidden="true"></span>
-    <span class="btn--big--fwd__text">Click here to ask a question about any aspect of NHS services</span>
-</a>
+<p>
+  <a href="{% url 'question-form' cobrand=cobrand.name %}" class="btn  btn--no-border  btn--big--fwd">
+      <span class="icon-chevron-right" aria-hidden="true"></span>
+      <span class="btn--big--fwd__text">Click here to ask a question about any aspect of NHS services</span>
+  </a>
+</p>
+<p>
+  <a href="{% url 'question-pick-provider' cobrand=cobrand.name %}" class="btn  btn--no-border  btn--big--fwd">
+      <span class="icon-chevron-right" aria-hidden="true"></span>
+      <span class="btn--big--fwd__text">Click here to ask a question about a specific NHS provider</span>
+  </a>
+</p>
 
 <div class="header  mt--b">
 <h2>Frequently asked questions</h2>
