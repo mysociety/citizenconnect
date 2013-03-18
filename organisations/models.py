@@ -74,6 +74,9 @@ class Organisation(AuditedModel,geomodels.Model):
         # Everyone else - NO
         return False
 
+    def __unicode__(self):
+        return self.name
+
 class Service(AuditedModel):
     name = models.TextField()
     service_code = models.TextField(db_index=True)

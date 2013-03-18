@@ -13,17 +13,18 @@ from django_tables2 import RequestConfig
 from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 # App imports
 from citizenconnect.shortcuts import render
-from issues.models import Problem
+from issues.models import Problem, Question
 
 from .models import Organisation, Service
 from .forms import OrganisationFinderForm
 import choices_api
 from .lib import interval_counts
 from .models import Organisation, CCG, SuperuserLogEntry
-from .tables  import NationalSummaryTable, MessageModelTable, ExtendedMessageModelTable
+from .tables  import NationalSummaryTable, MessageModelTable, ExtendedMessageModelTable, QuestionsDashboardTable
 
 def _check_organisation_access(organisation, user):
     if not organisation.can_be_accessed_by(user):
@@ -335,6 +336,10 @@ def login_redirect(request):
     elif user.groups.filter(pk=Organisation.MODERATORS).exists():
         return HttpResponseRedirect(reverse('moderate-home'))
 
+    # Question Answerers go to the question answering dashboard
+    elif user.groups.filter(pk=Organisation.QUESTION_ANSWERERS).exists():
+        return HttpResponseRedirect(reverse('questions-dashboard'))
+
     # Providers
     elif user.groups.filter(pk=Organisation.PROVIDERS).exists():
         # Providers with only one organisation just go to that organisation's dashboard
@@ -360,4 +365,26 @@ class SuperuserLogs(TemplateView):
             raise PermissionDenied()
         else:
             context['logs'] = SuperuserLogEntry.objects.all()
+        return context
+
+class QuestionsDashboard(ListView):
+
+    queryset = Question.objects.open_questions();
+    template_name = 'organisations/questions-dashboard.html'
+    context_object_name = "questions"
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.groups.filter(Q(pk=Organisation.QUESTION_ANSWERERS) |
+                                      Q(pk=Organisation.NHS_SUPERUSERS)).exists():
+            return super(QuestionsDashboard, self).dispatch(request, *args, **kwargs)
+        else:
+            raise PermissionDenied()
+
+    def get_context_data(self, **kwargs):
+        context = super(QuestionsDashboard, self).get_context_data(**kwargs)
+        # Setup a table for the questions
+        question_table = QuestionsDashboardTable(context['questions'])
+        RequestConfig(self.request, paginate={'per_page': 25}).configure(question_table)
+        context['table'] = question_table
+        context['page_obj'] = context['table'].page
         return context

@@ -25,6 +25,8 @@ urlpatterns = patterns('',
 
     url(r'^access-logs$', login_required(SuperuserLogs.as_view()), name='superuser-logs'),
 
+    url(r'^questions$', login_required(QuestionsDashboard.as_view()), name='questions-dashboard'),
+
     # Authentication related urls
     url(r'^login$',
         'django.contrib.auth.views.login',

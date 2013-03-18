@@ -607,3 +607,49 @@ class ProviderPickerTests(TestCase):
         expected_message = 'Sorry, there are no matches within 5 miles of SW1A 1AA. Please try again'
         self.assertContains(resp, expected_message, count=1, status_code=200)
 
+class QuestionDashboardTests(AuthorizationTestCase):
+
+    def setUp(self):
+        super(QuestionDashboardTests, self).setUp()
+        self.questions_dashboard_url = reverse('questions-dashboard')
+        # Add some questions
+        self.test_question = create_test_instance(Question, {})
+        self.test_organisation_question = create_test_instance(Question, {'organisation': self.test_organisation})
+        self.test_closed_question = create_test_instance(Question, {'status': Question.RESOLVED})
+
+    def test_dashboard_shows_only_open_questions(self):
+        self.login_as(self.test_question_answerer)
+        resp = self.client.get(self.questions_dashboard_url)
+        self.assertContains(resp, self.test_question.reference_number)
+        self.assertContains(resp, self.test_organisation_question.reference_number)
+        self.assertFalse(self.test_closed_question.reference_number in resp.content)
+
+    def test_dashboard_show_org_name(self):
+        self.login_as(self.test_question_answerer)
+        resp = self.client.get(self.questions_dashboard_url)
+        self.assertContains(resp, self.test_organisation.name)
+
+    def test_dashboard_requires_login(self):
+        expected_redirect_url = "{0}?next={1}".format(reverse("login"), self.questions_dashboard_url)
+        resp = self.client.get(self.questions_dashboard_url)
+        self.assertRedirects(resp, expected_redirect_url)
+
+    def test_dashboard_only_accessible_to_question_answerers_and_superusers(self):
+        users_who_shouldnt_have_access = [self.test_allowed_user,
+                                          self.test_other_provider_user,
+                                          self.test_moderator,
+                                          self.test_no_provider_user,
+                                          self.test_pals_user]
+        for user in users_who_shouldnt_have_access:
+            self.login_as(user)
+            resp = self.client.get(self.questions_dashboard_url)
+            self.assertEqual(resp.status_code, 403)
+
+        users_who_should_have_access = [self.test_question_answerer,
+                                        self.test_nhs_superuser]
+
+        for user in users_who_should_have_access:
+            self.login_as(user)
+            resp = self.client.get(self.questions_dashboard_url)
+            self.assertEqual(resp.status_code, 200)
+

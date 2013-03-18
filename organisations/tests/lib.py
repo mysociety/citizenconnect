@@ -281,6 +281,14 @@ class AuthorizationTestCase(TestCase):
         self.test_moderator.groups.add(moderators_group)
         self.test_moderator.save()
 
+        # A Question Answerer
+        self.test_question_answerer = User.objects.create_user('Test Question Answerer',
+                                                               'answerer@example.com',
+                                                               self.test_password)
+        question_answerers_group = Group.objects.get(pk=Organisation.QUESTION_ANSWERERS)
+        self.test_question_answerer.groups.add(question_answerers_group)
+        self.test_question_answerer.save()
+
         # Helpful lists for simpler testing
         self.users_who_can_access_everything = [self.superuser, self.test_nhs_superuser, self.test_moderator]
 
