@@ -19,6 +19,9 @@ def _check_message_access(message, user):
 class AskQuestion(TemplateView):
     template_name = 'issues/ask-question.html'
 
+class QuestionPickProvider(PickProviderBase):
+    result_link_url_name = 'question-form'
+
 class QuestionCreate(CreateView):
     model = Question
     form_class = QuestionForm
@@ -29,6 +32,21 @@ class QuestionCreate(CreateView):
         context = RequestContext(self.request)
         context['object'] = self.object
         return render(self.request, self.confirm_template, context)
+
+    # Get the (optional) organisation name
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(QuestionCreate, self).get_context_data(**kwargs)
+        if 'ods_code' in self.kwargs and self.kwargs['ods_code']:
+            context['organisation'] = Organisation.objects.get(ods_code=self.kwargs['ods_code'])
+        return context
+
+    def get_initial(self):
+        initial = super(QuestionCreate, self).get_initial()
+        if 'ods_code' in self.kwargs and self.kwargs['ods_code']:
+            initial = initial.copy()
+            initial['organisation'] = get_object_or_404(Organisation, ods_code=self.kwargs['ods_code'])
+        return initial
 
 class ProblemPickProvider(PickProviderBase):
     result_link_url_name = 'problem-form'

@@ -31,6 +31,7 @@ class QuestionForm(MessageModelForm):
         model = Question
 
         fields = [
+            'organisation',
             'description',
             'postcode',
             'category',
@@ -41,6 +42,7 @@ class QuestionForm(MessageModelForm):
         ]
 
         widgets = {
+            'organisation': HiddenInput,
             # Add placeholder for description
             'description': Textarea({'placeholder': 'Please write the details of your question in this box.'}),
             'postcode': TextInput(attrs={'class': 'text-input'}),

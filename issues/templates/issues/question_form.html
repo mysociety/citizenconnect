@@ -38,6 +38,12 @@
             </ul>
         </fieldset>
 
+        {% if organisation %}
+            <fieldset class="island">
+                <label for="id_category">Organisation: </label>{{ organisation.name }}
+            </fieldset>
+        {% endif %}
+
         <fieldset class="island">
             <label for="id_category">Category</label>
 
