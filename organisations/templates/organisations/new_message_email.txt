@@ -20,6 +20,7 @@ Message:
 
 {% if message.issue_type == "Problem" %}
 To respond to this message, please visit your dashboard at: {{ site_base_url }}{% url 'org-dashboard' ods_code=message.organisation.ods_code %}
-{# TODO - send people to the question answerers dashboard for questions  #}
+{% else %}
+Once you have responded to this question, you can update it at: {{ site_base_url }}{% url 'questions-dashboard' %}
 {% endif %}
 {% endautoescape %}

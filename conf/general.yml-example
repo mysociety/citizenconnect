@@ -45,3 +45,9 @@ MAPIT_BASE_URL: 'http://mapit.mysociety.org/'
 # Site base url - so that we can generate fully qualified links outside of requests
 # eg: in cron scripts that need to generate links for emails
 SITE_BASE_URL: 'http://localhost:8000'
+
+# The default email address which emails sent by the site will appear to come from
+DEFAULT_FROM_EMAIL: 'no-reply@example.com'
+
+# The email address to which questions will be sent for answering
+QUESTION_ANSWERERS_EMAIL: 'questions@example.com'

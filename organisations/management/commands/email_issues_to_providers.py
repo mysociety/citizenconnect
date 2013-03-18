@@ -41,11 +41,15 @@ class Command(BaseCommand):
     def send_message(self, template, issue):
         context = Context({ 'message': issue, 'site_base_url': settings.SITE_BASE_URL })
         logger.info('Emailing message reference number: {0}'.format(issue.reference_number))
-        # TODO - recipient list should come from the organisation if it's a
-        # problem and from a setting if it's a question
+        if issue.issue_type == "Problem":
+            # TODO - recipient list should come from the organisation
+            recipient_list = ['recipient@example.com']
+        else:
+            recipient_list = [settings.QUESTION_ANSWERERS_EMAIL]
+
         mail.send_mail(subject='Care Connect: New {0}'.format(issue.issue_type),
                   message=template.render(context),
                   from_email=settings.DEFAULT_FROM_EMAIL,
-                  recipient_list=['steve@mysociety.org'],
+                  recipient_list=recipient_list,
                   fail_silently=False)
 

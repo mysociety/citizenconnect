@@ -181,9 +181,6 @@ PAGINATION_DEFAULT_WINDOW = 2
 PAGINATION_DEFAULT_ORPHANS = 2
 PAGINATION_INVALID_PAGE_RAISES_404 = True
 
-# Default from email
-DEFAULT_FROM_EMAIL = 'no-reply@citizenconnect.mysociety.org'
-
 # Authentication related settings
 LOGIN_URL = '/private/login'
 # We have to set this to something otherwise Django will redirect

@@ -40,7 +40,7 @@ class EmailIssuesToProviderTests(TestCase):
         first_mail = mail.outbox[0]
         self.assertEqual(first_mail.subject, 'Care Connect: New Problem')
         self.assertEqual(first_mail.from_email, 'no-reply@citizenconnect.mysociety.org')
-        self.assertEqual(first_mail.to, ['steve@mysociety.org'])
+        self.assertEqual(first_mail.to, ['recipient@example.com'])
         self.assertTrue(self.test_problem.reporter_name in first_mail.body)
         self.assertTrue(self.test_problem.reporter_email in first_mail.body)
         self.assertTrue(self.test_problem.category in first_mail.body)
@@ -51,11 +51,13 @@ class EmailIssuesToProviderTests(TestCase):
         second_mail = mail.outbox[1]
         self.assertEqual(second_mail.subject, 'Care Connect: New Question')
         self.assertEqual(second_mail.from_email, 'no-reply@citizenconnect.mysociety.org')
-        self.assertEqual(second_mail.to, ['steve@mysociety.org'])
+        self.assertEqual(second_mail.to, [settings.QUESTION_ANSWERERS_EMAIL])
         self.assertTrue(self.test_question.reporter_name in second_mail.body)
         self.assertTrue(self.test_question.reporter_email in second_mail.body)
         self.assertTrue(self.test_question.category in second_mail.body)
         self.assertTrue(self.test_question.description in second_mail.body)
+        dashboard_url = settings.SITE_BASE_URL + reverse('questions-dashboard')
+        self.assertTrue(dashboard_url in second_mail.body)
 
         # Check that messages were marked as mailed
         self.test_problem = Problem.objects.get(pk=self.test_problem.id)
