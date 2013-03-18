@@ -18,6 +18,7 @@ class Organisation(AuditedModel,geomodels.Model):
     PROVIDERS = 1
     NHS_SUPERUSERS = 2
     MODERATORS = 3
+    QUESTION_ANSWERERS = 4
 
     name = models.TextField()
     organisation_type = models.CharField(max_length=100, choices=settings.ORGANISATION_CHOICES)
