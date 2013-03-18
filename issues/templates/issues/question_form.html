@@ -100,39 +100,5 @@
             <button class="btn  fr" type="submit">Submit</button>
         </fieldset>
     </form>
-    {% endblock content %}
-
-    {% block extra_js %}
-        <script type="text/javascript">
-          $(function(){
-            $('.big-radio-group').each(function(){
-              var $t = $(this);
-
-              // add dummy radio element
-              $('input[type=radio]', $t).each(function(){
-                $(this).hide().after('<div class="big-radio-group__cell"><div class="big-radio-group__radio"></div></div>');
-              });
-
-              // bind the click event so we can update the actual inputs
-              $('li', $t).on('click', function(){
-                $('li', $t).removeClass('big-radio-group--active');
-                $('input[type=radio]', $(this)).prop("checked", true);
-                $(this).addClass('big-radio-group--active');
-              });
-            });
-
-
-          });
-
-          // bind the onload event so we can trigger the click on
-          // whichever one is already selected
-          $(window).load(function(){
-            $('.big-radio-group input[type=radio]').each(function(){
-              if($(this).is(':checked')){
-                console.log('checked!!');
-                $(this).parents('li').click();
-              }
-            });
-          });
-        </script>
-    {% endblock extra_js %}
+</div>
+{% endblock content %}
