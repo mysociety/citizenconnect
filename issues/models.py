@@ -126,6 +126,7 @@ class Question(MessageModel):
                                 verbose_name='Please select the category that best describes your question')
     status = models.IntegerField(default=NEW, choices=STATUS_CHOICES, db_index=True)
     postcode = models.CharField(max_length=25, blank=True)
+    organisation = models.ForeignKey('organisations.Organisation', blank=True, null=True)
 
     @property
     def reference_number(self):
