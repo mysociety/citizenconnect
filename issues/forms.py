@@ -125,3 +125,16 @@ class ProblemForm(MessageModelForm):
             'public': HiddenInput,
             'public_reporter_name': HiddenInput,
         }
+
+class QuestionUpdateForm(forms.ModelForm):
+    """
+    Form for updating questions (by question-answerers)
+    """
+
+    class Meta:
+        model = Question
+
+        fields = [
+            'response',
+            'status'
+        ]

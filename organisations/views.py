@@ -30,6 +30,11 @@ def _check_organisation_access(organisation, user):
     if not organisation.can_be_accessed_by(user):
         raise PermissionDenied()
 
+def check_question_access(user):
+        if not user.groups.filter(Q(pk=Organisation.QUESTION_ANSWERERS) |
+                                      Q(pk=Organisation.NHS_SUPERUSERS)).exists():
+            raise PermissionDenied()
+
 class PrivateViewMixin(object):
     """
     Mixin for views which live at both /private urls and other
@@ -374,11 +379,8 @@ class QuestionsDashboard(ListView):
     context_object_name = "questions"
 
     def dispatch(self, request, *args, **kwargs):
-        if request.user.groups.filter(Q(pk=Organisation.QUESTION_ANSWERERS) |
-                                      Q(pk=Organisation.NHS_SUPERUSERS)).exists():
-            return super(QuestionsDashboard, self).dispatch(request, *args, **kwargs)
-        else:
-            raise PermissionDenied()
+        check_question_access(request.user)
+        return super(QuestionsDashboard, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(QuestionsDashboard, self).get_context_data(**kwargs)

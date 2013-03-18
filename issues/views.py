@@ -1,4 +1,4 @@
-from django.views.generic import TemplateView, CreateView, DetailView
+from django.views.generic import TemplateView, CreateView, DetailView, UpdateView
 from django.shortcuts import get_object_or_404
 from django.forms.widgets import HiddenInput
 from django.template import RequestContext
@@ -7,10 +7,10 @@ from django.core.exceptions import PermissionDenied
 # App imports
 from citizenconnect.shortcuts import render
 from organisations.models import Organisation, Service
-from organisations.views import PickProviderBase, OrganisationAwareViewMixin
+from organisations.views import PickProviderBase, OrganisationAwareViewMixin, PrivateViewMixin, check_question_access
 
 from .models import Question, Problem
-from .forms import QuestionForm, ProblemForm
+from .forms import QuestionForm, ProblemForm, QuestionUpdateForm
 
 def _check_message_access(message, user):
     if not message.can_be_accessed_by(user):
@@ -47,6 +47,23 @@ class QuestionCreate(CreateView):
             initial = initial.copy()
             initial['organisation'] = get_object_or_404(Organisation, ods_code=self.kwargs['ods_code'])
         return initial
+
+class QuestionUpdate(PrivateViewMixin, UpdateView):
+    model = Question
+    form_class = QuestionUpdateForm
+    context_object_name = "question"
+    template_name = 'issues/question_update_form.html'
+    confirm_template = 'issues/question-update-confirm.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        check_question_access(request.user)
+        return super(QuestionUpdate, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        self.object = form.save()
+        context = RequestContext(self.request)
+        context['object'] = self.object
+        return render(self.request, self.confirm_template, context)
 
 class ProblemPickProvider(PickProviderBase):
     result_link_url_name = 'problem-form'

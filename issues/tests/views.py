@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.core.urlresolvers import reverse
 
 from organisations.tests import create_test_instance, create_test_organisation, AuthorizationTestCase
 from responses.models import ProblemResponse
@@ -32,6 +33,36 @@ class QuestionCreateViewTests(TestCase):
         resp = self.client.get(self.organisation_url)
         self.assertContains(resp, self.test_organisation.name)
 
+class QuestionUpdateViewTests(AuthorizationTestCase):
+
+    def setUp(self):
+        super(QuestionUpdateViewTests, self).setUp()
+        self.test_question = create_test_instance(Question, {})
+        self.url = reverse('question-update', kwargs={'pk':self.test_question.id})
+
+    def test_requires_login(self):
+        expected_redirect_url = "{0}?next={1}".format(reverse('login'), self.url)
+        resp = self.client.get(self.url)
+        self.assertRedirects(resp, expected_redirect_url)
+
+    def test_only_question_answerers_and_superusers_can_access(self):
+        users_who_shouldnt_have_access = [self.test_allowed_user,
+                                          self.test_other_provider_user,
+                                          self.test_moderator,
+                                          self.test_no_provider_user,
+                                          self.test_pals_user]
+        for user in users_who_shouldnt_have_access:
+            self.login_as(user)
+            resp = self.client.get(self.url)
+            self.assertEqual(resp.status_code, 403)
+
+        users_who_should_have_access = [self.test_question_answerer,
+                                        self.test_nhs_superuser]
+
+        for user in users_who_should_have_access:
+            self.login_as(user)
+            resp = self.client.get(self.url)
+            self.assertEqual(resp.status_code, 200)
 
 class ProblemPublicViewTests(AuthorizationTestCase):
 

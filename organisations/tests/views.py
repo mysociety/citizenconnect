@@ -629,6 +629,11 @@ class QuestionDashboardTests(AuthorizationTestCase):
         resp = self.client.get(self.questions_dashboard_url)
         self.assertContains(resp, self.test_organisation.name)
 
+    def test_dashboard_links_to_question_update_form(self):
+        self.login_as(self.test_question_answerer)
+        resp = self.client.get(self.questions_dashboard_url)
+        self.assertContains(resp, reverse('question-update', kwargs={'pk':self.test_question.id}))
+
     def test_dashboard_requires_login(self):
         expected_redirect_url = "{0}?next={1}".format(reverse("login"), self.questions_dashboard_url)
         resp = self.client.get(self.questions_dashboard_url)
@@ -652,4 +657,3 @@ class QuestionDashboardTests(AuthorizationTestCase):
             self.login_as(user)
             resp = self.client.get(self.questions_dashboard_url)
             self.assertEqual(resp.status_code, 200)
-

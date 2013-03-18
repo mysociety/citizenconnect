@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 
-from .views import *
+from ..views import *
 
 urlpatterns = patterns('',
     url(r'^question/ask-question$', AskQuestion.as_view(), name='ask-question'),

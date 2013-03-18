@@ -1,2 +1,2 @@
 {% load url from future %}
-<a href="{#{% url 'question-edit-form' pk=record.id %}#}">Update</a>
+<a href="{% url 'question-update' pk=record.id %}">Update</a>

@@ -176,3 +176,19 @@ class QuestionCreateFormTests(TestCase):
         resp = self.client.post(self.form_url, self.test_question)
         question = Question.objects.get(reporter_name=self.uuid)
         self.assertEqual(question.organisation, self.test_organisation)
+
+def QuestionUpdateFormTests(AuthorizationTestCase):
+
+    def setUp(self):
+        self.test_question = create_test_instance(Question, {})
+        self.form_url = reverse('question-update', kwargs={'pk':self.test_question.id})
+
+    def test_form_happy_path(self):
+        self.login_as(self.test_question_answerer)
+        resp = self.client.post(self.form_url, {'response':'test response',
+                                         'status': Question.RESOLVED})
+
+        self.assertContains(resp, 'Thank you, the question has been updated.')
+        self.test_question = Question.objects.get(pk=self.test_question.id)
+        self.assertEqual(self.test_question.response, 'test response')
+        self.assertEqual(self.test_question.status, Question.RESOLVED)
