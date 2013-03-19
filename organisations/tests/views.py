@@ -52,19 +52,19 @@ class OrganisationSummaryTests(AuthorizationTestCase):
 
     def test_summary_page_exists(self):
         for url in self.urls:
-            self.login_as(self.test_allowed_user)
+            self.login_as(self.provider)
             resp = self.client.get(url)
             self.assertEqual(resp.status_code, 200)
 
     def test_summary_page_shows_organisation_name(self):
         for url in self.urls:
-            self.login_as(self.test_allowed_user)
+            self.login_as(self.provider)
             resp = self.client.get(url)
             self.assertTrue(self.test_organisation.name in resp.content)
 
     def test_summary_page_has_problems(self):
         for url in self.urls:
-            self.login_as(self.test_allowed_user)
+            self.login_as(self.provider)
             resp = self.client.get(url)
             total = resp.context['problems_total']
             self.assertEqual(total['all_time'], 3)
@@ -93,7 +93,7 @@ class OrganisationSummaryTests(AuthorizationTestCase):
 
     def test_summary_page_applies_problem_category_filter(self):
         for url in self.urls:
-            self.login_as(self.test_allowed_user)
+            self.login_as(self.provider)
             resp = self.client.get(url + '?problems_category=cleanliness')
             self.assertEqual(resp.context['problems_category'], 'cleanliness')
             total = resp.context['problems_total']
@@ -110,7 +110,7 @@ class OrganisationSummaryTests(AuthorizationTestCase):
 
     def test_summary_page_applies_department_filter(self):
         for url in self.urls:
-            self.login_as(self.test_allowed_user)
+            self.login_as(self.provider)
             resp = self.client.get(url + '?service=%s' % self.service.id)
             self.assertEqual(resp.context['selected_service'], self.service.id)
 
@@ -122,7 +122,7 @@ class OrganisationSummaryTests(AuthorizationTestCase):
 
     def test_summary_page_gets_survey_data(self):
         for url in self.urls:
-            self.login_as(self.test_allowed_user)
+            self.login_as(self.provider)
             resp = self.client.get(url)
             issues_total = resp.context['issues_total']
             self.assertEqual(issues_total['happy_service'], 0.666666666666667)
@@ -130,7 +130,7 @@ class OrganisationSummaryTests(AuthorizationTestCase):
 
     def test_summary_page_gets_time_limit_data(self):
         for url in self.urls:
-            self.login_as(self.test_allowed_user)
+            self.login_as(self.provider)
             resp = self.client.get(url)
             issues_total = resp.context['issues_total']
             self.assertEqual(issues_total['average_time_to_acknowledge'], Decimal('61.0000000000000000'))
@@ -152,12 +152,12 @@ class OrganisationSummaryTests(AuthorizationTestCase):
             self.assertEqual(resp.status_code, 200)
 
     def test_private_summary_page_is_inaccessible_to_other_providers(self):
-        self.login_as(self.test_other_provider_user)
+        self.login_as(self.other_provider)
         resp = self.client.get(self.private_summary_url)
         self.assertEqual(resp.status_code, 403)
 
     def test_private_summary_page_is_accessible_to_pals_users(self):
-        self.login_as(self.test_pals_user)
+        self.login_as(self.pals)
         resp = self.client.get(self.private_summary_url)
         self.assertEqual(resp.status_code, 200)
 
@@ -191,9 +191,9 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         self.gp.save()
 
         # Add the pals user from AuthorizationTestCase to both hospital and gp
-        self.hospital.users.add(self.test_pals_user)
+        self.hospital.users.add(self.pals)
         self.hospital.save()
-        self.gp.users.add(self.test_pals_user)
+        self.gp.users.add(self.pals)
         self.gp.save()
 
         # Add an explicitly public and an explicitly private problem to test
@@ -290,7 +290,7 @@ class OrganisationProblemsTests(AuthorizationTestCase):
             self.assertEqual(resp.status_code,200)
 
     def test_private_pages_are_accessible_to_pals_users(self):
-        self.login_as(self.test_pals_user)
+        self.login_as(self.pals)
         resp = self.client.get(self.private_hospital_problems_url)
         self.assertEqual(resp.status_code,200)
         resp = self.client.get(self.private_gp_problems_url)
@@ -316,7 +316,7 @@ class OrganisationReviewsTests(AuthorizationTestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_private_page_exists_and_is_accessible_to_allowed_users(self):
-        self.login_as(self.test_allowed_user)
+        self.login_as(self.provider)
         resp = self.client.get(self.private_reviews_url)
         self.assertEqual(resp.status_code, 200)
 
@@ -332,7 +332,7 @@ class OrganisationReviewsTests(AuthorizationTestCase):
             self.assertEqual(resp.status_code, 200)
 
     def test_private_page_is_inaccessible_to_other_providers(self):
-        self.login_as(self.test_other_provider_user)
+        self.login_as(self.other_provider)
         resp = self.client.get(self.private_reviews_url)
         self.assertEqual(resp.status_code, 403)
 
@@ -344,23 +344,23 @@ class OrganisationDashboardTests(AuthorizationTestCase):
         self.dashboard_url = '/private/dashboard/%s' % self.test_organisation.ods_code
 
     def test_dashboard_page_exists(self):
-        self.login_as(self.test_allowed_user)
+        self.login_as(self.provider)
         resp = self.client.get(self.dashboard_url)
         self.assertEqual(resp.status_code, 200)
 
     def test_dashboard_page_shows_organisation_name(self):
-        self.login_as(self.test_allowed_user)
+        self.login_as(self.provider)
         resp = self.client.get(self.dashboard_url)
         self.assertTrue(self.test_organisation.name in resp.content)
 
     def test_dashboard_shows_problems(self):
-        self.login_as(self.test_allowed_user)
+        self.login_as(self.provider)
         resp = self.client.get(self.dashboard_url)
         self.assertTrue('/private/response/%s' % self.problem.id in resp.content)
 
     def test_dashboard_doesnt_show_closed_problems(self):
         self.closed_problem = create_test_instance(Problem, {'organisation': self.test_organisation, 'status': Problem.RESOLVED})
-        self.login_as(self.test_allowed_user)
+        self.login_as(self.provider)
         resp = self.client.get(self.dashboard_url)
         self.assertTrue('/private/response/%s' % self.closed_problem.id not in resp.content)
 
@@ -376,7 +376,7 @@ class OrganisationDashboardTests(AuthorizationTestCase):
             self.assertEqual(resp.status_code, 200)
 
     def test_dashboard_page_is_inaccessible_to_other_providers(self):
-        self.login_as(self.test_other_provider_user)
+        self.login_as(self.other_provider)
         resp = self.client.get(self.dashboard_url)
         self.assertEqual(resp.status_code, 403)
 
@@ -394,7 +394,7 @@ class OrganisationMapTests(AuthorizationTestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_private_map_page_exists(self):
-        self.login_as(self.test_nhs_superuser)
+        self.login_as(self.nhs_superuser)
         resp = self.client.get(self.private_map_url)
         self.assertEqual(resp.status_code, 200)
 
@@ -428,20 +428,20 @@ class OrganisationMapTests(AuthorizationTestCase):
         resp = self.client.get(self.private_map_url)
         self.assertRedirects(resp, expected_login_url)
 
-        self.login_as(self.test_allowed_user)
+        self.login_as(self.provider)
         resp = self.client.get(self.private_map_url)
         self.assertEqual(resp.status_code, 403)
 
-        self.login_as(self.test_other_provider_user)
+        self.login_as(self.other_provider)
         resp = self.client.get(self.private_map_url)
         self.assertEqual(resp.status_code, 403)
 
-        self.login_as(self.test_moderator)
+        self.login_as(self.case_handler)
         resp = self.client.get(self.private_map_url)
         self.assertEqual(resp.status_code, 403)
 
     def test_private_map_includes_unmoderated_and_unpublished_problems(self):
-        self.login_as(self.test_nhs_superuser)
+        self.login_as(self.nhs_superuser)
         create_test_instance(Problem, {'organisation': self.other_gp})
         create_test_instance(Problem, {'organisation': self.other_gp,
                                        'publication_status': Problem.HIDDEN,
@@ -466,7 +466,7 @@ class OrganisationMapTests(AuthorizationTestCase):
         self.assertEqual(response_json[1]['url'], expected_other_gp_url)
 
     def test_private_map_provider_urls_are_to_private_dashboards(self):
-        self.login_as(self.test_nhs_superuser)
+        self.login_as(self.nhs_superuser)
         expected_gp_url = reverse('org-dashboard', kwargs={'ods_code':self.gp.ods_code})
         expected_other_gp_url = reverse('org-dashboard', kwargs={'ods_code':self.other_gp.ods_code})
 
@@ -618,19 +618,19 @@ class QuestionDashboardTests(AuthorizationTestCase):
         self.test_closed_question = create_test_instance(Question, {'status': Question.RESOLVED})
 
     def test_dashboard_shows_only_open_questions(self):
-        self.login_as(self.test_question_answerer)
+        self.login_as(self.question_answerer)
         resp = self.client.get(self.questions_dashboard_url)
         self.assertContains(resp, self.test_question.reference_number)
         self.assertContains(resp, self.test_organisation_question.reference_number)
         self.assertFalse(self.test_closed_question.reference_number in resp.content)
 
     def test_dashboard_show_org_name(self):
-        self.login_as(self.test_question_answerer)
+        self.login_as(self.question_answerer)
         resp = self.client.get(self.questions_dashboard_url)
         self.assertContains(resp, self.test_organisation.name)
 
     def test_dashboard_links_to_question_update_form(self):
-        self.login_as(self.test_question_answerer)
+        self.login_as(self.question_answerer)
         resp = self.client.get(self.questions_dashboard_url)
         self.assertContains(resp, reverse('question-update', kwargs={'pk':self.test_question.id}))
 
@@ -640,18 +640,18 @@ class QuestionDashboardTests(AuthorizationTestCase):
         self.assertRedirects(resp, expected_redirect_url)
 
     def test_dashboard_only_accessible_to_question_answerers_and_superusers(self):
-        users_who_shouldnt_have_access = [self.test_allowed_user,
-                                          self.test_other_provider_user,
-                                          self.test_moderator,
-                                          self.test_no_provider_user,
-                                          self.test_pals_user]
+        users_who_shouldnt_have_access = [self.provider,
+                                          self.other_provider,
+                                          self.case_handler,
+                                          self.no_provider,
+                                          self.pals]
         for user in users_who_shouldnt_have_access:
             self.login_as(user)
             resp = self.client.get(self.questions_dashboard_url)
             self.assertEqual(resp.status_code, 403)
 
-        users_who_should_have_access = [self.test_question_answerer,
-                                        self.test_nhs_superuser]
+        users_who_should_have_access = [self.question_answerer,
+                                        self.nhs_superuser]
 
         for user in users_who_should_have_access:
             self.login_as(user)

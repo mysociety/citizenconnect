@@ -10,8 +10,8 @@ class OrganisationModelTests(AuthorizationTestCase):
         super(OrganisationModelTests, self).setUp()
 
     def test_user_can_access_provider_happy_path(self):
-        self.assertTrue(self.test_organisation.can_be_accessed_by(self.test_allowed_user))
-        self.assertTrue(self.other_test_organisation.can_be_accessed_by(self.test_other_provider_user))
+        self.assertTrue(self.test_organisation.can_be_accessed_by(self.provider))
+        self.assertTrue(self.other_test_organisation.can_be_accessed_by(self.other_provider))
 
     def test_superusers_can_access_any_provider(self):
         for user in self.users_who_can_access_everything:
@@ -23,13 +23,13 @@ class OrganisationModelTests(AuthorizationTestCase):
         self.assertFalse(self.other_test_organisation.can_be_accessed_by(self.anonymous_user))
 
     def test_user_with_no_providers_cannot_access_provider(self):
-        self.assertFalse(self.test_organisation.can_be_accessed_by(self.test_no_provider_user))
-        self.assertFalse(self.other_test_organisation.can_be_accessed_by(self.test_no_provider_user))
+        self.assertFalse(self.test_organisation.can_be_accessed_by(self.no_provider))
+        self.assertFalse(self.other_test_organisation.can_be_accessed_by(self.no_provider))
 
     def test_user_with_other_provider_cannot_access_different_provider(self):
-        self.assertFalse(self.test_organisation.can_be_accessed_by(self.test_other_provider_user))
-        self.assertFalse(self.other_test_organisation.can_be_accessed_by(self.test_allowed_user))
+        self.assertFalse(self.test_organisation.can_be_accessed_by(self.other_provider))
+        self.assertFalse(self.other_test_organisation.can_be_accessed_by(self.provider))
 
     def test_pals_user_can_access_both_providers(self):
-        self.assertTrue(self.test_organisation.can_be_accessed_by(self.test_pals_user))
-        self.assertTrue(self.other_test_organisation.can_be_accessed_by(self.test_pals_user))
+        self.assertTrue(self.test_organisation.can_be_accessed_by(self.pals))
+        self.assertTrue(self.other_test_organisation.can_be_accessed_by(self.pals))

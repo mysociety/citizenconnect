@@ -6,3 +6,4 @@ from .templatetags import *
 from .models import *
 from .accounts import *
 from .superuser_logs import *
+from .auth import *

@@ -222,9 +222,9 @@ class AuthorizationTestCase(TestCase):
         self.test_password = 'password'
 
         # A user that is allowed to access the organisation
-        self.test_allowed_user = User.objects.get(pk=6)
+        self.provider = User.objects.get(pk=6)
         # add the relation to the organisation
-        self.test_organisation.users.add(self.test_allowed_user)
+        self.test_organisation.users.add(self.provider)
         self.test_organisation.save()
 
         # A Django superuser
@@ -234,32 +234,32 @@ class AuthorizationTestCase(TestCase):
         self.anonymous_user = AnonymousUser()
 
         # A provider user linked to no providers
-        self.test_no_provider_user = User.objects.get(pk=8)
+        self.no_provider = User.objects.get(pk=8)
 
         # A User linked to a different provider
-        self.test_other_provider_user = User.objects.get(pk=7)
+        self.other_provider = User.objects.get(pk=7)
         # add the relation to the other organisation
-        self.other_test_organisation.users.add(self.test_other_provider_user)
+        self.other_test_organisation.users.add(self.other_provider)
         self.other_test_organisation.save()
 
         # A user linked to multiple providers
-        self.test_pals_user = User.objects.get(pk=2)
-        self.test_organisation.users.add(self.test_pals_user)
+        self.pals = User.objects.get(pk=2)
+        self.test_organisation.users.add(self.pals)
         self.test_organisation.save()
-        self.other_test_organisation.users.add(self.test_pals_user)
+        self.other_test_organisation.users.add(self.pals)
         self.other_test_organisation.save()
 
         # An NHS Superuser
-        self.test_nhs_superuser = User.objects.get(pk=4)
+        self.nhs_superuser = User.objects.get(pk=4)
 
-        # A Moderator
-        self.test_moderator = User.objects.get(pk=3)
+        # A Case Handler
+        self.case_handler = User.objects.get(pk=3)
 
         # A Question Answerer
-        self.test_question_answerer = User.objects.get(pk=5)
+        self.question_answerer = User.objects.get(pk=5)
 
         # Helpful lists for simpler testing
-        self.users_who_can_access_everything = [self.superuser, self.test_nhs_superuser, self.test_moderator]
+        self.users_who_can_access_everything = [self.superuser, self.nhs_superuser, self.case_handler]
 
         # Reference to the login url because lots of tests need it
         self.login_url = reverse('login')

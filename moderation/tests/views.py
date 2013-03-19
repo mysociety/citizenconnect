@@ -12,7 +12,7 @@ class BasicViewTests(BaseModerationTestCase):
 
     def setUp(self):
         super(BasicViewTests, self).setUp()
-        self.login_as(self.test_moderator)
+        self.login_as(self.case_handler)
 
     def test_home_view_exists(self):
         resp = self.client.get(self.home_url)
@@ -51,7 +51,7 @@ class BasicViewTests(BaseModerationTestCase):
 
     def test_views_innacessible_to_providers(self):
         self.client.logout()
-        self.login_as(self.test_allowed_user)
+        self.login_as(self.provider)
 
         resp = self.client.get(self.home_url)
         self.assertEqual(resp.status_code, 403)
@@ -75,7 +75,7 @@ class HomeViewTests(BaseModerationTestCase):
         self.moderated_problem = create_test_instance(Problem, {'organisation':self.test_organisation,
                                                                 'moderated': Problem.MODERATED})
 
-        self.login_as(self.test_moderator)
+        self.login_as(self.case_handler)
 
     def test_issues_in_context(self):
         resp = self.client.get(self.home_url)
@@ -105,7 +105,7 @@ class ModerateFormViewTests(BaseModerationTestCase):
         self.moderated_problem = create_test_instance(Problem, {'organisation':self.test_organisation,
                                                                 'moderated': Problem.MODERATED})
 
-        self.login_as(self.test_moderator)
+        self.login_as(self.case_handler)
 
     def test_problem_in_context(self):
         resp = self.client.get(self.problem_form_url)

@@ -14,7 +14,7 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         super(ResponseFormTests, self).setUp()
         self.test_problem = create_test_instance(Problem, {'organisation':self.test_organisation})
         self.problem_response_form_url = '/private/response/%s' % self.test_problem.id
-        self.login_as(self.test_allowed_user)
+        self.login_as(self.provider)
 
     def test_form_creates_problem_response(self):
         response_text = 'This problem is solved'
@@ -111,7 +111,7 @@ class ResponseFormViewTests(AuthorizationTestCase):
         super(ResponseFormViewTests, self).setUp()
         self.problem = create_test_instance(Problem, {'organisation': self.test_organisation})
         self.response_form_url = '/private/response/%s' % self.problem.id
-        self.login_as(self.test_allowed_user)
+        self.login_as(self.provider)
 
     def test_response_page_exists(self):
         resp = self.client.get(self.response_form_url)
@@ -144,6 +144,6 @@ class ResponseFormViewTests(AuthorizationTestCase):
 
     def test_other_providers_cant_respond(self):
         self.client.logout()
-        self.login_as(self.test_other_provider_user)
+        self.login_as(self.other_provider)
         resp = self.client.get(self.response_form_url)
         self.assertEqual(resp.status_code, 403)

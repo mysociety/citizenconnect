@@ -184,7 +184,7 @@ def QuestionUpdateFormTests(AuthorizationTestCase):
         self.form_url = reverse('question-update', kwargs={'pk':self.test_question.id})
 
     def test_form_happy_path(self):
-        self.login_as(self.test_question_answerer)
+        self.login_as(self.question_answerer)
         resp = self.client.post(self.form_url, {'response':'test response',
                                          'status': Question.RESOLVED})
 

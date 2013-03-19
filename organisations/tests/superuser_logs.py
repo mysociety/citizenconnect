@@ -31,20 +31,20 @@ class SuperuserLogTests(AuthorizationTestCase):
             reverse('problem-view', kwargs={'cobrand':'choices', 'pk':self.hidden_problem.id})
         ]
         self.users_who_should_not_be_logged = [
-            self.test_allowed_user,
-            self.test_other_provider_user,
-            self.test_moderator,
+            self.provider,
+            self.other_provider,
+            self.case_handler,
             self.superuser, # Django superuser
-            self.test_pals_user,
-            self.test_no_provider_user
+            self.pals,
+            self.no_provider
         ]
 
     def test_superuser_access_logged(self):
-        self.login_as(self.test_nhs_superuser)
+        self.login_as(self.nhs_superuser)
 
         for path in self.test_urls:
             resp = self.client.get(path)
-            self.assertIsNotNone(SuperuserLogEntry.objects.get(user=self.test_nhs_superuser, path=path))
+            self.assertIsNotNone(SuperuserLogEntry.objects.get(user=self.nhs_superuser, path=path))
 
     def test_other_user_access_not_logged(self):
         for user in self.users_who_should_not_be_logged:
@@ -60,7 +60,7 @@ class SuperuserLogViewTests(AuthorizationTestCase):
 
     def setUp(self):
         super(SuperuserLogViewTests, self).setUp()
-        self.login_as(self.test_nhs_superuser)
+        self.login_as(self.nhs_superuser)
         self.logs_url = reverse('private-map')
 
     def test_log_page_exists(self):
@@ -75,20 +75,20 @@ class SuperuserLogViewTests(AuthorizationTestCase):
 
         resp = self.client.get(reverse('superuser-logs'))
 
-        log_entry = SuperuserLogEntry.objects.get(user=self.test_nhs_superuser, path=map_url)
+        log_entry = SuperuserLogEntry.objects.get(user=self.nhs_superuser, path=map_url)
 
         self.assertTrue(log_entry in resp.context['logs'])
-        self.assertContains(resp, self.test_nhs_superuser.username)
+        self.assertContains(resp, self.nhs_superuser.username)
         self.assertContains(resp, map_url)
 
     def test_log_page_only_accessible_to_superusers(self):
         non_superusers = [
-            self.test_allowed_user,
-            self.test_other_provider_user,
-            self.test_moderator,
+            self.provider,
+            self.other_provider,
+            self.case_handler,
             self.superuser, # Django superuser
-            self.test_pals_user,
-            self.test_no_provider_user
+            self.pals,
+            self.no_provider
         ]
 
         for user in non_superusers:

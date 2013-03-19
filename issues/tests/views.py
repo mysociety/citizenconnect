@@ -46,18 +46,18 @@ class QuestionUpdateViewTests(AuthorizationTestCase):
         self.assertRedirects(resp, expected_redirect_url)
 
     def test_only_question_answerers_and_superusers_can_access(self):
-        users_who_shouldnt_have_access = [self.test_allowed_user,
-                                          self.test_other_provider_user,
-                                          self.test_moderator,
-                                          self.test_no_provider_user,
-                                          self.test_pals_user]
+        users_who_shouldnt_have_access = [self.provider,
+                                          self.other_provider,
+                                          self.case_handler,
+                                          self.no_provider,
+                                          self.pals]
         for user in users_who_shouldnt_have_access:
             self.login_as(user)
             resp = self.client.get(self.url)
             self.assertEqual(resp.status_code, 403)
 
-        users_who_should_have_access = [self.test_question_answerer,
-                                        self.test_nhs_superuser]
+        users_who_should_have_access = [self.question_answerer,
+                                        self.nhs_superuser]
 
         for user in users_who_should_have_access:
             self.login_as(user)
@@ -105,7 +105,7 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         resp = self.client.get(self.test_moderated_problem_url)
         self.assertEqual(resp.status_code, 200)
 
-        self.login_as(self.test_allowed_user)
+        self.login_as(self.provider)
         resp = self.client.get(self.test_moderated_problem_url)
         self.assertEqual(resp.status_code, 200)
 
@@ -113,12 +113,12 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         resp = self.client.get(self.test_moderated_problem_url)
         self.assertEqual(resp.status_code, 200)
 
-        self.login_as(self.test_other_provider_user)
+        self.login_as(self.other_provider)
         resp = self.client.get(self.test_moderated_problem_url)
         self.assertEqual(resp.status_code, 200)
 
     def test_private_problem_accessible_to_allowed_user(self):
-        self.login_as(self.test_allowed_user)
+        self.login_as(self.provider)
         resp = self.client.get(self.test_private_problem_url)
         self.assertEqual(resp.status_code, 200)
 
@@ -127,7 +127,7 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         self.assertEqual(resp.status_code, 403)
 
     def test_private_problem_inaccessible_to_other_provider_user(self):
-        self.login_as(self.test_other_provider_user)
+        self.login_as(self.other_provider)
         resp = self.client.get(self.test_private_problem_url)
         self.assertEqual(resp.status_code, 403)
 
@@ -138,12 +138,12 @@ class ProblemPublicViewTests(AuthorizationTestCase):
             self.assertEqual(resp.status_code, 200)
 
     def test_private_problem_accessible_to_pals_user(self):
-        self.login_as(self.test_pals_user)
+        self.login_as(self.pals)
         resp = self.client.get(self.test_private_problem_url)
         self.assertEqual(resp.status_code, 200)
 
     def test_unmoderated_problem_accessible_to_allowed_user(self):
-        self.login_as(self.test_allowed_user)
+        self.login_as(self.provider)
         resp = self.client.get(self.test_unmoderated_problem_url)
         self.assertEqual(resp.status_code, 200)
 
@@ -152,7 +152,7 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         self.assertEqual(resp.status_code, 403)
 
     def test_unmoderated_problem_inaccessible_to_other_provider_user(self):
-        self.login_as(self.test_other_provider_user)
+        self.login_as(self.other_provider)
         resp = self.client.get(self.test_unmoderated_problem_url)
         self.assertEqual(resp.status_code, 403)
 
@@ -163,7 +163,7 @@ class ProblemPublicViewTests(AuthorizationTestCase):
             self.assertEqual(resp.status_code, 200)
 
     def test_unmoderated_problem_accessible_to_pals_user(self):
-        self.login_as(self.test_pals_user)
+        self.login_as(self.pals)
         resp = self.client.get(self.test_unmoderated_problem_url)
         self.assertEqual(resp.status_code, 200)
 

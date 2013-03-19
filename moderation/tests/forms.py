@@ -14,7 +14,7 @@ class LookupFormTests(BaseModerationTestCase):
                                                              'status': Problem.RESOLVED})
         self.moderated_problem = create_test_instance(Problem, {'organisation':self.test_organisation,
                                                                 'moderated': Problem.MODERATED})
-        self.login_as(self.test_moderator)
+        self.login_as(self.case_handler)
 
     def test_happy_path(self):
         resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.test_problem.id)})
@@ -48,7 +48,7 @@ class ModerationFormTests(BaseModerationTestCase):
 
     def setUp(self):
         super(ModerationFormTests, self).setUp()
-        self.login_as(self.test_moderator)
+        self.login_as(self.case_handler)
 
     def test_moderation_form_sets_moderated(self):
         test_form_values = {

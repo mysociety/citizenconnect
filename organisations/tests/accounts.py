@@ -137,7 +137,7 @@ class LoginRedirectTests(AuthorizationTestCase):
 
     def test_login_redirect_view_used(self):
         test_values = {
-            'username': self.test_allowed_user.username,
+            'username': self.provider.username,
             'password': self.test_password,
         }
         resp = self.client.post(self.login_url, test_values)
@@ -148,19 +148,19 @@ class LoginRedirectTests(AuthorizationTestCase):
 
     def test_moderator_goes_to_moderation_homepage(self):
         moderation_url = reverse('moderate-home')
-        self.login_as(self.test_moderator)
+        self.login_as(self.case_handler)
         resp = self.client.get(self.login_redirect_url)
         self.assertRedirects(resp, moderation_url)
 
     def test_provider_goes_to_provider_dashboard(self):
         dashboard_url = reverse('org-dashboard', kwargs={'ods_code':self.test_organisation.ods_code})
-        self.login_as(self.test_allowed_user)
+        self.login_as(self.provider)
         resp = self.client.get(self.login_redirect_url)
         self.assertRedirects(resp, dashboard_url)
 
     def test_nhs_superuser_goes_to_superuser_page(self):
         map_url = reverse('private-map')
-        self.login_as(self.test_nhs_superuser)
+        self.login_as(self.nhs_superuser)
         resp = self.client.get(self.login_redirect_url)
         self.assertRedirects(resp, map_url)
 
@@ -171,7 +171,7 @@ class LoginRedirectTests(AuthorizationTestCase):
         resp = self.client.get(self.login_redirect_url)
         self.assertRedirects(resp, home_url)
         # Provider with no organisations
-        self.login_as(self.test_no_provider_user)
+        self.login_as(self.no_provider)
         resp = self.client.get(self.login_redirect_url)
         self.assertRedirects(resp, home_url)
 
@@ -182,12 +182,12 @@ class LoginRedirectTests(AuthorizationTestCase):
 
     def test_multi_provider_user_goes_to_dashboard_choice_page(self):
         pals_url = reverse('dashboard-choice')
-        self.login_as(self.test_pals_user)
+        self.login_as(self.pals)
         resp = self.client.get(self.login_redirect_url)
         self.assertRedirects(resp, pals_url)
 
     def test_question_answerer_goes_to_questions_dashboard(self):
         questions_dashboard_url = reverse('questions-dashboard')
-        self.login_as(self.test_question_answerer)
+        self.login_as(self.question_answerer)
         resp = self.client.get(self.login_redirect_url)
         self.assertRedirects(resp, questions_dashboard_url)
