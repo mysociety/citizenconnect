@@ -8,17 +8,14 @@ from django.core.exceptions import ValidationError
 
 from citizenconnect.models import AuditedModel
 
+import auth
+from .auth import user_in_group, user_in_groups, user_is_superuser
+
 class CCG(AuditedModel):
     name = models.TextField()
     code = models.CharField(max_length=8, db_index=True, unique=True)
 
 class Organisation(AuditedModel,geomodels.Model):
-
-    # Group id's for the user groups we care about when making decisions
-    PROVIDERS = 1
-    NHS_SUPERUSERS = 2
-    MODERATORS = 3
-    QUESTION_ANSWERERS = 4
 
     name = models.TextField()
     organisation_type = models.CharField(max_length=100, choices=settings.ORGANISATION_CHOICES)
@@ -64,7 +61,7 @@ class Organisation(AuditedModel,geomodels.Model):
             return True
 
         # NHS Superusers or Moderators - YES
-        if user.groups.filter(Q(pk=self.NHS_SUPERUSERS) | Q(pk=self.MODERATORS)).exists():
+        if user_in_groups(user, [auth.NHS_SUPERUSERS, auth.CASE_HANDLERS]):
             return True
 
         # Providers in this organisation - YES

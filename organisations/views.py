@@ -19,20 +19,20 @@ from django.db.models import Q
 from citizenconnect.shortcuts import render
 from issues.models import Problem, Question
 
-from .models import Organisation, Service
-from .forms import OrganisationFinderForm
 import choices_api
+import auth
+from .auth import user_in_group, user_in_groups, user_is_superuser
+from .models import Organisation, Service, CCG, SuperuserLogEntry
+from .forms import OrganisationFinderForm
 from .lib import interval_counts
-from .models import Organisation, CCG, SuperuserLogEntry
-from .tables  import NationalSummaryTable, MessageModelTable, ExtendedMessageModelTable, QuestionsDashboardTable
+from .tables import NationalSummaryTable, MessageModelTable, ExtendedMessageModelTable, QuestionsDashboardTable
 
 def _check_organisation_access(organisation, user):
     if not organisation.can_be_accessed_by(user):
         raise PermissionDenied()
 
 def check_question_access(user):
-        if not user.groups.filter(Q(pk=Organisation.QUESTION_ANSWERERS) |
-                                      Q(pk=Organisation.NHS_SUPERUSERS)).exists():
+        if not user_in_groups(user, [auth.QUESTION_ANSWERERS, auth.NHS_SUPERUSERS]):
             raise PermissionDenied()
 
 class PrivateViewMixin(object):
@@ -98,7 +98,7 @@ class Map(PrivateViewMixin, TemplateView):
 
         # Check that the user is a superuser
         if context['private']:
-            if not self.request.user.groups.filter(pk=Organisation.NHS_SUPERUSERS).exists():
+            if not user_is_superuser(self.request.user):
                 raise PermissionDenied()
 
         organisations_list = []
@@ -334,19 +334,19 @@ def login_redirect(request):
     user = request.user
 
     # NHS Super users get a special map page
-    if user.groups.filter(pk=Organisation.NHS_SUPERUSERS).exists():
+    if user_in_group(user, auth.NHS_SUPERUSERS):
         return HttpResponseRedirect(reverse('private-map'))
 
     # Moderators go to the moderation queue
-    elif user.groups.filter(pk=Organisation.MODERATORS).exists():
+    elif user_in_group(user, auth.CASE_HANDLERS):
         return HttpResponseRedirect(reverse('moderate-home'))
 
     # Question Answerers go to the question answering dashboard
-    elif user.groups.filter(pk=Organisation.QUESTION_ANSWERERS).exists():
+    elif user_in_group(user, auth.QUESTION_ANSWERERS):
         return HttpResponseRedirect(reverse('questions-dashboard'))
 
     # Providers
-    elif user.groups.filter(pk=Organisation.PROVIDERS).exists():
+    elif user_in_group(user, auth.PROVIDERS):
         # Providers with only one organisation just go to that organisation's dashboard
         if user.organisations.count() == 1:
             organisation = user.organisations.all()[0]
@@ -366,7 +366,7 @@ class SuperuserLogs(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(SuperuserLogs, self).get_context_data(**kwargs)
         # Only NHS superusers can see this page
-        if not self.request.user.groups.filter(pk=Organisation.NHS_SUPERUSERS).exists():
+        if not user_is_superuser(self.request.user):
             raise PermissionDenied()
         else:
             context['logs'] = SuperuserLogEntry.objects.all()

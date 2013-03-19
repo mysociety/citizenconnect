@@ -86,7 +86,6 @@ class SuperuserLogViewTests(AuthorizationTestCase):
             self.provider,
             self.other_provider,
             self.case_handler,
-            self.superuser, # Django superuser
             self.pals,
             self.no_provider
         ]

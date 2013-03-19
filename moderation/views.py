@@ -14,6 +14,8 @@ from django_tables2 import RequestConfig
 # App imports
 from issues.models import Problem
 from organisations.models import Organisation
+import organisations.auth as auth
+from organisations.auth import user_in_group
 
 from .forms import LookupForm, ProblemModerationForm
 from .tables import ModerationTable
@@ -24,7 +26,7 @@ class ModeratorsOnlyMixin(object):
     """
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.groups.filter(pk=Organisation.MODERATORS).exists():
+        if not user_in_group(request.user, auth.CASE_HANDLERS):
             raise PermissionDenied()
         else:
             return super(ModeratorsOnlyMixin, self).dispatch(request, *args, **kwargs)
