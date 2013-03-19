@@ -210,6 +210,8 @@ class AuthorizationTestCase(TestCase):
     A test case which sets up some dummy data useful for testing authorization
     """
 
+    fixtures = ['development_users.json']
+
     def setUp(self):
         # Create some dummy Users and an Organisation they want to access
 
@@ -217,77 +219,44 @@ class AuthorizationTestCase(TestCase):
         self.test_organisation = create_test_organisation()
         self.other_test_organisation = create_test_organisation({'ods_code': '12345'})
 
-        providers_group = Group.objects.get(pk=Organisation.PROVIDERS)
+        self.test_password = 'password'
 
         # A user that is allowed to access the organisation
-        self.test_password = 'password'
-        self.test_allowed_user = User.objects.create_user('Test User',
-                                                          'user@example.com',
-                                                          self.test_password)
-        self.test_allowed_user.groups.add(providers_group)
-        self.test_allowed_user.save()
+        self.test_allowed_user = User.objects.get(pk=6)
         # add the relation to the organisation
         self.test_organisation.users.add(self.test_allowed_user)
         self.test_organisation.save()
 
         # A Django superuser
-        self.superuser = User.objects.create_superuser('Super User',
-                                                       'superuser@example.com',
-                                                       self.test_password)
+        self.superuser = User.objects.get(pk=1)
 
         # An anonymous user
         self.anonymous_user = AnonymousUser()
 
         # A provider user linked to no providers
-        self.test_no_provider_user = User.objects.create_user('Test No Provider User',
-                                                              'noprovideruser@example.com',
-                                                              self.test_password)
-        self.test_no_provider_user.groups.add(providers_group)
-        self.test_no_provider_user.save()
+        self.test_no_provider_user = User.objects.get(pk=8)
 
         # A User linked to a different provider
-        self.test_other_provider_user = User.objects.create_user('Test Other Provider User',
-                                                                 'otherprovideruser@example.com',
-                                                                 self.test_password)
-        self.test_other_provider_user.groups.add(providers_group)
-        self.test_other_provider_user.save()
+        self.test_other_provider_user = User.objects.get(pk=7)
         # add the relation to the other organisation
         self.other_test_organisation.users.add(self.test_other_provider_user)
         self.other_test_organisation.save()
 
         # A user linked to multiple providers
-        self.test_pals_user = User.objects.create_user('Test Multiple Provider User',
-                                                       'multipleprovideruser@example.com',
-                                                       self.test_password)
-        self.test_pals_user.groups.add(providers_group)
+        self.test_pals_user = User.objects.get(pk=2)
         self.test_organisation.users.add(self.test_pals_user)
         self.test_organisation.save()
         self.other_test_organisation.users.add(self.test_pals_user)
         self.other_test_organisation.save()
 
         # An NHS Superuser
-        self.test_nhs_superuser = User.objects.create_user('Test NHS Super User',
-                                                           'nhssuperuser@example.com',
-                                                           self.test_password)
-        nhs_superusers_group = Group.objects.get(pk=Organisation.NHS_SUPERUSERS)
-        self.test_nhs_superuser.groups.add(nhs_superusers_group)
-        self.test_nhs_superuser.save()
+        self.test_nhs_superuser = User.objects.get(pk=4)
 
         # A Moderator
-        self.test_moderator = User.objects.create_user('Test Moderator',
-                                                        'moderator@example.com',
-                                                        self.test_password)
-        moderators_group = Group.objects.get(pk=Organisation.MODERATORS)
-        self.test_moderator.groups.add(moderators_group)
-        self.test_moderator.save()
+        self.test_moderator = User.objects.get(pk=3)
 
         # A Question Answerer
-        self.test_question_answerer = User.objects.create_user('Test Question Answerer',
-                                                               'answerer@example.com',
-                                                               self.test_password)
-        question_answerers_group = Group.objects.get(pk=Organisation.QUESTION_ANSWERERS)
-        self.test_question_answerer.groups.add(question_answerers_group)
-        self.test_question_answerer.save()
+        self.test_question_answerer = User.objects.get(pk=5)
 
         # Helpful lists for simpler testing
         self.users_who_can_access_everything = [self.superuser, self.test_nhs_superuser, self.test_moderator]
