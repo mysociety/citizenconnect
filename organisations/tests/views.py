@@ -177,7 +177,8 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         self.staff_problem = create_test_instance(Problem, {'category': 'staff',
                                                             'organisation': self.hospital,
                                                             'moderated': Problem.MODERATED,
-                                                            'publication_status': Problem.PUBLISHED})
+                                                            'publication_status': Problem.PUBLISHED,
+                                                            'moderated_description': "Moderated description"})
 
         # Add some users to test access rights
         self.test_hospital_user = User.objects.create_user("Test hospital user", 'hospital@example.com', self.test_password)

@@ -109,7 +109,8 @@ class ResponseFormViewTests(AuthorizationTestCase):
 
     def setUp(self):
         super(ResponseFormViewTests, self).setUp()
-        self.problem = create_test_instance(Problem, {'organisation': self.test_organisation})
+        self.problem = create_test_instance(Problem, {'organisation': self.test_organisation,
+                                                      'moderated_description': 'Moderated description'})
         self.response_form_url = '/private/response/%s' % self.problem.id
         self.login_as(self.provider)
 
@@ -122,7 +123,7 @@ class ResponseFormViewTests(AuthorizationTestCase):
         self.assertContains(resp, self.problem.reference_number)
         self.assertContains(resp, self.problem.issue_type)
         self.assertContains(resp, self.problem.reporter_name)
-        self.assertContains(resp, self.problem.description)
+        self.assertContains(resp, self.problem.moderated_description)
 
     def test_response_form_display_no_responses_message(self):
         resp = self.client.get(self.response_form_url)

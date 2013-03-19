@@ -65,15 +65,6 @@ class MessageModel(AuditedModel):
     mailed = models.BooleanField(default=False, blank=False)
 
     @property
-    def summary(self):
-        # TODO - make this a setting?
-        summary_length = 30
-        if len(self.description) > summary_length:
-            return self.description[:summary_length] + '...'
-        else:
-            return self.description
-
-    @property
     def issue_type(self):
         """
         Return the class name, so that it can be printed
@@ -136,6 +127,15 @@ class Question(MessageModel):
     @property
     def reporter_name_display(self):
         return self.reporter_name
+
+    @property
+    def summary(self):
+        # TODO - make this a setting?
+        summary_length = 30
+        if len(self.description) > summary_length:
+            return self.description[:summary_length] + '...'
+        else:
+            return self.description
 
 class ProblemManager(models.Manager):
     use_for_related_fields = True
@@ -212,6 +212,17 @@ class Problem(MessageModel):
             return self.reporter_name
         else:
             return "Anonymous"
+
+    @property
+    def summary(self):
+        if (self.public and self.publication_status == Problem.PUBLISHED):
+            summary_length = 30
+            if len(self.moderated_description) > summary_length:
+                return self.moderated_description[:summary_length] + '...'
+            else:
+                return self.moderated_description
+        else:
+            return "Private"
 
     def can_be_accessed_by(self, user):
         """

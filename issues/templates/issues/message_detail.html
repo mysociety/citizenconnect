@@ -56,7 +56,11 @@
 <div class="meta-data-wrap">
     <h3 class="meta-data-label">Details</h3>
     <div class="islet  islet--squared">
-        <p>{{ object.description }}</p>
+        {% if object.issue_type == "Problem" %}
+            <p>{{ object.moderated_description }}</p>
+        {% else %}
+            <p>{{ object.description }}</p>
+        {% endif %}
     </div>
 </div>
 
