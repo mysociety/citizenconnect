@@ -21,19 +21,11 @@ from issues.models import Problem, Question
 
 import choices_api
 import auth
-from .auth import user_in_group, user_in_groups, user_is_superuser
+from .auth import user_in_group, user_in_groups, user_is_superuser, check_organisation_access, check_question_access
 from .models import Organisation, Service, CCG, SuperuserLogEntry
 from .forms import OrganisationFinderForm
 from .lib import interval_counts
 from .tables import NationalSummaryTable, MessageModelTable, ExtendedMessageModelTable, QuestionsDashboardTable
-
-def _check_organisation_access(organisation, user):
-    if not organisation.can_be_accessed_by(user):
-        raise PermissionDenied()
-
-def check_question_access(user):
-        if not user_in_groups(user, [auth.QUESTION_ANSWERERS, auth.NHS_SUPERUSERS]):
-            raise PermissionDenied()
 
 class PrivateViewMixin(object):
     """
@@ -58,6 +50,9 @@ class OrganisationAwareViewMixin(PrivateViewMixin):
         # Call the base implementation first to get a context
         context = super(OrganisationAwareViewMixin, self).get_context_data(**kwargs)
         context['organisation'] = Organisation.objects.get(ods_code=self.kwargs['ods_code'])
+        # Check that the user can access the organisation if this is private
+        if context['private']:
+            check_organisation_access(context['organisation'], self.request.user)
         return context
 
 class MessageListMixin(OrganisationAwareViewMixin):
@@ -66,10 +61,6 @@ class MessageListMixin(OrganisationAwareViewMixin):
 
     def get_context_data(self, **kwargs):
         context = super(MessageListMixin, self).get_context_data(**kwargs)
-
-        # Check that the user can access the organisation if this is private
-        if context['private']:
-            _check_organisation_access(context['organisation'], self.request.user)
 
         table_args = {'private': context['private'],
                       'message_type': self.message_type}
@@ -179,10 +170,6 @@ class OrganisationSummary(OrganisationAwareViewMixin,
 
         organisation = context['organisation']
 
-        # Check that the user can access the organisation if this is private
-        if context['private']:
-            _check_organisation_access(context['organisation'], self.request.user)
-
         context['services'] = list(organisation.services.all().order_by('name'))
         selected_service = self.request.GET.get('service')
         if selected_service:
@@ -242,13 +229,6 @@ class OrganisationReviews(OrganisationAwareViewMixin,
                           TemplateView):
     template_name = 'organisations/organisation-reviews.html'
 
-    def get_context_data(self, **kwargs):
-        context = super(OrganisationReviews, self).get_context_data(**kwargs)
-        # Check that the user can access the organisation if this is private
-        if context['private']:
-            _check_organisation_access(context['organisation'], self.request.user)
-        return context
-
 class Summary(TemplateView):
     template_name = 'organisations/summary.html'
 
@@ -301,9 +281,6 @@ class OrganisationDashboard(OrganisationAwareViewMixin,
     def get_context_data(self, **kwargs):
         # Get all the problems
         context = super(OrganisationDashboard, self).get_context_data(**kwargs)
-
-        # Check the user is allowed to access this organisation
-        _check_organisation_access(context['organisation'], self.request.user)
 
         # Get the models related to this organisation, and let the db sort them
         problems = context['organisation'].problem_set.open_problems()

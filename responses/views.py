@@ -1,9 +1,9 @@
 from django.views.generic import CreateView, TemplateView
 from django.core.urlresolvers import reverse
-from django.core.exceptions import PermissionDenied
 from django.template import RequestContext
 
 from citizenconnect.shortcuts import render
+from organisations.auth import check_problem_access
 from issues.models import Problem
 
 from .forms import ProblemResponseForm
@@ -31,8 +31,7 @@ class ResponseForm(CreateView):
         initial['message'] = message
         initial['message_status'] = message.status
         # Check that the user has access to message before allowing them to respond
-        if not initial['message'].can_be_accessed_by(self.request.user):
-            raise PermissionDenied()
+        check_problem_access(message, self.request.user)
         return initial
 
     def form_valid(self, form):

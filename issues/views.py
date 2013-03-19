@@ -2,19 +2,15 @@ from django.views.generic import TemplateView, CreateView, DetailView, UpdateVie
 from django.shortcuts import get_object_or_404
 from django.forms.widgets import HiddenInput
 from django.template import RequestContext
-from django.core.exceptions import PermissionDenied
 
 # App imports
 from citizenconnect.shortcuts import render
 from organisations.models import Organisation, Service
-from organisations.views import PickProviderBase, OrganisationAwareViewMixin, PrivateViewMixin, check_question_access
+from organisations.views import PickProviderBase, OrganisationAwareViewMixin, PrivateViewMixin
+from organisations.auth import check_question_access, check_problem_access
 
 from .models import Question, Problem
 from .forms import QuestionForm, ProblemForm, QuestionUpdateForm
-
-def _check_message_access(message, user):
-    if not message.can_be_accessed_by(user):
-        raise PermissionDenied()
 
 class AskQuestion(TemplateView):
     template_name = 'issues/ask-question.html'
@@ -102,5 +98,5 @@ class ProblemDetail(DetailView):
 
     def get_object(self, *args, **kwargs):
         obj = super(ProblemDetail, self).get_object(*args, **kwargs)
-        _check_message_access(obj, self.request.user)
+        check_problem_access(obj, self.request.user)
         return obj

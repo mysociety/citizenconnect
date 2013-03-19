@@ -5,19 +5,26 @@ from django.contrib.auth.decorators import login_required
 from organisations.views import *
 
 urlpatterns = patterns('',
-    url(r'^dashboard/(?P<ods_code>\w+)$', login_required(OrganisationDashboard.as_view()), name='org-dashboard'),
+
+    url(r'^dashboard/(?P<ods_code>\w+)$',
+        login_required(OrganisationDashboard.as_view()),
+        name='org-dashboard',
+        kwargs={'private': True}),
+
     url(r'^summary/(?P<ods_code>\w+)$',
-            login_required(OrganisationSummary.as_view()),
-            name='private-org-summary',
-            kwargs={'private': True}),
+        login_required(OrganisationSummary.as_view()),
+        name='private-org-summary',
+        kwargs={'private': True}),
+
     url(r'^problems/(?P<ods_code>\w+)$',
-            login_required(OrganisationProblems.as_view()),
-            name='private-org-problems',
-            kwargs={'private': True}),
+        login_required(OrganisationProblems.as_view()),
+        name='private-org-problems',
+        kwargs={'private': True}),
+
     url(r'^reviews/(?P<ods_code>\w+)$',
-            login_required(OrganisationReviews.as_view()),
-            name='private-org-reviews',
-            kwargs={'private': True}),
+        login_required(OrganisationReviews.as_view()),
+        name='private-org-reviews',
+        kwargs={'private': True}),
 
     url(r'^map$', login_required(Map.as_view()), name='private-map', kwargs={'private': True}),
 

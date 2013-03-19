@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User, Group
+from django.core.exceptions import PermissionDenied
 
 """
 Helpers to do with authorisation of users
@@ -27,3 +28,15 @@ def user_in_groups(user, groups):
 
 def user_in_group(user, group):
     return user_in_groups(user, [group])
+
+def check_organisation_access(organisation, user):
+    if not organisation.can_be_accessed_by(user):
+        raise PermissionDenied()
+
+def check_question_access(user):
+    if not user_in_groups(user, [QUESTION_ANSWERERS, NHS_SUPERUSERS]):
+        raise PermissionDenied()
+
+def check_problem_access(problem, user):
+    if not problem.can_be_accessed_by(user):
+        raise PermissionDenied()
