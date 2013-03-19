@@ -15,3 +15,4 @@ class BaseModerationTestCase(AuthorizationTestCase, TransactionTestCase):
         self.lookup_url = '/private/moderate/lookup'
         self.problem_form_url = '/private/moderate/%d' % self.test_problem.id
         self.confirm_url = '/private/moderate/confirm'
+        self.all_urls = [self.home_url, self.lookup_url, self.problem_form_url, self.confirm_url]

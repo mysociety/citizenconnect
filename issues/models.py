@@ -4,8 +4,6 @@ from django.core.exceptions import ValidationError
 from django.db.models import Q
 
 from citizenconnect.models import AuditedModel
-import organisations.auth as auth
-from organisations.auth import user_in_groups
 
 class MessageModel(AuditedModel):
     """

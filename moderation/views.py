@@ -15,18 +15,18 @@ from django_tables2 import RequestConfig
 from issues.models import Problem
 from organisations.models import Organisation
 import organisations.auth as auth
-from organisations.auth import user_in_group
+from organisations.auth import user_in_group, user_is_superuser
 
 from .forms import LookupForm, ProblemModerationForm
 from .tables import ModerationTable
 
 class ModeratorsOnlyMixin(object):
     """
-    Mixin to protect views using the user_passes_test decorator
+    Mixin to protect views to only allow moderators to access them
     """
 
     def dispatch(self, request, *args, **kwargs):
-        if not user_in_group(request.user, auth.CASE_HANDLERS):
+        if not user_is_superuser(request.user) and not user_in_group(request.user, auth.CASE_HANDLERS):
             raise PermissionDenied()
         else:
             return super(ModeratorsOnlyMixin, self).dispatch(request, *args, **kwargs)

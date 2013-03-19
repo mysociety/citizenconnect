@@ -14,56 +14,33 @@ class BasicViewTests(BaseModerationTestCase):
         super(BasicViewTests, self).setUp()
         self.login_as(self.case_handler)
 
-    def test_home_view_exists(self):
-        resp = self.client.get(self.home_url)
-        self.assertEqual(resp.status_code, 200)
-
-    def test_lookup_view_exists(self):
-        resp = self.client.get(self.lookup_url)
-        self.assertEqual(resp.status_code, 200)
-
-    def test_form_views_exist(self):
-        resp = self.client.get(self.problem_form_url)
-        self.assertEqual(resp.status_code, 200)
-
-    def test_confirm_view_exists(self):
-        resp = self.client.get(self.confirm_url)
-        self.assertEqual(resp.status_code, 200)
+    def test_views_exist(self):
+        for url in self.all_urls:
+            resp = self.client.get(url)
+            self.assertEqual(resp.status_code, 200)
 
     def test_views_require_login(self):
         self.client.logout()
 
-        expected_login_url = "{0}?next={1}".format(self.login_url, self.home_url)
-        resp = self.client.get(self.home_url)
-        self.assertRedirects(resp, expected_login_url)
-
-        expected_login_url = "{0}?next={1}".format(self.login_url, self.lookup_url)
-        resp = self.client.get(self.lookup_url)
-        self.assertRedirects(resp, expected_login_url)
-
-        expected_login_url = "{0}?next={1}".format(self.login_url, self.problem_form_url)
-        resp = self.client.get(self.problem_form_url)
-        self.assertRedirects(resp, expected_login_url)
-
-        expected_login_url = "{0}?next={1}".format(self.login_url, self.confirm_url)
-        resp = self.client.get(self.confirm_url)
-        self.assertRedirects(resp, expected_login_url)
+        for url in self.all_urls:
+            expected_login_url = "{0}?next={1}".format(self.login_url, url)
+            resp = self.client.get(url)
+            self.assertRedirects(resp, expected_login_url)
 
     def test_views_innacessible_to_providers(self):
         self.client.logout()
         self.login_as(self.provider)
 
-        resp = self.client.get(self.home_url)
-        self.assertEqual(resp.status_code, 403)
+        for url in self.all_urls:
+            resp = self.client.get(url)
+            self.assertEqual(resp.status_code, 403)
 
-        resp = self.client.get(self.lookup_url)
-        self.assertEqual(resp.status_code, 403)
-
-        resp = self.client.get(self.problem_form_url)
-        self.assertEqual(resp.status_code, 403)
-
-        resp = self.client.get(self.confirm_url)
-        self.assertEqual(resp.status_code, 403)
+    def test_views_accessible_to_superusers(self):
+        for user in self.users_who_can_access_everything:
+            self.login_as(user)
+            for url in self.all_urls:
+                resp = self.client.get(url)
+                self.assertEqual(resp.status_code, 200)
 
 class HomeViewTests(BaseModerationTestCase):
 
