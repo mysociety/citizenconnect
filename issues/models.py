@@ -133,6 +133,10 @@ class Question(MessageModel):
     def reference_number(self):
         return '{0}{1}'.format(self.PREFIX, self.id)
 
+    @property
+    def reporter_name_display(self):
+        return self.reporter_name
+
 class ProblemManager(models.Manager):
     use_for_related_fields = True
 
@@ -200,6 +204,13 @@ class Problem(MessageModel):
     @property
     def reference_number(self):
         return '{0}{1}'.format(self.PREFIX, self.id)
+
+    @property
+    def reporter_name_display(self):
+        if self.public_reporter_name:
+            return self.reporter_name
+        else:
+            return "Anonymous"
 
     def can_be_accessed_by(self, user):
         """

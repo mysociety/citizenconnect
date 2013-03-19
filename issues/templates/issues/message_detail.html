@@ -18,15 +18,7 @@
 
             <p class="g  one-half  align-right--not-palm"><span class="meta-data-label">{% if object.issue_type == 'Problem' %}Reported{% else %}Asked{% endif %} on</span> {{ object.created|date:"d M Y" }}<br> {{ object.created|date:"h:i a" }}</p>
 
-            {% if object.issue_type == 'Problem' %}
-                {% if object.public_reporter_name %}
-                    <p class="meta-data__space-below  g  one-whole"><span class="meta-data-label">Reported by</span> {{ object.reporter_name }}</p>
-                {% else %}
-                    <p class="meta-data__space-below  g  one-whole"><span class="meta-data-label">Reported by</span> Anonymous</p>
-                {% endif %}
-            {% else %}
-                <p class="meta-data__space-below  g  one-whole"><span class="meta-data-label">Reported by</span> {{ object.reporter_name }}</p>
-            {% endif %}
+            <p class="meta-data__space-below  g  one-whole"><span class="meta-data-label">Reported by</span> {{ object.reporter_name_display }}</p>
 
             <p class="g  one-third  palm-one-whole">
                 {% if object.issue_type == 'Problem' and private %}
