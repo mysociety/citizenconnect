@@ -200,6 +200,7 @@ class Problem(MessageModel):
     time_to_address = models.IntegerField(null=True)
     publication_status = models.IntegerField(default=HIDDEN, blank=False, choices=PUBLICATION_STATUS_CHOICES)
     moderated = models.IntegerField(default=NOT_MODERATED, blank=False, choices=MODERATED_STATUS_CHOICES)
+    moderated_description = models.TextField(blank=True)
 
     @property
     def reference_number(self):
