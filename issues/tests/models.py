@@ -19,18 +19,20 @@ class ProblemModelTests(AuthorizationTestCase):
                                     public_reporter_name=True,
                                     preferred_contact_method=Problem.CONTACT_EMAIL,
                                     status=Problem.NEW)
+
         self.test_moderated_problem = Problem(organisation=self.test_organisation,
-                                    description='A Test Problem',
-                                    category='cleanliness',
-                                    reporter_name='Test User',
-                                    reporter_email='reporter@example.com',
-                                    reporter_phone='01111 111 111',
-                                    public=True,
-                                    public_reporter_name=True,
-                                    preferred_contact_method=Problem.CONTACT_EMAIL,
-                                    status=Problem.NEW,
-                                    moderated=Problem.MODERATED,
-                                    publication_status=Problem.PUBLISHED)
+                                              description='A Test Problem',
+                                              category='cleanliness',
+                                              reporter_name='Test User',
+                                              reporter_email='reporter@example.com',
+                                              reporter_phone='01111 111 111',
+                                              public=True,
+                                              public_reporter_name=True,
+                                              preferred_contact_method=Problem.CONTACT_EMAIL,
+                                              status=Problem.NEW,
+                                              moderated=Problem.MODERATED,
+                                              publication_status=Problem.PUBLISHED)
+
         self.test_private_problem = Problem(organisation=self.test_organisation,
                                             description='A Test Private Problem',
                                             category='cleanliness',
@@ -291,48 +293,45 @@ class ProblemManagerTests(ManagerTest):
             'status': Problem.RESOLVED
         })
 
+        # Intermidiate helper lists
         self.open_unmoderated_problems = [self.new_public_unmoderated_problem,
                                           self.new_private_unmoderated_problem]
-
         self.closed_unmoderated_problems = [self.closed_public_unmoderated_problem,
-                                             self.closed_private_unmoderated_problem]
-
-        self.unmoderated_problems = self.open_unmoderated_problems + self.closed_unmoderated_problems
-
+                                            self.closed_private_unmoderated_problem]
         self.open_moderated_problems = [self.new_public_moderated_problem_hidden,
-                                         self.new_public_moderated_problem_published,
-                                         self.new_private_moderated_problem_hidden,
-                                         self.new_private_moderated_problem_published]
-
-        self.open_problems = self.open_unmoderated_problems + self.open_moderated_problems
-
-        self.open_moderated_published_problems = [self.new_public_moderated_problem_published,
+                                        self.new_public_moderated_problem_published,
+                                        self.new_private_moderated_problem_hidden,
                                         self.new_private_moderated_problem_published]
-
         self.closed_problems = self.closed_unmoderated_problems + [self.closed_public_moderated_problem_hidden,
-                                                                    self.closed_public_moderated_problem_published,
-                                                                    self.closed_private_moderated_problem_hidden,
-                                                                    self.closed_private_moderated_problem_published]
-        self.all_problems = self.open_problems + self.closed_problems
+                                                                   self.closed_public_moderated_problem_published,
+                                                                   self.closed_private_moderated_problem_hidden,
+                                                                   self.closed_private_moderated_problem_published]
 
-        self.all_moderated_published_public_problems = [self.new_public_moderated_problem_published, self.closed_public_moderated_problem_published]
+        # Lists that we expect from our manager's methods
+        self.unmoderated_problems = self.open_unmoderated_problems + self.closed_unmoderated_problems
+        self.open_problems = self.open_unmoderated_problems + self.open_moderated_problems
+        self.open_moderated_published_problems = [self.new_public_moderated_problem_published,
+                                                  self.new_private_moderated_problem_published]
+        self.all_problems = self.open_problems + self.closed_problems
+        self.all_moderated_published_problems = self.open_moderated_published_problems + [self.closed_public_moderated_problem_published,
+                                                                                          self.closed_private_moderated_problem_published]
+
+    def test_all_problems_returns_correct_problems(self):
+        self.compare_querysets(Problem.objects.all(), self.all_problems)
 
     def test_open_problems_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.open_problems(), self.open_problems)
 
-    def test_unmoderated_returns_correct_problems(self):
+    def test_unmoderated_problems_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.unmoderated_problems(), self.unmoderated_problems)
 
     def test_open_moderated_published_problems_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.open_moderated_published_problems(),
                                self.open_moderated_published_problems)
 
-    def test_all_problems_returns_correct_questions(self):
-        self.compare_querysets(Problem.objects.all(), self.all_problems)
-
-    def test_all_moderated_published_public_problems_returns_correct_questions(self):
-        self.compare_querysets(Problem.objects.all_moderated_published_public_problems(),
-                               self.all_moderated_published_public_problems)
+    def test_all_moderated_published_problems_returns_correct_problems(self):
+        self.compare_querysets(Problem.objects.all_moderated_published_problems(),
+                               self.all_moderated_published_problems)
 
 class QuestionManagerTests(ManagerTest):
 

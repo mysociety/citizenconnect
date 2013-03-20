@@ -223,7 +223,7 @@ class OrganisationProblems(MessageListMixin,
         if private:
             return organisation.problem_set.all()
         else:
-            return organisation.problem_set.all_moderated_published_public_problems()
+            return organisation.problem_set.all_moderated_published_problems()
 
 class OrganisationReviews(OrganisationAwareViewMixin,
                           TemplateView):

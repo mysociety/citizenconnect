@@ -61,10 +61,13 @@ class MessageModelTable(tables.Table):
 
     def render_summary(self, record):
         if self.private:
-            url = reverse("response-form", kwargs={'pk': record.id})
+            return mark_safe(u'<a href="{0}">{1}'.format(reverse("response-form", kwargs={'pk': record.id}),
+                                                         record.private_summary))
+        elif record.public:
+            return mark_safe('<a href="{0}">{1}'.format(reverse('%s-view' % self.message_type, kwargs={'cobrand': self.cobrand, 'pk': record.id}),
+                                                        record.summary))
         else:
-            url = reverse('%s-view' % self.message_type, kwargs={'cobrand': self.cobrand, 'pk': record.id})
-        return mark_safe('''<a href="%s">%s</a>''' % (url, record.summary))
+            return record.summary
 
     class Meta:
         order_by = ('-created',)

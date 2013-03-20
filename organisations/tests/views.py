@@ -236,20 +236,26 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         resp = self.client.get(self.public_hospital_problems_url)
         self.assertContains(resp, '/choices/problem/%s' % self.staff_problem.id )
 
-    def test_public_page_doesnt_show_hidden_private_or_unmoderated_problems(self):
-        # Add some problems which shouldn't show up
-        unmoderated_problem = create_test_instance(Problem, {'organisation': self.hospital})
-        hidden_problem = create_test_instance(Problem, {'organisation': self.hospital,
-                                       'moderated': Problem.MODERATED,
-                                       'publication_status': Problem.HIDDEN})
+    def test_public_page_shows_private_problems_without_links(self):
+        # Add a private problem
         private_problem = create_test_instance(Problem, {'organisation': self.hospital,
                                        'moderated': Problem.MODERATED,
                                        'publication_status': Problem.PUBLISHED,
                                        'public': False})
         resp = self.client.get(self.public_hospital_problems_url)
+        self.assertTrue(private_problem.reference_number in resp.content)
+        self.assertTrue(private_problem.summary in resp.content)
+        self.assertTrue('/choices/problem/%s' % private_problem.id not in resp.content)
+
+    def test_public_page_doesnt_show_hidden_or_unmoderated_problems(self):
+        # Add some problems which shouldn't show up
+        unmoderated_problem = create_test_instance(Problem, {'organisation': self.hospital})
+        hidden_problem = create_test_instance(Problem, {'organisation': self.hospital,
+                                       'moderated': Problem.MODERATED,
+                                       'publication_status': Problem.HIDDEN})
+        resp = self.client.get(self.public_hospital_problems_url)
         self.assertTrue('/choices/problem/%s' % unmoderated_problem.id not in resp.content)
         self.assertTrue('/choices/problem/%s' % hidden_problem.id not in resp.content)
-        self.assertTrue('/choices/problem/%s' % private_problem.id not in resp.content)
 
     def test_private_page_exists(self):
         self.login_as(self.test_hospital_user)
@@ -276,6 +282,7 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         self.assertTrue('/private/response/%s' % unmoderated_problem.id in resp.content)
         self.assertTrue('/private/response/%s' % hidden_problem.id in resp.content)
         self.assertTrue('/private/response/%s' % private_problem.id in resp.content)
+        self.assertTrue(private_problem.private_summary in resp.content)
 
     def test_private_page_is_inaccessible_to_anon_users(self):
         expected_login_url = "{0}?next={1}".format(self.login_url, self.private_hospital_problems_url)

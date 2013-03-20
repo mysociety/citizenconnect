@@ -153,10 +153,9 @@ class ProblemManager(models.Manager):
         return self.open_problems().filter(moderated=Problem.MODERATED,
                                            publication_status=Problem.PUBLISHED)
 
-    def all_moderated_published_public_problems(self):
+    def all_moderated_published_problems(self):
         return super(ProblemManager, self).all().filter(moderated=Problem.MODERATED,
-                                                        publication_status=Problem.PUBLISHED,
-                                                        public=True)
+                                                        publication_status=Problem.PUBLISHED)
 
 class Problem(MessageModel):
     # Custom manager
@@ -216,13 +215,20 @@ class Problem(MessageModel):
     @property
     def summary(self):
         if (self.public and self.publication_status == Problem.PUBLISHED):
-            summary_length = 30
-            if len(self.moderated_description) > summary_length:
-                return self.moderated_description[:summary_length] + '...'
-            else:
-                return self.moderated_description
+            return self.summarise(self.moderated_description)
         else:
             return "Private"
+
+    @property
+    def private_summary(self):
+        return self.summarise(self.description)
+
+    def summarise(self, field):
+        summary_length = 30
+        if len(field) > summary_length:
+            return field[:summary_length] + '...'
+        else:
+            return field
 
     def can_be_accessed_by(self, user):
         """
