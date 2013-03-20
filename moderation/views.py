@@ -61,7 +61,7 @@ class ModerateLookup(ModeratorsOnlyMixin,
 class ModerateForm(ModeratorsOnlyMixin,
                    UpdateView):
 
-    queryset = Problem.objects.unmoderated_problems().all()
+    queryset = Problem.objects.all()
     template_name = 'moderation/moderate_form.html'
     form_class = ProblemModerationForm
 

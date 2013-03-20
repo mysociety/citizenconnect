@@ -101,14 +101,9 @@ class ModerateFormViewTests(BaseModerationTestCase):
         self.assertContains(resp, response1.response)
         self.assertContains(resp, response2.response)
 
-    def test_moderated_issues_rejected(self):
-        # Quiten down logging
-        logging.disable(logging.CRITICAL)
-
+    def test_moderated_issues_accepted(self):
         resp = self.client.get('/private/moderate/{0}'.format(self.moderated_problem.id))
-        self.assertEqual(resp.status_code, 404)
-
-        logging.disable(logging.NOTSET)
+        self.assertEqual(resp.status_code, 200)
 
     def test_closed_issues_accepted(self):
         resp = self.client.get('/private/moderate/{0}'.format(self.closed_problem.id))

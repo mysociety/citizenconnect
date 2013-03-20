@@ -17,12 +17,12 @@ class LookupForm(forms.Form):
             id = self.cleaned_data['reference_number'][1:]
             try:
                 if prefix == Problem.PREFIX:
-                    problem = Problem.objects.unmoderated_problems().get(pk=id)
+                    problem = Problem.objects.all().get(pk=id)
                     self.cleaned_data['model_id'] = problem.id
                 else:
                     raise forms.ValidationError('Sorry, that reference number is not recognised')
             except Problem.DoesNotExist:
-                raise forms.ValidationError('Sorry, there are no unmoderated problems with that reference number')
+                raise forms.ValidationError('Sorry, there are no problems with that reference number')
         return self.cleaned_data
 
 class ProblemModerationForm(forms.ModelForm):
