@@ -40,12 +40,24 @@ class ProblemModerationForm(forms.ModelForm):
         # If you are submitting the form, you have moderated it, so always return MODERATED
         return Problem.MODERATED
 
+    def clean(self):
+
+        # If we are publishing the problem and the reporter wants it public,
+        # it must have a moderated_description so that we have something to show for it
+        # on public pages
+        if self.instance.public and self.cleaned_data['publication_status'] == Problem.PUBLISHED:
+            if not 'moderated_description' in self.cleaned_data or not self.cleaned_data['moderated_description']:
+                self._errors['moderated_description'] = self.error_class(['You must moderate a version of the problem details when publishing public problems.'])
+                del self.cleaned_data['moderated_description']
+
+        return self.cleaned_data
+
     class Meta:
         model = Problem
 
         fields = [
             'publication_status',
-            'description',
+            'moderated_description',
             'moderated'
         ]
 

@@ -53,7 +53,7 @@ class ModerationFormTests(BaseModerationTestCase):
     def test_moderation_form_sets_moderated(self):
         test_form_values = {
             'publication_status': self.test_problem.publication_status,
-            'description': self.test_problem.description,
+            'moderated_description': self.test_problem.description,
             'moderated': self.test_problem.moderated,
             'publish': ''
         }
@@ -61,23 +61,23 @@ class ModerationFormTests(BaseModerationTestCase):
         problem = Problem.objects.get(pk=self.test_problem.id)
         self.assertEqual(problem.moderated, Problem.MODERATED)
 
-    def test_moderation_form_updates_message(self):
-        updated_description = "{0} updated".format(self.test_problem.description)
+    def test_moderation_form_sets_moderated_message(self):
+        moderated_description = "{0} moderated".format(self.test_problem.description)
         test_form_values = {
             'publication_status': self.test_problem.publication_status,
-            'description': updated_description,
+            'moderated_description': moderated_description,
             'moderated': self.test_problem.moderated,
             'publish': ''
         }
         resp = self.client.post(self.problem_form_url, test_form_values)
         problem = Problem.objects.get(pk=self.test_problem.id)
-        self.assertEqual(problem.description, updated_description)
+        self.assertEqual(problem.moderated_description, moderated_description)
 
-    def test_form_sets_publication_status_to_published(self):
+    def test_form_sets_publication_status_to_published_when_publish_clicked(self):
         expected_status = Problem.PUBLISHED
         test_form_values = {
             'publication_status': self.test_problem.publication_status,
-            'description': self.test_problem.description,
+            'moderated_description': self.test_problem.description,
             'moderated': self.test_problem.moderated,
             'publish': ''
         }
@@ -85,11 +85,11 @@ class ModerationFormTests(BaseModerationTestCase):
         problem = Problem.objects.get(pk=self.test_problem.id)
         self.assertEqual(problem.publication_status, expected_status)
 
-    def test_form_sets_publication_status_to_private(self):
+    def test_form_sets_publication_status_to_private_when_keep_private_clicked(self):
         expected_status = Problem.HIDDEN
         test_form_values = {
             'publication_status': self.test_problem.publication_status,
-            'description': self.test_problem.description,
+            'moderated_description': self.test_problem.description,
             'moderated': self.test_problem.moderated,
             'keep_private': ''
         }
@@ -101,9 +101,42 @@ class ModerationFormTests(BaseModerationTestCase):
         status = Problem.RESOLVED
         test_form_values = {
             'publication_status': self.test_problem.publication_status,
-            'description': self.test_problem.description,
+            'moderated_description': self.test_problem.description,
             'moderated': self.test_problem.moderated,
             'keep_private': ''
         }
         resp = self.client.post(self.problem_form_url, test_form_values)
         self.assertRedirects(resp, reverse('moderate-confirm'))
+
+    def test_moderation_form_requires_moderated_message_when_publishing_public_problems(self):
+        test_form_values = {
+            'publication_status': self.test_problem.publication_status,
+            'moderated': self.test_problem.moderated,
+            'publish': ''
+        }
+        resp = self.client.post(self.problem_form_url, test_form_values)
+        self.assertFormError(resp, 'form', 'moderated_description', 'You must moderate a version of the problem details when publishing public problems.')
+
+    def test_moderation_form_doesnt_requires_moderated_message_for_private_problems(self):
+        self.test_problem.public = False
+        self.test_problem.save()
+        expected_status = Problem.PUBLISHED
+        test_form_values = {
+            'publication_status': self.test_problem.publication_status,
+            'moderated': self.test_problem.moderated,
+            'publish': ''
+        }
+        resp = self.client.post(self.problem_form_url, test_form_values)
+        problem = Problem.objects.get(pk=self.test_problem.id)
+        self.assertEqual(problem.publication_status, expected_status)
+
+    def test_moderation_form_doesnt_requires_moderated_message_when_hiding_problems(self):
+        expected_status = Problem.HIDDEN
+        test_form_values = {
+            'publication_status': self.test_problem.publication_status,
+            'moderated': self.test_problem.moderated,
+            'keep_private': ''
+        }
+        resp = self.client.post(self.problem_form_url, test_form_values)
+        problem = Problem.objects.get(pk=self.test_problem.id)
+        self.assertEqual(problem.publication_status, expected_status)

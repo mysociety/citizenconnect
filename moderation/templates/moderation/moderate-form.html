@@ -10,7 +10,7 @@
     <h1>Moderate {{ message.issue_type }}</h1>
 </div>
 
-{% include "issues/message_detail.html" with object=message %}
+{% include "issues/message_detail.html" with object=message  private=1 %}
 
 <div class="moderate-form">
     <form method="post">
@@ -31,7 +31,7 @@
                 <li class="g  one-whole">
                     <label for="id_description">Moderated details</label>
                     {{ form.moderated_description }}
-                    <p class="info">You must moderate a version of the problem details when publishing public problems.</p>
+                    <p class="info">Required when publishing public problems.</p>
                     {% include "message-list.html" with messages=form.moderated_description.errors message_type='error' %}
                 </li>
             </ul>

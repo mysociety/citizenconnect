@@ -65,8 +65,8 @@ class HomeViewTests(BaseModerationTestCase):
 
     def test_issues_displayed(self):
         resp = self.client.get(self.home_url)
-        self.assertContains(resp, self.test_problem.summary)
-        self.assertContains(resp, self.closed_problem.summary)
+        self.assertContains(resp, self.test_problem.private_summary)
+        self.assertContains(resp, self.closed_problem.private_summary)
 
     def test_issues_link_to_moderate_form(self):
         resp = self.client.get(self.home_url)
