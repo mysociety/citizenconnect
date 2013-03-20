@@ -2,16 +2,16 @@
 {% load url from future %}
 
 
-{% block title %}Respond to a {{ message.issue_type }}{% endblock %}
+{% block title %}Respond to a {{ issue.issue_type }}{% endblock %}
 
 {% block bodyclasses %}response-form{% endblock %}
 
 {% block content %}
 <div class="header">
-    <h1>Respond to a {{ message.issue_type }}</h1>
+    <h1>Respond to a {{ issue.issue_type }}</h1>
 </div>
 
-{% include "issues/message_detail.html" with object=message private=1 %}
+{% include "issues/issue_detail.html" with object=issue private=1 %}
 
 <div class="response-form">
     <form method="post">
@@ -40,9 +40,9 @@
         <fieldset class="island">
             <ul class="gw">
                 <li class="g  one-whole">
-                    <label for="message_status">Status</label>
-                    {{ form.message_status }}
-                    {% include "message_list.html" with messages=form.message_status.errors message_type='error' %}
+                    <label for="issue_status">Status</label>
+                    {{ form.issue_status }}
+                    {% include "message_list.html" with messages=form.issue_status.errors message_type='error' %}
                 </li>
             </ul>
         </fieldset>

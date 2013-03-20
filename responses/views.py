@@ -15,11 +15,11 @@ class ResponseForm(CreateView):
     confirm_template = 'responses/response-confirm.html'
     model = ProblemResponse
     form_class = ProblemResponseForm
-    initial_object_name = 'message'
+    initial_object_name = 'issue'
 
     def get_context_data(self, **kwargs):
         context = super(ResponseForm, self).get_context_data(**kwargs)
-        context['message'] = Problem.objects.get(pk=self.kwargs['pk'])
+        context['issue'] = Problem.objects.get(pk=self.kwargs['pk'])
         return context
 
     def get_success_url(self):
@@ -27,11 +27,11 @@ class ResponseForm(CreateView):
 
     def get_initial(self):
         initial = super(ResponseForm, self).get_initial()
-        message = Problem.objects.get(pk=self.kwargs['pk'])
-        initial['message'] = message
-        initial['message_status'] = message.status
-        # Check that the user has access to message before allowing them to respond
-        check_problem_access(message, self.request.user)
+        issue = Problem.objects.get(pk=self.kwargs['pk'])
+        initial['issue'] = issue
+        initial['issue_status'] = issue.status
+        # Check that the user has access to issue before allowing them to respond
+        check_problem_access(issue, self.request.user)
         return initial
 
     def form_valid(self, form):
@@ -42,13 +42,13 @@ class ResponseForm(CreateView):
             self.object = form.save()
             context['response'] = self.object
 
-        # Process the message status field to actually change the message's
+        # Process the issue status field to actually change the issue's
         # status, because this form is a CreateView for a ProblemResponse
         # so will just ignore that field normally.
-        if 'message_status' in form.cleaned_data and form.cleaned_data['message_status']:
-            message = form.cleaned_data['message']
-            message.status = form.cleaned_data['message_status']
-            message.save()
-            context['message'] = message
+        if 'issue_status' in form.cleaned_data and form.cleaned_data['issue_status']:
+            issue = form.cleaned_data['issue']
+            issue.status = form.cleaned_data['issue_status']
+            issue.save()
+            context['issue'] = issue
 
         return render(self.request, self.confirm_template, context)

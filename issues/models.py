@@ -5,9 +5,9 @@ from django.db.models import Q
 
 from citizenconnect.models import AuditedModel
 
-class MessageModel(AuditedModel):
+class IssueModel(AuditedModel):
     """
-    Abstract model for base functionality of messages sent to NHS Organisations
+    Abstract model for base functionality of issues sent to NHS Organisations
     """
 
     CONTACT_PHONE = 'phone'
@@ -96,7 +96,7 @@ class QuestionManager(models.Manager):
     def open_questions(self):
         return super(QuestionManager, self).all().filter(status=Question.NEW)
 
-class Question(MessageModel):
+class Question(IssueModel):
     # Custom manager
     objects = QuestionManager()
 
@@ -111,7 +111,7 @@ class Question(MessageModel):
     PREFIX = 'Q'
 
     category = models.CharField(max_length=100,
-                                choices=MessageModel.CATEGORY_CHOICES,
+                                choices=IssueModel.CATEGORY_CHOICES,
                                 default='general',
                                 db_index=True,
                                 verbose_name='Please select the category that best describes your question')
@@ -157,7 +157,7 @@ class ProblemManager(models.Manager):
         return super(ProblemManager, self).all().filter(moderated=Problem.MODERATED,
                                                         publication_status=Problem.PUBLISHED)
 
-class Problem(MessageModel):
+class Problem(IssueModel):
     # Custom manager
     objects = ProblemManager()
 
@@ -184,7 +184,7 @@ class Problem(MessageModel):
     MODERATED_STATUS_CHOICES = ((NOT_MODERATED, "Not moderated"), (MODERATED, "Moderated"))
 
     category = models.CharField(max_length=100,
-                                choices=MessageModel.CATEGORY_CHOICES,
+                                choices=IssueModel.CATEGORY_CHOICES,
                                 default='other',
                                 db_index=True,
                                 verbose_name='Please select the category that best describes your problem')

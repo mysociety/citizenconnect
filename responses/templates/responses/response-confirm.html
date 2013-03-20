@@ -14,9 +14,9 @@
     <div class="g  one-whole">
       <ul class="message-list">
         {% if response %}
-            <li class="message-list__success">Thank you, the response has been published online. {% if response.message.issue_type == "Problem" %}<a href="{% url 'org-dashboard' ods_code=response.message.organisation.ods_code %}">Return to your provider dashboard</a>{% endif %}</li>
-        {% elif message %}
-            <li class="message-list__success">Thank you, the {{ message.issue_type }} status has been updated. {% if message.issue_type == "Problem" %}<a href="{% url 'org-dashboard' ods_code=message.organisation.ods_code %}">Return to your provider dashboard</a>{% endif %}</li>
+            <li class="message-list__success">Thank you, the response has been published online. {% if response.issue.issue_type == "Problem" %}<a href="{% url 'org-dashboard' ods_code=response.issue.organisation.ods_code %}">Return to your provider dashboard</a>{% endif %}</li>
+        {% elif issue %}
+            <li class="message-list__success">Thank you, the {{ issue.issue_type }} status has been updated. {% if issue.issue_type == "Problem" %}<a href="{% url 'org-dashboard' ods_code=issue.organisation.ods_code %}">Return to your provider dashboard</a>{% endif %}</li>
         {% endif %}
       </ul>
     </div>

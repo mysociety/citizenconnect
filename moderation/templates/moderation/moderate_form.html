@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 {% load url from future %}
 
-{% block title %}Moderate message{% endblock %}
+{% block title %}Moderate issue{% endblock %}
 
 {% block bodyclasses %}moderate-form{% endblock %}
 
 {% block content %}
 <div class="header">
-    <h1>Moderate {{ message.issue_type }}</h1>
+    <h1>Moderate {{ issue.issue_type }}</h1>
 </div>
 
-{% include "issues/message_detail.html" with object=message  private=1 %}
+{% include "issues/issue_detail.html" with object=issue  private=1 %}
 
 <div class="moderate-form">
     <form method="post">

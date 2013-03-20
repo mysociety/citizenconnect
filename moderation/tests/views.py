@@ -86,12 +86,12 @@ class ModerateFormViewTests(BaseModerationTestCase):
 
     def test_problem_in_context(self):
         resp = self.client.get(self.problem_form_url)
-        self.assertEqual(resp.context['message'], self.test_problem)
+        self.assertEqual(resp.context['issue'], self.test_problem)
 
-    def test_message_data_displayed(self):
-        # Add some responses to the message too
-        response1 = ProblemResponse.objects.create(response="response 1", message=self.test_problem)
-        response2 = ProblemResponse.objects.create(response="response 2", message=self.test_problem)
+    def test_issue_data_displayed(self):
+        # Add some responses to the issue too
+        response1 = ProblemResponse.objects.create(response="response 1", issue=self.test_problem)
+        response2 = ProblemResponse.objects.create(response="response 2", issue=self.test_problem)
 
         resp = self.client.get(self.problem_form_url)
         self.assertContains(resp, self.test_problem.reference_number)

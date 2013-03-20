@@ -59,7 +59,7 @@ class EmailIssuesToProviderTests(TestCase):
         dashboard_url = settings.SITE_BASE_URL + reverse('questions-dashboard')
         self.assertTrue(dashboard_url in second_mail.body)
 
-        # Check that messages were marked as mailed
+        # Check that issues were marked as mailed
         self.test_problem = Problem.objects.get(pk=self.test_problem.id)
         self.assertTrue(self.test_problem.mailed)
         self.test_question = Question.objects.get(pk=self.test_question.id)
@@ -102,7 +102,7 @@ class EmailIssuesToProviderTests(TestCase):
             self._call_command()
             # Check it still sent one mail
             self.assertEqual(mock_send_mail.call_count, 2)
-            # Check that the errored message is still marked as not mailed
+            # Check that the errored issue is still marked as not mailed
             self.test_problem = Problem.objects.get(pk=self.test_problem.id)
             self.assertFalse(self.test_problem.mailed)
             # And that the successful one got marked as mailed

@@ -20,7 +20,7 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         response_text = 'This problem is solved'
         test_form_values = {
             'response': response_text,
-            'message': self.test_problem.id,
+            'issue': self.test_problem.id,
             'respond': ''
         }
         resp = self.client.post(self.problem_response_form_url, test_form_values)
@@ -33,8 +33,8 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         response_text = 'This problem is solved'
         test_form_values = {
             'response': response_text,
-            'message': self.test_problem.id,
-            'message_status': Problem.RESOLVED,
+            'issue': self.test_problem.id,
+            'issue_status': Problem.RESOLVED,
             'respond': ''
         }
         resp = self.client.post(self.problem_response_form_url, test_form_values)
@@ -48,8 +48,8 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         response_text = ''
         test_form_values = {
             'response': response_text,
-            'message': self.test_problem.id,
-            'message_status': Problem.RESOLVED,
+            'issue': self.test_problem.id,
+            'issue_status': Problem.RESOLVED,
             'status': ''
         }
         resp = self.client.post(self.problem_response_form_url, test_form_values)
@@ -61,8 +61,8 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         response_text = 'I didn\'t mean to respond'
         test_form_values = {
             'response': response_text,
-            'message': self.test_problem.id,
-            'message_status': Problem.RESOLVED,
+            'issue': self.test_problem.id,
+            'issue_status': Problem.RESOLVED,
             'status': ''
         }
         resp = self.client.post(self.problem_response_form_url, test_form_values)
@@ -74,7 +74,7 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         response_text = ''
         test_form_values = {
             'response': response_text,
-            'message': self.test_problem.id,
+            'issue': self.test_problem.id,
             'respond': ''
         }
         resp = self.client.post(self.problem_response_form_url, test_form_values)
@@ -84,7 +84,7 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         response_text = 'This problem is solved'
         test_form_values = {
             'response': response_text,
-            'message': self.test_problem.id,
+            'issue': self.test_problem.id,
             'respond': ''
         }
         resp = self.client.post(self.problem_response_form_url, test_form_values)
@@ -92,12 +92,12 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         self.assertContains(resp, "response has been published online")
         self.assertContains(resp, reverse('org-dashboard', kwargs={'ods_code':self.test_organisation.ods_code}))
 
-    def test_form_shows_message_confirmation_with_link(self):
+    def test_form_shows_issue_confirmation_with_link(self):
         response_text = ''
         test_form_values = {
             'response': response_text,
-            'message': self.test_problem.id,
-            'message_status': Problem.RESOLVED,
+            'issue': self.test_problem.id,
+            'issue_status': Problem.RESOLVED,
             'status': ''
         }
         resp = self.client.post(self.problem_response_form_url, test_form_values)
@@ -117,7 +117,7 @@ class ResponseFormViewTests(AuthorizationTestCase):
         resp = self.client.get(self.response_form_url)
         self.assertEqual(resp.status_code, 200)
 
-    def test_response_form_contains_message_data(self):
+    def test_response_form_contains_issue_data(self):
         resp = self.client.get(self.response_form_url)
         self.assertContains(resp, self.problem.reference_number)
         self.assertContains(resp, self.problem.issue_type)
@@ -130,8 +130,8 @@ class ResponseFormViewTests(AuthorizationTestCase):
 
     def test_response_form_displays_previous_responses(self):
         # Add some responses
-        response1 = ProblemResponse.objects.create(response='response 1', message=self.problem)
-        response2 = ProblemResponse.objects.create(response='response 2', message=self.problem)
+        response1 = ProblemResponse.objects.create(response='response 1', issue=self.problem)
+        response2 = ProblemResponse.objects.create(response='response 2', issue=self.problem)
         resp = self.client.get(self.response_form_url)
         self.assertContains(resp, response1.response)
         self.assertContains(resp, response2.response)

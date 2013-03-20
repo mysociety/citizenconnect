@@ -9,7 +9,7 @@ from .models import ProblemResponse
 class ProblemResponseForm(forms.ModelForm):
 
     response = forms.CharField(required=False, widget=Textarea())
-    message_status = forms.ChoiceField(choices=Problem.STATUS_CHOICES,
+    issue_status = forms.ChoiceField(choices=Problem.STATUS_CHOICES,
                                        required=False)
 
     def clean_response(self):
@@ -30,9 +30,9 @@ class ProblemResponseForm(forms.ModelForm):
 
         fields = [
             'response',
-            'message'
+            'issue'
         ]
 
         widgets = {
-            'message': HiddenInput
+            'issue': HiddenInput
         }
