@@ -1,7 +1,9 @@
 from django import forms
 from django.forms.widgets import HiddenInput
+from django.forms.models import inlineformset_factory
 
 from issues.models import Problem
+from responses.models import ProblemResponse
 
 class LookupForm(forms.Form):
     reference_number = forms.CharField(required=True)
@@ -65,3 +67,6 @@ class ProblemModerationForm(forms.ModelForm):
             'publication_status': HiddenInput,
             'moderated': HiddenInput
         }
+
+# A formset for the responses attached to a problem
+ProblemResponseInlineFormSet = inlineformset_factory(Problem, ProblemResponse, max_num=0, fields=('response',))

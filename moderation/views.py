@@ -17,7 +17,7 @@ from organisations.models import Organisation
 import organisations.auth as auth
 from organisations.auth import user_in_group, user_is_superuser
 
-from .forms import LookupForm, ProblemModerationForm
+from .forms import LookupForm, ProblemModerationForm, ProblemResponseInlineFormSet
 from .tables import ModerationTable
 
 class ModeratorsOnlyMixin(object):
@@ -70,6 +70,19 @@ class ModerateForm(ModeratorsOnlyMixin,
 
     def get_success_url(self):
         return reverse('moderate-confirm')
+
+    def get_context_data(self, **kwargs):
+        context = super(ModerateForm, self).get_context_data(**kwargs)
+        message = Problem.objects.get(pk=self.kwargs['pk'])
+        if message.responses.all().count() > 0:
+            print "has some responses"
+            if self.request.POST:
+                context['response_forms'] = ProblemResponseInlineFormSet(self.request.POST, instance=message)
+            else:
+                context['response_forms'] = ProblemResponseInlineFormSet(instance=message)
+        return context
+
+
 
 class ModerateConfirm(ModeratorsOnlyMixin,
                       TemplateView):

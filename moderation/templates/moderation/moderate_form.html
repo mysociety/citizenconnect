@@ -15,6 +15,7 @@
 <div class="moderate-form">
     <form method="post">
         {% csrf_token %}
+        {{ response_forms.management_form }}
 
         {% if form.non_field_errors %}
             <fieldset class="island">
@@ -28,12 +29,31 @@
 
         <fieldset class="island">
             <ul class="gw">
-                <li class="g  one-whole">
+                <li class="g  three-quarters">
                     <label for="id_description">Moderated details</label>
                     {{ form.moderated_description }}
                     <p class="info">Required when publishing public problems.</p>
                     {% include "message_list.html" with messages=form.moderated_description.errors message_type='error' %}
                 </li>
+                <li class="g one-quarter">
+                    {{ form.DELETE }}
+                </li>
+            </ul>
+        </fieldset>
+
+        {{ response_forms }}
+
+        <fieldset class="island">
+            <ul class="gw">
+                {% for form in response_forms %}
+                    <li class="g  one-whole">
+                        <label for="id_description">Moderated response</label>
+                        {{ form.response }}
+                        {% include "message_list.html" with messages=form.response.errors message_type='error' %}
+                    </li>
+                {% empty %}
+                    <li class="g  one-whole">No Responses</li>
+                {% endfor %}
             </ul>
         </fieldset>
 
