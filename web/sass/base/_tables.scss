@@ -77,6 +77,14 @@ table {
     font-size: (22px / $font-size-base) + em;
     color: $c-table-icon-circle-color;
   }
+  .icon-hidden{
+    color: $c-table-icon-hidden-color;
+  }
+  .icon-warning {
+    font-size: (22px / $font-size-base) + em;
+    color: $c-table-icon-warning-color;
+  }
+
 }
 
 

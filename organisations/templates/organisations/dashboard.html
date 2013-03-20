@@ -48,8 +48,10 @@
                     <th>Received</th>
                     <th>Name</th>
                     <th>Issue snippet</th>
+                    <th>Breach</th>
                     <th>Status</th>
                     <th>Action Due</th>
+
                 </tr>
             </thead>
             <tbody>
@@ -60,6 +62,14 @@
                         <td>{{ problem.created }}</td>
                         <td>{{ problem.reporter_name_display }}</td>
                         <td><a href="{% url 'response-form' pk=problem.id %}">{{ problem.private_summary }}</a></td>
+                        <td>{% if problem.breach %}
+                            <span class="icon-warning" aria-hidden="true"></span>
+                            <span class="hide-text">Yes</span>
+                            {% else %}
+                            <span class="icon-circle icon-hidden" aria-hidden="true"></span>
+                            <span class="hide-text">No</span>
+                            {% endif %}
+                        </td>
                         <td>{{ problem.get_status_display }}</td>
                         <td>{% if problem.status == Problem.RESOLVED %}
                                 No
