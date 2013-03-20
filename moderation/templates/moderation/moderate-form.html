@@ -29,10 +29,10 @@
         <fieldset class="island">
             <ul class="gw">
                 <li class="g  one-whole">
-                    <label for="id_description">Edit details</label>
-                    {{ form.description }}
-                    <p class="info">Including as much information as possible to help us to help you.</p>
-                    {% include "message-list.html" with messages=form.description.errors message_type='error' %}
+                    <label for="id_description">Moderated details</label>
+                    {{ form.moderated_description }}
+                    <p class="info">You must moderate a version of the problem details when publishing public problems.</p>
+                    {% include "message-list.html" with messages=form.moderated_description.errors message_type='error' %}
                 </li>
             </ul>
         </fieldset>
