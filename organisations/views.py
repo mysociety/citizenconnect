@@ -128,8 +128,8 @@ class Map(PrivateViewMixin, TemplateView):
         return context
 
 class PickProviderBase(ListView):
-    template_name = 'provider-results.html'
-    form_template_name = 'pick-provider.html'
+    template_name = 'provider_results.html'
+    form_template_name = 'pick_provider.html'
     result_link_url_name = 'public-org-summary'
     paginate_by = 10
     model = Organisation
@@ -216,7 +216,7 @@ class OrganisationSummary(OrganisationAwareViewMixin,
 
 class OrganisationProblems(MessageListMixin,
                            TemplateView):
-    template_name = 'organisations/organisation-problems.html'
+    template_name = 'organisations/organisation_problems.html'
     message_type = 'problem'
 
     def get_issues(self, organisation, private):
@@ -227,7 +227,7 @@ class OrganisationProblems(MessageListMixin,
 
 class OrganisationReviews(OrganisationAwareViewMixin,
                           TemplateView):
-    template_name = 'organisations/organisation-reviews.html'
+    template_name = 'organisations/organisation_reviews.html'
 
 class Summary(TemplateView):
     template_name = 'organisations/summary.html'
@@ -292,7 +292,7 @@ class OrganisationDashboard(OrganisationAwareViewMixin,
 
 class DashboardChoice(TemplateView):
 
-    template_name = 'organisations/dashboard-choice.html'
+    template_name = 'organisations/dashboard_choice.html'
 
     def get_context_data(self, **kwargs):
         context = super(DashboardChoice, self).get_context_data(**kwargs)
@@ -338,7 +338,7 @@ def login_redirect(request):
 
 class SuperuserLogs(TemplateView):
 
-    template_name = 'organisations/superuser-logs.html'
+    template_name = 'organisations/superuser_logs.html'
 
     def get_context_data(self, **kwargs):
         context = super(SuperuserLogs, self).get_context_data(**kwargs)
@@ -352,7 +352,7 @@ class SuperuserLogs(TemplateView):
 class QuestionsDashboard(ListView):
 
     queryset = Question.objects.open_questions();
-    template_name = 'organisations/questions-dashboard.html'
+    template_name = 'organisations/questions_dashboard.html'
     context_object_name = "questions"
 
     def dispatch(self, request, *args, **kwargs):

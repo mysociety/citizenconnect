@@ -15,7 +15,7 @@
 
         {% if form.non_field_errors %}
             <fieldset class="island">
-                {% include "message-list.html" with messages=form.non_field_errors message_type='error' %}
+                {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
             </fieldset>
         {% endif %}
 
@@ -28,12 +28,12 @@
                 <li class="g  three-quarters  lap-one-half  palm-one-whole">
                     {{ form.description }}
                     <p class="info">Including as much information as possible to help us to help you.</p>
-                    {% include "message-list.html" with messages=form.description.errors message_type='error' %}
+                    {% include "message_list.html" with messages=form.description.errors message_type='error' %}
                 </li>
                 <li class="g  one-quarter  lap-one-half  palm-one-whole">
                     <label for="id_postcode">Post code</label>
                     {{ form.postcode }}
-                    {% include "message-list.html" with messages=form.postcode.errors message_type='error' %}
+                    {% include "message_list.html" with messages=form.postcode.errors message_type='error' %}
                 </li>
             </ul>
         </fieldset>
@@ -55,7 +55,7 @@
                 {% endfor %}
             </ul>
 
-            {% include "message-list.html" with messages=form.category.errors message_type='error' %}
+            {% include "message_list.html" with messages=form.category.errors message_type='error' %}
         </fieldset>
 
         <fieldset class="island">
@@ -63,17 +63,17 @@
                 <li class="g  one-half  palm-one-whole">
                     <label for="id_reporter_name">Your Name <span class="info">You must enter your name</span></label>
                     {{ form.reporter_name }}
-                    {% include "message-list.html" with messages=form.reporter_name.errors message_type='error' %}
+                    {% include "message_list.html" with messages=form.reporter_name.errors message_type='error' %}
                 </li>
                 <li class="g  one-half  palm-one-whole">
                     <label for="id_reporter_phone">Your Contact Number <span class="info">You must enter a contact number OR email address</span></label>
                     {{ form.reporter_phone }}
-                    {% include "message-list.html" with messages=form.reporter_phone.errors message_type='error' %}
+                    {% include "message_list.html" with messages=form.reporter_phone.errors message_type='error' %}
                 </li>
                 <li class="g  one-half  palm-one-whole">
                     <label for="id_reporter_email">Your Email Address <span class="info">You must enter a contact number OR email address</span></label>
                     {{ form.reporter_email }}
-                    {% include "message-list.html" with messages=form.reporter_email.errors message_type='error' %}
+                    {% include "message_list.html" with messages=form.reporter_email.errors message_type='error' %}
                 </li>
                 <li class="g  one-half  pal-one-whole">
                     <label for="id_preferred_contact_method_0">Preferred contact method</label>
@@ -82,7 +82,7 @@
                             <li>{{ radio }}</li>
                         {% endfor %}
                     </ul>
-                    {% include "message-list.html" with messages=form.preferred_contact_method.errors message_type='error' %}
+                    {% include "message_list.html" with messages=form.preferred_contact_method.errors message_type='error' %}
                 </li>
             </ul>
         </fieldset>
@@ -97,7 +97,7 @@
             <ul class="gw">
                 <li class="g  one-whole">
                     <label for="id_agree_to_terms">{{ form.agree_to_terms }} I have read and agree to the <a href="{% url 'about' cobrand=cobrand.name %}">Terms and Conditions</a></label>
-                    {% include "message-list.html" with messages=form.agree_to_terms.errors message_type='error' %}
+                    {% include "message_list.html" with messages=form.agree_to_terms.errors message_type='error' %}
                 </li>
             </ul>
         </fieldset>

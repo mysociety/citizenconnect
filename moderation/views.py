@@ -33,7 +33,7 @@ class ModeratorsOnlyMixin(object):
 
 class ModerateHome(ModeratorsOnlyMixin,
                    TemplateView):
-    template_name = 'moderation/moderate-home.html'
+    template_name = 'moderation/moderate_home.html'
 
     def get_context_data(self, **kwargs):
         # Get all the problems
@@ -48,7 +48,7 @@ class ModerateHome(ModeratorsOnlyMixin,
 
 class ModerateLookup(ModeratorsOnlyMixin,
                      FormView):
-    template_name = 'moderation/moderate-lookup.html'
+    template_name = 'moderation/moderate_lookup.html'
     form_class = LookupForm
 
     def form_valid(self, form):
@@ -62,7 +62,7 @@ class ModerateForm(ModeratorsOnlyMixin,
                    UpdateView):
 
     queryset = Problem.objects.unmoderated_problems().all()
-    template_name = 'moderation/moderate-form.html'
+    template_name = 'moderation/moderate_form.html'
     form_class = ProblemModerationForm
 
     # Standardise the context_object's name
@@ -73,4 +73,4 @@ class ModerateForm(ModeratorsOnlyMixin,
 
 class ModerateConfirm(ModeratorsOnlyMixin,
                       TemplateView):
-    template_name = 'moderation/moderate-confirm.html'
+    template_name = 'moderation/moderate_confirm.html'

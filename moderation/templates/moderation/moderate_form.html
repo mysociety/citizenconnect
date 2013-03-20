@@ -18,7 +18,7 @@
 
         {% if form.non_field_errors %}
             <fieldset class="island">
-                {% include "message-list.html" with messages=form.non_field_errors message_type='error' %}
+                {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
             </fieldset>
         {% endif %}
 
@@ -32,7 +32,7 @@
                     <label for="id_description">Moderated details</label>
                     {{ form.moderated_description }}
                     <p class="info">Required when publishing public problems.</p>
-                    {% include "message-list.html" with messages=form.moderated_description.errors message_type='error' %}
+                    {% include "message_list.html" with messages=form.moderated_description.errors message_type='error' %}
                 </li>
             </ul>
         </fieldset>

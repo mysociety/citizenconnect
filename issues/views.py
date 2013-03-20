@@ -13,7 +13,7 @@ from .models import Question, Problem
 from .forms import QuestionForm, ProblemForm, QuestionUpdateForm
 
 class AskQuestion(TemplateView):
-    template_name = 'issues/ask-question.html'
+    template_name = 'issues/ask_question.html'
 
 class QuestionPickProvider(PickProviderBase):
     result_link_url_name = 'question-form'
@@ -21,7 +21,7 @@ class QuestionPickProvider(PickProviderBase):
 class QuestionCreate(CreateView):
     model = Question
     form_class = QuestionForm
-    confirm_template = 'issues/question-confirm.html'
+    confirm_template = 'issues/question_confirm.html'
 
     def form_valid(self, form):
         self.object = form.save()
@@ -49,7 +49,7 @@ class QuestionUpdate(PrivateViewMixin, UpdateView):
     form_class = QuestionUpdateForm
     context_object_name = "question"
     template_name = 'issues/question_update_form.html'
-    confirm_template = 'issues/question-update-confirm.html'
+    confirm_template = 'issues/question_update_confirm.html'
 
     def dispatch(self, request, *args, **kwargs):
         check_question_access(request.user)
@@ -67,7 +67,7 @@ class ProblemPickProvider(PickProviderBase):
 class ProblemCreate(OrganisationAwareViewMixin, CreateView):
     model = Problem
     form_class = ProblemForm
-    confirm_template = 'issues/problem-confirm.html'
+    confirm_template = 'issues/problem_confirm.html'
 
     def form_valid(self, form):
         self.object = form.save()

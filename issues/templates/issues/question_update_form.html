@@ -18,7 +18,7 @@
 
         {% if form.non_field_errors %}
             <fieldset class="island">
-                {% include "message-list.html" with messages=form.non_field_errors message_type='error' %}
+                {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
             </fieldset>
         {% endif %}
 
@@ -31,7 +31,7 @@
                 <li class="g  one-whole">
                     <label for="id_response">Response</label>
                     {{ form.response }}
-                    {% include "message-list.html" with messages=form.response.errors message_type='error' %}
+                    {% include "message_list.html" with messages=form.response.errors message_type='error' %}
                 </li>
             </ul>
         </fieldset>
@@ -41,7 +41,8 @@
                 <li class="g  one-third  palm-one-whole">
                     <label for="id_status">Status</label>
                     {{ form.status }}
-                    {% include "message-list.html" with messages=form.status.errors message_type='error' %}
+                    {% include "message_list.html
+" with messages=form.status.errors message_type='error' %}
                 </li>
             </ul>
         </fieldset>
