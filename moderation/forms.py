@@ -38,6 +38,17 @@ class ProblemModerationForm(forms.ModelForm):
             publication_status = Problem.HIDDEN
         return publication_status
 
+    def clean_requires_legal_moderation(self):
+        # requires_legal_moderation is hidden, but if people click the "Requires Legal Moderation"
+        # button, we should set it to True. If they click either "Publish" or "Keep Private",
+        # we set it to False.
+        requires_legal_moderation = self.cleaned_data['requires_legal_moderation']
+        if 'now_requires_legal_moderation' in self.data:
+            requires_legal_moderation = True
+        else:
+            requires_legal_moderation = False
+        return requires_legal_moderation
+
     def clean_moderated(self):
         # If you are submitting the form, you have moderated it, so always return MODERATED
         return Problem.MODERATED
@@ -62,12 +73,14 @@ class ProblemModerationForm(forms.ModelForm):
             'moderated_description',
             'moderated',
             'status',
+            'requires_legal_moderation',
             'breach'
         ]
 
         widgets = {
             'publication_status': HiddenInput,
-            'moderated': HiddenInput
+            'moderated': HiddenInput,
+            'requires_legal_moderation': HiddenInput
         }
 
 # A formset for the responses attached to a problem

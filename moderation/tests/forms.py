@@ -100,9 +100,12 @@ class ModerationFormTests(BaseModerationTestCase):
         problem = Problem.objects.get(pk=self.test_problem.id)
         self.assertEqual(problem.status, Problem.ESCALATED)
 
+    def assert_expected_publication_status(self, expected_status, form_values):
+        resp = self.client.post(self.problem_form_url, form_values)
+        problem = Problem.objects.get(pk=self.test_problem.id)
+        self.assertEqual(problem.publication_status, expected_status)
 
     def test_form_sets_publication_status_to_published_when_publish_clicked(self):
-        expected_status = Problem.PUBLISHED
         test_form_values = {
             'publication_status': self.test_problem.publication_status,
             'moderated_description': self.test_problem.description,
@@ -110,12 +113,9 @@ class ModerationFormTests(BaseModerationTestCase):
             'publish': '',
             'status': self.test_problem.status,
         }
-        resp = self.client.post(self.problem_form_url, test_form_values)
-        problem = Problem.objects.get(pk=self.test_problem.id)
-        self.assertEqual(problem.publication_status, expected_status)
+        self.assert_expected_publication_status(Problem.PUBLISHED, test_form_values)
 
     def test_form_sets_publication_status_to_private_when_keep_private_clicked(self):
-        expected_status = Problem.HIDDEN
         test_form_values = {
             'publication_status': self.test_problem.publication_status,
             'moderated_description': self.test_problem.description,
@@ -123,9 +123,52 @@ class ModerationFormTests(BaseModerationTestCase):
             'keep_private': '',
             'status': self.test_problem.status,
         }
-        resp = self.client.post(self.problem_form_url, test_form_values)
+        self.assert_expected_publication_status(Problem.HIDDEN, test_form_values)
+
+    def test_form_sets_publication_status_to_private_when_requires_legal_moderation_clicked(self):
+        test_form_values = {
+            'publication_status': self.test_problem.publication_status,
+            'moderated_description': self.test_problem.description,
+            'moderated': self.test_problem.moderated,
+            'now_requires_legal_moderation': '',
+            'status': self.test_problem.status,
+        }
+        self.assert_expected_publication_status(Problem.HIDDEN, test_form_values)
+
+    def assert_expected_requires_legal_moderation(self, expected_value, form_values):
+        resp = self.client.post(self.problem_form_url, form_values)
         problem = Problem.objects.get(pk=self.test_problem.id)
-        self.assertEqual(problem.publication_status, expected_status)
+        self.assertEqual(problem.requires_legal_moderation, expected_value)
+
+    def test_form_sets_requires_legal_moderation_when_requires_legal_moderation_clicked(self):
+        test_form_values = {
+            'publication_status': self.test_problem.publication_status,
+            'moderated_description': self.test_problem.description,
+            'moderated': self.test_problem.moderated,
+            'now_requires_legal_moderation': '',
+            'status': self.test_problem.status,
+        }
+        self.assert_expected_requires_legal_moderation(True, test_form_values)
+
+    def test_form_unsets_requires_legal_moderation_when_keep_private_clicked(self):
+        test_form_values = {
+            'publication_status': self.test_problem.publication_status,
+            'moderated_description': self.test_problem.description,
+            'moderated': self.test_problem.moderated,
+            'keep_private': '',
+            'status': self.test_problem.status,
+        }
+        self.assert_expected_requires_legal_moderation(False, test_form_values)
+
+    def test_form_unsets_requires_legal_moderation_when_publish_clicked(self):
+        test_form_values = {
+            'publication_status': self.test_problem.publication_status,
+            'moderated_description': self.test_problem.description,
+            'moderated': self.test_problem.moderated,
+            'publish': '',
+            'status': self.test_problem.status,
+        }
+        self.assert_expected_requires_legal_moderation(False, test_form_values)
 
     def test_form_redirects_to_confirm_url(self):
         status = Problem.RESOLVED
