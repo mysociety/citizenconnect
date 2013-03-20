@@ -51,6 +51,16 @@
 
         <fieldset class="island">
             <ul class="gw">
+                <li class="g  one-third  palm-one-whole">
+                    <label for="id_status">Status</label>
+                    {{ form.status }}
+                    {% include "message_list.html" with messages=form.status.errors message_type='error' %}
+                </li>
+            </ul>
+        </fieldset>
+
+        <fieldset class="island">
+            <ul class="gw">
                 {% for form in response_forms %}
                     <li class="g  three-quarters">
                         <label for="id_responses-{{forloop.counter0}}-response">Moderated response</label>

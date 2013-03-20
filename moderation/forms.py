@@ -61,6 +61,7 @@ class ProblemModerationForm(forms.ModelForm):
             'publication_status',
             'moderated_description',
             'moderated',
+            'status',
             'breach'
         ]
 
