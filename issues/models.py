@@ -190,6 +190,14 @@ class Problem(IssueModel):
 
     MODERATED_STATUS_CHOICES = ((NOT_MODERATED, "Not moderated"), (MODERATED, "Moderated"))
 
+    LEGAL_MODERATION_NOT_REQUIRED = 0
+    LEGAL_MODERATION_REQUIRED = 1
+    LEGAL_MODERATION_DONE = 2
+
+    LEGAL_MODERATION_STATUS_CHOICES = ((LEGAL_MODERATION_NOT_REQUIRED, "Not required"),
+                                       (LEGAL_MODERATION_REQUIRED, "Required"),
+                                       (LEGAL_MODERATION_DONE, "Done"))
+
     category = models.CharField(max_length=100,
                                 choices=IssueModel.CATEGORY_CHOICES,
                                 default='other',
@@ -215,6 +223,9 @@ class Problem(IssueModel):
                                     choices=MODERATED_STATUS_CHOICES)
     moderated_description = models.TextField(blank=True)
     breach = models.BooleanField(default=False, blank=False)
+    legal_moderation_status = models.IntegerField(default=LEGAL_MODERATION_NOT_REQUIRED,
+                                                  blank=False,
+                                                  choices=LEGAL_MODERATION_STATUS_CHOICES)
 
     @property
     def reference_number(self):
