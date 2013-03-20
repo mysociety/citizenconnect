@@ -41,8 +41,7 @@
                 <li class="g  one-third  palm-one-whole">
                     <label for="id_status">Status</label>
                     {{ form.status }}
-                    {% include "message_list.html
-" with messages=form.status.errors message_type='error' %}
+                    {% include "message_list.html" with messages=form.status.errors message_type='error' %}
                 </li>
             </ul>
         </fieldset>
