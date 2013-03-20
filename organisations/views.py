@@ -85,7 +85,7 @@ class Map(PrivateViewMixin, TemplateView):
         context = super(Map, self).get_context_data(**kwargs)
 
         # TODO - Filter by location
-        organisations = Organisation.objects.all()
+        organisations = Organisation.objects.all().order_by("id")
 
         # Check that the user is a superuser
         if context['private']:
