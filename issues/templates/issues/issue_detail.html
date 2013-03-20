@@ -23,6 +23,10 @@
             <p class="g  one-third  palm-one-whole">
                 {% if object.issue_type == 'Problem' and private %}
                     {{ object.public|yesno:"Public,Private" }},&nbsp;
+                    {{ object.get_publication_status_display}},&nbsp;
+                    {% if object.requires_legal_moderation %}
+                      Requires legal moderation,&nbsp;
+                    {% endif %}
                 {% endif %}
                 {{ object.get_status_display }}
             </p>
