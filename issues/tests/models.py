@@ -293,15 +293,33 @@ class ProblemManagerTests(ManagerTest):
             'status': Problem.RESOLVED
         })
 
-        # Intermidiate helper lists
+        # Problems that have been escalated and moderated
+        self.escalated_public_moderated_problem_published = create_test_instance(Problem, {
+            'organisation': self.test_organisation,
+            'public':True,
+            'moderated':Problem.MODERATED,
+            'publication_status':Problem.PUBLISHED,
+            'status': Problem.ESCALATED
+        })
+
+        # Unmoderated escalated problems
+        self.escalated_private_unmoderated_problem = create_test_instance(Problem, {
+            'organisation': self.test_organisation,
+            'public':False,
+            'status': Problem.ESCALATED
+        })
+
+        # Intermediate helper lists
         self.open_unmoderated_problems = [self.new_public_unmoderated_problem,
-                                          self.new_private_unmoderated_problem]
+                                          self.new_private_unmoderated_problem,
+                                          self.escalated_private_unmoderated_problem]
         self.closed_unmoderated_problems = [self.closed_public_unmoderated_problem,
                                             self.closed_private_unmoderated_problem]
         self.open_moderated_problems = [self.new_public_moderated_problem_hidden,
                                         self.new_public_moderated_problem_published,
                                         self.new_private_moderated_problem_hidden,
-                                        self.new_private_moderated_problem_published]
+                                        self.new_private_moderated_problem_published,
+                                        self.escalated_public_moderated_problem_published]
         self.closed_problems = self.closed_unmoderated_problems + [self.closed_public_moderated_problem_hidden,
                                                                    self.closed_public_moderated_problem_published,
                                                                    self.closed_private_moderated_problem_hidden,
@@ -311,7 +329,8 @@ class ProblemManagerTests(ManagerTest):
         self.unmoderated_problems = self.open_unmoderated_problems + self.closed_unmoderated_problems
         self.open_problems = self.open_unmoderated_problems + self.open_moderated_problems
         self.open_moderated_published_problems = [self.new_public_moderated_problem_published,
-                                                  self.new_private_moderated_problem_published]
+                                                  self.new_private_moderated_problem_published,
+                                                  self.escalated_public_moderated_problem_published]
         self.all_problems = self.open_problems + self.closed_problems
         self.all_moderated_published_problems = self.open_moderated_published_problems + [self.closed_public_moderated_problem_published,
                                                                                           self.closed_private_moderated_problem_published]

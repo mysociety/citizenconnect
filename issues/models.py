@@ -144,7 +144,7 @@ class ProblemManager(models.Manager):
         """
         Return only open problems
         """
-        return super(ProblemManager, self).all().filter(Q(status=Problem.NEW) | Q(status=Problem.ACKNOWLEDGED))
+        return super(ProblemManager, self).all().filter(Q(status__in=Problem.OPEN_STATUSES))
 
     def unmoderated_problems(self):
         return super(ProblemManager, self).all().filter(moderated=Problem.NOT_MODERATED)
@@ -164,12 +164,19 @@ class Problem(IssueModel):
     NEW = 0
     ACKNOWLEDGED = 1
     RESOLVED = 2
+    ESCALATED = 3
 
     STATUS_CHOICES = (
         (NEW, 'Open'),
         (ACKNOWLEDGED, 'In Progress'),
-        (RESOLVED, 'Resolved')
+        (RESOLVED, 'Resolved'),
+        (ESCALATED, 'Escalated')
     )
+
+    BASE_OPEN_STATUSES = [NEW, ACKNOWLEDGED]
+    ESCALATION_STATUSES = [ESCALATED]
+
+    OPEN_STATUSES = BASE_OPEN_STATUSES + ESCALATION_STATUSES
 
     PREFIX = 'P'
 
