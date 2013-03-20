@@ -199,13 +199,20 @@ class Problem(IssueModel):
     public_reporter_name = models.BooleanField()
     status = models.IntegerField(default=NEW, choices=STATUS_CHOICES, db_index=True)
     organisation = models.ForeignKey('organisations.Organisation')
-    service = models.ForeignKey('organisations.Service', null=True, blank=True, verbose_name="Please select a department (optional)")
+    service = models.ForeignKey('organisations.Service',
+                                null=True,
+                                blank=True,
+                                verbose_name="Please select a department (optional)")
     happy_service = models.NullBooleanField()
     happy_outcome = models.NullBooleanField()
     time_to_acknowledge = models.IntegerField(null=True)
     time_to_address = models.IntegerField(null=True)
-    publication_status = models.IntegerField(default=HIDDEN, blank=False, choices=PUBLICATION_STATUS_CHOICES)
-    moderated = models.IntegerField(default=NOT_MODERATED, blank=False, choices=MODERATED_STATUS_CHOICES)
+    publication_status = models.IntegerField(default=HIDDEN,
+                                             blank=False,
+                                             choices=PUBLICATION_STATUS_CHOICES)
+    moderated = models.IntegerField(default=NOT_MODERATED,
+                                    blank=False,
+                                    choices=MODERATED_STATUS_CHOICES)
     moderated_description = models.TextField(blank=True)
     breach = models.BooleanField(default=False, blank=False)
 
