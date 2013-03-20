@@ -17,14 +17,14 @@
         {% if organisation.has_time_limits  %}
             <p class="g  one-half  palm-one-whole  feature">
             {% if issues_total.average_time_to_acknowledge != None %}
-                <span class="feature__num">{{ issues_total.average_time_to_acknowledge|formatted_time_interval }}</span><span class="feature__text">{% if issues_total.average_time_to_acknowledge|formatted_time_interval == '1' %} day {% else %} days {% endif %} on average to acknowledge messages </span>
+                <span class="feature__num">{{ issues_total.average_time_to_acknowledge|formatted_time_interval }}</span><span class="feature__text">{% if issues_total.average_time_to_acknowledge|formatted_time_interval == '1' %} day {% else %} days {% endif %} on average to acknowledge problems </span>
             {% else %}
                 <span class="feature__text">No data on average time to acknowledge problems</span>
             {% endif %}
             </p>
             <p class="g  one-half  palm-one-whole  feature">
             {% if issues_total.average_time_to_address != None %}
-                <span class="feature__num">{{ issues_total.average_time_to_address|formatted_time_interval }}</span><span class="feature__text">{% if issues_total.average_time_to_address|formatted_time_interval == '1' %} day {% else %} days {% endif %} on average to address messages</span>
+                <span class="feature__num">{{ issues_total.average_time_to_address|formatted_time_interval }}</span><span class="feature__text">{% if issues_total.average_time_to_address|formatted_time_interval == '1' %} day {% else %} days {% endif %} on average to address problems</span>
             {% else %}
                 <span class="feature__text">No data on time taken to address problems</span>
             {% endif %}
@@ -84,7 +84,7 @@
     <table>
         <thead>
             <tr>
-                <th class="table__title">Message Type</th>
+                <th class="table__title">Issue Type</th>
                 <th>Last 7 days</th>
                 <th>Last 4 weeks</th>
                 <th>Last 6 months</th>

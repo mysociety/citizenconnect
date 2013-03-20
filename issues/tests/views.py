@@ -91,8 +91,8 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         self.assertContains(resp, self.test_organisation.name, count=2, status_code=200)
 
     def test_public_problem_displays_responses(self):
-        response1 = ProblemResponse.objects.create(response="response 1", message=self.test_moderated_problem)
-        response2 = ProblemResponse.objects.create(response="response 2", message=self.test_moderated_problem)
+        response1 = ProblemResponse.objects.create(response="response 1", issue=self.test_moderated_problem)
+        response2 = ProblemResponse.objects.create(response="response 2", issue=self.test_moderated_problem)
         resp = self.client.get(self.test_moderated_problem_url)
         self.assertContains(resp, response1.response, count=1, status_code=200)
         self.assertContains(resp, response2.response, count=1, status_code=200)

@@ -5,4 +5,4 @@ from issues.models import Problem
 
 class ProblemResponse(AuditedModel):
     response = models.TextField()
-    message = models.ForeignKey(Problem, related_name='responses')
+    issue = models.ForeignKey(Problem, related_name='responses')

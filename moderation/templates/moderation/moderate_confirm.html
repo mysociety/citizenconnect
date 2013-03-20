@@ -1,19 +1,19 @@
 {% extends 'base.html' %}
 {% load url from future %}
 
-{% block title %}Message moderated{% endblock %}
+{% block title %}Issue moderated{% endblock %}
 
 {% block bodyclasses %}moderate-confirm{% endblock %}
 
 {% block content %}
 <div class="header">
-    <h1>Message moderated</h1>
+    <h1>Issue moderated</h1>
 </div>
 
 <div class="gw">
     <div class="g  one-whole">
       <ul class="message-list">
-        <li class="message-list__success">Thank you, the message has been moderated. <a href="{% url 'moderate-home' %}">Return to the moderation queue</a></li>
+        <li class="message-list__success">Thank you, the issue has been moderated. <a href="{% url 'moderate-home' %}">Return to the moderation queue</a></li>
       </ul>
     </div>
 </div>

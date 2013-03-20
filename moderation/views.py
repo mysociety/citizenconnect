@@ -66,7 +66,7 @@ class ModerateForm(ModeratorsOnlyMixin,
     form_class = ProblemModerationForm
 
     # Standardise the context_object's name
-    context_object_name = 'message'
+    context_object_name = 'issue'
 
     def get_success_url(self):
         return reverse('moderate-confirm')

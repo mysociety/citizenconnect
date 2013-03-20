@@ -1,0 +1,26 @@
+{% load url from future %}
+{% autoescape off %}
+You have receieved a new {{ issue.issue_type }} on Care Connect.
+
+Sender:
+{{ issue.reporter_name }}
+{% if issue.preferred_contact_method == "phone" %}
+Phone number: {{ issue.reporter_phone }}
+{% elif issue.preferred_contact_method == "email" %}
+Email address: {{ issue.reporter_email }}
+{% endif %}
+
+Category: {{ issue.category }}
+
+Sent to: {{ issue.organisation.name }} {{ issue.service.name }}
+
+Issue:
+
+{{ issue.description }}
+
+{% if issue.issue_type == "Problem" %}
+To respond to this problem, please visit your dashboard at: {{ site_base_url }}{% url 'org-dashboard' ods_code=issue.organisation.ods_code %}
+{% else %}
+Once you have responded to this question, you can update it at: {{ site_base_url }}{% url 'questions-dashboard' %}
+{% endif %}
+{% endautoescape %}

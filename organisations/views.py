@@ -25,7 +25,7 @@ from .auth import user_in_group, user_in_groups, user_is_superuser, check_organi
 from .models import Organisation, Service, CCG, SuperuserLogEntry
 from .forms import OrganisationFinderForm
 from .lib import interval_counts
-from .tables import NationalSummaryTable, MessageModelTable, ExtendedMessageModelTable, QuestionsDashboardTable
+from .tables import NationalSummaryTable, IssueModelTable, ExtendedIssueModelTable, QuestionsDashboardTable
 
 class PrivateViewMixin(object):
     """
@@ -55,23 +55,23 @@ class OrganisationAwareViewMixin(PrivateViewMixin):
             check_organisation_access(context['organisation'], self.request.user)
         return context
 
-class MessageListMixin(OrganisationAwareViewMixin):
+class IssueListMixin(OrganisationAwareViewMixin):
     """Mixin class for views which need to display a list of issues belonging to an organisation
        in either a public or private context"""
 
     def get_context_data(self, **kwargs):
-        context = super(MessageListMixin, self).get_context_data(**kwargs)
+        context = super(IssueListMixin, self).get_context_data(**kwargs)
 
         table_args = {'private': context['private'],
-                      'message_type': self.message_type}
+                      'issue_type': self.issue_type}
         if not context['private']:
             table_args['cobrand'] = kwargs['cobrand']
 
         issues = self.get_issues(context['organisation'], context['private'])
         if context['organisation'].has_services() and context['organisation'].has_time_limits():
-            issue_table = ExtendedMessageModelTable(issues, **table_args)
+            issue_table = ExtendedIssueModelTable(issues, **table_args)
         else:
-            issue_table = MessageModelTable(issues, **table_args)
+            issue_table = IssueModelTable(issues, **table_args)
 
         RequestConfig(self.request, paginate={'per_page': 8}).configure(issue_table)
         context['table'] = issue_table
@@ -214,10 +214,10 @@ class OrganisationSummary(OrganisationAwareViewMixin,
 
         return context
 
-class OrganisationProblems(MessageListMixin,
+class OrganisationProblems(IssueListMixin,
                            TemplateView):
     template_name = 'organisations/organisation_problems.html'
-    message_type = 'problem'
+    issue_type = 'problem'
 
     def get_issues(self, organisation, private):
         if private:

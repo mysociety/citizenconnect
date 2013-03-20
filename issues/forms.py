@@ -7,16 +7,16 @@ from django.forms.widgets import HiddenInput, RadioSelect, Textarea, TextInput
 
 from .models import Question, Problem
 
-class MessageModelForm(forms.ModelForm):
+class IssueModelForm(forms.ModelForm):
     """
-    ModelForm implementation that does the basics for MessageModel model forms
+    ModelForm implementation that does the basics for IssueModel model forms
     """
 
     # A check to make sure that people have read the T's & C's
     agree_to_terms = forms.BooleanField(required=True,
                                         error_messages={'required': 'You must agree to the terms and conditions to use this service.'})
 
-class QuestionForm(MessageModelForm):
+class QuestionForm(IssueModelForm):
 
     def clean_postcode(self):
         # Check that the postcode is valid
@@ -56,7 +56,7 @@ class QuestionForm(MessageModelForm):
             'preferred_contact_method': RadioSelect,
         }
 
-class ProblemForm(MessageModelForm):
+class ProblemForm(IssueModelForm):
 
     # States of privacy
     PRIVACY_PRIVATE = '0'

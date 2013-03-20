@@ -61,7 +61,7 @@ class ModerationFormTests(BaseModerationTestCase):
         problem = Problem.objects.get(pk=self.test_problem.id)
         self.assertEqual(problem.moderated, Problem.MODERATED)
 
-    def test_moderation_form_sets_moderated_message(self):
+    def test_moderation_form_sets_moderated_description(self):
         moderated_description = "{0} moderated".format(self.test_problem.description)
         test_form_values = {
             'publication_status': self.test_problem.publication_status,
@@ -108,7 +108,7 @@ class ModerationFormTests(BaseModerationTestCase):
         resp = self.client.post(self.problem_form_url, test_form_values)
         self.assertRedirects(resp, reverse('moderate-confirm'))
 
-    def test_moderation_form_requires_moderated_message_when_publishing_public_problems(self):
+    def test_moderation_form_requires_moderated_description_when_publishing_public_problems(self):
         test_form_values = {
             'publication_status': self.test_problem.publication_status,
             'moderated': self.test_problem.moderated,
@@ -117,7 +117,7 @@ class ModerationFormTests(BaseModerationTestCase):
         resp = self.client.post(self.problem_form_url, test_form_values)
         self.assertFormError(resp, 'form', 'moderated_description', 'You must moderate a version of the problem details when publishing public problems.')
 
-    def test_moderation_form_doesnt_requires_moderated_message_for_private_problems(self):
+    def test_moderation_form_doesnt_requires_moderated_description_for_private_problems(self):
         self.test_problem.public = False
         self.test_problem.save()
         expected_status = Problem.PUBLISHED
@@ -130,7 +130,7 @@ class ModerationFormTests(BaseModerationTestCase):
         problem = Problem.objects.get(pk=self.test_problem.id)
         self.assertEqual(problem.publication_status, expected_status)
 
-    def test_moderation_form_doesnt_requires_moderated_message_when_hiding_problems(self):
+    def test_moderation_form_doesnt_require_moderated_description_when_hiding_problems(self):
         expected_status = Problem.HIDDEN
         test_form_values = {
             'publication_status': self.test_problem.publication_status,
