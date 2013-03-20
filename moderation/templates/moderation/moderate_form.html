@@ -30,7 +30,7 @@
         <fieldset class="island">
             <ul class="gw">
                 <li class="g  one-whole">
-                    <label for="id_description">Moderated details</label>
+                    <label for="id_moderated_description">Moderated details</label>
                     {{ form.moderated_description }}
                     <p class="info">Required when publishing public problems.</p>
                     {% include "message_list.html" with messages=form.moderated_description.errors message_type='error' %}
@@ -42,7 +42,7 @@
             <ul class="gw">
                 {% for form in response_forms %}
                     <li class="g  three-quarters">
-                        <label for="id_description">Moderated response</label>
+                        <label for="id_responses-{{forloop.counter0}}-response">Moderated response</label>
                         {{ form.response }}
                         {% include "message_list.html" with messages=form.response.errors message_type='error' %}
                     </li>
