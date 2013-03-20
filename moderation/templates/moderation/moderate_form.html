@@ -39,6 +39,17 @@
         </fieldset>
 
         <fieldset class="island">
+             <ul class="gw">
+                    <li class="g one-eighth">
+                        {{ form.breach }}
+                    </li>
+                    <li class="g seven-eighths">
+                        <label for="id_breach">Does this problem describe a breach of the NHS' fundamental standards? </label>
+                    </li>
+                </ul>
+        </fieldset>
+
+        <fieldset class="island">
             <ul class="gw">
                 {% for form in response_forms %}
                     <li class="g  three-quarters">

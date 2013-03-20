@@ -60,7 +60,8 @@ class ProblemModerationForm(forms.ModelForm):
         fields = [
             'publication_status',
             'moderated_description',
-            'moderated'
+            'moderated',
+            'breach'
         ]
 
         widgets = {

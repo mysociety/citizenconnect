@@ -73,6 +73,18 @@ class ModerationFormTests(BaseModerationTestCase):
         problem = Problem.objects.get(pk=self.test_problem.id)
         self.assertEqual(problem.moderated_description, moderated_description)
 
+    def test_moderation_form_sets_breach(self):
+        test_form_values = {
+            'publication_status': self.test_problem.publication_status,
+            'moderated_description': self.test_problem.description,
+            'moderated': self.test_problem.moderated,
+            'publish': '',
+            'breach': 1
+        }
+        resp = self.client.post(self.problem_form_url, test_form_values)
+        problem = Problem.objects.get(pk=self.test_problem.id)
+        self.assertEqual(problem.breach, True)
+
     def test_form_sets_publication_status_to_published_when_publish_clicked(self):
         expected_status = Problem.PUBLISHED
         test_form_values = {
