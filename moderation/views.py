@@ -73,13 +73,13 @@ class ModerateForm(ModeratorsOnlyMixin,
 
     def get_context_data(self, **kwargs):
         context = super(ModerateForm, self).get_context_data(**kwargs)
-        message = Problem.objects.get(pk=self.kwargs['pk'])
-        if message.responses.all().count() > 0:
+        issue = Problem.objects.get(pk=self.kwargs['pk'])
+        if issue.responses.all().count() > 0:
             print "has some responses"
             if self.request.POST:
-                context['response_forms'] = ProblemResponseInlineFormSet(self.request.POST, instance=message)
+                context['response_forms'] = ProblemResponseInlineFormSet(self.request.POST, instance=issue)
             else:
-                context['response_forms'] = ProblemResponseInlineFormSet(instance=message)
+                context['response_forms'] = ProblemResponseInlineFormSet(instance=issue)
         return context
 
 
