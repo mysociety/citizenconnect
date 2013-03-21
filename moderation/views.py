@@ -15,10 +15,10 @@ from django_tables2 import RequestConfig
 from issues.models import Problem
 from organisations.models import Organisation
 import organisations.auth as auth
-from organisations.auth import user_in_group, user_is_superuser
+from organisations.auth import user_in_group, user_is_superuser, user_in_groups
 
 from .forms import LookupForm, ProblemModerationForm, ProblemResponseInlineFormSet
-from .tables import ModerationTable
+from .tables import ModerationTable, LegalModerationTable
 
 class ModeratorsOnlyMixin(object):
     """
@@ -31,19 +31,53 @@ class ModeratorsOnlyMixin(object):
         else:
             return super(ModeratorsOnlyMixin, self).dispatch(request, *args, **kwargs)
 
+class LegalModeratorsOnlyMixin(object):
+    """
+    Mixin to protect views to only allow legal moderators to access them
+    """
+
+    def dispatch(self, request, *args, **kwargs):
+        if not user_is_superuser(request.user) and not user_in_groups(request.user,
+                                                                      [auth.LEGAL_MODERATORS,
+                                                                       auth.CASE_HANDLERS]):
+            raise PermissionDenied()
+        else:
+            return super(LegalModeratorsOnlyMixin, self).dispatch(request, *args, **kwargs)
+
+class ModerationTableView(object):
+
+    def add_table_to_context(self, context, table_type):
+        # Setup a table for the problems
+        issue_table = table_type(context['issues'])
+        RequestConfig(self.request, paginate={'per_page': 25}).configure(issue_table)
+        context['table'] = issue_table
+        context['page_obj'] = context['table'].page
+        return context
+
 class ModerateHome(ModeratorsOnlyMixin,
+                   ModerationTableView,
                    TemplateView):
     template_name = 'moderation/moderate_home.html'
 
     def get_context_data(self, **kwargs):
-        # Get all the problems
+        # Get all the unmoderated problems
         context = super(ModerateHome, self).get_context_data(**kwargs)
         context['issues'] = Problem.objects.unmoderated_problems().order_by("-created")
-        # Setup a table for the problems
-        issue_table = ModerationTable(context['issues'])
-        RequestConfig(self.request, paginate={'per_page': 25}).configure(issue_table)
-        context['table'] = issue_table
-        context['page_obj'] = context['table'].page
+        context['title'] = "Moderation"
+        self.add_table_to_context(context, ModerationTable)
+        return context
+
+class LegalModerateHome(LegalModeratorsOnlyMixin,
+                        ModerationTableView,
+                        TemplateView):
+    template_name = 'moderation/moderate_home.html'
+
+    def get_context_data(self, **kwargs):
+        # Get all the problems flagged for legal moderation
+        context = super(LegalModerateHome, self).get_context_data(**kwargs)
+        context['issues'] = Problem.objects.all().filter(requires_legal_moderation=True).order_by("-created")
+        context['title'] = "Legal Moderation"
+        self.add_table_to_context(context, LegalModerationTable)
         return context
 
 class ModerateLookup(ModeratorsOnlyMixin,
@@ -81,8 +115,9 @@ class ModerateForm(ModeratorsOnlyMixin,
                 context['response_forms'] = ProblemResponseInlineFormSet(instance=issue)
         return context
 
-
-
+class LegalModerateForm(LegalModeratorsOnlyMixin,
+                        UpdateView):
+    pass
 class ModerateConfirm(ModeratorsOnlyMixin,
                       TemplateView):
     template_name = 'moderation/moderate_confirm.html'

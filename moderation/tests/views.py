@@ -27,7 +27,7 @@ class BasicViewTests(BaseModerationTestCase):
             resp = self.client.get(url)
             self.assertRedirects(resp, expected_login_url)
 
-    def test_views_innacessible_to_providers(self):
+    def test_views_inacessible_to_providers(self):
         self.client.logout()
         self.login_as(self.provider)
 
@@ -41,6 +41,15 @@ class BasicViewTests(BaseModerationTestCase):
             for url in self.all_urls:
                 resp = self.client.get(url)
                 self.assertEqual(resp.status_code, 200)
+
+    def test_views_accessible_to_legal_moderators(self):
+        self.client.logout()
+        self.login_as(self.legal_moderator)
+
+        for url in self.all_legal_moderator_urls:
+            resp = self.client.get(url)
+            self.assertEqual(resp.status_code, 200)
+
 
 class HomeViewTests(BaseModerationTestCase):
 
@@ -71,6 +80,28 @@ class HomeViewTests(BaseModerationTestCase):
     def test_issues_link_to_moderate_form(self):
         resp = self.client.get(self.home_url)
         self.assertContains(resp, self.problem_form_url)
+
+class LegalHomeViewTests(BaseModerationTestCase):
+
+    def setUp(self):
+        super(LegalHomeViewTests, self).setUp()
+        self.legal_moderation = create_test_instance(Problem, {'organisation': self.test_organisation,
+                                                               'requires_legal_moderation': True})
+        self.no_legal_moderation = create_test_instance(Problem, {'organisation': self.test_organisation})
+        self.login_as(self.legal_moderator)
+
+    def test_issues_in_context(self):
+        resp = self.client.get(self.legal_home_url)
+        self.assertTrue(self.legal_moderation in resp.context['issues'])
+
+    def test_issues_not_requiring_legal_moderation_not_in_context(self):
+        resp = self.client.get(self.legal_home_url)
+        self.assertTrue(self.no_legal_moderation not in resp.context['issues'])
+
+    def test_issues_link_to_legal_moderate_form(self):
+        resp = self.client.get(self.legal_home_url)
+        self.legal_problem_form_url = reverse('legal-moderate-form', kwargs={'pk':self.legal_moderation.id})
+        self.assertContains(resp, self.legal_problem_form_url)
 
 class ModerateFormViewTests(BaseModerationTestCase):
 
