@@ -160,6 +160,11 @@ class ProblemManager(models.Manager):
     def problems_requiring_legal_moderation(self):
         return super(ProblemManager, self).all().filter(requires_legal_moderation=True)
 
+    def open_escalated_problems(self):
+        # ESCALATION_STATUSES is a subset of OPEN_STATUSES, so
+        # we don't need to filter for open too
+        return super(ProblemManager, self).all().filter(Q(status__in=Problem.ESCALATION_STATUSES) | Q(breach=True))
+
 class Problem(IssueModel):
     # Custom manager
     objects = ProblemManager()
