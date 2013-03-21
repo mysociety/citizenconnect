@@ -15,7 +15,6 @@
 <div class="moderate-form">
     <form method="post">
         {% csrf_token %}
-        {{ response_forms.management_form }}
 
         {% if form.non_field_errors %}
             <fieldset class="island">
@@ -61,7 +60,11 @@
 
         <fieldset class="island">
             <ul class="gw">
+                {% if response_forms %}
+                    {{ response_forms.management_form }}
+                {% endif %}
                 {% for form in response_forms %}
+                    {{ form.id }}
                     <li class="g  three-quarters">
                         <label for="id_responses-{{forloop.counter0}}-response">Moderated response</label>
                         {{ form.response }}

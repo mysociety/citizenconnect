@@ -108,12 +108,26 @@ class ModerateForm(ModeratorsOnlyMixin,
     def get_context_data(self, **kwargs):
         context = super(ModerateForm, self).get_context_data(**kwargs)
         issue = Problem.objects.get(pk=self.kwargs['pk'])
-        if issue.responses.all().count() > 0:
-            if self.request.POST:
-                context['response_forms'] = ProblemResponseInlineFormSet(self.request.POST, instance=issue)
-            else:
-                context['response_forms'] = ProblemResponseInlineFormSet(instance=issue)
+        if self.request.POST:
+            context['response_forms'] = ProblemResponseInlineFormSet(self.request.POST, instance=issue)
+        else:
+            context['response_forms'] = ProblemResponseInlineFormSet(instance=issue)
         return context
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        if 'response_forms' in context:
+            response_forms = context['response_forms']
+            if response_forms.is_valid():
+                self.object = form.save()
+                response_forms.instance = self.object
+                response_forms.save()
+            else:
+                return self.render_to_response(self.get_context_data(form=form))
+        else:
+            self.object = form.save()
+
+        return HttpResponseRedirect(self.get_success_url())
 
 class LegalModerateForm(LegalModeratorsOnlyMixin,
                         UpdateView):
