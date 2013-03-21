@@ -327,6 +327,9 @@ def login_redirect(request):
     elif user_in_group(user, auth.CASE_HANDLERS):
         return HttpResponseRedirect(reverse('moderate-home'))
 
+    elif user_in_group(user, auth.LEGAL_MODERATORS):
+        return HttpResponseRedirect(reverse('legal-moderate-home'))
+
     # Question Answerers go to the question answering dashboard
     elif user_in_group(user, auth.QUESTION_ANSWERERS):
         return HttpResponseRedirect(reverse('questions-dashboard'))
