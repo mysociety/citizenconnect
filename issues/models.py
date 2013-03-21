@@ -157,6 +157,9 @@ class ProblemManager(models.Manager):
         return super(ProblemManager, self).all().filter(moderated=Problem.MODERATED,
                                                         publication_status=Problem.PUBLISHED)
 
+    def problems_requiring_legal_moderation(self):
+        return super(ProblemManager, self).all().filter(requires_legal_moderation=True)
+
 class Problem(IssueModel):
     # Custom manager
     objects = ProblemManager()

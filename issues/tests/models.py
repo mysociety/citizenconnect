@@ -309,6 +309,22 @@ class ProblemManagerTests(ManagerTest):
             'status': Problem.ESCALATED
         })
 
+        # Problems requiring legal moderation
+        self.public_problem_requiring_legal_moderation = create_test_instance(Problem, {
+            'organisation': self.test_organisation,
+            'public':True,
+            'moderated':Problem.MODERATED,
+            'requires_legal_moderation': True,
+            'publication_status': Problem.HIDDEN
+        })
+        self.private_problem_requiring_legal_moderation = create_test_instance(Problem, {
+            'organisation': self.test_organisation,
+            'public':False,
+            'moderated':Problem.MODERATED,
+            'requires_legal_moderation': True,
+            'publication_status': Problem.HIDDEN
+        })
+
         # Intermediate helper lists
         self.open_unmoderated_problems = [self.new_public_unmoderated_problem,
                                           self.new_private_unmoderated_problem,
@@ -319,7 +335,9 @@ class ProblemManagerTests(ManagerTest):
                                         self.new_public_moderated_problem_published,
                                         self.new_private_moderated_problem_hidden,
                                         self.new_private_moderated_problem_published,
-                                        self.escalated_public_moderated_problem_published]
+                                        self.escalated_public_moderated_problem_published,
+                                        self.public_problem_requiring_legal_moderation,
+                                        self.private_problem_requiring_legal_moderation]
         self.closed_problems = self.closed_unmoderated_problems + [self.closed_public_moderated_problem_hidden,
                                                                    self.closed_public_moderated_problem_published,
                                                                    self.closed_private_moderated_problem_hidden,
@@ -334,6 +352,8 @@ class ProblemManagerTests(ManagerTest):
         self.all_problems = self.open_problems + self.closed_problems
         self.all_moderated_published_problems = self.open_moderated_published_problems + [self.closed_public_moderated_problem_published,
                                                                                           self.closed_private_moderated_problem_published]
+        self.problems_requiring_legal_moderation = [self.public_problem_requiring_legal_moderation,
+                                                    self.private_problem_requiring_legal_moderation]
 
     def test_all_problems_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.all(), self.all_problems)
@@ -351,6 +371,10 @@ class ProblemManagerTests(ManagerTest):
     def test_all_moderated_published_problems_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.all_moderated_published_problems(),
                                self.all_moderated_published_problems)
+
+    def test_problems_requiring_legal_moderation_returns_correct_problems(self):
+        self.compare_querysets(Problem.objects.problems_requiring_legal_moderation(),
+                               self.problems_requiring_legal_moderation)
 
 class QuestionManagerTests(ManagerTest):
 
