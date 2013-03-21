@@ -190,6 +190,12 @@ class Problem(IssueModel):
 
     MODERATED_STATUS_CHOICES = ((NOT_MODERATED, "Not moderated"), (MODERATED, "Moderated"))
 
+    LOCALLY_COMMISSIONED = 0
+    NATIONALLY_COMMISSIONED = 1
+
+    COMMISSIONED_CHOICES = ((LOCALLY_COMMISSIONED, "Locally Commissioned"),
+                                   (NATIONALLY_COMMISSIONED, "Nationally Commissioned"))
+
     category = models.CharField(max_length=100,
                                 choices=IssueModel.CATEGORY_CHOICES,
                                 default='other',
@@ -216,6 +222,7 @@ class Problem(IssueModel):
     moderated_description = models.TextField(blank=True)
     breach = models.BooleanField(default=False, blank=False)
     requires_legal_moderation = models.BooleanField(default=False, blank=False)
+    commissioned = models.IntegerField(blank=True, null=True, choices=COMMISSIONED_CHOICES)
 
     @property
     def reference_number(self):

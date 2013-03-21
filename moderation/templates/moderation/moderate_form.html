@@ -60,6 +60,16 @@
 
         <fieldset class="island">
             <ul class="gw">
+                <li class="g  one-whole  palm-one-whole">
+                    <label for="id_status">How is the service described commissioned?</label>
+                    {{ form.commissioned }}
+                    {% include "message_list.html" with messages=form.commissioned.errors message_type='error' %}
+                </li>
+            </ul>
+        </fieldset>
+
+        <fieldset class="island">
+            <ul class="gw">
                 {% if response_forms %}
                     {{ response_forms.management_form }}
                 {% endif %}

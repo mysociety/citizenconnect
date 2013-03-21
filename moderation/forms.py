@@ -1,5 +1,5 @@
 from django import forms
-from django.forms.widgets import HiddenInput
+from django.forms.widgets import HiddenInput, RadioSelect
 from django.forms.models import inlineformset_factory
 
 from issues.models import Problem
@@ -26,6 +26,8 @@ class LookupForm(forms.Form):
         return self.cleaned_data
 
 class ProblemModerationForm(forms.ModelForm):
+
+    commissioned = forms.ChoiceField(widget=RadioSelect(), required=True, choices=Problem.COMMISSIONED_CHOICES)
 
     def clean_publication_status(self):
         # Status is hidden, but if people click the "Publish" button, we should
@@ -74,7 +76,8 @@ class ProblemModerationForm(forms.ModelForm):
             'moderated',
             'status',
             'requires_legal_moderation',
-            'breach'
+            'breach',
+            'commissioned'
         ]
 
         widgets = {

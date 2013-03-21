@@ -56,6 +56,7 @@ class ModerationFormTests(BaseModerationTestCase):
             'publish': '',
             'status': self.test_problem.status,
             'moderated': self.test_problem.moderated,
+            'commissioned': Problem.NATIONALLY_COMMISSIONED,
             'responses-TOTAL_FORMS': 0,
             'responses-INITIAL_FORMS': 0,
             'responses-MAX_NUM_FORMS': 0,
@@ -219,3 +220,13 @@ class ModerationFormTests(BaseModerationTestCase):
         problem = Problem.objects.get(pk=self.test_problem.id)
         self.assertEqual(problem.responses.all().count(), 1)
         self.assertEqual(problem.responses.all()[0], response2)
+
+    def test_moderation_form_requires_commissioned(self):
+        del self.form_values['commissioned']
+        resp = self.client.post(self.problem_form_url, self.form_values)
+        self.assertFormError(resp, 'form', 'commissioned', 'This field is required.')
+
+    def test_moderation_form_sets_commissioned(self):
+        resp = self.client.post(self.problem_form_url, self.form_values)
+        problem = Problem.objects.get(pk=self.test_problem.id)
+        self.assertEqual(problem.commissioned, Problem.NATIONALLY_COMMISSIONED)
