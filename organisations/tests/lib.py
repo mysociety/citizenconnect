@@ -258,6 +258,9 @@ class AuthorizationTestCase(TestCase):
         # A Question Answerer
         self.question_answerer = User.objects.get(pk=5)
 
+        # A Legal Moderator
+        self.legal_moderator = User.objects.get(pk=12)
+
         # Helpful lists for simpler testing
         self.users_who_can_access_everything = [self.superuser, self.nhs_superuser, self.case_handler]
 
