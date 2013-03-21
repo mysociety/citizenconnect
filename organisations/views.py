@@ -78,6 +78,48 @@ class IssueListMixin(OrganisationAwareViewMixin):
         context['page_obj'] = issue_table.page
         return context
 
+class FilterMixin(object):
+    """
+    Mixin for views which have some or all of the standard set of filters
+    """
+
+    def get_context_data(self, **kwargs):
+        context = super(FilterMixin, self).get_context_data(**kwargs)
+
+        # Set up the data for the filters
+        context['problem_categories'] = Problem.CATEGORY_CHOICES
+        context['problem_statuses'] = Problem.STATUS_CHOICES
+        context['organisation_types'] = settings.ORGANISATION_CHOICES
+        context['services'] = Service.service_codes()
+        context['ccgs'] = CCG.objects.all()
+        filters = {}
+
+        # Service code filter
+        selected_service = self.request.GET.get('service')
+        if selected_service in dict(context['services']):
+            filters['service_code'] = selected_service
+
+        # Category filter
+        category = self.request.GET.get('problem_category')
+        if category in dict(Problem.CATEGORY_CHOICES):
+            filters['problem_category'] = category
+            filters['category'] = category
+
+        # Organisation type filter
+        organisation_type = self.request.GET.get('organisation_type')
+        if organisation_type in settings.ORGANISATION_TYPES:
+            filters['organisation_type'] = organisation_type
+
+        # Status filter
+        status = self.request.GET.get('problem_status')
+        if status and status != 'all' and int(status) in dict(Problem.STATUS_CHOICES):
+            filters['problem_status'] = int(status)
+            filters['status'] = int(status)
+
+        context['filters'] = filters
+
+        return context
+
 class Map(PrivateViewMixin, TemplateView):
     template_name = 'organisations/map.html'
 
@@ -229,49 +271,16 @@ class OrganisationReviews(OrganisationAwareViewMixin,
                           TemplateView):
     template_name = 'organisations/organisation_reviews.html'
 
-class Summary(TemplateView):
+class Summary(FilterMixin, TemplateView):
     template_name = 'organisations/summary.html'
 
     def get_context_data(self, **kwargs):
-
         context = super(Summary, self).get_context_data(**kwargs)
-
-        # Set up the data for the filters
-        context['problem_categories'] = Problem.CATEGORY_CHOICES
-        context['problem_statuses'] = Problem.STATUS_CHOICES
-        context['organisation_types'] = settings.ORGANISATION_CHOICES
-        context['services'] = Service.service_codes()
-        context['ccgs'] = CCG.objects.all()
-        filters = {}
-
-        # Service code filter
-        selected_service = self.request.GET.get('service')
-        if selected_service in dict(context['services']):
-            filters['service_code'] = selected_service
-
-        # Category filter
-        category = self.request.GET.get('problem_category')
-        if category in dict(Problem.CATEGORY_CHOICES):
-            filters['problem_category'] = category
-            filters['category'] = category
-
-        # Organisation type filter
-        organisation_type = self.request.GET.get('organisation_type')
-        if organisation_type in settings.ORGANISATION_TYPES:
-            filters['organisation_type'] = organisation_type
-
-        # Status filter
-        status = self.request.GET.get('problem_status')
-        if status and status != 'all' and int(status) in dict(Problem.STATUS_CHOICES):
-            filters['problem_status'] = int(status)
-            filters['status'] = int(status)
-
-        organisation_rows = interval_counts(issue_type=Problem, filters=filters)
+        organisation_rows = interval_counts(issue_type=Problem, filters=context['filters'])
         organisations_table = NationalSummaryTable(organisation_rows, cobrand=kwargs['cobrand'])
         RequestConfig(self.request, paginate={"per_page": 8}).configure(organisations_table)
         context['table'] = organisations_table
         context['page_obj'] = organisations_table.page
-        context['filters'] = filters
         return context
 
 class OrganisationDashboard(OrganisationAwareViewMixin,
@@ -351,7 +360,7 @@ class SuperuserLogs(TemplateView):
 
 class QuestionsDashboard(ListView):
 
-    queryset = Question.objects.open_questions();
+    queryset = Question.objects.open_questions()
     template_name = 'organisations/questions_dashboard.html'
     context_object_name = "questions"
 
@@ -366,4 +375,24 @@ class QuestionsDashboard(ListView):
         RequestConfig(self.request, paginate={'per_page': 25}).configure(question_table)
         context['table'] = question_table
         context['page_obj'] = context['table'].page
+        return context
+
+class EscalationDashboard(FilterMixin, ListView):
+
+    queryset = Problem.objects.open_escalated_problems()
+    template_name = 'organisations/escalation_dashboard.html'
+    context_object_name = "problems"
+
+    def dispatch(self, request, *args, **kwargs):
+        if not user_is_superuser(request.user) and not user_in_groups(auth.CQC, auth.CCG):
+            raise PermissionDenied()
+        return super(EscalationDashboard, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(EscalationDashboard, self).get_context_data(**kwargs)
+        # Setup a table for the problems
+        problem_table = IssueModelTable(context['problems'], private=True, issue_type=Problem)
+        RequestConfig(self.request, paginate={'per_page': 25}).configure(problem_table)
+        context['table'] = problem_table
+        context['page_obj'] = problem_table.page
         return context

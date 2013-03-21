@@ -309,6 +309,16 @@ class ProblemManagerTests(ManagerTest):
             'status': Problem.ESCALATED
         })
 
+        # A breach of care standards problem
+        self.breach_public_moderated_problem_published = create_test_instance(Problem, {
+            'organisation': self.test_organisation,
+            'public': True,
+            'status': Problem.ACKNOWLEDGED,
+            'breach': True,
+            'moderated': Problem.MODERATED,
+            'publication_status': Problem.PUBLISHED
+        })
+
         # Problems requiring legal moderation
         self.public_problem_requiring_legal_moderation = create_test_instance(Problem, {
             'organisation': self.test_organisation,
@@ -337,7 +347,8 @@ class ProblemManagerTests(ManagerTest):
                                         self.new_private_moderated_problem_published,
                                         self.escalated_public_moderated_problem_published,
                                         self.public_problem_requiring_legal_moderation,
-                                        self.private_problem_requiring_legal_moderation]
+                                        self.private_problem_requiring_legal_moderation,
+                                        self.breach_public_moderated_problem_published]
         self.closed_problems = self.closed_unmoderated_problems + [self.closed_public_moderated_problem_hidden,
                                                                    self.closed_public_moderated_problem_published,
                                                                    self.closed_private_moderated_problem_hidden,
@@ -348,12 +359,17 @@ class ProblemManagerTests(ManagerTest):
         self.open_problems = self.open_unmoderated_problems + self.open_moderated_problems
         self.open_moderated_published_problems = [self.new_public_moderated_problem_published,
                                                   self.new_private_moderated_problem_published,
-                                                  self.escalated_public_moderated_problem_published]
+                                                  self.escalated_public_moderated_problem_published,
+                                                  self.breach_public_moderated_problem_published]
         self.all_problems = self.open_problems + self.closed_problems
         self.all_moderated_published_problems = self.open_moderated_published_problems + [self.closed_public_moderated_problem_published,
                                                                                           self.closed_private_moderated_problem_published]
         self.problems_requiring_legal_moderation = [self.public_problem_requiring_legal_moderation,
                                                     self.private_problem_requiring_legal_moderation]
+
+        self.open_escalated_problems = [self.breach_public_moderated_problem_published,
+                                        self.escalated_public_moderated_problem_published,
+                                        self.escalated_private_unmoderated_problem]
 
     def test_all_problems_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.all(), self.all_problems)
@@ -375,6 +391,10 @@ class ProblemManagerTests(ManagerTest):
     def test_problems_requiring_legal_moderation_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.problems_requiring_legal_moderation(),
                                self.problems_requiring_legal_moderation)
+
+    def test_escalated_problems_returns_correct_problems(self):
+        self.compare_querysets(Problem.objects.open_escalated_problems(),
+                               self.open_escalated_problems)
 
 class QuestionManagerTests(ManagerTest):
 

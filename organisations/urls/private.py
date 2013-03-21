@@ -34,6 +34,8 @@ urlpatterns = patterns('',
 
     url(r'^questions$', login_required(QuestionsDashboard.as_view()), name='questions-dashboard'),
 
+    url(r'^escalation$', login_required(EscalationDashboard.as_view()), name='escalation-dashboard'),
+
     # Authentication related urls
     url(r'^login$',
         'django.contrib.auth.views.login',
