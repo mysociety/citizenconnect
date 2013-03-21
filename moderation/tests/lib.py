@@ -19,13 +19,15 @@ class BaseModerationTestCase(AuthorizationTestCase, TransactionTestCase):
         self.confirm_url = '/private/moderate/confirm'
         self.legal_home_url = '/private/moderate/legal'
         self.legal_problem_form_url = '/private/moderate/legal/%d' % self.test_legal_moderation_problem.id
+        self.legal_confirm_url = '/private/moderate/legal/confirm'
         self.all_case_handler_urls = [self.home_url,
                                      self.lookup_url,
                                      self.problem_form_url,
                                      self.confirm_url]
 
         self.all_legal_moderator_urls = [self.legal_home_url,
-                                         self.legal_problem_form_url]
+                                         self.legal_problem_form_url,
+                                         self.legal_confirm_url]
         self.all_urls = self.all_case_handler_urls + self.all_legal_moderator_urls
 
     def assert_expected_publication_status(self, expected_status, form_values, url, problem):

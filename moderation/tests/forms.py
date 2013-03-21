@@ -157,7 +157,9 @@ class ModerationFormTests(BaseModerationTestCase):
 
     def test_form_redirects_to_confirm_url(self):
         resp = self.client.post(self.problem_form_url, self.form_values)
-        self.assertRedirects(resp, reverse('moderate-confirm'))
+        self.assertRedirects(resp, self.confirm_url)
+        resp = self.client.get(self.confirm_url)
+        self.assertContains(resp, self.home_url)
 
     def test_moderation_form_requires_moderated_description_when_publishing_public_problems(self):
         del self.form_values['moderated_description']
@@ -249,6 +251,8 @@ class LegalModerationFormTests(BaseModerationTestCase):
     def test_legal_moderation_form_redirects_to_legal_confirm_url(self):
         resp = self.client.post(self.legal_problem_form_url, self.form_values)
         self.assertRedirects(resp, self.legal_confirm_url)
+        resp = self.client.get(self.legal_confirm_url)
+        self.assertContains(resp, self.legal_home_url)
 
     def test_legal_moderation_form_sets_requires_legal_moderation_to_false(self):
         resp = self.client.post(self.legal_problem_form_url, self.form_values)

@@ -54,6 +54,13 @@ class ModerationTableMixin(object):
         context['page_obj'] = context['table'].page
         return context
 
+class ModerationConfirmationMixin(object):
+
+    def get_context_data(self, **kwargs):
+        context = super(ModerationConfirmationMixin, self).get_context_data(**kwargs)
+        context['home_link'] = self.home_link
+        return context
+
 class ModerateHome(ModeratorsOnlyMixin,
                    ModerationTableMixin,
                    TemplateView):
@@ -146,5 +153,13 @@ class LegalModerateForm(LegalModeratorsOnlyMixin,
         return context
 
 class ModerateConfirm(ModeratorsOnlyMixin,
+                      ModerationConfirmationMixin,
                       TemplateView):
     template_name = 'moderation/moderate_confirm.html'
+    home_link = 'moderate-home'
+
+class LegalModerateConfirm(LegalModeratorsOnlyMixin,
+                           ModerationConfirmationMixin,
+                           TemplateView):
+    template_name = 'moderation/moderate_confirm.html'
+    home_link = 'legal-moderate-home'
