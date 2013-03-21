@@ -219,8 +219,11 @@ class Problem(IssueModel):
                                 verbose_name="Please select a department (optional)")
     happy_service = models.NullBooleanField()
     happy_outcome = models.NullBooleanField()
+
+    # Integer values represent time in minutes
     time_to_acknowledge = models.IntegerField(null=True)
     time_to_address = models.IntegerField(null=True)
+
     publication_status = models.IntegerField(default=HIDDEN,
                                              blank=False,
                                              choices=PUBLICATION_STATUS_CHOICES)
