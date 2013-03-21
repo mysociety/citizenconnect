@@ -237,6 +237,7 @@ class Problem(IssueModel):
     breach = models.BooleanField(default=False, blank=False)
     requires_legal_moderation = models.BooleanField(default=False, blank=False)
     commissioned = models.IntegerField(blank=True, null=True, choices=COMMISSIONED_CHOICES)
+    survey_sent = models.DateTimeField(null=True, blank=True)
 
     @property
     def reference_number(self):
