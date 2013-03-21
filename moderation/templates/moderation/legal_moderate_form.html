@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load url from future %}
+{% block title %}Moderate {{ issue.issue_type }} - Legal{% endblock %}
+
+{% block bodyclasses %}legal-moderate-form{% endblock %}
+{% block content %}
+<div class="header">
+    <h1>Moderate {{ issue.issue_type }} - Legal</h1>
+</div>
+
+{% include "issues/issue_detail.html" with object=issue  private=1 %}
+
+<div class="legal-moderate-form">
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <fieldset class="island">
+                {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
+            </fieldset>
+        {% endif %}
+
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+        <fieldset class="island">
+            <ul class="gw">
+                <li class="g  one-whole">
+                    <label for="id_moderated_description">Moderated details</label>
+                    {{ form.moderated_description }}
+                    <p class="info">Required when publishing public problems.</p>
+                    {% include "message_list.html" with messages=form.moderated_description.errors message_type='error' %}
+                </li>
+            </ul>
+        </fieldset>
+
+        <fieldset>
+            <button class="btn fl" type="submit" name="keep_private">Not Suitable/Keep Private</button>
+            <button class="btn fr" type="submit" name="publish">Publish/Update Online</button>
+        </fieldset>
+
+
+    </form>
+</div>
+{% endblock %}

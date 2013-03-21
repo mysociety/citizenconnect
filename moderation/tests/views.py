@@ -139,3 +139,19 @@ class ModerateFormViewTests(BaseModerationTestCase):
     def test_closed_issues_accepted(self):
         resp = self.client.get('/private/moderate/{0}'.format(self.closed_problem.id))
         self.assertEqual(resp.status_code, 200)
+
+
+class LegalModerateFormViewTests(BaseModerationTestCase):
+
+    def setUp(self):
+        super(LegalModerateFormViewTests, self).setUp()
+        self.login_as(self.legal_moderator)
+
+    def test_problem_in_context(self):
+        resp = self.client.get(self.legal_problem_form_url)
+        self.assertEqual(resp.context['issue'], self.test_legal_moderation_problem)
+
+    def test_issues_not_requiring_legal_moderation_rejected(self):
+        legal_moderation_form_url =  reverse('legal-moderate-form', kwargs={'pk':self.test_problem.id})
+        resp = self.client.get(legal_moderation_form_url)
+        self.assertEqual(resp.status_code, 404)

@@ -25,9 +25,7 @@ class LookupForm(forms.Form):
                 raise forms.ValidationError('Sorry, there are no problems with that reference number')
         return self.cleaned_data
 
-class ProblemModerationForm(forms.ModelForm):
-
-    commissioned = forms.ChoiceField(widget=RadioSelect(), required=True, choices=Problem.COMMISSIONED_CHOICES)
+class ModerationForm(forms.ModelForm):
 
     def clean_publication_status(self):
         # Status is hidden, but if people click the "Publish" button, we should
@@ -39,6 +37,24 @@ class ProblemModerationForm(forms.ModelForm):
         else:
             publication_status = Problem.HIDDEN
         return publication_status
+
+    def clean(self):
+
+        # If we are publishing the problem and the reporter wants it public,
+        # it must have a moderated_description so that we have something to show for it
+        # on public pages
+        if self.instance.public and self.cleaned_data['publication_status'] == Problem.PUBLISHED:
+            if not 'moderated_description' in self.cleaned_data or not self.cleaned_data['moderated_description']:
+                self._errors['moderated_description'] = self.error_class(['You must moderate a version of the problem details when publishing public problems.'])
+                del self.cleaned_data['moderated_description']
+
+        return self.cleaned_data
+
+
+
+class ProblemModerationForm(ModerationForm):
+
+    commissioned = forms.ChoiceField(widget=RadioSelect(), required=True, choices=Problem.COMMISSIONED_CHOICES)
 
     def clean_requires_legal_moderation(self):
         # requires_legal_moderation is hidden, but if people click the "Requires Legal Moderation"
@@ -54,18 +70,6 @@ class ProblemModerationForm(forms.ModelForm):
     def clean_moderated(self):
         # If you are submitting the form, you have moderated it, so always return MODERATED
         return Problem.MODERATED
-
-    def clean(self):
-
-        # If we are publishing the problem and the reporter wants it public,
-        # it must have a moderated_description so that we have something to show for it
-        # on public pages
-        if self.instance.public and self.cleaned_data['publication_status'] == Problem.PUBLISHED:
-            if not 'moderated_description' in self.cleaned_data or not self.cleaned_data['moderated_description']:
-                self._errors['moderated_description'] = self.error_class(['You must moderate a version of the problem details when publishing public problems.'])
-                del self.cleaned_data['moderated_description']
-
-        return self.cleaned_data
 
     class Meta:
         model = Problem
@@ -88,3 +92,23 @@ class ProblemModerationForm(forms.ModelForm):
 
 # A formset for the responses attached to a problem
 ProblemResponseInlineFormSet = inlineformset_factory(Problem, ProblemResponse, max_num=0, fields=('response',))
+
+class ProblemLegalModerationForm(ModerationForm):
+
+    def clean_requires_legal_moderation(self):
+        # If you are submitting the form, you have legally moderated it, so always return False
+        return False
+
+    class Meta:
+        model = Problem
+
+        fields = [
+            'publication_status',
+            'moderated_description',
+            'requires_legal_moderation'
+        ]
+
+        widgets = {
+            'publication_status': HiddenInput,
+            'requires_legal_moderation': HiddenInput
+        }

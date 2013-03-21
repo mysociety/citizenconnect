@@ -17,7 +17,7 @@ from organisations.models import Organisation
 import organisations.auth as auth
 from organisations.auth import user_in_group, user_is_superuser, user_in_groups
 
-from .forms import LookupForm, ProblemModerationForm, ProblemResponseInlineFormSet
+from .forms import LookupForm, ProblemModerationForm, ProblemResponseInlineFormSet, ProblemLegalModerationForm
 from .tables import ModerationTable, LegalModerationTable
 
 class ModeratorsOnlyMixin(object):
@@ -131,7 +131,20 @@ class ModerateForm(ModeratorsOnlyMixin,
 
 class LegalModerateForm(LegalModeratorsOnlyMixin,
                         UpdateView):
-    pass
+    queryset = Problem.objects.problems_requiring_legal_moderation().all()
+    template_name = 'moderation/legal_moderate_form.html'
+    form_class = ProblemLegalModerationForm
+    # Standardise the context_object's name
+    context_object_name = 'issue'
+
+    def get_success_url(self):
+        return reverse('legal-moderate-confirm')
+
+    def get_context_data(self, **kwargs):
+        context = super(LegalModerateForm, self).get_context_data(**kwargs)
+        issue = Problem.objects.get(pk=self.kwargs['pk'])
+        return context
+
 class ModerateConfirm(ModeratorsOnlyMixin,
                       TemplateView):
     template_name = 'moderation/moderate_confirm.html'
