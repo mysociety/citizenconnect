@@ -1,5 +1,8 @@
+from datetime import datetime, timedelta
+
 from django.test import TestCase
 from django.core.exceptions import ValidationError
+from django.utils.timezone import utc
 
 from organisations.tests.lib import create_test_organisation, create_test_instance, AuthorizationTestCase
 
@@ -139,6 +142,72 @@ class ProblemModelTests(AuthorizationTestCase):
 
     def test_unmoderated_problem_accessible_to_pals_user(self):
         self.assertTrue(self.test_problem.can_be_accessed_by(self.pals))
+
+    def test_timedelta_to_minutes(self):
+        t = timedelta(minutes=30)
+        self.assertEqual(Problem.timedelta_to_minutes(t), 30)
+        t = timedelta(hours=5)
+        self.assertEqual(Problem.timedelta_to_minutes(t), 300)
+        t = timedelta(days=5, hours=5, minutes=34, seconds=22)
+        self.assertEqual(Problem.timedelta_to_minutes(t), 7534)
+
+class ProblemModelTimeToTests(ProblemModelTests):
+
+    def setUp(self):
+        now = datetime.utcnow().replace(tzinfo=utc)
+        super(ProblemModelTimeToTests, self).setUp()
+        self.test_problem.created = now - timedelta(days=5)
+
+    def test_sets_time_to_ack_when_saved_in_ack_status_and_time_to_ack_not_set(self):
+        self.test_problem.status = Problem.ACKNOWLEDGED
+        self.test_problem.save()
+        self.assertEqual(self.test_problem.time_to_acknowledge, 7200)
+
+    def test_does_not_set_time_to_ack_when_saved_in_ack_status_and_time_to_ack_set(self):
+        self.test_problem.time_to_acknowledge = 2000
+        self.test_problem.status = Problem.ACKNOWLEDGED
+        self.test_problem.save()
+        self.assertEqual(self.test_problem.time_to_acknowledge, 2000)
+
+    def test_does_not_set_time_to_ack_when_saved_in_new_status_and_time_to_ack_not_set(self):
+        self.test_problem.save()
+        self.assertEqual(self.test_problem.time_to_acknowledge, None)
+
+    def test_does_not_set_time_to_ack_when_saved_in_escalated_status_and_time_to_ack_not_set(self):
+        self.test_problem.status = Problem.ESCALATED
+        self.test_problem.save()
+        self.assertEqual(self.test_problem.time_to_acknowledge, None)
+
+    def test_sets_time_to_ack_when_saved_in_resolved_status_and_time_to_ack_not_set(self):
+        self.test_problem.status = Problem.RESOLVED
+        self.test_problem.save()
+        self.assertEqual(self.test_problem.time_to_acknowledge, 7200)
+
+    def test_sets_time_to_address_when_saved_in_resolved_status_and_time_to_address_not_set(self):
+        self.test_problem.status = Problem.RESOLVED
+        self.test_problem.save()
+        self.assertEqual(self.test_problem.time_to_address, 7200)
+
+    def test_does_not_set_time_to_address_when_saved_in_resolved_status_and_time_to_address_set(self):
+        self.test_problem.time_to_address = 3000
+        self.test_problem.status = Problem.RESOLVED
+        self.test_problem.save()
+        self.assertEqual(self.test_problem.time_to_address, 3000)
+
+    def test_does_not_set_time_to_address_when_saved_in_new_status_and_time_to_address_not_set(self):
+        self.test_problem.save()
+        self.assertEqual(self.test_problem.time_to_address, None)
+
+    def test_does_not_set_time_to_address_when_saved_in_ack_status_and_time_to_address_not_set(self):
+        self.test_problem.status = Problem.ACKNOWLEDGED
+        self.test_problem.save()
+        self.assertEqual(self.test_problem.time_to_address, None)
+
+    def test_does_not_set_time_to_address_when_saved_in_escalated_status_and_time_to_address_not_set(self):
+        self.test_problem.status = Problem.ESCALATED
+        self.test_problem.save()
+        self.assertEqual(self.test_problem.time_to_address, None)
+
 
 class QuestionModelTests(TestCase):
 

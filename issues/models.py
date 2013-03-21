@@ -1,7 +1,10 @@
+from datetime import datetime
+
 from django.db import models
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db.models import Q
+from django.utils.timezone import utc
 
 from citizenconnect.models import AuditedModel
 
@@ -272,3 +275,25 @@ class Problem(IssueModel):
         with access to the organisation it is assigned to can access it.
         """
         return (self.public and self.publication_status == Problem.PUBLISHED) or self.organisation.can_be_accessed_by(user)
+
+    def set_time_to_values(self):
+        now = datetime.utcnow().replace(tzinfo=utc)
+        minutes_since_created = self.timedelta_to_minutes(now - self.created)
+        if self.time_to_acknowledge == None and int(self.status) in [Problem.ACKNOWLEDGED, Problem.RESOLVED]:
+            self.time_to_acknowledge = minutes_since_created
+        if self.time_to_address == None and int(self.status) == Problem.RESOLVED:
+            self.time_to_address = minutes_since_created
+
+    def save(self, *args, **kwargs):
+        """Override the default model save() method in order to populate time_to_acknowledge
+        or time_to_address if appropriate."""
+        if self.created:
+            self.set_time_to_values()
+
+        super(Problem, self).save(*args, **kwargs) # Call the "real" save() method.
+
+    @classmethod
+    def timedelta_to_minutes(cls, timedelta):
+        days_in_minutes = timedelta.days * 60 * 24
+        seconds_in_minutes = timedelta.seconds / 60
+        return days_in_minutes + seconds_in_minutes
