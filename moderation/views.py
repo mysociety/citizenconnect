@@ -44,7 +44,7 @@ class LegalModeratorsOnlyMixin(object):
         else:
             return super(LegalModeratorsOnlyMixin, self).dispatch(request, *args, **kwargs)
 
-class ModerationTableView(object):
+class ModerationTableMixin(object):
 
     def add_table_to_context(self, context, table_type):
         # Setup a table for the problems
@@ -55,7 +55,7 @@ class ModerationTableView(object):
         return context
 
 class ModerateHome(ModeratorsOnlyMixin,
-                   ModerationTableView,
+                   ModerationTableMixin,
                    TemplateView):
     template_name = 'moderation/moderate_home.html'
 
@@ -68,7 +68,7 @@ class ModerateHome(ModeratorsOnlyMixin,
         return context
 
 class LegalModerateHome(LegalModeratorsOnlyMixin,
-                        ModerationTableView,
+                        ModerationTableMixin,
                         TemplateView):
     template_name = 'moderation/moderate_home.html'
 
