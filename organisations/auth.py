@@ -13,6 +13,7 @@ CASE_HANDLERS = 3
 QUESTION_ANSWERERS = 4
 CQC = 5
 CCG = 6
+LEGAL_MODERATORS = 7
 
 def user_is_superuser(user):
     """
