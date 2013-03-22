@@ -1,6 +1,6 @@
 {% load url from future %}
 {% autoescape off %}
-You have receieved a new {{ issue.issue_type }} on Care Connect.
+You have received a new {{ issue.issue_type }} on Care Connect.
 
 Sender:
 {{ issue.reporter_name }}
