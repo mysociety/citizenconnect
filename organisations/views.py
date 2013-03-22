@@ -181,6 +181,7 @@ class PickProviderBase(ListView):
     paginate_by = 10
     model = Organisation
     context_object_name = 'organisations'
+    issue_type = 'problem'
 
     def get(self, *args, **kwargs):
         super(PickProviderBase, self).get(*args, **kwargs)
@@ -204,9 +205,11 @@ class PickProviderBase(ListView):
                     context['organisations'] = queryset
                 return render(self.request, self.template_name, context)
             else:
-                return render(self.request, self.form_template_name, {'form': form})
+                return render(self.request, self.form_template_name, {'form': form,
+                                                                      'issue_type': self.issue_type})
         else:
-              return render(self.request, self.form_template_name, {'form': OrganisationFinderForm()})
+              return render(self.request, self.form_template_name, {'form': OrganisationFinderForm(),
+                                                                    'issue_type': self.issue_type})
 
 class OrganisationSummary(OrganisationAwareViewMixin,
                           TemplateView):

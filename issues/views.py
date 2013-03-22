@@ -17,6 +17,7 @@ class AskQuestion(TemplateView):
 
 class QuestionPickProvider(PickProviderBase):
     result_link_url_name = 'question-form'
+    issue_type = 'question'
 
 class QuestionCreate(CreateView):
     model = Question
@@ -63,6 +64,7 @@ class QuestionUpdate(PrivateViewMixin, UpdateView):
 
 class ProblemPickProvider(PickProviderBase):
     result_link_url_name = 'problem-form'
+    issue_type = 'problem'
 
 class ProblemCreate(OrganisationAwareViewMixin, CreateView):
     model = Problem
