@@ -331,6 +331,10 @@ def login_redirect(request):
     if user_in_group(user, auth.NHS_SUPERUSERS):
         return HttpResponseRedirect(reverse('private-map'))
 
+    # CQC and CCG users go to the escalation dashboard
+    elif user_in_groups(user, [auth.CQC, auth.CCG]):
+        return HttpResponseRedirect(reverse('escalation-dashboard'))
+
     # Moderators go to the moderation queue
     elif user_in_group(user, auth.CASE_HANDLERS):
         return HttpResponseRedirect(reverse('moderate-home'))
@@ -395,7 +399,7 @@ class EscalationDashboard(FilterMixin, ListView):
     context_object_name = "problems"
 
     def dispatch(self, request, *args, **kwargs):
-        if not user_is_superuser(request.user) and not user_in_groups(auth.CQC, auth.CCG):
+        if not user_is_superuser(request.user) and not user_in_groups(request.user, [auth.CQC, auth.CCG]):
             raise PermissionDenied()
         return super(EscalationDashboard, self).dispatch(request, *args, **kwargs)
 
