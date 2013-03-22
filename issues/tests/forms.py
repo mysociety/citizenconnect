@@ -1,6 +1,7 @@
 import uuid
 
 from django.test import TestCase
+from django.core.urlresolvers import reverse
 
 from organisations.tests.lib import create_test_organisation, create_test_service
 
@@ -17,7 +18,8 @@ class ProblemCreateFormTests(TestCase):
         # Create a unique name, to use in queries rather than relying
         # on primary key increments
         self.uuid = uuid.uuid4().hex
-        self.form_url = '/choices/problem/problem-form/%s' % self.test_organisation.ods_code
+        self.form_url = reverse('problem-form', kwargs={'ods_code': self.test_organisation.ods_code,
+                                                        'cobrand': 'choices'})
         self.test_problem = {
             'organisation': self.test_organisation.id,
             'service': self.test_service.id,
@@ -106,7 +108,7 @@ class QuestionCreateFormTests(TestCase):
         # Create a unique name, to use in queries rather than relying
         # on primary key increments
         self.uuid = uuid.uuid4().hex
-        self.form_url = '/choices/question/question-form'
+        self.form_url = reverse('question-form', kwargs={'cobrand':'choices'})
         self.test_organisation = create_test_organisation({'ods_code': '11111'})
         self.test_question = {
             'description': 'This is a question',

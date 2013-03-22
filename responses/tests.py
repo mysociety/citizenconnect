@@ -13,7 +13,7 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
     def setUp(self):
         super(ResponseFormTests, self).setUp()
         self.test_problem = create_test_instance(Problem, {'organisation':self.test_organisation})
-        self.problem_response_form_url = '/private/response/%s' % self.test_problem.id
+        self.problem_response_form_url = reverse('response-form', kwargs={'pk':self.test_problem.id})
         self.login_as(self.provider)
 
     def test_form_creates_problem_response(self):
@@ -110,7 +110,7 @@ class ResponseFormViewTests(AuthorizationTestCase):
     def setUp(self):
         super(ResponseFormViewTests, self).setUp()
         self.problem = create_test_instance(Problem, {'organisation': self.test_organisation})
-        self.response_form_url = '/private/response/%s' % self.problem.id
+        self.response_form_url = reverse('response-form', kwargs={'pk':self.problem.id})
         self.login_as(self.provider)
 
     def test_response_page_exists(self):

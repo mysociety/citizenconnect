@@ -20,14 +20,13 @@ class BasicAccountTests(TestCase):
         self.test_organisation.save()
 
         # Useful urls
-        self.login_url = '/private/login'
-        self.logout_url = '/private/logout'
-        self.reset_url = '/private/password-reset'
-        self.reset_done_url = '/private/password-reset-done'
-        self.reset_confirm_url = '/private/password-reset-confirm'
-        self.reset_complete_url = '/private/password-reset-complete'
-        self.password_change_url = '/private/password-change'
-        self.password_change_done_url = '/private/password-change-done'
+        self.login_url = reverse('login')
+        self.logout_url = reverse('logout')
+        self.reset_url = reverse('password_reset')
+        self.reset_done_url = reverse('password_reset_done')
+        self.reset_complete_url = reverse('password_reset_complete')
+        self.password_change_url = reverse('password_change')
+        self.password_change_done_url = reverse('password_change_done')
 
     def test_login_page_exists(self):
         resp = self.client.get(self.login_url)
@@ -88,7 +87,7 @@ class BasicAccountTests(TestCase):
         uidb36, token = get_reset_url_from_email(mail.outbox[0])
 
         # Post a new password to the reset form
-        confirm_url = '{0}/{1}-{2}'.format(self.reset_confirm_url, uidb36, token)
+        confirm_url = reverse('password_reset_confirm', kwargs={'uidb36':uidb36, 'token':token})
         test_new_values = {
             'new_password1': 'new_password',
             'new_password2': 'new_password',

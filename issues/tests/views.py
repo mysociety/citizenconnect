@@ -8,7 +8,7 @@ from ..models import Question, Problem
 
 class AskQuestionViewTests(TestCase):
     def setUp(self):
-        self.url = '/choices/question/ask-question'
+        self.url = reverse('ask-question', kwargs={'cobrand':'choices'})
 
     def test_ask_question_page_exists(self):
         resp = self.client.get(self.url)
@@ -26,8 +26,9 @@ class QuestionCreateViewTests(TestCase):
 
     def setUp(self):
         self.test_organisation = create_test_organisation();
-        self.url = '/choices/question/question-form'
-        self.organisation_url = '/choices/question/question-form/{0}'.format(self.test_organisation.ods_code)
+        self.url = reverse('question-form', kwargs={'cobrand':'choices'})
+        self.organisation_url = reverse('question-form', kwargs={'cobrand':'choices',
+                                                                 'ods_code': self.test_organisation.ods_code})
 
     def test_organisation_name_shown(self):
         resp = self.client.get(self.organisation_url)
@@ -78,9 +79,12 @@ class ProblemPublicViewTests(AuthorizationTestCase):
                                                                    'moderated': Problem.MODERATED,
                                                                    'publication_status': Problem.PUBLISHED})
 
-        self.test_moderated_problem_url = '/choices/problem/{0}'.format(self.test_moderated_problem.id)
-        self.test_unmoderated_problem_url = '/choices/problem/{0}'.format(self.test_unmoderated_problem.id)
-        self.test_private_problem_url = '/choices/problem/{0}'.format(self.test_private_problem.id)
+        self.test_moderated_problem_url = reverse('problem-view', kwargs={'pk': self.test_moderated_problem.id,
+                                                                            'cobrand':'choices'})
+        self.test_unmoderated_problem_url = reverse('problem-view', kwargs={'pk': self.test_unmoderated_problem.id,
+                                                                              'cobrand':'choices'})
+        self.test_private_problem_url = reverse('problem-view', kwargs={'pk': self.test_private_problem.id,
+                                                                          'cobrand':'choices'})
 
     def test_public_problem_page_exists(self):
         resp = self.client.get(self.test_moderated_problem_url)
@@ -170,7 +174,8 @@ class ProblemPublicViewTests(AuthorizationTestCase):
 class ProblemProviderPickerTests(TestCase):
 
     def setUp(self):
-        self.results_url = "/choices/problem/pick-provider?organisation_type=gppractices&location=London"
+        pick_provider_url = reverse('problems-pick-provider', kwargs={'cobrand':'choices'})
+        self.results_url = "{0}?organisation_type={1}&location={2}".format(pick_provider_url, 'gppractices', 'London')
 
     def test_results_page_exists(self):
         resp = self.client.get(self.results_url)
