@@ -91,6 +91,7 @@ class QuestionDetail(DetailView):
 
 class ProblemPickProvider(PickProviderBase):
     result_link_url_name = 'problem-form'
+    issue_type = 'problem'
 
 class ProblemCreate(OrganisationAwareViewMixin, CreateView):
     model = Problem
