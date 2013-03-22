@@ -116,6 +116,11 @@ class FilterMixin(object):
             filters['problem_status'] = int(status)
             filters['status'] = int(status)
 
+        # CCG Filter
+        ccg = self.request.GET.get('ccg')
+        if context['ccgs'].filter(code=ccg).exists():
+            filters['ccg'] = ccg
+
         context['filters'] = filters
 
         return context
@@ -393,9 +398,41 @@ class EscalationDashboard(FilterMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super(EscalationDashboard, self).get_context_data(**kwargs)
+
+        filtered_problems = self.apply_filters(context['filters'], context['problems'])
+
         # Setup a table for the problems
-        problem_table = IssueModelTable(context['problems'], private=True, issue_type=Problem)
+        problem_table = IssueModelTable(filtered_problems, private=True, issue_type=Problem)
         RequestConfig(self.request, paginate={'per_page': 25}).configure(problem_table)
         context['table'] = problem_table
         context['page_obj'] = problem_table.page
         return context
+
+    def apply_filters(self, filters, queryset):
+
+        filtered_queryset = queryset
+
+        for name, value in filters.items():
+
+            # Category filter
+            if name == 'category':
+                filtered_queryset = filtered_queryset.filter(category=value)
+
+            # Organisation type filter
+            if name == 'organisation_type':
+                filtered_queryset = filtered_queryset.filter(organisation__organisation_type=value)
+
+            # Status filter
+            if name == 'status':
+                filtered_queryset = filtered_queryset.filter(status=value)
+
+            # Service filter
+            if name == 'service_code':
+                filtered_queryset = filtered_queryset.filter(service__service_code=value)
+
+            # TODO - when orgs are linked to ccgs, put this in
+            # CCG Filter
+            # if name == 'ccg':
+                # filtered_queryset = filtered_queryset.filter(organisation__ccg=value)
+
+        return filtered_queryset
