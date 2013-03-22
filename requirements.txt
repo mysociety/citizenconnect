@@ -12,6 +12,7 @@ Django
 South
 django-pagination
 django-tables2
+django-reversion==1.6.5
 
 ### Testing
 mock

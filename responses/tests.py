@@ -13,7 +13,7 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
     def setUp(self):
         super(ResponseFormTests, self).setUp()
         self.test_problem = create_test_instance(Problem, {'organisation':self.test_organisation})
-        self.problem_response_form_url = '/private/response/%s' % self.test_problem.id
+        self.problem_response_form_url = reverse('response-form', kwargs={'pk':self.test_problem.id})
         self.login_as(self.provider)
 
     def test_form_creates_problem_response(self):
@@ -57,7 +57,7 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         self.assertEqual(self.test_problem.responses.count(), 0)
         self.assertEqual(self.test_problem.status, Problem.RESOLVED)
 
-    def test_form_ignores_response_during_status_change(self):
+    def test_form_warns_about_response_during_status_change(self):
         response_text = 'I didn\'t mean to respond'
         test_form_values = {
             'response': response_text,
@@ -66,9 +66,7 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
             'status': ''
         }
         resp = self.client.post(self.problem_response_form_url, test_form_values)
-        self.test_problem = Problem.objects.get(pk=self.test_problem.id)
-        self.assertEqual(self.test_problem.responses.count(), 0)
-        self.assertEqual(self.test_problem.status, Problem.RESOLVED)
+        self.assertFormError(resp, 'form', 'response', 'You cannot submit a response if you\'re just updating the status. Please delete the text in the response field or use the "Respond" button.')
 
     def test_form_requires_text_for_responses(self):
         response_text = ''
@@ -110,7 +108,7 @@ class ResponseFormViewTests(AuthorizationTestCase):
     def setUp(self):
         super(ResponseFormViewTests, self).setUp()
         self.problem = create_test_instance(Problem, {'organisation': self.test_organisation})
-        self.response_form_url = '/private/response/%s' % self.problem.id
+        self.response_form_url = reverse('response-form', kwargs={'pk':self.problem.id})
         self.login_as(self.provider)
 
     def test_response_page_exists(self):

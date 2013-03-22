@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.test import TransactionTestCase
 
 from organisations.models import Organisation
@@ -13,13 +14,13 @@ class BaseModerationTestCase(AuthorizationTestCase, TransactionTestCase):
         self.test_legal_moderation_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
                                                                             'requires_legal_moderation': True})
         self.test_question = create_test_instance(Question, {})
-        self.home_url = '/private/moderate/'
-        self.lookup_url = '/private/moderate/lookup'
-        self.problem_form_url = '/private/moderate/%d' % self.test_problem.id
-        self.confirm_url = '/private/moderate/confirm'
-        self.legal_home_url = '/private/moderate/legal'
-        self.legal_problem_form_url = '/private/moderate/legal/%d' % self.test_legal_moderation_problem.id
-        self.legal_confirm_url = '/private/moderate/legal/confirm'
+        self.home_url = reverse('moderate-home')
+        self.lookup_url = reverse('moderate-lookup')
+        self.problem_form_url = reverse('moderate-form', kwargs={'pk':self.test_problem.id})
+        self.confirm_url = reverse('moderate-confirm')
+        self.legal_home_url = reverse('legal-moderate-home')
+        self.legal_problem_form_url = reverse('legal-moderate-form', kwargs={'pk':self.test_legal_moderation_problem.id})
+        self.legal_confirm_url = reverse('legal-moderate-confirm')
         self.all_case_handler_urls = [self.home_url,
                                      self.lookup_url,
                                      self.problem_form_url,

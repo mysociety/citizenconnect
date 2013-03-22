@@ -19,9 +19,10 @@ class ProblemResponseForm(forms.ModelForm):
         if 'respond' in self.data and (not response or response == ''):
             raise forms.ValidationError('This field is required.')
 
-        # If people clicked the "update status" button, we ignore the response
-        if 'status' in self.data:
-            response = None
+        # If people clicked the "update status" button, and the added a response
+        # we warn them that it won't get used
+        if 'status' in self.data and response:
+            raise forms.ValidationError('You cannot submit a response if you\'re just updating the status. Please delete the text in the response field or use the "Respond" button.')
 
         return response
 

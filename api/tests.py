@@ -2,6 +2,7 @@ import uuid
 
 from django.test import TestCase
 from django.utils import simplejson as json
+from django.core.urlresolvers import reverse
 
 from organisations.tests.lib import create_test_organisation, create_test_service
 from issues.models import Problem, Question
@@ -38,8 +39,8 @@ class APITests(TestCase):
             'source':Problem.SOURCE_PHONE
         }
 
-        self.question_api_url = '/api/v0.1/question'
-        self.problem_api_url = '/api/v0.1/problem'
+        self.question_api_url = reverse('api-question-create')
+        self.problem_api_url = reverse('api-problem-create')
 
     def test_question_api_happy_path(self):
         resp = self.client.post(self.question_api_url, self.test_question)

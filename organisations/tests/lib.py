@@ -261,6 +261,13 @@ class AuthorizationTestCase(TestCase):
         # A Legal Moderator
         self.legal_moderator = User.objects.get(pk=12)
 
+        # A CQC user
+        self.cqc = User.objects.get(pk=10)
+
+        # A CCQ user
+        self.ccg = User.objects.get(pk=9)
+        # TODO - we need to link this user to orgs and the ccg at some point
+
         # Helpful lists for simpler testing
         self.users_who_can_access_everything = [self.superuser, self.nhs_superuser, self.case_handler]
 

@@ -46,8 +46,9 @@ class OrganisationSummaryTests(AuthorizationTestCase):
                      'time_to_address': None})
         self.other_dept_problem = create_test_instance(Problem, atts)
 
-        self.public_summary_url = '/choices/stats/summary/%s' % self.test_organisation.ods_code
-        self.private_summary_url = '/private/summary/%s' % self.test_organisation.ods_code
+        self.public_summary_url = reverse('public-org-summary', kwargs={'ods_code':self.test_organisation.ods_code,
+                                                                        'cobrand': 'choices'})
+        self.private_summary_url = reverse('private-org-summary', kwargs={'ods_code':self.test_organisation.ods_code})
         self.urls = [self.public_summary_url, self.private_summary_url]
 
     def test_summary_page_exists(self):
@@ -170,10 +171,16 @@ class OrganisationProblemsTests(AuthorizationTestCase):
                                                   'ods_code': 'ABC123'})
         self.gp = create_test_organisation({'organisation_type': 'gppractices',
                                             'ods_code': 'DEF456'})
-        self.public_hospital_problems_url = '/choices/stats/problems/%s' % self.hospital.ods_code
-        self.private_hospital_problems_url = '/private/problems/%s' % self.hospital.ods_code
-        self.public_gp_problems_url = '/choices/stats/problems/%s' % self.gp.ods_code
-        self.private_gp_problems_url = '/private/problems/%s' % self.gp.ods_code
+        self.public_hospital_problems_url = reverse('public-org-problems',
+                                                    kwargs={'ods_code':self.hospital.ods_code,
+                                                            'cobrand': 'choices'})
+        self.private_hospital_problems_url = reverse('private-org-problems',
+                                                    kwargs={'ods_code':self.hospital.ods_code})
+        self.public_gp_problems_url = reverse('public-org-problems',
+                                              kwargs={'ods_code':self.gp.ods_code,
+                                                      'cobrand': 'choices'})
+        self.private_gp_problems_url = reverse('private-org-problems',
+                                               kwargs={'ods_code':self.gp.ods_code})
         self.staff_problem = create_test_instance(Problem, {'category': 'staff',
                                                             'organisation': self.hospital,
                                                             'moderated': Problem.MODERATED,
@@ -233,8 +240,10 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_public_page_links_to_public_problems(self):
+        staff_problem_url = reverse('problem-view', kwargs={'pk':self.staff_problem.id,
+                                                              'cobrand': 'choices'})
         resp = self.client.get(self.public_hospital_problems_url)
-        self.assertContains(resp, '/choices/problem/%s' % self.staff_problem.id )
+        self.assertContains(resp, staff_problem_url)
 
     def test_public_page_shows_private_problems_without_links(self):
         # Add a private problem
@@ -242,20 +251,26 @@ class OrganisationProblemsTests(AuthorizationTestCase):
                                        'moderated': Problem.MODERATED,
                                        'publication_status': Problem.PUBLISHED,
                                        'public': False})
+        private_problem_url = reverse('problem-view', kwargs={'pk':self.private_problem.id,
+                                                                    'cobrand': 'choices'})
         resp = self.client.get(self.public_hospital_problems_url)
         self.assertTrue(private_problem.reference_number in resp.content)
         self.assertTrue(private_problem.summary in resp.content)
-        self.assertTrue('/choices/problem/%s' % private_problem.id not in resp.content)
+        self.assertTrue(private_problem_url not in resp.content)
 
     def test_public_page_doesnt_show_hidden_or_unmoderated_problems(self):
         # Add some problems which shouldn't show up
         unmoderated_problem = create_test_instance(Problem, {'organisation': self.hospital})
+        unmoderated_problem_url = reverse('problem-view', kwargs={'pk':unmoderated_problem.id,
+                                                                    'cobrand': 'choices'})
         hidden_problem = create_test_instance(Problem, {'organisation': self.hospital,
                                        'moderated': Problem.MODERATED,
                                        'publication_status': Problem.HIDDEN})
+        hidden_problem_url = reverse('problem-view', kwargs={'pk':hidden_problem.id,
+                                                                    'cobrand': 'choices'})
         resp = self.client.get(self.public_hospital_problems_url)
-        self.assertTrue('/choices/problem/%s' % unmoderated_problem.id not in resp.content)
-        self.assertTrue('/choices/problem/%s' % hidden_problem.id not in resp.content)
+        self.assertTrue(unmoderated_problem_url not in resp.content)
+        self.assertTrue(hidden_problem_url not in resp.content)
 
     def test_private_page_exists(self):
         self.login_as(self.test_hospital_user)
@@ -264,24 +279,28 @@ class OrganisationProblemsTests(AuthorizationTestCase):
 
     def test_private_page_links_to_problems(self):
         self.login_as(self.test_hospital_user)
+        response_url = reverse('response-form', kwargs={'pk':self.staff_problem.id})
         resp = self.client.get(self.private_hospital_problems_url)
-        self.assertTrue('/private/response/%s' % self.staff_problem.id in resp.content)
+        self.assertTrue(response_url in resp.content)
 
     def test_private_page_shows_hidden_private_and_unmoderated_problems(self):
         # Add some extra problems
         unmoderated_problem = create_test_instance(Problem, {'organisation': self.hospital})
+        unmoderated_response_url = reverse('response-form', kwargs={'pk':unmoderated_problem.id})
         hidden_problem = create_test_instance(Problem, {'organisation': self.hospital,
                                        'moderated': Problem.MODERATED,
                                        'publication_status': Problem.HIDDEN})
+        hidden_response_url = reverse('response-form', kwargs={'pk':hidden_problem.id})
         private_problem = create_test_instance(Problem, {'organisation': self.hospital,
                                        'moderated': Problem.MODERATED,
                                        'publication_status': Problem.PUBLISHED,
                                        'public': False})
+        private_response_url = reverse('response-form', kwargs={'pk':self.private_problem.id})
         self.login_as(self.test_hospital_user)
         resp = self.client.get(self.private_hospital_problems_url)
-        self.assertTrue('/private/response/%s' % unmoderated_problem.id in resp.content)
-        self.assertTrue('/private/response/%s' % hidden_problem.id in resp.content)
-        self.assertTrue('/private/response/%s' % private_problem.id in resp.content)
+        self.assertTrue(unmoderated_response_url in resp.content)
+        self.assertTrue(hidden_response_url in resp.content)
+        self.assertTrue(private_response_url in resp.content)
         self.assertTrue(private_problem.private_summary in resp.content)
 
     def test_private_page_is_inaccessible_to_anon_users(self):
@@ -316,8 +335,9 @@ class OrganisationReviewsTests(AuthorizationTestCase):
 
     def setUp(self):
         super(OrganisationReviewsTests, self).setUp()
-        self.public_reviews_url = '/choices/stats/reviews/{0}'.format(self.test_organisation.ods_code)
-        self.private_reviews_url = '/private/reviews/{0}'.format(self.test_organisation.ods_code)
+        self.public_reviews_url = reverse('public-org-reviews', kwargs={'ods_code':self.test_organisation.ods_code,
+                                                                        'cobrand':'choices'})
+        self.private_reviews_url = reverse('private-org-reviews', kwargs={'ods_code':self.test_organisation.ods_code})
 
     def test_public_page_exists_and_is_accessible_to_anyone(self):
         resp = self.client.get(self.public_reviews_url)
@@ -349,7 +369,7 @@ class OrganisationDashboardTests(AuthorizationTestCase):
     def setUp(self):
         super(OrganisationDashboardTests, self).setUp()
         self.problem = create_test_instance(Problem, {'organisation': self.test_organisation})
-        self.dashboard_url = '/private/dashboard/%s' % self.test_organisation.ods_code
+        self.dashboard_url = reverse('org-dashboard', kwargs={'ods_code':self.test_organisation.ods_code})
 
     def test_dashboard_page_exists(self):
         self.login_as(self.provider)
@@ -363,14 +383,16 @@ class OrganisationDashboardTests(AuthorizationTestCase):
 
     def test_dashboard_shows_problems(self):
         self.login_as(self.provider)
+        response_url = reverse('response-form', kwargs={'pk':self.problem.id})
         resp = self.client.get(self.dashboard_url)
-        self.assertTrue('/private/response/%s' % self.problem.id in resp.content)
+        self.assertTrue(response_url in resp.content)
 
     def test_dashboard_doesnt_show_closed_problems(self):
         self.closed_problem = create_test_instance(Problem, {'organisation': self.test_organisation, 'status': Problem.RESOLVED})
+        closed_problem_response_url = reverse('response-form', kwargs={'pk':self.closed_problem.id})
         self.login_as(self.provider)
         resp = self.client.get(self.dashboard_url)
-        self.assertTrue('/private/response/%s' % self.closed_problem.id not in resp.content)
+        self.assertTrue(closed_problem_response_url not in resp.content)
 
     def test_dashboard_page_is_inaccessible_to_anon_users(self):
         expected_login_url = "{0}?next={1}".format(self.login_url, self.dashboard_url)
@@ -394,8 +416,8 @@ class OrganisationMapTests(AuthorizationTestCase):
         super(OrganisationMapTests, self).setUp()
         self.gp = self.test_organisation
         self.other_gp = self.other_test_organisation
-        self.map_url = '/choices/stats/map'
-        self.private_map_url = '/private/map'
+        self.map_url = reverse('org-map', kwargs={'cobrand':'choices'})
+        self.private_map_url = reverse('private-map')
 
     def test_map_page_exists(self):
         resp = self.client.get(self.map_url)
@@ -488,7 +510,7 @@ class SummaryTests(TestCase):
 
     def setUp(self):
         super(SummaryTests, self).setUp()
-        self.summary_url = '/choices/stats/summary'
+        self.summary_url = reverse('org-all-summary', kwargs={'cobrand':'choices'})
 
     def test_summary_page_exists(self):
         resp = self.client.get(self.summary_url)
@@ -529,7 +551,7 @@ class ProviderPickerTests(TestCase):
             'ods_code':'HOS123',
             'point': Point(-0.13, 51.5)
         })
-        self.base_url = "/choices/stats/pick-provider"
+        self.base_url = reverse('org-pick-provider', kwargs={'cobrand': 'choices'})
         self.results_url = "%s?organisation_type=gppractices&location=SW1A+1AA" % self.base_url
 
     def test_results_page_exists(self):

@@ -116,6 +116,11 @@ class FilterMixin(object):
             filters['problem_status'] = int(status)
             filters['status'] = int(status)
 
+        # CCG Filter
+        ccg = self.request.GET.get('ccg')
+        if context['ccgs'].filter(code=ccg).exists():
+            filters['ccg'] = ccg
+
         context['filters'] = filters
 
         return context
@@ -176,6 +181,7 @@ class PickProviderBase(ListView):
     paginate_by = 10
     model = Organisation
     context_object_name = 'organisations'
+    issue_type = 'problem'
 
     def get(self, *args, **kwargs):
         super(PickProviderBase, self).get(*args, **kwargs)
@@ -199,9 +205,11 @@ class PickProviderBase(ListView):
                     context['organisations'] = queryset
                 return render(self.request, self.template_name, context)
             else:
-                return render(self.request, self.form_template_name, {'form': form})
+                return render(self.request, self.form_template_name, {'form': form,
+                                                                      'issue_type': self.issue_type})
         else:
-              return render(self.request, self.form_template_name, {'form': OrganisationFinderForm()})
+              return render(self.request, self.form_template_name, {'form': OrganisationFinderForm(),
+                                                                    'issue_type': self.issue_type})
 
 class OrganisationSummary(OrganisationAwareViewMixin,
                           TemplateView):
@@ -323,6 +331,10 @@ def login_redirect(request):
     if user_in_group(user, auth.NHS_SUPERUSERS):
         return HttpResponseRedirect(reverse('private-map'))
 
+    # CQC and CCG users go to the escalation dashboard
+    elif user_in_groups(user, [auth.CQC, auth.CCG]):
+        return HttpResponseRedirect(reverse('escalation-dashboard'))
+
     # Moderators go to the moderation queue
     elif user_in_group(user, auth.CASE_HANDLERS):
         return HttpResponseRedirect(reverse('moderate-home'))
@@ -387,15 +399,47 @@ class EscalationDashboard(FilterMixin, ListView):
     context_object_name = "problems"
 
     def dispatch(self, request, *args, **kwargs):
-        if not user_is_superuser(request.user) and not user_in_groups(auth.CQC, auth.CCG):
+        if not user_is_superuser(request.user) and not user_in_groups(request.user, [auth.CQC, auth.CCG]):
             raise PermissionDenied()
         return super(EscalationDashboard, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(EscalationDashboard, self).get_context_data(**kwargs)
+
+        filtered_problems = self.apply_filters(context['filters'], context['problems'])
+
         # Setup a table for the problems
-        problem_table = IssueModelTable(context['problems'], private=True, issue_type=Problem)
+        problem_table = IssueModelTable(filtered_problems, private=True, issue_type=Problem)
         RequestConfig(self.request, paginate={'per_page': 25}).configure(problem_table)
         context['table'] = problem_table
         context['page_obj'] = problem_table.page
         return context
+
+    def apply_filters(self, filters, queryset):
+
+        filtered_queryset = queryset
+
+        for name, value in filters.items():
+
+            # Category filter
+            if name == 'category':
+                filtered_queryset = filtered_queryset.filter(category=value)
+
+            # Organisation type filter
+            if name == 'organisation_type':
+                filtered_queryset = filtered_queryset.filter(organisation__organisation_type=value)
+
+            # Status filter
+            if name == 'status':
+                filtered_queryset = filtered_queryset.filter(status=value)
+
+            # Service filter
+            if name == 'service_code':
+                filtered_queryset = filtered_queryset.filter(service__service_code=value)
+
+            # TODO - when orgs are linked to ccgs, put this in
+            # CCG Filter
+            # if name == 'ccg':
+                # filtered_queryset = filtered_queryset.filter(organisation__ccg=value)
+
+        return filtered_queryset

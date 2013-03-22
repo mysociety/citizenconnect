@@ -94,6 +94,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.middleware.transaction.TransactionMiddleware',
+    'reversion.middleware.RevisionMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'pagination.middleware.PaginationMiddleware',
     # Uncomment the next line for simple clickjacking protection:
@@ -138,7 +140,8 @@ INSTALLED_APPS = (
     'reviews',
     'moderation',
     'api',
-    'responses'
+    'responses',
+    'reversion'
 )
 
 # Log WARN and above to stderr; ERROR and above by email when DEBUG is False.
