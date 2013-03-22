@@ -1,16 +1,13 @@
 from django.contrib import admin
-from issues import models
 
-# tweak to taste - simple at the top and more custom below
+import reversion
 
+from .models import Problem, Question
 
-# admin.site.register(models.FooBar)
+class ProblemAdmin(reversion.VersionAdmin):
+        pass
+admin.site.register(Problem, ProblemAdmin)
 
-
-
-# class FooBarAdmin(admin.ModelAdmin):
-#     prepopulated_fields = {"slug": ["name"]}
-#     list_display  = [ 'slug', 'name', ]
-#     search_fields = ['name']
-# 
-# admin.site.register( models.FooBar, FooBarAdmin )
+class QuestionAdmin(reversion.VersionAdmin):
+        pass
+admin.site.register(Question, QuestionAdmin)
