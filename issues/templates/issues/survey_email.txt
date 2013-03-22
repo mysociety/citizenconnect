@@ -1,0 +1,10 @@
+{% load url from future %}
+{% autoescape off %}
+
+Dear {{ problem.reporter_name }},
+
+{{ interval_in_days }} days ago, you reported a problem on Care Connect.
+
+Please click one of the following links to let us know whether you're satisfied with the way it was handled.
+
+{% endautoescape %}
