@@ -35,7 +35,7 @@ def check_organisation_access(organisation, user):
         raise PermissionDenied()
 
 def check_question_access(user):
-    if not user_in_groups(user, [QUESTION_ANSWERERS, NHS_SUPERUSERS]):
+    if not user_is_superuser(user) and not user_in_group(user, QUESTION_ANSWERERS):
         raise PermissionDenied()
 
 def check_problem_access(problem, user):
