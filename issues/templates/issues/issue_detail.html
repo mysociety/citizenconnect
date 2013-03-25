@@ -100,12 +100,9 @@
 {% if history and private %}
     <div class="meta-data-wrap">
         <h3 class="meta-data-label  meta-data-label--bordered">History</h3>
-        {% for version in history %}
+        {% for change in history reversed %}
             <div class="meta-data  meta-data--response">
-                <p>{{ version.revision.date_created }}{% if version.revision.user %} by {{ version.revision.user.username }}{% endif %}</p>
-                {% if version.revision.comment %}
-                    <p class="meta-data__foot">{{ version.revision.comment }}</p>
-                {% endif %}
+                <p>{{ change.description }}{% if change.user %} by {{ change.user.username }}{% endif %}</p>
             </div>
         {% endfor %}
     </div>

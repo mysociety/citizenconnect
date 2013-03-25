@@ -3,8 +3,6 @@ from django.shortcuts import get_object_or_404
 from django.forms.widgets import HiddenInput
 from django.template import RequestContext
 
-import reversion
-
 # App imports
 from citizenconnect.shortcuts import render
 from organisations.models import Organisation, Service
@@ -13,6 +11,7 @@ from organisations.auth import check_question_access, check_problem_access
 
 from .models import Question, Problem
 from .forms import QuestionForm, ProblemForm, QuestionUpdateForm
+from .lib import changes_for_model
 
 class AskQuestion(TemplateView):
     template_name = 'issues/ask_question.html'
@@ -66,7 +65,7 @@ class QuestionUpdate(PrivateViewMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(QuestionUpdate, self).get_context_data(**kwargs)
-        context['history'] = reversion.get_for_object(context[self.context_object_name])
+        context['history'] = changes_for_model(context[context_object_name])
         return context
 
 class ProblemPickProvider(PickProviderBase):

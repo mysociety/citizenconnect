@@ -2,11 +2,10 @@ from django.views.generic import CreateView, TemplateView
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 
-import reversion
-
 from citizenconnect.shortcuts import render
 from organisations.auth import check_problem_access
 from issues.models import Problem
+from issues.lib import changes_for_model
 
 from .forms import ProblemResponseForm
 from .models import ProblemResponse
@@ -21,7 +20,7 @@ class ResponseForm(CreateView):
     def get_context_data(self, **kwargs):
         context = super(ResponseForm, self).get_context_data(**kwargs)
         context['issue'] = Problem.objects.get(pk=self.kwargs['pk'])
-        context['history'] = reversion.get_for_object(context['issue'])
+        context['history'] = changes_for_model(context['issue'])
         return context
 
     def get_success_url(self):
