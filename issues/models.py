@@ -113,6 +113,16 @@ class Question(IssueModel):
 
     PREFIX = 'Q'
 
+    # Names for transitions between statuses we might want to print
+    TRANSITIONS = {
+        'status': {
+            'Answered': [[NEW, RESOLVED]]
+        }
+    }
+
+    # Which attrs are interesting to compare for revisions
+    REVISION_ATTRS = ['status']
+
     category = models.CharField(max_length=100,
                                 choices=IssueModel.CATEGORY_CHOICES,
                                 default='general',
@@ -206,6 +216,26 @@ class Problem(IssueModel):
 
     COMMISSIONED_CHOICES = ((LOCALLY_COMMISSIONED, "Locally Commissioned"),
                                    (NATIONALLY_COMMISSIONED, "Nationally Commissioned"))
+
+    # Names for transitions between statuses we might want to print
+    TRANSITIONS = {
+        'status': {
+            'Acknowledged': [[NEW, ACKNOWLEDGED]],
+            'Escalated': [[NEW, ESCALATED], [ACKNOWLEDGED, ESCALATED]],
+            'Resolved': [[ACKNOWLEDGED, RESOLVED], [ESCALATED, RESOLVED]]
+        },
+        'publication_status': {
+            'Published':[[HIDDEN, PUBLISHED]],
+            'Hidden':[[PUBLISHED, HIDDEN]]
+        },
+        'moderated': {
+            'Moderated':[[NOT_MODERATED, MODERATED]]
+        }
+    }
+
+    # Which attrs are interesting to compare for revisions
+    # The order of these determines the order they are output as a string
+    REVISION_ATTRS = ['moderated', 'publication_status', 'status']
 
     category = models.CharField(max_length=100,
                                 choices=IssueModel.CATEGORY_CHOICES,
