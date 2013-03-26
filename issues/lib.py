@@ -56,3 +56,36 @@ def changes_for_model(model):
                 if change_string:
                     changes.append({"user":version.revision.user, "description":change_string})
     return changes
+
+
+# Miss out i l o u
+base32_digits = "0123456789abcdefghjkmnpqrstvwxyz"
+
+class MistypedIDException(Exception):
+    pass
+
+def base32_to_int(s):
+    """Convert a base 32 string to an integer"""
+    mistyped = False
+    if s.find('o')>-1 or s.find('i')>-1 or s.find('l')>-1:
+        s = s.replace('o', '0').replace('i', '1').replace('l', '1')
+        mistyped = True
+    decoded = 0
+    multi = 1
+    while len(s) > 0:
+        decoded += multi * base32_digits.index(s[-1:])
+        multi = multi * 32
+        s = s[:-1]
+    if mistyped:
+        raise MistypedIDException(decoded)
+    return decoded
+
+def int_to_base32(i):
+    """Converts an integer to a base32 string"""
+    enc = ''
+    while i>=32:
+        i, mod = divmod(i,32)
+        enc = base32_digits[mod] + enc
+    enc = base32_digits[i] + enc
+    return enc
+

@@ -4,7 +4,7 @@ import reversion
 
 from organisations.tests.lib import create_test_instance
 
-from ..lib import changed_attrs, changes_as_string, changes_for_model
+from ..lib import changed_attrs, changes_as_string, changes_for_model, base32_to_int, int_to_base32, MistypedIDException
 from ..models import Problem, Question
 
 class LibTests(TestCase):
@@ -114,3 +114,15 @@ class LibTests(TestCase):
         self.assertEqual(len(expected_changes), len(actual_changes))
         for index, change in enumerate(actual_changes):
             self.assertEqual(change, expected_changes[index])
+
+    def test_base32_roundtrip_conversion(self):
+        self.assertEqual(829384, base32_to_int(int_to_base32(829384)))
+
+    def test_base32_to_int_raises_exception_on_mistyped_characters(self):
+        self.assertEqual(373536, base32_to_int('bcs0'))
+        with self.assertRaises(MistypedIDException) as context_manager:
+            base32_to_int('bcso')
+        exception = context_manager.exception
+        self.assertEqual(str(exception), '373536')
+
+
