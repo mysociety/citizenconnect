@@ -8,10 +8,10 @@ from organisations.tests.lib import create_test_organisation, create_test_instan
 
 from ..models import Problem, Question
 
-class ProblemModelTests(AuthorizationTestCase):
+class ProblemTestCase(AuthorizationTestCase):
 
     def setUp(self):
-        super(ProblemModelTests, self).setUp()
+        super(ProblemTestCase, self).setUp()
         self.test_problem = Problem(organisation=self.test_organisation,
                                     description='A Test Problem',
                                     category='cleanliness',
@@ -46,6 +46,8 @@ class ProblemModelTests(AuthorizationTestCase):
                                             public_reporter_name=False,
                                             preferred_contact_method=Problem.CONTACT_EMAIL,
                                             status=Problem.NEW)
+
+class ProblemModelTests(ProblemTestCase):
 
     def test_has_prefix_property(self):
         self.assertEqual(Problem.PREFIX, 'P')
@@ -151,7 +153,7 @@ class ProblemModelTests(AuthorizationTestCase):
         t = timedelta(days=5, hours=5, minutes=34, seconds=22)
         self.assertEqual(Problem.timedelta_to_minutes(t), 7534)
 
-class ProblemModelTimeToTests(ProblemModelTests):
+class ProblemModelTimeToTests(ProblemTestCase):
 
     def setUp(self):
         now = datetime.utcnow().replace(tzinfo=utc)
