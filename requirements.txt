@@ -3,9 +3,11 @@
 # more details: http://www.pip-installer.org/en/latest/requirements.html
 
 ### General useful bits
+ordereddict
 PyYAML
 psycopg2
 uk-postcode-utils
+
 
 ### Django related
 Django
