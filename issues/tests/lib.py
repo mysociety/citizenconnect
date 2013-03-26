@@ -83,7 +83,6 @@ class LibTests(TestCase):
         self.assertEqual(actual, expected)
 
     def test_changes_for_model(self):
-        reversion.register(Problem)
         # Make a problem and give it some history
         with reversion.create_revision():
             problem = create_test_instance(Problem, {'status': Problem.NEW,
