@@ -1,4 +1,6 @@
 from datetime import datetime, timedelta
+from random import randint
+from mock import patch
 
 from django.test import TestCase
 from django.core.exceptions import ValidationError
@@ -7,6 +9,7 @@ from django.utils.timezone import utc
 from organisations.tests.lib import create_test_organisation, create_test_instance, AuthorizationTestCase
 
 from ..models import Problem, Question
+from ..lib import MistypedIDException
 
 class ProblemTestCase(AuthorizationTestCase):
 
@@ -152,6 +155,21 @@ class ProblemModelTests(ProblemTestCase):
         self.assertEqual(Problem.timedelta_to_minutes(t), 300)
         t = timedelta(days=5, hours=5, minutes=34, seconds=22)
         self.assertEqual(Problem.timedelta_to_minutes(t), 7534)
+
+    def test_token_generated_returns_true_from_check(self):
+        token = self.test_problem.make_token(24792)
+        self.assertTrue(self.test_problem.check_token(token))
+
+    def test_token_generated_with_different_hash_returns_false_from_check(self):
+        token = self.test_problem.make_token(24792)
+        rand, hash = token.split("-")
+        different_token = "%s-%s" % (rand, "differenthash")
+        self.assertFalse(self.test_problem.check_token(different_token))
+
+    def test_mistyped_token_returns_false_from_check(self):
+        token = self.test_problem.make_token(30464)
+        self.assertEqual(token, 'xr0-bff54e08ca9de9f38b1f')
+        self.assertFalse(self.test_problem.check_token('xro-bff54e08ca9de9f38b1f'))
 
 class ProblemModelTimeToTests(ProblemTestCase):
 

@@ -1,4 +1,5 @@
 from datetime import datetime
+import hmac, hashlib
 
 from django.db import models
 from django.conf import settings
@@ -7,6 +8,7 @@ from django.db.models import Q
 from django.utils.timezone import utc
 
 from citizenconnect.models import AuditedModel
+from .lib import base32_to_int, int_to_base32, MistypedIDException
 
 class IssueModel(AuditedModel):
     """
@@ -250,6 +252,7 @@ class Problem(IssueModel):
                                 null=True,
                                 blank=True,
                                 verbose_name="Please select a department (optional)")
+
     happy_service = models.NullBooleanField()
     happy_outcome = models.NullBooleanField()
 
@@ -322,6 +325,26 @@ class Problem(IssueModel):
             self.set_time_to_values()
 
         super(Problem, self).save(*args, **kwargs) # Call the "real" save() method.
+
+    def check_token(self, token):
+        try:
+            rand, hash = token.split("-")
+        except:
+            return False
+
+        try:
+            rand = base32_to_int(rand)
+        except:
+            return False
+
+        if self.make_token(rand) != token:
+            return False
+        return True
+
+    def make_token(self, rand):
+        rand = int_to_base32(rand)
+        hash = hmac.new(settings.SECRET_KEY, unicode(self.id) + rand, hashlib.sha1).hexdigest()[::2]
+        return "%s-%s" % (rand, hash)
 
     @classmethod
     def timedelta_to_minutes(cls, timedelta):
