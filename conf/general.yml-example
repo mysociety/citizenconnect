@@ -54,3 +54,9 @@ QUESTION_ANSWERERS_EMAIL: 'questions@example.com'
 
 # How many days to wait after a problem is reported before sending a survey
 SURVEY_INTERVAL_IN_DAYS: 28
+
+# The host to use for sending email.
+EMAIL_HOST: localhost
+
+# Port to use for the SMTP server defined in EMAIL_HOST.
+EMAIL_PORT: 25
