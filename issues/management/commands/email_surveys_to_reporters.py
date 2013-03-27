@@ -49,7 +49,7 @@ class Command(BaseCommand):
 
     def send_survey(self, template, problem):
         interval = (datetime.utcnow().replace(tzinfo=utc) - problem.created).days
-        survey_params = {'cobrand': 'choices',
+        survey_params = {'cobrand': problem.cobrand,
                          'token': problem.make_token(random.randint(0,32767)),
                          'id': int_to_base32(problem.id) }
         survey_params['response'] = 'y'
