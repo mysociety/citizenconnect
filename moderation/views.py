@@ -80,10 +80,10 @@ class LegalModerateHome(LegalModeratorsOnlyMixin,
     template_name = 'moderation/moderate_home.html'
 
     def get_context_data(self, **kwargs):
-        # Get all the problems flagged for legal moderation
+        # Get all the problems flagged for second tier moderation
         context = super(LegalModerateHome, self).get_context_data(**kwargs)
         context['issues'] = Problem.objects.problems_requiring_legal_moderation().order_by("-created")
-        context['title'] = "Legal Moderation"
+        context['title'] = "Second Tier Moderation"
         self.add_table_to_context(context, LegalModerationTable)
         return context
 
