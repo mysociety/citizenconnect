@@ -7,4 +7,14 @@ Dear {{ problem.reporter_name }},
 
 Please click one of the following links to let us know whether you're satisfied with the way it was handled.
 
+Are you happy with the overall service that you received at {{ problem.organisation.name }}?
+
+If you ARE happy, please click on the link below:
+
+{{ site_base_url }}{{ yes_url }}
+
+If you ARE NOT happy, please click on the link below:
+
+{{ site_base_url }}{{ no_url }}
+
 {% endautoescape %}

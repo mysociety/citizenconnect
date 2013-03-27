@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime, timedelta
+import random
 
 from django.core import mail
 from django.core.management.base import BaseCommand, CommandError
@@ -9,8 +10,11 @@ from django.db import transaction
 from django.template.loader import get_template
 from django.conf import settings
 from django.template import Context
+from django.core.urlresolvers import reverse
+
 
 from ...models import Problem
+from ...lib import int_to_base32
 
 logger = logging.getLogger(__name__)
 
@@ -45,8 +49,19 @@ class Command(BaseCommand):
 
     def send_survey(self, template, problem):
         interval = (datetime.utcnow().replace(tzinfo=utc) - problem.created).days
+        survey_params = {'cobrand': 'choices',
+                         'token': problem.make_token(random.randint(0,32767)),
+                         'id': int_to_base32(problem.id) }
+        survey_params['response'] = 'y'
+        yes_url = reverse('survey-form', kwargs=survey_params)
+        survey_params['response'] = 'n'
+        no_url = reverse('survey-form', kwargs=survey_params)
         context = Context({'problem': problem,
-                           'interval_in_days': interval})
+                           'interval_in_days': interval,
+                           'yes_url': yes_url,
+                           'no_url': no_url,
+                           'site_base_url': settings.SITE_BASE_URL })
+
         logger.info('Emailing survey for problem reference number: {0}'.format(problem.reference_number))
 
         mail.send_mail(subject='Care Connect Survey',
