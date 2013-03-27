@@ -1,4 +1,4 @@
-from django.views.generic import TemplateView, CreateView, DetailView, UpdateView
+from django.views.generic import TemplateView, CreateView, DetailView, UpdateView, FormView
 from django.shortcuts import get_object_or_404
 from django.forms.widgets import HiddenInput
 from django.template import RequestContext
@@ -10,8 +10,8 @@ from organisations.views import PickProviderBase, OrganisationAwareViewMixin, Pr
 from organisations.auth import check_question_access, check_problem_access
 
 from .models import Question, Problem
-from .forms import QuestionForm, ProblemForm, QuestionUpdateForm
-from .lib import changes_for_model
+from .forms import QuestionForm, ProblemForm, QuestionUpdateForm, ProblemSurveyForm
+from .lib import changes_for_model, base32_to_int
 
 class AskQuestion(TemplateView):
     template_name = 'issues/ask_question.html'
@@ -108,3 +108,19 @@ class ProblemDetail(DetailView):
         obj = super(ProblemDetail, self).get_object(*args, **kwargs)
         check_problem_access(obj, self.request.user)
         return obj
+
+class ProblemSurvey(UpdateView):
+    model = Problem
+    form_class = ProblemSurveyForm
+    template_name = 'issues/problem_survey_form.html'
+    confirm_template = 'issues/problem_survey_confirm.html'
+
+    def get_object(self):
+        id = self.kwargs.get('id', None)
+        try:
+            id = base32_to_int(id)
+        except ValueError:
+            raise Http404
+
+        problem = get_object_or_404(Problem, id=id)
+        return problem

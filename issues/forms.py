@@ -138,3 +138,27 @@ class QuestionUpdateForm(forms.ModelForm):
             'response',
             'status'
         ]
+
+class ProblemSurveyForm(forms.ModelForm):
+    """Form for handling problem survey responses.
+    """
+
+    class Meta:
+        model = Problem
+
+
+        SURVEY_CHOICES = (
+            ('', "I prefer not to answer"),
+            (True, "Yes"),
+            (False, "No")
+        )
+
+        fields = [
+            'happy_service',
+            'happy_outcome',
+        ]
+
+        widgets = {
+             'happy_service': RadioSelect(choices=SURVEY_CHOICES),
+             'happy_outcome': RadioSelect(choices=SURVEY_CHOICES),
+        }

@@ -5,6 +5,7 @@ from organisations.tests import create_test_instance, create_test_organisation, 
 from responses.models import ProblemResponse
 
 from ..models import Question, Problem
+from ..lib import int_to_base32
 
 class AskQuestionViewTests(TestCase):
     def setUp(self):
@@ -180,3 +181,25 @@ class ProblemProviderPickerTests(TestCase):
     def test_results_page_exists(self):
         resp = self.client.get(self.results_url)
         self.assertEqual(resp.status_code, 200)
+
+class ProblemSurveyTests(AuthorizationTestCase):
+
+    def setUp(self):
+        super(ProblemSurveyTests, self).setUp()
+        self.test_problem = create_test_instance(Problem, {'organisation':self.test_organisation})
+        self.form_page = reverse('survey-form', kwargs={'cobrand': 'choices',
+                                                        'response': 'n',
+                                                        'id': int_to_base32(self.test_problem.id),
+                                                        'token': self.test_problem.make_token(5555)})
+
+    def test_form_page_exists(self):
+        resp = self.client.get(self.form_page)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_form_page_returns_a_404_for_a_non_existent_problem(self):
+        form_page = reverse('survey-form', kwargs={'cobrand': 'choices',
+                                                   'response': 'n',
+                                                   'id': int_to_base32(-20),
+                                                   'token': self.test_problem.make_token(5555)})
+        resp = self.client.get(form_page)
+        self.assertEqual(resp.status_code, 404)
