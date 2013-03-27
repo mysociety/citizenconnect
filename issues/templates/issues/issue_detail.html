@@ -25,7 +25,7 @@
                     {{ object.public|yesno:"Public,Private" }},&nbsp;
                     {{ object.get_publication_status_display}},&nbsp;
                     {% if object.requires_legal_moderation %}
-                      Requires legal moderation,&nbsp;
+                      Requires second tier moderation,&nbsp;
                     {% endif %}
                 {% endif %}
                 {{ object.get_status_display }}

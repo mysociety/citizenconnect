@@ -57,7 +57,7 @@ class ProblemModerationForm(ModerationForm):
     commissioned = forms.ChoiceField(widget=RadioSelect(), required=True, choices=Problem.COMMISSIONED_CHOICES)
 
     def clean_requires_legal_moderation(self):
-        # requires_legal_moderation is hidden, but if people click the "Requires Legal Moderation"
+        # requires_legal_moderation is hidden, but if people click the "Requires Second Tier Moderation"
         # button, we should set it to True. If they click either "Publish" or "Keep Private",
         # we set it to False.
         requires_legal_moderation = self.cleaned_data['requires_legal_moderation']

@@ -408,7 +408,7 @@ class ProblemManagerTests(ManagerTest):
             'publication_status': Problem.PUBLISHED
         })
 
-        # Problems requiring legal moderation
+        # Problems requiring second tier moderation
         self.public_problem_requiring_legal_moderation = create_test_instance(Problem, {
             'organisation': self.test_organisation,
             'public':True,
