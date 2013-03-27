@@ -1,0 +1,16 @@
+# crontab.ugly:
+# Timed tasks for site. Template file.
+#
+# Copyright (c) 2013 UK Citizens Online Democracy. All rights reserved.
+# WWW: http://www.mysociety.org/
+
+!!(* if ($staging) { *)!!
+MAILTO=!!(*= $user *)!!@mysociety.org
+!!(* } else { *)!!
+MAILTO=cron-!!(*= $site *)!!@mysociety.org
+!!(* } *)!!
+
+# Set the virtualenv and add it to the path so that the correct python is used
+# requires that scripts start with '#!/usr/bin/env python'
+VIRTUAL_ENV="/data/vhost/!!(*= $vhost *)!!/virtualenv-citizenconnect"
+PATH=/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/:/data/vhost/!!(*= $vhost *)!!/virtualenv-citizenconnect/bin:/usr/local/bin:/usr/bin:/bin
