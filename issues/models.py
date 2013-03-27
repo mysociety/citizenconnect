@@ -1,13 +1,18 @@
+from datetime import datetime
+import hmac, hashlib
+
 from django.db import models
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db.models import Q
+from django.utils.timezone import utc
 
 from citizenconnect.models import AuditedModel
+from .lib import base32_to_int, int_to_base32, MistypedIDException
 
-class MessageModel(AuditedModel):
+class IssueModel(AuditedModel):
     """
-    Abstract model for base functionality of messages sent to NHS Organisations
+    Abstract model for base functionality of issues sent to NHS Organisations
     """
 
     CONTACT_PHONE = 'phone'
@@ -56,36 +61,13 @@ class MessageModel(AuditedModel):
                              'lostproperty': 'Lost property',
                              'other': ''}
 
-    HIDDEN = 0
-    PUBLISHED = 1
-
-    PUBLICATION_STATUS_CHOICES = ((HIDDEN, "Hidden"), (PUBLISHED, "Published"))
-
-    NOT_MODERATED = 0
-    MODERATED = 1
-
-    MODERATED_STATUS_CHOICES = ((NOT_MODERATED, "Not moderated"), (MODERATED, "Moderated"))
-
     description = models.TextField(verbose_name='')
     reporter_name = models.CharField(max_length=200, blank=False, verbose_name='')
     reporter_phone = models.CharField(max_length=50, blank=True, verbose_name='')
     reporter_email = models.CharField(max_length=254, blank=True, verbose_name='')
-    public = models.BooleanField()
-    public_reporter_name = models.BooleanField()
     preferred_contact_method = models.CharField(max_length=100, choices=CONTACT_CHOICES, default=CONTACT_EMAIL)
     source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True)
     mailed = models.BooleanField(default=False, blank=False)
-    publication_status = models.IntegerField(default=HIDDEN, blank=False, choices=PUBLICATION_STATUS_CHOICES)
-    moderated = models.IntegerField(default=NOT_MODERATED, blank=False, choices=MODERATED_STATUS_CHOICES)
-
-    @property
-    def summary(self):
-        # TODO - make this a setting?
-        summary_length = 30
-        if len(self.description) > summary_length:
-            return self.description[:summary_length] + '...'
-        else:
-            return self.description
 
     @property
     def issue_type(self):
@@ -110,7 +92,6 @@ class MessageModel(AuditedModel):
         elif self.preferred_contact_method == self.CONTACT_PHONE and not self.reporter_phone:
             raise ValidationError('You must provide a phone number if you prefer to be contacted by phone')
 
-
     class Meta:
         abstract = True
 
@@ -118,38 +99,58 @@ class QuestionManager(models.Manager):
     use_for_related_fields = True
 
     def open_questions(self):
-        return super(QuestionManager, self).all().filter(Q(status=Question.NEW) | Q(status=Question.ACKNOWLEDGED))
+        return super(QuestionManager, self).all().filter(status=Question.NEW)
 
-    def unmoderated_questions(self):
-        return super(QuestionManager, self).all().filter(moderated=MessageModel.NOT_MODERATED)
-
-class Question(MessageModel):
+class Question(IssueModel):
     # Custom manager
     objects = QuestionManager()
 
     NEW = 0
-    ACKNOWLEDGED = 1
-    RESOLVED = 2
+    RESOLVED = 1
 
     STATUS_CHOICES = (
         (NEW, 'Open'),
-        (ACKNOWLEDGED, 'In Progress'),
         (RESOLVED, 'Resolved'),
     )
 
     PREFIX = 'Q'
 
+    # Names for transitions between statuses we might want to print
+    TRANSITIONS = {
+        'status': {
+            'Answered': [[NEW, RESOLVED]]
+        }
+    }
+
+    # Which attrs are interesting to compare for revisions
+    REVISION_ATTRS = ['status']
+
     category = models.CharField(max_length=100,
-                                choices=MessageModel.CATEGORY_CHOICES,
+                                choices=IssueModel.CATEGORY_CHOICES,
                                 default='general',
                                 db_index=True,
                                 verbose_name='Please select the category that best describes your question')
     status = models.IntegerField(default=NEW, choices=STATUS_CHOICES, db_index=True)
     postcode = models.CharField(max_length=25, blank=True)
+    organisation = models.ForeignKey('organisations.Organisation', blank=True, null=True)
+    response = models.TextField(blank=True)
 
     @property
     def reference_number(self):
         return '{0}{1}'.format(self.PREFIX, self.id)
+
+    @property
+    def reporter_name_display(self):
+        return self.reporter_name
+
+    @property
+    def summary(self):
+        # TODO - make this a setting?
+        summary_length = 30
+        if len(self.description) > summary_length:
+            return self.description[:summary_length] + '...'
+        else:
+            return self.description
 
 class ProblemManager(models.Manager):
     use_for_related_fields = True
@@ -158,49 +159,195 @@ class ProblemManager(models.Manager):
         """
         Return only open problems
         """
-        return super(ProblemManager, self).all().filter(Q(status=Problem.NEW) | Q(status=Problem.ACKNOWLEDGED))
+        return super(ProblemManager, self).all().filter(Q(status__in=Problem.OPEN_STATUSES))
 
     def unmoderated_problems(self):
-        return super(ProblemManager, self).all().filter(moderated=MessageModel.NOT_MODERATED)
+        return super(ProblemManager, self).all().filter(moderated=Problem.NOT_MODERATED)
 
     def open_moderated_published_problems(self):
-        return self.open_problems().filter(moderated=MessageModel.MODERATED,
-                                           publication_status=MessageModel.PUBLISHED)
+        return self.open_problems().filter(moderated=Problem.MODERATED,
+                                           publication_status=Problem.PUBLISHED)
 
-    def all_moderated_published_public_problems(self):
-        return super(ProblemManager, self).all().filter(moderated=MessageModel.MODERATED,
-                                                        publication_status=MessageModel.PUBLISHED,
-                                                        public=True)
+    def all_moderated_published_problems(self):
+        return super(ProblemManager, self).all().filter(moderated=Problem.MODERATED,
+                                                        publication_status=Problem.PUBLISHED)
 
-class Problem(MessageModel):
+    def problems_requiring_legal_moderation(self):
+        return super(ProblemManager, self).all().filter(requires_legal_moderation=True)
+
+    def open_escalated_problems(self):
+        # ESCALATION_STATUSES is a subset of OPEN_STATUSES, so
+        # we don't need to filter for open too
+        return super(ProblemManager, self).all().filter(Q(status__in=Problem.ESCALATION_STATUSES) | Q(breach=True))
+
+class Problem(IssueModel):
     # Custom manager
     objects = ProblemManager()
 
     NEW = 0
     ACKNOWLEDGED = 1
     RESOLVED = 2
+    ESCALATED = 3
 
     STATUS_CHOICES = (
         (NEW, 'Open'),
         (ACKNOWLEDGED, 'In Progress'),
-        (RESOLVED, 'Resolved')
+        (RESOLVED, 'Resolved'),
+        (ESCALATED, 'Escalated')
     )
+
+    BASE_OPEN_STATUSES = [NEW, ACKNOWLEDGED]
+    ESCALATION_STATUSES = [ESCALATED]
+
+    OPEN_STATUSES = BASE_OPEN_STATUSES + ESCALATION_STATUSES
 
     PREFIX = 'P'
 
+    HIDDEN = 0
+    PUBLISHED = 1
+
+    PUBLICATION_STATUS_CHOICES = ((HIDDEN, "Hidden"), (PUBLISHED, "Published"))
+
+    NOT_MODERATED = 0
+    MODERATED = 1
+
+    MODERATED_STATUS_CHOICES = ((NOT_MODERATED, "Not moderated"), (MODERATED, "Moderated"))
+
+    LOCALLY_COMMISSIONED = 0
+    NATIONALLY_COMMISSIONED = 1
+
+    COMMISSIONED_CHOICES = ((LOCALLY_COMMISSIONED, "Locally Commissioned"),
+                                   (NATIONALLY_COMMISSIONED, "Nationally Commissioned"))
+
+    # Names for transitions between statuses we might want to print
+    TRANSITIONS = {
+        'status': {
+            'Acknowledged': [[NEW, ACKNOWLEDGED]],
+            'Escalated': [[NEW, ESCALATED], [ACKNOWLEDGED, ESCALATED]],
+            'Resolved': [[ACKNOWLEDGED, RESOLVED], [ESCALATED, RESOLVED]]
+        },
+        'publication_status': {
+            'Published':[[HIDDEN, PUBLISHED]],
+            'Hidden':[[PUBLISHED, HIDDEN]]
+        },
+        'moderated': {
+            'Moderated':[[NOT_MODERATED, MODERATED]]
+        }
+    }
+
+    # Which attrs are interesting to compare for revisions
+    # The order of these determines the order they are output as a string
+    REVISION_ATTRS = ['moderated', 'publication_status', 'status']
+
     category = models.CharField(max_length=100,
-                                choices=MessageModel.CATEGORY_CHOICES,
+                                choices=IssueModel.CATEGORY_CHOICES,
                                 default='other',
                                 db_index=True,
                                 verbose_name='Please select the category that best describes your problem')
+    public = models.BooleanField()
+    public_reporter_name = models.BooleanField()
     status = models.IntegerField(default=NEW, choices=STATUS_CHOICES, db_index=True)
     organisation = models.ForeignKey('organisations.Organisation')
-    service = models.ForeignKey('organisations.Service', null=True, blank=True, verbose_name="Please select a department (optional)")
+    service = models.ForeignKey('organisations.Service',
+                                null=True,
+                                blank=True,
+                                verbose_name="Please select a department (optional)")
+
     happy_service = models.NullBooleanField()
     happy_outcome = models.NullBooleanField()
+
+    # Integer values represent time in minutes
     time_to_acknowledge = models.IntegerField(null=True)
     time_to_address = models.IntegerField(null=True)
+
+    publication_status = models.IntegerField(default=HIDDEN,
+                                             blank=False,
+                                             choices=PUBLICATION_STATUS_CHOICES)
+    moderated = models.IntegerField(default=NOT_MODERATED,
+                                    blank=False,
+                                    choices=MODERATED_STATUS_CHOICES)
+    moderated_description = models.TextField(blank=True)
+    breach = models.BooleanField(default=False, blank=False)
+    requires_legal_moderation = models.BooleanField(default=False, blank=False)
+    commissioned = models.IntegerField(blank=True, null=True, choices=COMMISSIONED_CHOICES)
+    survey_sent = models.DateTimeField(null=True, blank=True)
 
     @property
     def reference_number(self):
         return '{0}{1}'.format(self.PREFIX, self.id)
+
+    @property
+    def reporter_name_display(self):
+        if self.public_reporter_name:
+            return self.reporter_name
+        else:
+            return "Anonymous"
+
+    @property
+    def summary(self):
+        if (self.public and self.publication_status == Problem.PUBLISHED):
+            return self.summarise(self.moderated_description)
+        else:
+            return "Private"
+
+    @property
+    def private_summary(self):
+        return self.summarise(self.description)
+
+    def summarise(self, field):
+        summary_length = 30
+        if len(field) > summary_length:
+            return field[:summary_length] + '...'
+        else:
+            return field
+
+    def can_be_accessed_by(self, user):
+        """
+        Whether or not an issue is accessible to a given user.
+        In practice the issue is publically accessible to everyone if it's public
+        and has been moderated to be publically available, otherwise only people
+        with access to the organisation it is assigned to can access it.
+        """
+        return (self.public and self.publication_status == Problem.PUBLISHED) or self.organisation.can_be_accessed_by(user)
+
+    def set_time_to_values(self):
+        now = datetime.utcnow().replace(tzinfo=utc)
+        minutes_since_created = self.timedelta_to_minutes(now - self.created)
+        if self.time_to_acknowledge == None and int(self.status) in [Problem.ACKNOWLEDGED, Problem.RESOLVED]:
+            self.time_to_acknowledge = minutes_since_created
+        if self.time_to_address == None and int(self.status) == Problem.RESOLVED:
+            self.time_to_address = minutes_since_created
+
+    def save(self, *args, **kwargs):
+        """Override the default model save() method in order to populate time_to_acknowledge
+        or time_to_address if appropriate."""
+        if self.created:
+            self.set_time_to_values()
+
+        super(Problem, self).save(*args, **kwargs) # Call the "real" save() method.
+
+    def check_token(self, token):
+        try:
+            rand, hash = token.split("-")
+        except:
+            return False
+
+        try:
+            rand = base32_to_int(rand)
+        except:
+            return False
+
+        if self.make_token(rand) != token:
+            return False
+        return True
+
+    def make_token(self, rand):
+        rand = int_to_base32(rand)
+        hash = hmac.new(settings.SECRET_KEY, unicode(self.id) + rand, hashlib.sha1).hexdigest()[::2]
+        return "%s-%s" % (rand, hash)
+
+    @classmethod
+    def timedelta_to_minutes(cls, timedelta):
+        days_in_minutes = timedelta.days * 60 * 24
+        seconds_in_minutes = timedelta.seconds / 60
+        return days_in_minutes + seconds_in_minutes

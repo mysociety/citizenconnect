@@ -19,8 +19,6 @@ class QuestionAPIForm(forms.ModelForm):
             'reporter_phone',
             'reporter_email',
             'preferred_contact_method',
-            'public',
-            'public_reporter_name',
             'source'
         ]
 

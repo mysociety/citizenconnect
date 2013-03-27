@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load url from future %}
+
+{% block title %}Moderate {{ issue.issue_type }}{% endblock %}
+
+{% block bodyclasses %}moderate-form{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1>Moderate {{ issue.issue_type }}</h1>
+</div>
+
+{% include "issues/issue_detail.html" with object=issue  private=1 %}
+
+<div class="moderate-form">
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <fieldset class="island">
+                {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
+            </fieldset>
+        {% endif %}
+
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+
+        <fieldset class="island">
+            <ul class="gw">
+                <li class="g  one-whole">
+                    <label for="id_moderated_description">Moderated details</label>
+                    {{ form.moderated_description }}
+                    <p class="info">Required when publishing public problems.</p>
+                    {% include "message_list.html" with messages=form.moderated_description.errors message_type='error' %}
+                </li>
+            </ul>
+        </fieldset>
+
+        <fieldset class="island">
+             <ul class="gw">
+                    <li class="g one-eighth">
+                        {{ form.breach }}
+                    </li>
+                    <li class="g seven-eighths">
+                        <label for="id_breach">Does this problem describe a breach of the NHS' fundamental standards? </label>
+                    </li>
+                </ul>
+        </fieldset>
+
+        <fieldset class="island">
+            <ul class="gw">
+                <li class="g  one-third  palm-one-whole">
+                    <label for="id_status">Status</label>
+                    {{ form.status }}
+                    {% include "message_list.html" with messages=form.status.errors message_type='error' %}
+                </li>
+            </ul>
+        </fieldset>
+
+        <fieldset class="island">
+            <ul class="gw">
+                <li class="g  one-whole  palm-one-whole">
+                    <label for="id_status">How is the service described commissioned?</label>
+                    {{ form.commissioned }}
+                    {% include "message_list.html" with messages=form.commissioned.errors message_type='error' %}
+                </li>
+            </ul>
+        </fieldset>
+
+        <fieldset class="island">
+            <ul class="gw">
+                {% if response_forms %}
+                    {{ response_forms.management_form }}
+                {% endif %}
+                {% for form in response_forms %}
+                    {{ form.id }}
+                    <li class="g  three-quarters">
+                        <label for="id_responses-{{forloop.counter0}}-response">Moderated response</label>
+                        {{ form.response }}
+                        {% include "message_list.html" with messages=form.response.errors message_type='error' %}
+                    </li>
+                    <li class="g one-quarter  mt">
+                        {{ form.DELETE }} Delete
+                    </li>
+                {% empty %}
+                    <li class="g  one-whole">No Responses</li>
+                {% endfor %}
+            </ul>
+        </fieldset>
+
+        <fieldset >
+            <ul class="gw">
+            <li class="g one-third palm-one-whole align-center mt"><button class="btn one-whole" type="submit" name="keep_private">Not Suitable/Keep Private</button></li>
+            <li class="g one-third palm-one-whole align-center mt"><button class="btn one-whole" type="submit" name="now_requires_legal_moderation">Requires Legal Moderation</button></li>
+            <li class="g one-third palm-one-whole align-center mt"><button class="btn one-whole" type="submit" name="publish">Publish/Update Online</button></li>
+            </ul>
+        </fieldset>
+
+    </form>
+</div>
+{% endblock %}

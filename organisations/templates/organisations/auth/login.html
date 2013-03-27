@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{% block title %}Login{% endblock title %}
+
+{% block content %}
+
+<div class="header">
+    <h1>Login</h1>
+</div>
+
+<div class="island inline-form">
+
+    {% if form.errors %}
+        <ul class="message-list">
+            <li class="message-list__error">Your username and password didn't match. Please try again.</li>
+        </ul>
+    {% endif %}
+
+    <form method="post" action="{% url 'django.contrib.auth.views.login' %}" class="gw">
+        {% csrf_token %}
+        <div class="g two-fifths palm-one-whole">
+            <label for="id_username">Username</label>
+            <input id="id_username" type="text" name="username" class="text-input">
+        </div>
+        <div class="g two-fifths palm-one-whole">
+            <label for="id_password">Password</label>
+            <input type="password" name="password" id="id_password" class="text-input">
+        </div>
+        <div class="g one-fifth palm-one-whole">
+            <input type="submit" class="btn btn--no-label" value="Login" />
+            <input type="hidden" name="next" value="{{ next }}" />
+        </div>
+    </form>
+</div>
+{% endblock %}

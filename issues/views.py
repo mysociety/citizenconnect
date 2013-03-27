@@ -1,4 +1,4 @@
-from django.views.generic import TemplateView, CreateView, DetailView
+from django.views.generic import TemplateView, CreateView, DetailView, UpdateView, FormView
 from django.shortcuts import get_object_or_404
 from django.forms.widgets import HiddenInput
 from django.template import RequestContext
@@ -6,79 +6,24 @@ from django.template import RequestContext
 # App imports
 from citizenconnect.shortcuts import render
 from organisations.models import Organisation, Service
-from organisations.views import PickProviderBase, OrganisationAwareViewMixin
+from organisations.views import PickProviderBase, OrganisationAwareViewMixin, PrivateViewMixin
+from organisations.auth import check_question_access, check_problem_access
 
 from .models import Question, Problem
-from .forms import QuestionForm, ProblemForm
-
-class MessageAwareViewMixin(object):
-    """
-    Mixin for views that are "aware" of a message, given via /problem/id or /question/id
-    url parameters, and placed into a "message" context object for the template
-    """
-
-    def get_context_data(self, **kwargs):
-        context = super(MessageAwareViewMixin, self).get_context_data(**kwargs)
-        message_type = self.kwargs['message_type']
-        if message_type == 'question':
-            context['message'] = Question.objects.get(pk=self.kwargs['pk'])
-        elif message_type == 'problem':
-            context['message'] = Problem.objects.get(pk=self.kwargs['pk'])
-        else:
-            raise ValueError("Unknown message type: %s" % message_type)
-        return context
-
-class MessageDependentFormViewMixin(object):
-    """
-    Mixin for form views which deal with either messages themselves or other objects,
-    like responses to messages, which are basically the same but change some stuff
-    based on whether the message is a Question or Problem.
-
-    This works by dealing with the repetitive "is the message a problem or question"
-    code in all the places where it would happen and the doing the right thing.
-
-    To make it work you need to provide class attributes for each option:
-
-    question_form_class - The form class to use when the message is a Question
-    problem_form_class - The form class to use when the message is a Problem
-
-    question_queryset - The queryset to use when the message is a Question
-    problem_queryset - The queryset to use when the message is a Problem
-    """
-
-    def get_form_class(self):
-        """
-        Return the right form class depending on what model we're editing.
-        """
-        message_type = self.kwargs['message_type']
-        if message_type == 'question':
-            return self.question_form_class
-        elif message_type == 'problem':
-            return self.problem_form_class
-        else:
-            raise ValueError("Unknown message type: %s" % message_type)
-
-    def get_queryset(self):
-        """
-        Determine the queryset dynamically based on the message_type.
-        This is another way of specifying the Model we're editing, but there isn't
-        a get_model method to use for that, so we do this instead.
-        """
-        message_type = self.kwargs['message_type']
-        if message_type == 'question':
-            return self.question_queryset
-        elif message_type == 'problem':
-            return self.problem_queryset
-        else:
-            raise ValueError("Unknown message type: %s" % message_type)
+from .forms import QuestionForm, ProblemForm, QuestionUpdateForm, ProblemSurveyForm
+from .lib import changes_for_model, base32_to_int
 
 class AskQuestion(TemplateView):
-    template_name = 'issues/ask-question.html'
+    template_name = 'issues/ask_question.html'
+
+class QuestionPickProvider(PickProviderBase):
+    result_link_url_name = 'question-form'
+    issue_type = 'question'
 
 class QuestionCreate(CreateView):
     model = Question
     form_class = QuestionForm
-    confirm_template = 'issues/question-confirm.html'
+    confirm_template = 'issues/question_confirm.html'
 
     def form_valid(self, form):
         self.object = form.save()
@@ -86,16 +31,51 @@ class QuestionCreate(CreateView):
         context['object'] = self.object
         return render(self.request, self.confirm_template, context)
 
-class QuestionDetail(DetailView):
+    # Get the (optional) organisation name
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(QuestionCreate, self).get_context_data(**kwargs)
+        if 'ods_code' in self.kwargs and self.kwargs['ods_code']:
+            context['organisation'] = Organisation.objects.get(ods_code=self.kwargs['ods_code'])
+        return context
+
+    def get_initial(self):
+        initial = super(QuestionCreate, self).get_initial()
+        if 'ods_code' in self.kwargs and self.kwargs['ods_code']:
+            initial = initial.copy()
+            initial['organisation'] = get_object_or_404(Organisation, ods_code=self.kwargs['ods_code'])
+        return initial
+
+class QuestionUpdate(PrivateViewMixin, UpdateView):
     model = Question
+    form_class = QuestionUpdateForm
+    context_object_name = "question"
+    template_name = 'issues/question_update_form.html'
+    confirm_template = 'issues/question_update_confirm.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        check_question_access(request.user)
+        return super(QuestionUpdate, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        self.object = form.save()
+        context = RequestContext(self.request)
+        context['object'] = self.object
+        return render(self.request, self.confirm_template, context)
+
+    def get_context_data(self, **kwargs):
+        context = super(QuestionUpdate, self).get_context_data(**kwargs)
+        context['history'] = changes_for_model(context[self.context_object_name])
+        return context
 
 class ProblemPickProvider(PickProviderBase):
     result_link_url_name = 'problem-form'
+    issue_type = 'problem'
 
 class ProblemCreate(OrganisationAwareViewMixin, CreateView):
     model = Problem
     form_class = ProblemForm
-    confirm_template = 'issues/problem-confirm.html'
+    confirm_template = 'issues/problem_confirm.html'
 
     def form_valid(self, form):
         self.object = form.save()
@@ -121,4 +101,39 @@ class ProblemCreate(OrganisationAwareViewMixin, CreateView):
         return form
 
 class ProblemDetail(DetailView):
+
     model = Problem
+
+    def get_object(self, *args, **kwargs):
+        obj = super(ProblemDetail, self).get_object(*args, **kwargs)
+        check_problem_access(obj, self.request.user)
+        return obj
+
+class ProblemSurvey(UpdateView):
+    model = Problem
+    form_class = ProblemSurveyForm
+    template_name = 'issues/problem_survey_form.html'
+    confirm_template = 'issues/problem_survey_confirm.html'
+
+    def get_object(self):
+        id = self.kwargs.get('id', None)
+        try:
+            id = base32_to_int(id)
+        except ValueError:
+            raise Http404
+
+        problem = get_object_or_404(Problem, id=id)
+        # Record the first survey response
+        response = self.kwargs.get('response', None)
+        if response == 'y':
+            problem.happy_service = True
+        elif response == 'n':
+            problem.happy_service = False
+        problem.save()
+        return problem
+
+    def form_valid(self, form):
+         self.object = form.save()
+         context = RequestContext(self.request)
+         context['object'] = self.object
+         return render(self.request, self.confirm_template, context)

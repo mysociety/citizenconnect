@@ -7,10 +7,56 @@ from django.forms.widgets import HiddenInput, RadioSelect, Textarea, TextInput
 
 from .models import Question, Problem
 
-class MessageModelForm(forms.ModelForm):
+class IssueModelForm(forms.ModelForm):
     """
-    ModelForm implementation that does the basics for MessageModel model forms
+    ModelForm implementation that does the basics for IssueModel model forms
     """
+
+    # A check to make sure that people have read the T's & C's
+    agree_to_terms = forms.BooleanField(required=True,
+                                        error_messages={'required': 'You must agree to the terms and conditions to use this service.'})
+
+class QuestionForm(IssueModelForm):
+
+    def clean_postcode(self):
+        # Check that the postcode is valid
+        postcode = self.cleaned_data['postcode']
+        if postcode and not postcode == '':
+            postcode = re.sub('\s+', '', postcode.upper())
+            if not validation.is_valid_postcode(postcode):
+                raise forms.ValidationError('Sorry, that doesn\'t seem to be a valid postcode.')
+        return postcode
+
+    class Meta:
+        model = Question
+
+        fields = [
+            'organisation',
+            'description',
+            'postcode',
+            'category',
+            'reporter_name',
+            'reporter_phone',
+            'reporter_email',
+            'preferred_contact_method',
+        ]
+
+        widgets = {
+            'organisation': HiddenInput,
+            # Add placeholder for description
+            'description': Textarea({'placeholder': 'Please write the details of your question in this box.'}),
+            'postcode': TextInput(attrs={'class': 'text-input'}),
+            'category': RadioSelect,
+            'reporter_name': TextInput(attrs={'class': 'text-input'}),
+            # Add placeholder for phone
+            'reporter_phone': TextInput(attrs={'class': 'text-input'}),
+            # Add placeholder for email
+            'reporter_email': TextInput(attrs={'class': 'text-input'}),
+            # Make preferred contact method a radio button instead of a select
+            'preferred_contact_method': RadioSelect,
+        }
+
+class ProblemForm(IssueModelForm):
 
     # States of privacy
     PRIVACY_PRIVATE = '0'
@@ -29,10 +75,6 @@ class MessageModelForm(forms.ModelForm):
        required=True
     )
 
-    # A check to make sure that people have read the T's & C's
-    agree_to_terms = forms.BooleanField(required=True,
-                                        error_messages={'required': 'You must agree to the terms and conditions to use this service.'})
-
     def clean(self):
         cleaned_data = self.cleaned_data
         # Set public and public_reporter_name based on what they chose in privacy
@@ -46,52 +88,6 @@ class MessageModelForm(forms.ModelForm):
             cleaned_data['public_reporter_name'] = True
 
         return cleaned_data
-
-class QuestionForm(MessageModelForm):
-
-    def clean_postcode(self):
-        # Check that the postcode is valid
-        postcode = self.cleaned_data['postcode']
-        if postcode and not postcode == '':
-            postcode = re.sub('\s+', '', postcode.upper())
-            if not validation.is_valid_postcode(postcode):
-                raise forms.ValidationError('Sorry, that doesn\'t seem to be a valid postcode.')
-        return postcode
-
-    class Meta:
-        model = Question
-
-        fields = [
-            'description',
-            'postcode',
-            'category',
-            'reporter_name',
-            'reporter_phone',
-            'reporter_email',
-            'preferred_contact_method',
-            'public',
-            'public_reporter_name'
-        ]
-
-        widgets = {
-            # Add placeholder for description
-            'description': Textarea({'placeholder': 'Please write the details of your question in this box.'}),
-            'postcode': TextInput(attrs={'class': 'text-input'}),
-            'category': RadioSelect,
-            'reporter_name': TextInput(attrs={'class': 'text-input'}),
-            # Add placeholder for phone
-            'reporter_phone': TextInput(attrs={'class': 'text-input'}),
-            # Add placeholder for email
-            'reporter_email': TextInput(attrs={'class': 'text-input'}),
-            # Make preferred contact method a radio button instead of a select
-            'preferred_contact_method': RadioSelect,
-            # Hide the privacy booleans because they're not very user-friendly
-            # so we set them from the radio options in privacy instead
-            'public': HiddenInput,
-            'public_reporter_name': HiddenInput,
-        }
-
-class ProblemForm(MessageModelForm):
 
     class Meta:
         model = Problem
@@ -128,4 +124,39 @@ class ProblemForm(MessageModelForm):
             # so we set them from the radio options in privacy instead
             'public': HiddenInput,
             'public_reporter_name': HiddenInput,
+        }
+
+class QuestionUpdateForm(forms.ModelForm):
+    """
+    Form for updating questions (by question-answerers)
+    """
+
+    class Meta:
+        model = Question
+
+        fields = [
+            'response',
+            'status'
+        ]
+
+class ProblemSurveyForm(forms.ModelForm):
+    """Form for handling problem survey responses.
+    """
+
+    class Meta:
+        model = Problem
+
+
+        SURVEY_CHOICES = (
+            ('', "I prefer not to answer"),
+            (True, "Yes"),
+            (False, "No")
+        )
+
+        fields = [
+            'happy_outcome',
+        ]
+
+        widgets = {
+             'happy_outcome': RadioSelect(choices=SURVEY_CHOICES),
         }

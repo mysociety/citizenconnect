@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Lookup issue{% endblock %}
+
+{% block bodyclasses %}moderate-lookup{% endblock %}
+
+{% block content %}
+<h1>Lookup Issue</h1>
+
+<p>To find an issue or response that required further moderation or review, please input the reference number in the box below and hit submit.</p>
+
+
+ <div class="island">
+
+    {% if form.non_field_errors %}
+        {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
+    {% endif %}
+
+    <form method="post" class="gw inline-form">
+        {% csrf_token %}
+
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+
+        <div class="g  four-fifths  palm-two-thirds">
+            <label for="id_reference_number" class="g  one-whole">Reference Number</label>
+            <input type="text" name="reference_number" id="id_reference_number"  class="text-input  one-whole" />
+        </div>
+
+        <div class="g  one-fifth  palm-one-third">
+            <input type="submit" value="Find" class="btn btn--no-label" />
+        </div>
+    </form>
+</div>
+{% endblock %}

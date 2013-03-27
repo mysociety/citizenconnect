@@ -59,32 +59,30 @@ class Command(BaseCommand):
                          'GPB': 'gppractices'}
         for row in reader:
             rownum += 1
-            if rownum == 1:
-                continue
             choices_id = row[0]
             name = row[1]
-            organisation_type_text = row[2]
-            url = row[3]
-            address_line1 = self.clean_value(row[4])
-            address_line2 = self.clean_value(row[5])
-            address_line3 = self.clean_value(row[6])
-            city = self.clean_value(row[7])
-            county = self.clean_value(row[8])
-            lat = row[9]
-            lon = row[10]
-            last_updated = row[11]
-            postcode = self.clean_value(row[12])
-            ods_code = row[13]
-            service_code = row[14]
-            service_name = row[15]
-            organisation_contact = row[16]
-            organisation_contact_type = row[17]
+            trust = row[2]
+            organisation_type_text = row[3]
+            url = row[4]
+            address_line1 = self.clean_value(row[5])
+            address_line2 = self.clean_value(row[6])
+            address_line3 = self.clean_value(row[7])
+            city = self.clean_value(row[8])
+            county = self.clean_value(row[9])
+            lat = row[10]
+            lon = row[11]
+            last_updated = row[12]
+            postcode = self.clean_value(row[13])
+            ods_code = row[14]
+            service_code = row[15]
+            service_name = row[16]
+            organisation_contact = row[17]
+
 
             if organisation_type_text not in type_mappings:
                 if verbose:
                     print "Unknown organisation type %s, skipping" % organisation_type_text
                 continue
-
             organisation_type = type_mappings[organisation_type_text]
             organisation_defaults = {'choices_id':choices_id,
                                      'name': name,

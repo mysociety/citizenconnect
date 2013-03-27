@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load url from future %}
+{% load render_table from django_tables2 %}
+
+{% block title %}{{ organisation.name }} :: Problem Reports{% endblock %}
+
+{% block bodyclasses %}organisation-problems{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1>{{ organisation.name }} Problem Reports</h1>
+</div>
+{% include "organisations/includes/summary_tabs.html" with active_tab='problems' %}
+
+{% render_table table 'organisations/includes/summary_table.html' %}
+{% endblock %}

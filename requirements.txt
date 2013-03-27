@@ -3,15 +3,18 @@
 # more details: http://www.pip-installer.org/en/latest/requirements.html
 
 ### General useful bits
+ordereddict
 PyYAML
 psycopg2
 uk-postcode-utils
 
+
 ### Django related
-Django
+Django==1.4.3
 South
 django-pagination
 django-tables2
+django-reversion==1.6.5  # compatible with Django 1.4.3
 
 ### Testing
 mock

@@ -7,20 +7,25 @@ import json
 from django.views.generic import FormView, TemplateView, UpdateView, ListView
 from django.template.defaultfilters import escape
 from django.core.urlresolvers import reverse
+from django.core.exceptions import PermissionDenied
 from django.template import RequestContext
 from django_tables2 import RequestConfig
 from django.conf import settings
+from django.http import HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 # App imports
 from citizenconnect.shortcuts import render
-from issues.models import Problem
+from issues.models import Problem, Question
 
-from .models import Organisation, Service
-from .forms import OrganisationFinderForm
 import choices_api
+import auth
+from .auth import user_in_group, user_in_groups, user_is_superuser, check_organisation_access, check_question_access
+from .models import Organisation, Service, CCG, SuperuserLogEntry
+from .forms import OrganisationFinderForm
 from .lib import interval_counts
-from .models import Organisation, CCG
-from .tables  import NationalSummaryTable, MessageModelTable, ExtendedMessageModelTable
+from .tables import NationalSummaryTable, IssueModelTable, ExtendedIssueModelTable, QuestionsDashboardTable
 
 class PrivateViewMixin(object):
     """
@@ -36,7 +41,7 @@ class PrivateViewMixin(object):
             context['private'] = False
         return context
 
-class OrganisationAwareViewMixin(object):
+class OrganisationAwareViewMixin(PrivateViewMixin):
     """Mixin class for views which need to have a reference to a particular
     organisation, such as problem forms."""
 
@@ -45,27 +50,79 @@ class OrganisationAwareViewMixin(object):
         # Call the base implementation first to get a context
         context = super(OrganisationAwareViewMixin, self).get_context_data(**kwargs)
         context['organisation'] = Organisation.objects.get(ods_code=self.kwargs['ods_code'])
+        # Check that the user can access the organisation if this is private
+        if context['private']:
+            check_organisation_access(context['organisation'], self.request.user)
         return context
 
-class MessageListMixin(PrivateViewMixin):
+class IssueListMixin(OrganisationAwareViewMixin):
     """Mixin class for views which need to display a list of issues belonging to an organisation
        in either a public or private context"""
 
     def get_context_data(self, **kwargs):
-        context = super(MessageListMixin, self).get_context_data(**kwargs)
+        context = super(IssueListMixin, self).get_context_data(**kwargs)
+
         table_args = {'private': context['private'],
-                      'message_type': self.message_type}
+                      'issue_type': self.issue_type}
         if not context['private']:
             table_args['cobrand'] = kwargs['cobrand']
-        organisation = Organisation.objects.get(ods_code=self.kwargs['ods_code'])
-        if organisation.has_services() and organisation.has_time_limits():
-            issue_table = ExtendedMessageModelTable(self.get_issues(organisation, context['private']), **table_args)
+
+        issues = self.get_issues(context['organisation'], context['private'])
+        if context['organisation'].has_services() and context['organisation'].has_time_limits():
+            issue_table = ExtendedIssueModelTable(issues, **table_args)
         else:
-            issue_table = MessageModelTable(self.get_issues(organisation, context['private']), **table_args)
-        context['organisation'] = organisation
+            issue_table = IssueModelTable(issues, **table_args)
+
         RequestConfig(self.request, paginate={'per_page': 8}).configure(issue_table)
         context['table'] = issue_table
         context['page_obj'] = issue_table.page
+        return context
+
+class FilterMixin(object):
+    """
+    Mixin for views which have some or all of the standard set of filters
+    """
+
+    def get_context_data(self, **kwargs):
+        context = super(FilterMixin, self).get_context_data(**kwargs)
+
+        # Set up the data for the filters
+        context['problem_categories'] = Problem.CATEGORY_CHOICES
+        context['problem_statuses'] = Problem.STATUS_CHOICES
+        context['organisation_types'] = settings.ORGANISATION_CHOICES
+        context['services'] = Service.service_codes()
+        context['ccgs'] = CCG.objects.all()
+        filters = {}
+
+        # Service code filter
+        selected_service = self.request.GET.get('service')
+        if selected_service in dict(context['services']):
+            filters['service_code'] = selected_service
+
+        # Category filter
+        category = self.request.GET.get('problem_category')
+        if category in dict(Problem.CATEGORY_CHOICES):
+            filters['problem_category'] = category
+            filters['category'] = category
+
+        # Organisation type filter
+        organisation_type = self.request.GET.get('organisation_type')
+        if organisation_type in settings.ORGANISATION_TYPES:
+            filters['organisation_type'] = organisation_type
+
+        # Status filter
+        status = self.request.GET.get('problem_status')
+        if status and status != 'all' and int(status) in dict(Problem.STATUS_CHOICES):
+            filters['problem_status'] = int(status)
+            filters['status'] = int(status)
+
+        # CCG Filter
+        ccg = self.request.GET.get('ccg')
+        if context['ccgs'].filter(code=ccg).exists():
+            filters['ccg'] = ccg
+
+        context['filters'] = filters
+
         return context
 
 class Map(PrivateViewMixin, TemplateView):
@@ -75,10 +132,12 @@ class Map(PrivateViewMixin, TemplateView):
         context = super(Map, self).get_context_data(**kwargs)
 
         # TODO - Filter by location
-        organisations = Organisation.objects.all()
+        organisations = Organisation.objects.all().order_by("id")
 
-        # TODO - check the user has access to the map (ie: is a superuser)
-        # when the user accounts work is merged in (after the expo)
+        # Check that the user is a superuser
+        if context['private']:
+            if not user_is_superuser(self.request.user):
+                raise PermissionDenied()
 
         organisations_list = []
         for organisation in organisations:
@@ -116,12 +175,13 @@ class Map(PrivateViewMixin, TemplateView):
         return context
 
 class PickProviderBase(ListView):
-    template_name = 'provider-results.html'
-    form_template_name = 'pick-provider.html'
+    template_name = 'provider_results.html'
+    form_template_name = 'pick_provider.html'
     result_link_url_name = 'public-org-summary'
     paginate_by = 10
     model = Organisation
     context_object_name = 'organisations'
+    issue_type = 'problem'
 
     def get(self, *args, **kwargs):
         super(PickProviderBase, self).get(*args, **kwargs)
@@ -145,9 +205,11 @@ class PickProviderBase(ListView):
                     context['organisations'] = queryset
                 return render(self.request, self.template_name, context)
             else:
-                return render(self.request, self.form_template_name, {'form': form})
+                return render(self.request, self.form_template_name, {'form': form,
+                                                                      'issue_type': self.issue_type})
         else:
-              return render(self.request, self.form_template_name, {'form': OrganisationFinderForm()})
+              return render(self.request, self.form_template_name, {'form': OrganisationFinderForm(),
+                                                                    'issue_type': self.issue_type})
 
 class OrganisationSummary(OrganisationAwareViewMixin,
                           TemplateView):
@@ -157,16 +219,12 @@ class OrganisationSummary(OrganisationAwareViewMixin,
         context = super(OrganisationSummary, self).get_context_data(**kwargs)
 
         organisation = context['organisation']
+
         context['services'] = list(organisation.services.all().order_by('name'))
         selected_service = self.request.GET.get('service')
         if selected_service:
             if int(selected_service) in [ service.id for service in context['services'] ]:
                 context['selected_service'] = int(selected_service)
-
-        if 'private' in kwargs and kwargs['private'] == True:
-            context['private'] = True
-        else:
-            context['private'] = False
 
         count_filters = {}
         if context.has_key('selected_service'):
@@ -206,72 +264,31 @@ class OrganisationSummary(OrganisationAwareViewMixin,
 
         return context
 
-class OrganisationProblems(MessageListMixin,
+class OrganisationProblems(IssueListMixin,
                            TemplateView):
-    template_name = 'organisations/organisation-problems.html'
-    message_type = 'problem'
+    template_name = 'organisations/organisation_problems.html'
+    issue_type = 'problem'
 
     def get_issues(self, organisation, private):
         if private:
             return organisation.problem_set.all()
         else:
-            return organisation.problem_set.all_moderated_published_public_problems()
+            return organisation.problem_set.all_moderated_published_problems()
 
 class OrganisationReviews(OrganisationAwareViewMixin,
                           TemplateView):
-    template_name = 'organisations/organisation-reviews.html'
+    template_name = 'organisations/organisation_reviews.html'
 
-    def get_context_data(self, **kwargs):
-        context = super(OrganisationReviews, self).get_context_data(**kwargs)
-        if 'private' in kwargs and kwargs['private'] == True:
-            context['private'] = True
-        else:
-            context['private'] = False
-        return context
-
-class Summary(TemplateView):
+class Summary(FilterMixin, TemplateView):
     template_name = 'organisations/summary.html'
 
     def get_context_data(self, **kwargs):
-
         context = super(Summary, self).get_context_data(**kwargs)
-
-        # Set up the data for the filters
-        context['problem_categories'] = Problem.CATEGORY_CHOICES
-        context['problem_statuses'] = Problem.STATUS_CHOICES
-        context['organisation_types'] = settings.ORGANISATION_CHOICES
-        context['services'] = Service.service_codes()
-        context['ccgs'] = CCG.objects.all()
-        filters = {}
-
-        # Service code filter
-        selected_service = self.request.GET.get('service')
-        if selected_service in dict(context['services']):
-            filters['service_code'] = selected_service
-
-        # Category filter
-        category = self.request.GET.get('problem_category')
-        if category in dict(Problem.CATEGORY_CHOICES):
-            filters['problem_category'] = category
-            filters['category'] = category
-
-        # Organisation type filter
-        organisation_type = self.request.GET.get('organisation_type')
-        if organisation_type in settings.ORGANISATION_TYPES:
-            filters['organisation_type'] = organisation_type
-
-        # Status filter
-        status = self.request.GET.get('problem_status')
-        if status and status != 'all' and int(status) in dict(Problem.STATUS_CHOICES):
-            filters['problem_status'] = int(status)
-            filters['status'] = int(status)
-
-        organisation_rows = interval_counts(issue_type=Problem, filters=filters)
+        organisation_rows = interval_counts(issue_type=Problem, filters=context['filters'])
         organisations_table = NationalSummaryTable(organisation_rows, cobrand=kwargs['cobrand'])
         RequestConfig(self.request, paginate={"per_page": 8}).configure(organisations_table)
         context['table'] = organisations_table
         context['page_obj'] = organisations_table.page
-        context['filters'] = filters
         return context
 
 class OrganisationDashboard(OrganisationAwareViewMixin,
@@ -281,11 +298,148 @@ class OrganisationDashboard(OrganisationAwareViewMixin,
     def get_context_data(self, **kwargs):
         # Get all the problems
         context = super(OrganisationDashboard, self).get_context_data(**kwargs)
+
         # Get the models related to this organisation, and let the db sort them
         problems = context['organisation'].problem_set.open_problems()
         context['problems'] = problems
         context['problems_total'] = interval_counts(issue_type=Problem,
                                                     filters={},
                                                     organisation_id=context['organisation'].id)
-
         return context
+
+class DashboardChoice(TemplateView):
+
+    template_name = 'organisations/dashboard_choice.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(DashboardChoice, self).get_context_data(**kwargs)
+        # Get all the organisations the user can see
+        context['organisations'] = self.request.user.organisations.all()
+        return context
+
+@login_required
+def login_redirect(request):
+    """
+    View function to redirect a logged in user to the right url after logging in.
+    Allows users to have an effective "homepage" which they go to automatically
+    after logging in. Uses their user group to determine what is the right page.
+    """
+
+    user = request.user
+
+    # NHS Super users get a special map page
+    if user_in_group(user, auth.NHS_SUPERUSERS):
+        return HttpResponseRedirect(reverse('private-map'))
+
+    # CQC and CCG users go to the escalation dashboard
+    elif user_in_groups(user, [auth.CQC, auth.CCG]):
+        return HttpResponseRedirect(reverse('escalation-dashboard'))
+
+    # Moderators go to the moderation queue
+    elif user_in_group(user, auth.CASE_HANDLERS):
+        return HttpResponseRedirect(reverse('moderate-home'))
+
+    elif user_in_group(user, auth.LEGAL_MODERATORS):
+        return HttpResponseRedirect(reverse('legal-moderate-home'))
+
+    # Question Answerers go to the question answering dashboard
+    elif user_in_group(user, auth.QUESTION_ANSWERERS):
+        return HttpResponseRedirect(reverse('questions-dashboard'))
+
+    # Providers
+    elif user_in_group(user, auth.PROVIDERS):
+        # Providers with only one organisation just go to that organisation's dashboard
+        if user.organisations.count() == 1:
+            organisation = user.organisations.all()[0]
+            return HttpResponseRedirect(reverse('org-dashboard', kwargs={'ods_code':organisation.ods_code}))
+        # Providers with more than one provider attached
+        # go to a page to choose which one to see
+        elif user.organisations.count() > 1:
+            return HttpResponseRedirect(reverse('dashboard-choice'))
+
+    # Anyone else goes to the normal homepage
+    return HttpResponseRedirect(reverse('home', kwargs={'cobrand':'choices'}))
+
+class SuperuserLogs(TemplateView):
+
+    template_name = 'organisations/superuser_logs.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(SuperuserLogs, self).get_context_data(**kwargs)
+        # Only NHS superusers can see this page
+        if not user_is_superuser(self.request.user):
+            raise PermissionDenied()
+        else:
+            context['logs'] = SuperuserLogEntry.objects.all()
+        return context
+
+class QuestionsDashboard(ListView):
+
+    queryset = Question.objects.open_questions()
+    template_name = 'organisations/questions_dashboard.html'
+    context_object_name = "questions"
+
+    def dispatch(self, request, *args, **kwargs):
+        check_question_access(request.user)
+        return super(QuestionsDashboard, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(QuestionsDashboard, self).get_context_data(**kwargs)
+        # Setup a table for the questions
+        question_table = QuestionsDashboardTable(context['questions'])
+        RequestConfig(self.request, paginate={'per_page': 25}).configure(question_table)
+        context['table'] = question_table
+        context['page_obj'] = context['table'].page
+        return context
+
+class EscalationDashboard(FilterMixin, ListView):
+
+    queryset = Problem.objects.open_escalated_problems()
+    template_name = 'organisations/escalation_dashboard.html'
+    context_object_name = "problems"
+
+    def dispatch(self, request, *args, **kwargs):
+        if not user_is_superuser(request.user) and not user_in_groups(request.user, [auth.CQC, auth.CCG]):
+            raise PermissionDenied()
+        return super(EscalationDashboard, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(EscalationDashboard, self).get_context_data(**kwargs)
+
+        filtered_problems = self.apply_filters(context['filters'], context['problems'])
+
+        # Setup a table for the problems
+        problem_table = IssueModelTable(filtered_problems, private=True, issue_type=Problem)
+        RequestConfig(self.request, paginate={'per_page': 25}).configure(problem_table)
+        context['table'] = problem_table
+        context['page_obj'] = problem_table.page
+        return context
+
+    def apply_filters(self, filters, queryset):
+
+        filtered_queryset = queryset
+
+        for name, value in filters.items():
+
+            # Category filter
+            if name == 'category':
+                filtered_queryset = filtered_queryset.filter(category=value)
+
+            # Organisation type filter
+            if name == 'organisation_type':
+                filtered_queryset = filtered_queryset.filter(organisation__organisation_type=value)
+
+            # Status filter
+            if name == 'status':
+                filtered_queryset = filtered_queryset.filter(status=value)
+
+            # Service filter
+            if name == 'service_code':
+                filtered_queryset = filtered_queryset.filter(service__service_code=value)
+
+            # TODO - when orgs are linked to ccgs, put this in
+            # CCG Filter
+            # if name == 'ccg':
+                # filtered_queryset = filtered_queryset.filter(organisation__ccg=value)
+
+        return filtered_queryset

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load url from future %}
+{% load render_table from django_tables2 %}
+
+{% block title %}Escalated Problems{% endblock %}
+
+{% block bodyclasses %}escalation-dashboard{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1>Escalated Problems</h1>
+</div>
+
+{% include 'organisations/includes/filters.html' %}
+
+{% render_table table 'organisations/includes/summary_table.html' %}
+
+{% endblock %}

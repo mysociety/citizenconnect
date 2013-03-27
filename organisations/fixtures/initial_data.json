@@ -1,0 +1,58 @@
+[
+    {
+        "pk": 1,
+        "model": "auth.group",
+        "fields": {
+            "name": "Providers",
+            "permissions": []
+        }
+    },
+    {
+        "pk": 2,
+        "model": "auth.group",
+        "fields": {
+            "name": "NHS Superusers",
+            "permissions": []
+        }
+    },
+    {
+        "pk": 4,
+        "model": "auth.group",
+        "fields": {
+            "name": "Question Answerers",
+            "permissions": []
+        }
+    },
+    {
+        "pk": 3,
+        "model": "auth.group",
+        "fields": {
+            "name": "Case Handlers",
+            "permissions": []
+        }
+    },
+    {
+        "pk": 5,
+        "model": "auth.group",
+        "fields": {
+            "name": "Care Quality Commission",
+            "permissions": []
+        }
+    },
+    {
+        "pk": 6,
+        "model": "auth.group",
+        "fields": {
+            "name": "Clinical Commissioning Groups",
+            "permissions": []
+        }
+    },
+    {
+        "pk": 7,
+        "model": "auth.group",
+        "fields": {
+            "name": "Legal Moderators",
+            "permissions": []
+        }
+    }
+]

@@ -94,10 +94,13 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.middleware.transaction.TransactionMiddleware',
+    'reversion.middleware.RevisionMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'pagination.middleware.PaginationMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'organisations.middleware.SuperuserLogEntryMiddleware'
 )
 
 ROOT_URLCONF = 'citizenconnect.urls'
@@ -137,7 +140,8 @@ INSTALLED_APPS = (
     'reviews',
     'moderation',
     'api',
-    'responses'
+    'responses',
+    'reversion'
 )
 
 # Log WARN and above to stderr; ERROR and above by email when DEBUG is False.
@@ -179,6 +183,15 @@ PAGINATION_DEFAULT_PAGINATION = 10
 PAGINATION_DEFAULT_WINDOW = 2
 PAGINATION_DEFAULT_ORPHANS = 2
 PAGINATION_INVALID_PAGE_RAISES_404 = True
+
+# Authentication related settings
+LOGIN_URL = '/private/login'
+# We have to set this to something otherwise Django will redirect
+# to /accounts/profile (which doesn't exist) if next is not specified
+# on any login_required urls
+LOGIN_REDIRECT_URL = '/private/login-redirect'
+# Makes sense to have this as a setting too
+LOGOUT_REDIRECT_URL = '/'
 
 # Now get the mySociety configuration
 from .mysociety import *

@@ -11,57 +11,8 @@
 
   <h1>National Summary</h1>
 
-  <div class="filters">
-      <form class="gw" action="{{ request.path }}">
-          <div class="g  one-sixth  palm-one-half">
-            <select name="ccg">
-                <option value="">CCG</option>
-                 {% for ccg in ccgs %}
-                    <option value="{{ ccg.code }}" {% if filters.ccg == ccg.code %}selected{% endif %}>{{ ccg.name }}</option>
-                {% endfor %}
-            </select>
-          </div>
+  {% include 'organisations/includes/filters.html' %}
 
-          <div class="g  one-sixth  palm-one-half">
-              <select name="organisation_type">
-                  <option value="">Provider type</option>
-                   {% for value, display_value in organisation_types %}
-                      <option value="{{ value }}" {% if filters.organisation_type == value %}selected{% endif %}>{{ display_value }}</option>
-                  {% endfor %}
-              </select>
-          </div>
-
-          <div class="g  one-sixth  palm-one-half">
-              <select name="service">
-                  <option value="">Department</option>
-                  {% for service_code, service_name in services %}
-                      <option value="{{ service_code }}" {% if filters.service_code == service_code %}selected{% endif %}>{{ service_name }}</option>
-                  {% endfor %}
-              </select>
-          </div>
-
-          <div class="g  one-sixth  palm-one-half">
-              <select name="problem_category">
-                  <option value="">Problem type</option>
-                  {% for value, display_value in problem_categories %}
-                      <option value="{{ value }}" {% if filters.problem_category == value %}selected{% endif %}>{{ display_value }}</option>
-                  {% endfor %}
-              </select>
-          </div>
-          <div class="g  one-sixth  palm-one-half">
-              <select name="problem_status">
-                  <option value="all">Problem status</option>
-                  {% for value, display_value in problem_statuses %}
-                      <option value="{{ value }}" {% if filters.problem_status == value %}selected{% endif %}>{{ display_value }}</option>
-                  {% endfor %}
-              </select>
-          </div>
-          <div class="g  one-sixth  palm-one-whole">
-            <input type="submit" value="Filter" class="btn  fr  palm-one-whole">
-          </div>
-      </form>
-  </div>
-
-{% render_table table 'organisations/includes/summary-table.html' %}
+{% render_table table 'organisations/includes/summary_table.html' %}
 
 {% endblock %}

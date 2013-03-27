@@ -1,0 +1,109 @@
+<div class="meta-data-wrap">
+
+    <div class="meta-data">
+        <div class="gw">
+            <p class="meta-data__title  g  one-whole">{{ object.organisation|default_if_none:"No particular organisation" }}</p>
+            {% if object.issue_type == 'Problem' %}
+                <p class="meta-data__sub-title  g  one-half  palm-one-whole">{{ object.service|default_if_none:"No particular service" }}</p>
+                <p class="g  one-half  palm-one-whole  align-right--not-palm"><span class="meta-data-label">Category</span> {{ object.get_category_display }}</p>
+            {% else %}
+                <p class="g  one-whole"><span class="meta-data-label">Category</span> {{ object.get_category_display }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="meta-data">
+        <div class="gw">
+            <p class="g  one-half"><strong>{{ object.reference_number }}</strong></p>
+
+            <p class="g  one-half  align-right--not-palm"><span class="meta-data-label">{% if object.issue_type == 'Problem' %}Reported{% else %}Asked{% endif %} on</span> {{ object.created|date:"d M Y" }}<br> {{ object.created|date:"h:i a" }}</p>
+
+            <p class="meta-data__space-below  g  one-whole"><span class="meta-data-label">Reported by</span> {{ object.reporter_name_display }}</p>
+
+            <p class="g  one-third  palm-one-whole">
+                {% if object.issue_type == 'Problem' and private %}
+                    {{ object.public|yesno:"Public,Private" }},&nbsp;
+                    {{ object.get_publication_status_display}},&nbsp;
+                    {% if object.requires_legal_moderation %}
+                      Requires legal moderation,&nbsp;
+                    {% endif %}
+                {% endif %}
+                {{ object.get_status_display }}
+            </p>
+
+            {% if object.issue_type == 'Problem' %}
+                <p class="g  two-thirds  palm-one-whole  align-right--not-palm">
+                    {% if object.happy_service != None %}
+                        <strong>Happy with Service</strong>&nbsp;
+                        {% if object.happy_service %}
+                            <span class="icon-checkmark" aria-hidden="true"><span class="hide-text">yes</span></span>
+                        {% else %}
+                            <span class="icon-x" aria-hidden="true"><span class="hide-text">no</span></span>
+                        {% endif %}
+                    {% endif %}
+                    {% if object.happy_outcome != None %}
+                        <span class="meta-data-spacer"> </span>
+                        <strong>Happy with Outcome</strong>&nbsp;
+                        {% if object.happy_outcome %}
+                            <span class="icon-checkmark" aria-hidden="true"><span class="hide-text">yes</span></span>
+                        {% else %}
+                            <span class="icon-x" aria-hidden="true"><span class="hide-text">no</span></span>
+                        {% endif %}
+                    {% endif %}
+                </p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+<div class="meta-data-wrap">
+    <h3 class="meta-data-label">Details</h3>
+    <div class="islet  islet--squared">
+        {% if object.issue_type == "Problem" %}
+            {% if private %}
+                <p>{{ object.description }}</p>
+            {% else %}
+                <p>{{ object.moderated_description }}</p>
+            {% endif %}
+        {% else %}
+            <p>{{ object.description }}</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="meta-data-wrap">
+    {% if object.issue_type == 'Problem' %}
+        <h3 class="meta-data-label  meta-data-label--bordered">Responses</h3>
+        {% for response in object.responses.all %}
+            <div class="meta-data  meta-data--response">
+                <p>{{ response.response }}</p>
+                <p class="meta-data__foot">
+                    {{ object.organisation.name }}<span class="meta-data-spacer"> </span>
+                    {{ response.created|date:"d.m.Y" }}<span class="meta-data-spacer"> </span>
+                    {{ response.created|date:"h:i a" }}
+                </p>
+            </div>
+        {% empty %}
+            <div class="meta-data  meta-data--response">
+                <p>No responses.</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <h3 class="meta-data-label  meta-data-label--bordered">Response</h3>
+        <div class="meta-data  meta-data--response">
+            <p>{{ object.response|default:"No response." }}</p>
+        </div>
+    {% endif %}
+</div>
+
+{% if history and private %}
+    <div class="meta-data-wrap">
+        <h3 class="meta-data-label  meta-data-label--bordered">History</h3>
+        {% for change in history reversed %}
+            <div class="meta-data  meta-data--response">
+                <p>{{ change.description }}{% if change.user %} by {{ change.user.username }}{% endif %}</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}

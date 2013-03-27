@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load url from future %}
+
+
+{% block title %}Pick Provider{% endblock %}
+
+{% block bodyclasses %}pick-provider{% endblock %}
+{% block containerclasses %}container{% endblock %}
+
+{% block content %}
+
+<h1>Choose a Provider</h1>
+
+<p>To find the part of the NHS that you would like your {{ issue_type }} sent to please put either the name of the provider (e.g. Hospital name, GP practice name) the postcode of the provider or your postcode</p>
+
+<div class="island">
+    {% if form.non_field_errors or form.errors.location %}
+        {% if form.errors.location %}
+            {% with messages=form.non_field_errors|add:form.errors.location %}
+                {% include "message_list.html" with messages=messages message_type='error' %}
+            {% endwith %}
+        {% else %}
+            {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
+        {% endif %}
+    {% endif %}
+
+    <form action="" method="get" class="gw inline-form">
+        <div class="g  one-fifth  palm-one-whole">
+            <label>Provider type</label>
+            {{ form.organisation_type }}
+        </div>
+        <div class="g  three-fifths  palm-two-thirds">
+
+            <label for="id_location" class="g  one-whole">Provider&CloseCurlyQuote;s name</label>
+
+            <input type="text" name="location" id="id_location"  class="text-input  one-whole" placeholder="e.g. &OpenCurlyQuote;Guy&CloseCurlyQuote;s Hospital&CloseCurlyQuote; or &OpenCurlyQuote;SW1P 3AZ&CloseCurlyQuote;" />
+        </div>
+
+        <div class="g  one-fifth  palm-one-third">
+            <input type="submit" value="Find" class="btn btn--no-label" />
+        </div>
+
+        <p class="g  one-whole">Please note this feature is currently limited to services only within London and the North East of England. As the service develops we will be expanding to include more areas.</p>
+    </form>
+</div>
+
+{% endblock %}

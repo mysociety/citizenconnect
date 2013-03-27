@@ -187,9 +187,9 @@ textarea {
 
 
 /**
- * Pick a provier page - big single input form
+ * Inline forms, like on the pick provider page
  */
-.pick-provider-form {
+.inline-form {
   input, button {
     font-size: (20px / $font-size-base) + em;
     @media screen and (max-width: $small-page-width-max + ($grid-gutter*2)  + em) {

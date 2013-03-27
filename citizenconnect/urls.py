@@ -17,11 +17,12 @@ urlpatterns = patterns('',
     url(r'^' + cobrand_pattern + r'/?$', Home.as_view(), name='home'),
     url(r'^' + cobrand_pattern + r'/about$', About.as_view(), name='about'),
 
-    url(r'^' + cobrand_pattern + r'/', include('issues.urls')),
+    url(r'^' + cobrand_pattern + r'/', include('issues.urls.public')),
     url(r'^' + cobrand_pattern + r'/review/', include('reviews.urls')),
     url(r'^' + cobrand_pattern + r'/stats/', include('organisations.urls.public')),
 
     # private is the namespace for NHS-staff only pages
+    url(r'^private/', include('issues.urls.private')),
     url(r'^private/', include('organisations.urls.private')),
     url(r'^private/moderate/', include('moderation.urls')),
     url(r'^private/response/', include('responses.urls')),

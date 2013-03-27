@@ -2,6 +2,7 @@ import uuid
 
 from django.test import TestCase
 from django.utils import simplejson as json
+from django.core.urlresolvers import reverse
 
 from organisations.tests.lib import create_test_organisation, create_test_service
 from issues.models import Problem, Question
@@ -34,14 +35,12 @@ class APITests(TestCase):
             'reporter_name': self.question_uuid,
             'reporter_email': 'steve@mysociety.org',
             'reporter_phone': '01111 111 111',
-            'public':False,
-            'public_reporter_name':False,
             'preferred_contact_method': Problem.CONTACT_PHONE,
             'source':Problem.SOURCE_PHONE
         }
 
-        self.question_api_url = '/api/v0.1/question'
-        self.problem_api_url = '/api/v0.1/problem'
+        self.question_api_url = reverse('api-question-create')
+        self.problem_api_url = reverse('api-problem-create')
 
     def test_question_api_happy_path(self):
         resp = self.client.post(self.question_api_url, self.test_question)
@@ -57,8 +56,6 @@ class APITests(TestCase):
         self.assertEqual(question.reporter_name, self.test_question['reporter_name'])
         self.assertEqual(question.reporter_email, self.test_question['reporter_email'])
         self.assertEqual(question.reporter_phone, self.test_question['reporter_phone'])
-        self.assertEqual(question.public, self.test_question['public'])
-        self.assertEqual(question.public_reporter_name, self.test_question['public_reporter_name'])
         self.assertEqual(question.source, self.test_question['source'])
 
     def test_problem_api_happy_path(self):

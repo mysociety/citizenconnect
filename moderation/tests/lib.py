@@ -1,18 +1,38 @@
+from django.core.urlresolvers import reverse
 from django.test import TransactionTestCase
 
 from organisations.models import Organisation
-from organisations.tests.lib import create_test_instance, create_test_organisation
+from organisations.tests.lib import create_test_instance, create_test_organisation, AuthorizationTestCase
 from issues.models import Problem, Question
 
-class BaseModerationTestCase(TransactionTestCase):
+class BaseModerationTestCase(AuthorizationTestCase, TransactionTestCase):
 
     def setUp(self):
         # Add some issues
-        self.test_organisation = create_test_organisation()
+        super(BaseModerationTestCase, self).setUp()
         self.test_problem = create_test_instance(Problem, {'organisation':self.test_organisation})
+        self.test_legal_moderation_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
+                                                                            'requires_legal_moderation': True})
         self.test_question = create_test_instance(Question, {})
-        self.home_url = '/private/moderate/'
-        self.lookup_url = '/private/moderate/lookup'
-        self.problem_form_url = '/private/moderate/problem/%d' % self.test_problem.id
-        self.question_form_url = '/private/moderate/question/%d' % self.test_question.id
-        self.confirm_url = '/private/moderate/confirm'
+        self.home_url = reverse('moderate-home')
+        self.lookup_url = reverse('moderate-lookup')
+        self.problem_form_url = reverse('moderate-form', kwargs={'pk':self.test_problem.id})
+        self.confirm_url = reverse('moderate-confirm')
+        self.legal_home_url = reverse('legal-moderate-home')
+        self.legal_problem_form_url = reverse('legal-moderate-form', kwargs={'pk':self.test_legal_moderation_problem.id})
+        self.legal_confirm_url = reverse('legal-moderate-confirm')
+        self.all_case_handler_urls = [self.home_url,
+                                     self.lookup_url,
+                                     self.problem_form_url,
+                                     self.confirm_url]
+
+        self.all_legal_moderator_urls = [self.legal_home_url,
+                                         self.legal_problem_form_url,
+                                         self.legal_confirm_url]
+        self.all_urls = self.all_case_handler_urls + self.all_legal_moderator_urls
+
+    def assert_expected_publication_status(self, expected_status, form_values, url, problem):
+        resp = self.client.post(url, form_values)
+        problem = Problem.objects.get(pk=problem.id)
+        self.assertEqual(problem.publication_status, expected_status)
+

@@ -32,9 +32,9 @@ def interval_counts(issue_type, filters={}, sort='name', organisation_id=None):
     issue_table = issue_type._meta.db_table
 
     now = datetime.utcnow().replace(tzinfo=utc)
-    intervals = {'week': now - timedelta(7),
-                 'four_weeks': now - timedelta(28),
-                 'six_months': now - timedelta(365/12*6)}
+    intervals = {'week': now - timedelta(days=7),
+                 'four_weeks': now - timedelta(days=28),
+                 'six_months': now - timedelta(days=365/12*6)}
 
     boolean_counts = ['happy_service', 'happy_outcome']
 

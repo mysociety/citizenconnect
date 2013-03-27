@@ -4,24 +4,24 @@ from django.core.urlresolvers import reverse
 
 # App imports
 from issues.models import Problem, Question
-from organisations.tests.lib import create_test_instance, create_test_organisation
+from organisations.tests.lib import create_test_instance, create_test_organisation, AuthorizationTestCase
 
-from .models import ProblemResponse, QuestionResponse
+from .models import ProblemResponse
 
-class ResponseFormTests(TransactionTestCase):
+class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
 
     def setUp(self):
-        self.test_organisation = create_test_organisation()
+        super(ResponseFormTests, self).setUp()
         self.test_problem = create_test_instance(Problem, {'organisation':self.test_organisation})
-        self.test_question = create_test_instance(Question, {})
-        self.problem_response_form_url = '/private/response/problem/%s' % self.test_problem.id
-        self.question_response_form_url = '/private/response/question/%s' % self.test_problem.id
+        self.problem_response_form_url = reverse('response-form', kwargs={'pk':self.test_problem.id})
+        self.login_as(self.provider)
 
     def test_form_creates_problem_response(self):
         response_text = 'This problem is solved'
         test_form_values = {
             'response': response_text,
-            'message': self.test_problem.id
+            'issue': self.test_problem.id,
+            'respond': ''
         }
         resp = self.client.post(self.problem_response_form_url, test_form_values)
         self.test_problem = Problem.objects.get(pk=self.test_problem.id)
@@ -29,62 +29,93 @@ class ResponseFormTests(TransactionTestCase):
         self.assertEqual(self.test_problem.responses.count(), 1)
         self.assertEqual(response.response, response_text)
 
-    def test_form_creates_question_response(self):
-        response_text = 'This question is solved'
-        test_form_values = {
-            'response': response_text,
-            'message': self.test_question.id
-        }
-        resp = self.client.post(self.question_response_form_url, test_form_values)
-        self.test_question = Question.objects.get(pk=self.test_question.id)
-        response = self.test_question.responses.all()[0]
-        self.assertEqual(self.test_question.responses.count(), 1)
-        self.assertEqual(response.response, response_text)
-
-    def test_form_saves_problem_status(self):
+    def test_form_creates_problem_response_and_saves_status(self):
         response_text = 'This problem is solved'
         test_form_values = {
             'response': response_text,
-            'message': self.test_problem.id,
-            'message_status': Problem.RESOLVED
+            'issue': self.test_problem.id,
+            'issue_status': Problem.RESOLVED,
+            'respond': ''
         }
         resp = self.client.post(self.problem_response_form_url, test_form_values)
         self.test_problem = Problem.objects.get(pk=self.test_problem.id)
+        response = self.test_problem.responses.all()[0]
+        self.assertEqual(self.test_problem.responses.count(), 1)
+        self.assertEqual(response.response, response_text)
         self.assertEqual(self.test_problem.status, Problem.RESOLVED)
 
-    def test_form_saves_question_status(self):
-        response_text = 'This question is solved'
+    def test_form_allows_empty_response_for_status_change(self):
+        response_text = ''
         test_form_values = {
             'response': response_text,
-            'message': self.test_question.id,
-            'message_status': Question.RESOLVED
+            'issue': self.test_problem.id,
+            'issue_status': Problem.RESOLVED,
+            'status': ''
         }
-        resp = self.client.post(self.question_response_form_url, test_form_values)
-        self.test_question = Question.objects.get(pk=self.test_question.id)
-        self.assertEqual(self.test_question.status, Question.RESOLVED)
+        resp = self.client.post(self.problem_response_form_url, test_form_values)
+        self.test_problem = Problem.objects.get(pk=self.test_problem.id)
+        self.assertEqual(self.test_problem.responses.count(), 0)
+        self.assertEqual(self.test_problem.status, Problem.RESOLVED)
 
-    def test_form_shows_confirmation_with_link(self):
+    def test_form_warns_about_response_during_status_change(self):
+        response_text = 'I didn\'t mean to respond'
+        test_form_values = {
+            'response': response_text,
+            'issue': self.test_problem.id,
+            'issue_status': Problem.RESOLVED,
+            'status': ''
+        }
+        resp = self.client.post(self.problem_response_form_url, test_form_values)
+        self.assertFormError(resp, 'form', 'response', 'You cannot submit a response if you\'re just updating the status. Please delete the text in the response field or use the "Respond" button.')
+
+    def test_form_requires_text_for_responses(self):
+        response_text = ''
+        test_form_values = {
+            'response': response_text,
+            'issue': self.test_problem.id,
+            'respond': ''
+        }
+        resp = self.client.post(self.problem_response_form_url, test_form_values)
+        self.assertFormError(resp, 'form', 'response', 'This field is required.')
+
+    def test_form_shows_response_confirmation_with_link(self):
         response_text = 'This problem is solved'
         test_form_values = {
             'response': response_text,
-            'message': self.test_problem.id
+            'issue': self.test_problem.id,
+            'respond': ''
         }
         resp = self.client.post(self.problem_response_form_url, test_form_values)
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, "response has been published online")
         self.assertContains(resp, reverse('org-dashboard', kwargs={'ods_code':self.test_organisation.ods_code}))
 
-class ResponseFormViewTests(TestCase):
+    def test_form_shows_issue_confirmation_with_link(self):
+        response_text = ''
+        test_form_values = {
+            'response': response_text,
+            'issue': self.test_problem.id,
+            'issue_status': Problem.RESOLVED,
+            'status': ''
+        }
+        resp = self.client.post(self.problem_response_form_url, test_form_values)
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "the Problem status has been updated")
+        self.assertContains(resp, reverse('org-dashboard', kwargs={'ods_code':self.test_organisation.ods_code}))
+
+class ResponseFormViewTests(AuthorizationTestCase):
 
     def setUp(self):
-        self.problem = create_test_instance(Problem, {})
-        self.response_form_url = '/private/response/problem/%s' % self.problem.id
+        super(ResponseFormViewTests, self).setUp()
+        self.problem = create_test_instance(Problem, {'organisation': self.test_organisation})
+        self.response_form_url = reverse('response-form', kwargs={'pk':self.problem.id})
+        self.login_as(self.provider)
 
     def test_response_page_exists(self):
         resp = self.client.get(self.response_form_url)
         self.assertEqual(resp.status_code, 200)
 
-    def test_response_form_contains_message_data(self):
+    def test_response_form_contains_issue_data(self):
         resp = self.client.get(self.response_form_url)
         self.assertContains(resp, self.problem.reference_number)
         self.assertContains(resp, self.problem.issue_type)
@@ -97,8 +128,20 @@ class ResponseFormViewTests(TestCase):
 
     def test_response_form_displays_previous_responses(self):
         # Add some responses
-        response1 = ProblemResponse.objects.create(response='response 1', message=self.problem)
-        response2 = ProblemResponse.objects.create(response='response 2', message=self.problem)
+        response1 = ProblemResponse.objects.create(response='response 1', issue=self.problem)
+        response2 = ProblemResponse.objects.create(response='response 2', issue=self.problem)
         resp = self.client.get(self.response_form_url)
         self.assertContains(resp, response1.response)
         self.assertContains(resp, response2.response)
+
+    def test_response_form_requires_login(self):
+        self.client.logout()
+        expected_login_url = "{0}?next={1}".format(reverse('login'), self.response_form_url)
+        resp = self.client.get(self.response_form_url)
+        self.assertRedirects(resp, expected_login_url)
+
+    def test_other_providers_cant_respond(self):
+        self.client.logout()
+        self.login_as(self.other_provider)
+        resp = self.client.get(self.response_form_url)
+        self.assertEqual(resp.status_code, 403)

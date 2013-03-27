@@ -25,28 +25,31 @@ class Command(BaseCommand):
 
         if len(new_issues) > 0:
             # Get the template
-            message_template = get_template('organisations/new_message_email.txt')
+            issue_template = get_template('organisations/new_issue_email.txt')
             # Loop over them and send
             for issue in new_issues:
                 try:
-                    self.send_message(message_template, issue)
+                    self.send_issue(issue_template, issue)
                     issue.mailed = True
                     issue.save()
                     transaction.commit()
                 except Exception as e:
                     logger.error('{0}'.format(e))
-                    logger.error('Error mailing message: {0}'.format(issue.reference_number))
+                    logger.error('Error mailing issue: {0}'.format(issue.reference_number))
                     transaction.rollback()
 
-    def send_message(self, template, issue):
-        context = Context({ 'message': issue, 'site_base_url': settings.SITE_BASE_URL })
-        logger.info('Emailing message reference number: {0}'.format(issue.reference_number))
-        # TODO - from_email should be a setting?
-        # TODO - recipient list should come from the organisation if it's a
-        # problem and from a setting if it's a question
+    def send_issue(self, template, issue):
+        context = Context({ 'issue': issue, 'site_base_url': settings.SITE_BASE_URL })
+        logger.info('Emailing issue reference number: {0}'.format(issue.reference_number))
+        if issue.issue_type == "Problem":
+            # TODO - recipient list should come from the organisation
+            recipient_list = ['recipient@example.com']
+        else:
+            recipient_list = [settings.QUESTION_ANSWERERS_EMAIL]
+
         mail.send_mail(subject='Care Connect: New {0}'.format(issue.issue_type),
                   message=template.render(context),
-                  from_email='no-reply@citizenconnect.mysociety.org',
-                  recipient_list=['steve@mysociety.org'],
+                  from_email=settings.DEFAULT_FROM_EMAIL,
+                  recipient_list=recipient_list,
                   fail_silently=False)
 

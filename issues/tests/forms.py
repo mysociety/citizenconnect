@@ -1,11 +1,13 @@
 import uuid
 
 from django.test import TestCase
+from django.core.urlresolvers import reverse
 
-from organisations.tests.lib import create_test_organisation, create_test_service
+from organisations.tests.lib import create_test_organisation, create_test_service, create_test_instance
 
 from ..models import Problem, Question
 from ..forms import ProblemForm, QuestionForm
+from ..lib import int_to_base32
 
 class ProblemCreateFormTests(TestCase):
 
@@ -17,7 +19,8 @@ class ProblemCreateFormTests(TestCase):
         # Create a unique name, to use in queries rather than relying
         # on primary key increments
         self.uuid = uuid.uuid4().hex
-        self.form_url = '/choices/problem/problem-form/%s' % self.test_organisation.ods_code
+        self.form_url = reverse('problem-form', kwargs={'ods_code': self.test_organisation.ods_code,
+                                                        'cobrand': 'choices'})
         self.test_problem = {
             'organisation': self.test_organisation.id,
             'service': self.test_service.id,
@@ -106,7 +109,8 @@ class QuestionCreateFormTests(TestCase):
         # Create a unique name, to use in queries rather than relying
         # on primary key increments
         self.uuid = uuid.uuid4().hex
-        self.form_url = '/choices/question/question-form'
+        self.form_url = reverse('question-form', kwargs={'cobrand':'choices'})
+        self.test_organisation = create_test_organisation({'ods_code': '11111'})
         self.test_question = {
             'description': 'This is a question',
             'postcode': 'BS32 4NF',
@@ -114,7 +118,6 @@ class QuestionCreateFormTests(TestCase):
             'reporter_name': self.uuid,
             'reporter_email': 'steve@mysociety.org',
             'reporter_phone': '01111 111 111',
-            'privacy': QuestionForm.PRIVACY_PRIVATE,
             'preferred_contact_method': 'phone',
             'agree_to_terms': True
         }
@@ -130,29 +133,11 @@ class QuestionCreateFormTests(TestCase):
         # Check in db
         question = Question.objects.get(reporter_name=self.uuid)
         self.assertContains(resp, question.reference_number, count=1, status_code=200)
-        self.assertEqual(question.public, False)
-        self.assertEqual(question.public_reporter_name, False)
         self.assertEqual(question.description, 'This is a question')
         self.assertEqual(question.postcode, 'BS324NF')
         self.assertEqual(question.reporter_name, self.uuid)
         self.assertEqual(question.reporter_email, 'steve@mysociety.org')
         self.assertEqual(question.preferred_contact_method, 'phone')
-
-    def test_question_form_respects_name_privacy(self):
-        self.test_question['privacy'] = QuestionForm.PRIVACY_PRIVATE_NAME
-        resp = self.client.post(self.form_url, self.test_question)
-        # Check in db
-        question = Question.objects.get(reporter_name=self.uuid)
-        self.assertEqual(question.public, True)
-        self.assertEqual(question.public_reporter_name, False)
-
-    def test_question_form_respects_public_privacy(self):
-        self.test_question['privacy'] = QuestionForm.PRIVACY_PUBLIC
-        resp = self.client.post(self.form_url, self.test_question)
-        # Check in db
-        question = Question.objects.get(reporter_name=self.uuid)
-        self.assertEqual(question.public, True)
-        self.assertEqual(question.public_reporter_name, True)
 
     def test_question_form_errors_without_email_or_phone(self):
         del self.test_question['reporter_email']
@@ -188,3 +173,53 @@ class QuestionCreateFormTests(TestCase):
         del self.test_question['reporter_name']
         resp = self.client.post(self.form_url, self.test_question)
         self.assertFormError(resp, 'form', 'reporter_name', 'This field is required.')
+
+    def test_organisation_is_accepted(self):
+        self.test_question['organisation'] = self.test_organisation.id
+        resp = self.client.post(self.form_url, self.test_question)
+        question = Question.objects.get(reporter_name=self.uuid)
+        self.assertEqual(question.organisation, self.test_organisation)
+
+def QuestionUpdateFormTests(AuthorizationTestCase):
+
+    def setUp(self):
+        self.test_question = create_test_instance(Question, {})
+        self.form_url = reverse('question-update', kwargs={'pk':self.test_question.id})
+
+    def test_form_happy_path(self):
+        self.login_as(self.question_answerer)
+        resp = self.client.post(self.form_url, {'response':'test response',
+                                                'status': Question.RESOLVED})
+
+        self.assertContains(resp, 'Thank you, the question has been updated.')
+        self.test_question = Question.objects.get(pk=self.test_question.id)
+        self.assertEqual(self.test_question.response, 'test response')
+        self.assertEqual(self.test_question.status, Question.RESOLVED)
+
+class ProblemSurveyFormTests(TestCase):
+
+    def setUp(self):
+        self.test_problem = create_test_instance(Problem, {})
+        self.survey_form_url = reverse('survey-form', kwargs={'cobrand': 'choices',
+                                                              'response': 'n',
+                                                              'id': int_to_base32(self.test_problem.id),
+                                                              'token': self.test_problem.make_token(5555)})
+        self.form_values = {'happy_outcome': 'True'}
+
+    def test_form_happy_path(self):
+        resp = self.client.post(self.survey_form_url, self.form_values)
+        self.assertContains(resp, 'Thanks for answering our questions.')
+        self.test_problem = Problem.objects.get(pk=self.test_problem.id)
+        self.assertEqual(self.test_problem.happy_outcome, True)
+
+    def test_form_records_empty_happy_outcome(self):
+        resp = self.client.post(self.survey_form_url, {'happy_outcome': ''})
+        self.assertContains(resp, 'Thanks for answering our questions.')
+        self.test_problem = Problem.objects.get(pk=self.test_problem.id)
+        self.assertEqual(self.test_problem.happy_outcome, None)
+
+    def test_form_records_false_happy_outcome(self):
+        resp = self.client.post(self.survey_form_url, {'happy_outcome': 'False'})
+        self.assertContains(resp, 'Thanks for answering our questions.')
+        self.test_problem = Problem.objects.get(pk=self.test_problem.id)
+        self.assertEqual(self.test_problem.happy_outcome, False)

@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load url from future %}
+
+{% block title %}Update question{% endblock %}
+
+{% block bodyclasses %}question-form{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1>Update question</h1>
+</div>
+
+{% include "issues/issue_detail.html" with object=question private=1 %}
+
+<div class="question-form">
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <fieldset class="island">
+                {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
+            </fieldset>
+        {% endif %}
+
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+
+        <fieldset class="island">
+            <ul class="gw">
+                <li class="g  one-whole">
+                    <label for="id_response">Response</label>
+                    {{ form.response }}
+                    {% include "message_list.html" with messages=form.response.errors message_type='error' %}
+                </li>
+            </ul>
+        </fieldset>
+
+        <fieldset class="island">
+            <ul class="gw">
+                <li class="g  one-third  palm-one-whole">
+                    <label for="id_status">Status</label>
+                    {{ form.status }}
+                    {% include "message_list.html" with messages=form.status.errors message_type='error' %}
+                </li>
+            </ul>
+        </fieldset>
+
+        <fieldset>
+            <button class="btn  fr" type="submit">Submit</button>
+        </fieldset>
+    </form>
+</div>
+{% endblock content %}

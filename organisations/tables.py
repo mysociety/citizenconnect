@@ -38,7 +38,7 @@ class NationalSummaryTable(tables.Table):
     class Meta:
         order_by = ('name',)
 
-class MessageModelTable(tables.Table):
+class IssueModelTable(tables.Table):
 
     reference_number = tables.Column(verbose_name="Ref.", order_by=("id"))
     created = tables.DateTimeColumn(verbose_name="Received")
@@ -53,26 +53,27 @@ class MessageModelTable(tables.Table):
     def __init__(self, *args, **kwargs):
 
         self.private = kwargs.pop('private')
-        self.message_type = kwargs.pop('message_type')
+        self.issue_type = kwargs.pop('issue_type')
         if not self.private:
             self.cobrand = kwargs.pop('cobrand')
-        super(MessageModelTable, self).__init__(*args, **kwargs)
+        super(IssueModelTable, self).__init__(*args, **kwargs)
 
 
     def render_summary(self, record):
         if self.private:
-            url = reverse("response-form", kwargs={'message_type': self.message_type, 'pk': record.id})
+            return mark_safe(u'<a href="{0}">{1}'.format(reverse("response-form", kwargs={'pk': record.id}),
+                                                         record.private_summary))
+        elif record.public:
+            return mark_safe('<a href="{0}">{1}'.format(reverse('%s-view' % self.issue_type, kwargs={'cobrand': self.cobrand, 'pk': record.id}),
+                                                        record.summary))
         else:
-            url = reverse('%s-view' % self.message_type, kwargs={'cobrand': self.cobrand, 'pk': record.id})
-        return mark_safe('''<a href="%s">%s</a>''' % (url, record.summary))
+            return record.summary
 
     class Meta:
         order_by = ('-created',)
         attrs = {"class": "problem-table"}
 
-
-
-class ExtendedMessageModelTable(MessageModelTable):
+class ExtendedIssueModelTable(IssueModelTable):
 
     service = tables.Column(verbose_name='Department')
     time_to_acknowledge = tables.TemplateColumn(verbose_name='Time to acknowledge (days)',
@@ -93,3 +94,16 @@ class ExtendedMessageModelTable(MessageModelTable):
                     'happy_service',
                     'happy_outcome',
                     'summary')
+
+class QuestionsDashboardTable(tables.Table):
+
+    reference_number = tables.Column(verbose_name="Ref.", order_by=("id"))
+    created = tables.DateTimeColumn(verbose_name="Received")
+    summary = tables.Column(verbose_name='Text snippet', order_by=("description"))
+    organisation = tables.Column(verbose_name="Organisation", default="None")
+    action = tables.TemplateColumn(verbose_name='Actions',
+                                    template_name='organisations/includes/question_link_column.html',
+                                    orderable=False)
+
+    class Meta:
+        order_by = ('-created',)

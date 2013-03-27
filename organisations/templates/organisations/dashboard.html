@@ -17,7 +17,7 @@
 
             <p class="g  one-half  palm-one-whole  feature">
                 {% if problems_total.average_time_to_address != None %}
-                    <span class="feature__num">{{ problems_total.average_time_to_address|formatted_time_interval }}</span><span class="feature__text">{% if problems_total.average_time_to_address|formatted_time_interval == '1' %} day {% else %} days {% endif %} on average to address messages</span>
+                    <span class="feature__num">{{ problems_total.average_time_to_address|formatted_time_interval }}</span><span class="feature__text">{% if problems_total.average_time_to_address|formatted_time_interval == '1' %} day {% else %} days {% endif %} on average to address problems</span>
                 {% else %}
                     <span class="feature__text">No data on time taken to address problems</span>
                 {% endif %}
@@ -38,18 +38,20 @@
         <p><a href="{% url 'private-org-summary' ods_code=organisation.ods_code %}">More stats</a></p>
     </div>
 
-<div class="messages-table">
+<div class="issues-table">
     <div class="feature">
         <table>
             <thead>
                 <tr>
                     <th>Ref</th>
-                    <th>Message Type</th>
+                    <th>Issue Type</th>
                     <th>Received</th>
                     <th>Name</th>
-                    <th>Message snippet</th>
+                    <th>Issue snippet</th>
+                    <th>Breach</th>
                     <th>Status</th>
                     <th>Action Due</th>
+
                 </tr>
             </thead>
             <tbody>
@@ -58,8 +60,16 @@
                         <td>{{ problem.reference_number }}</td>
                         <td>{{ problem.issue_type }}</td>
                         <td>{{ problem.created }}</td>
-                        <td>{{ problem.reporter_name }}</td>
-                        <td><a href="{% url 'response-form' message_type=problem.issue_type.lower pk=problem.id %}">{{ problem.summary }}</a></td>
+                        <td>{{ problem.reporter_name_display }}</td>
+                        <td><a href="{% url 'response-form' pk=problem.id %}">{{ problem.private_summary }}</a></td>
+                        <td>{% if problem.breach %}
+                            <span class="icon-warning" aria-hidden="true"></span>
+                            <span class="hide-text">Yes</span>
+                            {% else %}
+                            <span class="icon-circle icon-hidden" aria-hidden="true"></span>
+                            <span class="hide-text">No</span>
+                            {% endif %}
+                        </td>
                         <td>{{ problem.get_status_display }}</td>
                         <td>{% if problem.status == Problem.RESOLVED %}
                                 No
