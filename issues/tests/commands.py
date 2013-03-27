@@ -39,7 +39,7 @@ class EmailSurveysToReportersTests(TestCase):
         self.assertEqual(len(mail.outbox), 1)
         first_mail = mail.outbox[0]
         self.assertEqual(first_mail.subject, 'Care Connect Survey')
-        self.assertEqual(first_mail.from_email, 'no-reply@citizenconnect.mysociety.org')
+        self.assertEqual(first_mail.from_email, settings.DEFAULT_FROM_EMAIL)
         self.assertEqual(first_mail.to, ['problem@example.com'])
         self.assertTrue("Dear %s," % self.test_problem.reporter_name in first_mail.body)
         self.assertTrue("%d days ago," % self.test_problem_age in first_mail.body)
