@@ -195,6 +195,7 @@ class ProblemSurveyTests(AuthorizationTestCase):
     def test_form_page_exists(self):
         resp = self.client.get(self.form_page)
         self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'Thanks for your feedback...and another question.', count=1, status_code=200)
 
     def test_form_page_returns_a_404_for_a_non_existent_problem(self):
         form_page = reverse('survey-form', kwargs={'cobrand': 'choices',
@@ -203,3 +204,19 @@ class ProblemSurveyTests(AuthorizationTestCase):
                                                    'token': self.test_problem.make_token(5555)})
         resp = self.client.get(form_page)
         self.assertEqual(resp.status_code, 404)
+
+    def test_form_page_records_the_happy_service_no_response(self):
+        self.assertEqual(self.test_problem.happy_service, None)
+        resp = self.client.get(self.form_page)
+        test_problem = Problem.objects.get(id=self.test_problem.id)
+        self.assertEqual(test_problem.happy_service, False)
+
+    def test_form_page_records_the_happy_service_yes_response(self):
+        form_page = reverse('survey-form', kwargs={'cobrand': 'choices',
+                                                   'response': 'y',
+                                                   'id': int_to_base32(self.test_problem.id),
+                                                   'token': self.test_problem.make_token(5555)})
+        self.assertEqual(self.test_problem.happy_service, None)
+        resp = self.client.get(form_page)
+        test_problem = Problem.objects.get(id=self.test_problem.id)
+        self.assertEqual(test_problem.happy_service, True)

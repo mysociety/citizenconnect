@@ -123,4 +123,17 @@ class ProblemSurvey(UpdateView):
             raise Http404
 
         problem = get_object_or_404(Problem, id=id)
+        # Record the first survey response
+        response = self.kwargs.get('response', None)
+        if response == 'y':
+            problem.happy_service = True
+        elif response == 'n':
+            problem.happy_service = False
+        problem.save()
         return problem
+
+    def form_valid(self, form):
+         self.object = form.save()
+         context = RequestContext(self.request)
+         context['object'] = self.object
+         return render(self.request, self.confirm_template, context)
