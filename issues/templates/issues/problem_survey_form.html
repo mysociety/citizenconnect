@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load url from future %}
+
+{% block title %}Survey about your problem report{% endblock %}
+
+{% block bodyclasses %}problem-survey-form{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1>Thanks for your feedback...and another question.</h1>
+</div>
+
+
+<form method="post">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+        <fieldset class="island">
+            {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
+        </fieldset>
+    {% endif %}
+
+    {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+    {% endfor %}
+
+    <fieldset class="island">
+        <ul class="gw">
+            <li class="g  one-whole">
+                Are you happy with the way your problem has been handled?
+                {{ form.happy_outcome }}
+                {% include "message_list.html" with messages=form.happy_outcome.errors message_type='error' %}
+            </li>
+        </ul>
+    </fieldset>
+
+    <fieldset>
+        <button class="btn  fr" type="submit">Submit</button>
+    </fieldset>
+</form>
+
+{% endblock content %}

@@ -3,10 +3,11 @@ import uuid
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from organisations.tests.lib import create_test_organisation, create_test_service
+from organisations.tests.lib import create_test_organisation, create_test_service, create_test_instance
 
 from ..models import Problem, Question
 from ..forms import ProblemForm, QuestionForm
+from ..lib import int_to_base32
 
 class ProblemCreateFormTests(TestCase):
 
@@ -188,9 +189,37 @@ def QuestionUpdateFormTests(AuthorizationTestCase):
     def test_form_happy_path(self):
         self.login_as(self.question_answerer)
         resp = self.client.post(self.form_url, {'response':'test response',
-                                         'status': Question.RESOLVED})
+                                                'status': Question.RESOLVED})
 
         self.assertContains(resp, 'Thank you, the question has been updated.')
         self.test_question = Question.objects.get(pk=self.test_question.id)
         self.assertEqual(self.test_question.response, 'test response')
         self.assertEqual(self.test_question.status, Question.RESOLVED)
+
+class ProblemSurveyFormTests(TestCase):
+
+    def setUp(self):
+        self.test_problem = create_test_instance(Problem, {})
+        self.survey_form_url = reverse('survey-form', kwargs={'cobrand': 'choices',
+                                                              'response': 'n',
+                                                              'id': int_to_base32(self.test_problem.id),
+                                                              'token': self.test_problem.make_token(5555)})
+        self.form_values = {'happy_outcome': 'True'}
+
+    def test_form_happy_path(self):
+        resp = self.client.post(self.survey_form_url, self.form_values)
+        self.assertContains(resp, 'Thanks for answering our questions.')
+        self.test_problem = Problem.objects.get(pk=self.test_problem.id)
+        self.assertEqual(self.test_problem.happy_outcome, True)
+
+    def test_form_records_empty_happy_outcome(self):
+        resp = self.client.post(self.survey_form_url, {'happy_outcome': ''})
+        self.assertContains(resp, 'Thanks for answering our questions.')
+        self.test_problem = Problem.objects.get(pk=self.test_problem.id)
+        self.assertEqual(self.test_problem.happy_outcome, None)
+
+    def test_form_records_false_happy_outcome(self):
+        resp = self.client.post(self.survey_form_url, {'happy_outcome': 'False'})
+        self.assertContains(resp, 'Thanks for answering our questions.')
+        self.test_problem = Problem.objects.get(pk=self.test_problem.id)
+        self.assertEqual(self.test_problem.happy_outcome, False)
