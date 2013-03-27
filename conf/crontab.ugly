@@ -14,3 +14,5 @@ MAILTO=cron-!!(*= $site *)!!@mysociety.org
 # requires that scripts start with '#!/usr/bin/env python'
 VIRTUAL_ENV="/data/vhost/!!(*= $vhost *)!!/virtualenv-citizenconnect"
 PATH=/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/:/data/vhost/!!(*= $vhost *)!!/virtualenv-citizenconnect/bin:/usr/local/bin:/usr/bin:/bin
+
+3 6 * * * !!(*= $user *)!! /data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/email_surveys_to_reporters.bash
