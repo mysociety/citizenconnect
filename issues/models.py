@@ -271,7 +271,8 @@ class Problem(IssueModel):
     requires_legal_moderation = models.BooleanField(default=False, blank=False)
     commissioned = models.IntegerField(blank=True, null=True, choices=COMMISSIONED_CHOICES)
     survey_sent = models.DateTimeField(null=True, blank=True)
-    cobrand = models.CharField(max_length=30, blank=False)
+    COBRAND_CHOICES = [(cobrand, cobrand) for cobrand in settings.ALLOWED_COBRANDS]
+    cobrand = models.CharField(max_length=30, blank=False, choices=COBRAND_CHOICES)
 
     @property
     def reference_number(self):
