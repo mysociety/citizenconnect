@@ -39,3 +39,12 @@ class EmailSurveysToReportersTests(TestCase):
         self.assertEqual(first_mail.to, ['problem@example.com'])
         self.assertTrue("Dear %s," % self.test_problem.reporter_name in first_mail.body)
         self.assertTrue("%d days ago," % self.test_problem_age in first_mail.body)
+
+    def test_sends_no_emails_when_none_to_send(self):
+        self.test_problem.survey_sent = datetime.utcnow().replace(tzinfo=utc)
+        self.test_problem.save()
+
+        self._call_command()
+
+        self.assertEqual(len(mail.outbox), 0)
+
