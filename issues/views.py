@@ -80,6 +80,9 @@ class ProblemCreate(OrganisationAwareViewMixin, CreateView):
     def form_valid(self, form):
         self.object = form.save()
         context = RequestContext(self.request)
+        # Set the cobrand on the problem so we can use it for the survey later
+        self.object.cobrand = context['cobrand']['name']
+        self.object.save()
         context['object'] = self.object
         return render(self.request, self.confirm_template, context)
 

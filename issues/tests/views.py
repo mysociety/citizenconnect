@@ -26,7 +26,7 @@ class AskQuestionViewTests(TestCase):
 class QuestionCreateViewTests(TestCase):
 
     def setUp(self):
-        self.test_organisation = create_test_organisation();
+        self.test_organisation = create_test_organisation()
         self.url = reverse('question-form', kwargs={'cobrand':'choices'})
         self.organisation_url = reverse('question-form', kwargs={'cobrand':'choices',
                                                                  'ods_code': self.test_organisation.ods_code})

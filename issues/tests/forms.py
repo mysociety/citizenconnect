@@ -103,6 +103,11 @@ class ProblemCreateFormTests(TestCase):
         resp = self.client.post(self.form_url, self.test_problem)
         self.assertFormError(resp, 'form', 'reporter_name', 'This field is required.')
 
+    def test_problem_form_saves_cobrand(self):
+        resp = self.client.post(self.form_url, self.test_problem)
+        problem = Problem.objects.get(reporter_name=self.uuid)
+        self.assertEqual(problem.cobrand, 'choices')
+
 class QuestionCreateFormTests(TestCase):
 
     def setUp(self):
