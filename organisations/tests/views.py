@@ -699,7 +699,7 @@ class EscalationDashboardTests(AuthorizationTestCase):
                                                                        'breach': True})
 
     def test_dashboard_accessible_to_ccg_users(self):
-        self.login_as(self.ccg)
+        self.login_as(self.ccg_user)
         resp = self.client.get(self.escalation_dashboard_url)
         self.assertEqual(resp.status_code, 200)
 

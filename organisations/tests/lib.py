@@ -15,7 +15,18 @@ from django.core.urlresolvers import reverse
 from issues.models import Problem, Question
 
 from ..lib import interval_counts
-from ..models import Organisation, Service
+from ..models import Organisation, Service, CCG
+
+def create_test_ccg(attributes={}):
+    # Make a CCG
+    default_attributes = {
+        'name':'Test CCG',
+        'code':'ABC',
+    }
+    default_attributes.update(attributes)
+    instance = CCG(**dict((k,v) for (k,v) in default_attributes.items() if '__' not in k))
+    instance.save()
+    return instance
 
 def create_test_organisation(attributes={}):
     # Make an organisation
@@ -215,9 +226,14 @@ class AuthorizationTestCase(TestCase):
     def setUp(self):
         # Create some dummy Users and an Organisation they want to access
 
+        # CCGs
+        self.test_ccg = create_test_ccg()
+        self.other_test_ccg = create_test_ccg({'code': 'XYZ'})
+
         # Organisations
-        self.test_organisation = create_test_organisation()
-        self.other_test_organisation = create_test_organisation({'ods_code': '12345'})
+        self.test_organisation = create_test_organisation({'ccg': self.test_ccg})
+        self.other_test_organisation = create_test_organisation({'ods_code': '12345',
+                                                                 'ccg': self.other_test_ccg})
 
         self.test_password = 'password'
 
@@ -264,9 +280,18 @@ class AuthorizationTestCase(TestCase):
         # A CQC user
         self.cqc = User.objects.get(pk=10)
 
-        # A CCQ user
-        self.ccg = User.objects.get(pk=9)
-        # TODO - we need to link this user to orgs and the ccg at some point
+        # A CCG user linked to no CCGs
+        self.no_ccg = User.objects.get(pk=14)
+
+        # A CCG user for the CCG that test organisation belongs to
+        self.ccg_user = User.objects.get(pk=9)
+        self.test_ccg.users.add(self.ccg_user)
+        self.test_ccg.save()
+
+        # A CCG user for the CCG that other test organisation belongs to
+        self.other_ccg_user = User.objects.get(pk=13)
+        self.other_test_ccg.users.add(self.other_ccg_user)
+        self.other_test_ccg.save()
 
         # Helpful lists for simpler testing
         self.users_who_can_access_everything = [self.superuser, self.nhs_superuser, self.case_handler]

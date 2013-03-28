@@ -205,6 +205,6 @@ class LoginRedirectTests(AuthorizationTestCase):
 
     def test_ccg_user_goes_to_escalation_dashboard(self):
         escalation_dashboard_url = reverse('escalation-dashboard')
-        self.login_as(self.ccg)
+        self.login_as(self.ccg_user)
         resp = self.client.get(self.login_redirect_url)
         self.assertRedirects(resp, escalation_dashboard_url)

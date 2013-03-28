@@ -236,6 +236,46 @@
             "email": "second_tier_moderator@example.com",
             "date_joined": "2013-03-19T11:28:50Z"
         }
+    },
+    {
+        "pk": 13,
+        "model": "auth.user",
+        "fields": {
+            "username": "other_ccg",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2013-03-19T11:28:50Z",
+            "groups": [
+                6
+            ],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$jWJUa0RaX5zt$bnS2UDpLvK+rPjjrU5zaVymaUnr0Dr1GG4ELTIH4PNg=",
+            "email": "other_ccg@example.com",
+            "date_joined": "2013-03-19T11:28:50Z"
+        }
+    },
+    {
+        "pk": 14,
+        "model": "auth.user",
+        "fields": {
+            "username": "no_ccg",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2013-03-19T11:28:50Z",
+            "groups": [
+                6
+            ],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$jWJUa0RaX5zt$bnS2UDpLvK+rPjjrU5zaVymaUnr0Dr1GG4ELTIH4PNg=",
+            "email": "no_ccg@example.com",
+            "date_joined": "2013-03-19T11:28:50Z"
+        }
     }
 
 ]
