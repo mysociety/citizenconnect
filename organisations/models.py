@@ -32,6 +32,7 @@ class Organisation(AuditedModel,geomodels.Model):
 
     point =  geomodels.PointField()
     objects = geomodels.GeoManager()
+    ccg = models.ForeignKey(CCG, blank=True, null=True)
 
     @property
     def open_issues(self):
