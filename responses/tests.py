@@ -145,3 +145,9 @@ class ResponseFormViewTests(AuthorizationTestCase):
         self.login_as(self.other_provider)
         resp = self.client.get(self.response_form_url)
         self.assertEqual(resp.status_code, 403)
+
+    def test_other_ccgs_cant_respond(self):
+        self.client.logout()
+        self.login_as(self.other_ccg_user)
+        resp = self.client.get(self.response_form_url)
+        self.assertEqual(resp.status_code, 403)

@@ -52,7 +52,9 @@ class QuestionUpdateViewTests(AuthorizationTestCase):
                                           self.other_provider,
                                           self.case_handler,
                                           self.no_provider,
-                                          self.pals]
+                                          self.pals,
+                                          self.ccg_user,
+                                          self.other_ccg_user]
         for user in users_who_shouldnt_have_access:
             self.login_as(user)
             resp = self.client.get(self.url)
@@ -122,8 +124,20 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         resp = self.client.get(self.test_moderated_problem_url)
         self.assertEqual(resp.status_code, 200)
 
-    def test_private_problem_accessible_to_allowed_user(self):
+        self.login_as(self.ccg_user)
+        resp = self.client.get(self.test_moderated_problem_url)
+        self.assertEqual(resp.status_code, 200)
+
+        self.login_as(self.other_ccg_user)
+        resp = self.client.get(self.test_moderated_problem_url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_private_problem_accessible_to_allowed_users(self):
         self.login_as(self.provider)
+        resp = self.client.get(self.test_private_problem_url)
+        self.assertEqual(resp.status_code, 200)
+
+        self.login_as(self.ccg_user)
         resp = self.client.get(self.test_private_problem_url)
         self.assertEqual(resp.status_code, 200)
 
@@ -133,6 +147,11 @@ class ProblemPublicViewTests(AuthorizationTestCase):
 
     def test_private_problem_inaccessible_to_other_provider_user(self):
         self.login_as(self.other_provider)
+        resp = self.client.get(self.test_private_problem_url)
+        self.assertEqual(resp.status_code, 403)
+
+    def test_private_problem_inaccessible_to_other_ccg_user(self):
+        self.login_as(self.other_ccg_user)
         resp = self.client.get(self.test_private_problem_url)
         self.assertEqual(resp.status_code, 403)
 
@@ -147,8 +166,12 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         resp = self.client.get(self.test_private_problem_url)
         self.assertEqual(resp.status_code, 200)
 
-    def test_unmoderated_problem_accessible_to_allowed_user(self):
+    def test_unmoderated_problem_accessible_to_allowed_uses(self):
         self.login_as(self.provider)
+        resp = self.client.get(self.test_unmoderated_problem_url)
+        self.assertEqual(resp.status_code, 200)
+
+        self.login_as(self.ccg_user)
         resp = self.client.get(self.test_unmoderated_problem_url)
         self.assertEqual(resp.status_code, 200)
 
@@ -158,6 +181,11 @@ class ProblemPublicViewTests(AuthorizationTestCase):
 
     def test_unmoderated_problem_inaccessible_to_other_provider_user(self):
         self.login_as(self.other_provider)
+        resp = self.client.get(self.test_unmoderated_problem_url)
+        self.assertEqual(resp.status_code, 403)
+
+    def test_unmoderated_problem_inaccessible_to_other_ccg_user(self):
+        self.login_as(self.other_ccg_user)
         resp = self.client.get(self.test_unmoderated_problem_url)
         self.assertEqual(resp.status_code, 403)
 

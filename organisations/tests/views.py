@@ -15,7 +15,7 @@ from issues.models import Problem, Question
 
 import organisations
 from ..models import Organisation
-from . import create_test_instance, create_test_organisation, create_test_service, AuthorizationTestCase
+from . import create_test_instance, create_test_organisation, create_test_service, create_test_ccg, AuthorizationTestCase
 
 class OrganisationSummaryTests(AuthorizationTestCase):
 
@@ -152,8 +152,18 @@ class OrganisationSummaryTests(AuthorizationTestCase):
             resp = self.client.get(self.private_summary_url)
             self.assertEqual(resp.status_code, 200)
 
+    def test_private_summary_page_is_accessible_to_ccg(self):
+        self.login_as(self.ccg_user)
+        resp = self.client.get(self.private_summary_url)
+        self.assertEqual(resp.status_code, 200)
+
     def test_private_summary_page_is_inaccessible_to_other_providers(self):
         self.login_as(self.other_provider)
+        resp = self.client.get(self.private_summary_url)
+        self.assertEqual(resp.status_code, 403)
+
+    def test_private_summary_page_is_inaccessible_to_other_ccgs(self):
+        self.login_as(self.other_ccg_user)
         resp = self.client.get(self.private_summary_url)
         self.assertEqual(resp.status_code, 403)
 
@@ -169,8 +179,10 @@ class OrganisationProblemsTests(AuthorizationTestCase):
 
         self.hospital = create_test_organisation({'organisation_type': 'hospitals',
                                                   'ods_code': 'ABC123'})
+        self.gp_ccg = create_test_ccg({'code': 'MOO'})
         self.gp = create_test_organisation({'organisation_type': 'gppractices',
-                                            'ods_code': 'DEF456'})
+                                            'ods_code': 'DEF456',
+                                            'ccg': self.gp_ccg})
         self.public_hospital_problems_url = reverse('public-org-problems',
                                                     kwargs={'ods_code':self.hospital.ods_code,
                                                             'cobrand': 'choices'})
@@ -203,6 +215,10 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         self.hospital.save()
         self.gp.users.add(self.pals)
         self.gp.save()
+
+        # Add the CCG user from AuthorizationTestCase to the gp CCG
+        self.gp_ccg.users.add(self.ccg_user)
+        self.gp_ccg.save()
 
         # Add an explicitly public and an explicitly private problem to test
         # privacy is respected
@@ -331,6 +347,16 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         resp = self.client.get(self.private_gp_problems_url)
         self.assertEqual(resp.status_code, 403)
 
+    def test_private_page_is_inaccessible_to_other_ccgs(self):
+        self.login_as(self.ccg_user)
+        resp = self.client.get(self.private_hospital_problems_url)
+        self.assertEqual(resp.status_code, 403)
+
+    def test_private_page_is_accessible_to_ccg(self):
+        self.login_as(self.ccg_user)
+        resp = self.client.get(self.private_gp_problems_url)
+        self.assertEqual(resp.status_code, 200)
+
 class OrganisationReviewsTests(AuthorizationTestCase):
 
     def setUp(self):
@@ -347,6 +373,9 @@ class OrganisationReviewsTests(AuthorizationTestCase):
         self.login_as(self.provider)
         resp = self.client.get(self.private_reviews_url)
         self.assertEqual(resp.status_code, 200)
+        self.login_as(self.ccg_user)
+        resp = self.client.get(self.private_reviews_url)
+        self.assertEqual(resp.status_code, 200)
 
     def test_private_page_is_inaccessible_to_anon_users(self):
         expected_login_url = "{0}?next={1}".format(self.login_url, self.private_reviews_url)
@@ -361,6 +390,11 @@ class OrganisationReviewsTests(AuthorizationTestCase):
 
     def test_private_page_is_inaccessible_to_other_providers(self):
         self.login_as(self.other_provider)
+        resp = self.client.get(self.private_reviews_url)
+        self.assertEqual(resp.status_code, 403)
+
+    def test_private_page_is_inaccessible_to_other_ccgs(self):
+        self.login_as(self.other_ccg_user)
         resp = self.client.get(self.private_reviews_url)
         self.assertEqual(resp.status_code, 403)
 
@@ -407,6 +441,11 @@ class OrganisationDashboardTests(AuthorizationTestCase):
 
     def test_dashboard_page_is_inaccessible_to_other_providers(self):
         self.login_as(self.other_provider)
+        resp = self.client.get(self.dashboard_url)
+        self.assertEqual(resp.status_code, 403)
+
+    def test_dashboard_page_is_inaccessible_to_other_ccgs(self):
+        self.login_as(self.other_ccg_user)
         resp = self.client.get(self.dashboard_url)
         self.assertEqual(resp.status_code, 403)
 
@@ -672,6 +711,8 @@ class QuestionDashboardTests(AuthorizationTestCase):
     def test_dashboard_only_accessible_to_question_answerers_and_superusers(self):
         users_who_shouldnt_have_access = [self.provider,
                                           self.other_provider,
+                                          self.ccg_user,
+                                          self.other_ccg_user,
                                           self.case_handler,
                                           self.no_provider,
                                           self.pals]
@@ -709,3 +750,8 @@ class EscalationDashboardTests(AuthorizationTestCase):
         self.assertContains(resp, self.org_breach_problem.reference_number)
         self.assertContains(resp, self.other_org_breach_problem.reference_number)
 
+    def test_dashboard_only_shows_problems_for_ccg_organisations(self):
+        self.login_as(self.ccg_user)
+        resp = self.client.get(self.escalation_dashboard_url)
+        self.assertContains(resp, self.org_breach_problem.reference_number)
+        self.assertNotContains(resp, self.other_org_breach_problem.reference_number)

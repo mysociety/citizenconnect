@@ -35,6 +35,14 @@ class BasicViewTests(BaseModerationTestCase):
             resp = self.client.get(url)
             self.assertEqual(resp.status_code, 403)
 
+    def test_views_inacessible_to_ccgs(self):
+        self.client.logout()
+        self.login_as(self.ccg_user)
+
+        for url in self.all_urls:
+            resp = self.client.get(url)
+            self.assertEqual(resp.status_code, 403)
+
     def test_views_accessible_to_superusers(self):
         for user in self.users_who_can_access_everything:
             self.login_as(user)

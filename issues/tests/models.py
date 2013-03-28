@@ -115,6 +115,8 @@ class ProblemModelTests(ProblemTestCase):
         self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.superuser))
         self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.anonymous_user))
         self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.other_provider))
+        self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.ccg_user))
+        self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.other_ccg_user))
 
     def test_private_problem_accessible_to_allowed_user(self):
         self.assertTrue(self.test_private_problem.can_be_accessed_by(self.provider))
@@ -125,6 +127,9 @@ class ProblemModelTests(ProblemTestCase):
     def test_private_problem_inaccessible_to_other_provider_user(self):
         self.assertFalse(self.test_private_problem.can_be_accessed_by(self.other_provider))
 
+    def test_private_problem_inaccessible_to_other_ccg_user(self):
+        self.assertFalse(self.test_private_problem.can_be_accessed_by(self.other_ccg_user))
+
     def test_private_problem_accessible_to_superusers(self):
         for user in self.users_who_can_access_everything:
             self.assertTrue(self.test_private_problem.can_be_accessed_by(user))
@@ -132,14 +137,21 @@ class ProblemModelTests(ProblemTestCase):
     def test_private_problem_accessible_to_pals_user(self):
         self.assertTrue(self.test_private_problem.can_be_accessed_by(self.pals))
 
+    def test_private_problem_accessible_to_ccg_user(self):
+        self.assertTrue(self.test_private_problem.can_be_accessed_by(self.ccg_user))
+
     def test_unmoderated_problem_inaccessible_to_anon_user(self):
         self.assertFalse(self.test_problem.can_be_accessed_by(self.anonymous_user))
 
     def test_unmoderated_problem_inaccessible_to_other_provider_user(self):
         self.assertFalse(self.test_problem.can_be_accessed_by(self.other_provider))
 
-    def test_unmoderated_problem_accessible_to_allowed_user(self):
+    def test_unmoderated_problem_inaccessible_to_other_ccg_user(self):
+        self.assertFalse(self.test_problem.can_be_accessed_by(self.other_ccg_user))
+
+    def test_unmoderated_problem_accessible_to_allowed_users(self):
         self.assertTrue(self.test_problem.can_be_accessed_by(self.provider))
+        self.assertTrue(self.test_problem.can_be_accessed_by(self.ccg_user))
 
     def test_unmoderated_problem_accessible_to_superusers(self):
         for user in self.users_who_can_access_everything:

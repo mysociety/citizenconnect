@@ -406,6 +406,11 @@ class EscalationDashboard(FilterMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(EscalationDashboard, self).get_context_data(**kwargs)
 
+        # Restrict problem queryset for non-CGC and non-superuser users (i.e. CCG users)
+        user = self.request.user
+        if not user_is_superuser(user) and not user_in_groups(user, [auth.CQC]):
+            context['problems'] = context['problems'].filter(organisation__ccg__in=(user.ccgs.all()))
+
         filtered_problems = self.apply_filters(context['filters'], context['problems'])
 
         # Setup a table for the problems

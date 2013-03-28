@@ -33,6 +33,8 @@ class SuperuserLogTests(AuthorizationTestCase):
         self.users_who_should_not_be_logged = [
             self.provider,
             self.other_provider,
+            self.ccg_user,
+            self.other_ccg_user,
             self.case_handler,
             self.superuser, # Django superuser
             self.pals,
