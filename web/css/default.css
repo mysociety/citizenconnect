@@ -2664,6 +2664,14 @@ body.docs {
   .nav li {
     display: block;
     float: left; }
+    .nav li .info-tab {
+      display: block;
+      font-size: 0.875em;
+      text-decoration: none;
+      text-transform: uppercase;
+      text-align: center;
+      padding: 0.75em;
+      line-height: 1; }
     .nav li a {
       display: block;
       font-size: 0.875em;

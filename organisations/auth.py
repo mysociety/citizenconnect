@@ -41,3 +41,6 @@ def check_question_access(user):
 def check_problem_access(problem, user):
     if not problem.can_be_accessed_by(user):
         raise PermissionDenied()
+
+def user_can_access_escalation_dashboard(user):
+    return (user_is_superuser(user) or user_in_groups(user, [CQC, CCG]))

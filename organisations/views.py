@@ -21,7 +21,7 @@ from issues.models import Problem, Question
 
 import choices_api
 import auth
-from .auth import user_in_group, user_in_groups, user_is_superuser, check_organisation_access, check_question_access
+from .auth import user_in_group, user_in_groups, user_is_superuser, check_organisation_access, check_question_access, user_can_access_escalation_dashboard
 from .models import Organisation, Service, CCG, SuperuserLogEntry
 from .forms import OrganisationFinderForm
 from .lib import interval_counts
@@ -399,7 +399,7 @@ class EscalationDashboard(FilterMixin, ListView):
     context_object_name = "problems"
 
     def dispatch(self, request, *args, **kwargs):
-        if not user_is_superuser(request.user) and not user_in_groups(request.user, [auth.CQC, auth.CCG]):
+        if not user_can_access_escalation_dashboard(request.user):
             raise PermissionDenied()
         return super(EscalationDashboard, self).dispatch(request, *args, **kwargs)
 

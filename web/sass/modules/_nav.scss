@@ -9,6 +9,15 @@
   li {
     display: block;
     float: left;
+    .info-tab {
+        display: block;
+        font-size: (14px / $font-size-base) + em;
+        text-decoration: none;
+        text-transform: uppercase;
+        text-align: center;
+        padding: 0.75em;
+        line-height: 1;
+    }
     a {
       display: block;
       font-size: (14px / $font-size-base) + em;
