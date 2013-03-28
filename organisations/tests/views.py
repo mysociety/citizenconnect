@@ -687,3 +687,25 @@ class QuestionDashboardTests(AuthorizationTestCase):
             self.login_as(user)
             resp = self.client.get(self.questions_dashboard_url)
             self.assertEqual(resp.status_code, 200)
+
+class EscalationDashboardTests(AuthorizationTestCase):
+
+    def setUp(self):
+        super(EscalationDashboardTests, self).setUp()
+        self.escalation_dashboard_url = reverse('escalation-dashboard')
+        self.org_breach_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
+                                                                 'breach': True})
+        self.other_org_breach_problem = create_test_instance(Problem, {'organisation': self.other_test_organisation,
+                                                                       'breach': True})
+
+    def test_dashboard_accessible_to_ccg_users(self):
+        self.login_as(self.ccg)
+        resp = self.client.get(self.escalation_dashboard_url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_dashboard_shows_all_problems_for_nhs_superusers(self):
+        self.login_as(self.nhs_superuser)
+        resp = self.client.get(self.escalation_dashboard_url)
+        self.assertContains(resp, self.org_breach_problem.reference_number)
+        self.assertContains(resp, self.other_org_breach_problem.reference_number)
+
