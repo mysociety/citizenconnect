@@ -24,7 +24,7 @@
                 {% if object.issue_type == 'Problem' and private %}
                     {{ object.public|yesno:"Public,Private" }},&nbsp;
                     {{ object.get_publication_status_display}},&nbsp;
-                    {% if object.requires_legal_moderation %}
+                    {% if object.requires_second_tier_moderation %}
                       Requires second tier moderation,&nbsp;
                     {% endif %}
                 {% endif %}

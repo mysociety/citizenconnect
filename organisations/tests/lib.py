@@ -258,8 +258,8 @@ class AuthorizationTestCase(TestCase):
         # A Question Answerer
         self.question_answerer = User.objects.get(pk=5)
 
-        # A Legal Moderator
-        self.legal_moderator = User.objects.get(pk=12)
+        # A Second Tier Moderator
+        self.second_tier_moderator = User.objects.get(pk=12)
 
         # A CQC user
         self.cqc = User.objects.get(pk=10)

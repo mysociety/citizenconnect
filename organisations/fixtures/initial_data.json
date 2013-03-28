@@ -51,7 +51,7 @@
         "pk": 7,
         "model": "auth.group",
         "fields": {
-            "name": "Legal Moderators",
+            "name": "Second Tier Moderators",
             "permissions": []
         }
     }

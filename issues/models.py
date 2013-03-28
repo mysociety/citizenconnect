@@ -172,8 +172,8 @@ class ProblemManager(models.Manager):
         return super(ProblemManager, self).all().filter(moderated=Problem.MODERATED,
                                                         publication_status=Problem.PUBLISHED)
 
-    def problems_requiring_legal_moderation(self):
-        return super(ProblemManager, self).all().filter(requires_legal_moderation=True)
+    def problems_requiring_second_tier_moderation(self):
+        return super(ProblemManager, self).all().filter(requires_second_tier_moderation=True)
 
     def open_escalated_problems(self):
         # ESCALATION_STATUSES is a subset of OPEN_STATUSES, so
@@ -268,7 +268,7 @@ class Problem(IssueModel):
                                     choices=MODERATED_STATUS_CHOICES)
     moderated_description = models.TextField(blank=True)
     breach = models.BooleanField(default=False, blank=False)
-    requires_legal_moderation = models.BooleanField(default=False, blank=False)
+    requires_second_tier_moderation = models.BooleanField(default=False, blank=False)
     commissioned = models.IntegerField(blank=True, null=True, choices=COMMISSIONED_CHOICES)
     survey_sent = models.DateTimeField(null=True, blank=True)
     COBRAND_CHOICES = [(cobrand, cobrand) for cobrand in settings.ALLOWED_COBRANDS]

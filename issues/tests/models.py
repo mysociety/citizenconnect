@@ -409,18 +409,18 @@ class ProblemManagerTests(ManagerTest):
         })
 
         # Problems requiring second tier moderation
-        self.public_problem_requiring_legal_moderation = create_test_instance(Problem, {
+        self.public_problem_requiring_second_tier_moderation = create_test_instance(Problem, {
             'organisation': self.test_organisation,
             'public':True,
             'moderated':Problem.MODERATED,
-            'requires_legal_moderation': True,
+            'requires_second_tier_moderation': True,
             'publication_status': Problem.HIDDEN
         })
-        self.private_problem_requiring_legal_moderation = create_test_instance(Problem, {
+        self.private_problem_requiring_second_tier_moderation = create_test_instance(Problem, {
             'organisation': self.test_organisation,
             'public':False,
             'moderated':Problem.MODERATED,
-            'requires_legal_moderation': True,
+            'requires_second_tier_moderation': True,
             'publication_status': Problem.HIDDEN
         })
 
@@ -435,8 +435,8 @@ class ProblemManagerTests(ManagerTest):
                                         self.new_private_moderated_problem_hidden,
                                         self.new_private_moderated_problem_published,
                                         self.escalated_public_moderated_problem_published,
-                                        self.public_problem_requiring_legal_moderation,
-                                        self.private_problem_requiring_legal_moderation,
+                                        self.public_problem_requiring_second_tier_moderation,
+                                        self.private_problem_requiring_second_tier_moderation,
                                         self.breach_public_moderated_problem_published]
         self.closed_problems = self.closed_unmoderated_problems + [self.closed_public_moderated_problem_hidden,
                                                                    self.closed_public_moderated_problem_published,
@@ -453,8 +453,8 @@ class ProblemManagerTests(ManagerTest):
         self.all_problems = self.open_problems + self.closed_problems
         self.all_moderated_published_problems = self.open_moderated_published_problems + [self.closed_public_moderated_problem_published,
                                                                                           self.closed_private_moderated_problem_published]
-        self.problems_requiring_legal_moderation = [self.public_problem_requiring_legal_moderation,
-                                                    self.private_problem_requiring_legal_moderation]
+        self.problems_requiring_second_tier_moderation = [self.public_problem_requiring_second_tier_moderation,
+                                                    self.private_problem_requiring_second_tier_moderation]
 
         self.open_escalated_problems = [self.breach_public_moderated_problem_published,
                                         self.escalated_public_moderated_problem_published,
@@ -477,9 +477,9 @@ class ProblemManagerTests(ManagerTest):
         self.compare_querysets(Problem.objects.all_moderated_published_problems(),
                                self.all_moderated_published_problems)
 
-    def test_problems_requiring_legal_moderation_returns_correct_problems(self):
-        self.compare_querysets(Problem.objects.problems_requiring_legal_moderation(),
-                               self.problems_requiring_legal_moderation)
+    def test_problems_requiring_second_tier_moderation_returns_correct_problems(self):
+        self.compare_querysets(Problem.objects.problems_requiring_second_tier_moderation(),
+                               self.problems_requiring_second_tier_moderation)
 
     def test_escalated_problems_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.open_escalated_problems(),

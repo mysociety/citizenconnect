@@ -110,9 +110,9 @@ class ModerationFormTests(BaseModerationTestCase):
                                                 self.problem_form_url,
                                                 self.test_problem)
 
-    def test_moderation_form_sets_publication_status_to_private_when_requires_legal_moderation_clicked(self):
+    def test_moderation_form_sets_publication_status_to_private_when_requires_second_tier_moderation_clicked(self):
         test_form_values = {
-            'now_requires_legal_moderation': ''
+            'now_requires_second_tier_moderation': ''
         }
         self.form_values.update(test_form_values)
         del self.form_values['publish']
@@ -121,37 +121,37 @@ class ModerationFormTests(BaseModerationTestCase):
                                                 self.problem_form_url,
                                                 self.test_problem)
 
-    def assert_expected_requires_legal_moderation(self, expected_value, form_values):
+    def assert_expected_requires_second_tier_moderation(self, expected_value, form_values):
         resp = self.client.post(self.problem_form_url, form_values)
         problem = Problem.objects.get(pk=self.test_problem.id)
-        self.assertEqual(problem.requires_legal_moderation, expected_value)
+        self.assertEqual(problem.requires_second_tier_moderation, expected_value)
 
-    def test_form_sets_requires_legal_moderation_when_requires_legal_moderation_clicked(self):
+    def test_form_sets_requires_second_tier_moderation_when_requires_second_tier_moderation_clicked(self):
         test_form_values = {
-            'now_requires_legal_moderation': '',
+            'now_requires_second_tier_moderation': '',
         }
         self.form_values.update(test_form_values)
         del self.form_values['publish']
-        self.assert_expected_requires_legal_moderation(True, self.form_values)
+        self.assert_expected_requires_second_tier_moderation(True, self.form_values)
 
-    def test_form_unsets_requires_legal_moderation_when_keep_private_clicked(self):
-        self.test_problem.requires_legal_moderation = True
+    def test_form_unsets_requires_second_tier_moderation_when_keep_private_clicked(self):
+        self.test_problem.requires_second_tier_moderation = True
         self.test_problem.save()
         test_form_values = {
             'keep_private': '',
         }
         self.form_values.update(test_form_values)
         del self.form_values['publish']
-        self.assert_expected_requires_legal_moderation(False, self.form_values)
+        self.assert_expected_requires_second_tier_moderation(False, self.form_values)
 
-    def test_form_unsets_requires_legal_moderation_when_publish_clicked(self):
-        self.test_problem.requires_legal_moderation = True
+    def test_form_unsets_requires_second_tier_moderation_when_publish_clicked(self):
+        self.test_problem.requires_second_tier_moderation = True
         self.test_problem.save()
         test_form_values = {
             'publish': ''
         }
         self.form_values.update(test_form_values)
-        self.assert_expected_requires_legal_moderation(False, self.form_values)
+        self.assert_expected_requires_second_tier_moderation(False, self.form_values)
 
     def test_form_redirects_to_confirm_url(self):
         resp = self.client.post(self.problem_form_url, self.form_values)
@@ -235,43 +235,43 @@ class ModerationFormTests(BaseModerationTestCase):
         problem = Problem.objects.get(pk=self.test_problem.id)
         self.assertEqual(problem.commissioned, Problem.NATIONALLY_COMMISSIONED)
 
-class LegalModerationFormTests(BaseModerationTestCase):
+class SecondTierModerationFormTests(BaseModerationTestCase):
 
     def setUp(self):
-        super(LegalModerationFormTests, self).setUp()
-        self.login_as(self.legal_moderator)
+        super(SecondTierModerationFormTests, self).setUp()
+        self.login_as(self.second_tier_moderator)
         self.form_values = {
-            'publication_status': self.test_legal_moderation_problem.publication_status,
-            'moderated_description': self.test_legal_moderation_problem.description,
+            'publication_status': self.test_second_tier_moderation_problem.publication_status,
+            'moderated_description': self.test_second_tier_moderation_problem.description,
             'publish': '',
         }
 
-    def test_legal_moderation_form_redirects_to_legal_confirm_url(self):
-        resp = self.client.post(self.legal_problem_form_url, self.form_values)
-        self.assertRedirects(resp, self.legal_confirm_url)
-        resp = self.client.get(self.legal_confirm_url)
-        self.assertContains(resp, self.legal_home_url)
+    def test_second_tier_moderation_form_redirects_to_second_tier_confirm_url(self):
+        resp = self.client.post(self.second_tier_problem_form_url, self.form_values)
+        self.assertRedirects(resp, self.second_tier_confirm_url)
+        resp = self.client.get(self.second_tier_confirm_url)
+        self.assertContains(resp, self.second_tier_home_url)
 
-    def test_legal_moderation_form_sets_requires_legal_moderation_to_false(self):
-        resp = self.client.post(self.legal_problem_form_url, self.form_values)
-        problem = Problem.objects.get(pk=self.test_legal_moderation_problem.id)
-        self.assertEqual(problem.requires_legal_moderation, False)
+    def test_second_tier_moderation_form_sets_requires_second_tier_moderation_to_false(self):
+        resp = self.client.post(self.second_tier_problem_form_url, self.form_values)
+        problem = Problem.objects.get(pk=self.test_second_tier_moderation_problem.id)
+        self.assertEqual(problem.requires_second_tier_moderation, False)
 
-    def test_legal_moderation_form_requires_moderated_description_when_publishing_public_problems(self):
+    def test_second_tier_moderation_form_requires_moderated_description_when_publishing_public_problems(self):
         del self.form_values['moderated_description']
-        resp = self.client.post(self.legal_problem_form_url, self.form_values)
+        resp = self.client.post(self.second_tier_problem_form_url, self.form_values)
         self.assertFormError(resp, 'form', 'moderated_description', 'You must moderate a version of the problem details when publishing public problems.')
 
-    def test_legal_moderation_form_doesnt_require_moderated_description_for_private_problems(self):
-        self.test_legal_moderation_problem.public = False
-        self.test_legal_moderation_problem.save()
+    def test_second_tier_moderation_form_doesnt_require_moderated_description_for_private_problems(self):
+        self.test_second_tier_moderation_problem.public = False
+        self.test_second_tier_moderation_problem.save()
         expected_status = Problem.PUBLISHED
         del self.form_values['moderated_description']
-        resp = self.client.post(self.legal_problem_form_url, self.form_values)
-        problem = Problem.objects.get(pk=self.test_legal_moderation_problem.id)
+        resp = self.client.post(self.second_tier_problem_form_url, self.form_values)
+        problem = Problem.objects.get(pk=self.test_second_tier_moderation_problem.id)
         self.assertEqual(problem.publication_status, expected_status)
 
-    def test_legal_moderation_form_doesnt_require_moderated_description_when_hiding_problems(self):
+    def test_second_tier_moderation_form_doesnt_require_moderated_description_when_hiding_problems(self):
         expected_status = Problem.HIDDEN
         test_form_values = {
             'keep_private': ''
@@ -279,17 +279,17 @@ class LegalModerationFormTests(BaseModerationTestCase):
         self.form_values.update(test_form_values)
         del self.form_values['publish']
         del self.form_values['moderated_description']
-        resp = self.client.post(self.legal_problem_form_url, self.form_values)
-        problem = Problem.objects.get(pk=self.test_legal_moderation_problem.id)
+        resp = self.client.post(self.second_tier_problem_form_url, self.form_values)
+        problem = Problem.objects.get(pk=self.test_second_tier_moderation_problem.id)
         self.assertEqual(problem.publication_status, expected_status)
 
-    def test_legal_moderation_form_sets_publication_status_to_published_when_publish_clicked(self):
+    def test_second_tier_moderation_form_sets_publication_status_to_published_when_publish_clicked(self):
         self.assert_expected_publication_status(Problem.PUBLISHED,
                                                 self.form_values,
-                                                self.legal_problem_form_url,
-                                                self.test_legal_moderation_problem)
+                                                self.second_tier_problem_form_url,
+                                                self.test_second_tier_moderation_problem)
 
-    def test_legal_moderation_form_sets_publication_status_to_private_when_keep_private_clicked(self):
+    def test_second_tier_moderation_form_sets_publication_status_to_private_when_keep_private_clicked(self):
         test_form_values = {
             'keep_private': ''
         }
@@ -297,5 +297,5 @@ class LegalModerationFormTests(BaseModerationTestCase):
         del self.form_values['publish']
         self.assert_expected_publication_status(Problem.HIDDEN,
                                                 self.form_values,
-                                                self.legal_problem_form_url,
-                                                self.test_legal_moderation_problem)
+                                                self.second_tier_problem_form_url,
+                                                self.test_second_tier_moderation_problem)

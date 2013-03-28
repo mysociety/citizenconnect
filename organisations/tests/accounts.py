@@ -151,11 +151,11 @@ class LoginRedirectTests(AuthorizationTestCase):
         resp = self.client.get(self.login_redirect_url)
         self.assertRedirects(resp, moderation_url)
 
-    def test_legal_moderator_goes_to_legal_moderation_homepage(self):
-        legal_moderation_url = reverse('legal-moderate-home')
-        self.login_as(self.legal_moderator)
+    def test_second_tier_moderator_goes_to_second_tier_moderation_homepage(self):
+        second_tier_moderation_url = reverse('second-tier-moderate-home')
+        self.login_as(self.second_tier_moderator)
         resp = self.client.get(self.login_redirect_url)
-        self.assertRedirects(resp, legal_moderation_url)
+        self.assertRedirects(resp, second_tier_moderation_url)
 
     def test_provider_goes_to_provider_dashboard(self):
         dashboard_url = reverse('org-dashboard', kwargs={'ods_code':self.test_organisation.ods_code})

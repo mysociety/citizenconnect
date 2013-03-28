@@ -56,16 +56,16 @@ class ProblemModerationForm(ModerationForm):
 
     commissioned = forms.ChoiceField(widget=RadioSelect(), required=True, choices=Problem.COMMISSIONED_CHOICES)
 
-    def clean_requires_legal_moderation(self):
-        # requires_legal_moderation is hidden, but if people click the "Requires Second Tier Moderation"
+    def clean_requires_second_tier_moderation(self):
+        # requires_second_tier_moderation is hidden, but if people click the "Requires Second Tier Moderation"
         # button, we should set it to True. If they click either "Publish" or "Keep Private",
         # we set it to False.
-        requires_legal_moderation = self.cleaned_data['requires_legal_moderation']
-        if 'now_requires_legal_moderation' in self.data:
-            requires_legal_moderation = True
+        requires_second_tier_moderation = self.cleaned_data['requires_second_tier_moderation']
+        if 'now_requires_second_tier_moderation' in self.data:
+            requires_second_tier_moderation = True
         else:
-            requires_legal_moderation = False
-        return requires_legal_moderation
+            requires_second_tier_moderation = False
+        return requires_second_tier_moderation
 
     def clean_moderated(self):
         # If you are submitting the form, you have moderated it, so always return MODERATED
@@ -79,7 +79,7 @@ class ProblemModerationForm(ModerationForm):
             'moderated_description',
             'moderated',
             'status',
-            'requires_legal_moderation',
+            'requires_second_tier_moderation',
             'breach',
             'commissioned'
         ]
@@ -87,16 +87,16 @@ class ProblemModerationForm(ModerationForm):
         widgets = {
             'publication_status': HiddenInput,
             'moderated': HiddenInput,
-            'requires_legal_moderation': HiddenInput
+            'requires_second_tier_moderation': HiddenInput
         }
 
 # A formset for the responses attached to a problem
 ProblemResponseInlineFormSet = inlineformset_factory(Problem, ProblemResponse, max_num=0, fields=('response',))
 
-class ProblemLegalModerationForm(ModerationForm):
+class ProblemSecondTierModerationForm(ModerationForm):
 
-    def clean_requires_legal_moderation(self):
-        # If you are submitting the form, you have legally moderated it, so always return False
+    def clean_requires_second_tier_moderation(self):
+        # If you are submitting the form, you have second tier moderated it, so always return False
         return False
 
     class Meta:
@@ -105,10 +105,10 @@ class ProblemLegalModerationForm(ModerationForm):
         fields = [
             'publication_status',
             'moderated_description',
-            'requires_legal_moderation'
+            'requires_second_tier_moderation'
         ]
 
         widgets = {
             'publication_status': HiddenInput,
-            'requires_legal_moderation': HiddenInput
+            'requires_second_tier_moderation': HiddenInput
         }
