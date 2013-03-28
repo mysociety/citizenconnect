@@ -7,4 +7,4 @@ set -e
 cd `dirname $0`/..
 source ../virtualenv-citizenconnect/bin/activate
 
-./manage.py email_surveys_to_reporters
+./manage.py $1
