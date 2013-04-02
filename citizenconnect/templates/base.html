@@ -9,10 +9,14 @@
         <meta name="HandheldFriendly" content="True">
         <meta name="MobileOptimized" content="320">
         {% block extra_headers %}{% endblock %}
+        <link rel="stylesheet" href="{% static 'css/leaflet.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/leaflet.rrose.css' %}" />
         <!--[if lte IE 7]>
             <link rel="stylesheet" href="{% static "css/default-ie7.css" %}">
         <![endif]-->
         <!--[if lte IE 8]>
+            <link rel="stylesheet" href="{% static 'css/leaflet.ie.css' %}" />
+            <link rel="stylesheet" href="{% static 'css/leaflet.rrose.ie.css' %}" />
             <link rel="stylesheet" href="{% static "css/default-ie8.css" %}">
         <![endif]-->
         <!--[if gt IE 8]><!-->
