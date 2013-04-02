@@ -4,7 +4,7 @@
         <div class="gw">
             <p class="meta-data__title  g  one-whole">{{ object.organisation|default_if_none:"No particular organisation" }}</p>
             {% if object.issue_type == 'Problem' %}
-                <p class="meta-data__sub-title  g  one-half  palm-one-whole">{{ object.service|default_if_none:"No particular service" }}</p>
+                <p class="meta-data__sub-title  g  one-half  palm-one-whole">{{ object.service|default_if_none:"General problem" }}</p>
                 <p class="g  one-half  palm-one-whole  align-right--not-palm"><span class="meta-data-label">Category</span> {{ object.get_category_display }}</p>
             {% else %}
                 <p class="g  one-whole"><span class="meta-data-label">Category</span> {{ object.get_category_display }}</p>
