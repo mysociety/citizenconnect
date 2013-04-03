@@ -235,22 +235,34 @@ class OrganisationSummary(OrganisationAwareViewMixin,
             count_filters['category'] = category
         context['problems_categories'] = Problem.CATEGORY_CHOICES
 
+        if context['private']:
+            status_rows = Problem.STATUS_CHOICES
+            volume_statuses = Problem.ALL_STATUSES
+        else:
+            status_rows = Problem.VISIBLE_STATUS_CHOICES
+            volume_statuses = Problem.VISIBLE_STATUSES
+        summary_stats_statuses = Problem.VISIBLE_STATUSES
+        count_filters['status'] = tuple(volume_statuses)
         context['problems_total'] = interval_counts(issue_type=Problem,
                                                     filters=count_filters,
                                                     organisation_id=organisation.id)
-
+        count_filters['status'] = tuple(summary_stats_statuses)
+        context['problems_summary_stats'] = interval_counts(issue_type=Problem,
+                                                            filters=count_filters,
+                                                            organisation_id=organisation.id)
         status_list = []
-        if context['private']:
-            status_choices = Problem.STATUS_CHOICES
-        else:
-            status_choices = Problem.VISIBLE_STATUS_CHOICES
-        for status, description in status_choices:
-            count_filters['status'] = status
+        for status, description in status_rows:
+            count_filters['status'] = (status,)
             status_counts = interval_counts(issue_type=Problem,
                                             filters=count_filters,
                                             organisation_id=organisation.id)
             del count_filters['status']
             status_counts['description'] = description
+            status_counts['status'] = status
+            if status in Problem.VISIBLE_STATUSES:
+                status_counts['hidden'] = False
+            else:
+                status_counts['hidden'] = True
             status_list.append(status_counts)
         context['problems_by_status'] = status_list
 
@@ -262,8 +274,7 @@ class OrganisationSummary(OrganisationAwareViewMixin,
                               'average_time_to_acknowledge',
                               'average_time_to_address']
         for attribute in summary_attributes:
-            problem_average = context['problems_total'][attribute]
-            issues_total[attribute] = problem_average
+            issues_total[attribute] = context['problems_summary_stats'][attribute]
         context['issues_total'] = issues_total
 
         return context

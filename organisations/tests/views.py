@@ -1,3 +1,4 @@
+# encoding: utf-8
 import os
 from mock import Mock, MagicMock, patch
 import json
@@ -29,8 +30,8 @@ class OrganisationSummaryTests(AuthorizationTestCase):
         atts.update({'category': 'cleanliness',
                      'happy_service': True,
                      'happy_outcome': None,
-                     'time_to_acknowledge': 51,
-                     'time_to_address': 543})
+                     'time_to_acknowledge': 5100,
+                     'time_to_address': 54300})
         self.cleanliness_problem = create_test_instance(Problem, atts)
         atts.update({'category': 'staff',
                      'happy_service': True,
@@ -42,9 +43,17 @@ class OrganisationSummaryTests(AuthorizationTestCase):
                      'service_id' : self.service.id,
                      'happy_service': False,
                      'happy_outcome': True,
-                     'time_to_acknowledge': 71,
+                     'time_to_acknowledge': 7100,
                      'time_to_address': None})
         self.other_dept_problem = create_test_instance(Problem, atts)
+        atts.update({'category': 'access',
+                     'service_id' : None,
+                     'happy_service': False,
+                     'happy_outcome': False,
+                     'time_to_acknowledge': 2100,
+                     'time_to_address': 2300,
+                     'status': Problem.ABUSIVE})
+        self.hidden_status_access_problem = create_test_instance(Problem, atts)
 
         self.public_summary_url = reverse('public-org-summary', kwargs={'ods_code':self.test_organisation.ods_code,
                                                                         'cobrand': 'choices'})
@@ -63,34 +72,68 @@ class OrganisationSummaryTests(AuthorizationTestCase):
             resp = self.client.get(url)
             self.assertTrue(self.test_organisation.name in resp.content)
 
-    def test_summary_page_has_problems(self):
-        for url in self.urls:
-            self.login_as(self.provider)
-            resp = self.client.get(url)
-            total = resp.context['problems_total']
-            self.assertEqual(total['all_time'], 3)
-            self.assertEqual(total['week'], 3)
-            self.assertEqual(total['four_weeks'], 3)
-            self.assertEqual(total['six_months'], 3)
+    def test_private_summary_page_shows_all_problems(self):
+        self.login_as(self.provider)
+        resp = self.client.get(self.private_summary_url)
+        total = resp.context['problems_total']
+        self.assertEqual(total['all_time'], 4)
+        self.assertEqual(total['week'], 4)
+        self.assertEqual(total['four_weeks'], 4)
+        self.assertEqual(total['six_months'], 4)
 
-            problems_by_status = resp.context['problems_by_status']
-            self.assertEqual(problems_by_status[0]['all_time'], 3)
-            self.assertEqual(problems_by_status[0]['week'], 3)
-            self.assertEqual(problems_by_status[0]['four_weeks'], 3)
-            self.assertEqual(problems_by_status[0]['six_months'], 3)
-            self.assertEqual(problems_by_status[0]['description'], 'Open')
+        problems_by_status = resp.context['problems_by_status']
+        self.assertEqual(problems_by_status[0]['all_time'], 3)
+        self.assertEqual(problems_by_status[0]['week'], 3)
+        self.assertEqual(problems_by_status[0]['four_weeks'], 3)
+        self.assertEqual(problems_by_status[0]['six_months'], 3)
+        self.assertEqual(problems_by_status[0]['description'], 'Open')
 
-            self.assertEqual(problems_by_status[1]['all_time'], 0)
-            self.assertEqual(problems_by_status[1]['week'], 0)
-            self.assertEqual(problems_by_status[1]['four_weeks'], 0)
-            self.assertEqual(problems_by_status[1]['six_months'], 0)
-            self.assertEqual(problems_by_status[1]['description'], 'In Progress')
+        self.assertEqual(problems_by_status[1]['all_time'], 0)
+        self.assertEqual(problems_by_status[1]['week'], 0)
+        self.assertEqual(problems_by_status[1]['four_weeks'], 0)
+        self.assertEqual(problems_by_status[1]['six_months'], 0)
+        self.assertEqual(problems_by_status[1]['description'], 'In Progress')
 
-            self.assertEqual(problems_by_status[2]['all_time'], 0)
-            self.assertEqual(problems_by_status[2]['week'], 0)
-            self.assertEqual(problems_by_status[2]['four_weeks'], 0)
-            self.assertEqual(problems_by_status[2]['six_months'], 0)
-            self.assertEqual(problems_by_status[2]['description'], 'Resolved')
+        self.assertEqual(problems_by_status[2]['all_time'], 0)
+        self.assertEqual(problems_by_status[2]['week'], 0)
+        self.assertEqual(problems_by_status[2]['four_weeks'], 0)
+        self.assertEqual(problems_by_status[2]['six_months'], 0)
+        self.assertEqual(problems_by_status[2]['description'], 'Resolved')
+
+        self.assertEqual(problems_by_status[7]['all_time'], 1)
+        self.assertEqual(problems_by_status[7]['week'], 1)
+        self.assertEqual(problems_by_status[7]['four_weeks'], 1)
+        self.assertEqual(problems_by_status[7]['six_months'], 1)
+        self.assertEqual(problems_by_status[7]['description'], 'Abusive/Vexatious')
+
+    def test_public_summary_page_only_shows_visible_problems(self):
+        self.login_as(self.provider)
+        resp = self.client.get(self.public_summary_url)
+        total = resp.context['problems_total']
+        self.assertEqual(total['all_time'], 3)
+        self.assertEqual(total['week'], 3)
+        self.assertEqual(total['four_weeks'], 3)
+        self.assertEqual(total['six_months'], 3)
+
+        problems_by_status = resp.context['problems_by_status']
+        self.assertEqual(problems_by_status[0]['all_time'], 3)
+        self.assertEqual(problems_by_status[0]['week'], 3)
+        self.assertEqual(problems_by_status[0]['four_weeks'], 3)
+        self.assertEqual(problems_by_status[0]['six_months'], 3)
+        self.assertEqual(problems_by_status[0]['description'], 'Open')
+
+        self.assertEqual(problems_by_status[1]['all_time'], 0)
+        self.assertEqual(problems_by_status[1]['week'], 0)
+        self.assertEqual(problems_by_status[1]['four_weeks'], 0)
+        self.assertEqual(problems_by_status[1]['six_months'], 0)
+        self.assertEqual(problems_by_status[1]['description'], 'In Progress')
+
+        self.assertEqual(problems_by_status[2]['all_time'], 0)
+        self.assertEqual(problems_by_status[2]['week'], 0)
+        self.assertEqual(problems_by_status[2]['four_weeks'], 0)
+        self.assertEqual(problems_by_status[2]['six_months'], 0)
+        self.assertEqual(problems_by_status[2]['description'], 'Resolved')
+
 
     def test_summary_page_applies_problem_category_filter(self):
         for url in self.urls:
@@ -121,7 +164,7 @@ class OrganisationSummaryTests(AuthorizationTestCase):
             self.assertEqual(problems_by_status[0]['four_weeks'], 1)
             self.assertEqual(problems_by_status[0]['six_months'], 1)
 
-    def test_summary_page_gets_survey_data(self):
+    def test_summary_page_gets_survey_data_for_problems_in_visible_statuses(self):
         for url in self.urls:
             self.login_as(self.provider)
             resp = self.client.get(url)
@@ -129,13 +172,13 @@ class OrganisationSummaryTests(AuthorizationTestCase):
             self.assertEqual(issues_total['happy_service'], 0.666666666666667)
             self.assertEqual(issues_total['happy_outcome'], 1.0)
 
-    def test_summary_page_gets_time_limit_data(self):
+    def test_summary_page_gets_time_limit_data_for_problems_in_visible_statuses(self):
         for url in self.urls:
             self.login_as(self.provider)
             resp = self.client.get(url)
             issues_total = resp.context['issues_total']
-            self.assertEqual(issues_total['average_time_to_acknowledge'], Decimal('61.0000000000000000'))
-            self.assertEqual(issues_total['average_time_to_address'], Decimal('543.0000000000000000000'))
+            self.assertEqual(issues_total['average_time_to_acknowledge'], Decimal('6100.0000000000000000'))
+            self.assertEqual(issues_total['average_time_to_address'], Decimal('54300.0000000000000000000'))
 
     def test_public_summary_page_shows_only_visible_status_rows(self):
         resp = self.client.get(self.public_summary_url)
@@ -149,6 +192,33 @@ class OrganisationSummaryTests(AuthorizationTestCase):
         self.assertContains(resp, 'Resolved', count=1, status_code=200)
         self.assertContains(resp, 'Unable to Resolve', count=1)
         self.assertContains(resp, 'Abusive/Vexatious', count=1)
+
+    def test_summary_page_does_not_include_problems_in_hidden_statuses_in_total_row_summary_stats(self):
+        for url in self.urls:
+            self.login_as(self.provider)
+            resp = self.client.get(url)
+            summary_stats = resp.context['problems_summary_stats']
+            self.assertEqual(summary_stats['happy_service'], 0.666666666666667)
+            self.assertEqual(summary_stats['happy_outcome'], 1.0)
+            self.assertEqual(summary_stats['average_time_to_acknowledge'], Decimal('6100.0000000000000000'))
+            self.assertEqual(summary_stats['average_time_to_address'], Decimal('54300.0000000000000000000'))
+
+    def test_summary_pages_display_summary_stats_values_in_visible_status_rows(self):
+        for url in self.urls:
+            self.login_as(self.provider)
+            resp = self.client.get(url)
+            self.assertContains(resp, '<td id="status_0_time_to_acknowledge">4</td>')
+            self.assertContains(resp, '<td class="separator" id="status_0_time_to_address">38</td>')
+            self.assertContains(resp, '<td id="status_0_happy_service">67%</td>')
+            self.assertContains(resp, '<td id="status_0_happy_outcome">100%</td>')
+
+    def test_private_summary_page_does_not_display_summary_stats_values_in_hidden_status_rows(self):
+        self.login_as(self.provider)
+        resp = self.client.get(self.private_summary_url)
+        self.assertContains(resp, '<td id="status_7_time_to_acknowledge">—</td>')
+        self.assertContains(resp, '<td class="separator" id="status_7_time_to_address">—</td>')
+        self.assertContains(resp, '<td id="status_7_happy_service">—</td>')
+        self.assertContains(resp, '<td id="status_7_happy_outcome">—</td>')
 
     def test_public_summary_page_is_accessible_to_everyone(self):
         resp = self.client.get(self.public_summary_url)
