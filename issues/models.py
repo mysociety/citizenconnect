@@ -166,11 +166,14 @@ class ProblemManager(models.Manager):
 
     def open_moderated_published_problems(self):
         return self.open_problems().filter(moderated=Problem.MODERATED,
-                                           publication_status=Problem.PUBLISHED)
+                                           publication_status=Problem.PUBLISHED,
+                                           status__in=Problem.VISIBLE_STATUSES)
 
     def all_moderated_published_problems(self):
         return super(ProblemManager, self).all().filter(moderated=Problem.MODERATED,
-                                                        publication_status=Problem.PUBLISHED)
+                                                        publication_status=Problem.PUBLISHED,
+                                                        status__in=Problem.VISIBLE_STATUSES)
+
 
     def problems_requiring_second_tier_moderation(self):
         return super(ProblemManager, self).all().filter(requires_second_tier_moderation=True)
@@ -319,11 +322,14 @@ class Problem(IssueModel):
     def can_be_accessed_by(self, user):
         """
         Whether or not an issue is accessible to a given user.
-        In practice the issue is publically accessible to everyone if it's public
-        and has been moderated to be publically available, otherwise only people
-        with access to the organisation it is assigned to can access it.
+        In practice the issue is publically accessible to everyone if it's public,
+        in a visible status and has been moderated to be publically available,
+        otherwise only people with access to the organisation it is assigned to can access it.
         """
-        return (self.public and self.publication_status == Problem.PUBLISHED) or self.organisation.can_be_accessed_by(user)
+        return (self.public \
+                and self.publication_status == Problem.PUBLISHED and \
+                int(self.status) in Problem.VISIBLE_STATUSES) \
+                or self.organisation.can_be_accessed_by(user)
 
     def set_time_to_values(self):
         now = datetime.utcnow().replace(tzinfo=utc)

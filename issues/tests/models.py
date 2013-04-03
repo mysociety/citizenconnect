@@ -49,6 +49,17 @@ class ProblemTestCase(AuthorizationTestCase):
                                             public_reporter_name=False,
                                             preferred_contact_method=Problem.CONTACT_EMAIL,
                                             status=Problem.NEW)
+        self.test_hidden_status_problem = Problem(organisation=self.test_organisation,
+                                                  description='A Test Hidden Problem',
+                                                  category='cleanliness',
+                                                  reporter_name='Test User',
+                                                  reporter_email='reporter@example.com',
+                                                  reporter_phone='01111 111 111',
+                                                  public=True,
+                                                  public_reporter_name=True,
+                                                  preferred_contact_method=Problem.CONTACT_EMAIL,
+                                                  status=Problem.ABUSIVE,
+                                                  publication_status=Problem.PUBLISHED)
 
 class ProblemModelTests(ProblemTestCase):
 
@@ -159,6 +170,28 @@ class ProblemModelTests(ProblemTestCase):
 
     def test_unmoderated_problem_accessible_to_pals_user(self):
         self.assertTrue(self.test_problem.can_be_accessed_by(self.pals))
+
+    def test_hidden_status_problem_accessible_to_allowed_user(self):
+        self.assertTrue(self.test_hidden_status_problem.can_be_accessed_by(self.provider))
+
+    def test_hidden_status_problem_inaccessible_to_anon_user(self):
+        self.assertFalse(self.test_hidden_status_problem.can_be_accessed_by(self.anonymous_user))
+
+    def test_hidden_status_problem_inaccessible_to_other_provider_user(self):
+        self.assertFalse(self.test_hidden_status_problem.can_be_accessed_by(self.other_provider))
+
+    def test_hidden_status_problem_inaccessible_to_other_ccg_user(self):
+        self.assertFalse(self.test_hidden_status_problem.can_be_accessed_by(self.other_ccg_user))
+
+    def test_hidden_status_problem_accessible_to_superusers(self):
+        for user in self.users_who_can_access_everything:
+            self.assertTrue(self.test_hidden_status_problem.can_be_accessed_by(user))
+
+    def test_hidden_status_problem_accessible_to_pals_user(self):
+        self.assertTrue(self.test_hidden_status_problem.can_be_accessed_by(self.pals))
+
+    def test_hidden_status_problem_accessible_to_ccg_user(self):
+        self.assertTrue(self.test_hidden_status_problem.can_be_accessed_by(self.ccg_user))
 
     def test_timedelta_to_minutes(self):
         t = timedelta(minutes=30)
@@ -436,6 +469,25 @@ class ProblemManagerTests(ManagerTest):
             'publication_status': Problem.HIDDEN
         })
 
+        # Problems in hidden statuses
+        self.public_published_unresolvable_problem = create_test_instance(Problem, {
+            'organisation': self.test_organisation,
+            'public': True,
+            'moderated': Problem.MODERATED,
+            'publication_status': Problem.PUBLISHED,
+            'status': Problem.UNABLE_TO_RESOLVE
+        })
+
+        self.public_published_abusive_problem = create_test_instance(Problem, {
+            'organisation': self.test_organisation,
+            'public': True,
+            'moderated': Problem.MODERATED,
+            'publication_status': Problem.PUBLISHED,
+            'status': Problem.ABUSIVE
+        })
+
+
+
         # Intermediate helper lists
         self.open_unmoderated_problems = [self.new_public_unmoderated_problem,
                                           self.new_private_unmoderated_problem,
@@ -453,7 +505,9 @@ class ProblemManagerTests(ManagerTest):
         self.closed_problems = self.closed_unmoderated_problems + [self.closed_public_moderated_problem_hidden,
                                                                    self.closed_public_moderated_problem_published,
                                                                    self.closed_private_moderated_problem_hidden,
-                                                                   self.closed_private_moderated_problem_published]
+                                                                   self.closed_private_moderated_problem_published,
+                                                                   self.public_published_unresolvable_problem,
+                                                                   self.public_published_abusive_problem]
 
         # Lists that we expect from our manager's methods
         self.unmoderated_problems = self.open_unmoderated_problems + self.closed_unmoderated_problems
