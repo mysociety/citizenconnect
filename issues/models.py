@@ -188,18 +188,31 @@ class Problem(IssueModel):
     ACKNOWLEDGED = 1
     RESOLVED = 2
     ESCALATED = 3
+    UNABLE_TO_RESOLVE = 4
+    REFERRED = 5
+    UNABLE_TO_CONTACT = 6
+    ABUSIVE = 7
 
     STATUS_CHOICES = (
         (NEW, 'Open'),
         (ACKNOWLEDGED, 'In Progress'),
         (RESOLVED, 'Resolved'),
-        (ESCALATED, 'Escalated')
+        (ESCALATED, 'Escalated'),
+        (UNABLE_TO_RESOLVE, 'Unable to Resolve'),
+        (REFERRED, 'Referred to Another Provider'),
+        (UNABLE_TO_CONTACT, 'Unable to Contact'),
+        (ABUSIVE, 'Abusive/Vexatious')
     )
 
+    # Assigning individual statuses to status classes
     BASE_OPEN_STATUSES = [NEW, ACKNOWLEDGED]
     ESCALATION_STATUSES = [ESCALATED]
+    HIDDEN_STATUSES = [UNABLE_TO_RESOLVE, REFERRED, UNABLE_TO_CONTACT, ABUSIVE]
 
+    # Calculated status classes
+    ALL_STATUSES = [status for status, description in STATUS_CHOICES]
     OPEN_STATUSES = BASE_OPEN_STATUSES + ESCALATION_STATUSES
+    VISIBLE_STATUSES = [status for status in ALL_STATUSES if status not in HIDDEN_STATUSES]
 
     PREFIX = 'P'
 
