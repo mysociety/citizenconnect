@@ -26,7 +26,8 @@ def _average_value_clause(issue_table, field, alias):
     return clause
 
 # Return counts for an organisation or a set of organisations for the last week, four week
-# and six months based on created date and filters
+# and six months based on created date and filters. Filter values can be specified as a single value
+# or a tuple of values.
 def interval_counts(issue_type, filters={}, sort='name', organisation_id=None):
     cursor = connection.cursor()
     issue_table = issue_type._meta.db_table
@@ -71,7 +72,9 @@ def interval_counts(issue_type, filters={}, sort='name', organisation_id=None):
     for criteria in ['status', 'service_id', 'category']:
         value = filters.get(criteria)
         if value != None:
-            criteria_clauses.append(issue_table + "." + criteria + " = %s""")
+            if type(value) != tuple:
+                value = (value,)
+            criteria_clauses.append(issue_table + "." + criteria + " in %s""")
             params.append(value)
 
     service_code = filters.get('service_code')
@@ -79,9 +82,11 @@ def interval_counts(issue_type, filters={}, sort='name', organisation_id=None):
         if organisation_id:
             raise NotImplementedError("Filtering for service on a single organisation uses service_id, not service_code")
         else:
+            if type(service_code) != tuple:
+                service_code = (service_code,)
             extra_tables.append('organisations_service')
             criteria_clauses.append("organisations_service.id = %s.service_id" % issue_table)
-            criteria_clauses.append("organisations_service.service_code = %s")
+            criteria_clauses.append("organisations_service.service_code in %s")
             params.append(service_code)
 
     organisation_type = filters.get('organisation_type')
@@ -89,7 +94,9 @@ def interval_counts(issue_type, filters={}, sort='name', organisation_id=None):
         if organisation_id:
              raise NotImplementedError("Filtering for an organisation type is unnecessary for a single organisation")
         else:
-             criteria_clauses.append("organisations_organisation.organisation_type = %s")
+             if type(organisation_type) != tuple:
+                organisation_type = (organisation_type,)
+             criteria_clauses.append("organisations_organisation.organisation_type in %s")
              params.append(organisation_type)
 
     # Group by clauses to go with the non-aggregate selects

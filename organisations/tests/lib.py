@@ -117,8 +117,8 @@ class IntervalCountsTest(TestCase):
         # Create a spread of problems over time for two organisations
         problem_ages = {3: {'time_to_acknowledge' : 24, 'time_to_address': 220},
                         4: {'time_to_acknowledge' : 32, 'time_to_address': 102},
-                        5: {'happy_outcome': True, 'happy_service': True},
-                        21: {'happy_outcome': False},
+                        5: {'happy_outcome': True, 'happy_service': True, 'status': Problem.ABUSIVE},
+                        21: {'happy_outcome': False, 'status': Problem.UNABLE_TO_RESOLVE},
                         22: {'service_id': self.test_org_injuries.id},
                         45: {'time_to_acknowledge' : 12, 'time_to_address': 400}}
 
@@ -215,6 +215,25 @@ class IntervalCountsTest(TestCase):
                             'average_time_to_address': None }]
         self.assertEqual(expected_counts, interval_counts(issue_type=Problem,
                                                           filters=filters))
+
+    def test_filter_by_statuses(self):
+        filters = {'status': (Problem.UNABLE_TO_RESOLVE, Problem.ABUSIVE,)}
+        expected_counts = [{'week': 1,
+                           'four_weeks': 2,
+                           'id': self.test_organisation.id,
+                           'name': 'Test Organisation',
+                           'ods_code': 'XXX999',
+                           'six_months': 2,
+                           'all_time': 2,
+                           'happy_outcome': 0.5,
+                           'happy_outcome_count': 2,
+                           'happy_service': 1.0,
+                           'happy_service_count': 1,
+                           'average_time_to_acknowledge': None,
+                           'average_time_to_address': None}]
+        actual = interval_counts(issue_type=Problem, filters=filters)
+        self.assertEqual(expected_counts, actual)
+
 
 class AuthorizationTestCase(TestCase):
     """
