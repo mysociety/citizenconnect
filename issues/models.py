@@ -207,15 +207,16 @@ class Problem(IssueModel):
         (ABUSIVE, 'Abusive/Vexatious')
     )
 
-    # Assigning individual statuses to status classes
+    # Assigning individual statuses to status sets
     BASE_OPEN_STATUSES = [NEW, ACKNOWLEDGED]
     ESCALATION_STATUSES = [ESCALATED]
     HIDDEN_STATUSES = [UNABLE_TO_RESOLVE, REFERRED, UNABLE_TO_CONTACT, ABUSIVE]
 
-    # Calculated status classes
+    # Calculated status sets
     ALL_STATUSES = [status for status, description in STATUS_CHOICES]
     OPEN_STATUSES = BASE_OPEN_STATUSES + ESCALATION_STATUSES
     VISIBLE_STATUSES = [status for status in ALL_STATUSES if status not in HIDDEN_STATUSES]
+    VISIBLE_STATUS_CHOICES = [(status, description) for status, description in STATUS_CHOICES if status in VISIBLE_STATUSES]
 
     PREFIX = 'P'
 

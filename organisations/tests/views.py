@@ -137,6 +137,19 @@ class OrganisationSummaryTests(AuthorizationTestCase):
             self.assertEqual(issues_total['average_time_to_acknowledge'], Decimal('61.0000000000000000'))
             self.assertEqual(issues_total['average_time_to_address'], Decimal('543.0000000000000000000'))
 
+    def test_public_summary_page_shows_only_visible_status_rows(self):
+        resp = self.client.get(self.public_summary_url)
+        self.assertContains(resp, 'Resolved', count=1, status_code=200)
+        self.assertNotContains(resp, 'Unable to Resolve')
+        self.assertNotContains(resp, 'Abusive/Vexatious')
+
+    def test_private_summary_page_shows_visible_and_hidden_status_rows(self):
+        self.login_as(self.provider)
+        resp = self.client.get(self.private_summary_url)
+        self.assertContains(resp, 'Resolved', count=1, status_code=200)
+        self.assertContains(resp, 'Unable to Resolve', count=1)
+        self.assertContains(resp, 'Abusive/Vexatious', count=1)
+
     def test_public_summary_page_is_accessible_to_everyone(self):
         resp = self.client.get(self.public_summary_url)
         self.assertEqual(resp.status_code, 200)
@@ -477,15 +490,18 @@ class OrganisationMapTests(AuthorizationTestCase):
         self.assertEqual(response_json[1]['ods_code'], self.other_gp.ods_code)
         self.assertEqual(response_json[1]['problem_count'], 0)
 
-    def test_public_map_doesnt_include_unmoderated_or_unpublished_problems(self):
+    def test_public_map_doesnt_include_unmoderated_or_unpublished_or_hidden_status_problems(self):
         create_test_instance(Problem, {'organisation': self.other_gp})
         create_test_instance(Problem, {'organisation': self.other_gp,
                                        'publication_status': Problem.HIDDEN,
                                        'moderated': Problem.MODERATED})
         create_test_instance(Problem, {'organisation': self.other_gp,
                                        'publication_status': Problem.PUBLISHED,
+                                       'moderated': Problem.MODERATED,
+                                       'status': Problem.ABUSIVE})
+        create_test_instance(Problem, {'organisation': self.other_gp,
+                                       'publication_status': Problem.PUBLISHED,
                                        'moderated': Problem.MODERATED})
-
 
         resp = self.client.get(self.map_url)
         response_json = json.loads(resp.context['organisations'])
@@ -515,6 +531,10 @@ class OrganisationMapTests(AuthorizationTestCase):
         create_test_instance(Problem, {'organisation': self.other_gp,
                                        'publication_status': Problem.HIDDEN,
                                        'moderated': Problem.MODERATED})
+        create_test_instance(Problem, {'organisation': self.other_gp,
+                                       'publication_status': Problem.PUBLISHED,
+                                       'moderated': Problem.MODERATED,
+                                       'status': Problem.ABUSIVE})
         create_test_instance(Problem, {'organisation': self.other_gp,
                                        'publication_status': Problem.PUBLISHED,
                                        'moderated': Problem.MODERATED})

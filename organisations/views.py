@@ -240,7 +240,11 @@ class OrganisationSummary(OrganisationAwareViewMixin,
                                                     organisation_id=organisation.id)
 
         status_list = []
-        for status, description in Problem.STATUS_CHOICES:
+        if context['private']:
+            status_choices = Problem.STATUS_CHOICES
+        else:
+            status_choices = Problem.VISIBLE_STATUS_CHOICES
+        for status, description in status_choices:
             count_filters['status'] = status
             status_counts = interval_counts(issue_type=Problem,
                                             filters=count_filters,
