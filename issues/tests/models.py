@@ -2,9 +2,12 @@ from datetime import datetime, timedelta
 from random import randint
 from mock import patch
 
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
 from django.core.exceptions import ValidationError
 from django.utils.timezone import utc
+
+from concurrency.exceptions import RecordModifiedError
+from concurrency.utils import ConcurrencyTestMixin
 
 from organisations.tests.lib import create_test_organisation, create_test_instance, AuthorizationTestCase
 
@@ -239,6 +242,24 @@ class ProblemModelTimeToTests(ProblemTestCase):
         self.test_problem.status = Problem.ESCALATED
         self.test_problem.save()
         self.assertEqual(self.test_problem.time_to_address, None)
+
+
+class ProblemModelConcurrencyTests(TransactionTestCase, ConcurrencyTestMixin):
+
+    def setUp(self):
+        self.test_organisation = create_test_organisation()
+        # These are needed for ConcurrencyTestMixin to run its' tests
+        self.concurrency_model = Problem
+        self.concurrency_kwargs = {'organisation': self.test_organisation,
+                            'description': 'A Test Problem',
+                            'category': 'cleanliness',
+                            'reporter_name': 'Test User',
+                            'reporter_email': 'reporter@example.com',
+                            'reporter_phone': '01111 111 111',
+                            'public': True,
+                            'public_reporter_name': True,
+                            'preferred_contact_method': Problem.CONTACT_EMAIL,
+                            'status': Problem.NEW}
 
 
 class QuestionModelTests(TestCase):

@@ -2,6 +2,9 @@
 from django.test import TestCase, TransactionTestCase
 from django.core.urlresolvers import reverse
 
+from concurrency.utils import ConcurrencyTestMixin
+from concurrency.exceptions import RecordModifiedError
+
 # App imports
 from issues.models import Problem, Question
 from organisations.tests.lib import create_test_instance, create_test_organisation, AuthorizationTestCase
@@ -151,3 +154,11 @@ class ResponseFormViewTests(AuthorizationTestCase):
         self.login_as(self.other_ccg_user)
         resp = self.client.get(self.response_form_url)
         self.assertEqual(resp.status_code, 403)
+
+class ResponseModelTests(TransactionTestCase, ConcurrencyTestMixin):
+
+    def setUp(self):
+        self.problem = create_test_instance(Problem, {})
+        # These are needed for ConcurrencyTestMixin to run its' tests
+        self.concurrency_model = ProblemResponse
+        self.concurrency_kwargs = {'response': 'A response', 'issue': self.problem}
