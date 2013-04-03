@@ -213,7 +213,7 @@ class PickProviderBase(ListView):
 
 class OrganisationSummary(OrganisationAwareViewMixin,
                           TemplateView):
-    template_name = 'organisations/organisation-summary.html'
+    template_name = 'organisations/organisation_summary.html'
 
     def get_context_data(self, **kwargs):
         context = super(OrganisationSummary, self).get_context_data(**kwargs)
