@@ -536,7 +536,7 @@ class OrganisationMapTests(AuthorizationTestCase):
 
     def setUp(self):
         super(OrganisationMapTests, self).setUp()
-        self.gp = self.test_organisation
+        self.hospital = self.test_organisation
         self.other_gp = self.other_test_organisation
         self.map_url = reverse('org-map', kwargs={'cobrand':'choices'})
         self.private_map_url = reverse('private-map')
@@ -555,7 +555,7 @@ class OrganisationMapTests(AuthorizationTestCase):
         resp = self.client.get(self.map_url)
         response_json = json.loads(resp.context['organisations'])
         self.assertEqual(len(response_json), 2)
-        self.assertEqual(response_json[0]['ods_code'], self.gp.ods_code)
+        self.assertEqual(response_json[0]['ods_code'], self.hospital.ods_code)
         self.assertEqual(response_json[0]['problem_count'], 0)
         self.assertEqual(response_json[1]['ods_code'], self.other_gp.ods_code)
         self.assertEqual(response_json[1]['problem_count'], 0)
@@ -615,7 +615,7 @@ class OrganisationMapTests(AuthorizationTestCase):
         self.assertEqual(response_json[1]['problem_count'], 3)
 
     def test_public_map_provider_urls_are_to_public_summary_pages(self):
-        expected_gp_url = reverse('public-org-summary', kwargs={'ods_code':self.gp.ods_code, 'cobrand':'choices'})
+        expected_gp_url = reverse('public-org-summary', kwargs={'ods_code':self.hospital.ods_code, 'cobrand':'choices'})
         expected_other_gp_url = reverse('public-org-summary', kwargs={'ods_code':self.other_gp.ods_code, 'cobrand':'choices'})
 
         resp = self.client.get(self.map_url)
@@ -626,7 +626,7 @@ class OrganisationMapTests(AuthorizationTestCase):
 
     def test_private_map_provider_urls_are_to_private_dashboards(self):
         self.login_as(self.nhs_superuser)
-        expected_gp_url = reverse('org-dashboard', kwargs={'ods_code':self.gp.ods_code})
+        expected_gp_url = reverse('org-dashboard', kwargs={'ods_code':self.hospital.ods_code})
         expected_other_gp_url = reverse('org-dashboard', kwargs={'ods_code':self.other_gp.ods_code})
 
         resp = self.client.get(self.private_map_url)
