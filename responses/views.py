@@ -37,7 +37,6 @@ class ResponseForm(CreateView):
 
     def get(self, request, *args, **kwargs):
         response = super(ResponseForm, self).get(request, *args, **kwargs)
-        self.request = request
         self.set_issue_version_in_session()
         return response
 
