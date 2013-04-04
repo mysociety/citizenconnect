@@ -7,6 +7,7 @@ from decimal import Decimal
 
 # Django imports
 from django.test import TestCase
+from django.test.utils import override_settings
 from django.contrib.gis.geos import Point
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -635,6 +636,7 @@ class OrganisationMapTests(AuthorizationTestCase):
         self.assertEqual(response_json[0]['url'], expected_gp_url)
         self.assertEqual(response_json[1]['url'], expected_other_gp_url)
 
+@override_settings(SUMMARY_THRESHOLD=None)
 class SummaryTests(AuthorizationTestCase):
 
     def setUp(self):
@@ -665,6 +667,15 @@ class SummaryTests(AuthorizationTestCase):
         self.assertContains(resp, 'Test Organisation')
         self.assertNotContains(resp, 'Other Test Organisation')
         self.assertContains(resp, '<td class="week">1</td>', count=1, status_code=200)
+
+    def test_summary_page_applies_threshold_from_settings(self):
+        with self.settings(SUMMARY_THRESHOLD=('six_months', 1)):
+            resp = self.client.get(self.summary_url)
+            self.assertContains(resp, 'Test Organisation')
+
+        with self.settings(SUMMARY_THRESHOLD=('six_months', 2)):
+            resp = self.client.get(self.summary_url)
+            self.assertNotContains(resp, 'Test Organisation')
 
 class ProviderPickerTests(TestCase):
 

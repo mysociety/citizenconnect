@@ -309,7 +309,12 @@ class Summary(FilterMixin, TemplateView):
         if not context['filters'].get('status'):
         # by default the status should filter for visible statuses
             context['filters']['status'] = tuple(Problem.VISIBLE_STATUSES)
-        organisation_rows = interval_counts(issue_type=Problem, filters=context['filters'])
+        threshold = None
+        if settings.SUMMARY_THRESHOLD:
+            threshold = settings.SUMMARY_THRESHOLD
+        organisation_rows = interval_counts(issue_type=Problem,
+                                            filters=context['filters'],
+                                            threshold=threshold)
         organisations_table = NationalSummaryTable(organisation_rows, cobrand=kwargs['cobrand'])
         RequestConfig(self.request, paginate={"per_page": 8}).configure(organisations_table)
         context['table'] = organisations_table

@@ -234,6 +234,39 @@ class IntervalCountsTest(TestCase):
         actual = interval_counts(issue_type=Problem, filters=filters)
         self.assertEqual(expected_counts, actual)
 
+    def test_applies_interval_count_threshold_to_overall_counts(self):
+        expected_counts = [{'week': 3,
+                           'four_weeks': 5,
+                           'id': self.test_organisation.id,
+                           'name': 'Test Organisation',
+                           'ods_code': 'XXX999',
+                           'six_months': 6,
+                           'all_time': 6,
+                           'happy_outcome': 0.5,
+                           'happy_outcome_count': 2,
+                           'happy_service': 1.0,
+                           'happy_service_count': 1,
+                           'average_time_to_acknowledge': Decimal('22.6666666666666667'),
+                           'average_time_to_address': Decimal('240.6666666666666667')}]
+        actual = interval_counts(issue_type=Problem, filters={}, threshold=('six_months', 6))
+        self.assertEqual(expected_counts, actual)
+
+    def test_applies_all_time_interval_count_threshold_to_overall_counts(self):
+        expected_counts = [{'week': 3,
+                           'four_weeks': 5,
+                           'id': self.test_organisation.id,
+                           'name': 'Test Organisation',
+                           'ods_code': 'XXX999',
+                           'six_months': 6,
+                           'all_time': 6,
+                           'happy_outcome': 0.5,
+                           'happy_outcome_count': 2,
+                           'happy_service': 1.0,
+                           'happy_service_count': 1,
+                           'average_time_to_acknowledge': Decimal('22.6666666666666667'),
+                           'average_time_to_address': Decimal('240.6666666666666667')}]
+        actual = interval_counts(issue_type=Problem, filters={}, threshold=('all_time', 6))
+        self.assertEqual(expected_counts, actual)
 
 class AuthorizationTestCase(TestCase):
     """
