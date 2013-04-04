@@ -29,8 +29,8 @@ from .tables import NationalSummaryTable, IssueModelTable, ExtendedIssueModelTab
 
 class PrivateViewMixin(object):
     """
-    Mixin for views which live at both /private urls and other
-    urls, and need to know which is currently being requested.
+    Mixin for views which need access to a context variable indicating whether the view
+    is being accessed in a private context, only accessible to logged-in users.
     """
 
     def get_context_data(self, **kwargs):
@@ -78,7 +78,7 @@ class IssueListMixin(OrganisationAwareViewMixin):
         context['page_obj'] = issue_table.page
         return context
 
-class FilterMixin(object):
+class FilterMixin(PrivateViewMixin):
     """
     Mixin for views which have some or all of the standard set of filters
     """
@@ -87,8 +87,12 @@ class FilterMixin(object):
         context = super(FilterMixin, self).get_context_data(**kwargs)
 
         # Set up the data for the filters
-        context['problem_categories'] = Problem.CATEGORY_CHOICES
-        context['problem_statuses'] = Problem.STATUS_CHOICES
+        context['categories'] = Problem.CATEGORY_CHOICES
+        if context['private']:
+            context['statuses'] = Problem.STATUS_CHOICES
+        else:
+            context['statuses'] = Problem.VISIBLE_STATUS_CHOICES
+
         context['organisation_types'] = settings.ORGANISATION_CHOICES
         context['services'] = Service.service_codes()
         context['ccgs'] = CCG.objects.all()
@@ -100,9 +104,8 @@ class FilterMixin(object):
             filters['service_code'] = selected_service
 
         # Category filter
-        category = self.request.GET.get('problem_category')
+        category = self.request.GET.get('category')
         if category in dict(Problem.CATEGORY_CHOICES):
-            filters['problem_category'] = category
             filters['category'] = category
 
         # Organisation type filter
@@ -111,9 +114,8 @@ class FilterMixin(object):
             filters['organisation_type'] = organisation_type
 
         # Status filter
-        status = self.request.GET.get('problem_status')
+        status = self.request.GET.get('status')
         if status and status != 'all' and int(status) in dict(Problem.STATUS_CHOICES):
-            filters['problem_status'] = int(status)
             filters['status'] = int(status)
 
         # CCG Filter
@@ -213,7 +215,7 @@ class PickProviderBase(ListView):
 
 class OrganisationSummary(OrganisationAwareViewMixin,
                           TemplateView):
-    template_name = 'organisations/organisation-summary.html'
+    template_name = 'organisations/organisation_summary.html'
 
     def get_context_data(self, **kwargs):
         context = super(OrganisationSummary, self).get_context_data(**kwargs)
@@ -235,18 +237,34 @@ class OrganisationSummary(OrganisationAwareViewMixin,
             count_filters['category'] = category
         context['problems_categories'] = Problem.CATEGORY_CHOICES
 
+        if context['private']:
+            status_rows = Problem.STATUS_CHOICES
+            volume_statuses = Problem.ALL_STATUSES
+        else:
+            status_rows = Problem.VISIBLE_STATUS_CHOICES
+            volume_statuses = Problem.VISIBLE_STATUSES
+        summary_stats_statuses = Problem.VISIBLE_STATUSES
+        count_filters['status'] = tuple(volume_statuses)
         context['problems_total'] = interval_counts(issue_type=Problem,
                                                     filters=count_filters,
                                                     organisation_id=organisation.id)
-
+        count_filters['status'] = tuple(summary_stats_statuses)
+        context['problems_summary_stats'] = interval_counts(issue_type=Problem,
+                                                            filters=count_filters,
+                                                            organisation_id=organisation.id)
         status_list = []
-        for status, description in Problem.STATUS_CHOICES:
-            count_filters['status'] = status
+        for status, description in status_rows:
+            count_filters['status'] = (status,)
             status_counts = interval_counts(issue_type=Problem,
                                             filters=count_filters,
                                             organisation_id=organisation.id)
             del count_filters['status']
             status_counts['description'] = description
+            status_counts['status'] = status
+            if status in Problem.VISIBLE_STATUSES:
+                status_counts['hidden'] = False
+            else:
+                status_counts['hidden'] = True
             status_list.append(status_counts)
         context['problems_by_status'] = status_list
 
@@ -258,8 +276,7 @@ class OrganisationSummary(OrganisationAwareViewMixin,
                               'average_time_to_acknowledge',
                               'average_time_to_address']
         for attribute in summary_attributes:
-            problem_average = context['problems_total'][attribute]
-            issues_total[attribute] = problem_average
+            issues_total[attribute] = context['problems_summary_stats'][attribute]
         context['issues_total'] = issues_total
 
         return context
@@ -284,6 +301,14 @@ class Summary(FilterMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(Summary, self).get_context_data(**kwargs)
+        if context['filters'].get('status'):
+            # ignore a filter request for a hidden status
+            if not context['filters']['status'] in Problem.VISIBLE_STATUSES:
+                del context['filters']['status']
+
+        if not context['filters'].get('status'):
+        # by default the status should filter for visible statuses
+            context['filters']['status'] = tuple(Problem.VISIBLE_STATUSES)
         organisation_rows = interval_counts(issue_type=Problem, filters=context['filters'])
         organisations_table = NationalSummaryTable(organisation_rows, cobrand=kwargs['cobrand'])
         RequestConfig(self.request, paginate={"per_page": 8}).configure(organisations_table)
@@ -392,11 +417,9 @@ class QuestionsDashboard(ListView):
         context['page_obj'] = context['table'].page
         return context
 
-class EscalationDashboard(FilterMixin, ListView):
+class EscalationDashboard(FilterMixin, TemplateView):
 
-    queryset = Problem.objects.open_escalated_problems()
     template_name = 'organisations/escalation_dashboard.html'
-    context_object_name = "problems"
 
     def dispatch(self, request, *args, **kwargs):
         if not user_can_access_escalation_dashboard(request.user):
@@ -405,7 +428,7 @@ class EscalationDashboard(FilterMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super(EscalationDashboard, self).get_context_data(**kwargs)
-
+        context['problems'] = Problem.objects.open_escalated_problems()
         # Restrict problem queryset for non-CGC and non-superuser users (i.e. CCG users)
         user = self.request.user
         if not user_is_superuser(user) and not user_in_groups(user, [auth.CQC]):

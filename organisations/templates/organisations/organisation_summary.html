@@ -105,12 +105,12 @@
                 <td>{{ problems_total.six_months }}</td>
                 <td class="separator">{{ problems_total.all_time }}</td>
                 {% if organisation.has_time_limits %}
-                    <td>{{ problems_total.average_time_to_acknowledge|formatted_time_interval }}</td>
-                    <td class="separator">{{ problems_total.average_time_to_address|formatted_time_interval }}</td>
+                    <td>{{ problems_summary_stats.average_time_to_acknowledge|formatted_time_interval }}</td>
+                    <td class="separator">{{ problems_summary_stats.average_time_to_address|formatted_time_interval }}</td>
                 {% endif %}
-                <td>{{ problems_total.happy_service|percent }}
+                <td>{{ problems_summary_stats.happy_service|percent }}
                 </td>
-                <td>{{ problems_total.happy_outcome|percent }}
+                <td>{{ problems_summary_stats.happy_outcome|percent }}
                 </td>
             </tr>
             {% for status in problems_by_status %}
@@ -122,11 +122,11 @@
                 <td>{{ status.six_months }}</td>
                 <td class="separator">{{ status.all_time }}</td>
                 {% if organisation.has_time_limits %}
-                    <td>{{ status.average_time_to_acknowledge|formatted_time_interval }}</td>
-                    <td class="separator">{{ status.average_time_to_address|formatted_time_interval }}</td>
+                    <td id="status_{{status.status}}_time_to_acknowledge">{% if status.hidden %}—{% else %}{{ status.average_time_to_acknowledge|formatted_time_interval }}{% endif %}</td>
+                    <td class="separator" id="status_{{status.status}}_time_to_address">{% if status.hidden %}—{% else %}{{ status.average_time_to_address|formatted_time_interval }}{% endif %}</td>
                 {% endif %}
-                <td>{{ status.happy_service|percent }}</td>
-                <td>{{ status.happy_outcome|percent }}</td>
+                <td id="status_{{status.status}}_happy_service">{% if status.hidden %}—{% else %}{{ status.happy_service|percent }}{% endif %}</td>
+                <td id="status_{{status.status}}_happy_outcome">{% if status.hidden %}—{% else %}{{ status.happy_outcome|percent }}{% endif %}</td>
             </tr>
             {% endfor %}
         </tbody>

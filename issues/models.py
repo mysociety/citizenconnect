@@ -169,11 +169,14 @@ class ProblemManager(models.Manager):
 
     def open_moderated_published_problems(self):
         return self.open_problems().filter(moderated=Problem.MODERATED,
-                                           publication_status=Problem.PUBLISHED)
+                                           publication_status=Problem.PUBLISHED,
+                                           status__in=Problem.VISIBLE_STATUSES)
 
     def all_moderated_published_problems(self):
         return super(ProblemManager, self).all().filter(moderated=Problem.MODERATED,
-                                                        publication_status=Problem.PUBLISHED)
+                                                        publication_status=Problem.PUBLISHED,
+                                                        status__in=Problem.VISIBLE_STATUSES)
+
 
     def problems_requiring_second_tier_moderation(self):
         return super(ProblemManager, self).all().filter(requires_second_tier_moderation=True)
@@ -191,18 +194,32 @@ class Problem(IssueModel):
     ACKNOWLEDGED = 1
     RESOLVED = 2
     ESCALATED = 3
+    UNABLE_TO_RESOLVE = 4
+    REFERRED = 5
+    UNABLE_TO_CONTACT = 6
+    ABUSIVE = 7
 
     STATUS_CHOICES = (
         (NEW, 'Open'),
         (ACKNOWLEDGED, 'In Progress'),
         (RESOLVED, 'Resolved'),
-        (ESCALATED, 'Escalated')
+        (ESCALATED, 'Escalated'),
+        (UNABLE_TO_RESOLVE, 'Unable to Resolve'),
+        (REFERRED, 'Referred to Another Provider'),
+        (UNABLE_TO_CONTACT, 'Unable to Contact'),
+        (ABUSIVE, 'Abusive/Vexatious')
     )
 
+    # Assigning individual statuses to status sets
     BASE_OPEN_STATUSES = [NEW, ACKNOWLEDGED]
     ESCALATION_STATUSES = [ESCALATED]
+    HIDDEN_STATUSES = [UNABLE_TO_RESOLVE, REFERRED, UNABLE_TO_CONTACT, ABUSIVE]
 
+    # Calculated status sets
+    ALL_STATUSES = [status for status, description in STATUS_CHOICES]
     OPEN_STATUSES = BASE_OPEN_STATUSES + ESCALATION_STATUSES
+    VISIBLE_STATUSES = [status for status in ALL_STATUSES if status not in HIDDEN_STATUSES]
+    VISIBLE_STATUS_CHOICES = [(status, description) for status, description in STATUS_CHOICES if status in VISIBLE_STATUSES]
 
     PREFIX = 'P'
 
@@ -311,11 +328,14 @@ class Problem(IssueModel):
     def can_be_accessed_by(self, user):
         """
         Whether or not an issue is accessible to a given user.
-        In practice the issue is publically accessible to everyone if it's public
-        and has been moderated to be publically available, otherwise only people
-        with access to the organisation it is assigned to can access it.
+        In practice the issue is publically accessible to everyone if it's public,
+        in a visible status and has been moderated to be publically available,
+        otherwise only people with access to the organisation it is assigned to can access it.
         """
-        return (self.public and self.publication_status == Problem.PUBLISHED) or self.organisation.can_be_accessed_by(user)
+        return (self.public \
+                and self.publication_status == Problem.PUBLISHED and \
+                int(self.status) in Problem.VISIBLE_STATUSES) \
+                or self.organisation.can_be_accessed_by(user)
 
     def set_time_to_values(self):
         now = datetime.utcnow().replace(tzinfo=utc)

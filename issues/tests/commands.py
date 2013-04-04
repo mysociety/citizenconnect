@@ -59,3 +59,11 @@ class EmailSurveysToReportersTests(TestCase):
         self.assertEqual(len(mail.outbox), 1)
         first_mail = mail.outbox[0]
         self.assertTrue('/myhealthlondon/' in first_mail.body)
+
+    def test_does_not_send_survey_for_a_problem_in_a_hidden_state(self):
+        self.test_problem.status = Problem.ABUSIVE
+        self.test_problem.save()
+        self.set_problem_age()
+        self._call_command()
+        self.assertEqual(len(mail.outbox), 0)
+
