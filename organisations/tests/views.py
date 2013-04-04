@@ -640,15 +640,31 @@ class SummaryTests(AuthorizationTestCase):
     def setUp(self):
         super(SummaryTests, self).setUp()
         self.summary_url = reverse('org-all-summary', kwargs={'cobrand':'choices'})
-
+        create_test_instance(Problem, {'organisation': self.test_organisation})
+        create_test_instance(Problem, {'organisation': self.other_test_organisation,
+                                       'publication_status': Problem.PUBLISHED,
+                                       'moderated': Problem.MODERATED,
+                                       'status': Problem.ABUSIVE})
     def test_summary_page_exists(self):
         resp = self.client.get(self.summary_url)
         self.assertEqual(resp.status_code, 200)
+
+    def test_summary_doesnt_include_hidden_status_problems_in_default_view(self):
+        resp = self.client.get(self.summary_url)
+        self.assertContains(resp, 'Test Organisation')
+        self.assertNotContains(resp, 'Other Test Organisation')
+        self.assertContains(resp, '<td class="week">1</td>', count=1, status_code=200)
 
     def test_status_filter_only_shows_visible_statuses_in_filters(self):
         resp = self.client.get(self.summary_url)
         self.assertNotContains(resp, 'Referred to Another Provider')
         self.assertNotContains(resp, 'Unable to Contact')
+
+    def test_summary_page_ignores_hidden_status_filter(self):
+        resp = self.client.get(self.summary_url + '?status=7')
+        self.assertContains(resp, 'Test Organisation')
+        self.assertNotContains(resp, 'Other Test Organisation')
+        self.assertContains(resp, '<td class="week">1</td>', count=1, status_code=200)
 
 class ProviderPickerTests(TestCase):
 

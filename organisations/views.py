@@ -301,7 +301,14 @@ class Summary(FilterMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(Summary, self).get_context_data(**kwargs)
+        if context['filters'].get('status'):
+            # ignore a filter request for a hidden status
+            if not context['filters']['status'] in Problem.VISIBLE_STATUSES:
+                del context['filters']['status']
 
+        if not context['filters'].get('status'):
+        # by default the status should filter for visible statuses
+            context['filters']['status'] = tuple(Problem.VISIBLE_STATUSES)
         organisation_rows = interval_counts(issue_type=Problem, filters=context['filters'])
         organisations_table = NationalSummaryTable(organisation_rows, cobrand=kwargs['cobrand'])
         RequestConfig(self.request, paginate={"per_page": 8}).configure(organisations_table)
