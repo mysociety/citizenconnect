@@ -109,30 +109,63 @@ class ModerateForm(ModeratorsOnlyMixin,
     # Standardise the context_object's name
     context_object_name = 'issue'
 
+    def set_version_in_session(self, session_key, model):
+        # Save the model version in the user's session
+        self.request.session.setdefault(session_key, {})
+        self.request.session[session_key][model.id] = model.version
+        self.request.session.modified = True
+
+    def unset_version_in_session(self, session_key, model):
+        # Delete the model version from the user's session
+        if self.request.session.get(session_key, False):
+            if model.id in self.request.session[session_key]:
+                del self.request.session[session_key][model.id]
+                self.request.session.modified = True
+
+    def get(self, request, *args, **kwargs):
+        response = super(ModerateForm, self).get(request, *args, **kwargs)
+        self.set_version_in_session('problem_versions', self.object)
+        return response
+
+    def get_form_kwargs(self):
+        # Add the request to the form's kwargs
+        kwargs = super(ModerateForm, self).get_form_kwargs()
+        kwargs.update({
+            'request' : self.request
+        })
+        return kwargs
+
     def get_success_url(self):
         return reverse('moderate-confirm')
 
     def get_context_data(self, **kwargs):
         context = super(ModerateForm, self).get_context_data(**kwargs)
-        issue = Problem.objects.get(pk=self.kwargs['pk'])
         if self.request.POST:
-            context['response_forms'] = ProblemResponseInlineFormSet(self.request.POST, instance=issue)
+            context['response_forms'] = ProblemResponseInlineFormSet(data=self.request.POST,
+                                                                     instance=self.object)
         else:
-            context['response_forms'] = ProblemResponseInlineFormSet(instance=issue)
+            context['response_forms'] = ProblemResponseInlineFormSet(instance=self.object)
+
         return context
 
     def form_valid(self, form):
         context = self.get_context_data()
+        # If we have responses too, we have to check them manually for validity
         if 'response_forms' in context:
             response_forms = context['response_forms']
             if response_forms.is_valid():
                 self.object = form.save()
                 response_forms.instance = self.object
                 response_forms.save()
+                # Clear the version in the session
+                self.unset_version_in_session('problem_versions', self.object)
             else:
                 return self.render_to_response(self.get_context_data(form=form))
         else:
+            # No responses, just a problem
             self.object = form.save()
+            # Clear the version in the session
+            self.unset_version_in_session('problem_versions', self.object)
 
         return HttpResponseRedirect(self.get_success_url())
 

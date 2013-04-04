@@ -148,6 +148,52 @@ class ModerateFormViewTests(BaseModerationTestCase):
         resp = self.client.get(reverse('moderate-form', kwargs={'pk':self.closed_problem.id}))
         self.assertEqual(resp.status_code, 200)
 
+    def test_initial_versions_set_when_form_loads(self):
+        # Add some responses to the issue too
+        response1 = ProblemResponse.objects.create(response="response 1", issue=self.test_problem)
+        response2 = ProblemResponse.objects.create(response="response 2", issue=self.test_problem)
+
+        self.client.get(self.problem_form_url)
+        problem_session_version = self.client.session['problem_versions'][self.test_problem.id]
+        self.assertEqual(problem_session_version, self.test_problem.version)
+        response_session_versions = self.client.session['response_versions']
+        self.assertEqual(response_session_versions[response1.id], response1.version)
+        self.assertEqual(response_session_versions[response2.id], response2.version)
+
+    def test_version_cleared_when_form_valid(self):
+        # Add some responses to the issue too
+        response1 = ProblemResponse.objects.create(response="response 1", issue=self.test_problem)
+        response2 = ProblemResponse.objects.create(response="response 2", issue=self.test_problem)
+
+        # Call the form to simulate a browser and get a session into self.client
+        self.client.get(self.problem_form_url)
+        self.assertTrue(self.test_problem.id in self.client.session['problem_versions'])
+        self.assertTrue(response1.id in self.client.session['response_versions'])
+        self.assertTrue(response2.id in self.client.session['response_versions'])
+
+        # Post to the form with some new data
+        form_values = {
+            'publication_status': self.test_problem.publication_status,
+            'moderated_description': self.test_problem.description,
+            'publish': '',
+            'status': self.test_problem.status,
+            'moderated': self.test_problem.moderated,
+            'commissioned': Problem.NATIONALLY_COMMISSIONED,
+            'responses-TOTAL_FORMS': 2,
+            'responses-INITIAL_FORMS': 2,
+            'responses-MAX_NUM_FORMS': 0,
+            'responses-0-id': response1.id,
+            'responses-0-response': response1.response,
+            'responses-0-DELETE': False,
+            'responses-1-id': response2.id,
+            'responses-1-response': response2.response,
+            'responses-1-DELETE': False
+        }
+        resp = self.client.post(self.problem_form_url, form_values)
+        self.assertFalse(self.test_problem.id in self.client.session['problem_versions'])
+        self.assertFalse(response1.id in self.client.session['response_versions'])
+        self.assertFalse(response2.id in self.client.session['response_versions'])
+
 
 class SecondTierModerateFormViewTests(BaseModerationTestCase):
 

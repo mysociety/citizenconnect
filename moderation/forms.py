@@ -1,6 +1,6 @@
 from django import forms
 from django.forms.widgets import HiddenInput, RadioSelect
-from django.forms.models import inlineformset_factory
+from django.forms.models import inlineformset_factory, BaseInlineFormSet
 
 from issues.models import Problem
 from responses.models import ProblemResponse
@@ -27,6 +27,11 @@ class LookupForm(forms.Form):
 
 class ModerationForm(forms.ModelForm):
 
+    def __init__(self, request=None, *args, **kwargs):
+        # Store the request so we can use it later
+        self.request = request
+        super(ModerationForm, self).__init__(*args, **kwargs)
+
     def clean_publication_status(self):
         # Status is hidden, but if people click the "Publish" button, we should
         # publish it, and vice versa if they click "Keep Private", we default
@@ -39,17 +44,29 @@ class ModerationForm(forms.ModelForm):
         return publication_status
 
     def clean(self):
+        cleaned_data = super(ModerationForm, self).clean()
+
+        # Check that the user's version of the issue is still the latest
+        issue = self.instance
+        # session_version was set on the initial GET for the form view
+        session_version = self.request.session.get('problem_versions')[issue.id]
+        if session_version != issue.version:
+            # Reset the issue version in the session
+            self.request.session['problem_versions'][issue.id] = issue.version
+            # We need to do this because we haven't modified request.session itself
+            self.request.session.modified = True
+            # Raise an error to tell the user
+            raise forms.ValidationError('Sorry, someone else has modified the Problem during the time you were working on it. Please double-check your changes to make sure they\'re still necessary.')
 
         # If we are publishing the problem and the reporter wants it public,
         # it must have a moderated_description so that we have something to show for it
         # on public pages
-        if self.instance.public and self.cleaned_data['publication_status'] == Problem.PUBLISHED:
-            if not 'moderated_description' in self.cleaned_data or not self.cleaned_data['moderated_description']:
+        if self.instance.public and cleaned_data['publication_status'] == Problem.PUBLISHED:
+            if not 'moderated_description' in cleaned_data or not cleaned_data['moderated_description']:
                 self._errors['moderated_description'] = self.error_class(['You must moderate a version of the problem details when publishing public problems.'])
-                del self.cleaned_data['moderated_description']
+                del cleaned_data['moderated_description']
 
-        return self.cleaned_data
-
+        return cleaned_data
 
 
 class ProblemModerationForm(ModerationForm):
@@ -90,8 +107,12 @@ class ProblemModerationForm(ModerationForm):
             'requires_second_tier_moderation': HiddenInput
         }
 
-# A formset for the responses attached to a problem
-ProblemResponseInlineFormSet = inlineformset_factory(Problem, ProblemResponse, max_num=0, fields=('response',))
+
+ProblemResponseInlineFormSet = inlineformset_factory(Problem,
+                                                     ProblemResponse,
+                                                     max_num=0,
+                                                     fields=('response',))
+
 
 class ProblemSecondTierModerationForm(ModerationForm):
 
