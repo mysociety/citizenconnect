@@ -635,7 +635,7 @@ class OrganisationMapTests(AuthorizationTestCase):
         self.assertEqual(response_json[0]['url'], expected_gp_url)
         self.assertEqual(response_json[1]['url'], expected_other_gp_url)
 
-class SummaryTests(TestCase):
+class SummaryTests(AuthorizationTestCase):
 
     def setUp(self):
         super(SummaryTests, self).setUp()
@@ -644,6 +644,11 @@ class SummaryTests(TestCase):
     def test_summary_page_exists(self):
         resp = self.client.get(self.summary_url)
         self.assertEqual(resp.status_code, 200)
+
+    def test_status_filter_only_shows_visible_statuses_in_filters(self):
+        resp = self.client.get(self.summary_url)
+        self.assertNotContains(resp, 'Referred to Another Provider')
+        self.assertNotContains(resp, 'Unable to Contact')
 
 class ProviderPickerTests(TestCase):
 
@@ -819,6 +824,7 @@ class QuestionDashboardTests(AuthorizationTestCase):
             resp = self.client.get(self.questions_dashboard_url)
             self.assertEqual(resp.status_code, 200)
 
+
 class EscalationDashboardTests(AuthorizationTestCase):
 
     def setUp(self):
@@ -845,3 +851,9 @@ class EscalationDashboardTests(AuthorizationTestCase):
         resp = self.client.get(self.escalation_dashboard_url)
         self.assertContains(resp, self.org_breach_problem.reference_number)
         self.assertNotContains(resp, self.other_org_breach_problem.reference_number)
+
+    def test_dashboard_shows_all_statuses_in_filters(self):
+        self.login_as(self.ccg_user)
+        resp = self.client.get(self.escalation_dashboard_url)
+        self.assertContains(resp, 'Referred to Another Provider')
+        self.assertContains(resp, 'Unable to Contact')

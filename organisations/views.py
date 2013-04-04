@@ -29,8 +29,8 @@ from .tables import NationalSummaryTable, IssueModelTable, ExtendedIssueModelTab
 
 class PrivateViewMixin(object):
     """
-    Mixin for views which live at both /private urls and other
-    urls, and need to know which is currently being requested.
+    Mixin for views which need access to a context variable indicating whether the view
+    is being accessed in a private context, only accessible to logged-in users.
     """
 
     def get_context_data(self, **kwargs):
@@ -78,7 +78,7 @@ class IssueListMixin(OrganisationAwareViewMixin):
         context['page_obj'] = issue_table.page
         return context
 
-class FilterMixin(object):
+class FilterMixin(PrivateViewMixin):
     """
     Mixin for views which have some or all of the standard set of filters
     """
@@ -88,7 +88,11 @@ class FilterMixin(object):
 
         # Set up the data for the filters
         context['problem_categories'] = Problem.CATEGORY_CHOICES
-        context['problem_statuses'] = Problem.STATUS_CHOICES
+        if context['private']:
+            context['problem_statuses'] = Problem.STATUS_CHOICES
+        else:
+            context['problem_statuses'] = Problem.VISIBLE_STATUS_CHOICES
+
         context['organisation_types'] = settings.ORGANISATION_CHOICES
         context['services'] = Service.service_codes()
         context['ccgs'] = CCG.objects.all()
@@ -299,6 +303,7 @@ class Summary(FilterMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(Summary, self).get_context_data(**kwargs)
+
         organisation_rows = interval_counts(issue_type=Problem, filters=context['filters'])
         organisations_table = NationalSummaryTable(organisation_rows, cobrand=kwargs['cobrand'])
         RequestConfig(self.request, paginate={"per_page": 8}).configure(organisations_table)
@@ -407,11 +412,9 @@ class QuestionsDashboard(ListView):
         context['page_obj'] = context['table'].page
         return context
 
-class EscalationDashboard(FilterMixin, ListView):
+class EscalationDashboard(FilterMixin, TemplateView):
 
-    queryset = Problem.objects.open_escalated_problems()
     template_name = 'organisations/escalation_dashboard.html'
-    context_object_name = "problems"
 
     def dispatch(self, request, *args, **kwargs):
         if not user_can_access_escalation_dashboard(request.user):
@@ -420,7 +423,7 @@ class EscalationDashboard(FilterMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super(EscalationDashboard, self).get_context_data(**kwargs)
-
+        context['problems'] = Problem.objects.open_escalated_problems()
         # Restrict problem queryset for non-CGC and non-superuser users (i.e. CCG users)
         user = self.request.user
         if not user_is_superuser(user) and not user_in_groups(user, [auth.CQC]):
