@@ -98,7 +98,7 @@ class OrganisationSummaryTests(AuthorizationTestCase):
         self.assertEqual(problems_by_status[2]['week'], 0)
         self.assertEqual(problems_by_status[2]['four_weeks'], 0)
         self.assertEqual(problems_by_status[2]['six_months'], 0)
-        self.assertEqual(problems_by_status[2]['description'], 'Resolved')
+        self.assertEqual(problems_by_status[2]['description'], 'Responded to')
 
         self.assertEqual(problems_by_status[7]['all_time'], 1)
         self.assertEqual(problems_by_status[7]['week'], 1)
@@ -132,7 +132,7 @@ class OrganisationSummaryTests(AuthorizationTestCase):
         self.assertEqual(problems_by_status[2]['week'], 0)
         self.assertEqual(problems_by_status[2]['four_weeks'], 0)
         self.assertEqual(problems_by_status[2]['six_months'], 0)
-        self.assertEqual(problems_by_status[2]['description'], 'Resolved')
+        self.assertEqual(problems_by_status[2]['description'], 'Responded to')
 
 
     def test_summary_page_applies_problem_category_filter(self):
@@ -182,14 +182,14 @@ class OrganisationSummaryTests(AuthorizationTestCase):
 
     def test_public_summary_page_shows_only_visible_status_rows(self):
         resp = self.client.get(self.public_summary_url)
-        self.assertContains(resp, 'Resolved', count=1, status_code=200)
+        self.assertContains(resp, 'Responded to', count=1, status_code=200)
         self.assertNotContains(resp, 'Unable to Resolve')
         self.assertNotContains(resp, 'Abusive/Vexatious')
 
     def test_private_summary_page_shows_visible_and_hidden_status_rows(self):
         self.login_as(self.provider)
         resp = self.client.get(self.private_summary_url)
-        self.assertContains(resp, 'Resolved', count=1, status_code=200)
+        self.assertContains(resp, 'Responded to', count=1, status_code=200)
         self.assertContains(resp, 'Unable to Resolve', count=1)
         self.assertContains(resp, 'Abusive/Vexatious', count=1)
 

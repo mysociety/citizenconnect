@@ -202,7 +202,7 @@ class Problem(IssueModel):
     STATUS_CHOICES = (
         (NEW, 'Open'),
         (ACKNOWLEDGED, 'In Progress'),
-        (RESOLVED, 'Resolved'),
+        (RESOLVED, 'Responded to'),
         (ESCALATED, 'Escalated'),
         (UNABLE_TO_RESOLVE, 'Unable to Resolve'),
         (REFERRED, 'Referred to Another Provider'),
