@@ -87,11 +87,11 @@ class FilterMixin(PrivateViewMixin):
         context = super(FilterMixin, self).get_context_data(**kwargs)
 
         # Set up the data for the filters
-        context['problem_categories'] = Problem.CATEGORY_CHOICES
+        context['categories'] = Problem.CATEGORY_CHOICES
         if context['private']:
-            context['problem_statuses'] = Problem.STATUS_CHOICES
+            context['statuses'] = Problem.STATUS_CHOICES
         else:
-            context['problem_statuses'] = Problem.VISIBLE_STATUS_CHOICES
+            context['statuses'] = Problem.VISIBLE_STATUS_CHOICES
 
         context['organisation_types'] = settings.ORGANISATION_CHOICES
         context['services'] = Service.service_codes()
@@ -104,9 +104,8 @@ class FilterMixin(PrivateViewMixin):
             filters['service_code'] = selected_service
 
         # Category filter
-        category = self.request.GET.get('problem_category')
+        category = self.request.GET.get('category')
         if category in dict(Problem.CATEGORY_CHOICES):
-            filters['problem_category'] = category
             filters['category'] = category
 
         # Organisation type filter
@@ -115,9 +114,8 @@ class FilterMixin(PrivateViewMixin):
             filters['organisation_type'] = organisation_type
 
         # Status filter
-        status = self.request.GET.get('problem_status')
+        status = self.request.GET.get('status')
         if status and status != 'all' and int(status) in dict(Problem.STATUS_CHOICES):
-            filters['problem_status'] = int(status)
             filters['status'] = int(status)
 
         # CCG Filter
