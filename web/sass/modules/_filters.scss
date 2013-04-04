@@ -13,3 +13,16 @@
     font-size: (20px / $font-size-base) + em;
   }
 }
+
+.current-filter {
+    display: inline-block;
+    @include vendor(border-radius, ($grid-gutter / 3) + em);
+    background-color: $c-aquablue;
+    color: $c-white;
+    padding: ($grid-gutter / 5) + em ($grid-gutter / 3) + em ($grid-gutter / 5) + em ($grid-gutter / 2) + em ;
+    font-size: (14px / $font-size-base) + em;
+    a {
+        text-decoration: none;
+        color: $c-white;
+    }
+}
