@@ -253,7 +253,8 @@ class AuthorizationTestCase(TestCase):
         self.test_organisation = create_test_organisation({'ccg': self.test_ccg,
                                                            'organisation_type': 'hospitals'})
         self.other_test_organisation = create_test_organisation({'ods_code': '12345',
-                                                                 'ccg': self.other_test_ccg})
+                                                                 'ccg': self.other_test_ccg,
+                                                                 'name': 'Other Test Organisation'})
 
         self.test_password = 'password'
 
