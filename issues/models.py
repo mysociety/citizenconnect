@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.utils.timezone import utc
 
 from concurrency.fields import IntegerVersionField
-from concurrency.core import concurrency_check
+from concurrency.api import concurrency_check
 
 from citizenconnect.models import AuditedModel
 from .lib import base32_to_int, int_to_base32, MistypedIDException

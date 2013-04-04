@@ -1,6 +1,6 @@
 from django.db import models
 
-from concurrency.core import concurrency_check
+from concurrency.api import concurrency_check
 from concurrency.fields import IntegerVersionField
 
 from citizenconnect.models import AuditedModel
