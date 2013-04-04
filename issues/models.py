@@ -195,9 +195,10 @@ class Problem(IssueModel):
     RESOLVED = 2
     ESCALATED = 3
     UNABLE_TO_RESOLVE = 4
-    REFERRED = 5
+    REFERRED_TO_OTHER_PROVIDER = 5
     UNABLE_TO_CONTACT = 6
     ABUSIVE = 7
+    REFERRED_TO_OMBUDSMAN = 8
 
     STATUS_CHOICES = (
         (NEW, 'Open'),
@@ -205,15 +206,16 @@ class Problem(IssueModel):
         (RESOLVED, 'Responded to'),
         (ESCALATED, 'Escalated'),
         (UNABLE_TO_RESOLVE, 'Unable to Resolve'),
-        (REFERRED, 'Referred to Another Provider'),
+        (REFERRED_TO_OTHER_PROVIDER, 'Referred to Another Provider'),
         (UNABLE_TO_CONTACT, 'Unable to Contact'),
-        (ABUSIVE, 'Abusive/Vexatious')
+        (ABUSIVE, 'Abusive/Vexatious'),
+        (REFERRED_TO_OMBUDSMAN, 'Referred to Ombudsman'),
     )
 
     # Assigning individual statuses to status sets
     BASE_OPEN_STATUSES = [NEW, ACKNOWLEDGED]
-    ESCALATION_STATUSES = [ESCALATED]
-    HIDDEN_STATUSES = [UNABLE_TO_RESOLVE, REFERRED, UNABLE_TO_CONTACT, ABUSIVE]
+    ESCALATION_STATUSES = [ESCALATED, REFERRED_TO_OMBUDSMAN]
+    HIDDEN_STATUSES = [UNABLE_TO_RESOLVE, REFERRED_TO_OTHER_PROVIDER, UNABLE_TO_CONTACT, ABUSIVE]
 
     # Calculated status sets
     ALL_STATUSES = [status for status, description in STATUS_CHOICES]
