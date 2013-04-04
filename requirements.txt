@@ -15,6 +15,7 @@ South
 django-pagination
 django-tables2
 django-reversion==1.6.5  # compatible with Django 1.4.3
+django-concurrency
 
 ### Testing
 mock
@@ -22,8 +23,8 @@ mock
 ### Django related registration
 # The registration app is a little out of date - get it from the repo direct....
 # django-registration
-#-e hg+https://bitbucket.org/ubernostrum/django-registration@fad7080fe769#egg=django-registration
-#django-registration-defaults
+# -e hg+https://bitbucket.org/ubernostrum/django-registration@fad7080fe769#egg=django-registration
+# django-registration-defaults
 
 ### Xapian is a full text search engine, and haystack a django interface to it.
 ### If you want to use this uncomment below, and probably add the

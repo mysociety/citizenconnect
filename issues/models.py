@@ -7,6 +7,9 @@ from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.utils.timezone import utc
 
+from concurrency.fields import IntegerVersionField
+from concurrency.core import concurrency_check
+
 from citizenconnect.models import AuditedModel
 from .lib import base32_to_int, int_to_base32, MistypedIDException
 
@@ -291,6 +294,8 @@ class Problem(IssueModel):
     COBRAND_CHOICES = [(cobrand, cobrand) for cobrand in settings.ALLOWED_COBRANDS]
     cobrand = models.CharField(max_length=30, blank=False, choices=COBRAND_CHOICES)
 
+    version = IntegerVersionField()
+
     @property
     def reference_number(self):
         return '{0}{1}'.format(self.PREFIX, self.id)
@@ -343,6 +348,8 @@ class Problem(IssueModel):
     def save(self, *args, **kwargs):
         """Override the default model save() method in order to populate time_to_acknowledge
         or time_to_address if appropriate."""
+        concurrency_check(self, *args, **kwargs) # Do a concurrency check
+
         if self.created:
             self.set_time_to_values()
 
