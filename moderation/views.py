@@ -109,24 +109,6 @@ class ModerateForm(ModeratorsOnlyMixin,
     # Standardise the context_object's name
     context_object_name = 'issue'
 
-    def set_version_in_session(self, session_key, model):
-        # Save the model version in the user's session
-        self.request.session.setdefault(session_key, {})
-        self.request.session[session_key][model.id] = model.version
-        self.request.session.modified = True
-
-    def unset_version_in_session(self, session_key, model):
-        # Delete the model version from the user's session
-        if self.request.session.get(session_key, False):
-            if model.id in self.request.session[session_key]:
-                del self.request.session[session_key][model.id]
-                self.request.session.modified = True
-
-    def get(self, request, *args, **kwargs):
-        response = super(ModerateForm, self).get(request, *args, **kwargs)
-        self.set_version_in_session('problem_versions', self.object)
-        return response
-
     def get_form_kwargs(self):
         # Add the request to the form's kwargs
         kwargs = super(ModerateForm, self).get_form_kwargs()
@@ -157,15 +139,11 @@ class ModerateForm(ModeratorsOnlyMixin,
                 self.object = form.save()
                 response_forms.instance = self.object
                 response_forms.save()
-                # Clear the version in the session
-                self.unset_version_in_session('problem_versions', self.object)
             else:
                 return self.render_to_response(self.get_context_data(form=form))
         else:
             # No responses, just a problem
             self.object = form.save()
-            # Clear the version in the session
-            self.unset_version_in_session('problem_versions', self.object)
 
         return HttpResponseRedirect(self.get_success_url())
 
@@ -176,6 +154,14 @@ class SecondTierModerateForm(SecondTierModeratorsOnlyMixin,
     form_class = ProblemSecondTierModerationForm
     # Standardise the context_object's name
     context_object_name = 'issue'
+
+    def get_form_kwargs(self):
+        # Add the request to the form's kwargs
+        kwargs = super(SecondTierModerateForm, self).get_form_kwargs()
+        kwargs.update({
+            'request' : self.request
+        })
+        return kwargs
 
     def get_success_url(self):
         return reverse('second-tier-moderate-confirm')

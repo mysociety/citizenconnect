@@ -108,10 +108,15 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         self.assertContains(resp, "the Problem status has been updated")
         self.assertContains(resp, reverse('org-dashboard', kwargs={'ods_code':self.test_organisation.ods_code}))
 
+    def test_initial_version_set_when_form_loads(self):
+        self.client.get(self.response_form_url)
+        session_version = self.client.session['object_versions'][self.problem.id]
+        self.assertEqual(session_version, self.problem.version)
+
     def test_form_checks_versions(self):
         # Tweak the client session so that its' version for the problem is out of date
         session = self.client.session
-        session['problem_versions'][self.problem.id] -= 3000
+        session['object_versions'][self.problem.id] -= 3000
         session.save()
         # Now post to the form, we should be rejected
         response_text = 'This problem is solved'
@@ -126,7 +131,7 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
     def test_form_resets_version_if_versions_dont_match(self):
         # Tweak the client session so that its' version for the problem is out of date
         session = self.client.session
-        session['problem_versions'][self.problem.id] -= 3000
+        session['object_versions'][self.problem.id] -= 3000
         session.save()
         # Now post to the form, we should be rejected and our change to the issue
         # status should be reset
@@ -138,8 +143,23 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
             'respond': ''
         }
         resp = self.client.post(self.response_form_url, test_form_values)
-        session_version = self.client.session['problem_versions'][self.problem.id]
+        session_version = self.client.session['object_versions'][self.problem.id]
         self.assertEqual(session_version, self.problem.version)
+
+    def test_version_cleared_when_form_valid(self):
+        # Call the form to simulate a browser and get a session into self.client
+        self.client.get(self.response_form_url)
+        self.assertTrue(self.problem.id in self.client.session['object_versions'])
+        # Post to the form with some new data
+        response_text = 'This problem is solved'
+        test_form_values = {
+            'response': response_text,
+            'issue': self.problem.id,
+            'respond': ''
+        }
+        resp = self.client.post(self.response_form_url, test_form_values)
+        self.assertEqual(resp.status_code, 200)
+        self.assertFalse(self.problem.id in self.client.session['object_versions'])
 
 class ResponseFormViewTests(AuthorizationTestCase):
 
@@ -190,25 +210,24 @@ class ResponseFormViewTests(AuthorizationTestCase):
         resp = self.client.get(self.response_form_url)
         self.assertEqual(resp.status_code, 403)
 
-    def test_initial_version_set_when_form_loads(self):
-        self.client.get(self.response_form_url)
-        session_version = self.client.session['problem_versions'][self.problem.id]
-        self.assertEqual(session_version, self.problem.version)
+    def test_version_cleared_when_form_valid_even_if_no_response(self):
+        # The view has to call the unset method when no response is given
+        # because it doesn't call form.save()
 
-    def test_version_cleared_when_form_valid(self):
         # Call the form to simulate a browser and get a session into self.client
         self.client.get(self.response_form_url)
-        self.assertTrue(self.problem.id in self.client.session['problem_versions'])
+        self.assertTrue(self.problem.id in self.client.session['object_versions'])
         # Post to the form with some new data
         response_text = 'This problem is solved'
         test_form_values = {
-            'response': response_text,
+            'response':'',
             'issue': self.problem.id,
-            'respond': ''
+            'issue_status': Problem.RESOLVED,
+            'status': ''
         }
         resp = self.client.post(self.response_form_url, test_form_values)
         self.assertEqual(resp.status_code, 200)
-        self.assertFalse(self.problem.id in self.client.session['problem_versions'])
+        self.assertFalse(self.problem.id in self.client.session['object_versions'])
 
 class ResponseModelTests(TransactionTestCase, ConcurrencyTestMixin):
 

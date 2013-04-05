@@ -20,26 +20,6 @@ class ResponseForm(CreateView):
     model = ProblemResponse
     form_class = ProblemResponseForm
 
-    def set_issue_version_in_session(self):
-        # Save the issue version in the user's session
-        self.request.session.setdefault('problem_versions', {})
-        self.request.session['problem_versions'][self.issue.id] = self.issue.version
-        # We need to do this because we haven't modified request.session itself
-        self.request.session.modified = True
-
-    def unset_issue_version_in_session(self):
-        # Save the issue version in the user's session
-        if self.request.session.get('problem_versions', {}):
-            if self.issue.id in self.request.session['problem_versions']:
-                del self.request.session['problem_versions'][self.issue.id]
-        # We need to do this because we haven't modified request.session itself
-        self.request.session.modified = True
-
-    def get(self, request, *args, **kwargs):
-        response = super(ResponseForm, self).get(request, *args, **kwargs)
-        self.set_issue_version_in_session()
-        return response
-
     def get_form_kwargs(self):
         # Add the request to the form's kwargs
         kwargs = super(ResponseForm, self).get_form_kwargs()
@@ -50,7 +30,7 @@ class ResponseForm(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(ResponseForm, self).get_context_data(**kwargs)
-        context['issue'] = Problem.objects.get(pk=self.kwargs['pk'])
+        context['issue'] = self.issue
         context['history'] = changes_for_model(context['issue'])
         return context
 
@@ -82,8 +62,8 @@ class ResponseForm(CreateView):
             issue.status = form.cleaned_data['issue_status']
             issue.save()
             context['issue'] = issue
-
-        # Unset the session-based issue version tracker
-        self.unset_issue_version_in_session()
+            # Because we haven't necessarily called form.save(), manually
+            # unset the session-based issue version tracker too
+            form.unset_version_in_session()
 
         return render(self.request, self.confirm_template, context)

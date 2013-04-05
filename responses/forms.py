@@ -1,21 +1,25 @@
 from django import forms
 from django.forms.widgets import HiddenInput, Textarea
 
+from citizenconnect.forms import ConcurrentFormMixin
 from issues.models import Problem
 
 from .models import ProblemResponse
 
 
-class ProblemResponseForm(forms.ModelForm):
+class ProblemResponseForm(ConcurrentFormMixin, forms.ModelForm):
 
     response = forms.CharField(required=False, widget=Textarea())
     issue_status = forms.ChoiceField(choices=Problem.STATUS_CHOICES,
                                      required=False)
 
     def __init__(self, request=None, *args, **kwargs):
-        # Store the request so we can use it later
-        self.request = request
-        super(ProblemResponseForm, self).__init__(*args, **kwargs)
+        super(ProblemResponseForm, self).__init__(request=request, *args, **kwargs)
+        # Set the initial model
+        self.concurrency_model = self.initial['issue']
+        # If we're building a form for a GET request, set the initial session var
+        if self.request.META['REQUEST_METHOD'] == 'GET':
+            self.set_version_in_session()
 
     def clean_response(self):
         response = self.cleaned_data['response']
@@ -33,15 +37,10 @@ class ProblemResponseForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(ProblemResponseForm, self).clean()
-        # Check that the user's version of the issue is still the latest
-        issue = cleaned_data['issue']
-        # session_version was set on the initial GET for the form view
-        session_version = self.request.session.get('problem_versions')[issue.id]
-        if session_version != issue.version:
+        # Do a concurrency check
+        if not self.concurrency_check():
             # Reset the issue version in the session
-            self.request.session['problem_versions'][issue.id] = issue.version
-            # We need to do this because we haven't modified request.session itself
-            self.request.session.modified = True
+            self.set_version_in_session()
             # Raise an error to tell the user
             raise forms.ValidationError('Sorry, someone else has modified the Problem during the time you were working on it. Please double-check your changes to make sure they\'re still necessary.')
         return cleaned_data

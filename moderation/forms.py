@@ -2,6 +2,7 @@ from django import forms
 from django.forms.widgets import HiddenInput, RadioSelect
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
 
+from citizenconnect.forms import ConcurrentFormMixin
 from issues.models import Problem
 from responses.models import ProblemResponse
 
@@ -25,12 +26,15 @@ class LookupForm(forms.Form):
                 raise forms.ValidationError('Sorry, there are no problems with that reference number')
         return self.cleaned_data
 
-class ModerationForm(forms.ModelForm):
+class ModerationForm(ConcurrentFormMixin, forms.ModelForm):
 
     def __init__(self, request=None, *args, **kwargs):
-        # Store the request so we can use it later
-        self.request = request
-        super(ModerationForm, self).__init__(*args, **kwargs)
+        super(ModerationForm, self).__init__(request=request, *args, **kwargs)
+        # Set the initial model
+        self.concurrency_model = self.instance
+        # If we're building a form for a GET request, set the initial session vars
+        if self.request.META['REQUEST_METHOD'] == 'GET':
+            self.set_version_in_session()
 
     def clean_publication_status(self):
         # Status is hidden, but if people click the "Publish" button, we should
@@ -47,14 +51,8 @@ class ModerationForm(forms.ModelForm):
         cleaned_data = super(ModerationForm, self).clean()
 
         # Check that the user's version of the issue is still the latest
-        issue = self.instance
-        # session_version was set on the initial GET for the form view
-        session_version = self.request.session.get('problem_versions')[issue.id]
-        if session_version != issue.version:
-            # Reset the issue version in the session
-            self.request.session['problem_versions'][issue.id] = issue.version
-            # We need to do this because we haven't modified request.session itself
-            self.request.session.modified = True
+        if not self.concurrency_check():
+            self.set_version_in_session()
             # Raise an error to tell the user
             raise forms.ValidationError('Sorry, someone else has modified the Problem during the time you were working on it. Please double-check your changes to make sure they\'re still necessary.')
 
