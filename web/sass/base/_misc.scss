@@ -29,6 +29,6 @@ img {
 .ie7 {
     &,
     *, {
-        behavior: url(../boxsizing.htc);
+        behavior: url(/static/boxsizing.htc);
     }
 }
