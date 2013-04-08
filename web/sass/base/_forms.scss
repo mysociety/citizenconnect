@@ -207,6 +207,12 @@ textarea {
     float: left;
   }
 }
+.ie6, .ie7 {
+  .search-form .btn {
+    height: 2.5em;
+    padding-top: 0;
+  }
+}
 
 /**
  * Inline forms, like on the pick provider page
