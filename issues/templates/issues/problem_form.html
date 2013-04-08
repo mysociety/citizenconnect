@@ -7,6 +7,9 @@
 
 {% block content %}
 <div class="header">
+    {% if request.GET.organisation_type and request.GET.location %}
+        <a href="{% url 'problems-pick-provider' cobrand=cobrand.name %}?organisation_type={{ request.GET.organisation_type|urlencode }}&location={{ request.GET.location|urlencode }}" class="back-btn  fr"><span class="icon-chevron-left" aria-hidden="true"></span> Back to search results</a>
+    {% endif %}
     <h1>{{ organisation.name }}</h1>
 </div>
 

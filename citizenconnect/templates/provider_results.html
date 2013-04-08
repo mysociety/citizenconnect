@@ -21,7 +21,7 @@
     {% for organisation in organisations %}
     <li>
         <div class="results-list__title">
-            <h2><a href="{% url result_link_url_name cobrand=cobrand.name  ods_code=organisation.ods_code  %}">{{ organisation.name }}</a></h2>
+            <h2><a href="{% url result_link_url_name cobrand=cobrand.name  ods_code=organisation.ods_code  %}?organisation_type={{ request.GET.organisation_type|urlencode }}&location={{ request.GET.location|urlencode }}">{{ organisation.name }}</a></h2>
             <p>{{ organisation.city|default:"" }}</p>
         </div>
         <address>{% if organisation.address_line1 %}
@@ -34,7 +34,7 @@
                      {{ organisation.address_line3|default:"" }}<br>
                 {% endif %}
                 {{ organisation.postcode|default:"" }}</address>
-        <a href="{% url result_link_url_name cobrand=cobrand.name  ods_code=organisation.ods_code  %}" class="results-list__more-link"><span class="icon-chevron-right" aria-hidden="true"></span></a>
+        <a href="{% url result_link_url_name cobrand=cobrand.name  ods_code=organisation.ods_code  %}?organisation_type={{ request.GET.organisation_type|urlencode }}&location={{ request.GET.location|urlencode }}" class="results-list__more-link"><span class="icon-chevron-right" aria-hidden="true"></span></a>
     </li>
     {% endfor %}
 
