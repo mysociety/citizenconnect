@@ -46,3 +46,8 @@
     }
   }
 }
+
+// fix the wigglyness in IE
+.ie6, .ie7 {
+  .pagination li a > span { zoom: normal; }
+}
