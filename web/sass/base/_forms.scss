@@ -63,6 +63,13 @@ textarea {
   &:focus { @include vendor(box-shadow, inset 0px 0px 3px 1px $c-text-input-shadow-focus); }
 }
 
+.ie6, .ie7, .ie8 {
+  .text-input,
+  textarea {
+    border: 1px solid #ccc;
+  }
+}
+
 
 /**
  * Placeholder styling
