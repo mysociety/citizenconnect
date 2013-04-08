@@ -15,6 +15,10 @@
         {% block extra_headers %}{% endblock %}
         <link rel="stylesheet" href="{% static 'css/leaflet.css' %}" />
         <link rel="stylesheet" href="{% static 'css/leaflet.rrose.css' %}" />
+        <!--[if lte IE 8]>
+            <link rel="stylesheet" href="{% static 'css/leaflet.ie.css' %}" />
+            <link rel="stylesheet" href="{% static 'css/leaflet.rrose.ie.css' %}" />
+        <![endif]-->
         <link rel="stylesheet" href="{% static "css/default.css" %}">
         {% if cobrand %}
           {% include cobrand.styles_template %}
