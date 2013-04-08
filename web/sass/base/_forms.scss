@@ -109,6 +109,7 @@ textarea {
   display: table;
   ul { display: table-row; }
   li {
+    list-style: none;
     display: table-cell;
     padding: ($grid-gutter + em);
     background: $c-big-radio-group-bg;
@@ -157,6 +158,21 @@ textarea {
   }
 }
 
+// alternative layout for IEs that don't support display:table;
+.ie6, .ie7 {
+  .big-radio-group {
+    display: block;
+    ul {
+      display: block;
+      padding: 0;
+    }
+    li {
+      display: block;
+      float: left;
+      width: auto;
+    }
+  }
+}
 
 
 /******************/
@@ -184,7 +200,6 @@ textarea {
     float: left;
   }
 }
-
 
 /**
  * Inline forms, like on the pick provider page
