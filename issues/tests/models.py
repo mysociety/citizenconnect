@@ -217,7 +217,8 @@ class ProblemModelTests(ProblemTestCase):
     def test_mistyped_token_returns_false_from_check(self):
         with self.settings(SECRET_KEY="value needs to be consistent to ensure same token created"):
             token = self.test_problem.make_token(30464)
-            self.assertEqual(token, 'xr0-a60e0707bfb1d77f47eb')
+            self.assertEqual(token, 'xr0-0ca2b7902598992daf25')
+            self.assertTrue(self.test_problem.check_token(token))
             self.assertFalse(self.test_problem.check_token('xro-bff54e08ca9de9f38b1f'))
 
 class ProblemModelTimeToTests(ProblemTestCase):
