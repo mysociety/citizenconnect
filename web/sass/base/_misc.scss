@@ -23,6 +23,12 @@ img {
 // Set box-sizing to border-box everywhere
 * {
     @include vendor(box-sizing, border-box);
-    @include ie-7 { behavior: url(../boxsizing.htc); }
-    @include ie-8 { behavior: url(../boxsizing.htc); }
+}
+
+.ie6,
+.ie7 {
+    &,
+    *, {
+        behavior: url(../boxsizing.htc);
+    }
 }
