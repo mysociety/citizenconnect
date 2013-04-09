@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import hmac, hashlib
 
 from django.db import models
@@ -319,6 +319,14 @@ class Problem(IssueModel):
     @property
     def private_summary(self):
         return self.summarise(self.description)
+
+    @property
+    def resolved(self):
+        """When the issue was resolved - calculated from created + time_to_address"""
+        if self.time_to_address:
+            return self.created + timedelta(minutes=self.time_to_address)
+        else:
+            return None
 
     def summarise(self, field):
         summary_length = 30

@@ -30,7 +30,10 @@ table {
       &:hover { color: $c-table-link-hover-color; }
     }
     &.table__label { text-align: left; }
-    &.created { color: $c-table-created-color; }
+    &.created,
+    &.resolved {
+      color: $c-table-created-color;
+    }
     // coloured icons
     &.happy_service,
     &.happy_outcome {
