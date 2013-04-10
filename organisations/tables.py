@@ -38,7 +38,7 @@ class NationalSummaryTable(tables.Table):
     class Meta:
         order_by = ('name',)
 
-class IssueModelTable(tables.Table):
+class ProblemTable(tables.Table):
 
     reference_number = tables.Column(verbose_name="Ref.", order_by=("id"))
     created = tables.DateTimeColumn(verbose_name="Received")
@@ -56,7 +56,7 @@ class IssueModelTable(tables.Table):
         self.issue_type = kwargs.pop('issue_type')
         if not self.private:
             self.cobrand = kwargs.pop('cobrand')
-        super(IssueModelTable, self).__init__(*args, **kwargs)
+        super(ProblemTable, self).__init__(*args, **kwargs)
 
 
     def render_summary(self, record):
@@ -73,7 +73,7 @@ class IssueModelTable(tables.Table):
         order_by = ('-created',)
         attrs = {"class": "problem-table"}
 
-class ExtendedIssueModelTable(IssueModelTable):
+class ExtendedProblemTable(ProblemTable):
 
     service = tables.Column(verbose_name='Department')
     time_to_acknowledge = tables.TemplateColumn(verbose_name='Time to acknowledge (days)',
