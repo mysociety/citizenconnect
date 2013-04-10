@@ -52,23 +52,9 @@
                     {% include "message_list.html" with messages=form.reporter_name.errors message_type='error' %}
                 </li>
                 <li class="g  one-half  palm-one-whole">
-                    <label for="id_reporter_phone">Your Contact Number <span class="info">You must enter a contact number OR email address</span></label>
-                    {{ form.reporter_phone }}
-                    {% include "message_list.html" with messages=form.reporter_phone.errors message_type='error' %}
-                </li>
-                <li class="g  one-half  palm-one-whole">
-                    <label for="id_reporter_email">Your Email Address <span class="info">You must enter a contact number OR email address</span></label>
+                    <label for="id_reporter_email">Your Email Address <span class="info">You must enter your email address</span></label>
                     {{ form.reporter_email }}
                     {% include "message_list.html" with messages=form.reporter_email.errors message_type='error' %}
-                </li>
-                <li class="g  one-half  pal-one-whole">
-                    <label for="id_preferred_contact_method_0">Preferred contact method</label>
-                    <ul class="radio-list">
-                        {% for radio in form.preferred_contact_method %}
-                            <li>{{ radio }}</li>
-                        {% endfor %}
-                    </ul>
-                    {% include "message_list.html" with messages=form.preferred_contact_method.errors message_type='error' %}
                 </li>
             </ul>
         </fieldset>

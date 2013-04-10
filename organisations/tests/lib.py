@@ -69,12 +69,13 @@ def create_test_instance(model, attributes):
             attributes['organisation'] = create_test_organisation()
         if 'category' not in attributes:
             attributes['category'] = 'staff'
+        if 'preferred_contact_method' not in attributes:
+            attributes['preferred_contact_method'] = 'email'
 
     default_attributes = {
         'description': 'A test problem',
         'reporter_name': 'Test User',
         'reporter_email': 'reporter@example.com',
-        'preferred_contact_method': 'email',
         'status': model.NEW
     }
     default_attributes.update(attributes)

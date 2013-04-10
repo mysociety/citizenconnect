@@ -15,9 +15,7 @@ class QuestionAPIForm(forms.ModelForm):
         fields = [
             'description',
             'reporter_name',
-            'reporter_phone',
             'reporter_email',
-            'preferred_contact_method',
             'source'
         ]
 
