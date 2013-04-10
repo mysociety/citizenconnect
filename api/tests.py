@@ -190,3 +190,13 @@ class APITests(TestCase):
         content_json = json.loads(resp.content)
         errors = json.loads(content_json['errors'])
         self.assertEqual(errors['publication_status'][0], 'A problem that requires second tier moderation cannot be published.')
+
+    def test_preferred_contact_method_is_required(self):
+        problem_without_preferred_contact_method = self.test_problem
+        del problem_without_preferred_contact_method['preferred_contact_method']
+        resp = self.client.post(self.problem_api_url, problem_without_preferred_contact_method)
+        self.assertEquals(resp.status_code, 400)
+
+        content_json = json.loads(resp.content)
+        errors = json.loads(content_json['errors'])
+        self.assertEqual(errors['preferred_contact_method'][0],  'This field is required.')
