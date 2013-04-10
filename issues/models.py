@@ -43,7 +43,6 @@ class IssueModel(AuditedModel):
     reporter_email = models.CharField(max_length=254, blank=True, verbose_name='')
     preferred_contact_method = models.CharField(max_length=100, choices=CONTACT_CHOICES, default=CONTACT_EMAIL)
     source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True)
-    mailed = models.BooleanField(default=False, blank=False)
 
     @property
     def issue_type(self):
@@ -292,6 +291,7 @@ class Problem(IssueModel):
     survey_sent = models.DateTimeField(null=True, blank=True)
     COBRAND_CHOICES = [(cobrand, cobrand) for cobrand in settings.ALLOWED_COBRANDS]
     cobrand = models.CharField(max_length=30, blank=False, choices=COBRAND_CHOICES)
+    mailed = models.BooleanField(default=False, blank=False)
 
     version = IntegerVersionField()
 
