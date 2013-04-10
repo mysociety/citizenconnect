@@ -9,6 +9,7 @@ from django import forms
 from django.conf import settings
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import Distance
+from django.db.models import Q
 
 # App imports
 from issues.models import Problem, Question
@@ -63,13 +64,15 @@ class OrganisationFinderForm(forms.Form):
                 organisations = self.organisations_from_postcode(postcode, organisation_type, partial=True)
                 validation_message = "Sorry, there are no matches within 5 miles of %s. Please try again." % (location)
             else:
-                # organisations = Organisation.objects.filter(name__icontains=location,
-                #                                             organisation_type=organisation_type)
-                # if len(organisations) < 3 :
-                # Try a metaphone search to give more results
-                location_metaphone = dm(location)
-                organisations = Organisation.objects.filter(name_metaphone__contains=location_metaphone[0],
+                organisations = Organisation.objects.filter(name__icontains=location,
                                                             organisation_type=organisation_type)
+                if len(organisations) < 5 :
+                    # Try a metaphone search to give more results
+                    location_metaphone = dm(location)
+                    alt_orgs = Organisation.objects.filter(Q(name_metaphone__contains=location_metaphone[0]),
+                                                           Q(organisation_type=organisation_type),
+                                                           ~Q(pk__in=list([a.id for a in organisations])))
+                    organisations = organisations | alt_orgs
 
                 validation_message = "We couldn't find any matches for '%s'. Please try again." % (location)
             if len(organisations) == 0:
