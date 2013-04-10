@@ -225,3 +225,14 @@ class APITests(TestCase):
         errors = json.loads(content_json['errors'])
         self.assertEqual(errors['commissioned'][0],  'Select a valid choice. 99 is not one of the available choices.')
 
+    def test_source_does_not_accept_non_choice_value(self):
+        problem_with_non_choice_source_value = self.test_problem
+        problem_with_non_choice_source_value['source'] = 'telepathy'
+        resp = self.client.post(self.problem_api_url, problem_with_non_choice_source_value)
+        self.assertEquals(resp.status_code, 400)
+        content_json = json.loads(resp.content)
+
+        errors = json.loads(content_json['errors'])
+        self.assertEqual(errors['source'][0],  u"Value u'telepathy' is not a valid choice.")
+
+
