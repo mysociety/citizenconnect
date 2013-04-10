@@ -106,7 +106,8 @@ class ProblemAPIForm(forms.ModelForm):
             'public',
             'public_reporter_name',
             'publication_status',
-            'source'
+            'source',
+            'breach'
         ]
 
         widgets = {

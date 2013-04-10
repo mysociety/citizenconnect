@@ -29,7 +29,8 @@ class APITests(TestCase):
             'public_reporter_name': 1,
             'preferred_contact_method': Problem.CONTACT_PHONE,
             'source':Problem.SOURCE_PHONE,
-            'requires_second_tier_moderation': 0
+            'requires_second_tier_moderation': 0,
+            'breach': 1
         }
         self.question_uuid = uuid.uuid4().hex
         self.test_question = {
@@ -83,7 +84,8 @@ class APITests(TestCase):
         self.assertEqual(problem.publication_status, True)
         self.assertEqual(problem.source, self.test_problem['source'])
         self.assertEqual(problem.moderated, Problem.MODERATED)
-        self.assertEqual(problem.requires_second_tier_moderation, self.test_problem['requires_second_tier_moderation'])
+        self.assertEqual(problem.requires_second_tier_moderation, False)
+        self.assertEqual(problem.breach, True)
 
     def test_source_is_required(self):
         problem_without_source = self.test_problem
