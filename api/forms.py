@@ -76,6 +76,7 @@ class ProblemAPIForm(forms.ModelForm):
             'service_code',
             'service',
             'description',
+            'moderated_description',
             'category',
             'reporter_name',
             'reporter_phone',

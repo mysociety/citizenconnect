@@ -19,6 +19,7 @@ class APITests(TestCase):
             'organisation': self.test_organisation.ods_code,
             'service_code': self.test_service.service_code,
             'description': 'This is a problem',
+            'moderated_description': 'This is a moderated problem',
             'category': 'cleanliness',
             'reporter_name': self.problem_uuid,
             'reporter_email': 'steve@mysociety.org',
@@ -70,6 +71,7 @@ class APITests(TestCase):
         self.assertEqual(problem.organisation, self.test_organisation)
         self.assertEqual(problem.service, self.test_service)
         self.assertEqual(problem.description, self.test_problem['description'])
+        self.assertEqual(problem.moderated_description, self.test_problem['moderated_description'])
         self.assertEqual(problem.category, self.test_problem['category'])
         self.assertEqual(problem.reporter_name, self.test_problem['reporter_name'])
         self.assertEqual(problem.reporter_email, self.test_problem['reporter_email'])
