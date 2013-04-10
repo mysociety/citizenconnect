@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger(__name__)
+
 from django.contrib.gis.db import models as geomodels
 from django.conf import settings
 from django.db import models
@@ -9,7 +12,7 @@ from django.core.exceptions import ValidationError
 from citizenconnect.models import AuditedModel
 
 import auth
-from .auth import user_in_group, user_in_groups, user_is_superuser
+from .auth import user_in_group, user_in_groups, user_is_superuser, create_unique_username
 
 class CCG(AuditedModel):
     name = models.TextField()
@@ -82,6 +85,38 @@ class Organisation(AuditedModel,geomodels.Model):
 
         # Everyone else - NO
         return False
+
+
+    def ensure_related_user_exists(self):
+        """
+        Check to see if this org has user. If not either find one or create one.
+        
+        Will raise a ValueError exception if the organisation has no user and
+        has no email. ISSUE-329
+        """
+
+        # No need to create if there are already users
+        if self.users.count(): return
+        
+        # We can't attach a user if we don't have an email address
+        if not self.email: # ISSUE-329
+            raise ValueError("Organisation needs an email to find/create related user")
+            
+        logger.info('Creating account for {0} (ODS code: {1})'.format(self.name,
+                                                                       self.ods_code))
+
+        try:
+            user = User.objects.get(email=self.email)
+        except User.DoesNotExist:
+            user = User.objects.create_user(create_unique_username(self), self.email)
+        
+        # make sure user is in the right group. No-op if already a member.
+        providers_group = Group.objects.get(pk=auth.PROVIDERS)
+        user.groups.add(providers_group)
+        
+        # Add the user to this org
+        self.users.add(user)
+
 
     def __unicode__(self):
         return self.name
