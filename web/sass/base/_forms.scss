@@ -63,6 +63,13 @@ textarea {
   &:focus { @include vendor(box-shadow, inset 0px 0px 3px 1px $c-text-input-shadow-focus); }
 }
 
+.ie6, .ie7, .ie8 {
+  .text-input,
+  textarea {
+    border: 1px solid #ccc;
+  }
+}
+
 
 /**
  * Placeholder styling
@@ -109,6 +116,7 @@ textarea {
   display: table;
   ul { display: table-row; }
   li {
+    list-style: none;
     display: table-cell;
     padding: ($grid-gutter + em);
     background: $c-big-radio-group-bg;
@@ -157,6 +165,21 @@ textarea {
   }
 }
 
+// alternative layout for IEs that don't support display:table;
+.ie6, .ie7 {
+  .big-radio-group {
+    display: block;
+    ul {
+      display: block;
+      padding: 0;
+    }
+    li {
+      display: block;
+      float: left;
+      width: auto;
+    }
+  }
+}
 
 
 /******************/
@@ -184,7 +207,12 @@ textarea {
     float: left;
   }
 }
-
+.ie6, .ie7 {
+  .search-form .btn {
+    height: 2.5em;
+    padding-top: 0;
+  }
+}
 
 /**
  * Inline forms, like on the pick provider page

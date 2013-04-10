@@ -80,6 +80,7 @@ class ExtendedIssueModelTable(IssueModelTable):
                                                 template_name='organisations/includes/time_interval_column.html')
     time_to_address = tables.TemplateColumn(verbose_name='Time to address (days)',
                                             template_name='organisations/includes/time_interval_column.html')
+    resolved = tables.DateTimeColumn(verbose_name="Resolved")
 
     class Meta:
         order_by = ('-created',)
@@ -87,6 +88,7 @@ class ExtendedIssueModelTable(IssueModelTable):
         sequence = ('reference_number',
                     'created',
                     'status',
+                    'resolved',
                     'category',
                     'service',
                     'time_to_acknowledge',

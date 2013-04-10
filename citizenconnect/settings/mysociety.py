@@ -47,3 +47,9 @@ SURVEY_INTERVAL_IN_DAYS = config.get('SURVEY_INTERVAL_IN_DAYS')
 EMAIL_HOST = config.get('EMAIL_HOST')
 
 EMAIL_PORT = config.get('EMAIL_PORT')
+
+summary_threshold = config.get('SUMMARY_THRESHOLD')
+if summary_threshold:
+    SUMMARY_THRESHOLD = tuple(summary_threshold)
+else:
+    SUMMARY_THRESHOLD = None

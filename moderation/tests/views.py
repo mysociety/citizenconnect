@@ -35,6 +35,14 @@ class BasicViewTests(BaseModerationTestCase):
             resp = self.client.get(url)
             self.assertEqual(resp.status_code, 403)
 
+    def test_views_inacessible_to_ccgs(self):
+        self.client.logout()
+        self.login_as(self.ccg_user)
+
+        for url in self.all_urls:
+            resp = self.client.get(url)
+            self.assertEqual(resp.status_code, 403)
+
     def test_views_accessible_to_superusers(self):
         for user in self.users_who_can_access_everything:
             self.login_as(user)
@@ -42,11 +50,11 @@ class BasicViewTests(BaseModerationTestCase):
                 resp = self.client.get(url)
                 self.assertEqual(resp.status_code, 200)
 
-    def test_views_accessible_to_legal_moderators(self):
+    def test_views_accessible_to_second_tier_moderators(self):
         self.client.logout()
-        self.login_as(self.legal_moderator)
+        self.login_as(self.second_tier_moderator)
 
-        for url in self.all_legal_moderator_urls:
+        for url in self.all_second_tier_moderator_urls:
             resp = self.client.get(url)
             self.assertEqual(resp.status_code, 200)
 
@@ -81,27 +89,27 @@ class HomeViewTests(BaseModerationTestCase):
         resp = self.client.get(self.home_url)
         self.assertContains(resp, self.problem_form_url)
 
-class LegalHomeViewTests(BaseModerationTestCase):
+class SecondTierModerationHomeViewTests(BaseModerationTestCase):
 
     def setUp(self):
-        super(LegalHomeViewTests, self).setUp()
-        self.legal_moderation = create_test_instance(Problem, {'organisation': self.test_organisation,
-                                                               'requires_legal_moderation': True})
-        self.no_legal_moderation = create_test_instance(Problem, {'organisation': self.test_organisation})
-        self.login_as(self.legal_moderator)
+        super(SecondTierModerationHomeViewTests, self).setUp()
+        self.second_tier_moderation = create_test_instance(Problem, {'organisation': self.test_organisation,
+                                                               'requires_second_tier_moderation': True})
+        self.no_second_tier_moderation = create_test_instance(Problem, {'organisation': self.test_organisation})
+        self.login_as(self.second_tier_moderator)
 
     def test_issues_in_context(self):
-        resp = self.client.get(self.legal_home_url)
-        self.assertTrue(self.legal_moderation in resp.context['issues'])
+        resp = self.client.get(self.second_tier_home_url)
+        self.assertTrue(self.second_tier_moderation in resp.context['issues'])
 
-    def test_issues_not_requiring_legal_moderation_not_in_context(self):
-        resp = self.client.get(self.legal_home_url)
-        self.assertTrue(self.no_legal_moderation not in resp.context['issues'])
+    def test_issues_not_requiring_second_tier_moderation_not_in_context(self):
+        resp = self.client.get(self.second_tier_home_url)
+        self.assertTrue(self.no_second_tier_moderation not in resp.context['issues'])
 
-    def test_issues_link_to_legal_moderate_form(self):
-        resp = self.client.get(self.legal_home_url)
-        self.legal_problem_form_url = reverse('legal-moderate-form', kwargs={'pk':self.legal_moderation.id})
-        self.assertContains(resp, self.legal_problem_form_url)
+    def test_issues_link_to_second_tier_moderate_form(self):
+        resp = self.client.get(self.second_tier_home_url)
+        self.second_tier_problem_form_url = reverse('second-tier-moderate-form', kwargs={'pk':self.second_tier_moderation.id})
+        self.assertContains(resp, self.second_tier_problem_form_url)
 
 class ModerateFormViewTests(BaseModerationTestCase):
 
@@ -141,17 +149,17 @@ class ModerateFormViewTests(BaseModerationTestCase):
         self.assertEqual(resp.status_code, 200)
 
 
-class LegalModerateFormViewTests(BaseModerationTestCase):
+class SecondTierModerateFormViewTests(BaseModerationTestCase):
 
     def setUp(self):
-        super(LegalModerateFormViewTests, self).setUp()
-        self.login_as(self.legal_moderator)
+        super(SecondTierModerateFormViewTests, self).setUp()
+        self.login_as(self.second_tier_moderator)
 
     def test_problem_in_context(self):
-        resp = self.client.get(self.legal_problem_form_url)
-        self.assertEqual(resp.context['issue'], self.test_legal_moderation_problem)
+        resp = self.client.get(self.second_tier_problem_form_url)
+        self.assertEqual(resp.context['issue'], self.test_second_tier_moderation_problem)
 
-    def test_issues_not_requiring_legal_moderation_rejected(self):
-        legal_moderation_form_url =  reverse('legal-moderate-form', kwargs={'pk':self.test_problem.id})
-        resp = self.client.get(legal_moderation_form_url)
+    def test_issues_not_requiring_second_tier_moderation_rejected(self):
+        second_tier_moderation_form_url =  reverse('second-tier-moderate-form', kwargs={'pk':self.test_problem.id})
+        resp = self.client.get(second_tier_moderation_form_url)
         self.assertEqual(resp.status_code, 404)

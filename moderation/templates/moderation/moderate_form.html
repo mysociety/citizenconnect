@@ -73,15 +73,15 @@
                 {% if response_forms %}
                     {{ response_forms.management_form }}
                 {% endif %}
-                {% for form in response_forms %}
-                    {{ form.id }}
+                {% for response_form in response_forms %}
+                    {{ response_form.id }}
                     <li class="g  three-quarters">
                         <label for="id_responses-{{forloop.counter0}}-response">Moderated response</label>
-                        {{ form.response }}
-                        {% include "message_list.html" with messages=form.response.errors message_type='error' %}
+                        {{ response_form.response }}
+                        {% include "message_list.html" with messages=response_form.response.errors message_type='error' %}
                     </li>
                     <li class="g one-quarter  mt">
-                        {{ form.DELETE }} Delete
+                        {{ response_form.DELETE }} Delete
                     </li>
                 {% empty %}
                     <li class="g  one-whole">No Responses</li>
@@ -92,7 +92,7 @@
         <fieldset >
             <ul class="gw">
             <li class="g one-third palm-one-whole align-center mt"><button class="btn one-whole" type="submit" name="keep_private">Not Suitable/Keep Private</button></li>
-            <li class="g one-third palm-one-whole align-center mt"><button class="btn one-whole" type="submit" name="now_requires_legal_moderation">Requires Second Tier Moderation</button></li>
+            <li class="g one-third palm-one-whole align-center mt"><button class="btn one-whole" type="submit" name="now_requires_second_tier_moderation">Requires Second Tier Moderation</button></li>
             <li class="g one-third palm-one-whole align-center mt"><button class="btn one-whole" type="submit" name="publish">Publish/Update Online</button></li>
             </ul>
         </fieldset>

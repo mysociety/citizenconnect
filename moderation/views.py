@@ -17,8 +17,8 @@ from organisations.models import Organisation
 import organisations.auth as auth
 from organisations.auth import user_in_group, user_is_superuser, user_in_groups
 
-from .forms import LookupForm, ProblemModerationForm, ProblemResponseInlineFormSet, ProblemLegalModerationForm
-from .tables import ModerationTable, LegalModerationTable
+from .forms import LookupForm, ProblemModerationForm, ProblemResponseInlineFormSet, ProblemSecondTierModerationForm
+from .tables import ModerationTable, SecondTierModerationTable
 
 class ModeratorsOnlyMixin(object):
     """
@@ -31,18 +31,18 @@ class ModeratorsOnlyMixin(object):
         else:
             return super(ModeratorsOnlyMixin, self).dispatch(request, *args, **kwargs)
 
-class LegalModeratorsOnlyMixin(object):
+class SecondTierModeratorsOnlyMixin(object):
     """
-    Mixin to protect views to only allow legal moderators to access them
+    Mixin to protect views to only allow second tier moderators to access them
     """
 
     def dispatch(self, request, *args, **kwargs):
         if not user_is_superuser(request.user) and not user_in_groups(request.user,
-                                                                      [auth.LEGAL_MODERATORS,
+                                                                      [auth.SECOND_TIER_MODERATORS,
                                                                        auth.CASE_HANDLERS]):
             raise PermissionDenied()
         else:
-            return super(LegalModeratorsOnlyMixin, self).dispatch(request, *args, **kwargs)
+            return super(SecondTierModeratorsOnlyMixin, self).dispatch(request, *args, **kwargs)
 
 class ModerationTableMixin(object):
 
@@ -74,17 +74,17 @@ class ModerateHome(ModeratorsOnlyMixin,
         self.add_table_to_context(context, ModerationTable)
         return context
 
-class LegalModerateHome(LegalModeratorsOnlyMixin,
+class SecondTierModerateHome(SecondTierModeratorsOnlyMixin,
                         ModerationTableMixin,
                         TemplateView):
     template_name = 'moderation/moderate_home.html'
 
     def get_context_data(self, **kwargs):
         # Get all the problems flagged for second tier moderation
-        context = super(LegalModerateHome, self).get_context_data(**kwargs)
-        context['issues'] = Problem.objects.problems_requiring_legal_moderation().order_by("-created")
+        context = super(SecondTierModerateHome, self).get_context_data(**kwargs)
+        context['issues'] = Problem.objects.problems_requiring_second_tier_moderation().order_by("-created")
         context['title'] = "Second Tier Moderation"
-        self.add_table_to_context(context, LegalModerationTable)
+        self.add_table_to_context(context, SecondTierModerationTable)
         return context
 
 class ModerateLookup(ModeratorsOnlyMixin,
@@ -109,20 +109,30 @@ class ModerateForm(ModeratorsOnlyMixin,
     # Standardise the context_object's name
     context_object_name = 'issue'
 
+    def get_form_kwargs(self):
+        # Add the request to the form's kwargs
+        kwargs = super(ModerateForm, self).get_form_kwargs()
+        kwargs.update({
+            'request' : self.request
+        })
+        return kwargs
+
     def get_success_url(self):
         return reverse('moderate-confirm')
 
     def get_context_data(self, **kwargs):
         context = super(ModerateForm, self).get_context_data(**kwargs)
-        issue = Problem.objects.get(pk=self.kwargs['pk'])
         if self.request.POST:
-            context['response_forms'] = ProblemResponseInlineFormSet(self.request.POST, instance=issue)
+            context['response_forms'] = ProblemResponseInlineFormSet(data=self.request.POST,
+                                                                     instance=self.object)
         else:
-            context['response_forms'] = ProblemResponseInlineFormSet(instance=issue)
+            context['response_forms'] = ProblemResponseInlineFormSet(instance=self.object)
+
         return context
 
     def form_valid(self, form):
         context = self.get_context_data()
+        # If we have responses too, we have to check them manually for validity
         if 'response_forms' in context:
             response_forms = context['response_forms']
             if response_forms.is_valid():
@@ -132,23 +142,32 @@ class ModerateForm(ModeratorsOnlyMixin,
             else:
                 return self.render_to_response(self.get_context_data(form=form))
         else:
+            # No responses, just a problem
             self.object = form.save()
 
         return HttpResponseRedirect(self.get_success_url())
 
-class LegalModerateForm(LegalModeratorsOnlyMixin,
+class SecondTierModerateForm(SecondTierModeratorsOnlyMixin,
                         UpdateView):
-    queryset = Problem.objects.problems_requiring_legal_moderation().all()
-    template_name = 'moderation/legal_moderate_form.html'
-    form_class = ProblemLegalModerationForm
+    queryset = Problem.objects.problems_requiring_second_tier_moderation().all()
+    template_name = 'moderation/second_tier_moderate_form.html'
+    form_class = ProblemSecondTierModerationForm
     # Standardise the context_object's name
     context_object_name = 'issue'
 
+    def get_form_kwargs(self):
+        # Add the request to the form's kwargs
+        kwargs = super(SecondTierModerateForm, self).get_form_kwargs()
+        kwargs.update({
+            'request' : self.request
+        })
+        return kwargs
+
     def get_success_url(self):
-        return reverse('legal-moderate-confirm')
+        return reverse('second-tier-moderate-confirm')
 
     def get_context_data(self, **kwargs):
-        context = super(LegalModerateForm, self).get_context_data(**kwargs)
+        context = super(SecondTierModerateForm, self).get_context_data(**kwargs)
         issue = Problem.objects.get(pk=self.kwargs['pk'])
         return context
 
@@ -158,8 +177,8 @@ class ModerateConfirm(ModeratorsOnlyMixin,
     template_name = 'moderation/moderate_confirm.html'
     home_link = 'moderate-home'
 
-class LegalModerateConfirm(LegalModeratorsOnlyMixin,
+class SecondTierModerateConfirm(SecondTierModeratorsOnlyMixin,
                            ModerationConfirmationMixin,
                            TemplateView):
     template_name = 'moderation/moderate_confirm.html'
-    home_link = 'legal-moderate-home'
+    home_link = 'second-tier-moderate-home'

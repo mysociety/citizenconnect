@@ -4,21 +4,24 @@ from django.db import connection
 
 from .models import Organisation
 
+# Return a clause summing the number of records in a table whose field meets a criteria
+def _sum_clause(table, field, criteria):
+    return "SUM(CASE WHEN "+ table +"."+ field + " " + criteria + " THEN 1 ELSE 0 END)"
+
 # Return the number of records created more recently than the date supplied
 def _date_clause(issue_table, alias):
-    return "SUM(CASE WHEN "+ issue_table +".created > %s THEN 1 ELSE 0 END) as " + alias
+    return _sum_clause(issue_table, 'created', "> %s") + " AS " + alias
 
 # Get fraction of true values over non-null values for boolean field
 def _boolean_clause(issue_table, field):
-    clause =  "SUM(CASE WHEN "+ issue_table +"."+ field +" = %s THEN 1 ELSE 0 END)"
+    clause = _sum_clause(issue_table, field, "= %s")
     clause += " / "
-    clause += "NULLIF(sum(CASE WHEN "+ issue_table +"."+ field +" IS NOT NULL THEN 1 ELSE 0 END), 0)::float"
-    clause += " AS " + field
+    clause += "NULLIF(" + _sum_clause(issue_table, field, "IS NOT NULL") + ", 0)::float" + " AS " + field
     return clause
 
 # Return the count of non-null values for a boolean field
 def _count_clause(issue_table, field, alias):
-    return "SUM(CASE WHEN "+ issue_table +"."+ field +" IS NOT NULL THEN 1 ELSE 0 END) AS " + alias
+    return _sum_clause(issue_table, field, "IS NOT NULL") + " AS " + alias
 
 # Return the average of non-null values in an integer field
 def _average_value_clause(issue_table, field, alias):
@@ -26,8 +29,11 @@ def _average_value_clause(issue_table, field, alias):
     return clause
 
 # Return counts for an organisation or a set of organisations for the last week, four week
-# and six months based on created date and filters
-def interval_counts(issue_type, filters={}, sort='name', organisation_id=None):
+# and six months based on created date and filters. Filter values can be specified as a single value
+# or a tuple of values. For a set of organisations, a threshold can be expressed as a tuple of interval
+# and value and only organisations where the number of issues reported in the interval equals or exceeds
+# the value will be returned.
+def interval_counts(issue_type, filters={}, sort='name', organisation_id=None, threshold=None):
     cursor = connection.cursor()
     issue_table = issue_type._meta.db_table
 
@@ -71,7 +77,9 @@ def interval_counts(issue_type, filters={}, sort='name', organisation_id=None):
     for criteria in ['status', 'service_id', 'category']:
         value = filters.get(criteria)
         if value != None:
-            criteria_clauses.append(issue_table + "." + criteria + " = %s""")
+            if type(value) != tuple:
+                value = (value,)
+            criteria_clauses.append(issue_table + "." + criteria + " in %s""")
             params.append(value)
 
     service_code = filters.get('service_code')
@@ -79,9 +87,11 @@ def interval_counts(issue_type, filters={}, sort='name', organisation_id=None):
         if organisation_id:
             raise NotImplementedError("Filtering for service on a single organisation uses service_id, not service_code")
         else:
+            if type(service_code) != tuple:
+                service_code = (service_code,)
             extra_tables.append('organisations_service')
             criteria_clauses.append("organisations_service.id = %s.service_id" % issue_table)
-            criteria_clauses.append("organisations_service.service_code = %s")
+            criteria_clauses.append("organisations_service.service_code in %s")
             params.append(service_code)
 
     organisation_type = filters.get('organisation_type')
@@ -89,13 +99,33 @@ def interval_counts(issue_type, filters={}, sort='name', organisation_id=None):
         if organisation_id:
              raise NotImplementedError("Filtering for an organisation type is unnecessary for a single organisation")
         else:
-             criteria_clauses.append("organisations_organisation.organisation_type = %s")
+             if type(organisation_type) != tuple:
+                organisation_type = (organisation_type,)
+             criteria_clauses.append("organisations_organisation.organisation_type in %s")
              params.append(organisation_type)
 
     # Group by clauses to go with the non-aggregate selects
     group_by_clauses = ["""organisations_organisation.id""",
                         """organisations_organisation.name""",
                         """organisations_organisation.ods_code"""]
+
+    # Having clauses to implement the threshold
+    having_text = ''
+    if threshold != None:
+        if organisation_id:
+            raise NotImplementedError("Threshold is not implemented for a single organisation")
+        interval, cutoff = threshold
+        allowed_intervals = intervals.keys() + ['all_time']
+        if interval not in allowed_intervals:
+            raise NotImplementedError("Threshold can only be set on the value of one of: %s" % allowed_intervals)
+
+        if interval == 'all_time':
+            having_clause = "count("+ issue_table + ".id)"
+        else:
+            having_clause =  _sum_clause(issue_table, 'created', "> %s")
+            params.append(intervals[interval])
+        having_text = "HAVING " + having_clause + " >= %s"
+        params.append(cutoff)
 
     # Assemble the SQL
     select_text = "SELECT %s" % ', '.join(select_clauses)
@@ -116,7 +146,13 @@ def interval_counts(issue_type, filters={}, sort='name', organisation_id=None):
 
     group_text = "GROUP BY %s" % ', '.join(group_by_clauses)
     sort_text = "ORDER BY %s" % sort
-    query = "%s %s %s %s %s" % (select_text, from_text, criteria_text, group_text, sort_text)
+    query = "%s %s %s %s %s %s" % (select_text,
+                                   from_text,
+                                   criteria_text,
+                                   group_text,
+                                   having_text,
+                                   sort_text)
+
     cursor.execute(query, params)
     desc = cursor.description
     # Return a list of dictionaries

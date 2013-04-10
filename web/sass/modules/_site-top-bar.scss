@@ -27,3 +27,18 @@
     }
   }
 }
+
+// alternative layout for IEs that don't support display:table;
+.ie6, .ie7 {
+  .site-top-bar {
+    display: block;
+    .site-top-bar__row {
+      display: block;
+      .site-top-bar__cell {
+        display: block;
+        float: left;
+      }
+      .site-top-bar__cell--nav { float: right; }
+    }
+  }
+}

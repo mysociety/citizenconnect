@@ -61,3 +61,19 @@
     &:hover { background: $c-split-box-hover-excited-bg; }
   }
 }
+
+// IE non-css-table layout
+.ie6, .ie7 {
+  .split-box {
+    display: block;
+    .split-box__inner {
+      display: block;
+    }
+    .split-box__left,
+    .split-box__right {
+      display: block;
+      width: 50%;
+      float: left;
+    }
+  }
+}

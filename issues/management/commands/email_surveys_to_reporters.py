@@ -28,7 +28,8 @@ class Command(BaseCommand):
         survey_cutoff = now - survey_interval
         surveyable_problems = Problem.objects.filter(Q(survey_sent__isnull=True) &
                                                      Q(created__lte=survey_cutoff) &
-                                                     Q(reporter_email__isnull=False))
+                                                     Q(reporter_email__isnull=False) &
+                                                     Q(status__in=Problem.VISIBLE_STATUSES))
 
         logger.info('{0} surveys to email'.format(len(surveyable_problems)))
         if len(surveyable_problems) > 0:
@@ -49,7 +50,7 @@ class Command(BaseCommand):
 
     def send_survey(self, template, problem):
         interval = (datetime.utcnow().replace(tzinfo=utc) - problem.created).days
-        survey_params = {'cobrand': 'choices',
+        survey_params = {'cobrand': problem.cobrand,
                          'token': problem.make_token(random.randint(0,32767)),
                          'id': int_to_base32(problem.id) }
         survey_params['response'] = 'y'

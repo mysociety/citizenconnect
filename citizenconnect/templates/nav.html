@@ -1,0 +1,43 @@
+{% load url from future %}
+{% load page_auth %}
+{% if cobrand %}
+    <div class="site-top-bar">
+        <div class="site-top-bar__row">
+            <div class="site-top-bar__cell">
+                <p>Currently this site is only live for parts of London and the North East - other areas will be added soon</p>
+            </div>
+            <div class="site-top-bar__cell  site-top-bar__cell--nav">
+                <ul class="nav  fr">
+                    {% if cobrand.name == 'choices' %}
+                        {% url 'home' cobrand=cobrand.name as url %}
+                            <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}"><span class="icon-home" aria-hidden="true"></span>&nbsp;Home</a></li>
+                    {% else %}
+                        <li><a href="http://www.nhslondon.lampuat64-1.rroom.net/"><span class="icon-home" aria-hidden="true"></span>Home</a></li>
+                    {% endif %}
+
+                    {% url 'about' cobrand=cobrand.name as url %}
+                        <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% elif user.is_authenticated %}
+    <div class="site-top-bar">
+        <div class="site-top-bar__row">
+            <div class="site-top-bar__cell  site-top-bar__cell--nav">
+                <ul class="nav  fr">
+                    {% if user|can_access:"escalation-dashboard" %}
+                        {% url 'escalation-dashboard' as url %}
+                            <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Escalation dashboard</a></li>
+                    {% endif %}
+                    {% url 'password_reset' as url %}
+                        <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Change password</a></li>
+                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                </ul>
+                <ul class="nav  fr">
+                    <li><span class="info-tab">Logged in as: {{ user.username }}</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endif %}

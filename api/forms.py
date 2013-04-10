@@ -30,6 +30,11 @@ class ProblemAPIForm(forms.ModelForm):
     service_code = forms.CharField(required=False)
     # Make source required
     source = forms.CharField(required=True)
+    # Make moderated optional (we set it ourselves)
+    moderated = forms.IntegerField(required=False)
+    # Make commissioned required
+    commissioned = forms.ChoiceField(required=True, choices=Problem.COMMISSIONED_CHOICES)
+
 
     # Pull out the organisation ods_code and turn it into a real organisation
     def clean_organisation(self):
@@ -45,6 +50,10 @@ class ProblemAPIForm(forms.ModelForm):
         # Force the service foreign key field to be ignored, because we only
         # want to accept services via the service_code field we've added
         return None
+
+    def clean_moderated(self):
+        # If you are submitting the form, you have moderated it, so always return MODERATED
+        return Problem.MODERATED
 
     def clean(self):
         # Run super class clean method
@@ -66,6 +75,19 @@ class ProblemAPIForm(forms.ModelForm):
                     self._errors['service_code'] = self.error_class(['Sorry, that service is not recognised.'])
                     del cleaned_data['service_code']
 
+        # If we are publishing the problem and the reporter wants it public,
+        # it must have a moderated_description so that we have something to show for it
+        # on public pages
+        if cleaned_data['public'] == True and cleaned_data['publication_status'] == Problem.PUBLISHED:
+            if not 'moderated_description' in cleaned_data or not cleaned_data['moderated_description']:
+                self._errors['moderated_description'] = self.error_class(['You must moderate a version of the problem details when publishing public problems.'])
+                del cleaned_data['moderated_description']
+
+        # If a problem is flagged as requiring second tier moderation, it can't be published
+        if cleaned_data['requires_second_tier_moderation'] == True and cleaned_data['publication_status'] == Problem.PUBLISHED:
+            self._errors['publication_status'] = self.error_class(['A problem that requires second tier moderation cannot be published.'])
+            del cleaned_data['publication_status']
+
         return cleaned_data
 
     class Meta:
@@ -76,6 +98,9 @@ class ProblemAPIForm(forms.ModelForm):
             'service_code',
             'service',
             'description',
+            'moderated_description',
+            'moderated',
+            'requires_second_tier_moderation',
             'category',
             'reporter_name',
             'reporter_phone',
@@ -83,7 +108,10 @@ class ProblemAPIForm(forms.ModelForm):
             'preferred_contact_method',
             'public',
             'public_reporter_name',
-            'source'
+            'publication_status',
+            'source',
+            'breach',
+            'commissioned'
         ]
 
         widgets = {

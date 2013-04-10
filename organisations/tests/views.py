@@ -1,3 +1,4 @@
+# encoding: utf-8
 import os
 from mock import Mock, MagicMock, patch
 import json
@@ -6,6 +7,7 @@ from decimal import Decimal
 
 # Django imports
 from django.test import TestCase
+from django.test.utils import override_settings
 from django.contrib.gis.geos import Point
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -15,7 +17,7 @@ from issues.models import Problem, Question
 
 import organisations
 from ..models import Organisation
-from . import create_test_instance, create_test_organisation, create_test_service, AuthorizationTestCase
+from . import create_test_instance, create_test_organisation, create_test_service, create_test_ccg, AuthorizationTestCase
 
 class OrganisationSummaryTests(AuthorizationTestCase):
 
@@ -29,8 +31,8 @@ class OrganisationSummaryTests(AuthorizationTestCase):
         atts.update({'category': 'cleanliness',
                      'happy_service': True,
                      'happy_outcome': None,
-                     'time_to_acknowledge': 51,
-                     'time_to_address': 543})
+                     'time_to_acknowledge': 5100,
+                     'time_to_address': 54300})
         self.cleanliness_problem = create_test_instance(Problem, atts)
         atts.update({'category': 'staff',
                      'happy_service': True,
@@ -42,9 +44,17 @@ class OrganisationSummaryTests(AuthorizationTestCase):
                      'service_id' : self.service.id,
                      'happy_service': False,
                      'happy_outcome': True,
-                     'time_to_acknowledge': 71,
+                     'time_to_acknowledge': 7100,
                      'time_to_address': None})
         self.other_dept_problem = create_test_instance(Problem, atts)
+        atts.update({'category': 'access',
+                     'service_id' : None,
+                     'happy_service': False,
+                     'happy_outcome': False,
+                     'time_to_acknowledge': 2100,
+                     'time_to_address': 2300,
+                     'status': Problem.ABUSIVE})
+        self.hidden_status_access_problem = create_test_instance(Problem, atts)
 
         self.public_summary_url = reverse('public-org-summary', kwargs={'ods_code':self.test_organisation.ods_code,
                                                                         'cobrand': 'choices'})
@@ -63,34 +73,68 @@ class OrganisationSummaryTests(AuthorizationTestCase):
             resp = self.client.get(url)
             self.assertTrue(self.test_organisation.name in resp.content)
 
-    def test_summary_page_has_problems(self):
-        for url in self.urls:
-            self.login_as(self.provider)
-            resp = self.client.get(url)
-            total = resp.context['problems_total']
-            self.assertEqual(total['all_time'], 3)
-            self.assertEqual(total['week'], 3)
-            self.assertEqual(total['four_weeks'], 3)
-            self.assertEqual(total['six_months'], 3)
+    def test_private_summary_page_shows_all_problems(self):
+        self.login_as(self.provider)
+        resp = self.client.get(self.private_summary_url)
+        total = resp.context['problems_total']
+        self.assertEqual(total['all_time'], 4)
+        self.assertEqual(total['week'], 4)
+        self.assertEqual(total['four_weeks'], 4)
+        self.assertEqual(total['six_months'], 4)
 
-            problems_by_status = resp.context['problems_by_status']
-            self.assertEqual(problems_by_status[0]['all_time'], 3)
-            self.assertEqual(problems_by_status[0]['week'], 3)
-            self.assertEqual(problems_by_status[0]['four_weeks'], 3)
-            self.assertEqual(problems_by_status[0]['six_months'], 3)
-            self.assertEqual(problems_by_status[0]['description'], 'Open')
+        problems_by_status = resp.context['problems_by_status']
+        self.assertEqual(problems_by_status[0]['all_time'], 3)
+        self.assertEqual(problems_by_status[0]['week'], 3)
+        self.assertEqual(problems_by_status[0]['four_weeks'], 3)
+        self.assertEqual(problems_by_status[0]['six_months'], 3)
+        self.assertEqual(problems_by_status[0]['description'], 'Open')
 
-            self.assertEqual(problems_by_status[1]['all_time'], 0)
-            self.assertEqual(problems_by_status[1]['week'], 0)
-            self.assertEqual(problems_by_status[1]['four_weeks'], 0)
-            self.assertEqual(problems_by_status[1]['six_months'], 0)
-            self.assertEqual(problems_by_status[1]['description'], 'In Progress')
+        self.assertEqual(problems_by_status[1]['all_time'], 0)
+        self.assertEqual(problems_by_status[1]['week'], 0)
+        self.assertEqual(problems_by_status[1]['four_weeks'], 0)
+        self.assertEqual(problems_by_status[1]['six_months'], 0)
+        self.assertEqual(problems_by_status[1]['description'], 'In Progress')
 
-            self.assertEqual(problems_by_status[2]['all_time'], 0)
-            self.assertEqual(problems_by_status[2]['week'], 0)
-            self.assertEqual(problems_by_status[2]['four_weeks'], 0)
-            self.assertEqual(problems_by_status[2]['six_months'], 0)
-            self.assertEqual(problems_by_status[2]['description'], 'Resolved')
+        self.assertEqual(problems_by_status[2]['all_time'], 0)
+        self.assertEqual(problems_by_status[2]['week'], 0)
+        self.assertEqual(problems_by_status[2]['four_weeks'], 0)
+        self.assertEqual(problems_by_status[2]['six_months'], 0)
+        self.assertEqual(problems_by_status[2]['description'], 'Responded to')
+
+        self.assertEqual(problems_by_status[7]['all_time'], 1)
+        self.assertEqual(problems_by_status[7]['week'], 1)
+        self.assertEqual(problems_by_status[7]['four_weeks'], 1)
+        self.assertEqual(problems_by_status[7]['six_months'], 1)
+        self.assertEqual(problems_by_status[7]['description'], 'Abusive/Vexatious')
+
+    def test_public_summary_page_only_shows_visible_problems(self):
+        self.login_as(self.provider)
+        resp = self.client.get(self.public_summary_url)
+        total = resp.context['problems_total']
+        self.assertEqual(total['all_time'], 3)
+        self.assertEqual(total['week'], 3)
+        self.assertEqual(total['four_weeks'], 3)
+        self.assertEqual(total['six_months'], 3)
+
+        problems_by_status = resp.context['problems_by_status']
+        self.assertEqual(problems_by_status[0]['all_time'], 3)
+        self.assertEqual(problems_by_status[0]['week'], 3)
+        self.assertEqual(problems_by_status[0]['four_weeks'], 3)
+        self.assertEqual(problems_by_status[0]['six_months'], 3)
+        self.assertEqual(problems_by_status[0]['description'], 'Open')
+
+        self.assertEqual(problems_by_status[1]['all_time'], 0)
+        self.assertEqual(problems_by_status[1]['week'], 0)
+        self.assertEqual(problems_by_status[1]['four_weeks'], 0)
+        self.assertEqual(problems_by_status[1]['six_months'], 0)
+        self.assertEqual(problems_by_status[1]['description'], 'In Progress')
+
+        self.assertEqual(problems_by_status[2]['all_time'], 0)
+        self.assertEqual(problems_by_status[2]['week'], 0)
+        self.assertEqual(problems_by_status[2]['four_weeks'], 0)
+        self.assertEqual(problems_by_status[2]['six_months'], 0)
+        self.assertEqual(problems_by_status[2]['description'], 'Responded to')
+
 
     def test_summary_page_applies_problem_category_filter(self):
         for url in self.urls:
@@ -121,7 +165,7 @@ class OrganisationSummaryTests(AuthorizationTestCase):
             self.assertEqual(problems_by_status[0]['four_weeks'], 1)
             self.assertEqual(problems_by_status[0]['six_months'], 1)
 
-    def test_summary_page_gets_survey_data(self):
+    def test_summary_page_gets_survey_data_for_problems_in_visible_statuses(self):
         for url in self.urls:
             self.login_as(self.provider)
             resp = self.client.get(url)
@@ -129,13 +173,53 @@ class OrganisationSummaryTests(AuthorizationTestCase):
             self.assertEqual(issues_total['happy_service'], 0.666666666666667)
             self.assertEqual(issues_total['happy_outcome'], 1.0)
 
-    def test_summary_page_gets_time_limit_data(self):
+    def test_summary_page_gets_time_limit_data_for_problems_in_visible_statuses(self):
         for url in self.urls:
             self.login_as(self.provider)
             resp = self.client.get(url)
             issues_total = resp.context['issues_total']
-            self.assertEqual(issues_total['average_time_to_acknowledge'], Decimal('61.0000000000000000'))
-            self.assertEqual(issues_total['average_time_to_address'], Decimal('543.0000000000000000000'))
+            self.assertEqual(issues_total['average_time_to_acknowledge'], Decimal('6100.0000000000000000'))
+            self.assertEqual(issues_total['average_time_to_address'], Decimal('54300.0000000000000000000'))
+
+    def test_public_summary_page_shows_only_visible_status_rows(self):
+        resp = self.client.get(self.public_summary_url)
+        self.assertContains(resp, 'Responded to', count=1, status_code=200)
+        self.assertNotContains(resp, 'Unable to Resolve')
+        self.assertNotContains(resp, 'Abusive/Vexatious')
+
+    def test_private_summary_page_shows_visible_and_hidden_status_rows(self):
+        self.login_as(self.provider)
+        resp = self.client.get(self.private_summary_url)
+        self.assertContains(resp, 'Responded to', count=1, status_code=200)
+        self.assertContains(resp, 'Unable to Resolve', count=1)
+        self.assertContains(resp, 'Abusive/Vexatious', count=1)
+
+    def test_summary_page_does_not_include_problems_in_hidden_statuses_in_total_row_summary_stats(self):
+        for url in self.urls:
+            self.login_as(self.provider)
+            resp = self.client.get(url)
+            summary_stats = resp.context['problems_summary_stats']
+            self.assertEqual(summary_stats['happy_service'], 0.666666666666667)
+            self.assertEqual(summary_stats['happy_outcome'], 1.0)
+            self.assertEqual(summary_stats['average_time_to_acknowledge'], Decimal('6100.0000000000000000'))
+            self.assertEqual(summary_stats['average_time_to_address'], Decimal('54300.0000000000000000000'))
+
+    def test_summary_pages_display_summary_stats_values_in_visible_status_rows(self):
+        for url in self.urls:
+            self.login_as(self.provider)
+            resp = self.client.get(url)
+            self.assertContains(resp, '<td id="status_0_time_to_acknowledge">4</td>')
+            self.assertContains(resp, '<td class="separator" id="status_0_time_to_address">38</td>')
+            self.assertContains(resp, '<td id="status_0_happy_service">67%</td>')
+            self.assertContains(resp, '<td id="status_0_happy_outcome">100%</td>')
+
+    def test_private_summary_page_does_not_display_summary_stats_values_in_hidden_status_rows(self):
+        self.login_as(self.provider)
+        resp = self.client.get(self.private_summary_url)
+        self.assertContains(resp, '<td id="status_7_time_to_acknowledge">—</td>')
+        self.assertContains(resp, '<td class="separator" id="status_7_time_to_address">—</td>')
+        self.assertContains(resp, '<td id="status_7_happy_service">—</td>')
+        self.assertContains(resp, '<td id="status_7_happy_outcome">—</td>')
 
     def test_public_summary_page_is_accessible_to_everyone(self):
         resp = self.client.get(self.public_summary_url)
@@ -152,8 +236,18 @@ class OrganisationSummaryTests(AuthorizationTestCase):
             resp = self.client.get(self.private_summary_url)
             self.assertEqual(resp.status_code, 200)
 
+    def test_private_summary_page_is_accessible_to_ccg(self):
+        self.login_as(self.ccg_user)
+        resp = self.client.get(self.private_summary_url)
+        self.assertEqual(resp.status_code, 200)
+
     def test_private_summary_page_is_inaccessible_to_other_providers(self):
         self.login_as(self.other_provider)
+        resp = self.client.get(self.private_summary_url)
+        self.assertEqual(resp.status_code, 403)
+
+    def test_private_summary_page_is_inaccessible_to_other_ccgs(self):
+        self.login_as(self.other_ccg_user)
         resp = self.client.get(self.private_summary_url)
         self.assertEqual(resp.status_code, 403)
 
@@ -169,8 +263,10 @@ class OrganisationProblemsTests(AuthorizationTestCase):
 
         self.hospital = create_test_organisation({'organisation_type': 'hospitals',
                                                   'ods_code': 'ABC123'})
+        self.gp_ccg = create_test_ccg({'code': 'MOO'})
         self.gp = create_test_organisation({'organisation_type': 'gppractices',
-                                            'ods_code': 'DEF456'})
+                                            'ods_code': 'DEF456',
+                                            'ccg': self.gp_ccg})
         self.public_hospital_problems_url = reverse('public-org-problems',
                                                     kwargs={'ods_code':self.hospital.ods_code,
                                                             'cobrand': 'choices'})
@@ -203,6 +299,10 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         self.hospital.save()
         self.gp.users.add(self.pals)
         self.gp.save()
+
+        # Add the CCG user from AuthorizationTestCase to the gp CCG
+        self.gp_ccg.users.add(self.ccg_user)
+        self.gp_ccg.save()
 
         # Add an explicitly public and an explicitly private problem to test
         # privacy is respected
@@ -331,6 +431,16 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         resp = self.client.get(self.private_gp_problems_url)
         self.assertEqual(resp.status_code, 403)
 
+    def test_private_page_is_inaccessible_to_other_ccgs(self):
+        self.login_as(self.ccg_user)
+        resp = self.client.get(self.private_hospital_problems_url)
+        self.assertEqual(resp.status_code, 403)
+
+    def test_private_page_is_accessible_to_ccg(self):
+        self.login_as(self.ccg_user)
+        resp = self.client.get(self.private_gp_problems_url)
+        self.assertEqual(resp.status_code, 200)
+
 class OrganisationReviewsTests(AuthorizationTestCase):
 
     def setUp(self):
@@ -347,6 +457,9 @@ class OrganisationReviewsTests(AuthorizationTestCase):
         self.login_as(self.provider)
         resp = self.client.get(self.private_reviews_url)
         self.assertEqual(resp.status_code, 200)
+        self.login_as(self.ccg_user)
+        resp = self.client.get(self.private_reviews_url)
+        self.assertEqual(resp.status_code, 200)
 
     def test_private_page_is_inaccessible_to_anon_users(self):
         expected_login_url = "{0}?next={1}".format(self.login_url, self.private_reviews_url)
@@ -361,6 +474,11 @@ class OrganisationReviewsTests(AuthorizationTestCase):
 
     def test_private_page_is_inaccessible_to_other_providers(self):
         self.login_as(self.other_provider)
+        resp = self.client.get(self.private_reviews_url)
+        self.assertEqual(resp.status_code, 403)
+
+    def test_private_page_is_inaccessible_to_other_ccgs(self):
+        self.login_as(self.other_ccg_user)
         resp = self.client.get(self.private_reviews_url)
         self.assertEqual(resp.status_code, 403)
 
@@ -410,11 +528,16 @@ class OrganisationDashboardTests(AuthorizationTestCase):
         resp = self.client.get(self.dashboard_url)
         self.assertEqual(resp.status_code, 403)
 
+    def test_dashboard_page_is_inaccessible_to_other_ccgs(self):
+        self.login_as(self.other_ccg_user)
+        resp = self.client.get(self.dashboard_url)
+        self.assertEqual(resp.status_code, 403)
+
 class OrganisationMapTests(AuthorizationTestCase):
 
     def setUp(self):
         super(OrganisationMapTests, self).setUp()
-        self.gp = self.test_organisation
+        self.hospital = self.test_organisation
         self.other_gp = self.other_test_organisation
         self.map_url = reverse('org-map', kwargs={'cobrand':'choices'})
         self.private_map_url = reverse('private-map')
@@ -433,20 +556,23 @@ class OrganisationMapTests(AuthorizationTestCase):
         resp = self.client.get(self.map_url)
         response_json = json.loads(resp.context['organisations'])
         self.assertEqual(len(response_json), 2)
-        self.assertEqual(response_json[0]['ods_code'], self.gp.ods_code)
+        self.assertEqual(response_json[0]['ods_code'], self.hospital.ods_code)
         self.assertEqual(response_json[0]['problem_count'], 0)
         self.assertEqual(response_json[1]['ods_code'], self.other_gp.ods_code)
         self.assertEqual(response_json[1]['problem_count'], 0)
 
-    def test_public_map_doesnt_include_unmoderated_or_unpublished_problems(self):
+    def test_public_map_doesnt_include_unmoderated_or_unpublished_or_hidden_status_problems(self):
         create_test_instance(Problem, {'organisation': self.other_gp})
         create_test_instance(Problem, {'organisation': self.other_gp,
                                        'publication_status': Problem.HIDDEN,
                                        'moderated': Problem.MODERATED})
         create_test_instance(Problem, {'organisation': self.other_gp,
                                        'publication_status': Problem.PUBLISHED,
+                                       'moderated': Problem.MODERATED,
+                                       'status': Problem.ABUSIVE})
+        create_test_instance(Problem, {'organisation': self.other_gp,
+                                       'publication_status': Problem.PUBLISHED,
                                        'moderated': Problem.MODERATED})
-
 
         resp = self.client.get(self.map_url)
         response_json = json.loads(resp.context['organisations'])
@@ -478,6 +604,10 @@ class OrganisationMapTests(AuthorizationTestCase):
                                        'moderated': Problem.MODERATED})
         create_test_instance(Problem, {'organisation': self.other_gp,
                                        'publication_status': Problem.PUBLISHED,
+                                       'moderated': Problem.MODERATED,
+                                       'status': Problem.ABUSIVE})
+        create_test_instance(Problem, {'organisation': self.other_gp,
+                                       'publication_status': Problem.PUBLISHED,
                                        'moderated': Problem.MODERATED})
 
         resp = self.client.get(self.private_map_url)
@@ -486,7 +616,7 @@ class OrganisationMapTests(AuthorizationTestCase):
         self.assertEqual(response_json[1]['problem_count'], 3)
 
     def test_public_map_provider_urls_are_to_public_summary_pages(self):
-        expected_gp_url = reverse('public-org-summary', kwargs={'ods_code':self.gp.ods_code, 'cobrand':'choices'})
+        expected_gp_url = reverse('public-org-summary', kwargs={'ods_code':self.hospital.ods_code, 'cobrand':'choices'})
         expected_other_gp_url = reverse('public-org-summary', kwargs={'ods_code':self.other_gp.ods_code, 'cobrand':'choices'})
 
         resp = self.client.get(self.map_url)
@@ -497,7 +627,7 @@ class OrganisationMapTests(AuthorizationTestCase):
 
     def test_private_map_provider_urls_are_to_private_dashboards(self):
         self.login_as(self.nhs_superuser)
-        expected_gp_url = reverse('org-dashboard', kwargs={'ods_code':self.gp.ods_code})
+        expected_gp_url = reverse('org-dashboard', kwargs={'ods_code':self.hospital.ods_code})
         expected_other_gp_url = reverse('org-dashboard', kwargs={'ods_code':self.other_gp.ods_code})
 
         resp = self.client.get(self.private_map_url)
@@ -506,15 +636,46 @@ class OrganisationMapTests(AuthorizationTestCase):
         self.assertEqual(response_json[0]['url'], expected_gp_url)
         self.assertEqual(response_json[1]['url'], expected_other_gp_url)
 
-class SummaryTests(TestCase):
+@override_settings(SUMMARY_THRESHOLD=None)
+class SummaryTests(AuthorizationTestCase):
 
     def setUp(self):
         super(SummaryTests, self).setUp()
         self.summary_url = reverse('org-all-summary', kwargs={'cobrand':'choices'})
-
+        create_test_instance(Problem, {'organisation': self.test_organisation})
+        create_test_instance(Problem, {'organisation': self.other_test_organisation,
+                                       'publication_status': Problem.PUBLISHED,
+                                       'moderated': Problem.MODERATED,
+                                       'status': Problem.ABUSIVE})
     def test_summary_page_exists(self):
         resp = self.client.get(self.summary_url)
         self.assertEqual(resp.status_code, 200)
+
+    def test_summary_doesnt_include_hidden_status_problems_in_default_view(self):
+        resp = self.client.get(self.summary_url)
+        self.assertContains(resp, 'Test Organisation')
+        self.assertNotContains(resp, 'Other Test Organisation')
+        self.assertContains(resp, '<td class="week">1</td>', count=1, status_code=200)
+
+    def test_status_filter_only_shows_visible_statuses_in_filters(self):
+        resp = self.client.get(self.summary_url)
+        self.assertNotContains(resp, 'Referred to Another Provider')
+        self.assertNotContains(resp, 'Unable to Contact')
+
+    def test_summary_page_ignores_hidden_status_filter(self):
+        resp = self.client.get(self.summary_url + '?status=7')
+        self.assertContains(resp, 'Test Organisation')
+        self.assertNotContains(resp, 'Other Test Organisation')
+        self.assertContains(resp, '<td class="week">1</td>', count=1, status_code=200)
+
+    def test_summary_page_applies_threshold_from_settings(self):
+        with self.settings(SUMMARY_THRESHOLD=('six_months', 1)):
+            resp = self.client.get(self.summary_url)
+            self.assertContains(resp, 'Test Organisation')
+
+        with self.settings(SUMMARY_THRESHOLD=('six_months', 2)):
+            resp = self.client.get(self.summary_url)
+            self.assertNotContains(resp, 'Test Organisation')
 
 class ProviderPickerTests(TestCase):
 
@@ -672,6 +833,8 @@ class QuestionDashboardTests(AuthorizationTestCase):
     def test_dashboard_only_accessible_to_question_answerers_and_superusers(self):
         users_who_shouldnt_have_access = [self.provider,
                                           self.other_provider,
+                                          self.ccg_user,
+                                          self.other_ccg_user,
                                           self.case_handler,
                                           self.no_provider,
                                           self.pals]
@@ -687,3 +850,37 @@ class QuestionDashboardTests(AuthorizationTestCase):
             self.login_as(user)
             resp = self.client.get(self.questions_dashboard_url)
             self.assertEqual(resp.status_code, 200)
+
+
+class EscalationDashboardTests(AuthorizationTestCase):
+
+    def setUp(self):
+        super(EscalationDashboardTests, self).setUp()
+        self.escalation_dashboard_url = reverse('escalation-dashboard')
+        self.org_breach_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
+                                                                 'breach': True})
+        self.other_org_breach_problem = create_test_instance(Problem, {'organisation': self.other_test_organisation,
+                                                                       'breach': True})
+
+    def test_dashboard_accessible_to_ccg_users(self):
+        self.login_as(self.ccg_user)
+        resp = self.client.get(self.escalation_dashboard_url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_dashboard_shows_all_problems_for_nhs_superusers(self):
+        self.login_as(self.nhs_superuser)
+        resp = self.client.get(self.escalation_dashboard_url)
+        self.assertContains(resp, self.org_breach_problem.reference_number)
+        self.assertContains(resp, self.other_org_breach_problem.reference_number)
+
+    def test_dashboard_only_shows_problems_for_ccg_organisations(self):
+        self.login_as(self.ccg_user)
+        resp = self.client.get(self.escalation_dashboard_url)
+        self.assertContains(resp, self.org_breach_problem.reference_number)
+        self.assertNotContains(resp, self.other_org_breach_problem.reference_number)
+
+    def test_dashboard_shows_all_statuses_in_filters(self):
+        self.login_as(self.ccg_user)
+        resp = self.client.get(self.escalation_dashboard_url)
+        self.assertContains(resp, 'Referred to Another Provider')
+        self.assertContains(resp, 'Unable to Contact')

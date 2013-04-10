@@ -15,4 +15,6 @@ MAILTO=cron-!!(*= $site *)!!@mysociety.org
 VIRTUAL_ENV="/data/vhost/!!(*= $vhost *)!!/virtualenv-citizenconnect"
 PATH=/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/:/data/vhost/!!(*= $vhost *)!!/virtualenv-citizenconnect/bin:/usr/local/bin:/usr/bin:/bin
 
-3 6 * * * !!(*= $user *)!! /data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/email_surveys_to_reporters.bash
+3 6 * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/send-surveys.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash email_surveys_to_reporters" || echo "stalled?"
+
+/5 * * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/send-problems.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash email_issues_to_providers" || echo "stalled?"

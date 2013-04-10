@@ -15,7 +15,7 @@ class ModerationTable(BaseModerationTable):
                                     template_name='moderation/includes/moderation_link.html',
                                     orderable=False)
 
-class LegalModerationTable(BaseModerationTable):
+class SecondTierModerationTable(BaseModerationTable):
     action = tables.TemplateColumn(verbose_name='Actions',
-                                    template_name='moderation/includes/legal_moderation_link.html',
+                                    template_name='moderation/includes/second_tier_moderation_link.html',
                                     orderable=False)

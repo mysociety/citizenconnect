@@ -6,6 +6,7 @@ from django import forms
 from django.forms.widgets import HiddenInput, RadioSelect, Textarea, TextInput
 
 from .models import Question, Problem
+from .widgets import CategoryRadioFieldRenderer
 
 class IssueModelForm(forms.ModelForm):
     """
@@ -46,7 +47,7 @@ class QuestionForm(IssueModelForm):
             # Add placeholder for description
             'description': Textarea({'placeholder': 'Please write the details of your question in this box.'}),
             'postcode': TextInput(attrs={'class': 'text-input'}),
-            'category': RadioSelect,
+            'category': RadioSelect(renderer=CategoryRadioFieldRenderer),
             'reporter_name': TextInput(attrs={'class': 'text-input'}),
             # Add placeholder for phone
             'reporter_phone': TextInput(attrs={'class': 'text-input'}),
@@ -112,7 +113,7 @@ class ProblemForm(IssueModelForm):
             'service': RadioSelect,
             # Add placeholder for description
             'description': Textarea({'placeholder': 'Please write the details of your problem in this box'}),
-            'category': RadioSelect,
+            'category': RadioSelect(renderer=CategoryRadioFieldRenderer),
             'reporter_name': TextInput(attrs={'class': 'text-input'}),
             # Add placeholder for phone
             'reporter_phone': TextInput(attrs={'class': 'text-input'}),

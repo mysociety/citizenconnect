@@ -14,6 +14,7 @@ from .auth import user_in_group, user_in_groups, user_is_superuser
 class CCG(AuditedModel):
     name = models.TextField()
     code = models.CharField(max_length=8, db_index=True, unique=True)
+    users = models.ManyToManyField(User, related_name='ccgs')
 
 class Organisation(AuditedModel,geomodels.Model):
 
@@ -32,6 +33,7 @@ class Organisation(AuditedModel,geomodels.Model):
 
     point =  geomodels.PointField()
     objects = geomodels.GeoManager()
+    ccg = models.ForeignKey(CCG, blank=True, null=True)
 
     @property
     def open_issues(self):
@@ -66,6 +68,10 @@ class Organisation(AuditedModel,geomodels.Model):
 
         # Providers in this organisation - YES
         if user in self.users.all():
+            return True
+
+        # CCG users for a CCG associated with this organisation - YES
+        if self.ccg and user in self.ccg.users.all():
             return True
 
         # Everyone else - NO

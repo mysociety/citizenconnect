@@ -15,7 +15,18 @@ from django.core.urlresolvers import reverse
 from issues.models import Problem, Question
 
 from ..lib import interval_counts
-from ..models import Organisation, Service
+from ..models import Organisation, Service, CCG
+
+def create_test_ccg(attributes={}):
+    # Make a CCG
+    default_attributes = {
+        'name':'Test CCG',
+        'code':'ABC',
+    }
+    default_attributes.update(attributes)
+    instance = CCG(**dict((k,v) for (k,v) in default_attributes.items() if '__' not in k))
+    instance.save()
+    return instance
 
 def create_test_organisation(attributes={}):
     # Make an organisation
@@ -106,8 +117,8 @@ class IntervalCountsTest(TestCase):
         # Create a spread of problems over time for two organisations
         problem_ages = {3: {'time_to_acknowledge' : 24, 'time_to_address': 220},
                         4: {'time_to_acknowledge' : 32, 'time_to_address': 102},
-                        5: {'happy_outcome': True, 'happy_service': True},
-                        21: {'happy_outcome': False},
+                        5: {'happy_outcome': True, 'happy_service': True, 'status': Problem.ABUSIVE},
+                        21: {'happy_outcome': False, 'status': Problem.UNABLE_TO_RESOLVE},
                         22: {'service_id': self.test_org_injuries.id},
                         45: {'time_to_acknowledge' : 12, 'time_to_address': 400}}
 
@@ -205,6 +216,58 @@ class IntervalCountsTest(TestCase):
         self.assertEqual(expected_counts, interval_counts(issue_type=Problem,
                                                           filters=filters))
 
+    def test_filter_by_statuses(self):
+        filters = {'status': (Problem.UNABLE_TO_RESOLVE, Problem.ABUSIVE,)}
+        expected_counts = [{'week': 1,
+                           'four_weeks': 2,
+                           'id': self.test_organisation.id,
+                           'name': 'Test Organisation',
+                           'ods_code': 'XXX999',
+                           'six_months': 2,
+                           'all_time': 2,
+                           'happy_outcome': 0.5,
+                           'happy_outcome_count': 2,
+                           'happy_service': 1.0,
+                           'happy_service_count': 1,
+                           'average_time_to_acknowledge': None,
+                           'average_time_to_address': None}]
+        actual = interval_counts(issue_type=Problem, filters=filters)
+        self.assertEqual(expected_counts, actual)
+
+    def test_applies_interval_count_threshold_to_overall_counts(self):
+        expected_counts = [{'week': 3,
+                           'four_weeks': 5,
+                           'id': self.test_organisation.id,
+                           'name': 'Test Organisation',
+                           'ods_code': 'XXX999',
+                           'six_months': 6,
+                           'all_time': 6,
+                           'happy_outcome': 0.5,
+                           'happy_outcome_count': 2,
+                           'happy_service': 1.0,
+                           'happy_service_count': 1,
+                           'average_time_to_acknowledge': Decimal('22.6666666666666667'),
+                           'average_time_to_address': Decimal('240.6666666666666667')}]
+        actual = interval_counts(issue_type=Problem, filters={}, threshold=('six_months', 6))
+        self.assertEqual(expected_counts, actual)
+
+    def test_applies_all_time_interval_count_threshold_to_overall_counts(self):
+        expected_counts = [{'week': 3,
+                           'four_weeks': 5,
+                           'id': self.test_organisation.id,
+                           'name': 'Test Organisation',
+                           'ods_code': 'XXX999',
+                           'six_months': 6,
+                           'all_time': 6,
+                           'happy_outcome': 0.5,
+                           'happy_outcome_count': 2,
+                           'happy_service': 1.0,
+                           'happy_service_count': 1,
+                           'average_time_to_acknowledge': Decimal('22.6666666666666667'),
+                           'average_time_to_address': Decimal('240.6666666666666667')}]
+        actual = interval_counts(issue_type=Problem, filters={}, threshold=('all_time', 6))
+        self.assertEqual(expected_counts, actual)
+
 class AuthorizationTestCase(TestCase):
     """
     A test case which sets up some dummy data useful for testing authorization
@@ -215,9 +278,16 @@ class AuthorizationTestCase(TestCase):
     def setUp(self):
         # Create some dummy Users and an Organisation they want to access
 
+        # CCGs
+        self.test_ccg = create_test_ccg()
+        self.other_test_ccg = create_test_ccg({'code': 'XYZ'})
+
         # Organisations
-        self.test_organisation = create_test_organisation()
-        self.other_test_organisation = create_test_organisation({'ods_code': '12345'})
+        self.test_organisation = create_test_organisation({'ccg': self.test_ccg,
+                                                           'organisation_type': 'hospitals'})
+        self.other_test_organisation = create_test_organisation({'ods_code': '12345',
+                                                                 'ccg': self.other_test_ccg,
+                                                                 'name': 'Other Test Organisation'})
 
         self.test_password = 'password'
 
@@ -258,15 +328,24 @@ class AuthorizationTestCase(TestCase):
         # A Question Answerer
         self.question_answerer = User.objects.get(pk=5)
 
-        # A Legal Moderator
-        self.legal_moderator = User.objects.get(pk=12)
+        # A Second Tier Moderator
+        self.second_tier_moderator = User.objects.get(pk=12)
 
         # A CQC user
         self.cqc = User.objects.get(pk=10)
 
-        # A CCQ user
-        self.ccg = User.objects.get(pk=9)
-        # TODO - we need to link this user to orgs and the ccg at some point
+        # A CCG user linked to no CCGs
+        self.no_ccg = User.objects.get(pk=14)
+
+        # A CCG user for the CCG that test organisation belongs to
+        self.ccg_user = User.objects.get(pk=9)
+        self.test_ccg.users.add(self.ccg_user)
+        self.test_ccg.save()
+
+        # A CCG user for the CCG that other test organisation belongs to
+        self.other_ccg_user = User.objects.get(pk=13)
+        self.other_test_ccg.users.add(self.other_ccg_user)
+        self.other_test_ccg.save()
 
         # Helpful lists for simpler testing
         self.users_who_can_access_everything = [self.superuser, self.nhs_superuser, self.case_handler]

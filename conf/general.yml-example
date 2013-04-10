@@ -60,3 +60,7 @@ EMAIL_HOST: localhost
 
 # Port to use for the SMTP server defined in EMAIL_HOST.
 EMAIL_PORT: 25
+
+# The threshold in number of reports per interval to use for determining
+# inclusion in the national summary report
+SUMMARY_THRESHOLD: ['six_months', 6]

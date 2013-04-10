@@ -34,7 +34,9 @@ urlpatterns = patterns('',
 
     url(r'^questions$', login_required(QuestionsDashboard.as_view()), name='questions-dashboard'),
 
-    url(r'^escalation$', login_required(EscalationDashboard.as_view()), name='escalation-dashboard'),
+    url(r'^escalation$', login_required(EscalationDashboard.as_view()),
+                         name='escalation-dashboard',
+                         kwargs={'private': True}),
 
     # Authentication related urls
     url(r'^login$',

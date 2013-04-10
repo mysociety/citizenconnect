@@ -1,6 +1,9 @@
 from django.views.generic import CreateView, TemplateView
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
+from django.shortcuts import get_object_or_404
+
+from concurrency.exceptions import RecordModifiedError
 
 from citizenconnect.shortcuts import render
 from organisations.auth import check_problem_access
@@ -17,9 +20,17 @@ class ResponseForm(CreateView):
     model = ProblemResponse
     form_class = ProblemResponseForm
 
+    def get_form_kwargs(self):
+        # Add the request to the form's kwargs
+        kwargs = super(ResponseForm, self).get_form_kwargs()
+        kwargs.update({
+            'request' : self.request
+        })
+        return kwargs
+
     def get_context_data(self, **kwargs):
         context = super(ResponseForm, self).get_context_data(**kwargs)
-        context['issue'] = Problem.objects.get(pk=self.kwargs['pk'])
+        context['issue'] = self.issue
         context['history'] = changes_for_model(context['issue'])
         return context
 
@@ -28,11 +39,11 @@ class ResponseForm(CreateView):
 
     def get_initial(self):
         initial = super(ResponseForm, self).get_initial()
-        issue = Problem.objects.get(pk=self.kwargs['pk'])
-        initial['issue'] = issue
-        initial['issue_status'] = issue.status
+        self.issue = get_object_or_404(Problem, pk=self.kwargs['pk'])
+        initial['issue'] = self.issue
+        initial['issue_status'] = self.issue.status
         # Check that the user has access to issue before allowing them to respond
-        check_problem_access(issue, self.request.user)
+        check_problem_access(self.issue, self.request.user)
         return initial
 
     def form_valid(self, form):
@@ -51,5 +62,8 @@ class ResponseForm(CreateView):
             issue.status = form.cleaned_data['issue_status']
             issue.save()
             context['issue'] = issue
+            # Because we haven't necessarily called form.save(), manually
+            # unset the session-based issue version tracker too
+            form.unset_version_in_session()
 
         return render(self.request, self.confirm_template, context)

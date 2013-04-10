@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import hmac, hashlib
 
 from django.db import models
@@ -6,6 +6,9 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.utils.timezone import utc
+
+from concurrency.fields import IntegerVersionField
+from concurrency.api import concurrency_check
 
 from citizenconnect.models import AuditedModel
 from .lib import base32_to_int, int_to_base32, MistypedIDException
@@ -166,14 +169,17 @@ class ProblemManager(models.Manager):
 
     def open_moderated_published_problems(self):
         return self.open_problems().filter(moderated=Problem.MODERATED,
-                                           publication_status=Problem.PUBLISHED)
+                                           publication_status=Problem.PUBLISHED,
+                                           status__in=Problem.VISIBLE_STATUSES)
 
     def all_moderated_published_problems(self):
         return super(ProblemManager, self).all().filter(moderated=Problem.MODERATED,
-                                                        publication_status=Problem.PUBLISHED)
+                                                        publication_status=Problem.PUBLISHED,
+                                                        status__in=Problem.VISIBLE_STATUSES)
 
-    def problems_requiring_legal_moderation(self):
-        return super(ProblemManager, self).all().filter(requires_legal_moderation=True)
+
+    def problems_requiring_second_tier_moderation(self):
+        return super(ProblemManager, self).all().filter(requires_second_tier_moderation=True)
 
     def open_escalated_problems(self):
         # ESCALATION_STATUSES is a subset of OPEN_STATUSES, so
@@ -188,18 +194,34 @@ class Problem(IssueModel):
     ACKNOWLEDGED = 1
     RESOLVED = 2
     ESCALATED = 3
+    UNABLE_TO_RESOLVE = 4
+    REFERRED_TO_OTHER_PROVIDER = 5
+    UNABLE_TO_CONTACT = 6
+    ABUSIVE = 7
+    REFERRED_TO_OMBUDSMAN = 8
 
     STATUS_CHOICES = (
         (NEW, 'Open'),
         (ACKNOWLEDGED, 'In Progress'),
-        (RESOLVED, 'Resolved'),
-        (ESCALATED, 'Escalated')
+        (RESOLVED, 'Responded to'),
+        (ESCALATED, 'Escalated'),
+        (UNABLE_TO_RESOLVE, 'Unable to Resolve'),
+        (REFERRED_TO_OTHER_PROVIDER, 'Referred to Another Provider'),
+        (UNABLE_TO_CONTACT, 'Unable to Contact'),
+        (ABUSIVE, 'Abusive/Vexatious'),
+        (REFERRED_TO_OMBUDSMAN, 'Referred to Ombudsman'),
     )
 
+    # Assigning individual statuses to status sets
     BASE_OPEN_STATUSES = [NEW, ACKNOWLEDGED]
-    ESCALATION_STATUSES = [ESCALATED]
+    ESCALATION_STATUSES = [ESCALATED, REFERRED_TO_OMBUDSMAN]
+    HIDDEN_STATUSES = [UNABLE_TO_RESOLVE, REFERRED_TO_OTHER_PROVIDER, UNABLE_TO_CONTACT, ABUSIVE]
 
+    # Calculated status sets
+    ALL_STATUSES = [status for status, description in STATUS_CHOICES]
     OPEN_STATUSES = BASE_OPEN_STATUSES + ESCALATION_STATUSES
+    VISIBLE_STATUSES = [status for status in ALL_STATUSES if status not in HIDDEN_STATUSES]
+    VISIBLE_STATUS_CHOICES = [(status, description) for status, description in STATUS_CHOICES if status in VISIBLE_STATUSES]
 
     PREFIX = 'P'
 
@@ -268,9 +290,13 @@ class Problem(IssueModel):
                                     choices=MODERATED_STATUS_CHOICES)
     moderated_description = models.TextField(blank=True)
     breach = models.BooleanField(default=False, blank=False)
-    requires_legal_moderation = models.BooleanField(default=False, blank=False)
+    requires_second_tier_moderation = models.BooleanField(default=False, blank=False)
     commissioned = models.IntegerField(blank=True, null=True, choices=COMMISSIONED_CHOICES)
     survey_sent = models.DateTimeField(null=True, blank=True)
+    COBRAND_CHOICES = [(cobrand, cobrand) for cobrand in settings.ALLOWED_COBRANDS]
+    cobrand = models.CharField(max_length=30, blank=False, choices=COBRAND_CHOICES)
+
+    version = IntegerVersionField()
 
     @property
     def reference_number(self):
@@ -294,6 +320,14 @@ class Problem(IssueModel):
     def private_summary(self):
         return self.summarise(self.description)
 
+    @property
+    def resolved(self):
+        """When the issue was resolved - calculated from created + time_to_address"""
+        if self.time_to_address:
+            return self.created + timedelta(minutes=self.time_to_address)
+        else:
+            return None
+
     def summarise(self, field):
         summary_length = 30
         if len(field) > summary_length:
@@ -304,11 +338,14 @@ class Problem(IssueModel):
     def can_be_accessed_by(self, user):
         """
         Whether or not an issue is accessible to a given user.
-        In practice the issue is publically accessible to everyone if it's public
-        and has been moderated to be publically available, otherwise only people
-        with access to the organisation it is assigned to can access it.
+        In practice the issue is publically accessible to everyone if it's public,
+        in a visible status and has been moderated to be publically available,
+        otherwise only people with access to the organisation it is assigned to can access it.
         """
-        return (self.public and self.publication_status == Problem.PUBLISHED) or self.organisation.can_be_accessed_by(user)
+        return (self.public \
+                and self.publication_status == Problem.PUBLISHED and \
+                int(self.status) in Problem.VISIBLE_STATUSES) \
+                or self.organisation.can_be_accessed_by(user)
 
     def set_time_to_values(self):
         now = datetime.utcnow().replace(tzinfo=utc)
@@ -321,6 +358,8 @@ class Problem(IssueModel):
     def save(self, *args, **kwargs):
         """Override the default model save() method in order to populate time_to_acknowledge
         or time_to_address if appropriate."""
+        concurrency_check(self, *args, **kwargs) # Do a concurrency check
+
         if self.created:
             self.set_time_to_values()
 

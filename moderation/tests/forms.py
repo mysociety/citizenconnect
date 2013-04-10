@@ -59,6 +59,8 @@ class ModerationFormTests(BaseModerationTestCase):
             'responses-INITIAL_FORMS': 0,
             'responses-MAX_NUM_FORMS': 0,
         }
+        # Get the form as the client to set the initial session vars
+        self.client.get(self.problem_form_url)
 
     def test_moderation_form_sets_moderated(self):
         resp = self.client.post(self.problem_form_url, self.form_values)
@@ -110,9 +112,9 @@ class ModerationFormTests(BaseModerationTestCase):
                                                 self.problem_form_url,
                                                 self.test_problem)
 
-    def test_moderation_form_sets_publication_status_to_private_when_requires_legal_moderation_clicked(self):
+    def test_moderation_form_sets_publication_status_to_private_when_requires_second_tier_moderation_clicked(self):
         test_form_values = {
-            'now_requires_legal_moderation': ''
+            'now_requires_second_tier_moderation': ''
         }
         self.form_values.update(test_form_values)
         del self.form_values['publish']
@@ -121,37 +123,42 @@ class ModerationFormTests(BaseModerationTestCase):
                                                 self.problem_form_url,
                                                 self.test_problem)
 
-    def assert_expected_requires_legal_moderation(self, expected_value, form_values):
+    def assert_expected_requires_second_tier_moderation(self, expected_value, form_values):
         resp = self.client.post(self.problem_form_url, form_values)
+        self.assertEqual(resp.status_code, 302)
         problem = Problem.objects.get(pk=self.test_problem.id)
-        self.assertEqual(problem.requires_legal_moderation, expected_value)
+        self.assertEqual(problem.requires_second_tier_moderation, expected_value)
 
-    def test_form_sets_requires_legal_moderation_when_requires_legal_moderation_clicked(self):
+    def test_form_sets_requires_second_tier_moderation_when_requires_second_tier_moderation_clicked(self):
         test_form_values = {
-            'now_requires_legal_moderation': '',
+            'now_requires_second_tier_moderation': '',
         }
         self.form_values.update(test_form_values)
         del self.form_values['publish']
-        self.assert_expected_requires_legal_moderation(True, self.form_values)
+        self.assert_expected_requires_second_tier_moderation(True, self.form_values)
 
-    def test_form_unsets_requires_legal_moderation_when_keep_private_clicked(self):
-        self.test_problem.requires_legal_moderation = True
+    def test_form_unsets_requires_second_tier_moderation_when_keep_private_clicked(self):
+        self.test_problem.requires_second_tier_moderation = True
         self.test_problem.save()
+        # Re-Get the form as the client to set the initial session vars
+        self.client.get(self.problem_form_url)
         test_form_values = {
             'keep_private': '',
         }
         self.form_values.update(test_form_values)
         del self.form_values['publish']
-        self.assert_expected_requires_legal_moderation(False, self.form_values)
+        self.assert_expected_requires_second_tier_moderation(False, self.form_values)
 
-    def test_form_unsets_requires_legal_moderation_when_publish_clicked(self):
-        self.test_problem.requires_legal_moderation = True
+    def test_form_unsets_requires_second_tier_moderation_when_publish_clicked(self):
+        self.test_problem.requires_second_tier_moderation = True
         self.test_problem.save()
+        # Re-Get the form as the client to set the initial session vars
+        self.client.get(self.problem_form_url)
         test_form_values = {
             'publish': ''
         }
         self.form_values.update(test_form_values)
-        self.assert_expected_requires_legal_moderation(False, self.form_values)
+        self.assert_expected_requires_second_tier_moderation(False, self.form_values)
 
     def test_form_redirects_to_confirm_url(self):
         resp = self.client.post(self.problem_form_url, self.form_values)
@@ -167,6 +174,8 @@ class ModerationFormTests(BaseModerationTestCase):
     def test_moderation_form_doesnt_requires_moderated_description_for_private_problems(self):
         self.test_problem.public = False
         self.test_problem.save()
+        # Re-Get the form as the client to set the initial session vars
+        self.client.get(self.problem_form_url)
         expected_status = Problem.PUBLISHED
         del self.form_values['moderated_description']
         resp = self.client.post(self.problem_form_url, self.form_values)
@@ -189,6 +198,8 @@ class ModerationFormTests(BaseModerationTestCase):
         # Add some responses to the test problem
         response1 = ProblemResponse.objects.create(response="Response 1", issue=self.test_problem)
         response2 = ProblemResponse.objects.create(response="Response 2", issue=self.test_problem)
+        # Re-Get the form as the client to set the initial session vars
+        self.client.get(self.problem_form_url)
         test_form_values = {
             'responses-TOTAL_FORMS': 2,
             'responses-INITIAL_FORMS': 2,
@@ -208,6 +219,8 @@ class ModerationFormTests(BaseModerationTestCase):
     def test_moderation_form_can_delete_responses(self):
         response1 = ProblemResponse.objects.create(response="Response 1", issue=self.test_problem)
         response2 = ProblemResponse.objects.create(response="Response 2", issue=self.test_problem)
+        # Re-Get the form as the client to set the initial session vars
+        self.client.get(self.problem_form_url)
         test_form_values = {
             'responses-TOTAL_FORMS': 2,
             'responses-INITIAL_FORMS': 2,
@@ -235,43 +248,125 @@ class ModerationFormTests(BaseModerationTestCase):
         problem = Problem.objects.get(pk=self.test_problem.id)
         self.assertEqual(problem.commissioned, Problem.NATIONALLY_COMMISSIONED)
 
-class LegalModerationFormTests(BaseModerationTestCase):
+class ModerationFormConcurrencyTests(BaseModerationTestCase):
 
     def setUp(self):
-        super(LegalModerationFormTests, self).setUp()
-        self.login_as(self.legal_moderator)
+        super(ModerationFormConcurrencyTests, self).setUp()
+        self.login_as(self.case_handler)
         self.form_values = {
-            'publication_status': self.test_legal_moderation_problem.publication_status,
-            'moderated_description': self.test_legal_moderation_problem.description,
+            'publication_status': self.test_problem.publication_status,
+            'moderated_description': self.test_problem.description,
+            'publish': '',
+            'status': self.test_problem.status,
+            'moderated': self.test_problem.moderated,
+            'commissioned': Problem.NATIONALLY_COMMISSIONED,
+            'responses-TOTAL_FORMS': 0,
+            'responses-INITIAL_FORMS': 0,
+            'responses-MAX_NUM_FORMS': 0,
+        }
+        # Get the form as the client to set the initial session vars
+        self.client.get(self.problem_form_url)
+
+    def test_initial_versions_set_when_form_loads(self):
+        problem_session_version = self.client.session['object_versions'][self.test_problem.id]
+        self.assertEqual(problem_session_version, self.test_problem.version)
+
+    def test_version_cleared_when_form_valid(self):
+        self.assertTrue(self.test_problem.id in self.client.session['object_versions'])
+        resp = self.client.post(self.problem_form_url, self.form_values)
+        self.assertFalse(self.test_problem.id in self.client.session['object_versions'])
+
+    def test_form_checks_problem_versions(self):
+        # Tweak the client session so that its' version for the problem is out of date
+        session = self.client.session
+        session['object_versions'][self.test_problem.id] -= 3000
+        session.save()
+
+        resp = self.client.post(self.problem_form_url, self.form_values)
+        self.assertFormError(resp, 'form', None, 'Sorry, someone else has modified the Problem during the time you were working on it. Please double-check your changes to make sure they\'re still necessary.')
+
+    def test_form_checks_problem_versions_with_responses(self):
+        # Add some responses
+        response1 = ProblemResponse.objects.create(response="Response 1", issue=self.test_problem)
+        response2 = ProblemResponse.objects.create(response="Response 2", issue=self.test_problem)
+
+        # Re-Get the form as the client to set the initial session vars
+        self.client.get(self.problem_form_url)
+
+        # Prep test values
+        test_form_values = {
+            'responses-TOTAL_FORMS': 2,
+            'responses-INITIAL_FORMS': 2,
+            'responses-MAX_NUM_FORMS': 0,
+            'responses-0-id': response1.id,
+            'responses-0-response': response1.response,
+            'responses-0-DELETE': False,
+            'responses-1-id': response2.id,
+            'responses-1-response': response2.response,
+            'responses-1-DELETE': False
+        }
+        self.form_values.update(test_form_values)
+
+        # Tweak the client session so that its' version for the problem is out of date
+        session = self.client.session
+        session['object_versions'][self.test_problem.id] -= 3000
+        session.save()
+
+        resp = self.client.post(self.problem_form_url, self.form_values)
+        self.assertFormError(resp, 'form', None, 'Sorry, someone else has modified the Problem during the time you were working on it. Please double-check your changes to make sure they\'re still necessary.')
+
+    def test_form_resets_version_if_versions_dont_match(self):
+        # Tweak the client session so that its' version for the problem is out of date
+        session = self.client.session
+        session['object_versions'][self.test_problem.id] -= 3000
+        session.save()
+
+        resp = self.client.post(self.problem_form_url, self.form_values)
+        session_version = self.client.session['object_versions'][self.test_problem.id]
+        self.assertEqual(session_version, self.test_problem.version)
+
+
+class SecondTierModerationFormTests(BaseModerationTestCase):
+
+    def setUp(self):
+        super(SecondTierModerationFormTests, self).setUp()
+        self.login_as(self.second_tier_moderator)
+        self.form_values = {
+            'publication_status': self.test_second_tier_moderation_problem.publication_status,
+            'moderated_description': self.test_second_tier_moderation_problem.description,
             'publish': '',
         }
+        # Get the form as the client to set the initial session vars
+        self.client.get(self.second_tier_problem_form_url)
 
-    def test_legal_moderation_form_redirects_to_legal_confirm_url(self):
-        resp = self.client.post(self.legal_problem_form_url, self.form_values)
-        self.assertRedirects(resp, self.legal_confirm_url)
-        resp = self.client.get(self.legal_confirm_url)
-        self.assertContains(resp, self.legal_home_url)
+    def test_second_tier_moderation_form_redirects_to_second_tier_confirm_url(self):
+        resp = self.client.post(self.second_tier_problem_form_url, self.form_values)
+        self.assertRedirects(resp, self.second_tier_confirm_url)
+        resp = self.client.get(self.second_tier_confirm_url)
+        self.assertContains(resp, self.second_tier_home_url)
 
-    def test_legal_moderation_form_sets_requires_legal_moderation_to_false(self):
-        resp = self.client.post(self.legal_problem_form_url, self.form_values)
-        problem = Problem.objects.get(pk=self.test_legal_moderation_problem.id)
-        self.assertEqual(problem.requires_legal_moderation, False)
+    def test_second_tier_moderation_form_sets_requires_second_tier_moderation_to_false(self):
+        resp = self.client.post(self.second_tier_problem_form_url, self.form_values)
+        problem = Problem.objects.get(pk=self.test_second_tier_moderation_problem.id)
+        self.assertEqual(problem.requires_second_tier_moderation, False)
 
-    def test_legal_moderation_form_requires_moderated_description_when_publishing_public_problems(self):
+    def test_second_tier_moderation_form_requires_moderated_description_when_publishing_public_problems(self):
         del self.form_values['moderated_description']
-        resp = self.client.post(self.legal_problem_form_url, self.form_values)
+        resp = self.client.post(self.second_tier_problem_form_url, self.form_values)
         self.assertFormError(resp, 'form', 'moderated_description', 'You must moderate a version of the problem details when publishing public problems.')
 
-    def test_legal_moderation_form_doesnt_require_moderated_description_for_private_problems(self):
-        self.test_legal_moderation_problem.public = False
-        self.test_legal_moderation_problem.save()
+    def test_second_tier_moderation_form_doesnt_require_moderated_description_for_private_problems(self):
+        self.test_second_tier_moderation_problem.public = False
+        self.test_second_tier_moderation_problem.save()
+        # Re-get the form as the client to get the latest version into the session
+        self.client.get(self.second_tier_problem_form_url)
         expected_status = Problem.PUBLISHED
         del self.form_values['moderated_description']
-        resp = self.client.post(self.legal_problem_form_url, self.form_values)
-        problem = Problem.objects.get(pk=self.test_legal_moderation_problem.id)
+        resp = self.client.post(self.second_tier_problem_form_url, self.form_values)
+        problem = Problem.objects.get(pk=self.test_second_tier_moderation_problem.id)
         self.assertEqual(problem.publication_status, expected_status)
 
-    def test_legal_moderation_form_doesnt_require_moderated_description_when_hiding_problems(self):
+    def test_second_tier_moderation_form_doesnt_require_moderated_description_when_hiding_problems(self):
         expected_status = Problem.HIDDEN
         test_form_values = {
             'keep_private': ''
@@ -279,17 +374,17 @@ class LegalModerationFormTests(BaseModerationTestCase):
         self.form_values.update(test_form_values)
         del self.form_values['publish']
         del self.form_values['moderated_description']
-        resp = self.client.post(self.legal_problem_form_url, self.form_values)
-        problem = Problem.objects.get(pk=self.test_legal_moderation_problem.id)
+        resp = self.client.post(self.second_tier_problem_form_url, self.form_values)
+        problem = Problem.objects.get(pk=self.test_second_tier_moderation_problem.id)
         self.assertEqual(problem.publication_status, expected_status)
 
-    def test_legal_moderation_form_sets_publication_status_to_published_when_publish_clicked(self):
+    def test_second_tier_moderation_form_sets_publication_status_to_published_when_publish_clicked(self):
         self.assert_expected_publication_status(Problem.PUBLISHED,
                                                 self.form_values,
-                                                self.legal_problem_form_url,
-                                                self.test_legal_moderation_problem)
+                                                self.second_tier_problem_form_url,
+                                                self.test_second_tier_moderation_problem)
 
-    def test_legal_moderation_form_sets_publication_status_to_private_when_keep_private_clicked(self):
+    def test_second_tier_moderation_form_sets_publication_status_to_private_when_keep_private_clicked(self):
         test_form_values = {
             'keep_private': ''
         }
@@ -297,5 +392,46 @@ class LegalModerationFormTests(BaseModerationTestCase):
         del self.form_values['publish']
         self.assert_expected_publication_status(Problem.HIDDEN,
                                                 self.form_values,
-                                                self.legal_problem_form_url,
-                                                self.test_legal_moderation_problem)
+                                                self.second_tier_problem_form_url,
+                                                self.test_second_tier_moderation_problem)
+
+class SecondTierModerationFormConcurrencyTests(BaseModerationTestCase):
+
+    def setUp(self):
+        super(SecondTierModerationFormConcurrencyTests, self).setUp()
+        self.login_as(self.second_tier_moderator)
+        self.form_values = {
+            'publication_status': self.test_second_tier_moderation_problem.publication_status,
+            'moderated_description': self.test_second_tier_moderation_problem.description,
+            'publish': '',
+        }
+        # Get the form as the client to set the initial session vars
+        self.client.get(self.second_tier_problem_form_url)
+
+    def test_initial_versions_set_when_form_loads(self):
+        problem_session_version = self.client.session['object_versions'][self.test_second_tier_moderation_problem.id]
+        self.assertEqual(problem_session_version, self.test_second_tier_moderation_problem.version)
+
+    def test_version_cleared_when_form_valid(self):
+        self.assertTrue(self.test_second_tier_moderation_problem.id in self.client.session['object_versions'])
+        resp = self.client.post(self.second_tier_problem_form_url, self.form_values)
+        self.assertFalse(self.test_second_tier_moderation_problem.id in self.client.session['object_versions'])
+
+    def test_form_checks_problem_versions(self):
+        # Tweak the client session so that its' version for the problem is out of date
+        session = self.client.session
+        session['object_versions'][self.test_second_tier_moderation_problem.id] -= 3000
+        session.save()
+
+        resp = self.client.post(self.second_tier_problem_form_url, self.form_values)
+        self.assertFormError(resp, 'form', None, 'Sorry, someone else has modified the Problem during the time you were working on it. Please double-check your changes to make sure they\'re still necessary.')
+
+    def test_form_resets_version_if_versions_dont_match(self):
+        # Tweak the client session so that its' version for the problem is out of date
+        session = self.client.session
+        session['object_versions'][self.test_second_tier_moderation_problem.id] -= 3000
+        session.save()
+
+        resp = self.client.post(self.second_tier_problem_form_url, self.form_values)
+        session_version = self.client.session['object_versions'][self.test_second_tier_moderation_problem.id]
+        self.assertEqual(session_version, self.test_second_tier_moderation_problem.version)

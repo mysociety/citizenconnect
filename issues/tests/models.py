@@ -2,9 +2,12 @@ from datetime import datetime, timedelta
 from random import randint
 from mock import patch
 
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
 from django.core.exceptions import ValidationError
 from django.utils.timezone import utc
+
+from concurrency.exceptions import RecordModifiedError
+from concurrency.utils import ConcurrencyTestMixin
 
 from organisations.tests.lib import create_test_organisation, create_test_instance, AuthorizationTestCase
 
@@ -49,6 +52,17 @@ class ProblemTestCase(AuthorizationTestCase):
                                             public_reporter_name=False,
                                             preferred_contact_method=Problem.CONTACT_EMAIL,
                                             status=Problem.NEW)
+        self.test_hidden_status_problem = Problem(organisation=self.test_organisation,
+                                                  description='A Test Hidden Problem',
+                                                  category='cleanliness',
+                                                  reporter_name='Test User',
+                                                  reporter_email='reporter@example.com',
+                                                  reporter_phone='01111 111 111',
+                                                  public=True,
+                                                  public_reporter_name=True,
+                                                  preferred_contact_method=Problem.CONTACT_EMAIL,
+                                                  status=Problem.ABUSIVE,
+                                                  publication_status=Problem.PUBLISHED)
 
 class ProblemModelTests(ProblemTestCase):
 
@@ -115,6 +129,8 @@ class ProblemModelTests(ProblemTestCase):
         self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.superuser))
         self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.anonymous_user))
         self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.other_provider))
+        self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.ccg_user))
+        self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.other_ccg_user))
 
     def test_private_problem_accessible_to_allowed_user(self):
         self.assertTrue(self.test_private_problem.can_be_accessed_by(self.provider))
@@ -125,6 +141,9 @@ class ProblemModelTests(ProblemTestCase):
     def test_private_problem_inaccessible_to_other_provider_user(self):
         self.assertFalse(self.test_private_problem.can_be_accessed_by(self.other_provider))
 
+    def test_private_problem_inaccessible_to_other_ccg_user(self):
+        self.assertFalse(self.test_private_problem.can_be_accessed_by(self.other_ccg_user))
+
     def test_private_problem_accessible_to_superusers(self):
         for user in self.users_who_can_access_everything:
             self.assertTrue(self.test_private_problem.can_be_accessed_by(user))
@@ -132,14 +151,21 @@ class ProblemModelTests(ProblemTestCase):
     def test_private_problem_accessible_to_pals_user(self):
         self.assertTrue(self.test_private_problem.can_be_accessed_by(self.pals))
 
+    def test_private_problem_accessible_to_ccg_user(self):
+        self.assertTrue(self.test_private_problem.can_be_accessed_by(self.ccg_user))
+
     def test_unmoderated_problem_inaccessible_to_anon_user(self):
         self.assertFalse(self.test_problem.can_be_accessed_by(self.anonymous_user))
 
     def test_unmoderated_problem_inaccessible_to_other_provider_user(self):
         self.assertFalse(self.test_problem.can_be_accessed_by(self.other_provider))
 
-    def test_unmoderated_problem_accessible_to_allowed_user(self):
+    def test_unmoderated_problem_inaccessible_to_other_ccg_user(self):
+        self.assertFalse(self.test_problem.can_be_accessed_by(self.other_ccg_user))
+
+    def test_unmoderated_problem_accessible_to_allowed_users(self):
         self.assertTrue(self.test_problem.can_be_accessed_by(self.provider))
+        self.assertTrue(self.test_problem.can_be_accessed_by(self.ccg_user))
 
     def test_unmoderated_problem_accessible_to_superusers(self):
         for user in self.users_who_can_access_everything:
@@ -147,6 +173,28 @@ class ProblemModelTests(ProblemTestCase):
 
     def test_unmoderated_problem_accessible_to_pals_user(self):
         self.assertTrue(self.test_problem.can_be_accessed_by(self.pals))
+
+    def test_hidden_status_problem_accessible_to_allowed_user(self):
+        self.assertTrue(self.test_hidden_status_problem.can_be_accessed_by(self.provider))
+
+    def test_hidden_status_problem_inaccessible_to_anon_user(self):
+        self.assertFalse(self.test_hidden_status_problem.can_be_accessed_by(self.anonymous_user))
+
+    def test_hidden_status_problem_inaccessible_to_other_provider_user(self):
+        self.assertFalse(self.test_hidden_status_problem.can_be_accessed_by(self.other_provider))
+
+    def test_hidden_status_problem_inaccessible_to_other_ccg_user(self):
+        self.assertFalse(self.test_hidden_status_problem.can_be_accessed_by(self.other_ccg_user))
+
+    def test_hidden_status_problem_accessible_to_superusers(self):
+        for user in self.users_who_can_access_everything:
+            self.assertTrue(self.test_hidden_status_problem.can_be_accessed_by(user))
+
+    def test_hidden_status_problem_accessible_to_pals_user(self):
+        self.assertTrue(self.test_hidden_status_problem.can_be_accessed_by(self.pals))
+
+    def test_hidden_status_problem_accessible_to_ccg_user(self):
+        self.assertTrue(self.test_hidden_status_problem.can_be_accessed_by(self.ccg_user))
 
     def test_timedelta_to_minutes(self):
         t = timedelta(minutes=30)
@@ -167,9 +215,11 @@ class ProblemModelTests(ProblemTestCase):
         self.assertFalse(self.test_problem.check_token(different_token))
 
     def test_mistyped_token_returns_false_from_check(self):
-        token = self.test_problem.make_token(30464)
-        self.assertEqual(token, 'xr0-bff54e08ca9de9f38b1f')
-        self.assertFalse(self.test_problem.check_token('xro-bff54e08ca9de9f38b1f'))
+        with self.settings(SECRET_KEY="value needs to be consistent to ensure same token created"):
+            token = self.test_problem.make_token(30464)
+            self.assertEqual(token, 'xr0-0ca2b7902598992daf25')
+            self.assertTrue(self.test_problem.check_token(token))
+            self.assertFalse(self.test_problem.check_token('xro-0ca2b7902598992daf25'))
 
 class ProblemModelTimeToTests(ProblemTestCase):
 
@@ -227,6 +277,24 @@ class ProblemModelTimeToTests(ProblemTestCase):
         self.test_problem.status = Problem.ESCALATED
         self.test_problem.save()
         self.assertEqual(self.test_problem.time_to_address, None)
+
+
+class ProblemModelConcurrencyTests(TransactionTestCase, ConcurrencyTestMixin):
+
+    def setUp(self):
+        self.test_organisation = create_test_organisation()
+        # These are needed for ConcurrencyTestMixin to run its' tests
+        self.concurrency_model = Problem
+        self.concurrency_kwargs = {'organisation': self.test_organisation,
+                            'description': 'A Test Problem',
+                            'category': 'cleanliness',
+                            'reporter_name': 'Test User',
+                            'reporter_email': 'reporter@example.com',
+                            'reporter_phone': '01111 111 111',
+                            'public': True,
+                            'public_reporter_name': True,
+                            'preferred_contact_method': Problem.CONTACT_EMAIL,
+                            'status': Problem.NEW}
 
 
 class QuestionModelTests(TestCase):
@@ -409,20 +477,39 @@ class ProblemManagerTests(ManagerTest):
         })
 
         # Problems requiring second tier moderation
-        self.public_problem_requiring_legal_moderation = create_test_instance(Problem, {
+        self.public_problem_requiring_second_tier_moderation = create_test_instance(Problem, {
             'organisation': self.test_organisation,
             'public':True,
             'moderated':Problem.MODERATED,
-            'requires_legal_moderation': True,
+            'requires_second_tier_moderation': True,
             'publication_status': Problem.HIDDEN
         })
-        self.private_problem_requiring_legal_moderation = create_test_instance(Problem, {
+        self.private_problem_requiring_second_tier_moderation = create_test_instance(Problem, {
             'organisation': self.test_organisation,
             'public':False,
             'moderated':Problem.MODERATED,
-            'requires_legal_moderation': True,
+            'requires_second_tier_moderation': True,
             'publication_status': Problem.HIDDEN
         })
+
+        # Problems in hidden statuses
+        self.public_published_unresolvable_problem = create_test_instance(Problem, {
+            'organisation': self.test_organisation,
+            'public': True,
+            'moderated': Problem.MODERATED,
+            'publication_status': Problem.PUBLISHED,
+            'status': Problem.UNABLE_TO_RESOLVE
+        })
+
+        self.public_published_abusive_problem = create_test_instance(Problem, {
+            'organisation': self.test_organisation,
+            'public': True,
+            'moderated': Problem.MODERATED,
+            'publication_status': Problem.PUBLISHED,
+            'status': Problem.ABUSIVE
+        })
+
+
 
         # Intermediate helper lists
         self.open_unmoderated_problems = [self.new_public_unmoderated_problem,
@@ -435,13 +522,15 @@ class ProblemManagerTests(ManagerTest):
                                         self.new_private_moderated_problem_hidden,
                                         self.new_private_moderated_problem_published,
                                         self.escalated_public_moderated_problem_published,
-                                        self.public_problem_requiring_legal_moderation,
-                                        self.private_problem_requiring_legal_moderation,
+                                        self.public_problem_requiring_second_tier_moderation,
+                                        self.private_problem_requiring_second_tier_moderation,
                                         self.breach_public_moderated_problem_published]
         self.closed_problems = self.closed_unmoderated_problems + [self.closed_public_moderated_problem_hidden,
                                                                    self.closed_public_moderated_problem_published,
                                                                    self.closed_private_moderated_problem_hidden,
-                                                                   self.closed_private_moderated_problem_published]
+                                                                   self.closed_private_moderated_problem_published,
+                                                                   self.public_published_unresolvable_problem,
+                                                                   self.public_published_abusive_problem]
 
         # Lists that we expect from our manager's methods
         self.unmoderated_problems = self.open_unmoderated_problems + self.closed_unmoderated_problems
@@ -453,8 +542,8 @@ class ProblemManagerTests(ManagerTest):
         self.all_problems = self.open_problems + self.closed_problems
         self.all_moderated_published_problems = self.open_moderated_published_problems + [self.closed_public_moderated_problem_published,
                                                                                           self.closed_private_moderated_problem_published]
-        self.problems_requiring_legal_moderation = [self.public_problem_requiring_legal_moderation,
-                                                    self.private_problem_requiring_legal_moderation]
+        self.problems_requiring_second_tier_moderation = [self.public_problem_requiring_second_tier_moderation,
+                                                    self.private_problem_requiring_second_tier_moderation]
 
         self.open_escalated_problems = [self.breach_public_moderated_problem_published,
                                         self.escalated_public_moderated_problem_published,
@@ -477,9 +566,9 @@ class ProblemManagerTests(ManagerTest):
         self.compare_querysets(Problem.objects.all_moderated_published_problems(),
                                self.all_moderated_published_problems)
 
-    def test_problems_requiring_legal_moderation_returns_correct_problems(self):
-        self.compare_querysets(Problem.objects.problems_requiring_legal_moderation(),
-                               self.problems_requiring_legal_moderation)
+    def test_problems_requiring_second_tier_moderation_returns_correct_problems(self):
+        self.compare_querysets(Problem.objects.problems_requiring_second_tier_moderation(),
+                               self.problems_requiring_second_tier_moderation)
 
     def test_escalated_problems_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.open_escalated_problems(),

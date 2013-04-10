@@ -8,6 +8,7 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 
 from .lib import create_test_organisation, create_test_service, create_test_instance
+from ..models import Organisation
 
 from issues.models import Question, Problem
 
@@ -39,7 +40,7 @@ class EmailIssuesToProviderTests(TestCase):
 
         first_mail = mail.outbox[0]
         self.assertEqual(first_mail.subject, 'Care Connect: New Problem')
-        self.assertEqual(first_mail.from_email, 'no-reply@citizenconnect.mysociety.org')
+        self.assertEqual(first_mail.from_email, settings.DEFAULT_FROM_EMAIL)
         self.assertEqual(first_mail.to, ['recipient@example.com'])
         self.assertTrue(self.test_problem.reporter_name in first_mail.body)
         self.assertTrue(self.test_problem.reporter_email in first_mail.body)
@@ -50,7 +51,7 @@ class EmailIssuesToProviderTests(TestCase):
 
         second_mail = mail.outbox[1]
         self.assertEqual(second_mail.subject, 'Care Connect: New Question')
-        self.assertEqual(second_mail.from_email, 'no-reply@citizenconnect.mysociety.org')
+        self.assertEqual(second_mail.from_email, settings.DEFAULT_FROM_EMAIL)
         self.assertEqual(second_mail.to, [settings.QUESTION_ANSWERERS_EMAIL])
         self.assertTrue(self.test_question.reporter_name in second_mail.body)
         self.assertTrue(self.test_question.reporter_email in second_mail.body)
@@ -110,3 +111,29 @@ class EmailIssuesToProviderTests(TestCase):
             self.assertTrue(self.test_question.mailed)
         logging.disable(logging.NOTSET)
 
+class CreateAccountsForOrganisationsTests(TestCase):
+
+    def setUp(self):
+        self.test_organisation = create_test_organisation()
+
+    def _call_command(self):
+        args = []
+        opts = {}
+        call_command('create_accounts_for_organisations', *args, **opts)
+
+    # def test_happy_path(self):
+    #     # TODO - cannot test happy path because organisations don't have
+    #     # email addresses yet
+    #     pass
+
+    def test_handles_orgs_with_no_email(self):
+        # Quiet logging for this test
+        logging.disable(logging.CRITICAL)
+
+        # This would raise an error if it didn't handle it
+        self._call_command()
+        # Check that no users were created
+        users = list(Organisation.objects.get(pk=self.test_organisation.id).users.all())
+        self.assertEqual(users, [])
+
+        logging.disable(logging.NOTSET)

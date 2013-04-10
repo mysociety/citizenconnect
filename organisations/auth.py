@@ -13,7 +13,7 @@ CASE_HANDLERS = 3
 QUESTION_ANSWERERS = 4
 CQC = 5
 CCG = 6
-LEGAL_MODERATORS = 7
+SECOND_TIER_MODERATORS = 7
 
 def user_is_superuser(user):
     """
@@ -41,3 +41,31 @@ def check_question_access(user):
 def check_problem_access(problem, user):
     if not problem.can_be_accessed_by(user):
         raise PermissionDenied()
+
+def user_can_access_escalation_dashboard(user):
+    return (user_is_superuser(user) or user_in_groups(user, [CQC, CCG]))
+
+def create_unique_username(organisation):
+    """
+    Try to create a unique username for an organisation.
+    """
+    username = organisation.name[:250]
+    username = username.replace(' ', '_')
+    username = ''.join([char for char in username if is_valid_username_char(char)])
+    username = username.lower()
+    if not User.objects.all().filter(username=username).exists():
+        return username
+    else:
+        increment = 1
+        possible_username = "{0}_{1}".format(username, increment)
+        while User.objects.all().filter(username=possible_username).exists():
+            possible_username = "{0}_{1}".format(username, increment)
+            increment += 1
+        return possible_username
+
+def is_valid_username_char(char):
+    """
+    Is a character allowed in usernames?
+    Only letters and underscores are allowed
+    """
+    return char.isalpha() or char == '_'

@@ -19,14 +19,19 @@ class APITests(TestCase):
             'organisation': self.test_organisation.ods_code,
             'service_code': self.test_service.service_code,
             'description': 'This is a problem',
+            'moderated_description': 'This is a moderated problem',
             'category': 'cleanliness',
             'reporter_name': self.problem_uuid,
             'reporter_email': 'steve@mysociety.org',
             'reporter_phone': '01111 111 111',
-            'public':False,
-            'public_reporter_name':False,
+            'publication_status': Problem.PUBLISHED,
+            'public': 1,
+            'public_reporter_name': 1,
             'preferred_contact_method': Problem.CONTACT_PHONE,
-            'source':Problem.SOURCE_PHONE
+            'source':Problem.SOURCE_PHONE,
+            'requires_second_tier_moderation': 0,
+            'breach': 1,
+            'commissioned': Problem.NATIONALLY_COMMISSIONED
         }
         self.question_uuid = uuid.uuid4().hex
         self.test_question = {
@@ -70,13 +75,19 @@ class APITests(TestCase):
         self.assertEqual(problem.organisation, self.test_organisation)
         self.assertEqual(problem.service, self.test_service)
         self.assertEqual(problem.description, self.test_problem['description'])
+        self.assertEqual(problem.moderated_description, self.test_problem['moderated_description'])
         self.assertEqual(problem.category, self.test_problem['category'])
         self.assertEqual(problem.reporter_name, self.test_problem['reporter_name'])
         self.assertEqual(problem.reporter_email, self.test_problem['reporter_email'])
         self.assertEqual(problem.reporter_phone, self.test_problem['reporter_phone'])
         self.assertEqual(problem.public, self.test_problem['public'])
-        self.assertEqual(problem.public_reporter_name, self.test_problem['public_reporter_name'])
+        self.assertEqual(problem.public_reporter_name, True)
+        self.assertEqual(problem.publication_status, True)
         self.assertEqual(problem.source, self.test_problem['source'])
+        self.assertEqual(problem.moderated, Problem.MODERATED)
+        self.assertEqual(problem.requires_second_tier_moderation, False)
+        self.assertEqual(problem.breach, True)
+        self.assertEqual(problem.commissioned, Problem.NATIONALLY_COMMISSIONED)
 
     def test_source_is_required(self):
         problem_without_source = self.test_problem
@@ -162,3 +173,66 @@ class APITests(TestCase):
         content_json = json.loads(resp.content)
         errors = json.loads(content_json['errors'])
         self.assertEqual(errors['__all__'][0], 'You must provide either a phone number or an email address')
+
+    def test_moderated_description_is_required_when_publishing_public_problems(self):
+        public_problem_with_no_moderated_description = self.test_problem
+        public_problem_with_no_moderated_description['public'] = 1
+        del public_problem_with_no_moderated_description['moderated_description']
+        resp = self.client.post(self.problem_api_url, public_problem_with_no_moderated_description)
+        self.assertEquals(resp.status_code, 400)
+
+        content_json = json.loads(resp.content)
+        errors = json.loads(content_json['errors'])
+        self.assertEqual(errors['moderated_description'][0],  'You must moderate a version of the problem details when publishing public problems.')
+
+    def test_problem_cannot_be_published_if_requires_second_tier_moderation(self):
+        problem_requiring_second_tier_moderation = self.test_problem
+        problem_requiring_second_tier_moderation['requires_second_tier_moderation'] = 1
+        resp = self.client.post(self.problem_api_url, problem_requiring_second_tier_moderation)
+        self.assertEquals(resp.status_code, 400)
+
+        content_json = json.loads(resp.content)
+        errors = json.loads(content_json['errors'])
+        self.assertEqual(errors['publication_status'][0], 'A problem that requires second tier moderation cannot be published.')
+
+    def test_preferred_contact_method_is_required(self):
+        problem_without_preferred_contact_method = self.test_problem
+        del problem_without_preferred_contact_method['preferred_contact_method']
+        resp = self.client.post(self.problem_api_url, problem_without_preferred_contact_method)
+        self.assertEquals(resp.status_code, 400)
+
+        content_json = json.loads(resp.content)
+        errors = json.loads(content_json['errors'])
+        self.assertEqual(errors['preferred_contact_method'][0],  'This field is required.')
+
+    def test_commissioned_is_required(self):
+        problem_without_commissioned = self.test_problem
+        del problem_without_commissioned['commissioned']
+        resp = self.client.post(self.problem_api_url, problem_without_commissioned)
+        self.assertEquals(resp.status_code, 400)
+
+        content_json = json.loads(resp.content)
+        errors = json.loads(content_json['errors'])
+        self.assertEqual(errors['commissioned'][0],  'This field is required.')
+
+    def test_commissioned_does_not_accept_non_choice_value(self):
+        problem_with_non_choice_commissioned_value = self.test_problem
+        problem_with_non_choice_commissioned_value['commissioned'] = 99
+        resp = self.client.post(self.problem_api_url, problem_with_non_choice_commissioned_value)
+        self.assertEquals(resp.status_code, 400)
+        content_json = json.loads(resp.content)
+
+        errors = json.loads(content_json['errors'])
+        self.assertEqual(errors['commissioned'][0],  'Select a valid choice. 99 is not one of the available choices.')
+
+    def test_source_does_not_accept_non_choice_value(self):
+        problem_with_non_choice_source_value = self.test_problem
+        problem_with_non_choice_source_value['source'] = 'telepathy'
+        resp = self.client.post(self.problem_api_url, problem_with_non_choice_source_value)
+        self.assertEquals(resp.status_code, 400)
+        content_json = json.loads(resp.content)
+
+        errors = json.loads(content_json['errors'])
+        self.assertEqual(errors['source'][0],  u"Value u'telepathy' is not a valid choice.")
+
+

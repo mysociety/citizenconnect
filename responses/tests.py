@@ -2,6 +2,8 @@
 from django.test import TestCase, TransactionTestCase
 from django.core.urlresolvers import reverse
 
+from concurrency.utils import ConcurrencyTestMixin
+
 # App imports
 from issues.models import Problem, Question
 from organisations.tests.lib import create_test_instance, create_test_organisation, AuthorizationTestCase
@@ -12,80 +14,83 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
 
     def setUp(self):
         super(ResponseFormTests, self).setUp()
-        self.test_problem = create_test_instance(Problem, {'organisation':self.test_organisation})
-        self.problem_response_form_url = reverse('response-form', kwargs={'pk':self.test_problem.id})
+        self.problem = create_test_instance(Problem, {'organisation':self.test_organisation})
+        self.response_form_url = reverse('response-form', kwargs={'pk':self.problem.id})
         self.login_as(self.provider)
+        # The form assumes a session variable is set, because it is when you load the form
+        # in a browser, so we call the page to set it here.
+        self.client.get(self.response_form_url)
 
     def test_form_creates_problem_response(self):
         response_text = 'This problem is solved'
         test_form_values = {
             'response': response_text,
-            'issue': self.test_problem.id,
+            'issue': self.problem.id,
             'respond': ''
         }
-        resp = self.client.post(self.problem_response_form_url, test_form_values)
-        self.test_problem = Problem.objects.get(pk=self.test_problem.id)
-        response = self.test_problem.responses.all()[0]
-        self.assertEqual(self.test_problem.responses.count(), 1)
+        resp = self.client.post(self.response_form_url, test_form_values)
+        self.problem = Problem.objects.get(pk=self.problem.id)
+        response = self.problem.responses.all()[0]
+        self.assertEqual(self.problem.responses.count(), 1)
         self.assertEqual(response.response, response_text)
 
     def test_form_creates_problem_response_and_saves_status(self):
         response_text = 'This problem is solved'
         test_form_values = {
             'response': response_text,
-            'issue': self.test_problem.id,
+            'issue': self.problem.id,
             'issue_status': Problem.RESOLVED,
             'respond': ''
         }
-        resp = self.client.post(self.problem_response_form_url, test_form_values)
-        self.test_problem = Problem.objects.get(pk=self.test_problem.id)
-        response = self.test_problem.responses.all()[0]
-        self.assertEqual(self.test_problem.responses.count(), 1)
+        resp = self.client.post(self.response_form_url, test_form_values)
+        self.problem = Problem.objects.get(pk=self.problem.id)
+        response = self.problem.responses.all()[0]
+        self.assertEqual(self.problem.responses.count(), 1)
         self.assertEqual(response.response, response_text)
-        self.assertEqual(self.test_problem.status, Problem.RESOLVED)
+        self.assertEqual(self.problem.status, Problem.RESOLVED)
 
     def test_form_allows_empty_response_for_status_change(self):
         response_text = ''
         test_form_values = {
             'response': response_text,
-            'issue': self.test_problem.id,
+            'issue': self.problem.id,
             'issue_status': Problem.RESOLVED,
             'status': ''
         }
-        resp = self.client.post(self.problem_response_form_url, test_form_values)
-        self.test_problem = Problem.objects.get(pk=self.test_problem.id)
-        self.assertEqual(self.test_problem.responses.count(), 0)
-        self.assertEqual(self.test_problem.status, Problem.RESOLVED)
+        resp = self.client.post(self.response_form_url, test_form_values)
+        self.problem = Problem.objects.get(pk=self.problem.id)
+        self.assertEqual(self.problem.responses.count(), 0)
+        self.assertEqual(self.problem.status, Problem.RESOLVED)
 
     def test_form_warns_about_response_during_status_change(self):
         response_text = 'I didn\'t mean to respond'
         test_form_values = {
             'response': response_text,
-            'issue': self.test_problem.id,
+            'issue': self.problem.id,
             'issue_status': Problem.RESOLVED,
             'status': ''
         }
-        resp = self.client.post(self.problem_response_form_url, test_form_values)
+        resp = self.client.post(self.response_form_url, test_form_values)
         self.assertFormError(resp, 'form', 'response', 'You cannot submit a response if you\'re just updating the status. Please delete the text in the response field or use the "Respond" button.')
 
     def test_form_requires_text_for_responses(self):
         response_text = ''
         test_form_values = {
             'response': response_text,
-            'issue': self.test_problem.id,
+            'issue': self.problem.id,
             'respond': ''
         }
-        resp = self.client.post(self.problem_response_form_url, test_form_values)
+        resp = self.client.post(self.response_form_url, test_form_values)
         self.assertFormError(resp, 'form', 'response', 'This field is required.')
 
     def test_form_shows_response_confirmation_with_link(self):
         response_text = 'This problem is solved'
         test_form_values = {
             'response': response_text,
-            'issue': self.test_problem.id,
+            'issue': self.problem.id,
             'respond': ''
         }
-        resp = self.client.post(self.problem_response_form_url, test_form_values)
+        resp = self.client.post(self.response_form_url, test_form_values)
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, "response has been published online")
         self.assertContains(resp, reverse('org-dashboard', kwargs={'ods_code':self.test_organisation.ods_code}))
@@ -94,14 +99,67 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         response_text = ''
         test_form_values = {
             'response': response_text,
-            'issue': self.test_problem.id,
+            'issue': self.problem.id,
             'issue_status': Problem.RESOLVED,
             'status': ''
         }
-        resp = self.client.post(self.problem_response_form_url, test_form_values)
+        resp = self.client.post(self.response_form_url, test_form_values)
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, "the Problem status has been updated")
         self.assertContains(resp, reverse('org-dashboard', kwargs={'ods_code':self.test_organisation.ods_code}))
+
+    def test_initial_version_set_when_form_loads(self):
+        self.client.get(self.response_form_url)
+        session_version = self.client.session['object_versions'][self.problem.id]
+        self.assertEqual(session_version, self.problem.version)
+
+    def test_form_checks_versions(self):
+        # Tweak the client session so that its' version for the problem is out of date
+        session = self.client.session
+        session['object_versions'][self.problem.id] -= 3000
+        session.save()
+        # Now post to the form, we should be rejected
+        response_text = 'This problem is solved'
+        test_form_values = {
+            'response': response_text,
+            'issue': self.problem.id,
+            'respond': ''
+        }
+        resp = self.client.post(self.response_form_url, test_form_values)
+        self.assertFormError(resp, 'form', None, 'Sorry, someone else has modified the Problem during the time you were working on it. Please double-check your changes to make sure they\'re still necessary.')
+
+    def test_form_resets_version_if_versions_dont_match(self):
+        # Tweak the client session so that its' version for the problem is out of date
+        session = self.client.session
+        session['object_versions'][self.problem.id] -= 3000
+        session.save()
+        # Now post to the form, we should be rejected and our change to the issue
+        # status should be reset
+        response_text = 'This problem is solved'
+        test_form_values = {
+            'response': response_text,
+            'issue': self.problem.id,
+            'issue_status': Problem.RESOLVED,
+            'respond': ''
+        }
+        resp = self.client.post(self.response_form_url, test_form_values)
+        session_version = self.client.session['object_versions'][self.problem.id]
+        self.assertEqual(session_version, self.problem.version)
+
+    def test_version_cleared_when_form_valid(self):
+        # Call the form to simulate a browser and get a session into self.client
+        self.client.get(self.response_form_url)
+        self.assertTrue(self.problem.id in self.client.session['object_versions'])
+        # Post to the form with some new data
+        response_text = 'This problem is solved'
+        test_form_values = {
+            'response': response_text,
+            'issue': self.problem.id,
+            'respond': ''
+        }
+        resp = self.client.post(self.response_form_url, test_form_values)
+        self.assertEqual(resp.status_code, 200)
+        self.assertFalse(self.problem.id in self.client.session['object_versions'])
 
 class ResponseFormViewTests(AuthorizationTestCase):
 
@@ -145,3 +203,36 @@ class ResponseFormViewTests(AuthorizationTestCase):
         self.login_as(self.other_provider)
         resp = self.client.get(self.response_form_url)
         self.assertEqual(resp.status_code, 403)
+
+    def test_other_ccgs_cant_respond(self):
+        self.client.logout()
+        self.login_as(self.other_ccg_user)
+        resp = self.client.get(self.response_form_url)
+        self.assertEqual(resp.status_code, 403)
+
+    def test_version_cleared_when_form_valid_even_if_no_response(self):
+        # The view has to call the unset method when no response is given
+        # because it doesn't call form.save()
+
+        # Call the form to simulate a browser and get a session into self.client
+        self.client.get(self.response_form_url)
+        self.assertTrue(self.problem.id in self.client.session['object_versions'])
+        # Post to the form with some new data
+        response_text = 'This problem is solved'
+        test_form_values = {
+            'response':'',
+            'issue': self.problem.id,
+            'issue_status': Problem.RESOLVED,
+            'status': ''
+        }
+        resp = self.client.post(self.response_form_url, test_form_values)
+        self.assertEqual(resp.status_code, 200)
+        self.assertFalse(self.problem.id in self.client.session['object_versions'])
+
+class ResponseModelTests(TransactionTestCase, ConcurrencyTestMixin):
+
+    def setUp(self):
+        self.problem = create_test_instance(Problem, {})
+        # These are needed for ConcurrencyTestMixin to run its' tests
+        self.concurrency_model = ProblemResponse
+        self.concurrency_kwargs = {'response': 'A response', 'issue': self.problem}

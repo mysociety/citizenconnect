@@ -50,8 +50,7 @@
                     <th>Issue snippet</th>
                     <th>Breach</th>
                     <th>Status</th>
-                    <th>Action Due</th>
-
+                    <th>Moderated</th>
                 </tr>
             </thead>
             <tbody>
@@ -71,11 +70,14 @@
                             {% endif %}
                         </td>
                         <td>{{ problem.get_status_display }}</td>
-                        <td>{% if problem.status == Problem.RESOLVED %}
-                                No
+                        <td>{% if problem.moderated %}
+                                <span class="icon-checkmark" aria-hidden="true"></span>
+                                <span class="hide-text">Yes</span>
                             {% else %}
-                                Yes
-                            {% endif %}</td>
+                                <span class="icon-x" aria-hidden="true"></span>
+                                <span class="hide-text">No</span>
+                            {% endif %}
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
