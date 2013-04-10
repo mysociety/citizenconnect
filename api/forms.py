@@ -66,6 +66,15 @@ class ProblemAPIForm(forms.ModelForm):
                     self._errors['service_code'] = self.error_class(['Sorry, that service is not recognised.'])
                     del cleaned_data['service_code']
 
+        # If we are publishing the problem and the reporter wants it public,
+        # it must have a moderated_description so that we have something to show for it
+        # on public pages
+        if cleaned_data['public'] == True and cleaned_data['publication_status'] == Problem.PUBLISHED:
+            if not 'moderated_description' in cleaned_data or not cleaned_data['moderated_description']:
+                self._errors['moderated_description'] = self.error_class(['You must moderate a version of the problem details when publishing public problems.'])
+                del cleaned_data['moderated_description']
+
+
         return cleaned_data
 
     class Meta:

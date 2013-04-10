@@ -25,8 +25,8 @@ class APITests(TestCase):
             'reporter_email': 'steve@mysociety.org',
             'reporter_phone': '01111 111 111',
             'publication_status': Problem.PUBLISHED,
-            'public':False,
-            'public_reporter_name':False,
+            'public': 1,
+            'public_reporter_name': 1,
             'preferred_contact_method': Problem.CONTACT_PHONE,
             'source':Problem.SOURCE_PHONE
         }
@@ -78,8 +78,8 @@ class APITests(TestCase):
         self.assertEqual(problem.reporter_email, self.test_problem['reporter_email'])
         self.assertEqual(problem.reporter_phone, self.test_problem['reporter_phone'])
         self.assertEqual(problem.public, self.test_problem['public'])
-        self.assertEqual(problem.public_reporter_name, self.test_problem['public_reporter_name'])
-        self.assertEqual(problem.publication_status, self.test_problem['publication_status'])
+        self.assertEqual(problem.public_reporter_name, True)
+        self.assertEqual(problem.publication_status, True)
         self.assertEqual(problem.source, self.test_problem['source'])
 
     def test_source_is_required(self):
@@ -166,3 +166,15 @@ class APITests(TestCase):
         content_json = json.loads(resp.content)
         errors = json.loads(content_json['errors'])
         self.assertEqual(errors['__all__'][0], 'You must provide either a phone number or an email address')
+
+    def test_moderated_description_is_required_when_publishing_public_problems(self):
+        public_problem_with_no_moderated_description = self.test_problem
+        public_problem_with_no_moderated_description['public'] = 1
+        del public_problem_with_no_moderated_description['moderated_description']
+        resp = self.client.post(self.problem_api_url, public_problem_with_no_moderated_description)
+        self.assertEquals(resp.status_code, 400)
+
+        content_json = json.loads(resp.content)
+        errors = json.loads(content_json['errors'])
+        self.assertEqual(errors['moderated_description'][0],  'You must moderate a version of the problem details when publishing public problems.')
+
