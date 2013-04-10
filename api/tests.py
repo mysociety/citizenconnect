@@ -30,7 +30,8 @@ class APITests(TestCase):
             'preferred_contact_method': Problem.CONTACT_PHONE,
             'source':Problem.SOURCE_PHONE,
             'requires_second_tier_moderation': 0,
-            'breach': 1
+            'breach': 1,
+            'commissioned': Problem.NATIONALLY_COMMISSIONED
         }
         self.question_uuid = uuid.uuid4().hex
         self.test_question = {
@@ -86,6 +87,7 @@ class APITests(TestCase):
         self.assertEqual(problem.moderated, Problem.MODERATED)
         self.assertEqual(problem.requires_second_tier_moderation, False)
         self.assertEqual(problem.breach, True)
+        self.assertEqual(problem.commissioned, Problem.NATIONALLY_COMMISSIONED)
 
     def test_source_is_required(self):
         problem_without_source = self.test_problem
@@ -202,3 +204,24 @@ class APITests(TestCase):
         content_json = json.loads(resp.content)
         errors = json.loads(content_json['errors'])
         self.assertEqual(errors['preferred_contact_method'][0],  'This field is required.')
+
+    def test_commissioned_is_required(self):
+        problem_without_commissioned = self.test_problem
+        del problem_without_commissioned['commissioned']
+        resp = self.client.post(self.problem_api_url, problem_without_commissioned)
+        self.assertEquals(resp.status_code, 400)
+
+        content_json = json.loads(resp.content)
+        errors = json.loads(content_json['errors'])
+        self.assertEqual(errors['commissioned'][0],  'This field is required.')
+
+    def test_commissioned_does_not_accept_non_choice_value(self):
+        problem_with_non_choice_commissioned_value = self.test_problem
+        problem_with_non_choice_commissioned_value['commissioned'] = 99
+        resp = self.client.post(self.problem_api_url, problem_with_non_choice_commissioned_value)
+        self.assertEquals(resp.status_code, 400)
+        content_json = json.loads(resp.content)
+
+        errors = json.loads(content_json['errors'])
+        self.assertEqual(errors['commissioned'][0],  'Select a valid choice. 99 is not one of the available choices.')
+

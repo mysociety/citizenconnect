@@ -32,6 +32,9 @@ class ProblemAPIForm(forms.ModelForm):
     source = forms.CharField(required=True)
     # Make moderated optional (we set it ourselves)
     moderated = forms.IntegerField(required=False)
+    # Make commissioned required
+    commissioned = forms.ChoiceField(required=True, choices=Problem.COMMISSIONED_CHOICES)
+
 
     # Pull out the organisation ods_code and turn it into a real organisation
     def clean_organisation(self):
@@ -107,7 +110,8 @@ class ProblemAPIForm(forms.ModelForm):
             'public_reporter_name',
             'publication_status',
             'source',
-            'breach'
+            'breach',
+            'commissioned'
         ]
 
         widgets = {
