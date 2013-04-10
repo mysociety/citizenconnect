@@ -40,23 +40,9 @@
 
         {% if organisation %}
             <fieldset class="island">
-                <label for="id_category">Organisation: </label>{{ organisation.name }}
+                <label for="id_organisation">Organisation: </label>{{ organisation.name }}
             </fieldset>
         {% endif %}
-
-        <fieldset class="island">
-            <label for="id_category">Category</label>
-
-            <p class="info">Please select the category that best describes your question</p>
-
-            <ul class="radio-list">
-                {% for radio in form.category %}
-                    <li>{{ radio }}</li>
-                {% endfor %}
-            </ul>
-
-            {% include "message_list.html" with messages=form.category.errors message_type='error' %}
-        </fieldset>
 
         <fieldset class="island">
             <ul class="gw">

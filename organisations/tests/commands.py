@@ -55,7 +55,6 @@ class EmailIssuesToProviderTests(TestCase):
         self.assertEqual(second_mail.to, [settings.QUESTION_ANSWERERS_EMAIL])
         self.assertTrue(self.test_question.reporter_name in second_mail.body)
         self.assertTrue(self.test_question.reporter_email in second_mail.body)
-        self.assertTrue(self.test_question.category in second_mail.body)
         self.assertTrue(self.test_question.description in second_mail.body)
         dashboard_url = settings.SITE_BASE_URL + reverse('questions-dashboard')
         self.assertTrue(dashboard_url in second_mail.body)

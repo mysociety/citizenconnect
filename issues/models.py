@@ -36,33 +36,6 @@ class IssueModel(AuditedModel):
         (SOURCE_SMS, 'SMS')
     )
 
-    CATEGORY_CHOICES = (
-        (u'staff', u'Staff Attitude'),
-        (u'access', u'Access to Service'),
-        (u'delays', u'Delays'),
-        (u'treatment', u'Your Treatment'),
-        (u'communication', u'Communication'),
-        (u'cleanliness', u'Cleanliness'),
-        (u'equipment', u'Equipment'),
-        (u'medicines', u'Medicines'),
-        (u'dignity', u'Dignity and Privacy'),
-        (u'parking', u'Parking'),
-        (u'lostproperty', u'Lost Property'),
-        (u'other', u'Other'),
-    )
-
-    CATEGORY_DESCRIPTIONS = {'staff': 'Bedside manner and attitude of staff',
-                             'access': 'Difficulty getting appointments, long waiting times',
-                             'delays': 'Delays in care, e.g. referrals and test results',
-                             'treatment': 'Wrong advice / unsafe care / refusal of treatment / consent',
-                             'communication': 'Communications and administration e.g. letters',
-                             'cleanliness': 'Cleanliness and facilities',
-                             'equipment': 'Problems with equipment, aids and devices',
-                             'medicines': 'Problems with medicines',
-                             'dignity': 'Privacy, dignity, confidentiality',
-                             'parking': 'Problems with parking / charges',
-                             'lostproperty': 'Lost property',
-                             'other': ''}
 
     description = models.TextField(verbose_name='')
     reporter_name = models.CharField(max_length=200, blank=False, verbose_name='')
@@ -128,11 +101,6 @@ class Question(IssueModel):
     # Which attrs are interesting to compare for revisions
     REVISION_ATTRS = ['status']
 
-    category = models.CharField(max_length=100,
-                                choices=IssueModel.CATEGORY_CHOICES,
-                                default='general',
-                                db_index=True,
-                                verbose_name='Please select the category that best describes your question')
     status = models.IntegerField(default=NEW, choices=STATUS_CHOICES, db_index=True)
     postcode = models.CharField(max_length=25, blank=True)
     organisation = models.ForeignKey('organisations.Organisation', blank=True, null=True)
@@ -241,6 +209,35 @@ class Problem(IssueModel):
     COMMISSIONED_CHOICES = ((LOCALLY_COMMISSIONED, "Locally Commissioned"),
                                    (NATIONALLY_COMMISSIONED, "Nationally Commissioned"))
 
+    CATEGORY_CHOICES = (
+       (u'staff', u'Staff Attitude'),
+       (u'access', u'Access to Service'),
+       (u'delays', u'Delays'),
+       (u'treatment', u'Your Treatment'),
+       (u'communication', u'Communication'),
+       (u'cleanliness', u'Cleanliness'),
+       (u'equipment', u'Equipment'),
+       (u'medicines', u'Medicines'),
+       (u'dignity', u'Dignity and Privacy'),
+       (u'parking', u'Parking'),
+       (u'lostproperty', u'Lost Property'),
+       (u'other', u'Other'),
+    )
+
+    CATEGORY_DESCRIPTIONS = {'staff': 'Bedside manner and attitude of staff',
+                            'access': 'Difficulty getting appointments, long waiting times',
+                            'delays': 'Delays in care, e.g. referrals and test results',
+                            'treatment': 'Wrong advice / unsafe care / refusal of treatment / consent',
+                            'communication': 'Communications and administration e.g. letters',
+                            'cleanliness': 'Cleanliness and facilities',
+                            'equipment': 'Problems with equipment, aids and devices',
+                            'medicines': 'Problems with medicines',
+                            'dignity': 'Privacy, dignity, confidentiality',
+                            'parking': 'Problems with parking / charges',
+                            'lostproperty': 'Lost property',
+                            'other': ''}
+
+
     # Names for transitions between statuses we might want to print
     TRANSITIONS = {
         'status': {
@@ -262,7 +259,7 @@ class Problem(IssueModel):
     REVISION_ATTRS = ['moderated', 'publication_status', 'status']
 
     category = models.CharField(max_length=100,
-                                choices=IssueModel.CATEGORY_CHOICES,
+                                choices=CATEGORY_CHOICES,
                                 default='other',
                                 db_index=True,
                                 verbose_name='Please select the category that best describes your problem')

@@ -10,7 +10,9 @@ Phone number: {{ issue.reporter_phone }}
 Email address: {{ issue.reporter_email }}
 {% endif %}
 
+{% if issue.issue_type == "Problem" %}
 Category: {{ issue.category }}
+{% endif %}
 
 Sent to: {{ issue.organisation.name }} {{ issue.service.name }}
 

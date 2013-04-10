@@ -119,7 +119,6 @@ class QuestionCreateFormTests(TestCase):
         self.test_question = {
             'description': 'This is a question',
             'postcode': 'BS32 4NF',
-            'category': 'medicines',
             'reporter_name': self.uuid,
             'reporter_email': 'steve@mysociety.org',
             'reporter_phone': '01111 111 111',

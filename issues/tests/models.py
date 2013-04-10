@@ -301,7 +301,6 @@ class QuestionModelTests(TestCase):
 
     def setUp(self):
         self.test_question = Question(description='A Test Question',
-                                    category='general',
                                     reporter_name='Test User',
                                     reporter_email='reporter@example.com',
                                     reporter_phone='01111 111 111',

@@ -67,10 +67,11 @@ def create_test_instance(model, attributes):
         if 'organisation' not in attributes:
             # Make a dummy organisation
             attributes['organisation'] = create_test_organisation()
+        if 'category' not in attributes:
+            attributes['category'] = 'staff'
 
     default_attributes = {
         'description': 'A test problem',
-        'category': 'staff',
         'reporter_name': 'Test User',
         'reporter_email': 'reporter@example.com',
         'preferred_contact_method': 'email',

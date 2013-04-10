@@ -36,7 +36,6 @@ class APITests(TestCase):
         self.question_uuid = uuid.uuid4().hex
         self.test_question = {
             'description': 'This is a question',
-            'category': 'staff',
             'reporter_name': self.question_uuid,
             'reporter_email': 'steve@mysociety.org',
             'reporter_phone': '01111 111 111',
@@ -57,7 +56,6 @@ class APITests(TestCase):
         content_json = json.loads(resp.content)
         self.assertTrue(content_json['reference_number'], expected_reference_number)
         self.assertEqual(question.description, self.test_question['description'])
-        self.assertEqual(question.category, self.test_question['category'])
         self.assertEqual(question.reporter_name, self.test_question['reporter_name'])
         self.assertEqual(question.reporter_email, self.test_question['reporter_email'])
         self.assertEqual(question.reporter_phone, self.test_question['reporter_phone'])
