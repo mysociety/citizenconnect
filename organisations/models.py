@@ -38,6 +38,11 @@ class Organisation(AuditedModel,geomodels.Model):
     # email may not be unique
     email = models.EmailField(max_length=254, blank=True)
 
+    # Initially empty - this gets a value when the the intro email is sent to the
+    # organisation. It doubles up as a flag to say whether the email has been sent or
+    # not.
+    intro_email_sent = models.DateTimeField(blank=True, null=True, editable=False)
+
     users = models.ManyToManyField(User, related_name='organisations')
 
     point =  geomodels.PointField()
