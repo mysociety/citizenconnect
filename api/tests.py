@@ -81,6 +81,7 @@ class APITests(TestCase):
         self.assertEqual(problem.public_reporter_name, True)
         self.assertEqual(problem.publication_status, True)
         self.assertEqual(problem.source, self.test_problem['source'])
+        self.assertEqual(problem.moderated, Problem.MODERATED)
 
     def test_source_is_required(self):
         problem_without_source = self.test_problem

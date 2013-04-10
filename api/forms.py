@@ -30,6 +30,8 @@ class ProblemAPIForm(forms.ModelForm):
     service_code = forms.CharField(required=False)
     # Make source required
     source = forms.CharField(required=True)
+    # Make moderated optional (we set it ourselves)
+    moderated = forms.IntegerField(required=False)
 
     # Pull out the organisation ods_code and turn it into a real organisation
     def clean_organisation(self):
@@ -45,6 +47,10 @@ class ProblemAPIForm(forms.ModelForm):
         # Force the service foreign key field to be ignored, because we only
         # want to accept services via the service_code field we've added
         return None
+
+    def clean_moderated(self):
+        # If you are submitting the form, you have moderated it, so always return MODERATED
+        return Problem.MODERATED
 
     def clean(self):
         # Run super class clean method
@@ -86,6 +92,7 @@ class ProblemAPIForm(forms.ModelForm):
             'service',
             'description',
             'moderated_description',
+            'moderated',
             'category',
             'reporter_name',
             'reporter_phone',
