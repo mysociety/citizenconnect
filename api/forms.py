@@ -84,6 +84,7 @@ class ProblemAPIForm(forms.ModelForm):
             'preferred_contact_method',
             'public',
             'public_reporter_name',
+            'publication_status',
             'source'
         ]
 

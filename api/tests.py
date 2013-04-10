@@ -24,6 +24,7 @@ class APITests(TestCase):
             'reporter_name': self.problem_uuid,
             'reporter_email': 'steve@mysociety.org',
             'reporter_phone': '01111 111 111',
+            'publication_status': Problem.PUBLISHED,
             'public':False,
             'public_reporter_name':False,
             'preferred_contact_method': Problem.CONTACT_PHONE,
@@ -78,6 +79,7 @@ class APITests(TestCase):
         self.assertEqual(problem.reporter_phone, self.test_problem['reporter_phone'])
         self.assertEqual(problem.public, self.test_problem['public'])
         self.assertEqual(problem.public_reporter_name, self.test_problem['public_reporter_name'])
+        self.assertEqual(problem.publication_status, self.test_problem['publication_status'])
         self.assertEqual(problem.source, self.test_problem['source'])
 
     def test_source_is_required(self):
