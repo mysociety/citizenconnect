@@ -28,7 +28,8 @@ class APITests(TestCase):
             'public': 1,
             'public_reporter_name': 1,
             'preferred_contact_method': Problem.CONTACT_PHONE,
-            'source':Problem.SOURCE_PHONE
+            'source':Problem.SOURCE_PHONE,
+            'requires_second_tier_moderation': 0
         }
         self.question_uuid = uuid.uuid4().hex
         self.test_question = {
@@ -82,6 +83,7 @@ class APITests(TestCase):
         self.assertEqual(problem.publication_status, True)
         self.assertEqual(problem.source, self.test_problem['source'])
         self.assertEqual(problem.moderated, Problem.MODERATED)
+        self.assertEqual(problem.requires_second_tier_moderation, self.test_problem['requires_second_tier_moderation'])
 
     def test_source_is_required(self):
         problem_without_source = self.test_problem
@@ -179,3 +181,12 @@ class APITests(TestCase):
         errors = json.loads(content_json['errors'])
         self.assertEqual(errors['moderated_description'][0],  'You must moderate a version of the problem details when publishing public problems.')
 
+    def test_problem_cannot_be_published_if_requires_second_tier_moderation(self):
+        problem_requiring_second_tier_moderation = self.test_problem
+        problem_requiring_second_tier_moderation['requires_second_tier_moderation'] = 1
+        resp = self.client.post(self.problem_api_url, problem_requiring_second_tier_moderation)
+        self.assertEquals(resp.status_code, 400)
+
+        content_json = json.loads(resp.content)
+        errors = json.loads(content_json['errors'])
+        self.assertEqual(errors['publication_status'][0], 'A problem that requires second tier moderation cannot be published.')

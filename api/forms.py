@@ -80,6 +80,10 @@ class ProblemAPIForm(forms.ModelForm):
                 self._errors['moderated_description'] = self.error_class(['You must moderate a version of the problem details when publishing public problems.'])
                 del cleaned_data['moderated_description']
 
+        # If a problem is flagged as requiring second tier moderation, it can't be published
+        if cleaned_data['requires_second_tier_moderation'] == True and cleaned_data['publication_status'] == Problem.PUBLISHED:
+            self._errors['publication_status'] = self.error_class(['A problem that requires second tier moderation cannot be published.'])
+            del cleaned_data['publication_status']
 
         return cleaned_data
 
@@ -93,6 +97,7 @@ class ProblemAPIForm(forms.ModelForm):
             'description',
             'moderated_description',
             'moderated',
+            'requires_second_tier_moderation',
             'category',
             'reporter_name',
             'reporter_phone',
