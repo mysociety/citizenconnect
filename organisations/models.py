@@ -3,6 +3,7 @@ logger = logging.getLogger(__name__)
 
 from django.contrib.gis.db import models as geomodels
 from django.conf import settings
+from django.core import mail
 from django.db import models
 from django.db.models import Q
 from django.db import connection
@@ -121,6 +122,21 @@ class Organisation(AuditedModel,geomodels.Model):
         
         # Add the user to this org
         self.users.add(user)
+    
+    
+    def send_mail(self, **kwargs):
+        """
+        This is very similar to the built in Django function `send_mail` (https://docs.djangoproject.com/en/dev/topics/email/#send-mail)
+
+        It takes the same arguments as mail.send_mail but does the following differently:
+        
+          * will create a user account linked to the provider if required
+          * will send out an intro email if one has not already been sent
+          * will set the recipient_list to the provider's email address(es)
+          * will send the email
+        """
+
+        return mail.send_mail(**kwargs)
 
 
     def __unicode__(self):
