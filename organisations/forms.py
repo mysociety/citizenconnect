@@ -14,6 +14,7 @@ from django.contrib.gis.measure import Distance
 from issues.models import Problem, Question
 
 from .models import Organisation
+from .metaphone import dm
 
 class OrganisationFinderForm(forms.Form):
     organisation_type = forms.ChoiceField(choices=settings.ORGANISATION_CHOICES, initial='hospitals')
@@ -62,8 +63,14 @@ class OrganisationFinderForm(forms.Form):
                 organisations = self.organisations_from_postcode(postcode, organisation_type, partial=True)
                 validation_message = "Sorry, there are no matches within 5 miles of %s. Please try again." % (location)
             else:
-                organisations = Organisation.objects.filter(name__icontains=location,
+                # organisations = Organisation.objects.filter(name__icontains=location,
+                #                                             organisation_type=organisation_type)
+                # if len(organisations) < 3 :
+                # Try a metaphone search to give more results
+                location_metaphone = dm(location)
+                organisations = Organisation.objects.filter(name_metaphone__contains=location_metaphone[0],
                                                             organisation_type=organisation_type)
+
                 validation_message = "We couldn't find any matches for '%s'. Please try again." % (location)
             if len(organisations) == 0:
                 raise forms.ValidationError(validation_message)
