@@ -2,6 +2,7 @@
 
 from __future__ import division
 from django import template
+
 register = template.Library()
 
 @register.filter(is_safe=True)
@@ -32,6 +33,13 @@ def formatted_boolean(boolean):
         return "False"
     else:
         return None
+
+@register.filter(is_safe=True)
+def row_classes(table, record):
+    try:
+        return table.row_classes(record)
+    except AttributeError:
+        return ""
 
 def paginator(context, adjacent_pages=2):
     """Base function for an ellipsis-capable paginator"""

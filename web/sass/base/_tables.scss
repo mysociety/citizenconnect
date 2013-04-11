@@ -36,7 +36,9 @@ table {
     }
     // coloured icons
     &.happy_service,
-    &.happy_outcome {
+    &.happy_outcome,
+    &.time_to_acknowledge,
+    &.time_to_address {
       vertical-align: middle;
       text-align: center;
     }
@@ -108,4 +110,12 @@ table {
   }
   // last cell
   .summary { padding-right: 0; }
+}
+
+.organisation-problems {
+    .problem-table {
+        tr.highlight {
+            background-color: $c-table-row-highlight-color;
+        }
+    }
 }

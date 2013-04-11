@@ -58,6 +58,11 @@ class ProblemTable(tables.Table):
             self.cobrand = kwargs.pop('cobrand')
         super(ProblemTable, self).__init__(*args, **kwargs)
 
+    def row_classes(self, record):
+        if record.status in Problem.ESCALATION_STATUSES:
+            return 'highlight'
+        else:
+            return ''
 
     def render_summary(self, record):
         if self.private:
