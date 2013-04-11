@@ -17,7 +17,7 @@ from .auth import user_in_group, user_in_groups, user_is_superuser
 from .metaphone import dm
 
 
-class CCG(AuditedModel):
+class CCG(MailSendMixin, UserCreationMixin, AuditedModel):
     name = models.TextField()
     code = models.CharField(max_length=8, db_index=True, unique=True)
     users = models.ManyToManyField(User, related_name='ccgs')
