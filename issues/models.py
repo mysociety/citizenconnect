@@ -128,6 +128,10 @@ class ProblemManager(models.Manager):
         return super(ProblemManager, self).all().filter(Q(status__in=Problem.ESCALATION_STATUSES) &
                                                         Q(status__in=Problem.OPEN_STATUSES))
 
+    def open_unescalated_problems(self):
+        return super(ProblemManager, self).all().filter(Q(status__in=Problem.OPEN_STATUSES) &
+                                                        Q(status__in=Problem.NON_ESCALATION_STATUSES))
+
 class Problem(IssueModel):
     # Custom manager
     objects = ProblemManager()
@@ -162,6 +166,7 @@ class Problem(IssueModel):
     # Calculated status sets
     ALL_STATUSES = [status for status, description in STATUS_CHOICES]
     OPEN_STATUSES = BASE_OPEN_STATUSES + ESCALATION_STATUSES
+    NON_ESCALATION_STATUSES = [status for status in ALL_STATUSES if status not in ESCALATION_STATUSES]
     VISIBLE_STATUSES = [status for status in ALL_STATUSES if status not in HIDDEN_STATUSES]
     VISIBLE_STATUS_CHOICES = [(status, description) for status, description in STATUS_CHOICES if status in VISIBLE_STATUSES]
 
