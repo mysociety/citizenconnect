@@ -498,8 +498,7 @@ class ProblemManagerTests(ManagerTest):
         self.problems_requiring_second_tier_moderation = [self.public_problem_requiring_second_tier_moderation,
                                                     self.private_problem_requiring_second_tier_moderation]
 
-        self.open_escalated_problems = [self.breach_public_moderated_problem_published,
-                                        self.escalated_public_moderated_problem_published,
+        self.open_escalated_problems = [self.escalated_public_moderated_problem_published,
                                         self.escalated_private_unmoderated_problem]
 
     def test_all_problems_returns_correct_problems(self):
