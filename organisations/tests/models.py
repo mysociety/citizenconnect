@@ -118,8 +118,14 @@ class OrganisationModelSendMailTests(TestCase):
     def test_send_mail_raises_if_recipient_list_provided(self):
         self.assertRaises(TypeError, self.org.send_mail, subject="Test Subject", message="Test message", recipient_list="bob@foo.com")
     
-    
-    # test that the user gets created
+    def test_send_mail_creates_user(self):
+        org = self.org
+        
+        self.assertEqual(org.users.count(), 0)
+        self.org.send_mail('test', 'foo')
+        self.assertEqual(org.users.count(), 1)
+        
+
     
     # test that the intro email is sent
     

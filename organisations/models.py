@@ -156,7 +156,8 @@ class Organisation(AuditedModel,geomodels.Model):
         if not len(kwargs['recipient_list']):
             raise ValueError("Organisation '{0}' has no email addresses".format(self))
 
-        # FIXME - create user accounts
+        self.ensure_related_user_exists()
+        
         # FIXME - send intro email if needed
 
         return mail.send_mail(**kwargs)
