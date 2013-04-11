@@ -107,12 +107,17 @@ class OrganisationModelUserCreationTests(TestCase):
 
 class OrganisationModelSendMailTests(TestCase):
     
+    def setUp(self):
+        self.org = create_test_organisation({"email": "foo@example.com"})
+
     def test_send_mail_raises_if_no_email_on_org(self):
         # Remove this test once ISSUE-329 resolved
-        org = create_test_organisation();
+        org = create_test_organisation({"ods_code": "foo"});
         self.assertRaises(ValueError, org.send_mail, subject="Test Subject", message="Test message")
         
-    # test that trying to provide recipient_list raises
+    def test_send_mail_raises_if_recipient_list_provided(self):
+        self.assertRaises(TypeError, self.org.send_mail, subject="Test Subject", message="Test message", recipient_list="bob@foo.com")
+    
     
     # test that the user gets created
     
