@@ -109,10 +109,8 @@ class EmailProblemsToProviderTests(TestCase):
 
         logging.disable(logging.NOTSET)
 
-class CreateAccountsForOrganisationsTests(TestCase):
 
-    def setUp(self):
-        self.test_organisation = create_test_organisation()
+class CreateAccountsForOrganisationsTests(TestCase):
 
     def _call_command(self):
         args = []
@@ -124,14 +122,16 @@ class CreateAccountsForOrganisationsTests(TestCase):
     #     # email addresses yet
     #     pass
 
-    def test_handles_orgs_with_no_email(self):
+    def test_handles_orgs_with_no_email(self):  # ISSUE-329
         # Quiet logging for this test
         logging.disable(logging.CRITICAL)
+
+        test_organisation_no_email   = create_test_organisation()
 
         # This would raise an error if it didn't handle it
         self._call_command()
         # Check that no users were created
-        users = list(Organisation.objects.get(pk=self.test_organisation.id).users.all())
-        self.assertEqual(users, [])
+        users = Organisation.objects.get(pk=test_organisation_no_email.id).users
+        self.assertEqual(users.count(), 0)
 
         logging.disable(logging.NOTSET)
