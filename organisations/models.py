@@ -126,7 +126,12 @@ class Organisation(AuditedModel,geomodels.Model):
         """
         Overriden save to calculate double metaphones for name
         """
-        name_metaphones = dm(self.name)
+        # dm() expects unicode data, and gets upset with byte strings
+        if isinstance(self.name, unicode):
+            unicode_name = self.name
+        else:
+            unicode_name = unicode(self.name, encoding='utf-8', errors='ignore')
+        name_metaphones = dm(unicode_name)
         self.name_metaphone = name_metaphones[0] # Ignoring the alternative for now
         super(Organisation, self).save(*args, **kwargs)
 
