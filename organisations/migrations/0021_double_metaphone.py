@@ -1,23 +1,25 @@
 # -*- coding: utf-8 -*-
 import datetime
 from south.db import db
-from south.v2 import SchemaMigration
+from south.v2 import DataMigration
 from django.db import models
 
+from ..metaphone import dm
 
-class Migration(SchemaMigration):
+class Migration(DataMigration):
 
     def forwards(self, orm):
-        # Adding field 'Organisation.name_metaphone'
-        db.add_column('organisations_organisation', 'name_metaphone',
-                      self.gf('django.db.models.fields.TextField')(default=''),
-                      keep_default=False)
-
+        "Write your forwards methods here."
+        # Re-save the models to calculate all the metaphones
+        for organisation in orm.Organisation.objects.all():
+            name_metaphones = dm(organisation.name)
+            organisation.name_metaphone = name_metaphones[0]
+            organisation.save()
 
     def backwards(self, orm):
-        # Deleting field 'Organisation.name_metaphone'
-        db.delete_column('organisations_organisation', 'name_metaphone')
-
+        "Write your backwards methods here."
+        # Blank all the metaphones out
+        orm.Organisation.objects.all().update(name_metaphone='')
 
     models = {
         'auth.group': {
@@ -78,6 +80,7 @@ class Migration(SchemaMigration):
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '254', 'blank': 'True'}),
             'escalation_ccg': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'escalation_organisations'", 'to': "orm['organisations.CCG']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'intro_email_sent': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
             'name': ('django.db.models.fields.TextField', [], {}),
             'name_metaphone': ('django.db.models.fields.TextField', [], {}),
@@ -107,3 +110,4 @@ class Migration(SchemaMigration):
     }
 
     complete_apps = ['organisations']
+    symmetrical = True
