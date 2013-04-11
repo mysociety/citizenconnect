@@ -353,6 +353,9 @@ class AuthorizationTestCase(TestCase):
         self.other_test_ccg.users.add(self.other_ccg_user)
         self.other_test_ccg.save()
 
+        # A Customer Contact Centre user
+        self.customer_contact_centre_user = User.objects.get(pk=15)
+
         # Helpful lists for simpler testing
         self.users_who_can_access_everything = [self.superuser, self.nhs_superuser, self.case_handler]
 

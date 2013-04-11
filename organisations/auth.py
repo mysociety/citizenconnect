@@ -14,6 +14,7 @@ QUESTION_ANSWERERS = 4
 CQC = 5
 CCG = 6
 SECOND_TIER_MODERATORS = 7
+CUSTOMER_CONTACT_CENTRE = 8
 
 def user_is_superuser(user):
     """
