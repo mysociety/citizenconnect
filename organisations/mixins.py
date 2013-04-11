@@ -103,6 +103,11 @@ class UserCreationMixin(models.Model):
 
     class Meta:
         abstract = True
+        
+    def default_user_group(self):
+        """Group to ensure that users are members of"""
+        raise NotImplementedError("You should implement 'default_user_group' in your class")
+
 
     def ensure_related_user_exists(self):
         """
@@ -121,8 +126,7 @@ class UserCreationMixin(models.Model):
         if not self.email: # ISSUE-329
             raise ValueError("{0} {1} needs an email to find/create related user".format(class_name, self.id))
 
-        logger.info('Creating account for {0} (ODS code: {1})'.format(self.name,
-                                                                       self.ods_code))
+        logger.info('Creating account for {0}'.format(self))
 
         try:
             user = User.objects.get(email=self.email)

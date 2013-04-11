@@ -28,6 +28,10 @@ class CCG(MailSendMixin, UserCreationMixin, AuditedModel):
     # email may not be unique
     email = models.EmailField(max_length=254, blank=True)
 
+    def default_user_group(self):
+        """Group to ensure that users are members of"""
+        return Group.objects.get(pk=auth.CCG)
+        
 
 
 class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Model):
