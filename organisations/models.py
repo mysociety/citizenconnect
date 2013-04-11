@@ -150,7 +150,7 @@ class Organisation(AuditedModel,geomodels.Model):
             message        = message,
             fail_silently  = fail_silently,
             from_email     = settings.DEFAULT_FROM_EMAIL,
-            recipient_list = [self.email],
+            recipient_list = filter(bool, [self.email]),
         )
 
         if not len(kwargs['recipient_list']):

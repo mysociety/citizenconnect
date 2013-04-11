@@ -102,3 +102,23 @@ class OrganisationModelUserCreationTests(TestCase):
         self.assertEqual(org.users.count(), 1)
 
         self.assertEqual(org.users.all()[0].id, self.user_foo.id)
+
+
+
+class OrganisationModelSendMailTests(TestCase):
+    
+    def test_send_mail_raises_if_no_email_on_org(self):
+        # Remove this test once ISSUE-329 resolved
+        org = create_test_organisation();
+        self.assertRaises(ValueError, org.send_mail, subject="Test Subject", message="Test message")
+        
+    # test that trying to provide recipient_list raises
+    
+    # test that the user gets created
+    
+    # test that the intro email is sent
+    
+    # test that the intro email is only sent once
+    
+    # test that the desired email is also sent
+
