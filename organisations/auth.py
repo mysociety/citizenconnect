@@ -44,7 +44,7 @@ def check_problem_access(problem, user):
         raise PermissionDenied()
 
 def user_can_access_escalation_dashboard(user):
-    return (user_is_superuser(user) or user_in_groups(user, [CQC, CCG]))
+    return (user_is_superuser(user) or user_in_groups(user, [CQC, CCG, CUSTOMER_CONTACT_CENTRE]))
 
 def create_unique_username(organisation):
     """

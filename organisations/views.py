@@ -353,8 +353,8 @@ def login_redirect(request):
     if user_in_group(user, auth.NHS_SUPERUSERS):
         return HttpResponseRedirect(reverse('private-map'))
 
-    # CQC and CCG users go to the escalation dashboard
-    elif user_in_groups(user, [auth.CQC, auth.CCG]):
+    # CQC, CCG, and customer contact centre users go to the escalation dashboard
+    elif user_in_groups(user, [auth.CQC, auth.CCG, auth.CUSTOMER_CONTACT_CENTRE]):
         return HttpResponseRedirect(reverse('escalation-dashboard'))
 
     # Moderators go to the moderation queue
@@ -426,10 +426,14 @@ class EscalationDashboard(FilterMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(EscalationDashboard, self).get_context_data(**kwargs)
         context['problems'] = Problem.objects.open_escalated_problems()
-        # Restrict problem queryset for non-CGC and non-superuser users (i.e. CCG users)
+        # Restrict problem queryset for non-CQC and non-superuser users (i.e. CCG users)
         user = self.request.user
-        if not user_is_superuser(user) and not user_in_groups(user, [auth.CQC]):
-            context['problems'] = context['problems'].filter(organisation__escalation_ccg__in=(user.ccgs.all()))
+        if not user_is_superuser(user) and not user_in_groups(user, [auth.CQC, auth.CUSTOMER_CONTACT_CENTRE]):
+            context['problems'] = context['problems'].filter(organisation__escalation_ccg__in=(user.ccgs.all()),
+                                                             commissioned=Problem.LOCALLY_COMMISSIONED)
+
+        elif not user_is_superuser(user) and not user_in_groups(user, [auth.CQC, auth.CCG]):
+            context['problems'] = context['problems'].filter(commissioned=Problem.NATIONALLY_COMMISSIONED)
 
         filtered_problems = self.apply_filters(context['filters'], context['problems'])
 

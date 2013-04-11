@@ -857,30 +857,60 @@ class EscalationDashboardTests(AuthorizationTestCase):
     def setUp(self):
         super(EscalationDashboardTests, self).setUp()
         self.escalation_dashboard_url = reverse('escalation-dashboard')
-        self.org_escalated_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
-                                                                 'status': Problem.ESCALATED})
-        self.other_org_escalated_problem = create_test_instance(Problem, {'organisation': self.other_test_organisation,
-                                                                       'status': Problem.ESCALATED})
+        self.org_local_escalated_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
+                                                                          'status': Problem.ESCALATED,
+                                                                          'commissioned': Problem.LOCALLY_COMMISSIONED})
+
+        self.org_national_escalated_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
+                                                                             'status': Problem.ESCALATED,
+                                                                             'commissioned': Problem.NATIONALLY_COMMISSIONED})
+        self.other_org_local_escalated_problem = create_test_instance(Problem, {'organisation': self.other_test_organisation,
+                                                                                'status': Problem.ESCALATED,
+                                                                                'commissioned': Problem.LOCALLY_COMMISSIONED})
+        self.other_org_national_escalated_problem = create_test_instance(Problem, {'organisation': self.other_test_organisation,
+                                                                                   'status': Problem.ESCALATED,
+                                                                                   'commissioned': Problem.NATIONALLY_COMMISSIONED})
 
     def test_dashboard_accessible_to_ccg_users(self):
         self.login_as(self.ccg_user)
         resp = self.client.get(self.escalation_dashboard_url)
         self.assertEqual(resp.status_code, 200)
 
+    def test_dashboard_accessible_to_customer_contact_centre(self):
+        self.login_as(self.customer_contact_centre_user)
+        resp = self.client.get(self.escalation_dashboard_url)
+        self.assertEqual(resp.status_code, 200)
+
     def test_dashboard_shows_all_problems_for_nhs_superusers(self):
         self.login_as(self.nhs_superuser)
         resp = self.client.get(self.escalation_dashboard_url)
-        self.assertContains(resp, self.org_breach_problem.reference_number)
-        self.assertContains(resp, self.other_org_breach_problem.reference_number)
+        self.assertContains(resp, self.org_local_escalated_problem.reference_number)
+        self.assertContains(resp, self.org_national_escalated_problem.reference_number)
+        self.assertContains(resp, self.other_org_local_escalated_problem.reference_number)
+        self.assertContains(resp, self.other_org_national_escalated_problem.reference_number)
 
-    def test_dashboard_only_shows_problems_for_escalation_ccg_organisations(self):
+    def test_dashboard_only_shows_locally_commissioned_problems_to_escalation_ccg_organisations(self):
         self.login_as(self.ccg_user)
         # Remove the test ccg from the ccgs for this org so that we know access is coming
         # via the escalation_ccg field, not the ccgs association
         self.test_organisation.ccgs.remove(self.test_ccg)
         resp = self.client.get(self.escalation_dashboard_url)
-        self.assertContains(resp, self.org_breach_problem.reference_number)
-        self.assertNotContains(resp, self.other_org_breach_problem.reference_number)
+        self.assertContains(resp, self.org_local_escalated_problem.reference_number)
+        # Does not show other org's problem or nationally commmissioned problem for this org
+        self.assertNotContains(resp, self.org_national_escalated_problem.reference_number)
+        self.assertNotContains(resp, self.other_org_local_escalated_problem.reference_number)
+        self.assertNotContains(resp, self.other_org_national_escalated_problem.reference_number)
+
+    def test_dashboard_only_shows_nationally_commissioned_problems_to_customer_care_centre(self):
+        self.login_as(self.customer_contact_centre_user)
+        resp = self.client.get(self.escalation_dashboard_url)
+        # Shows nationally commissioned problems for all orgs
+        self.assertContains(resp, self.org_national_escalated_problem.reference_number)
+        self.assertContains(resp, self.other_org_national_escalated_problem.reference_number)
+        # Does not show locally commissioned problems
+        self.assertNotContains(resp, self.org_local_escalated_problem.reference_number)
+        self.assertNotContains(resp, self.other_org_local_escalated_problem.reference_number)
+
 
     def test_dashboard_shows_all_statuses_in_filters(self):
         self.login_as(self.ccg_user)
