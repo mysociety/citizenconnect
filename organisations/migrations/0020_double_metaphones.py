@@ -4,8 +4,6 @@ from south.db import db
 from south.v2 import DataMigration
 from django.db import models
 
-from organisations.metaphone import dm
-
 class Migration(DataMigration):
 
     def forwards(self, orm):
@@ -72,12 +70,13 @@ class Migration(DataMigration):
             'address_line1': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
             'address_line2': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
             'address_line3': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'ccg': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['organisations.CCG']", 'null': 'True', 'blank': 'True'}),
+            'ccgs': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'organisations'", 'symmetrical': 'False', 'to': "orm['organisations.CCG']"}),
             'choices_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True'}),
             'city': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
             'county': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '254', 'blank': 'True'}),
+            'escalation_ccg': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'escalation_organisations'", 'to': "orm['organisations.CCG']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
             'name': ('django.db.models.fields.TextField', [], {}),
