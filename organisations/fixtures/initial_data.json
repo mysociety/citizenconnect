@@ -56,6 +56,14 @@
         }
     },
     {
+        "pk": 8,
+        "model": "auth.group",
+        "fields": {
+            "name": "Customer Contact Centre",
+            "permissions": []
+        }
+    },
+    {
         "pk": 1,
         "model": "organisations.ccg",
         "fields": {

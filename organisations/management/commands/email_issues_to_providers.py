@@ -1,6 +1,5 @@
 import logging
 
-from django.core import mail
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from django.template.loader import get_template
@@ -39,13 +38,9 @@ class Command(BaseCommand):
     def send_problem(self, template, problem):
         context = Context({ 'problem': problem, 'site_base_url': settings.SITE_BASE_URL })
         logger.info('Emailing problem reference number: {0}'.format(problem.reference_number))
-        # TODO - recipient list should come from the organisation
-        recipient_list = ['recipient@example.com']
 
-
-        mail.send_mail(subject='Care Connect: New Problem',
-                  message=template.render(context),
-                  from_email=settings.DEFAULT_FROM_EMAIL,
-                  recipient_list=recipient_list,
-                  fail_silently=False)
+        problem.organisation.send_mail(
+            subject='Care Connect: New Problem',
+            message=template.render(context)
+        )
 

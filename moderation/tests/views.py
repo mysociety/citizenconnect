@@ -58,6 +58,13 @@ class BasicViewTests(BaseModerationTestCase):
             resp = self.client.get(url)
             self.assertEqual(resp.status_code, 200)
 
+    def test_views_inaccessible_to_customer_contact_centre(self):
+        self.client.logout()
+        self.login_as(self.customer_contact_centre_user)
+        for url in self.all_urls:
+            resp = self.client.get(url)
+            self.assertEqual(resp.status_code, 403)
+
 
 class HomeViewTests(BaseModerationTestCase):
 
