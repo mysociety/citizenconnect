@@ -125,9 +125,8 @@ class ProblemManager(models.Manager):
         return super(ProblemManager, self).all().filter(requires_second_tier_moderation=True)
 
     def open_escalated_problems(self):
-        # ESCALATION_STATUSES is a subset of OPEN_STATUSES, so
-        # we don't need to filter for open too
-        return super(ProblemManager, self).all().filter(Q(status__in=Problem.ESCALATION_STATUSES))
+        return super(ProblemManager, self).all().filter(Q(status__in=Problem.ESCALATION_STATUSES) &
+                                                        Q(status__in=Problem.OPEN_STATUSES))
 
 class Problem(IssueModel):
     # Custom manager
