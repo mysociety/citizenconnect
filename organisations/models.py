@@ -10,10 +10,10 @@ from django.contrib.auth.models import User, Group
 from django.core.exceptions import ValidationError
 
 from citizenconnect.models import AuditedModel
-from .mixins import MailSendMixin
+from .mixins import MailSendMixin, UserCreationMixin
 
 import auth
-from .auth import user_in_group, user_in_groups, user_is_superuser, create_unique_username
+from .auth import user_in_group, user_in_groups, user_is_superuser
 from .metaphone import dm
 
 
@@ -23,7 +23,7 @@ class CCG(AuditedModel):
     users = models.ManyToManyField(User, related_name='ccgs')
 
 
-class Organisation(MailSendMixin, AuditedModel, geomodels.Model):
+class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Model):
 
     name = models.TextField()
     organisation_type = models.CharField(max_length=100, choices=settings.ORGANISATION_CHOICES)
@@ -94,37 +94,6 @@ class Organisation(MailSendMixin, AuditedModel, geomodels.Model):
         # Everyone else - NO
         return False
 
-
-    def ensure_related_user_exists(self):
-        """
-        Check to see if this org has user. If not either find one or create one.
-
-        Will raise a ValueError exception if the organisation has no user and
-        has no email. ISSUE-329
-        """
-
-        # No need to create if there are already users
-        if self.users.count(): return
-
-        # We can't attach a user if we don't have an email address
-        if not self.email: # ISSUE-329
-            raise ValueError("Organisation needs an email to find/create related user")
-
-        logger.info('Creating account for {0} (ODS code: {1})'.format(self.name,
-                                                                       self.ods_code))
-
-        try:
-            user = User.objects.get(email=self.email)
-        except User.DoesNotExist:
-            user = User.objects.create_user(create_unique_username(self), self.email)
-
-        # make sure user is in the right group. No-op if already a member.
-        providers_group = Group.objects.get(pk=auth.PROVIDERS)
-        user.groups.add(providers_group)
-
-        # Add the user to this org
-        self.users.add(user)
-    
     
     def save(self, *args, **kwargs):
         """
@@ -138,6 +107,12 @@ class Organisation(MailSendMixin, AuditedModel, geomodels.Model):
         name_metaphones = dm(unicode_name)
         self.name_metaphone = name_metaphones[0] # Ignoring the alternative for now
         super(Organisation, self).save(*args, **kwargs)
+
+
+    def default_user_group(self):
+        """Group to ensure that users are members of"""
+        return Group.objects.get(pk=auth.PROVIDERS)
+
 
     def __unicode__(self):
         return self.name

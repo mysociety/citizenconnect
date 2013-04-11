@@ -9,6 +9,10 @@ from django.template import Context
 from django.template.loader import get_template
 from django.utils.timezone import utc
 
+from django.contrib.auth.models import User, Group
+
+import auth
+
 
 class MailSendMixin(models.Model):
 
@@ -92,3 +96,43 @@ class MailSendMixin(models.Model):
         self.save()
     
         return
+
+
+
+class UserCreationMixin(models.Model):
+
+    class Meta:
+        abstract = True
+
+    def ensure_related_user_exists(self):
+        """
+        Check to see if this org has user. If not either find one or create one.
+
+        Will raise a ValueError exception if the organisation has no user and
+        has no email. ISSUE-329
+        """
+        
+        class_name = self.__class__.__name__
+
+        # No need to create if there are already users
+        if self.users.count(): return
+
+        # We can't attach a user if we don't have an email address
+        if not self.email: # ISSUE-329
+            raise ValueError("{0} {1} needs an email to find/create related user".format(class_name, self.id))
+
+        logger.info('Creating account for {0} (ODS code: {1})'.format(self.name,
+                                                                       self.ods_code))
+
+        try:
+            user = User.objects.get(email=self.email)
+        except User.DoesNotExist:
+            user = User.objects.create_user(auth.create_unique_username(self), self.email)
+
+        # make sure user is in the right group. No-op if already a member.
+        user.groups.add(self.default_user_group())
+
+        # Add the user to this org
+        self.users.add(user)
+
+
