@@ -69,10 +69,19 @@ class OrganisationFinderForm(forms.Form):
                 if len(organisations) < 5 :
                     # Try a metaphone search to give more results
                     location_metaphone = dm(location)
-                    alt_orgs = Organisation.objects.filter(Q(name_metaphone__contains=location_metaphone[0]),
+                    # First do a __startswith
+                    print "Doing metaphone for __startswith"
+                    alt_orgs = Organisation.objects.filter(Q(name_metaphone__startswith=location_metaphone[0]),
                                                            Q(organisation_type=organisation_type),
                                                            ~Q(pk__in=list([a.id for a in organisations])))
                     organisations = organisations | alt_orgs
+                    if len(organisations) < 5:
+                        print "Doing metaphone for __contains"
+                        # Try a metaphone __contains to give even more results
+                        more_orgs = Organisation.objects.filter(Q(name_metaphone__contains=location_metaphone[0]),
+                                                                Q(organisation_type=organisation_type),
+                                                                ~Q(pk__in=list([a.id for a in organisations])))
+                        organisations = organisations | more_orgs
 
                 validation_message = "We couldn't find any matches for '%s'. Please try again." % (location)
             if len(organisations) == 0:
