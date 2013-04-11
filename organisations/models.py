@@ -1,31 +1,29 @@
-import datetime
 import logging
 logger = logging.getLogger(__name__)
 
 from django.contrib.gis.db import models as geomodels
 from django.conf import settings
-from django.core import mail
 from django.db import models
 from django.db.models import Q
 from django.db import connection
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ValidationError
-from django.template.loader import get_template
-from django.template import Context
-from django.utils.timezone import utc
 
 from citizenconnect.models import AuditedModel
+from .mixins import MailSendMixin
 
 import auth
 from .auth import user_in_group, user_in_groups, user_is_superuser, create_unique_username
 from .metaphone import dm
+
 
 class CCG(AuditedModel):
     name = models.TextField()
     code = models.CharField(max_length=8, db_index=True, unique=True)
     users = models.ManyToManyField(User, related_name='ccgs')
 
-class Organisation(AuditedModel,geomodels.Model):
+
+class Organisation(MailSendMixin, AuditedModel, geomodels.Model):
 
     name = models.TextField()
     organisation_type = models.CharField(max_length=100, choices=settings.ORGANISATION_CHOICES)
@@ -43,11 +41,6 @@ class Organisation(AuditedModel,geomodels.Model):
     # max_length set manually to make it RFC compliant (default of 75 is too short)
     # email may not be unique
     email = models.EmailField(max_length=254, blank=True)
-
-    # Initially empty - this gets a value when the the intro email is sent to the
-    # organisation. It doubles up as a flag to say whether the email has been sent or
-    # not.
-    intro_email_sent = models.DateTimeField(blank=True, null=True, editable=False)
 
     users = models.ManyToManyField(User, related_name='organisations')
 
@@ -133,80 +126,6 @@ class Organisation(AuditedModel,geomodels.Model):
         self.users.add(user)
     
     
-    def send_mail(self, subject, message, fail_silently=False):
-        """
-        This is very similar to the built in Django function `send_mail` (https://docs.djangoproject.com/en/dev/topics/email/#send-mail)
-
-        It takes the following arguments which are passed through to mail.send_mail:
-
-            subject, message, fail_silently=False
-        
-        It will auto fill the following arguments:
-        
-            from_email     - set from settings.DEFAULT_FROM_EMAIL
-            recipient_list - set from the organisations details
-        
-        In addition it will:
-
-          * raise an exception if there are no email addresses for the org - ISSUE-329
-          * will create a user account linked to the provider if required
-          * will send out an intro email if one has not already been sent
-          * will send the email
-        """
-
-        kwargs = dict(
-            subject        = subject,
-            message        = message,
-            fail_silently  = fail_silently,
-            from_email     = settings.DEFAULT_FROM_EMAIL,
-            recipient_list = filter(bool, [self.email]),
-        )
-
-        if not len(kwargs['recipient_list']):
-            raise ValueError("Organisation '{0}' has no email addresses".format(self))
-
-        self.ensure_related_user_exists()
-        
-        if not self.intro_email_sent:
-            self.send_intro_email()
-
-        return mail.send_mail(**kwargs)
-
-
-    def send_intro_email(self):
-        """
-        Send the intro email and put the current time into intro_email_sent field.
-        """
-
-        subject_template = get_template('organisations/intro_email_subject.txt')
-        message_template = get_template('organisations/intro_email_message.txt')
-
-        context = Context({
-            'user': self.users.all()[0],
-            'site_base_url': settings.SITE_BASE_URL
-        })
-
-        logger.info('Sending intro email to {0}'.format(self))
-
-        kwargs = dict(
-            subject        = subject_template.render(context),
-            message        = message_template.render(context),
-            fail_silently  = False,
-            from_email     = settings.DEFAULT_FROM_EMAIL,
-            recipient_list = filter(bool, [self.email]),
-        )
-
-        if not len(kwargs['recipient_list']):
-            raise ValueError("Organisation '{0}' has no email addresses".format(self))
-
-        mail.send_mail(**kwargs)
-
-        self.intro_email_sent = datetime.datetime.utcnow().replace(tzinfo=utc)
-        self.save()
-        
-        return
-
-
     def save(self, *args, **kwargs):
         """
         Overriden save to calculate double metaphones for name
