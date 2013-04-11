@@ -18,6 +18,7 @@ from citizenconnect.models import AuditedModel
 
 import auth
 from .auth import user_in_group, user_in_groups, user_is_superuser, create_unique_username
+from .metaphone import dm
 
 class CCG(AuditedModel):
     name = models.TextField()
@@ -54,6 +55,9 @@ class Organisation(AuditedModel,geomodels.Model):
     objects = geomodels.GeoManager()
     escalation_ccg = models.ForeignKey(CCG, blank=False, null=False, related_name='escalation_organisations')
     ccgs = models.ManyToManyField(CCG, related_name='organisations')
+
+    # Calculated double_metaphone field, for search by provider name
+    name_metaphone = models.TextField()
 
     @property
     def open_issues(self):
@@ -203,6 +207,18 @@ class Organisation(AuditedModel,geomodels.Model):
         return
 
 
+    def save(self, *args, **kwargs):
+        """
+        Overriden save to calculate double metaphones for name
+        """
+        # dm() expects unicode data, and gets upset with byte strings
+        if isinstance(self.name, unicode):
+            unicode_name = self.name
+        else:
+            unicode_name = unicode(self.name, encoding='utf-8', errors='ignore')
+        name_metaphones = dm(unicode_name)
+        self.name_metaphone = name_metaphones[0] # Ignoring the alternative for now
+        super(Organisation, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return self.name

@@ -3,17 +3,20 @@ import re
 from ukpostcodeutils import validation
 import json
 import urllib
+from itertools import chain
 
 # Django imports
 from django import forms
 from django.conf import settings
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import Distance
+from django.db.models import Q
 
 # App imports
 from issues.models import Problem, Question
 
 from .models import Organisation
+from .metaphone import dm
 
 class OrganisationFinderForm(forms.Form):
     organisation_type = forms.ChoiceField(choices=settings.ORGANISATION_CHOICES, initial='hospitals')
@@ -64,6 +67,22 @@ class OrganisationFinderForm(forms.Form):
             else:
                 organisations = Organisation.objects.filter(name__icontains=location,
                                                             organisation_type=organisation_type)
+                if len(organisations) < 5 :
+                    # Try a metaphone search to give more results
+                    location_metaphone = dm(location)
+                    # First do a __startswith or __endswith
+                    alt_orgs = Organisation.objects.filter(Q(name_metaphone__startswith=location_metaphone[0])
+                                                           | Q(name_metaphone__endswith=location_metaphone[0]),
+                                                           Q(organisation_type=organisation_type),
+                                                           ~Q(pk__in=list([a.id for a in organisations])))
+                    organisations = list(chain(organisations, alt_orgs))
+                    if len(organisations) < 10:
+                        # Try a metaphone __contains to give even more results
+                        more_orgs = Organisation.objects.filter(Q(name_metaphone__contains=location_metaphone[0]),
+                                                                Q(organisation_type=organisation_type),
+                                                                ~Q(pk__in=list([a.id for a in organisations])))
+                        organisations = list(chain(organisations, more_orgs))
+
                 validation_message = "We couldn't find any matches for '%s'. Please try again." % (location)
             if len(organisations) == 0:
                 raise forms.ValidationError(validation_message)

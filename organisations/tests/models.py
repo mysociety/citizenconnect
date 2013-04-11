@@ -5,11 +5,12 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.core import mail
 from django.contrib.auth.models import User
+from django.contrib.gis.geos import Point
 from django.utils.timezone import utc
 
-from .lib import create_test_organisation, get_reset_url_from_email, AuthorizationTestCase
+from .lib import create_test_organisation, get_reset_url_from_email, AuthorizationTestCase, create_test_ccg
 
-from ..models import Organisation
+from ..models import Organisation, CCG
 
 class OrganisationModelAuthTests(AuthorizationTestCase):
 
@@ -72,11 +73,11 @@ class OrganisationModelUserCreationTests(TestCase):
 
     def test_user_creation_where_org_has_no_email(self): # ISSUE-329
         org = self.org_no_email
-        
+
         self.assertEqual(org.users.count(), 0)
         self.assertRaises(ValueError, lambda: org.ensure_related_user_exists() )
         self.assertEqual(org.users.count(), 0)
-        
+
     def test_user_creation_where_user_exists(self):
         org = self.org_foo_with_user
 
@@ -95,7 +96,7 @@ class OrganisationModelUserCreationTests(TestCase):
         user = org.users.all()[0]
         self.assertFalse( user.has_usable_password() )
         self.assertEqual( user.email, org.email )
-        
+
     def test_user_creation_where_user_exists_but_not_related(self):
         org = self.org_foo_no_user
 
@@ -106,9 +107,27 @@ class OrganisationModelUserCreationTests(TestCase):
         self.assertEqual(org.users.all()[0].id, self.user_foo.id)
 
 
+class OrganisationMetaphoneTests(TestCase):
+
+    def setUp(self):
+        # Make an organisation without saving it
+
+        escalation_ccg = create_test_ccg()
+        self.organisation = Organisation(name=u'Test Organisation',
+                                         organisation_type='gppractices',
+                                         choices_id='12702',
+                                         ods_code='F84021',
+                                         point=Point(51.536, -0.06213),
+                                         escalation_ccg=escalation_ccg)
+
+    def test_name_metaphone_created_on_save(self):
+        self.assertEqual(self.organisation.name_metaphone, '')
+        self.organisation.save()
+        self.assertEqual(self.organisation.name_metaphone, 'TSTRKNSXN')
+
 
 class OrganisationModelSendMailTests(TestCase):
-    
+
     def setUp(self):
         self.org = create_test_organisation({"email": "foo@example.com"})
 
@@ -116,20 +135,20 @@ class OrganisationModelSendMailTests(TestCase):
         # Remove this test once ISSUE-329 resolved
         org = create_test_organisation({"ods_code": "foo"});
         self.assertRaises(ValueError, org.send_mail, subject="Test Subject", message="Test message")
-        
+
     def test_send_mail_raises_if_recipient_list_provided(self):
         self.assertRaises(TypeError, self.org.send_mail, subject="Test Subject", message="Test message", recipient_list="bob@foo.com")
-    
+
     def test_send_mail_creates_user(self):
         org = self.org
-        
+
         self.assertEqual(org.users.count(), 0)
         self.org.send_mail('test', 'foo')
         self.assertEqual(org.users.count(), 1)
 
     def test_send_mail_that_the_intro_email_is_sent(self):
         org = self.org
-        
+
         self.assertFalse(org.intro_email_sent)
         self.org.send_mail('test', 'foo')
         self.assertTrue(org.intro_email_sent)
@@ -155,7 +174,7 @@ class OrganisationModelSendMailTests(TestCase):
 
         org.intro_email_sent = now
         org.save()
-        
+
         self.assertEqual(org.intro_email_sent, now)
         self.org.send_mail('test', 'foo')
         self.assertEqual(org.intro_email_sent, now)
@@ -165,4 +184,3 @@ class OrganisationModelSendMailTests(TestCase):
 
         self.assertEqual( trigger_mail.subject, 'test' )
         self.assertEqual( trigger_mail.body,    'foo' )
-
