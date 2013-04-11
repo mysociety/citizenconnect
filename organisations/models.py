@@ -42,7 +42,8 @@ class Organisation(AuditedModel,geomodels.Model):
 
     point =  geomodels.PointField()
     objects = geomodels.GeoManager()
-    ccg = models.ForeignKey(CCG, blank=True, null=True)
+    escalation_ccg = models.ForeignKey(CCG, blank=False, null=False, related_name='escalation_organisations')
+    ccgs = models.ManyToManyField(CCG, related_name='organisations')
 
     @property
     def open_issues(self):
@@ -80,7 +81,7 @@ class Organisation(AuditedModel,geomodels.Model):
             return True
 
         # CCG users for a CCG associated with this organisation - YES
-        if self.ccg and user in self.ccg.users.all():
+        if user in User.objects.filter(ccgs__organisations=self).all():
             return True
 
         # Everyone else - NO
@@ -90,18 +91,18 @@ class Organisation(AuditedModel,geomodels.Model):
     def ensure_related_user_exists(self):
         """
         Check to see if this org has user. If not either find one or create one.
-        
+
         Will raise a ValueError exception if the organisation has no user and
         has no email. ISSUE-329
         """
 
         # No need to create if there are already users
         if self.users.count(): return
-        
+
         # We can't attach a user if we don't have an email address
         if not self.email: # ISSUE-329
             raise ValueError("Organisation needs an email to find/create related user")
-            
+
         logger.info('Creating account for {0} (ODS code: {1})'.format(self.name,
                                                                        self.ods_code))
 
@@ -109,11 +110,11 @@ class Organisation(AuditedModel,geomodels.Model):
             user = User.objects.get(email=self.email)
         except User.DoesNotExist:
             user = User.objects.create_user(create_unique_username(self), self.email)
-        
+
         # make sure user is in the right group. No-op if already a member.
         providers_group = Group.objects.get(pk=auth.PROVIDERS)
         user.groups.add(providers_group)
-        
+
         # Add the user to this org
         self.users.add(user)
 

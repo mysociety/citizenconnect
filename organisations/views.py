@@ -429,7 +429,7 @@ class EscalationDashboard(FilterMixin, TemplateView):
         # Restrict problem queryset for non-CGC and non-superuser users (i.e. CCG users)
         user = self.request.user
         if not user_is_superuser(user) and not user_in_groups(user, [auth.CQC]):
-            context['problems'] = context['problems'].filter(organisation__ccg__in=(user.ccgs.all()))
+            context['problems'] = context['problems'].filter(organisation__escalation_ccg__in=(user.ccgs.all()))
 
         filtered_problems = self.apply_filters(context['filters'], context['problems'])
 
