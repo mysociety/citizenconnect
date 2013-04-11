@@ -7,8 +7,8 @@ from django.core.management import call_command
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
-from .lib import create_test_organisation, create_test_service, create_test_instance
-from ..models import Organisation
+from .lib import create_test_organisation, create_test_ccg, create_test_service, create_test_instance
+from ..models import Organisation, CCG
 
 from issues.models import Problem
 
@@ -109,29 +109,46 @@ class EmailProblemsToProviderTests(TestCase):
 
         logging.disable(logging.NOTSET)
 
-class CreateAccountsForOrganisationsTests(TestCase):
 
-    def setUp(self):
-        self.test_organisation = create_test_organisation()
+class CreateAccountsForOrganisationsAndCCGsTests(TestCase):
 
     def _call_command(self):
         args = []
         opts = {}
-        call_command('create_accounts_for_organisations', *args, **opts)
+        call_command('create_accounts_for_organisations_and_ccgs', *args, **opts)
 
-    # def test_happy_path(self):
-    #     # TODO - cannot test happy path because organisations don't have
-    #     # email addresses yet
-    #     pass
 
-    def test_handles_orgs_with_no_email(self):
+    def test_happy_path(self):
+        # Quiet logging for this test - there a CCGs loaded that don't have email
+        logging.disable(logging.CRITICAL)
+
+        test_organisation_with_email = create_test_organisation({"email": "org@example.com"})
+        test_ccg_with_email          = create_test_ccg({         "email": "ccg@example.com"})
+
+        self._call_command()
+
+        # Check that user was created
+        for obj in [ test_organisation_with_email, test_ccg_with_email]:
+            users = obj.__class__.objects.get(pk=obj.id).users
+            self.assertEqual(users.count(), 1)
+            self.assertEqual(users.all()[0].email, obj.email)
+
+        logging.disable(logging.NOTSET)
+
+
+    def test_handles_orgs_with_no_email(self):  # ISSUE-329
         # Quiet logging for this test
         logging.disable(logging.CRITICAL)
 
+        test_organisation_no_email = create_test_organisation()
+        test_ccg_no_email     = create_test_ccg()
+
         # This would raise an error if it didn't handle it
         self._call_command()
-        # Check that no users were created
-        users = list(Organisation.objects.get(pk=self.test_organisation.id).users.all())
-        self.assertEqual(users, [])
+
+        # Check that user was created
+        for obj in [ test_organisation_no_email, test_ccg_no_email]:
+            users = obj.__class__.objects.get(pk=obj.id).users
+            self.assertEqual(users.count(), 0)
 
         logging.disable(logging.NOTSET)
