@@ -1,3 +1,4 @@
+import datetime
 import logging
 logger = logging.getLogger(__name__)
 
@@ -9,6 +10,8 @@ from django.db.models import Q
 from django.db import connection
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ValidationError
+from django.template.loader import get_template
+from django.template import Context
 
 from citizenconnect.models import AuditedModel
 
@@ -158,9 +161,44 @@ class Organisation(AuditedModel,geomodels.Model):
 
         self.ensure_related_user_exists()
         
-        # FIXME - send intro email if needed
+        if not self.intro_email_sent:
+            self.send_intro_email()
 
         return mail.send_mail(**kwargs)
+
+
+    def send_intro_email(self):
+        """
+        Send the intro email and put the current time into intro_email_sent field.
+        """
+
+        subject_template = get_template('organisations/intro_email_subject.txt')
+        message_template = get_template('organisations/intro_email_message.txt')
+
+        context = Context({
+            'user': self.users.all()[0],
+            'site_base_url': settings.SITE_BASE_URL
+        })
+
+        logger.info('Sending intro email to {0}'.format(self))
+
+        kwargs = dict(
+            subject        = subject_template.render(context),
+            message        = message_template.render(context),
+            fail_silently  = False,
+            from_email     = settings.DEFAULT_FROM_EMAIL,
+            recipient_list = filter(bool, [self.email]),
+        )
+
+        if not len(kwargs['recipient_list']):
+            raise ValueError("Organisation '{0}' has no email addresses".format(self))
+
+        mail.send_mail(**kwargs)
+
+        self.intro_email_sent = datetime.datetime.now()
+        
+        return
+
 
 
     def __unicode__(self):

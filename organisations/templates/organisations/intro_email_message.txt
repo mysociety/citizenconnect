@@ -2,7 +2,9 @@
 {% autoescape off %}
 You're receiving this e-mail because someone has sent you a message using the Care Connect website. That message will be in an email sent immediately after this one.
 
-To respond to it you will need to login to Care Connect.
+To respond to it you will need to login to Care Connect:
+
+  {{ site_base_url }}{% url 'login' %}
 
 Your details are as follows:
 
@@ -11,8 +13,7 @@ Your details are as follows:
 
 If you have not logged in before you will need to create a new password. Please use the password reset to do this:
 
-  {% url 'password_reset' %}
-
+  {{ site_base_url }}{% url 'password_reset' %}
 
 {# FIXME - how to handle provider and user emails differing #}
 

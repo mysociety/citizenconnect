@@ -1,9 +1,11 @@
 import unittest
+import datetime
 
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.core import mail
 from django.contrib.auth.models import User
+from django.utils.timezone import utc
 
 from .lib import create_test_organisation, get_reset_url_from_email, AuthorizationTestCase
 
@@ -124,12 +126,43 @@ class OrganisationModelSendMailTests(TestCase):
         self.assertEqual(org.users.count(), 0)
         self.org.send_mail('test', 'foo')
         self.assertEqual(org.users.count(), 1)
-        
 
-    
-    # test that the intro email is sent
-    
-    # test that the intro email is only sent once
-    
-    # test that the desired email is also sent
+    def test_send_mail_that_the_intro_email_is_sent(self):
+        org = self.org
+        
+        self.assertFalse(org.intro_email_sent)
+        self.org.send_mail('test', 'foo')
+        self.assertTrue(org.intro_email_sent)
+
+        self.assertEqual(len(mail.outbox), 2)
+        intro_mail   = mail.outbox[0]
+        trigger_mail = mail.outbox[1]
+
+        self.assertTrue( org.users.all()[0].username in intro_mail.body )
+        self.assertTrue( org.email                   in intro_mail.to )
+
+        self.assertEqual( trigger_mail.subject, 'test' )
+        self.assertEqual( trigger_mail.body,    'foo' )
+
+        # print
+        # print intro_mail.subject
+        # print intro_mail.body
+
+
+    def test_send_mail_intro_email_not_sent_twice(self):
+        org = self.org
+        now = datetime.datetime.utcnow().replace(tzinfo=utc)
+
+        org.intro_email_sent = now
+        org.save()
+        
+        self.assertEqual(org.intro_email_sent, now)
+        self.org.send_mail('test', 'foo')
+        self.assertEqual(org.intro_email_sent, now)
+
+        self.assertEqual(len(mail.outbox), 1)
+        trigger_mail = mail.outbox[0]
+
+        self.assertEqual( trigger_mail.subject, 'test' )
+        self.assertEqual( trigger_mail.body,    'foo' )
 
