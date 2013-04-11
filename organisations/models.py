@@ -12,6 +12,7 @@ from django.contrib.auth.models import User, Group
 from django.core.exceptions import ValidationError
 from django.template.loader import get_template
 from django.template import Context
+from django.utils.timezone import utc
 
 from citizenconnect.models import AuditedModel
 
@@ -195,7 +196,8 @@ class Organisation(AuditedModel,geomodels.Model):
 
         mail.send_mail(**kwargs)
 
-        self.intro_email_sent = datetime.datetime.now()
+        self.intro_email_sent = datetime.datetime.utcnow().replace(tzinfo=utc)
+        self.save()
         
         return
 

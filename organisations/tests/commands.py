@@ -39,9 +39,11 @@ class EmailProblemsToProviderTests(TestCase):
     def test_happy_path(self):
         self._call_command()
 
-        self.assertEqual(len(mail.outbox), 2)
+        # intro mail, problem mail, other problem mail
+        self.assertEqual(len(mail.outbox), 3)
 
-        first_mail = mail.outbox[0]
+        intro_mail = mail.outbox[0]
+        first_mail = mail.outbox[1]
         self.assertEqual(first_mail.subject, 'Care Connect: New Problem')
         self.assertEqual(first_mail.from_email, settings.DEFAULT_FROM_EMAIL)
         self.assertEqual(first_mail.to, ['recipient@example.com'])
@@ -80,7 +82,9 @@ class EmailProblemsToProviderTests(TestCase):
         self.test_problem.save()
         self._call_command()
 
-        first_mail = mail.outbox[0]
+        intro_mail = mail.outbox[0]
+        first_mail = mail.outbox[1]
+
         self.assertTrue(self.test_problem.reporter_phone in first_mail.body)
         self.assertTrue(self.test_problem.reporter_email not in first_mail.body)
 
@@ -90,10 +94,12 @@ class EmailProblemsToProviderTests(TestCase):
         # Make send_mail throw an exception for the first call
         old_send_mail = mail.send_mail
         with patch.object(mail, 'send_mail') as mock_send_mail:
-            mock_send_mail.side_effect = [Exception('A fake error in sending mail'), 1]
+
+            # intro mail, intro mail again, other problem mail
+            mock_send_mail.side_effect = [Exception('A fake error in sending mail'), 1, 1]
             self._call_command()
             # Check it still sent one mail
-            self.assertEqual(mock_send_mail.call_count, 2)
+            self.assertEqual(mock_send_mail.call_count, 3)
             # Check that the errored issue is still marked as not mailed
             self.test_problem = Problem.objects.get(pk=self.test_problem.id)
             self.assertFalse(self.test_problem.mailed)
