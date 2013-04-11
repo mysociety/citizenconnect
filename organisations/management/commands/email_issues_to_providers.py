@@ -39,15 +39,8 @@ class Command(BaseCommand):
         context = Context({ 'problem': problem, 'site_base_url': settings.SITE_BASE_URL })
         logger.info('Emailing problem reference number: {0}'.format(problem.reference_number))
 
-        # FIXME - switch the sending to use the 'send_mail' method on the
-        # provider (it will setup the recipients correctly) and more.
-        recipient_list = ['recipient@example.com']
-
         problem.organisation.send_mail(
             subject='Care Connect: New Problem',
-            message=template.render(context),
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=recipient_list,
-            fail_silently=False
+            message=template.render(context)
         )
 

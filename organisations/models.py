@@ -124,17 +124,40 @@ class Organisation(AuditedModel,geomodels.Model):
         self.users.add(user)
     
     
-    def send_mail(self, **kwargs):
+    def send_mail(self, subject, message, fail_silently=False):
         """
         This is very similar to the built in Django function `send_mail` (https://docs.djangoproject.com/en/dev/topics/email/#send-mail)
 
-        It takes the same arguments as mail.send_mail but does the following differently:
+        It takes the following arguments which are passed through to mail.send_mail:
+
+            subject, message, fail_silently=False
         
+        It will auto fill the following arguments:
+        
+            from_email     - set from settings.DEFAULT_FROM_EMAIL
+            recipient_list - set from the organisations details
+        
+        In addition it will:
+
+          * raise an exception if there are no email addresses for the org - ISSUE-329
           * will create a user account linked to the provider if required
           * will send out an intro email if one has not already been sent
-          * will set the recipient_list to the provider's email address(es)
           * will send the email
         """
+
+        kwargs = dict(
+            subject        = subject,
+            message        = message,
+            fail_silently  = fail_silently,
+            from_email     = settings.DEFAULT_FROM_EMAIL,
+            recipient_list = [self.email],
+        )
+
+        if not len(kwargs['recipient_list']):
+            raise ValueError("Organisation '{0}' has no email addresses".format(self))
+
+        # FIXME - create user accounts
+        # FIXME - send intro email if needed
 
         return mail.send_mail(**kwargs)
 

@@ -16,7 +16,7 @@ class EmailProblemsToProviderTests(TestCase):
 
     def setUp(self):
         # Add some test data
-        self.test_organisation = create_test_organisation()
+        self.test_organisation = create_test_organisation({"email":"recipient@example.com"})
         self.test_service = create_test_service({'organisation': self.test_organisation})
         self.test_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
                                                            'service': self.test_service,
