@@ -117,10 +117,18 @@ class CreateAccountsForOrganisationsTests(TestCase):
         opts = {}
         call_command('create_accounts_for_organisations', *args, **opts)
 
-    # def test_happy_path(self):
-    #     # TODO - cannot test happy path because organisations don't have
-    #     # email addresses yet
-    #     pass
+
+    def test_happy_path(self):
+        test_organisation_with_email = create_test_organisation({"email": "foo@example.com"})
+
+        self._call_command()
+
+        # Check that user was created
+        users = Organisation.objects.get(pk=test_organisation_with_email.id).users
+        self.assertEqual(users.count(), 1)
+        self.assertEqual(users.all()[0].email, test_organisation_with_email.email)
+        
+
 
     def test_handles_orgs_with_no_email(self):  # ISSUE-329
         # Quiet logging for this test
