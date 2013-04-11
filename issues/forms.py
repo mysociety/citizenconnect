@@ -35,11 +35,8 @@ class QuestionForm(IssueModelForm):
             'organisation',
             'description',
             'postcode',
-            'category',
             'reporter_name',
-            'reporter_phone',
             'reporter_email',
-            'preferred_contact_method',
         ]
 
         widgets = {
@@ -47,14 +44,9 @@ class QuestionForm(IssueModelForm):
             # Add placeholder for description
             'description': Textarea({'placeholder': 'Please write the details of your question in this box.'}),
             'postcode': TextInput(attrs={'class': 'text-input'}),
-            'category': RadioSelect(renderer=CategoryRadioFieldRenderer),
             'reporter_name': TextInput(attrs={'class': 'text-input'}),
-            # Add placeholder for phone
-            'reporter_phone': TextInput(attrs={'class': 'text-input'}),
             # Add placeholder for email
             'reporter_email': TextInput(attrs={'class': 'text-input'}),
-            # Make preferred contact method a radio button instead of a select
-            'preferred_contact_method': RadioSelect,
         }
 
 class ProblemForm(IssueModelForm):

@@ -7,7 +7,45 @@ from django.core.urlresolvers import reverse
 from organisations.tests.lib import create_test_organisation, create_test_service
 from issues.models import Problem, Question
 
-class APITests(TestCase):
+class QuestionAPITests(TestCase):
+
+    def setUp(self):
+        self.question_uuid = uuid.uuid4().hex
+        self.test_question = {
+            'description': 'This is a question',
+            'reporter_name': self.question_uuid,
+            'reporter_email': 'steve@mysociety.org',
+            'source':Question.SOURCE_PHONE
+        }
+
+        self.question_api_url = reverse('api-question-create')
+
+
+    def test_question_api_happy_path(self):
+        resp = self.client.post(self.question_api_url, self.test_question)
+        self.assertEquals(resp.status_code, 201)
+
+        question = Question.objects.get(reporter_name=self.question_uuid)
+        expected_reference_number = '{0}{1}'.format(Problem.PREFIX, question.id)
+
+        content_json = json.loads(resp.content)
+        self.assertTrue(content_json['reference_number'], expected_reference_number)
+        self.assertEqual(question.description, self.test_question['description'])
+        self.assertEqual(question.reporter_name, self.test_question['reporter_name'])
+        self.assertEqual(question.reporter_email, self.test_question['reporter_email'])
+        self.assertEqual(question.source, self.test_question['source'])
+
+    def test_reporter_email_is_required(self):
+        question_without_reporter_email = self.test_question
+        del question_without_reporter_email['reporter_email']
+        resp = self.client.post(self.question_api_url, question_without_reporter_email)
+        self.assertEquals(resp.status_code, 400)
+
+        content_json = json.loads(resp.content)
+        errors = json.loads(content_json['errors'])
+        self.assertEqual(errors['reporter_email'][0], 'This field is required.')
+
+class ProblemAPITests(TestCase):
 
     def setUp(self):
         self.test_organisation = create_test_organisation({'ods_code': '11111'})
@@ -33,35 +71,8 @@ class APITests(TestCase):
             'breach': 1,
             'commissioned': Problem.NATIONALLY_COMMISSIONED
         }
-        self.question_uuid = uuid.uuid4().hex
-        self.test_question = {
-            'description': 'This is a question',
-            'category': 'staff',
-            'reporter_name': self.question_uuid,
-            'reporter_email': 'steve@mysociety.org',
-            'reporter_phone': '01111 111 111',
-            'preferred_contact_method': Problem.CONTACT_PHONE,
-            'source':Problem.SOURCE_PHONE
-        }
 
-        self.question_api_url = reverse('api-question-create')
         self.problem_api_url = reverse('api-problem-create')
-
-    def test_question_api_happy_path(self):
-        resp = self.client.post(self.question_api_url, self.test_question)
-        self.assertEquals(resp.status_code, 201)
-
-        question = Question.objects.get(reporter_name=self.question_uuid)
-        expected_reference_number = '{0}{1}'.format(Problem.PREFIX, question.id)
-
-        content_json = json.loads(resp.content)
-        self.assertTrue(content_json['reference_number'], expected_reference_number)
-        self.assertEqual(question.description, self.test_question['description'])
-        self.assertEqual(question.category, self.test_question['category'])
-        self.assertEqual(question.reporter_name, self.test_question['reporter_name'])
-        self.assertEqual(question.reporter_email, self.test_question['reporter_email'])
-        self.assertEqual(question.reporter_phone, self.test_question['reporter_phone'])
-        self.assertEqual(question.source, self.test_question['source'])
 
     def test_problem_api_happy_path(self):
         resp = self.client.post(self.problem_api_url, self.test_problem)

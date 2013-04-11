@@ -25,7 +25,7 @@ from .auth import user_in_group, user_in_groups, user_is_superuser, check_organi
 from .models import Organisation, Service, CCG, SuperuserLogEntry
 from .forms import OrganisationFinderForm
 from .lib import interval_counts
-from .tables import NationalSummaryTable, IssueModelTable, ExtendedIssueModelTable, QuestionsDashboardTable
+from .tables import NationalSummaryTable, ProblemTable, ExtendedProblemTable, QuestionsDashboardTable
 
 class PrivateViewMixin(object):
     """
@@ -69,9 +69,9 @@ class IssueListMixin(OrganisationAwareViewMixin):
 
         issues = self.get_issues(context['organisation'], context['private'])
         if context['organisation'].has_services() and context['organisation'].has_time_limits():
-            issue_table = ExtendedIssueModelTable(issues, **table_args)
+            issue_table = ExtendedProblemTable(issues, **table_args)
         else:
-            issue_table = IssueModelTable(issues, **table_args)
+            issue_table = ProblemTable(issues, **table_args)
 
         RequestConfig(self.request, paginate={'per_page': 8}).configure(issue_table)
         context['table'] = issue_table
@@ -429,12 +429,12 @@ class EscalationDashboard(FilterMixin, TemplateView):
         # Restrict problem queryset for non-CGC and non-superuser users (i.e. CCG users)
         user = self.request.user
         if not user_is_superuser(user) and not user_in_groups(user, [auth.CQC]):
-            context['problems'] = context['problems'].filter(organisation__ccg__in=(user.ccgs.all()))
+            context['problems'] = context['problems'].filter(organisation__escalation_ccg__in=(user.ccgs.all()))
 
         filtered_problems = self.apply_filters(context['filters'], context['problems'])
 
         # Setup a table for the problems
-        problem_table = IssueModelTable(filtered_problems, private=True, issue_type=Problem)
+        problem_table = ProblemTable(filtered_problems, private=True, issue_type=Problem)
         RequestConfig(self.request, paginate={'per_page': 25}).configure(problem_table)
         context['table'] = problem_table
         context['page_obj'] = problem_table.page

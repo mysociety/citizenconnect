@@ -18,14 +18,6 @@ class IssueModel(AuditedModel):
     Abstract model for base functionality of issues sent to NHS Organisations
     """
 
-    CONTACT_PHONE = 'phone'
-    CONTACT_EMAIL = 'email'
-
-    CONTACT_CHOICES = (
-        (CONTACT_EMAIL, u'By Email'),
-        (CONTACT_PHONE, u'By Phone')
-    )
-
     SOURCE_PHONE = 'phone'
     SOURCE_EMAIL = 'email'
     SOURCE_SMS = 'sms'
@@ -36,41 +28,10 @@ class IssueModel(AuditedModel):
         (SOURCE_SMS, 'SMS')
     )
 
-    CATEGORY_CHOICES = (
-        (u'staff', u'Staff Attitude'),
-        (u'access', u'Access to Service'),
-        (u'delays', u'Delays'),
-        (u'treatment', u'Your Treatment'),
-        (u'communication', u'Communication'),
-        (u'cleanliness', u'Cleanliness'),
-        (u'equipment', u'Equipment'),
-        (u'medicines', u'Medicines'),
-        (u'dignity', u'Dignity and Privacy'),
-        (u'parking', u'Parking'),
-        (u'lostproperty', u'Lost Property'),
-        (u'other', u'Other'),
-    )
-
-    CATEGORY_DESCRIPTIONS = {'staff': 'Bedside manner and attitude of staff',
-                             'access': 'Difficulty getting appointments, long waiting times',
-                             'delays': 'Delays in care, e.g. referrals and test results',
-                             'treatment': 'Wrong advice / unsafe care / refusal of treatment / consent',
-                             'communication': 'Communications and administration e.g. letters',
-                             'cleanliness': 'Cleanliness and facilities',
-                             'equipment': 'Problems with equipment, aids and devices',
-                             'medicines': 'Problems with medicines',
-                             'dignity': 'Privacy, dignity, confidentiality',
-                             'parking': 'Problems with parking / charges',
-                             'lostproperty': 'Lost property',
-                             'other': ''}
 
     description = models.TextField(verbose_name='')
     reporter_name = models.CharField(max_length=200, blank=False, verbose_name='')
-    reporter_phone = models.CharField(max_length=50, blank=True, verbose_name='')
-    reporter_email = models.CharField(max_length=254, blank=True, verbose_name='')
-    preferred_contact_method = models.CharField(max_length=100, choices=CONTACT_CHOICES, default=CONTACT_EMAIL)
     source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True)
-    mailed = models.BooleanField(default=False, blank=False)
 
     @property
     def issue_type(self):
@@ -80,20 +41,6 @@ class IssueModel(AuditedModel):
         # TODO - this could be a custom template filter instead of a model property
         return self.__class__.__name__
 
-    def clean(self):
-        """
-        Custom model validation
-        """
-
-        # Check that one of phone or email is provided
-        if not self.reporter_phone and not self.reporter_email:
-            raise ValidationError('You must provide either a phone number or an email address')
-
-        # Check that whichever prefered_contact_method is chosen, they actually provided it
-        if self.preferred_contact_method == self.CONTACT_EMAIL and not self.reporter_email:
-            raise ValidationError('You must provide an email address if you prefer to be contacted by email')
-        elif self.preferred_contact_method == self.CONTACT_PHONE and not self.reporter_phone:
-            raise ValidationError('You must provide a phone number if you prefer to be contacted by phone')
 
     class Meta:
         abstract = True
@@ -128,11 +75,7 @@ class Question(IssueModel):
     # Which attrs are interesting to compare for revisions
     REVISION_ATTRS = ['status']
 
-    category = models.CharField(max_length=100,
-                                choices=IssueModel.CATEGORY_CHOICES,
-                                default='general',
-                                db_index=True,
-                                verbose_name='Please select the category that best describes your question')
+    reporter_email = models.CharField(max_length=254, blank=False, verbose_name='')
     status = models.IntegerField(default=NEW, choices=STATUS_CHOICES, db_index=True)
     postcode = models.CharField(max_length=25, blank=True)
     organisation = models.ForeignKey('organisations.Organisation', blank=True, null=True)
@@ -241,6 +184,42 @@ class Problem(IssueModel):
     COMMISSIONED_CHOICES = ((LOCALLY_COMMISSIONED, "Locally Commissioned"),
                                    (NATIONALLY_COMMISSIONED, "Nationally Commissioned"))
 
+    CATEGORY_CHOICES = (
+       (u'staff', u'Staff Attitude'),
+       (u'access', u'Access to Service'),
+       (u'delays', u'Delays'),
+       (u'treatment', u'Your Treatment'),
+       (u'communication', u'Communication'),
+       (u'cleanliness', u'Cleanliness'),
+       (u'equipment', u'Equipment'),
+       (u'medicines', u'Medicines'),
+       (u'dignity', u'Dignity and Privacy'),
+       (u'parking', u'Parking'),
+       (u'lostproperty', u'Lost Property'),
+       (u'other', u'Other'),
+    )
+
+    CATEGORY_DESCRIPTIONS = {'staff': 'Bedside manner and attitude of staff',
+                            'access': 'Difficulty getting appointments, long waiting times',
+                            'delays': 'Delays in care, e.g. referrals and test results',
+                            'treatment': 'Wrong advice / unsafe care / refusal of treatment / consent',
+                            'communication': 'Communications and administration e.g. letters',
+                            'cleanliness': 'Cleanliness and facilities',
+                            'equipment': 'Problems with equipment, aids and devices',
+                            'medicines': 'Problems with medicines',
+                            'dignity': 'Privacy, dignity, confidentiality',
+                            'parking': 'Problems with parking / charges',
+                            'lostproperty': 'Lost property',
+                            'other': ''}
+
+    CONTACT_PHONE = 'phone'
+    CONTACT_EMAIL = 'email'
+
+    CONTACT_CHOICES = (
+        (CONTACT_EMAIL, u'By Email'),
+        (CONTACT_PHONE, u'By Phone')
+    )
+
     # Names for transitions between statuses we might want to print
     TRANSITIONS = {
         'status': {
@@ -261,8 +240,11 @@ class Problem(IssueModel):
     # The order of these determines the order they are output as a string
     REVISION_ATTRS = ['moderated', 'publication_status', 'status']
 
+    reporter_phone = models.CharField(max_length=50, blank=True, verbose_name='')
+    reporter_email = models.CharField(max_length=254, blank=True, verbose_name='')
+    preferred_contact_method = models.CharField(max_length=100, choices=CONTACT_CHOICES, default=CONTACT_EMAIL)
     category = models.CharField(max_length=100,
-                                choices=IssueModel.CATEGORY_CHOICES,
+                                choices=CATEGORY_CHOICES,
                                 default='other',
                                 db_index=True,
                                 verbose_name='Please select the category that best describes your problem')
@@ -295,6 +277,7 @@ class Problem(IssueModel):
     survey_sent = models.DateTimeField(null=True, blank=True)
     COBRAND_CHOICES = [(cobrand, cobrand) for cobrand in settings.ALLOWED_COBRANDS]
     cobrand = models.CharField(max_length=30, blank=False, choices=COBRAND_CHOICES)
+    mailed = models.BooleanField(default=False, blank=False)
 
     version = IntegerVersionField()
 
@@ -327,6 +310,22 @@ class Problem(IssueModel):
             return self.created + timedelta(minutes=self.time_to_address)
         else:
             return None
+
+    def clean(self):
+        """
+        Custom model validation
+        """
+
+        # Check that one of phone or email is provided
+        if not self.reporter_phone and not self.reporter_email:
+            raise ValidationError('You must provide either a phone number or an email address')
+
+        # Check that whichever prefered_contact_method is chosen, they actually provided it
+        if self.preferred_contact_method == self.CONTACT_EMAIL and not self.reporter_email:
+            raise ValidationError('You must provide an email address if you prefer to be contacted by email')
+        elif self.preferred_contact_method == self.CONTACT_PHONE and not self.reporter_phone:
+            raise ValidationError('You must provide a phone number if you prefer to be contacted by phone')
+
 
     def summarise(self, field):
         summary_length = 30

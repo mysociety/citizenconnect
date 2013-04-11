@@ -7,47 +7,43 @@ from django.template.loader import get_template
 from django.template import Context
 from django.conf import settings
 
-from issues.models import Question, Problem
+from issues.models import Problem
 
 logger = logging.getLogger(__name__)
 
 @transaction.commit_manually
 class Command(BaseCommand):
-    help = 'Email new issues to providers'
+    help = 'Email new problems to providers'
 
     def handle(self, *args, **options):
-        new_questions = Question.objects.all().filter(mailed=False)
         new_problems = Problem.objects.all().filter(mailed=False)
 
-        new_issues = list(new_problems) + list(new_questions)
 
-        logger.info('{0} New issues to email'.format(len(new_issues)))
+        logger.info('{0} New problems to email'.format(len(new_problems)))
 
-        if len(new_issues) > 0:
+        if len(new_problems) > 0:
             # Get the template
-            issue_template = get_template('organisations/new_issue_email.txt')
+            problem_template = get_template('organisations/new_problem_email.txt')
             # Loop over them and send
-            for issue in new_issues:
+            for problem in new_problems:
                 try:
-                    self.send_issue(issue_template, issue)
-                    issue.mailed = True
-                    issue.save()
+                    self.send_problem(problem_template, problem)
+                    problem.mailed = True
+                    problem.save()
                     transaction.commit()
                 except Exception as e:
                     logger.error('{0}'.format(e))
-                    logger.error('Error mailing issue: {0}'.format(issue.reference_number))
+                    logger.error('Error mailing problem: {0}'.format(problem.reference_number))
                     transaction.rollback()
 
-    def send_issue(self, template, issue):
-        context = Context({ 'issue': issue, 'site_base_url': settings.SITE_BASE_URL })
-        logger.info('Emailing issue reference number: {0}'.format(issue.reference_number))
-        if issue.issue_type == "Problem":
-            # TODO - recipient list should come from the organisation
-            recipient_list = ['recipient@example.com']
-        else:
-            recipient_list = [settings.QUESTION_ANSWERERS_EMAIL]
+    def send_problem(self, template, problem):
+        context = Context({ 'problem': problem, 'site_base_url': settings.SITE_BASE_URL })
+        logger.info('Emailing problem reference number: {0}'.format(problem.reference_number))
+        # TODO - recipient list should come from the organisation
+        recipient_list = ['recipient@example.com']
 
-        mail.send_mail(subject='Care Connect: New {0}'.format(issue.issue_type),
+
+        mail.send_mail(subject='Care Connect: New Problem',
                   message=template.render(context),
                   from_email=settings.DEFAULT_FROM_EMAIL,
                   recipient_list=recipient_list,

@@ -43,7 +43,8 @@ class Organisation(AuditedModel,geomodels.Model):
 
     point =  geomodels.PointField()
     objects = geomodels.GeoManager()
-    ccg = models.ForeignKey(CCG, blank=True, null=True)
+    escalation_ccg = models.ForeignKey(CCG, blank=False, null=False, related_name='escalation_organisations')
+    ccgs = models.ManyToManyField(CCG, related_name='organisations')
 
     # Calculated double_metaphone field, for search by provider name
     name_metaphone = models.TextField()
@@ -84,7 +85,7 @@ class Organisation(AuditedModel,geomodels.Model):
             return True
 
         # CCG users for a CCG associated with this organisation - YES
-        if self.ccg and user in self.ccg.users.all():
+        if user in User.objects.filter(ccgs__organisations=self).all():
             return True
 
         # Everyone else - NO

@@ -1,0 +1,22 @@
+{% load url from future %}
+{% autoescape off %}
+You have received a new problem on Care Connect.
+
+Sender:
+{{ problem.reporter_name }}
+{% if problem.preferred_contact_method == "phone" %}
+Phone number: {{ problem.reporter_phone }}
+{% elif problem.preferred_contact_method == "email" %}
+Email address: {{ problem.reporter_email }}
+{% endif %}
+
+Category: {{ problem.category }}
+
+Sent to: {{ problem.organisation.name }} {{ problem.service.name }}
+
+Problem:
+
+{{ problem.description }}
+
+To respond to this problem, please visit your dashboard at: {{ site_base_url }}{% url 'org-dashboard' ods_code=problem.organisation.ods_code %}
+{% endautoescape %}

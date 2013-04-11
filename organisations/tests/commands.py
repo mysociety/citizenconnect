@@ -10,9 +10,9 @@ from django.conf import settings
 from .lib import create_test_organisation, create_test_service, create_test_instance
 from ..models import Organisation
 
-from issues.models import Question, Problem
+from issues.models import Problem
 
-class EmailIssuesToProviderTests(TestCase):
+class EmailProblemsToProviderTests(TestCase):
 
     def setUp(self):
         # Add some test data
@@ -23,10 +23,13 @@ class EmailIssuesToProviderTests(TestCase):
                                                            'reporter_name': 'Problem reporter',
                                                            'reporter_email': 'problem@example.com',
                                                            'reporter_phone': '123456789'})
-        self.test_question = create_test_instance(Question, {'reporter_name': 'Question reporter',
-                                                             'reporter_email': 'question@example.com',
-                                                             'reporter_phone': '910111213',
-                                                             'description': 'A Question'})
+
+        self.other_test_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
+                                                                 'service': self.test_service,
+                                                                 'reporter_name': 'Problem reporter',
+                                                                 'reporter_email': 'problem@example.com',
+                                                                 'reporter_phone': '123456789'})
+
 
     def _call_command(self):
         args = []
@@ -49,49 +52,37 @@ class EmailIssuesToProviderTests(TestCase):
         dashboard_url = settings.SITE_BASE_URL + reverse('org-dashboard', kwargs={'ods_code':self.test_problem.organisation.ods_code})
         self.assertTrue(dashboard_url in first_mail.body)
 
-        second_mail = mail.outbox[1]
-        self.assertEqual(second_mail.subject, 'Care Connect: New Question')
-        self.assertEqual(second_mail.from_email, settings.DEFAULT_FROM_EMAIL)
-        self.assertEqual(second_mail.to, [settings.QUESTION_ANSWERERS_EMAIL])
-        self.assertTrue(self.test_question.reporter_name in second_mail.body)
-        self.assertTrue(self.test_question.reporter_email in second_mail.body)
-        self.assertTrue(self.test_question.category in second_mail.body)
-        self.assertTrue(self.test_question.description in second_mail.body)
-        dashboard_url = settings.SITE_BASE_URL + reverse('questions-dashboard')
-        self.assertTrue(dashboard_url in second_mail.body)
-
-        # Check that issues were marked as mailed
+        # Check that problems were marked as mailed
         self.test_problem = Problem.objects.get(pk=self.test_problem.id)
         self.assertTrue(self.test_problem.mailed)
-        self.test_question = Question.objects.get(pk=self.test_question.id)
-        self.assertTrue(self.test_question.mailed)
+        self.other_test_problem = Problem.objects.get(pk=self.other_test_problem.id)
+        self.assertTrue(self.other_test_problem.mailed)
 
     def test_sends_no_emails_when_none_to_send(self):
         self.test_problem.mailed = True
         self.test_problem.save()
-        self.test_question.mailed = True
-        self.test_question.save()
+
+        self.other_test_problem.mailed = True
+        self.other_test_problem.save()
 
         self._call_command()
 
         self.assertEqual(len(mail.outbox), 0)
 
     def test_displays_correct_contact_method(self):
+
+        # Just use one problem for this test
+        self.other_test_problem.mailed = True
+        self.other_test_problem.save()
+
         self.test_problem.preferred_contact_method = Problem.CONTACT_PHONE
         self.test_problem.reporter_phone = '1234567'
         self.test_problem.save()
-
-        self.test_question.reporter_phone = '9101112'
-
         self._call_command()
 
         first_mail = mail.outbox[0]
         self.assertTrue(self.test_problem.reporter_phone in first_mail.body)
         self.assertTrue(self.test_problem.reporter_email not in first_mail.body)
-
-        second_mail = mail.outbox[1]
-        self.assertTrue(self.test_question.reporter_phone not in second_mail.body)
-        self.assertTrue(self.test_question.reporter_email in second_mail.body)
 
     def test_handles_errors_in_sending_mails(self):
         # Quiet logging for this test
@@ -106,9 +97,10 @@ class EmailIssuesToProviderTests(TestCase):
             # Check that the errored issue is still marked as not mailed
             self.test_problem = Problem.objects.get(pk=self.test_problem.id)
             self.assertFalse(self.test_problem.mailed)
-            # And that the successful one got marked as mailed
-            self.test_question = Question.objects.get(pk=self.test_question.id)
-            self.assertTrue(self.test_question.mailed)
+            # # And that the successful one got marked as mailed
+            self.other_test_problem = Problem.objects.get(pk=self.other_test_problem.id)
+            self.assertTrue(self.other_test_problem.mailed)
+
         logging.disable(logging.NOTSET)
 
 class CreateAccountsForOrganisationsTests(TestCase):

@@ -265,8 +265,8 @@ class OrganisationProblemsTests(AuthorizationTestCase):
                                                   'ods_code': 'ABC123'})
         self.gp_ccg = create_test_ccg({'code': 'MOO'})
         self.gp = create_test_organisation({'organisation_type': 'gppractices',
-                                            'ods_code': 'DEF456',
-                                            'ccg': self.gp_ccg})
+                                            'ods_code': 'DEF456'})
+        self.gp.ccgs.add(self.gp_ccg)
         self.public_hospital_problems_url = reverse('public-org-problems',
                                                     kwargs={'ods_code':self.hospital.ods_code,
                                                             'cobrand': 'choices'})
@@ -873,8 +873,11 @@ class EscalationDashboardTests(AuthorizationTestCase):
         self.assertContains(resp, self.org_breach_problem.reference_number)
         self.assertContains(resp, self.other_org_breach_problem.reference_number)
 
-    def test_dashboard_only_shows_problems_for_ccg_organisations(self):
+    def test_dashboard_only_shows_problems_for_escalation_ccg_organisations(self):
         self.login_as(self.ccg_user)
+        # Remove the test ccg from the ccgs for this org so that we know access is coming
+        # via the escalation_ccg field, not the ccgs association
+        self.test_organisation.ccgs.remove(self.test_ccg)
         resp = self.client.get(self.escalation_dashboard_url)
         self.assertContains(resp, self.org_breach_problem.reference_number)
         self.assertNotContains(resp, self.other_org_breach_problem.reference_number)

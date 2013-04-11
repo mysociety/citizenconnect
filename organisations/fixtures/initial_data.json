@@ -54,5 +54,16 @@
             "name": "Second Tier Moderators",
             "permissions": []
         }
+    },
+    {
+        "pk": 1,
+        "model": "organisations.ccg",
+        "fields": {
+            "name": "Demo CCG",
+            "code": "XXXXXXX",
+            "created": "2013-04-10T13:16:35.528Z",
+            "modified": "2013-04-10T13:16:35.528Z"
+        }
     }
+
 ]

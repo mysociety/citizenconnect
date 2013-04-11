@@ -3,7 +3,7 @@ import random
 from django.db import transaction, IntegrityError
 from django.core.management.base import BaseCommand, CommandError
 
-from ...models import Problem, IssueModel
+from ...models import Problem
 from organisations.models import Organisation
 
 class Command(BaseCommand):
@@ -41,7 +41,7 @@ class Command(BaseCommand):
                     new_problem.moderated = 1
                     if int(random.random() * 10) < 8:
                         new_problem.publication_status = 1
-            new_problem.category= IssueModel.CATEGORY_CHOICES[int(random.random() * len(IssueModel.CATEGORY_CHOICES))][0]
+            new_problem.category= Problem.CATEGORY_CHOICES[int(random.random() * len(Problem.CATEGORY_CHOICES))][0]
             new_problem.organisation = organisations[int(random.random() * len(organisations))]
             services = new_problem.organisation.services.all()
             if len(services) > 0:
