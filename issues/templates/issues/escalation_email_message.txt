@@ -8,7 +8,7 @@ A problem on the care connect system has been escalated.
     something about the problem - like a snippet of the description or similar.
 {% endcomment %}
 
-  url: {{ site_base_url }}{% url 'problem-view' pk=object.id %}
+  url: {{ site_base_url }}{{ object.get_absolute_url }}
 
 
 

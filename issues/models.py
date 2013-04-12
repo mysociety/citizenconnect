@@ -1,10 +1,16 @@
+import logging
+logger = logging.getLogger(__name__)
+
 from datetime import datetime, timedelta
 import hmac, hashlib
 
 from django.db import models
 from django.conf import settings
+from django.core import mail
 from django.core.exceptions import ValidationError
 from django.db.models import Q
+from django.template import Context
+from django.template.loader import get_template
 from django.utils.timezone import utc
 
 from concurrency.fields import IntegerVersionField
@@ -397,3 +403,38 @@ class Problem(IssueModel):
         days_in_minutes = timedelta.days * 60 * 24
         seconds_in_minutes = timedelta.seconds / 60
         return days_in_minutes + seconds_in_minutes
+
+
+    def escalation_email_recipient_organisations(self):
+        # FIXME - need to make smarter
+        return [self.organisation]
+
+
+    def send_escalation_email(self):
+        """
+        Send the escalation email. Throws exception if status is not 'ESCALATED'.
+        """
+        
+        # Safety check to prevent accidentally sending emails when not appropriate
+        if self.status != self.ESCALATED:
+            raise ValueError("Problem status of '{0}' is not 'ESCALATED'".format(self))
+        
+        # gather the templates and create the context for them
+        subject_template = get_template('issues/escalation_email_subject.txt')
+        message_template = get_template('issues/escalation_email_message.txt')
+            
+        context = Context({
+            'object':        self,
+            'site_base_url': settings.SITE_BASE_URL
+        })
+            
+        logger.info('Sending escalation email for {0}'.format(self))
+            
+        kwargs = dict(
+            subject        = subject_template.render(context),
+            message        = message_template.render(context),
+        )
+            
+        for org in self.escalation_email_recipient_organisations():
+            org.send_mail(**kwargs)
+

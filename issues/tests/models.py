@@ -3,6 +3,7 @@ from random import randint
 from mock import patch
 
 from django.test import TestCase, TransactionTestCase
+from django.core import mail
 from django.core.exceptions import ValidationError
 from django.utils.timezone import utc
 
@@ -304,6 +305,32 @@ class ProblemModelConcurrencyTests(TransactionTestCase, ConcurrencyTestMixin):
                             'preferred_contact_method': Problem.CONTACT_EMAIL,
                             'status': Problem.NEW}
 
+
+
+class ProblemModelEscalationTests(ProblemTestCase):
+
+    def setUp(self):
+        super(ProblemModelEscalationTests, self).setUp()        
+        self.test_organisation.email = 'test@example.org'
+        self.test_organisation.save()
+
+    def test_send_escalation_email_method_raises_when_not_escalated(self):
+        problem = self.test_problem
+        self.assertTrue( problem.status != Problem.ESCALATED )
+        self.assertRaises(Exception, problem.send_escalation_email)
+
+    def test_send_escalation_email_method(self):
+        problem = self.test_problem
+        problem.status = Problem.ESCALATED
+        self.assertTrue( problem.status == Problem.ESCALATED )
+        problem.send_escalation_email()
+
+        self.assertEqual(len(mail.outbox), 2)
+
+        intro_email      = mail.outbox[0]
+        escalation_email = mail.outbox[1]
+
+        self.assertTrue( "Problem has been escalated" in escalation_email.subject )
 
 
 class QuestionModelTests(TestCase):
