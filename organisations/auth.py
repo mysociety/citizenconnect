@@ -43,6 +43,13 @@ def check_problem_access(problem, user):
     if not problem.can_be_accessed_by(user):
         raise PermissionDenied()
 
+def check_response_access(problem, user):
+    """
+    Can a user respond to a problem?
+    For now, this is equivalent to being able to access the organisation.
+    """
+    check_organisation_access(problem.organisation, user)
+
 def user_can_access_escalation_dashboard(user):
     return (user_is_superuser(user) or user_in_groups(user, [CQC, CCG, CUSTOMER_CONTACT_CENTRE]))
 

@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from concurrency.exceptions import RecordModifiedError
 
 from citizenconnect.shortcuts import render
-from organisations.auth import check_problem_access
+from organisations.auth import check_response_access
 from issues.models import Problem
 from issues.lib import changes_for_model
 
@@ -43,7 +43,7 @@ class ResponseForm(CreateView):
         initial['issue'] = self.issue
         initial['issue_status'] = self.issue.status
         # Check that the user has access to issue before allowing them to respond
-        check_problem_access(self.issue, self.request.user)
+        check_response_access(self.issue, self.request.user)
         return initial
 
     def form_valid(self, form):
