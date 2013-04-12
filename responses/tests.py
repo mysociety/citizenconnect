@@ -229,6 +229,29 @@ class ResponseFormViewTests(AuthorizationTestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertFalse(self.problem.id in self.client.session['object_versions'])
 
+    def test_ISSUE_344_problem_response_access_different_to_problem_access(self):
+        # There was a bug where access to the response page was calling
+        # organisations.auth.check_problem_access(), but for published
+        # public problems, that returns true for _everyone_, so any
+        # authenticated user could respond (authenticated only because we
+        # had login_required on the view)
+
+        # Add a public published problem
+        public_published_problem = create_test_instance(Problem,
+                                                        {
+                                                            'organisation': self.test_organisation,
+                                                            'public': True,
+                                                            'status': Problem.ACKNOWLEDGED,
+                                                            'publication_status': Problem.PUBLISHED,
+                                                            'moderated': Problem.MODERATED
+                                                        })
+        form_which_should_403_for_other_providers = reverse('response-form', kwargs={'pk':public_published_problem.id})
+        self.client.logout()
+        self.login_as(self.other_provider)
+        resp = self.client.get(form_which_should_403_for_other_providers)
+        self.assertEqual(resp.status_code, 403) # This was a 200 with the bug
+
+
 class ResponseModelTests(TransactionTestCase, ConcurrencyTestMixin):
 
     def setUp(self):
