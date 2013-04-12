@@ -66,6 +66,14 @@ class ProblemTestCase(AuthorizationTestCase):
 
 class ProblemModelTests(ProblemTestCase):
 
+
+    def test_get_absolute_url(self):
+        self.test_problem.save()
+        self.assertEqual(
+            self.test_problem.get_absolute_url(),
+            '/choices/problem/' + str(self.test_problem.id)
+        )
+
     def test_has_prefix_property(self):
         self.assertEqual(Problem.PREFIX, 'P')
         self.assertEqual(self.test_problem.PREFIX, 'P')

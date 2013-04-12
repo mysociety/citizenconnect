@@ -285,6 +285,10 @@ class Problem(IssueModel):
 
     version = IntegerVersionField()
 
+    @models.permalink
+    def get_absolute_url(self):
+        return ('problem-view', (),  {'pk': self.id, 'cobrand': 'choices'} )
+
     @property
     def reference_number(self):
         return '{0}{1}'.format(self.PREFIX, self.id)
