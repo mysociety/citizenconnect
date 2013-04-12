@@ -1,0 +1,19 @@
+{% load url from future %}
+<ul class="tab-nav">
+    {% if private %}
+        {# NB: If we're viewing this in private mode, the user has access to the provider and their dashboard #}
+        <li><a {% if active_tab == 'dashboard' %}class="active"{% endif %} href="{% url 'org-dashboard' ods_code=organisation.ods_code %}">Dashboard</a></li>
+    {% endif %}
+
+    <li><a {% if active_tab == 'summary' %}class="active"{% endif %} href="{% if private %}
+        {% url 'private-org-summary' ods_code=organisation.ods_code %}
+    {% else %}
+        {% url 'public-org-summary' ods_code=organisation.ods_code cobrand=cobrand.name %}
+    {% endif %}">Summary</a></li>
+
+    <li><a {% if active_tab == 'problems' %}class="active"{% endif %} href="{% if private %}
+        {% url 'private-org-problems' ods_code=organisation.ods_code %}
+    {% else %}
+        {% url 'public-org-problems' ods_code=organisation.ods_code cobrand=cobrand.name %}
+    {% endif %}">Problems</a></li>
+ </ul>

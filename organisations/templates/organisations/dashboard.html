@@ -12,6 +12,8 @@
     <h1>{{ organisation.name }} Dashboard</h1>
 </div>
 
+{% include "organisations/includes/organisation_tabs.html" with active_tab='dashboard' %}
+
 <div class="island  island--aquablue">
     <div class="gw">
         {% if organisation.has_time_limits  %}
