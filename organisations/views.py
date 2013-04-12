@@ -436,7 +436,7 @@ class EscalationDashboard(FilterMixin, TemplateView):
         filtered_problems = self.apply_filters(context['filters'], context['problems'])
 
         # Setup a table for the problems
-        problem_table = EscalationTable(filtered_problems, private=True, issue_type=Problem)
+        problem_table = EscalationDashboardTable(filtered_problems)
         RequestConfig(self.request, paginate={'per_page': 25}).configure(problem_table)
         context['table'] = problem_table
         context['page_obj'] = problem_table.page
