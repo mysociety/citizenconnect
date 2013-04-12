@@ -429,7 +429,7 @@ class EscalationDashboard(FilterMixin, TemplateView):
         if not user_is_superuser(user) and not user_in_groups(user, [auth.CQC, auth.CUSTOMER_CONTACT_CENTRE]):
             context['problems'] = context['problems'].filter(organisation__escalation_ccg__in=(user.ccgs.all()),
                                                              commissioned=Problem.LOCALLY_COMMISSIONED)
-
+        # Restrict problem queryset for non CQC and non-CCG users (i.e. Customer Contact Centre)
         elif not user_is_superuser(user) and not user_in_groups(user, [auth.CQC, auth.CCG]):
             context['problems'] = context['problems'].filter(commissioned=Problem.NATIONALLY_COMMISSIONED)
 
@@ -470,3 +470,29 @@ class EscalationDashboard(FilterMixin, TemplateView):
                 # filtered_queryset = filtered_queryset.filter(organisation__ccg=attrs['value'])
 
         return filtered_queryset
+
+class EscalationBreaches(TemplateView):
+
+    template_name = 'organisations/escalation_breaches.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not user_can_access_escalation_dashboard(request.user):
+            raise PermissionDenied()
+        return super(EscalationBreaches, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(EscalationBreaches, self).get_context_data(**kwargs)
+        problems = Problem.objects.open_problems().filter(breach=True)
+
+        # Restrict problem queryset for non-CQC and non-superuser users (i.e. CCG users)
+        user = self.request.user
+        if not user_is_superuser(user) and not user_in_groups(user, [auth.CQC, auth.CUSTOMER_CONTACT_CENTRE]):
+            problems = problems.filter(organisation__escalation_ccg__in=(user.ccgs.all()))
+        # Everyone else see's all breaches
+
+        # Setup a table for the problems
+        problem_table = ProblemTable(problems, private=True)
+        RequestConfig(self.request, paginate={'per_page': 25}).configure(problem_table)
+        context['table'] = problem_table
+        context['page_obj'] = problem_table.page
+        return context
