@@ -1,0 +1,19 @@
+{% load url from future %}
+{% autoescape off %}
+
+A problem on the care connect system has been escalated.
+
+{% comment %}
+    FIXME - insert wording here about what to do. Might be nice to include
+    something about the problem - like a snippet of the description or similar.
+{% endcomment %}
+
+  url: {{ site_base_url }}{% url 'problem-view' pk=object.id %}
+
+
+
+Thanks for using Care Connect!
+
+The Care Connect team
+
+{% endautoescape %}
