@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load url from future %}
 {% load organisation_extras %}
+{% load render_table from django_tables2 %}
 
 {% block title %}{{ organisation.name }} Dashboard{% endblock %}
 
@@ -38,50 +39,5 @@
         <p><a href="{% url 'private-org-summary' ods_code=organisation.ods_code %}">More stats</a></p>
     </div>
 
-<div class="issues-table">
-    <div class="feature">
-        <table>
-            <thead>
-                <tr>
-                    <th>Ref</th>
-                    <th>Issue Type</th>
-                    <th>Received</th>
-                    <th>Name</th>
-                    <th>Issue snippet</th>
-                    <th>Breach</th>
-                    <th>Status</th>
-                    <th>Moderated</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for problem in problems %}
-                    <tr>
-                        <td>{{ problem.reference_number }}</td>
-                        <td>{{ problem.issue_type }}</td>
-                        <td>{{ problem.created }}</td>
-                        <td>{{ problem.reporter_name_display }}</td>
-                        <td><a href="{% url 'response-form' pk=problem.id %}">{{ problem.private_summary }}</a></td>
-                        <td>{% if problem.breach %}
-                            <span class="icon-warning" aria-hidden="true"></span>
-                            <span class="hide-text">Yes</span>
-                            {% else %}
-                            <span class="icon-circle icon-hidden" aria-hidden="true"></span>
-                            <span class="hide-text">No</span>
-                            {% endif %}
-                        </td>
-                        <td>{{ problem.get_status_display }}</td>
-                        <td>{% if problem.moderated %}
-                                <span class="icon-checkmark" aria-hidden="true"></span>
-                                <span class="hide-text">Yes</span>
-                            {% else %}
-                                <span class="icon-x" aria-hidden="true"></span>
-                                <span class="hide-text">No</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
+{% render_table table 'organisations/includes/summary_table.html' %}
 {% endblock %}

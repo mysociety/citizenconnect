@@ -25,7 +25,7 @@ from .auth import user_in_group, user_in_groups, user_is_superuser, check_organi
 from .models import Organisation, Service, CCG, SuperuserLogEntry
 from .forms import OrganisationFinderForm
 from .lib import interval_counts
-from .tables import NationalSummaryTable, ProblemTable, ExtendedProblemTable, QuestionsDashboardTable
+from .tables import NationalSummaryTable, ProblemTable, ExtendedProblemTable, QuestionsDashboardTable, ProblemDashboardTable, EscalationDashboardTable
 
 class PrivateViewMixin(object):
     """
@@ -55,28 +55,6 @@ class OrganisationAwareViewMixin(PrivateViewMixin):
             check_organisation_access(context['organisation'], self.request.user)
         return context
 
-class IssueListMixin(OrganisationAwareViewMixin):
-    """Mixin class for views which need to display a list of issues belonging to an organisation
-       in either a public or private context"""
-
-    def get_context_data(self, **kwargs):
-        context = super(IssueListMixin, self).get_context_data(**kwargs)
-
-        table_args = {'private': context['private'],
-                      'issue_type': self.issue_type}
-        if not context['private']:
-            table_args['cobrand'] = kwargs['cobrand']
-
-        issues = self.get_issues(context['organisation'], context['private'])
-        if context['organisation'].has_services() and context['organisation'].has_time_limits():
-            issue_table = ExtendedProblemTable(issues, **table_args)
-        else:
-            issue_table = ProblemTable(issues, **table_args)
-
-        RequestConfig(self.request, paginate={'per_page': 8}).configure(issue_table)
-        context['table'] = issue_table
-        context['page_obj'] = issue_table.page
-        return context
 
 class FilterMixin(PrivateViewMixin):
     """
@@ -269,16 +247,33 @@ class OrganisationSummary(OrganisationAwareViewMixin,
 
         return context
 
-class OrganisationProblems(IssueListMixin,
+class OrganisationProblems(OrganisationAwareViewMixin,
                            TemplateView):
     template_name = 'organisations/organisation_problems.html'
-    issue_type = 'problem'
 
     def get_issues(self, organisation, private):
         if private:
             return organisation.problem_set.all()
         else:
             return organisation.problem_set.all_moderated_published_problems()
+
+    def get_context_data(self, **kwargs):
+        context = super(OrganisationProblems, self).get_context_data(**kwargs)
+
+        table_args = {'private': context['private']}
+        if not context['private']:
+            table_args['cobrand'] = kwargs['cobrand']
+
+        issues = self.get_issues(context['organisation'], context['private'])
+        if context['organisation'].has_services() and context['organisation'].has_time_limits():
+            issue_table = ExtendedProblemTable(issues, **table_args)
+        else:
+            issue_table = ProblemTable(issues, **table_args)
+
+        RequestConfig(self.request, paginate={'per_page': 8}).configure(issue_table)
+        context['table'] = issue_table
+        context['page_obj'] = issue_table.page
+        return context
 
 class OrganisationReviews(OrganisationAwareViewMixin,
                           TemplateView):
@@ -323,7 +318,10 @@ class OrganisationDashboard(OrganisationAwareViewMixin,
 
         # Get the models related to this organisation, and let the db sort them
         problems = context['organisation'].problem_set.open_unescalated_problems()
-        context['problems'] = problems
+        problems_table = ProblemDashboardTable(problems)
+        RequestConfig(self.request, paginate={'per_page': 25}).configure(problems_table)
+        context['table'] = problems_table
+        context['page_obj'] = problems_table.page
         context['problems_total'] = interval_counts(issue_type=Problem,
                                                     filters={},
                                                     organisation_id=context['organisation'].id)
@@ -438,7 +436,7 @@ class EscalationDashboard(FilterMixin, TemplateView):
         filtered_problems = self.apply_filters(context['filters'], context['problems'])
 
         # Setup a table for the problems
-        problem_table = ProblemTable(filtered_problems, private=True, issue_type=Problem)
+        problem_table = EscalationTable(filtered_problems, private=True, issue_type=Problem)
         RequestConfig(self.request, paginate={'per_page': 25}).configure(problem_table)
         context['table'] = problem_table
         context['page_obj'] = problem_table.page
