@@ -16,6 +16,7 @@ django-pagination
 django-tables2
 django-reversion==1.6.5  # compatible with Django 1.4.3
 django-concurrency
+django-dirtyfields
 
 ### Testing
 mock

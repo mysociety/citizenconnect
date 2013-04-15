@@ -13,6 +13,8 @@ from django.template import Context
 from django.template.loader import get_template
 from django.utils.timezone import utc
 
+from dirtyfields import DirtyFieldsMixin
+
 from concurrency.fields import IntegerVersionField
 from concurrency.api import concurrency_check
 
@@ -138,7 +140,7 @@ class ProblemManager(models.Manager):
         return super(ProblemManager, self).all().filter(Q(status__in=Problem.OPEN_STATUSES) &
                                                         Q(status__in=Problem.NON_ESCALATION_STATUSES))
 
-class Problem(IssueModel):
+class Problem(DirtyFieldsMixin, IssueModel):
     # Custom manager
     objects = ProblemManager()
 
