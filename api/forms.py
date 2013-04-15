@@ -108,7 +108,8 @@ class ProblemAPIForm(forms.ModelForm):
             'publication_status',
             'source',
             'breach',
-            'commissioned'
+            'commissioned',
+            'relates_to_previous_problem',
         ]
 
         widgets = {
