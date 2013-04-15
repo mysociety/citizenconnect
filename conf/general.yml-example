@@ -64,3 +64,9 @@ EMAIL_PORT: 25
 # The threshold in number of reports per interval to use for determining
 # inclusion in the national summary report
 SUMMARY_THRESHOLD: ['six_months', 6]
+
+# Customer Contact Centre email addresses.
+CUSTOMER_CONTACT_CENTRE_EMAIL_ADDRESSES:
+  - 'ccc@example.org'
+  - 'ccc-247@example.org'
+
