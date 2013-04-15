@@ -515,7 +515,8 @@ class OrganisationDashboardTests(AuthorizationTestCase):
 
     def test_dashboard_doesnt_show_escalated_problems(self):
         self.escalated_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
-                                                                'status': Problem.ESCALATED})
+                                                                'status': Problem.ESCALATED,
+                                                                'commissioned': Problem.LOCALLY_COMMISSIONED})
         escalated_problem_response_url = reverse('response-form', kwargs={'pk':self.escalated_problem.id})
         self.login_as(self.provider)
         resp = self.client.get(self.dashboard_url)

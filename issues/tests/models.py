@@ -255,6 +255,7 @@ class ProblemModelTimeToTests(ProblemTestCase):
 
     def test_does_not_set_time_to_ack_when_saved_in_escalated_status_and_time_to_ack_not_set(self):
         self.test_problem.status = Problem.ESCALATED
+        self.test_problem.commissioned = Problem.LOCALLY_COMMISSIONED
         self.test_problem.save()
         self.assertEqual(self.test_problem.time_to_acknowledge, None)
 
@@ -285,6 +286,7 @@ class ProblemModelTimeToTests(ProblemTestCase):
 
     def test_does_not_set_time_to_address_when_saved_in_escalated_status_and_time_to_address_not_set(self):
         self.test_problem.status = Problem.ESCALATED
+        self.test_problem.commissioned = Problem.LOCALLY_COMMISSIONED
         self.test_problem.save()
         self.assertEqual(self.test_problem.time_to_address, None)
 
@@ -471,14 +473,16 @@ class ProblemManagerTests(ManagerTest):
             'public':True,
             'moderated':Problem.MODERATED,
             'publication_status':Problem.PUBLISHED,
-            'status': Problem.ESCALATED
+            'status': Problem.ESCALATED,
+            'commissioned': Problem.LOCALLY_COMMISSIONED,
         })
 
         # Unmoderated escalated problems
         self.escalated_private_unmoderated_problem = create_test_instance(Problem, {
             'organisation': self.test_organisation,
             'public':False,
-            'status': Problem.ESCALATED
+            'status': Problem.ESCALATED,
+            'commissioned': Problem.LOCALLY_COMMISSIONED,
         })
 
         # A breach of care standards problem

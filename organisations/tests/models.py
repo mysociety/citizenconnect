@@ -96,7 +96,7 @@ class UserCreationTestsMixin(object):
         self.user_foo = User.objects.create_user("foo", email="foo@example.com")
 
         # create organisations needed for tests
-        self.test_object_no_email      = self.create_test_object({'name': "No Email"}) # ISSUE-329
+        self.test_object_no_email      = self.create_test_object({'name': "No Email",         'email': ""}) # ISSUE-329
         self.test_object_no_user       = self.create_test_object({'name': "No User",          'email': "no-email@example.com"})
         self.test_object_foo_with_user = self.create_test_object({'name': "Foo with User",    'email': "foo@example.com"})
         self.test_object_foo_no_user   = self.create_test_object({'name': "Foo without User", 'email': "foo@example.com"})
@@ -149,7 +149,7 @@ class SendMailTestsMixin(object):
 
     def test_send_mail_raises_if_no_email_on_test_object(self):
         # Remove this test once ISSUE-329 resolved
-        test_object = self.create_test_object();
+        test_object = self.create_test_object({"email": ""});
         self.assertRaises(ValueError, test_object.send_mail, subject="Test Subject", message="Test message")
         
     def test_send_mail_raises_if_recipient_list_provided(self):
