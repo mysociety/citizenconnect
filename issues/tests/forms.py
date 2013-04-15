@@ -56,6 +56,7 @@ class ProblemCreateFormTests(TestCase):
         self.assertEqual(problem.reporter_name, self.uuid)
         self.assertEqual(problem.reporter_email, 'steve@mysociety.org')
         self.assertEqual(problem.preferred_contact_method, 'phone')
+        self.assertEqual(problem.relates_to_previous_problem, False)
 
     def test_problem_form_respects_name_privacy(self):
         self.test_problem['privacy'] = ProblemForm.PRIVACY_PRIVATE_NAME

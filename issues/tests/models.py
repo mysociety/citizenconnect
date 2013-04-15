@@ -118,6 +118,9 @@ class ProblemModelTests(ProblemTestCase):
     def test_defaults_to_not_mailed(self):
         self.assertFalse(self.test_problem.mailed)
 
+    def test_defaults_to_not_related_to_previous_problem(self):
+        self.assertFalse(self.test_problem.relates_to_previous_problem)
+
     def test_defaults_to_hidden(self):
         self.assertEqual(self.test_problem.publication_status, Problem.HIDDEN)
 

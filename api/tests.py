@@ -69,7 +69,8 @@ class ProblemAPITests(TestCase):
             'source':Problem.SOURCE_PHONE,
             'requires_second_tier_moderation': 0,
             'breach': 1,
-            'commissioned': Problem.NATIONALLY_COMMISSIONED
+            'commissioned': Problem.NATIONALLY_COMMISSIONED,
+            'relates_to_previous_problem': True,
         }
 
         self.problem_api_url = reverse('api-problem-create')
@@ -99,6 +100,7 @@ class ProblemAPITests(TestCase):
         self.assertEqual(problem.requires_second_tier_moderation, False)
         self.assertEqual(problem.breach, True)
         self.assertEqual(problem.commissioned, Problem.NATIONALLY_COMMISSIONED)
+        self.assertEqual(problem.relates_to_previous_problem, True)
 
     def test_source_is_required(self):
         problem_without_source = self.test_problem
