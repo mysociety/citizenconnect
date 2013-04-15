@@ -52,15 +52,25 @@ The provided script should work for Debian based hosts, see https://docs.djangop
     ./manage.py syncdb
 
 This will ask you if you wish to create a Django superuser, which you'll
-use to access the citizenconnect admin interface. You can always do it later with
-`./manage.py createsuperuser`, but there's no harm in doing it now either,
-just remember the details you choose!
+use to access the citizenconnect admin interface. Don't bother, we'll load
+a precreated one in a minute.
+
+### Add all the tables and columns we manage with South
 
     ./manage.py migrate
 
-### To reload the initial data
-
-    ./manage.py flush
-
 ### Gather all the static files in one place
     ./manage.py collectstatic --noinput
+
+### Add some users which are useful for development
+    ./manage.py loaddata organisations/fixtures/development_users.json
+
+### Load the organisations we deal with
+    ./manage.py loaddata organisations/fixtures/phase_2_organisations.json
+
+### If you ever need to reload the data, you can run
+    ./manage.py flush
+    ./manage.py migrate --fake
+(Because you just flushed South's records of what was migrated, but the structure is still the same)
+Then you can re-run the loaddata commands from above
+
