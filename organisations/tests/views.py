@@ -926,3 +926,58 @@ class EscalationDashboardTests(AuthorizationTestCase):
         resp = self.client.get(self.escalation_dashboard_url)
         self.assertContains(resp, 'Referred to Another Provider')
         self.assertContains(resp, 'Unable to Contact')
+
+class BreachDashboardTests(AuthorizationTestCase):
+
+    def setUp(self):
+        super(BreachDashboardTests, self).setUp()
+        self.breach_dashboard_url = reverse('escalation-breaches')
+        self.org_breach_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
+                                                                 'breach': True})
+        self.other_org_breach_problem = create_test_instance(Problem, {'organisation': self.other_test_organisation,
+                                                                       'breach': True})
+        self.org_problem = create_test_instance(Problem, {'organisation': self.test_organisation})
+
+    def test_dashboard_accessible_to_ccg_users(self):
+        self.login_as(self.ccg_user)
+        resp = self.client.get(self.breach_dashboard_url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_dashboard_accessible_to_customer_contact_centre(self):
+        self.login_as(self.customer_contact_centre_user)
+        resp = self.client.get(self.breach_dashboard_url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_dashboard_is_inacessible_to_anyone_else(self):
+        people_who_shouldnt_have_access = [
+            self.provider,
+            self.no_provider,
+            self.other_provider,
+            self.pals,
+            self.question_answerer,
+            self.second_tier_moderator
+        ]
+
+        for user in people_who_shouldnt_have_access:
+            self.login_as(user)
+            resp = self.client.get(self.breach_dashboard_url)
+            self.assertEqual(resp.status_code, 403, '{0} can access {1} when they shouldn\'t be able to'.format(user.username, self.breach_dashboard_url))
+
+    def test_dashboard_only_shows_breach_problems(self):
+        self.login_as(self.ccg_user)
+        resp = self.client.get(self.breach_dashboard_url)
+        self.assertContains(resp, self.org_breach_problem.reference_number)
+        self.assertNotContains(resp, self.org_problem.reference_number)
+
+    def test_dashboard_limits_problems_to_ccg_for_ccg_users(self):
+        self.login_as(self.ccg_user)
+        resp = self.client.get(self.breach_dashboard_url)
+        self.assertContains(resp, self.org_breach_problem.reference_number)
+        self.assertNotContains(resp, self.other_org_breach_problem.reference_number)
+
+    def test_dashboard_shows_all_breaches_to_superusers_and_customer_contact_centre(self):
+        for user in (self.customer_contact_centre_user, self.nhs_superuser):
+            self.login_as(user)
+            resp = self.client.get(self.breach_dashboard_url)
+            self.assertContains(resp, self.org_breach_problem.reference_number)
+            self.assertContains(resp, self.other_org_breach_problem.reference_number)
