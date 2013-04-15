@@ -449,8 +449,7 @@ table .icon-warning { font-size: 1.375em; color: #d81e05; }
 
 /** Public Problem table */
 .problem-table th, .problem-table td { vertical-align: top; text-align: left; padding-left: 10px; padding-right: 10px; }
-.problem-table .reference_number { font-weight: bold; padding-left: 0; }
-.problem-table .summary { padding-right: 0; }
+.problem-table .table__first { font-weight: bold; }
 .problem-table .breach .icon-circle { color: #d81e05; }
 
 .organisation-problems .problem-table tr.highlight { background-color: #fda397; }

@@ -105,12 +105,9 @@ table {
     padding-right: 10px;
   }
   // first cell
-  .reference_number {
+  .table__first {
     font-weight: bold;
-    padding-left: 0;
   }
-  // last cell
-  .summary { padding-right: 0; }
 
   .breach {
     // Colour circles red on the breach table
