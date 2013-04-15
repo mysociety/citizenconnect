@@ -90,3 +90,22 @@ class OrganisationFinderForm(forms.Form):
             cleaned_data['organisations'] = organisations
 
         return cleaned_data
+
+class FilterForm(forms.Form):
+    """
+    Form for processing filters on pages which filter issues
+    """
+    ccg = forms.ChoiceField(choices=CCG.objects.all(), required=False)
+    organisation_type = forms.ChoiceField(choices=settings.ORGANISATION_CHOICES, required=False)
+    service = forms.ChoiceField(choices=Service.service_codes(), required=False)
+    category = forms.ChoiceField(choices=Problem.CATEGORY_CHOICES, required=False)
+    status = forms.ChoiceField(choices=[ [str(status), desc] for (status, desc) in Problem.VISIBLE_STATUS_CHOICES ],
+                               required=False)
+    breach = forms.TypedChoiceField(choices=[[True, 'Breaches'], [False, 'Non-Breaches']],
+                                    required=False,
+                                    coerce=bool)
+
+    def __init__(self, private=False, *args, **kwargs):
+        # Set status choices to all choices if we're on a private page
+        if private:
+            self.fields['statuses'].choices = [ [str(status), desc] for (status, desc) in Problem.STATUS_CHOICES ]

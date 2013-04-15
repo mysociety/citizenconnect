@@ -23,7 +23,7 @@ import choices_api
 import auth
 from .auth import user_in_group, user_in_groups, user_is_superuser, check_organisation_access, check_question_access, user_can_access_escalation_dashboard
 from .models import Organisation, Service, CCG, SuperuserLogEntry
-from .forms import OrganisationFinderForm
+from .forms import OrganisationFinderForm, FilterForm
 from .lib import interval_counts
 from .tables import NationalSummaryTable, ProblemTable, ExtendedProblemTable, QuestionsDashboardTable, ProblemDashboardTable, EscalationDashboardTable, BreachTable
 
@@ -56,42 +56,17 @@ class OrganisationAwareViewMixin(PrivateViewMixin):
         return context
 
 
-class FilterMixin(PrivateViewMixin):
+class FilterFormMixin(PrivateViewMixin, FormView):
     """
-    Mixin for views which have some or all of the standard set of filters
+    Mixin for views which have a filter form
     """
+    form_class = FilterForm
 
-    def get_context_data(self, **kwargs):
-        context = super(FilterMixin, self).get_context_data(**kwargs)
-
-        # Set up the data for the filters
-        context['ccgs'] = CCG.objects.all()
-        context['organisation_types'] = settings.ORGANISATION_CHOICES
-        context['services'] = Service.service_codes()
-
-        context['categories'] = Problem.CATEGORY_CHOICES
-        if context['private']:
-            context['statuses'] = [ [str(status), desc] for (status, desc) in Problem.STATUS_CHOICES]
-        else:
-            context['statuses'] = [ [str(status), desc] for (status, desc) in Problem.VISIBLE_STATUS_CHOICES]
-
-        filters = {}
-
-        filters_to_choices = {'ccg': 'ccgs',
-                              'organisation_type': 'organisation_types',
-                              'service_code': 'services',
-                              'category': 'categories',
-                              'status': 'statuses'}
-
-        for filter_name, choices in filters_to_choices.items():
-            selected = self.request.GET.get(filter_name)
-            if selected and selected in dict(context[choices]):
-                filters[filter_name] = {'value': selected,
-                                        'description': dict(context[choices])[selected]}
-
-        context['filters'] = filters
-
-        return context
+    def get_form_kwargs(self):
+        kwargs = {'initial': self.get_initial()}
+        if self.request.GET:
+            kwargs['data'] = self.request.GET
+        return kwargs
 
 class Map(PrivateViewMixin, TemplateView):
     template_name = 'organisations/map.html'
@@ -293,8 +268,11 @@ class Summary(FilterMixin, TemplateView):
                 del interval_filters['status']
 
         if not interval_filters.get('status'):
-        # by default the status should filter for visible statuses
+            # by default the status should filter for visible statuses
             interval_filters['status'] = tuple(Problem.VISIBLE_STATUSES)
+
+        if interval_filters.get('breach'):
+            if interval_filters.get('breach') == 'True':
 
         threshold = None
         if settings.SUMMARY_THRESHOLD:
