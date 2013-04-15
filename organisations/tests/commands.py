@@ -140,8 +140,8 @@ class CreateAccountsForOrganisationsAndCCGsTests(TestCase):
         # Quiet logging for this test
         logging.disable(logging.CRITICAL)
 
-        test_organisation_no_email = create_test_organisation()
-        test_ccg_no_email     = create_test_ccg()
+        test_organisation_no_email = create_test_organisation({"email": ""})
+        test_ccg_no_email     = create_test_ccg({"email": ""})
 
         # This would raise an error if it didn't handle it
         self._call_command()

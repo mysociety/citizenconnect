@@ -1,11 +1,19 @@
+import logging
+logger = logging.getLogger(__name__)
+
 from datetime import datetime, timedelta
 import hmac, hashlib
 
 from django.db import models
 from django.conf import settings
+from django.core import mail
 from django.core.exceptions import ValidationError
 from django.db.models import Q
+from django.template import Context
+from django.template.loader import get_template
 from django.utils.timezone import utc
+
+import dirtyfields
 
 from concurrency.fields import IntegerVersionField
 from concurrency.api import concurrency_check
@@ -132,7 +140,7 @@ class ProblemManager(models.Manager):
         return super(ProblemManager, self).all().filter(Q(status__in=Problem.OPEN_STATUSES) &
                                                         Q(status__in=Problem.NON_ESCALATION_STATUSES))
 
-class Problem(IssueModel):
+class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
     # Custom manager
     objects = ProblemManager()
 
@@ -286,6 +294,10 @@ class Problem(IssueModel):
 
     version = IntegerVersionField()
 
+    @models.permalink
+    def get_absolute_url(self):
+        return ('problem-view', (),  {'pk': self.id, 'cobrand': 'choices'} )
+
     @property
     def reference_number(self):
         return '{0}{1}'.format(self.PREFIX, self.id)
@@ -367,7 +379,26 @@ class Problem(IssueModel):
         if self.created:
             self.set_time_to_values()
 
+        # capture the old state of the problem to use after the actual save has
+        # run. If there is no value it has not been changed since the last save,
+        # so use the current value. Or use None if this is a new entry.
+        if self.pk:
+            previous_status_value = self.get_dirty_fields().get('status', self.status)
+        else:
+            previous_status_value = None
+
         super(Problem, self).save(*args, **kwargs) # Call the "real" save() method.
+
+        # This should be run by the post-save signal, but it does not seem to
+        # run. Adding it here manually to get it working. See https://github.com/smn/django-dirtyfields/blob/master/src/dirtyfields/dirtyfields.py
+        # for the code that should run. This is why django-dirtyfields is pinned to 0.1
+        #
+        # Slightly changed contents of dirtyfields.reset_state:
+        self._original_state = self._as_dict()
+
+        # If we are now ESCALATED, but were not before the save, send email
+        if self.status == self.ESCALATED and previous_status_value != self.ESCALATED:
+            self.send_escalation_email()
 
     def check_token(self, token):
         try:
@@ -394,3 +425,43 @@ class Problem(IssueModel):
         days_in_minutes = timedelta.days * 60 * 24
         seconds_in_minutes = timedelta.seconds / 60
         return days_in_minutes + seconds_in_minutes
+
+
+    def send_escalation_email(self):
+        """
+        Send the escalation email. Throws exception if status is not 'ESCALATED'.
+        """
+        
+        # Safety check to prevent accidentally sending emails when not appropriate
+        if self.status != self.ESCALATED:
+            raise ValueError("Problem status of '{0}' is not 'ESCALATED'".format(self))
+        
+        # gather the templates and create the context for them
+        subject_template = get_template('issues/escalation_email_subject.txt')
+        message_template = get_template('issues/escalation_email_message.txt')
+            
+        context = Context({
+            'object':        self,
+            'site_base_url': settings.SITE_BASE_URL
+        })
+            
+        logger.info('Sending escalation email for {0}'.format(self))
+            
+        kwargs = dict(
+            subject        = subject_template.render(context),
+            message        = message_template.render(context),
+        )
+            
+        if self.commissioned == self.LOCALLY_COMMISSIONED:
+            # Send email to the CCG
+            self.organisation.escalation_ccg.send_mail(**kwargs)
+        elif self.commissioned == self.NATIONALLY_COMMISSIONED:
+            # send email to CCC
+            mail.send_mail(
+                recipient_list=settings.CUSTOMER_CONTACT_CENTRE_EMAIL_ADDRESSES,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                **kwargs
+            )
+        else:
+            raise ValueError("commissioned must be set to select destination for escalation email for {0}".format(self))
+
