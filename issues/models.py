@@ -430,6 +430,16 @@ class Problem(IssueModel):
             message        = message_template.render(context),
         )
             
-        # Send email to the CCG
-        self.organisation.escalation_ccg.send_mail(**kwargs)
+        if self.commissioned == self.LOCALLY_COMMISSIONED:
+            # Send email to the CCG
+            self.organisation.escalation_ccg.send_mail(**kwargs)
+        elif self.commissioned == self.NATIONALLY_COMMISSIONED:
+            # send email to CCC
+            mail.send_mail(
+                recipient_list=settings.CUSTOMER_CONTACT_CENTRE_EMAIL_ADDRESSES,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                **kwargs
+            )
+        else:
+            raise ValueError("commissioned must be set to select destination for escalation email for {0}".format(self))
 

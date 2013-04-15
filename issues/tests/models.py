@@ -3,6 +3,7 @@ from random import randint
 from mock import patch
 
 from django.test import TestCase, TransactionTestCase
+from django.conf import settings
 from django.core import mail
 from django.core.exceptions import ValidationError
 from django.utils.timezone import utc
@@ -320,21 +321,43 @@ class ProblemModelEscalationTests(ProblemTestCase):
     def test_send_escalation_email_method_raises_when_not_escalated(self):
         problem = self.test_problem
         self.assertTrue( problem.status != Problem.ESCALATED )
-        self.assertRaises(Exception, problem.send_escalation_email)
+        self.assertRaises(ValueError, problem.send_escalation_email)
 
-    def test_send_escalation_email_method(self):
+    def test_send_escalation_email_method_not_commissioned(self):
         problem = self.test_problem
         problem.status = Problem.ESCALATED
-        self.assertTrue( problem.status == Problem.ESCALATED )
+        problem.commissioned = None # deliberately not set
+
+        self.assertRaises(ValueError, problem.send_escalation_email)
+
+    def test_send_escalation_email_method_locally_commisioned(self):
+        problem = self.test_problem
+        problem.status = Problem.ESCALATED
+        problem.commissioned = Problem.LOCALLY_COMMISSIONED
+
         problem.send_escalation_email()
-
+    
         self.assertEqual(len(mail.outbox), 2)
-
+    
         intro_email      = mail.outbox[0]
         escalation_email = mail.outbox[1]
-
+    
         self.assertTrue( "Problem has been escalated" in escalation_email.subject )
         self.assertEqual( escalation_email.to, ['ccg@example.org'] )
+
+    def test_send_escalation_email_method_nationally_commissioned(self):
+        problem = self.test_problem
+        problem.status = Problem.ESCALATED
+        problem.commissioned = Problem.NATIONALLY_COMMISSIONED
+
+        problem.send_escalation_email()
+    
+        self.assertEqual(len(mail.outbox), 1)
+    
+        escalation_email = mail.outbox[0]
+    
+        self.assertTrue( "Problem has been escalated" in escalation_email.subject )
+        self.assertEqual( escalation_email.to, settings.CUSTOMER_CONTACT_CENTRE_EMAIL_ADDRESSES )
 
 
 class QuestionModelTests(TestCase):
