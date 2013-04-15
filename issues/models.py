@@ -282,6 +282,7 @@ class Problem(IssueModel):
     COBRAND_CHOICES = [(cobrand, cobrand) for cobrand in settings.ALLOWED_COBRANDS]
     cobrand = models.CharField(max_length=30, blank=False, choices=COBRAND_CHOICES)
     mailed = models.BooleanField(default=False, blank=False)
+    relates_to_previous_problem = models.BooleanField(default=False, blank=False)
 
     version = IntegerVersionField()
 
