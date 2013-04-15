@@ -95,7 +95,8 @@ class ProblemForm(IssueModelForm):
             'reporter_email',
             'preferred_contact_method',
             'public',
-            'public_reporter_name'
+            'public_reporter_name',
+            'relates_to_previous_problem',
         ]
 
         widgets = {

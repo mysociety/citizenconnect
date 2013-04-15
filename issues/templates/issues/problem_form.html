@@ -75,6 +75,15 @@
 
     <fieldset class="island">
         <ul class="gw">
+            <li class="g  one-whole">
+                <label for="id_relates_to_previous_problem">{{ form.relates_to_previous_problem }} Relates to previously reported problem</label>
+                {% include "message_list.html" with messages=form.relates_to_previous_problem.errors message_type='error' %}
+            </li>
+        </ul>
+    </fieldset>
+
+    <fieldset class="island">
+        <ul class="gw">
             <li class="g  one-half  palm-one-whole">
                 <label for="id_reporter_name">Your Name <span class="info">You must enter your name</span></label>
                 {{ form.reporter_name }}
