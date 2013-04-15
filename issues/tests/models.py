@@ -314,6 +314,9 @@ class ProblemModelEscalationTests(ProblemTestCase):
         self.test_organisation.email = 'test@example.org'
         self.test_organisation.save()
 
+        self.test_organisation.escalation_ccg.email = 'ccg@example.org'
+        self.test_organisation.save()
+
     def test_send_escalation_email_method_raises_when_not_escalated(self):
         problem = self.test_problem
         self.assertTrue( problem.status != Problem.ESCALATED )
@@ -331,6 +334,7 @@ class ProblemModelEscalationTests(ProblemTestCase):
         escalation_email = mail.outbox[1]
 
         self.assertTrue( "Problem has been escalated" in escalation_email.subject )
+        self.assertEqual( escalation_email.to, ['ccg@example.org'] )
 
 
 class QuestionModelTests(TestCase):

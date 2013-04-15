@@ -405,11 +405,6 @@ class Problem(IssueModel):
         return days_in_minutes + seconds_in_minutes
 
 
-    def escalation_email_recipient_organisations(self):
-        # FIXME - need to make smarter
-        return [self.organisation]
-
-
     def send_escalation_email(self):
         """
         Send the escalation email. Throws exception if status is not 'ESCALATED'.
@@ -435,6 +430,6 @@ class Problem(IssueModel):
             message        = message_template.render(context),
         )
             
-        for org in self.escalation_email_recipient_organisations():
-            org.send_mail(**kwargs)
+        # Send email to the CCG
+        self.organisation.escalation_ccg.send_mail(**kwargs)
 
