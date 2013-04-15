@@ -361,6 +361,58 @@ class ProblemModelEscalationTests(ProblemTestCase):
         self.assertTrue( "Problem has been escalated" in escalation_email.subject )
         self.assertEqual( escalation_email.to, settings.CUSTOMER_CONTACT_CENTRE_EMAIL_ADDRESSES )
 
+    def test_send_escalation_email_called_on_save(self):
+        problem = self.test_problem
+        
+        with patch.object(problem, 'send_escalation_email') as mocked_send:
+
+            # Save the problem for the first time, should not send
+            self.assertTrue(problem.status != Problem.ESCALATED)
+            problem.save()
+            self.assertFalse( mocked_send.called )
+
+            # change the status to Escalated
+            problem.status = Problem.ESCALATED
+            problem.save()
+            self.assertTrue( mocked_send.called )
+
+            # Save it again
+            mocked_send.reset_mock()
+            self.assertTrue(problem.status == Problem.ESCALATED)
+            problem.save()
+            self.assertFalse( mocked_send.called )
+
+            # Change it to not escalated
+            mocked_send.reset_mock()
+            problem.status = Problem.ACKNOWLEDGED
+            problem.save()
+            self.assertFalse( mocked_send.called )
+
+            # Escalate again
+            mocked_send.reset_mock()
+            problem.status = Problem.ESCALATED
+            problem.save()
+            self.assertTrue( mocked_send.called )
+
+    def test_send_escalation_email_called_on_create_escalated(self):
+        problem = Problem(
+            organisation=self.test_organisation,
+            description='A Test Problem',
+            category='cleanliness',
+            reporter_name='Test User',
+            reporter_email='reporter@example.com',
+            reporter_phone='01111 111 111',
+            public=True,
+            public_reporter_name=True,
+            preferred_contact_method=Problem.CONTACT_EMAIL,
+            status=Problem.ESCALATED
+        )
+        
+        # save object
+        with patch.object(problem, 'send_escalation_email') as mocked_send:
+            problem.save()
+            self.assertTrue( mocked_send.called )
+
 
 class QuestionModelTests(TestCase):
 

@@ -13,7 +13,7 @@ from django.template import Context
 from django.template.loader import get_template
 from django.utils.timezone import utc
 
-from dirtyfields import DirtyFieldsMixin
+import dirtyfields
 
 from concurrency.fields import IntegerVersionField
 from concurrency.api import concurrency_check
@@ -140,7 +140,7 @@ class ProblemManager(models.Manager):
         return super(ProblemManager, self).all().filter(Q(status__in=Problem.OPEN_STATUSES) &
                                                         Q(status__in=Problem.NON_ESCALATION_STATUSES))
 
-class Problem(DirtyFieldsMixin, IssueModel):
+class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
     # Custom manager
     objects = ProblemManager()
 
@@ -378,7 +378,26 @@ class Problem(DirtyFieldsMixin, IssueModel):
         if self.created:
             self.set_time_to_values()
 
+        # capture the old state of the problem to use after the actual save has
+        # run. If there is no value it has not been changed since the last save,
+        # so use the current value. Or use None if this is a new entry.
+        if self.pk:
+            previous_status_value = self.get_dirty_fields().get('status', self.status)
+        else:
+            previous_status_value = None
+
         super(Problem, self).save(*args, **kwargs) # Call the "real" save() method.
+
+        # This should be run by the post-save signal, but it does not seem to
+        # run. Adding it here manually to get it working. See https://github.com/smn/django-dirtyfields/blob/master/src/dirtyfields/dirtyfields.py
+        # for the code that should run. This is why django-dirtyfields is pinned to 0.1
+        #
+        # Slightly changed contents of dirtyfields.reset_state:
+        self._original_state = self._as_dict()
+
+        # If we are now ESCALATED, but were not before the save, send email
+        if self.status == self.ESCALATED and previous_status_value != self.ESCALATED:
+            self.send_escalation_email()
 
     def check_token(self, token):
         try:
