@@ -25,7 +25,7 @@ from .auth import user_in_group, user_in_groups, user_is_superuser, check_organi
 from .models import Organisation, Service, CCG, SuperuserLogEntry
 from .forms import OrganisationFinderForm
 from .lib import interval_counts
-from .tables import NationalSummaryTable, ProblemTable, ExtendedProblemTable, QuestionsDashboardTable, ProblemDashboardTable, EscalationDashboardTable
+from .tables import NationalSummaryTable, ProblemTable, ExtendedProblemTable, QuestionsDashboardTable, ProblemDashboardTable, EscalationDashboardTable, BreachTable
 
 class PrivateViewMixin(object):
     """
@@ -491,7 +491,7 @@ class EscalationBreaches(TemplateView):
         # Everyone else see's all breaches
 
         # Setup a table for the problems
-        problem_table = ProblemTable(problems, private=True)
+        problem_table = BreachTable(problems, private=True)
         RequestConfig(self.request, paginate={'per_page': 25}).configure(problem_table)
         context['table'] = problem_table
         context['page_obj'] = problem_table.page

@@ -159,7 +159,7 @@ class ProblemDashboardTable(BaseProblemTable):
     and always assuming a private context
     """
 
-    breach = tables.TemplateColumn(template_name="organisations/includes/boolean_column.html")
+    breach = tables.TemplateColumn(template_name="organisations/includes/breach_column.html")
 
     def __init__(self, *args, **kwargs):
         # Private is always true for dashboards
@@ -199,4 +199,38 @@ class EscalationDashboardTable(ProblemDashboardTable):
                     'status',
                     'category',
                     'breach',
+                    'summary')
+
+class BreachTable(ProblemTable):
+    """
+    Annoyingly quite like ProblemTable, but with provider_name in as well
+    """
+    provider_name = tables.Column(verbose_name='Provider name',
+                                  accessor='organisation.name',
+                                  attrs={'th': {'class': 'table__first'},
+                                         'td': {'class': 'table__first'}})
+    # Redefine this to tell it that it's not table__first anymore
+    reference_number = tables.Column(verbose_name="Ref.",
+                                     order_by=("id"),
+                                     attrs={'th': {'class': ''},
+                                            'td': {'class': ''}})
+
+    def __init__(self, *args, **kwargs):
+        # Private is always true for dashboards
+        self.private = True
+        super(BreachTable, self).__init__(*args, **kwargs)
+
+    def render_summary(self, record):
+        return self.render_summary_as_response_link(record)
+
+    class Meta:
+        order_by = ('-created',)
+        attrs = {"class": "problem-table"}
+        sequence = ('provider_name',
+                    'reference_number',
+                    'created',
+                    'status',
+                    'category',
+                    'happy_service',
+                    'happy_outcome',
                     'summary')

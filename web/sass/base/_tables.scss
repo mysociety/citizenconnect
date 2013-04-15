@@ -38,7 +38,8 @@ table {
     &.happy_service,
     &.happy_outcome,
     &.time_to_acknowledge,
-    &.time_to_address {
+    &.time_to_address,
+    &.breach {
       vertical-align: middle;
       text-align: center;
     }
@@ -110,6 +111,13 @@ table {
   }
   // last cell
   .summary { padding-right: 0; }
+
+  .breach {
+    // Colour circles red on the breach table
+    .icon-circle {
+      color:$c-table-icon-x-color;
+    }
+  }
 }
 
 .organisation-problems {
