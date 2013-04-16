@@ -11,6 +11,11 @@
     <h1>{{ title }}</h1>
 </div>
 
+<ul class="tab-nav">
+    <li><a class="active" href="{% url 'moderate-home' %}">Queue</a></li>
+    <li><a href="{% url 'moderate-lookup' %}">Lookup</a></li>
+</ul>
+
 {% render_table table 'organisations/includes/table.html' %}
 
 {% endblock %}
