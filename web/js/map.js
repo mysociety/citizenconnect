@@ -82,12 +82,22 @@ $(document).ready(function () {
                 shadowRetinaUrl: "/static/img/shadow@2x.png",
                 shadowSize: [24, 24]
             });
+            var nhsCentreIcon_5 = L.icon({
+                iconUrl: "/static/img/marker5.png",
+                iconRetinaUrl: "/static/img/marker5@2x.png",
+                iconSize: [16, 16],
+                popupAnchor: [-3, -76],
+                shadowUrl: "/static/img/shadow.png",
+                shadowRetinaUrl: "/static/img/shadow@2x.png",
+                shadowSize: [24, 24]
+            });
         } else {
             // Div Based: Prettier but not as compatible.
             var nhsCentreIcon_1 = L.divIcon({className: 'marker_m1'});
             var nhsCentreIcon_2 = L.divIcon({className: 'marker_m2'});
             var nhsCentreIcon_3 = L.divIcon({className: 'marker_m3'});
             var nhsCentreIcon_4 = L.divIcon({className: 'marker_m4'});
+            var nhsCentreIcon_5 = L.divIcon({className: 'marker_m5'});
         }
 
         map.setView(londonCentre, londonZoomLevel);
@@ -105,7 +115,10 @@ $(document).ready(function () {
             var marker, iconClass;
 
             // Determine the icon colour based on issue count (crudely)
-            if(nhsCentre.problem_count <= 3) {
+            if(nhsCentre.problem_count <= 0) {
+                iconClass = nhsCentreIcon_5;
+            }
+            else if(nhsCentre.problem_count <= 3) {
                 iconClass = nhsCentreIcon_4;
             }
             else if(nhsCentre.problem_count <= 6) {
