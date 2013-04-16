@@ -53,3 +53,7 @@ if summary_threshold:
     SUMMARY_THRESHOLD = tuple(summary_threshold)
 else:
     SUMMARY_THRESHOLD = None
+
+
+# Email addresses for the Customer Contact Centre
+CUSTOMER_CONTACT_CENTRE_EMAIL_ADDRESSES = config.get("CUSTOMER_CONTACT_CENTRE_EMAIL_ADDRESSES")

@@ -3,6 +3,8 @@ from random import randint
 from mock import patch
 
 from django.test import TestCase, TransactionTestCase
+from django.conf import settings
+from django.core import mail
 from django.core.exceptions import ValidationError
 from django.utils.timezone import utc
 
@@ -65,6 +67,14 @@ class ProblemTestCase(AuthorizationTestCase):
                                                   publication_status=Problem.PUBLISHED)
 
 class ProblemModelTests(ProblemTestCase):
+
+
+    def test_get_absolute_url(self):
+        self.test_problem.save()
+        self.assertEqual(
+            self.test_problem.get_absolute_url(),
+            '/choices/problem/' + str(self.test_problem.id)
+        )
 
     def test_has_prefix_property(self):
         self.assertEqual(Problem.PREFIX, 'P')
@@ -248,6 +258,7 @@ class ProblemModelTimeToTests(ProblemTestCase):
 
     def test_does_not_set_time_to_ack_when_saved_in_escalated_status_and_time_to_ack_not_set(self):
         self.test_problem.status = Problem.ESCALATED
+        self.test_problem.commissioned = Problem.LOCALLY_COMMISSIONED
         self.test_problem.save()
         self.assertEqual(self.test_problem.time_to_acknowledge, None)
 
@@ -278,6 +289,7 @@ class ProblemModelTimeToTests(ProblemTestCase):
 
     def test_does_not_set_time_to_address_when_saved_in_escalated_status_and_time_to_address_not_set(self):
         self.test_problem.status = Problem.ESCALATED
+        self.test_problem.commissioned = Problem.LOCALLY_COMMISSIONED
         self.test_problem.save()
         self.assertEqual(self.test_problem.time_to_address, None)
 
@@ -299,6 +311,110 @@ class ProblemModelConcurrencyTests(TransactionTestCase, ConcurrencyTestMixin):
                             'preferred_contact_method': Problem.CONTACT_EMAIL,
                             'status': Problem.NEW}
 
+
+
+class ProblemModelEscalationTests(ProblemTestCase):
+
+    def setUp(self):
+        super(ProblemModelEscalationTests, self).setUp()        
+        self.test_organisation.email = 'test@example.org'
+        self.test_organisation.save()
+
+        self.test_organisation.escalation_ccg.email = 'ccg@example.org'
+        self.test_organisation.save()
+
+    def test_send_escalation_email_method_raises_when_not_escalated(self):
+        problem = self.test_problem
+        self.assertTrue( problem.status != Problem.ESCALATED )
+        self.assertRaises(ValueError, problem.send_escalation_email)
+
+    def test_send_escalation_email_method_not_commissioned(self):
+        problem = self.test_problem
+        problem.status = Problem.ESCALATED
+        problem.commissioned = None # deliberately not set
+
+        self.assertRaises(ValueError, problem.send_escalation_email)
+
+    def test_send_escalation_email_method_locally_commisioned(self):
+        problem = self.test_problem
+        problem.status = Problem.ESCALATED
+        problem.commissioned = Problem.LOCALLY_COMMISSIONED
+
+        problem.send_escalation_email()
+    
+        self.assertEqual(len(mail.outbox), 2)
+    
+        intro_email      = mail.outbox[0]
+        escalation_email = mail.outbox[1]
+    
+        self.assertTrue( "Problem has been escalated" in escalation_email.subject )
+        self.assertEqual( escalation_email.to, ['ccg@example.org'] )
+
+    def test_send_escalation_email_method_nationally_commissioned(self):
+        problem = self.test_problem
+        problem.status = Problem.ESCALATED
+        problem.commissioned = Problem.NATIONALLY_COMMISSIONED
+
+        problem.send_escalation_email()
+    
+        self.assertEqual(len(mail.outbox), 1)
+    
+        escalation_email = mail.outbox[0]
+    
+        self.assertTrue( "Problem has been escalated" in escalation_email.subject )
+        self.assertEqual( escalation_email.to, settings.CUSTOMER_CONTACT_CENTRE_EMAIL_ADDRESSES )
+
+    def test_send_escalation_email_called_on_save(self):
+        problem = self.test_problem
+        
+        with patch.object(problem, 'send_escalation_email') as mocked_send:
+
+            # Save the problem for the first time, should not send
+            self.assertTrue(problem.status != Problem.ESCALATED)
+            problem.save()
+            self.assertFalse( mocked_send.called )
+
+            # change the status to Escalated
+            problem.status = Problem.ESCALATED
+            problem.save()
+            self.assertTrue( mocked_send.called )
+
+            # Save it again
+            mocked_send.reset_mock()
+            self.assertTrue(problem.status == Problem.ESCALATED)
+            problem.save()
+            self.assertFalse( mocked_send.called )
+
+            # Change it to not escalated
+            mocked_send.reset_mock()
+            problem.status = Problem.ACKNOWLEDGED
+            problem.save()
+            self.assertFalse( mocked_send.called )
+
+            # Escalate again
+            mocked_send.reset_mock()
+            problem.status = Problem.ESCALATED
+            problem.save()
+            self.assertTrue( mocked_send.called )
+
+    def test_send_escalation_email_called_on_create_escalated(self):
+        problem = Problem(
+            organisation=self.test_organisation,
+            description='A Test Problem',
+            category='cleanliness',
+            reporter_name='Test User',
+            reporter_email='reporter@example.com',
+            reporter_phone='01111 111 111',
+            public=True,
+            public_reporter_name=True,
+            preferred_contact_method=Problem.CONTACT_EMAIL,
+            status=Problem.ESCALATED
+        )
+        
+        # save object
+        with patch.object(problem, 'send_escalation_email') as mocked_send:
+            problem.save()
+            self.assertTrue( mocked_send.called )
 
 
 class QuestionModelTests(TestCase):
@@ -412,14 +528,16 @@ class ProblemManagerTests(ManagerTest):
             'public':True,
             'moderated':Problem.MODERATED,
             'publication_status':Problem.PUBLISHED,
-            'status': Problem.ESCALATED
+            'status': Problem.ESCALATED,
+            'commissioned': Problem.LOCALLY_COMMISSIONED,
         })
 
         # Unmoderated escalated problems
         self.escalated_private_unmoderated_problem = create_test_instance(Problem, {
             'organisation': self.test_organisation,
             'public':False,
-            'status': Problem.ESCALATED
+            'status': Problem.ESCALATED,
+            'commissioned': Problem.LOCALLY_COMMISSIONED,
         })
 
         # A breach of care standards problem

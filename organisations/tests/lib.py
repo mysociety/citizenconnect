@@ -22,6 +22,7 @@ def create_test_ccg(attributes={}):
     default_attributes = {
         'name':'Test CCG',
         'code':'ABC',
+        'email': 'test-ccg@example.org',
     }
     default_attributes.update(attributes)
     instance = CCG(**dict((k,v) for (k,v) in default_attributes.items() if '__' not in k))
