@@ -8,11 +8,6 @@
     <h1>Moderate {{ issue.issue_type }}</h1>
 </div>
 
-<ul class="tab-nav">
-    <li><a class="active" href="{% url 'second-tier-moderate-home' %}">Queue</a></li>
-    <li><a href="{% url 'moderate-lookup' %}">Lookup</a></li>
-</ul>
-
 {% include "issues/issue_detail.html" with object=issue  private=1 %}
 
 <div class="second-tier-moderate-form">
