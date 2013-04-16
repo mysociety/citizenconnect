@@ -8,10 +8,9 @@
     <h1>Moderate {{ issue.issue_type }}</h1>
 </div>
 
-{% load url from future %}
 <ul class="tab-nav">
     <li><a class="active" href="{% url 'second-tier-moderate-home' %}">Queue</a></li>
-    <li><a href="{% url 'lookup' %}">Lookup</a></li>
+    <li><a href="{% url 'moderate-lookup' %}">Lookup</a></li>
 </ul>
 
 {% include "issues/issue_detail.html" with object=issue  private=1 %}
