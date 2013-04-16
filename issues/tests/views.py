@@ -74,7 +74,8 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         super(ProblemPublicViewTests, self).setUp()
         self.test_moderated_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
                                                                      'moderated': Problem.MODERATED,
-                                                                     'publication_status': Problem.PUBLISHED})
+                                                                     'publication_status': Problem.PUBLISHED,
+                                                                     'moderated_description': "A moderated description"})
         self.test_unmoderated_problem = create_test_instance(Problem, {'organisation': self.test_organisation})
         self.test_private_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
                                                                    'public':False,
@@ -199,6 +200,11 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         self.login_as(self.pals)
         resp = self.client.get(self.test_unmoderated_problem_url)
         self.assertEqual(resp.status_code, 200)
+
+    def test_anon_user_sees_moderated_description_only(self):
+        resp = self.client.get(self.test_moderated_problem_url)
+        self.assertNotContains(resp, self.test_moderated_problem.description)
+        self.assertContains(resp, self.test_moderated_problem.moderated_description)
 
 class ProblemProviderPickerTests(TestCase):
 
