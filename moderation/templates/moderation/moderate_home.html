@@ -11,10 +11,7 @@
     <h1>{{ title }}</h1>
 </div>
 
-<ul class="tab-nav">
-    <li><a class="active" href="{% url 'moderate-home' %}">Queue</a></li>
-    <li><a href="{% url 'moderate-lookup' %}">Lookup</a></li>
-</ul>
+{% include 'moderation/includes/moderation_tabs.html' with active=queue %}
 
 {% render_table table 'organisations/includes/table.html' %}
 
