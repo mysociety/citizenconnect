@@ -251,6 +251,26 @@ class ResponseFormViewTests(AuthorizationTestCase):
         resp = self.client.get(form_which_should_403_for_other_providers)
         self.assertEqual(resp.status_code, 403) # This was a 200 with the bug
 
+    def test_response_form_contains_moderated_description_and_description(self):
+        # When a superuser is viewing the page, if there is a moderated
+        # description then that should be shown in addition to the regular
+        # description.
+        moderated_problem = create_test_instance(Problem,
+            {
+                'organisation': self.test_organisation,
+                'public': True,
+                'status': Problem.ACKNOWLEDGED,
+                'publication_status': Problem.PUBLISHED,
+                'moderated': Problem.MODERATED,
+                'description': "A description",
+                'moderated_description': "A moderated description",
+            })
+
+        response_form_url = reverse('response-form', kwargs={'pk':moderated_problem.id})
+        resp = self.client.get(response_form_url)
+        self.assertContains(resp, moderated_problem.description)
+        self.assertContains(resp, moderated_problem.moderated_description)
+
 
 class ResponseModelTests(TransactionTestCase, ConcurrencyTestMixin):
 
