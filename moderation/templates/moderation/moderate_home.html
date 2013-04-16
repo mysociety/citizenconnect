@@ -11,6 +11,8 @@
     <h1>{{ title }}</h1>
 </div>
 
+{% include 'moderation/includes/moderation_tabs.html' with active_tab='queue' %}
+
 {% render_table table 'organisations/includes/table.html' %}
 
 {% endblock %}

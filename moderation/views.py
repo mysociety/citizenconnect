@@ -77,7 +77,7 @@ class ModerateHome(ModeratorsOnlyMixin,
 class SecondTierModerateHome(SecondTierModeratorsOnlyMixin,
                         ModerationTableMixin,
                         TemplateView):
-    template_name = 'moderation/moderate_home.html'
+    template_name = 'moderation/second_tier_moderate_home.html'
 
     def get_context_data(self, **kwargs):
         # Get all the problems flagged for second tier moderation

@@ -1,0 +1,5 @@
+{% load url from future %}
+<ul class="tab-nav">
+    <li><a {% if active_tab == "queue" %}class="active"{% endif %} href="{% url 'moderate-home' %}">Queue</a></li>
+    <li><a {% if active_tab == "lookup" %}class="active"{% endif %} href="{% url 'moderate-lookup' %}">Lookup</a></li>
+</ul>
