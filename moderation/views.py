@@ -17,7 +17,8 @@ from organisations.models import Organisation
 import organisations.auth as auth
 from organisations.auth import user_in_group, user_is_superuser, user_in_groups
 
-from .forms import LookupForm, ProblemModerationForm, ProblemResponseInlineFormSet, ProblemSecondTierModerationForm
+from .forms import ProblemModerationForm, ProblemResponseInlineFormSet, ProblemSecondTierModerationForm
+from issues.forms import LookupForm
 from .tables import ModerationTable, SecondTierModerationTable
 
 class ModeratorsOnlyMixin(object):
