@@ -28,6 +28,10 @@ You can replace `9.1` with your postgres version, and `en_GB.utf8` with another 
 ### Create the GeoDjango database template
     sudo -u postgres bin/create_template_postgis-debian.sh
 
+Or if you're using OS X with Homebrew installed:
+
+    ./bin/create_template_postgis-mac.sh
+
 The provided script should work for Debian based hosts, see https://docs.djangoproject.com/en/1.4/ref/contrib/gis/install/#spatialdb-template for other instructions.
 
 ### Create a postgres user and database from the template
