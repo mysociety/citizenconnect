@@ -131,9 +131,11 @@ class Map(PrivateViewMixin, TemplateView):
             # Counts on private map are all open problems, regardless of moderation
             if context['private']:
                 organisation_dict['problem_count'] = organisation.problem_set.open_problems().count()
+                organisation_dict['closed_problem_count'] = organisation.problem_set.closed_problems().count()
             # Counts on public map don't include un-moderated or hidden issues, but do include private issues
             else:
                 organisation_dict['problem_count'] = organisation.problem_set.open_moderated_published_problems().count()
+                organisation_dict['closed_problem_count'] = organisation.problem_set.closed_moderated_published_problems().count()
 
             organisations_list.append(organisation_dict)
 
