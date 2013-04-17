@@ -167,7 +167,7 @@ class LookupForm(forms.Form):
             prefix = self.cleaned_data['reference_number'][:1]
             id = self.cleaned_data['reference_number'][1:]
             try:
-                if prefix == Problem.PREFIX:
+                if prefix.upper() == Problem.PREFIX:
                     problem = Problem.objects.all().get(pk=id)
                     self.cleaned_data['model_id'] = problem.id
                 else:
