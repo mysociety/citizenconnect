@@ -15,7 +15,7 @@ class BasicViewTests(BaseModerationTestCase):
         self.login_as(self.case_handler)
 
     def test_views_exist(self):
-        for url in self.all_urls:
+        for url in self.all_case_handler_urls:
             resp = self.client.get(url)
             self.assertEqual(resp.status_code, 200)
 
@@ -53,7 +53,6 @@ class BasicViewTests(BaseModerationTestCase):
     def test_views_accessible_to_second_tier_moderators(self):
         self.client.logout()
         self.login_as(self.second_tier_moderator)
-
         for url in self.all_second_tier_moderator_urls:
             resp = self.client.get(url)
             self.assertEqual(resp.status_code, 200)
@@ -117,6 +116,12 @@ class SecondTierModerationHomeViewTests(BaseModerationTestCase):
         resp = self.client.get(self.second_tier_home_url)
         self.second_tier_problem_form_url = reverse('second-tier-moderate-form', kwargs={'pk':self.second_tier_moderation.id})
         self.assertContains(resp, self.second_tier_problem_form_url)
+
+    def test_inaccessible_to_case_handlers(self):
+        self.client.logout()
+        self.login_as(self.case_handler)
+        resp = self.client.get(self.second_tier_home_url)
+        self.assertEqual(resp.status_code, 403)
 
 class ModerateFormViewTests(BaseModerationTestCase):
 
