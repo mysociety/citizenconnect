@@ -54,8 +54,12 @@
 </script>
 
 <script type="text/x-underscore-template" name="hover-bubble">
-  <strong><%= nhsCentre.name %></strong><br>
-  <em><%= nhsCentre.problem_count %></em> Unresolved Problems<br>
+  <h1><%= nhsCentre.name %></h1>
+  <h2>Problem reports</h2>
+  <ul>
+      <li><em><%= nhsCentre.problem_count %></em> Open/In progress issues</li>
+      <li><em><%= nhsCentre.closed_problem_count %></em> Closed issues</li>
+  </ul>
 </script>
 
 <script src="{% static 'js/map.js' %}"></script>
