@@ -32,7 +32,7 @@ Or if you're using OS X with Homebrew installed:
 
     ./bin/create_template_postgis-mac.sh
 
-The provided script should work for Debian based hosts, see https://docs.djangoproject.com/en/1.4/ref/contrib/gis/install/#spatialdb-template for other instructions.
+The provided scripts should work for Debian and OS X based hosts, see https://docs.djangoproject.com/en/1.4/ref/contrib/gis/install/#spatialdb-template for other instructions.
 
 ### Create a postgres user and database from the template
     sudo -u postgres psql
