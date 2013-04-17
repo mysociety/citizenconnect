@@ -5,6 +5,7 @@ import json
 
 # Django imports
 from django.views.generic import FormView, TemplateView, UpdateView, ListView
+from django.views.generic.edit import FormMixin
 from django.template.defaultfilters import escape
 from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
@@ -23,7 +24,7 @@ import choices_api
 import auth
 from .auth import user_in_group, user_in_groups, user_is_superuser, check_organisation_access, check_question_access, user_can_access_escalation_dashboard
 from .models import Organisation, Service, CCG, SuperuserLogEntry
-from .forms import OrganisationFinderForm
+from .forms import OrganisationFinderForm, FilterForm
 from .lib import interval_counts
 from .tables import NationalSummaryTable, ProblemTable, ExtendedProblemTable, QuestionsDashboardTable, ProblemDashboardTable, EscalationDashboardTable, BreachTable
 
@@ -56,41 +57,37 @@ class OrganisationAwareViewMixin(PrivateViewMixin):
         return context
 
 
-class FilterMixin(PrivateViewMixin):
+class FilterFormMixin(FormMixin):
     """
-    Mixin for views which have some or all of the standard set of filters
+    Mixin for views which have a filter form
     """
+    form_class = FilterForm
+
+    def get(self, request, *args, **kwargs):
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        form.is_valid()
+        kwargs['form'] = form
+        return self.render_to_response(self.get_context_data(**kwargs))
+
+    def get_form_kwargs(self):
+        # Pass form kwargs from GET instead of POST
+        kwargs = {'initial': self.get_initial()}
+        if self.request.GET:
+            kwargs['data'] = self.request.GET
+        if 'private' in self.kwargs and self.kwargs['private'] == True:
+            kwargs['private'] = True
+        return kwargs
 
     def get_context_data(self, **kwargs):
-        context = super(FilterMixin, self).get_context_data(**kwargs)
-
-        # Set up the data for the filters
-        context['ccgs'] = CCG.objects.all()
-        context['organisation_types'] = settings.ORGANISATION_CHOICES
-        context['services'] = Service.service_codes()
-
-        context['categories'] = Problem.CATEGORY_CHOICES
-        if context['private']:
-            context['statuses'] = [ [str(status), desc] for (status, desc) in Problem.STATUS_CHOICES]
-        else:
-            context['statuses'] = [ [str(status), desc] for (status, desc) in Problem.VISIBLE_STATUS_CHOICES]
-
-        filters = {}
-
-        filters_to_choices = {'ccg': 'ccgs',
-                              'organisation_type': 'organisation_types',
-                              'service_code': 'services',
-                              'category': 'categories',
-                              'status': 'statuses'}
-
-        for filter_name, choices in filters_to_choices.items():
-            selected = self.request.GET.get(filter_name)
-            if selected and selected in dict(context[choices]):
-                filters[filter_name] = {'value': selected,
-                                        'description': dict(context[choices])[selected]}
-
-        context['filters'] = filters
-
+        context = super(FilterFormMixin, self).get_context_data(**kwargs)
+        form = context['form']
+        selected_filters = {}
+        if hasattr(form, 'cleaned_data'):
+            for name, value in form.cleaned_data.items():
+                if value:
+                    selected_filters[name] = value
+        context['selected_filters'] = selected_filters
         return context
 
 class Map(PrivateViewMixin, TemplateView):
@@ -279,21 +276,24 @@ class OrganisationReviews(OrganisationAwareViewMixin,
                           TemplateView):
     template_name = 'organisations/organisation_reviews.html'
 
-class Summary(FilterMixin, TemplateView):
+class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
     template_name = 'organisations/summary.html'
 
     def get_context_data(self, **kwargs):
         context = super(Summary, self).get_context_data(**kwargs)
-        interval_filters = {}
-        for key,value in context['filters'].items():
-            interval_filters[key] = value['value']
+
+        # Build a dictionary of filters in the format we can pass
+        # into interval_counts to filter the problems we make a
+        # summary for
+        interval_filters = context['selected_filters']
+
         if interval_filters.get('status'):
             # ignore a filter request for a hidden status
             if not interval_filters['status'] in Problem.VISIBLE_STATUSES:
                 del interval_filters['status']
 
         if not interval_filters.get('status'):
-        # by default the status should filter for visible statuses
+            # by default the status should filter for visible statuses
             interval_filters['status'] = tuple(Problem.VISIBLE_STATUSES)
 
         threshold = None
@@ -412,7 +412,7 @@ class QuestionsDashboard(ListView):
         context['page_obj'] = context['table'].page
         return context
 
-class EscalationDashboard(FilterMixin, TemplateView):
+class EscalationDashboard(FilterFormMixin, TemplateView):
 
     template_name = 'organisations/escalation_dashboard.html'
 
@@ -421,19 +421,36 @@ class EscalationDashboard(FilterMixin, TemplateView):
             raise PermissionDenied()
         return super(EscalationDashboard, self).dispatch(request, *args, **kwargs)
 
-    def get_context_data(self, **kwargs):
-        context = super(EscalationDashboard, self).get_context_data(**kwargs)
-        context['problems'] = Problem.objects.open_escalated_problems()
-        # Restrict problem queryset for non-CQC and non-superuser users (i.e. CCG users)
+    def get_form_kwargs(self):
+        kwargs = super(EscalationDashboard, self).get_form_kwargs()
+
+        # Turn off the ccg filter if the user is a ccg
         user = self.request.user
         if not user_is_superuser(user) and not user_in_groups(user, [auth.CQC, auth.CUSTOMER_CONTACT_CENTRE]):
-            context['problems'] = context['problems'].filter(organisation__escalation_ccg__in=(user.ccgs.all()),
-                                                             commissioned=Problem.LOCALLY_COMMISSIONED)
+            kwargs['with_ccg'] = False
+
+        # Turn off status too, because all problems on this dashboard have
+        # a status of Escalated
+        kwargs['with_status'] = False
+
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super(EscalationDashboard, self).get_context_data(**kwargs)
+
+        problems = Problem.objects.open_escalated_problems()
+        user = self.request.user
+
+        # Restrict problem queryset for non-CQC and non-superuser users (i.e. CCG users)
+        if not user_is_superuser(user) and not user_in_groups(user, [auth.CQC, auth.CUSTOMER_CONTACT_CENTRE]):
+            problems = problems.filter(organisation__escalation_ccg__in=(user.ccgs.all()),
+                                       commissioned=Problem.LOCALLY_COMMISSIONED)
         # Restrict problem queryset for non CQC and non-CCG users (i.e. Customer Contact Centre)
         elif not user_is_superuser(user) and not user_in_groups(user, [auth.CQC, auth.CCG]):
-            context['problems'] = context['problems'].filter(commissioned=Problem.NATIONALLY_COMMISSIONED)
+            problems = problems.filter(commissioned=Problem.NATIONALLY_COMMISSIONED)
 
-        filtered_problems = self.apply_filters(context['filters'], context['problems'])
+        # Apply form filters on top of this
+        filtered_problems = self.apply_filters(context['selected_filters'], problems)
 
         # Setup a table for the problems
         problem_table = EscalationDashboardTable(filtered_problems)
@@ -443,32 +460,19 @@ class EscalationDashboard(FilterMixin, TemplateView):
         return context
 
     def apply_filters(self, filters, queryset):
-
         filtered_queryset = queryset
-
-        for name, attrs in filters.items():
-
-            # Category filter
+        for name, value in filters.items():
             if name == 'category':
-                filtered_queryset = filtered_queryset.filter(category=attrs['value'])
-
-            # Organisation type filter
+                filtered_queryset = filtered_queryset.filter(category=value)
             if name == 'organisation_type':
-                filtered_queryset = filtered_queryset.filter(organisation__organisation_type=attrs['value'])
-
-            # Status filter
-            if name == 'status':
-                filtered_queryset = filtered_queryset.filter(status=attrs['value'])
-
-            # Service filter
+                filtered_queryset = filtered_queryset.filter(organisation__organisation_type=value)
             if name == 'service_code':
-                filtered_queryset = filtered_queryset.filter(service__service_code=attrs['value'])
-
-            # TODO - when orgs are linked to ccgs, put this in
-            # CCG Filter
-            # if name == 'ccg':
-                # filtered_queryset = filtered_queryset.filter(organisation__ccg=attrs['value'])
-
+                filtered_queryset = filtered_queryset.filter(service__service_code=value)
+            if name == 'ccg':
+                # ccg is a CCG model instance
+                filtered_queryset = filtered_queryset.filter(organisation__ccgs__id__exact=value.id)
+            if name == 'breach':
+                filtered_queryset = filtered_queryset.filter(breach=value)
         return filtered_queryset
 
 class EscalationBreaches(TemplateView):

@@ -1,76 +1,32 @@
 {% load django_tables2 %}
+{% load organisation_extras %}
 <div class="filters">
     <form class="gw" action="{{ request.path }}">
 
-        <div class="g  one-sixth  palm-one-half">
-            <select name="ccg">
-                <option value="">CCG</option>
-                {% for ccg in ccgs %}
-                    <option value="{{ ccg.code }}" {% if filters.ccg.value == ccg.code %}selected{% endif %}>{{ ccg.name }}</option>
-                {% endfor %}
-            </select>
-        </div>
+        {% for field in form.visible_fields %}
+            <div class="g  {% if field.name == "ccg" %}one-twelfth{% else %}two-twelfths{% endif %}  palm-one-half">
+                {{ field }}
+            </div>
+        {% endfor %}
 
-        <div class="g  one-sixth  palm-one-half">
-            <select name="organisation_type">
-                <option value="">Provider type</option>
-                {% for value, display_value in organisation_types %}
-                    <option value="{{ value }}" {% if filters.organisation_type.value == value %}selected{% endif %}>{{ display_value }}</option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <div class="g  one-sixth  palm-one-half">
-            <select name="service_code">
-                <option value="">Department</option>
-                {% for service_code, service_name in services %}
-                    <option value="{{ service_code }}" {% if filters.service_code.value == service_code %}selected{% endif %}>{{ service_name }}</option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <div class="g  one-sixth  palm-one-half">
-            <select name="category">
-                <option value="">Problem type</option>
-                {% for value, display_value in categories %}
-                    <option value="{{ value }}" {% if filters.category.value == value %}selected{% endif %}>{{ display_value }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="g  one-sixth  palm-one-half ">
-            <select name="status">
-                <option value="">Problem status</option>
-                {% for value, display_value in statuses %}
-                    <option value="{{ value }}" {% if filters.status.value == value %}selected{% endif %}>{{ display_value }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="g  one-sixth  palm-one-whole">
+        <div class="g  one-twelfth  palm-one-whole">
             <input type="submit" value="Filter" class="btn  fr  palm-one-whole">
         </div>
     </form>
-    {% if filters %}
+    {% if selected_filters %}
     <div class="current-filters gw">
          <div class="g  one-sixth  palm-one-whole">
              Current filters:
         </div>
         <div class="g  five-sixths  palm-one-whole">
 
-            {% if filters.ccg %}
-                <div class="current-filter">{{ filters.ccg.description }} <a href="{% querystring 'ccg'='' %}">×</a></div>
-            {% endif %}
-            {% if filters.organisation_type %}
-                <div class="current-filter">{{ filters.organisation_type.description }} <a href="{% querystring 'organisation_type'='' %}">×</a></div>
-            {% endif %}
-            {% if filters.service_code %}
-                <div class="current-filter"> {{ filters.service_code.description }} <a href="{% querystring 'service_code'='' %}">×</a></div>
-            {% endif %}
-            {% if filters.category %}
-                <div class="current-filter">{{ filters.category.description }} <a href="{% querystring 'category'='' %}">×</a></div>
-            {% endif %}
-            {% if filters.status %}
-                <div class="current-filter">{{ filters.status.description }} <a href="{% querystring 'status'='' %}">×</a></div>
-            {% endif %}
+            {% for field in form.visible_fields %}
+                {% if field.value %}
+                    <div class="current-filter">
+                        {{ field|display_value }} <a href="{% querystring field.name='' %}">×</a>
+                    </div>
+                {% endif %}
+            {% endfor %}
         </div>
     </div>
     {% endif %}

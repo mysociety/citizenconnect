@@ -880,6 +880,14 @@ class EscalationDashboardTests(AuthorizationTestCase):
         self.other_org_national_escalated_problem = create_test_instance(Problem, {'organisation': self.other_test_organisation,
                                                                                    'status': Problem.ESCALATED,
                                                                                    'commissioned': Problem.NATIONALLY_COMMISSIONED})
+        # Add two services to the test org
+        self.service_one = create_test_service({'organisation': self.test_organisation})
+        self.service_two = create_test_service({'organisation': self.test_organisation,
+                                           'name': 'service two',
+                                           'service_code': 'SRV222'})
+        self.test_organisation.services.add(self.service_one)
+        self.test_organisation.services.add(self.service_two)
+        self.test_organisation.save()
 
     def test_dashboard_accessible_to_ccg_users(self):
         self.login_as(self.ccg_user)
@@ -921,12 +929,113 @@ class EscalationDashboardTests(AuthorizationTestCase):
         self.assertNotContains(resp, self.org_local_escalated_problem.reference_number)
         self.assertNotContains(resp, self.other_org_local_escalated_problem.reference_number)
 
+    def test_dashboard_hides_ccg_filter_only_for_ccg_users(self):
+        # CCG users are by-default filtered to their ccg only, so no need
+        # for the filter
+        ccg_filter_to_look_for = 'name="ccg"'
 
-    def test_dashboard_shows_all_statuses_in_filters(self):
         self.login_as(self.ccg_user)
         resp = self.client.get(self.escalation_dashboard_url)
-        self.assertContains(resp, 'Referred to Another Provider')
-        self.assertContains(resp, 'Unable to Contact')
+        self.assertNotContains(resp, ccg_filter_to_look_for)
+
+        self.login_as(self.nhs_superuser)
+        resp = self.client.get(self.escalation_dashboard_url)
+        self.assertContains(resp, ccg_filter_to_look_for)
+
+
+        self.login_as(self.customer_contact_centre_user)
+        resp = self.client.get(self.escalation_dashboard_url)
+        self.assertContains(resp, ccg_filter_to_look_for)
+
+    def test_dashboard_hides_status_filter(self):
+        status_filter_to_look_for = 'name="status"'
+
+        self.login_as(self.ccg_user)
+        resp = self.client.get(self.escalation_dashboard_url)
+        self.assertNotContains(resp, status_filter_to_look_for)
+
+    def test_filters_by_ccg(self):
+        # Have to login as a superuser to see the ccg filter
+        self.login_as(self.nhs_superuser)
+        ccg_filtered_url = '{0}?ccg={1}'.format(self.escalation_dashboard_url, self.test_ccg.id)
+        resp = self.client.get(ccg_filtered_url)
+        self.assertContains(resp, self.org_local_escalated_problem.reference_number)
+        # Because we're the superuser, we should see this too
+        self.assertContains(resp, self.org_national_escalated_problem.reference_number)
+        # These are both associated with the other ccg
+        self.assertNotContains(resp, self.other_org_local_escalated_problem.reference_number)
+        self.assertNotContains(resp, self.other_org_national_escalated_problem.reference_number)
+
+    def test_filters_by_provider_type(self):
+        # self.test_organisation is a hospital, self.test_other_organisation is a GP
+        # Need to login as superuser to be able to see both problems anyway
+        self.login_as(self.nhs_superuser)
+        problem_filtered_url = '{0}?organisation_type=hospitals'.format(self.escalation_dashboard_url)
+        resp = self.client.get(problem_filtered_url)
+        self.assertContains(resp, self.org_local_escalated_problem.reference_number)
+        self.assertContains(resp, self.org_national_escalated_problem.reference_number)
+        # These are both associated with a Hospital
+        self.assertNotContains(resp, self.other_org_local_escalated_problem.reference_number)
+        self.assertNotContains(resp, self.other_org_national_escalated_problem.reference_number)
+
+    def test_filters_by_department(self):
+        # Add some problems to the test org against specific services
+        service_one_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
+                                                             'service': self.service_one,
+                                                             'status': Problem.ESCALATED,
+                                                             'commissioned': Problem.LOCALLY_COMMISSIONED})
+        service_two_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
+                                                             'service': self.service_two,
+                                                             'status': Problem.ESCALATED,
+                                                             'commissioned': Problem.LOCALLY_COMMISSIONED})
+        department_filtered_url = '{0}?service_code={1}'.format(self.escalation_dashboard_url, self.service_one.service_code)
+
+        # We'll do this as the ccg user, because we should be able to
+        self.login_as(self.ccg_user)
+        resp = self.client.get(department_filtered_url)
+
+        self.assertContains(resp, service_one_problem.reference_number)
+        self.assertNotContains(resp, service_two_problem.reference_number)
+        # This doesn't have a service, so we shouldn't see it either
+        self.assertNotContains(resp, self.org_local_escalated_problem.reference_number)
+
+    def test_filters_by_problem_category(self):
+        cleanliness_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
+                                                             'service': self.service_one,
+                                                             'status': Problem.ESCALATED,
+                                                             'commissioned': Problem.LOCALLY_COMMISSIONED,
+                                                             'category': 'cleanliness'})
+        delays_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
+                                                       'service': self.service_two,
+                                                       'status': Problem.ESCALATED,
+                                                       'commissioned': Problem.LOCALLY_COMMISSIONED,
+                                                       'category': 'delays'})
+        category_filtered_url = '{0}?category=delays'.format(self.escalation_dashboard_url)
+
+        # We'll do this as the ccg user, because we should be able to
+        self.login_as(self.ccg_user)
+        resp = self.client.get(category_filtered_url)
+
+        self.assertContains(resp, delays_problem.reference_number)
+        self.assertNotContains(resp, cleanliness_problem.reference_number)
+        # This is in "staff" so shouldn't show either
+        self.assertNotContains(resp, self.org_local_escalated_problem.reference_number)
+
+    def test_filters_by_breach(self):
+        breach_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
+                                                        'service': self.service_two,
+                                                        'status': Problem.ESCALATED,
+                                                        'commissioned': Problem.LOCALLY_COMMISSIONED,
+                                                        'breach': True})
+        breach_filtered_url = '{0}?breach=True'.format(self.escalation_dashboard_url)
+
+        # We'll do this as the ccg user, because we should be able to
+        self.login_as(self.ccg_user)
+        resp = self.client.get(breach_filtered_url)
+
+        self.assertContains(resp, breach_problem.reference_number)
+        # This is not a breach, so shouldn't show
+        self.assertNotContains(resp, self.org_local_escalated_problem.reference_number)
 
 class BreachDashboardTests(AuthorizationTestCase):
 
