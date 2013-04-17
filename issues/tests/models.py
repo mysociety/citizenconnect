@@ -606,6 +606,11 @@ class ProblemManagerTests(ManagerTest):
                                                                    self.public_published_unresolvable_problem,
                                                                    self.public_published_abusive_problem]
 
+        self.closed_resolved_problems = self.closed_unmoderated_problems + [self.closed_public_moderated_problem_hidden,
+                                                                   self.closed_public_moderated_problem_published,
+                                                                   self.closed_private_moderated_problem_hidden,
+                                                                   self.closed_private_moderated_problem_published]
+
         # Lists that we expect from our manager's methods
         self.unmoderated_problems = self.open_unmoderated_problems + self.closed_unmoderated_problems
         self.open_problems = self.open_unmoderated_problems + self.open_moderated_problems
@@ -627,6 +632,10 @@ class ProblemManagerTests(ManagerTest):
 
     def test_open_problems_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.open_problems(), self.open_problems)
+
+    def test_closed_problems_returns_correct_problems(self):
+        self.compare_querysets(Problem.objects.closed_problems(),
+                self.closed_resolved_problems)
 
     def test_unmoderated_problems_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.unmoderated_problems(), self.unmoderated_problems)
