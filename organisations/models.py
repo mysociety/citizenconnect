@@ -31,7 +31,9 @@ class CCG(MailSendMixin, UserCreationMixin, AuditedModel):
     def default_user_group(self):
         """Group to ensure that users are members of"""
         return Group.objects.get(pk=auth.CCG)
-        
+
+    def __unicode__(self):
+        return self.name
 
 
 class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Model):
@@ -105,7 +107,7 @@ class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Mod
         # Everyone else - NO
         return False
 
-    
+
     def save(self, *args, **kwargs):
         """
         Overriden save to calculate double metaphones for name
@@ -133,9 +135,6 @@ class Service(AuditedModel):
     service_code = models.TextField(db_index=True)
     organisation = models.ForeignKey(Organisation, related_name='services')
 
-    def __unicode__(self):
-        return self.name
-
     @classmethod
     def service_codes(cls):
         cursor = connection.cursor()
@@ -143,6 +142,9 @@ class Service(AuditedModel):
                           FROM organisations_service
                           ORDER BY name""")
         return cursor.fetchall()
+
+    def __unicode__(self):
+        return self.name
 
     class Meta:
         unique_together = (("service_code", "organisation"),)

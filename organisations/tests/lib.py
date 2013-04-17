@@ -285,7 +285,7 @@ class AuthorizationTestCase(TestCase):
 
         # CCGs
         self.test_ccg = create_test_ccg()
-        self.other_test_ccg = create_test_ccg({'code': 'XYZ'})
+        self.other_test_ccg = create_test_ccg({'name': 'other test ccg', 'code': 'XYZ'})
 
         # Organisations
         self.test_organisation = create_test_organisation({'organisation_type': 'hospitals',
