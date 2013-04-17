@@ -59,7 +59,9 @@
   <ul>
       <li><em><%= nhsCentre.problem_count %></em> Open/In progress issues</li>
       <li><em><%= nhsCentre.closed_problem_count %></em> Closed issues</li>
-      <li><em>4</em> days average time to close</li>
+      <% if (nhsCentre.average_time_to_address) { %>
+      <li><em><%= nhsCentre.average_time_to_address %></em> days average time to close</li>
+      <% } %>
       <li><em>68%</em> users happy with outcome</li>
   </ul>
 </script>
