@@ -6,9 +6,56 @@ from concurrency.utils import ConcurrencyTestMixin
 
 # App imports
 from issues.models import Problem, Question
-from organisations.tests.lib import create_test_instance, create_test_organisation, AuthorizationTestCase
-
 from .models import ProblemResponse
+
+from organisations.tests.lib import create_test_instance, create_test_organisation, AuthorizationTestCase
+from moderation.tests.lib import BaseModerationTestCase
+
+
+# from organisations.models import Organisation
+
+
+class LookupFormTests(BaseModerationTestCase):
+
+    def setUp(self):
+        super(LookupFormTests, self).setUp()
+        self.closed_problem = create_test_instance(Problem, {'organisation':self.test_organisation,
+                                                             'status': Problem.RESOLVED})
+        self.moderated_problem = create_test_instance(Problem, {'organisation':self.test_organisation,
+                                                                'moderated': Problem.MODERATED})
+        self.login_as(self.case_handler)
+
+        self.lookup_url           = reverse('response-lookup')
+        self.problem_response_url = reverse('response-form', kwargs={'pk':self.test_problem.id})
+
+    def test_happy_path(self):
+        resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.test_problem.id)})
+        self.assertRedirects(resp, self.problem_response_url)
+
+    def test_form_rejects_empty_submissions(self):
+        resp = self.client.post(self.lookup_url, {})
+        self.assertFormError(resp, 'form', 'reference_number', 'This field is required.')
+
+    def test_form_rejects_unknown_prefixes(self):
+        resp = self.client.post(self.lookup_url, {'reference_number': 'a123'})
+        self.assertFormError(resp, 'form', None, 'Sorry, that reference number is not recognised')
+
+    def test_form_rejects_unknown_problems(self):
+        resp = self.client.post(self.lookup_url, {'reference_number': '{0}12300'.format(Problem.PREFIX)})
+        self.assertFormError(resp, 'form', None, 'Sorry, there are no problems with that reference number')
+
+    def test_form_rejects_questions(self):
+        resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Question.PREFIX, self.test_question.id)})
+        self.assertFormError(resp, 'form', None, 'Sorry, that reference number is not recognised')
+
+    def test_form_allows_moderated_problems(self):
+        resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.moderated_problem.id)})
+        self.assertRedirects(resp, '/private/response/{0}'.format(self.moderated_problem.id))
+
+    def test_form_allows_closed_problems(self):
+        resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.closed_problem.id)})
+        self.assertRedirects(resp, '/private/response/{0}'.format(self.closed_problem.id))
+
 
 class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
 
