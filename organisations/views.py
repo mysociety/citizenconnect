@@ -412,7 +412,7 @@ class QuestionsDashboard(ListView):
         context['page_obj'] = context['table'].page
         return context
 
-class EscalationDashboard(FilterMixin, TemplateView):
+class EscalationDashboard(FilterFormMixin, TemplateView):
 
     template_name = 'organisations/escalation_dashboard.html'
 
@@ -421,19 +421,36 @@ class EscalationDashboard(FilterMixin, TemplateView):
             raise PermissionDenied()
         return super(EscalationDashboard, self).dispatch(request, *args, **kwargs)
 
-    def get_context_data(self, **kwargs):
-        context = super(EscalationDashboard, self).get_context_data(**kwargs)
-        context['problems'] = Problem.objects.open_escalated_problems()
-        # Restrict problem queryset for non-CQC and non-superuser users (i.e. CCG users)
+    def get_form_kwargs(self):
+        kwargs = super(EscalationDashboard, self).get_form_kwargs()
+
+        # Turn off the ccg filter if the user is a ccg
         user = self.request.user
         if not user_is_superuser(user) and not user_in_groups(user, [auth.CQC, auth.CUSTOMER_CONTACT_CENTRE]):
-            context['problems'] = context['problems'].filter(organisation__escalation_ccg__in=(user.ccgs.all()),
-                                                             commissioned=Problem.LOCALLY_COMMISSIONED)
+            kwargs['with_ccg'] = False
+
+        # Turn off status too, because all problems on this dashboard have
+        # a status of Escalated
+        kwargs['with_status'] = False
+
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super(EscalationDashboard, self).get_context_data(**kwargs)
+
+        problems = Problem.objects.open_escalated_problems()
+        user = self.request.user
+
+        # Restrict problem queryset for non-CQC and non-superuser users (i.e. CCG users)
+        if not user_is_superuser(user) and not user_in_groups(user, [auth.CQC, auth.CUSTOMER_CONTACT_CENTRE]):
+            problems = problems.filter(organisation__escalation_ccg__in=(user.ccgs.all()),
+                                       commissioned=Problem.LOCALLY_COMMISSIONED)
         # Restrict problem queryset for non CQC and non-CCG users (i.e. Customer Contact Centre)
         elif not user_is_superuser(user) and not user_in_groups(user, [auth.CQC, auth.CCG]):
-            context['problems'] = context['problems'].filter(commissioned=Problem.NATIONALLY_COMMISSIONED)
+            problems = problems.filter(commissioned=Problem.NATIONALLY_COMMISSIONED)
 
-        filtered_problems = self.apply_filters(context['filters'], context['problems'])
+        # Apply form filters on top of this
+        filtered_problems = self.apply_filters(context['selected_filters'], problems)
 
         # Setup a table for the problems
         problem_table = EscalationDashboardTable(filtered_problems)
@@ -443,32 +460,19 @@ class EscalationDashboard(FilterMixin, TemplateView):
         return context
 
     def apply_filters(self, filters, queryset):
-
         filtered_queryset = queryset
-
-        for name, attrs in filters.items():
-
-            # Category filter
+        for name, value in filters.items():
             if name == 'category':
-                filtered_queryset = filtered_queryset.filter(category=attrs['value'])
-
-            # Organisation type filter
+                filtered_queryset = filtered_queryset.filter(category=value)
             if name == 'organisation_type':
-                filtered_queryset = filtered_queryset.filter(organisation__organisation_type=attrs['value'])
-
-            # Status filter
-            if name == 'status':
-                filtered_queryset = filtered_queryset.filter(status=attrs['value'])
-
-            # Service filter
+                filtered_queryset = filtered_queryset.filter(organisation__organisation_type=value)
             if name == 'service_code':
-                filtered_queryset = filtered_queryset.filter(service__service_code=attrs['value'])
-
-            # TODO - when orgs are linked to ccgs, put this in
-            # CCG Filter
-            # if name == 'ccg':
-                # filtered_queryset = filtered_queryset.filter(organisation__ccg=attrs['value'])
-
+                filtered_queryset = filtered_queryset.filter(service__service_code=value)
+            if name == 'ccg':
+                # ccg is a CCG model instance
+                filtered_queryset = filtered_queryset.filter(organisation__ccgs__id__exact=value.id)
+            if name == 'breach':
+                filtered_queryset = filtered_queryset.filter(breach=value)
         return filtered_queryset
 
 class EscalationBreaches(TemplateView):
