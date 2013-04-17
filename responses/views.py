@@ -1,7 +1,8 @@
-from django.views.generic import CreateView, TemplateView
+from django.views.generic import CreateView, TemplateView, FormView
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.shortcuts import get_object_or_404
+from django.http import HttpResponseRedirect
 
 from concurrency.exceptions import RecordModifiedError
 
@@ -11,7 +12,21 @@ from issues.models import Problem
 from issues.lib import changes_for_model
 
 from .forms import ProblemResponseForm
+from issues.forms import LookupForm
 from .models import ProblemResponse
+
+
+class ResponseLookup(FormView):
+    template_name = 'responses/response_lookup.html'
+    form_class = LookupForm
+
+    def form_valid(self, form):
+        # Calculate the url
+        context = RequestContext(self.request)
+        response_url = reverse("response-form", kwargs={'pk': form.cleaned_data['model_id']})
+        # Redirect to the url we calculated
+        return HttpResponseRedirect(response_url)
+
 
 class ResponseForm(CreateView):
 

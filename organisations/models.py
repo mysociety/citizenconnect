@@ -35,7 +35,6 @@ class CCG(MailSendMixin, UserCreationMixin, AuditedModel):
     def __unicode__(self):
         return self.name
 
-
 class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Model):
 
     name = models.TextField()
@@ -92,8 +91,10 @@ class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Mod
         if user.is_superuser:
             return True
 
-        # NHS Superusers or Moderators - YES
-        if user_in_groups(user, [auth.NHS_SUPERUSERS, auth.CASE_HANDLERS]):
+        # NHS Superusers, Moderators or customer contact centre users - YES
+        if user_in_groups(user, [auth.NHS_SUPERUSERS,
+                                 auth.CASE_HANDLERS,
+                                 auth.CUSTOMER_CONTACT_CENTRE]):
             return True
 
         # Providers in this organisation - YES

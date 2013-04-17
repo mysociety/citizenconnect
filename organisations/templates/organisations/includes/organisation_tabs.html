@@ -16,4 +16,7 @@
     {% else %}
         {% url 'public-org-problems' ods_code=organisation.ods_code cobrand=cobrand.name %}
     {% endif %}">Problems</a></li>
+
+    <li><a {% if active_tab == "lookup" %}class="active"{% endif %} href="{% url 'response-lookup' %}">Problem Lookup</a></li>
+
  </ul>
