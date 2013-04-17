@@ -52,5 +52,11 @@
     window.CitizenConnect = window.CitizenConnect || {};
     CitizenConnect.providers = {{ organisations|safe }};
 </script>
+
+<script type="text/x-underscore-template" name="hover-bubble">
+  <strong><%= nhsCentre.name %></a></strong><br>
+  <em><%= nhsCentre.problem_count %></em> Unresolved Problems<br>
+</script>
+
 <script src="{% static 'js/map.js' %}"></script>
 {% endblock extra_js %}

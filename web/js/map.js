@@ -147,10 +147,7 @@ $(document).ready(function () {
                     closeButton: false,
                     autoPan: false
                 }).setContent(
-                    // TODO - if we have to have underscore on the page for debouncing, we should
-                    // use it's templating features to make this nicer
-                    "<strong>" + nhsCentre.name + "</a></strong>" +
-                    "<br><em>" + nhsCentre.problem_count + "</em> Unresolved Problems<br>"
+                  _.template($("script[name=hover-bubble]").text(), {nhsCentre: nhsCentre})
                 )
                 .setLatLng(e.target._latlng)
                 .openOn(map);
