@@ -618,6 +618,10 @@ class ProblemManagerTests(ManagerTest):
                                                   self.new_private_moderated_problem_published,
                                                   self.escalated_public_moderated_problem_published,
                                                   self.breach_public_moderated_problem_published]
+
+        self.closed_moderated_published_problems = [self.closed_public_moderated_problem_published,
+                                                    self.closed_private_moderated_problem_published]
+
         self.all_problems = self.open_problems + self.closed_problems
         self.all_moderated_published_problems = self.open_moderated_published_problems + [self.closed_public_moderated_problem_published,
                                                                                           self.closed_private_moderated_problem_published]
@@ -643,6 +647,10 @@ class ProblemManagerTests(ManagerTest):
     def test_open_moderated_published_problems_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.open_moderated_published_problems(),
                                self.open_moderated_published_problems)
+
+    def test_closed_moderated_published_problems_returns_correct_problems(self):
+        self.compare_querysets(Problem.objects.closed_moderated_published_problems(),
+                               self.closed_moderated_published_problems)
 
     def test_all_moderated_published_problems_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.all_moderated_published_problems(),

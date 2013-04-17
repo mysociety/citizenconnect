@@ -129,6 +129,11 @@ class ProblemManager(models.Manager):
                                            publication_status=Problem.PUBLISHED,
                                            status__in=Problem.VISIBLE_STATUSES)
 
+    def closed_moderated_published_problems(self):
+        return self.closed_problems().filter(moderated=Problem.MODERATED,
+                                             publication_status=Problem.PUBLISHED,
+                                             status__in=Problem.VISIBLE_STATUSES)
+
     def all_moderated_published_problems(self):
         return super(ProblemManager, self).all().filter(moderated=Problem.MODERATED,
                                                         publication_status=Problem.PUBLISHED,
