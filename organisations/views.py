@@ -276,14 +276,17 @@ class OrganisationReviews(OrganisationAwareViewMixin,
                           TemplateView):
     template_name = 'organisations/organisation_reviews.html'
 
-class Summary(FilterMixin, TemplateView):
+class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
     template_name = 'organisations/summary.html'
 
     def get_context_data(self, **kwargs):
         context = super(Summary, self).get_context_data(**kwargs)
-        interval_filters = {}
-        for key,value in context['filters'].items():
-            interval_filters[key] = value['value']
+
+        # Build a dictionary of filters in the format we can pass
+        # into interval_counts to filter the problems we make a
+        # summary for
+        interval_filters = context['selected_filters']
+
         if interval_filters.get('status'):
             # ignore a filter request for a hidden status
             if not interval_filters['status'] in Problem.VISIBLE_STATUSES:
@@ -292,9 +295,6 @@ class Summary(FilterMixin, TemplateView):
         if not interval_filters.get('status'):
             # by default the status should filter for visible statuses
             interval_filters['status'] = tuple(Problem.VISIBLE_STATUSES)
-
-        if interval_filters.get('breach'):
-            if interval_filters.get('breach') == 'True':
 
         threshold = None
         if settings.SUMMARY_THRESHOLD:
