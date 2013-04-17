@@ -1,16 +1,24 @@
 import logging
 from mock import patch
+import os
+import sys
 
 from django.test import TestCase
 from django.core import mail
 from django.core.management import call_command
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.contrib.auth.models import User
 
 from .lib import create_test_organisation, create_test_ccg, create_test_service, create_test_instance
 from ..models import Organisation, CCG
 
+from organisations import auth
 from issues.models import Problem
+
+class DevNull(object):
+    def write(self, data):
+        pass
 
 class EmailProblemsToProviderTests(TestCase):
 
@@ -152,3 +160,36 @@ class CreateAccountsForOrganisationsAndCCGsTests(TestCase):
             self.assertEqual(users.count(), 0)
 
         logging.disable(logging.NOTSET)
+
+class CreateNonOrganisationAccountTests(TestCase):
+
+    # The fixture has a bad row that will cause the command to write to stderr -
+    # we don't want to see this output during the test run
+    def setUp(self):
+        self.old_stderr = sys.stderr
+        sys.stderr = DevNull()
+
+    def tearDown(self):
+        sys.stderr = self.old_stderr
+
+    def _call_command(self, args=[], opts={}):
+        call_command('create_non_organisation_accounts', *args, **opts)
+
+    def expect_groups(self, email, expected_groups):
+        user = User.objects.get(email=email)
+        self.assertTrue(auth.user_in_groups(user, expected_groups))
+        other_groups = [ group for group in auth.ALL_GROUPS if not group in expected_groups ]
+        for group in other_groups:
+            self.assertFalse(auth.user_in_group(user, group))
+
+    def test_happy_path(self):
+
+        self._call_command([os.path.join(settings.PROJECT_ROOT, 'organisations', 'fixtures', 'example_accounts.csv')])
+        self.expect_groups('spreadsheetsuper@example.com', [auth.NHS_SUPERUSERS])
+        self.expect_groups('spreadsheetcasehandler@example.com', [auth.CASE_HANDLERS])
+        self.expect_groups('spreadsheetcasemod@example.com', [auth.CASE_HANDLERS, auth.SECOND_TIER_MODERATORS])
+        self.expect_groups('spreadsheetqa@example.com', [auth.QUESTION_ANSWERERS])
+        self.expect_groups('spreadsheetcqc@example.com', [auth.CQC])
+        self.expect_groups('spreadsheetccc@example.com', [auth.CUSTOMER_CONTACT_CENTRE])
+        bad_row_users = User.objects.filter(email='spreadsheetbadrow@example.com')
+        self.assertEqual(0, len(bad_row_users))
