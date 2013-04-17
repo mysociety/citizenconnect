@@ -358,7 +358,7 @@ class AuthorizationTestCase(TestCase):
         self.customer_contact_centre_user = User.objects.get(pk=15)
 
         # Helpful lists for simpler testing
-        self.users_who_can_access_everything = [self.superuser, self.nhs_superuser, self.case_handler]
+        self.users_who_can_access_everything = [self.superuser, self.nhs_superuser]
 
         # Reference to the login url because lots of tests need it
         self.login_url = reverse('login')

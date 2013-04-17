@@ -31,7 +31,7 @@ class CCG(MailSendMixin, UserCreationMixin, AuditedModel):
     def default_user_group(self):
         """Group to ensure that users are members of"""
         return Group.objects.get(pk=auth.CCG)
-        
+
 
 
 class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Model):
@@ -90,8 +90,10 @@ class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Mod
         if user.is_superuser:
             return True
 
-        # NHS Superusers or Moderators - YES
-        if user_in_groups(user, [auth.NHS_SUPERUSERS, auth.CASE_HANDLERS]):
+        # NHS Superusers, Moderators or customer contact centre users - YES
+        if user_in_groups(user, [auth.NHS_SUPERUSERS,
+                                 auth.CASE_HANDLERS,
+                                 auth.CUSTOMER_CONTACT_CENTRE]):
             return True
 
         # Providers in this organisation - YES
@@ -105,7 +107,7 @@ class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Mod
         # Everyone else - NO
         return False
 
-    
+
     def save(self, *args, **kwargs):
         """
         Overriden save to calculate double metaphones for name

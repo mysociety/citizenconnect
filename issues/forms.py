@@ -154,3 +154,25 @@ class ProblemSurveyForm(forms.ModelForm):
         widgets = {
              'happy_outcome': RadioSelect(choices=SURVEY_CHOICES),
         }
+
+
+class LookupForm(forms.Form):
+    reference_number = forms.CharField(required=True)
+    model_id = forms.CharField(widget=HiddenInput(), required=False)
+
+    # TODO - this is a bit of hangover from when problems and questions
+    # could be moderated, but now it's only problems
+    def clean(self):
+        if 'reference_number' in self.cleaned_data:
+            prefix = self.cleaned_data['reference_number'][:1]
+            id = self.cleaned_data['reference_number'][1:]
+            try:
+                if prefix.upper() == Problem.PREFIX:
+                    problem = Problem.objects.all().get(pk=id)
+                    self.cleaned_data['model_id'] = problem.id
+                else:
+                    raise forms.ValidationError('Sorry, that reference number is not recognised')
+            except Problem.DoesNotExist:
+                raise forms.ValidationError('Sorry, there are no problems with that reference number')
+        return self.cleaned_data
+
