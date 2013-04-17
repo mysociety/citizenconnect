@@ -12,11 +12,17 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
+        if len(args) != 1:
+            raise RuntimeError("Usage: ./manage.py create_example_problems number_to_create")
+
         number_of_problems = int(args[0])
 
         i = 0
         existing_problems = Problem.objects.all()
         organisations = Organisation.objects.all()
+
+        if not existing_problems.count():
+            raise RuntimeError("There are no existing problems in the database to base the new example ones on")
 
         while i <= number_of_problems:
             i += 1
