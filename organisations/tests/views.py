@@ -741,14 +741,14 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
         for status_enum, status_name in Problem.STATUS_CHOICES:
             self.assertContains(resp, '<option value="{0}">{1}</option>'.format(status_enum, status_name))
     
-    # def test_summary_page_applies_threshold_from_settings(self):
-    #     with self.settings(SUMMARY_THRESHOLD=('six_months', 1)):
-    #         resp = self.client.get(self.summary_url)
-    #         self.assertContains(resp, 'Test Organisation')
-    # 
-    #     with self.settings(SUMMARY_THRESHOLD=('six_months', 2)):
-    #         resp = self.client.get(self.summary_url)
-    #         self.assertNotContains(resp, 'Test Organisation')
+    def test_summary_page_applies_threshold_from_settings(self):
+        with self.settings(SUMMARY_THRESHOLD=('six_months', 1)):
+            resp = self.client.get(self.summary_url)
+            self.assertContains(resp, 'Test Organisation')
+    
+        with self.settings(SUMMARY_THRESHOLD=('six_months', 2)):
+            resp = self.client.get(self.summary_url)
+            self.assertNotContains(resp, 'Test Organisation')
 
 
 class ProviderPickerTests(TestCase):
