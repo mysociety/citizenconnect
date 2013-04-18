@@ -687,6 +687,28 @@ class SummaryTests(AuthorizationTestCase):
             resp = self.client.get(self.summary_url)
             self.assertNotContains(resp, 'Test Organisation')
 
+
+@override_settings(SUMMARY_THRESHOLD=None)
+class PrivateNationalSummaryTests(AuthorizationTestCase):
+
+    def setUp(self):
+        super(PrivateNationalSummaryTests, self).setUp()
+        self.summary_url = reverse('private-national-summary')
+        print self.summary_url
+        create_test_instance(Problem, {'organisation': self.test_organisation})
+        create_test_instance(Problem, {'organisation': self.other_test_organisation,
+                                       'publication_status': Problem.PUBLISHED,
+                                       'moderated': Problem.MODERATED,
+                                       'status': Problem.ABUSIVE})
+        # self.login_as(self.provider)
+
+    def test_summary_page_requires_login(self):
+        expected_redirect_url = "{0}?next={1}".format(reverse("login"), self.summary_url)
+        resp = self.client.get(self.summary_url)
+        self.assertRedirects(resp, expected_redirect_url)
+
+
+
 class ProviderPickerTests(TestCase):
 
     def mock_api_response(self, data, response_code):
