@@ -13,7 +13,7 @@ from django_tables2 import RequestConfig
 from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Q, Avg
 
 # App imports
 from citizenconnect.shortcuts import render
@@ -100,7 +100,8 @@ class Map(PrivateViewMixin, TemplateView):
         context = super(Map, self).get_context_data(**kwargs)
 
         # TODO - Filter by location
-        organisations = Organisation.objects.all().order_by("id")
+        organisations = Organisation.objects.annotate(
+                average_time_to_address=Avg('problem__time_to_address'))
 
         # Check that the user is a superuser
         if context['private']:
@@ -114,6 +115,7 @@ class Map(PrivateViewMixin, TemplateView):
             organisation_dict['name'] = organisation.name
             organisation_dict['lon'] = organisation.point.coords[0]
             organisation_dict['lat'] = organisation.point.coords[1]
+            organisation_dict['average_time_to_address'] = organisation.average_time_to_address
 
             # If we're showing the private map, link to the organisation's dashboard
             if context['private']:
