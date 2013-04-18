@@ -32,11 +32,11 @@
             {% if cobrand.name == 'choices' %}
                 <a href="http://www.nhslondon.lampuat64-1.rroom.net/faq" class="btn  btn--big  btn--no-border">London</a>
             {% else %}
-                <a href="{% url 'ask-question' cobrand=cobrand.name %}" class="btn  btn--big  btn--no-border">London</a>
+                <a href="{% url 'question-form' cobrand=cobrand.name %}" class="btn  btn--big  btn--no-border">London</a>
             {% endif %}
         </div>
         <div class="g  one-half  palm-one-whole">
-            <a href="{% url 'ask-question' cobrand=cobrand.name %}" class="btn  btn--big  btn--no-border">the North East</a>
+            <a href="{% url 'question-form' cobrand=cobrand.name %}" class="btn  btn--big  btn--no-border">the North East</a>
         </div>
     </div>
 </div>
