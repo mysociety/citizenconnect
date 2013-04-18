@@ -289,8 +289,8 @@ h1, h2 { font-weight: normal; }
 .title-bold { font-weight: bold; }
 
 /** A link that stands out */
-.standout-link { color: #ff6500; font-weight: bold; text-decoration: none; }
-.standout-link:hover { color: #ff6500 / 1.1; }
+.standout-link { color: #e28c05; font-weight: bold; text-decoration: none; }
+.standout-link:hover { color: #cd7f04; }
 
 /* Remove default fieldset styles. */
 fieldset { border: 0; margin: 0 0 2.5em 0; padding: 0; }

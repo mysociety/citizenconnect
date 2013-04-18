@@ -81,10 +81,10 @@ h1, h2 { font-weight: normal; }
  * A link that stands out
  */
 .standout-link {
-    color: #ff6500;
+    color: $c-standout-link-color;
     font-weight: bold;
     text-decoration: none;
     &:hover {
-        color: #ff6500 / 1.1;
+        color: $c-standout-link-hover-color;
     }
 }
