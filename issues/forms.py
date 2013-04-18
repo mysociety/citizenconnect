@@ -35,11 +35,8 @@ class QuestionForm(IssueModelForm):
             'organisation',
             'description',
             'postcode',
-            'category',
             'reporter_name',
-            'reporter_phone',
             'reporter_email',
-            'preferred_contact_method',
         ]
 
         widgets = {
@@ -47,14 +44,9 @@ class QuestionForm(IssueModelForm):
             # Add placeholder for description
             'description': Textarea({'placeholder': 'Please write the details of your question in this box.'}),
             'postcode': TextInput(attrs={'class': 'text-input'}),
-            'category': RadioSelect(renderer=CategoryRadioFieldRenderer),
             'reporter_name': TextInput(attrs={'class': 'text-input'}),
-            # Add placeholder for phone
-            'reporter_phone': TextInput(attrs={'class': 'text-input'}),
             # Add placeholder for email
             'reporter_email': TextInput(attrs={'class': 'text-input'}),
-            # Make preferred contact method a radio button instead of a select
-            'preferred_contact_method': RadioSelect,
         }
 
 class ProblemForm(IssueModelForm):
@@ -103,7 +95,8 @@ class ProblemForm(IssueModelForm):
             'reporter_email',
             'preferred_contact_method',
             'public',
-            'public_reporter_name'
+            'public_reporter_name',
+            'relates_to_previous_problem',
         ]
 
         widgets = {
@@ -161,3 +154,25 @@ class ProblemSurveyForm(forms.ModelForm):
         widgets = {
              'happy_outcome': RadioSelect(choices=SURVEY_CHOICES),
         }
+
+
+class LookupForm(forms.Form):
+    reference_number = forms.CharField(required=True)
+    model_id = forms.CharField(widget=HiddenInput(), required=False)
+
+    # TODO - this is a bit of hangover from when problems and questions
+    # could be moderated, but now it's only problems
+    def clean(self):
+        if 'reference_number' in self.cleaned_data:
+            prefix = self.cleaned_data['reference_number'][:1]
+            id = self.cleaned_data['reference_number'][1:]
+            try:
+                if prefix.upper() == Problem.PREFIX:
+                    problem = Problem.objects.all().get(pk=id)
+                    self.cleaned_data['model_id'] = problem.id
+                else:
+                    raise forms.ValidationError('Sorry, that reference number is not recognised')
+            except Problem.DoesNotExist:
+                raise forms.ValidationError('Sorry, there are no problems with that reference number')
+        return self.cleaned_data
+

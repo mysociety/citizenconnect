@@ -14,11 +14,8 @@ class QuestionAPIForm(forms.ModelForm):
 
         fields = [
             'description',
-            'category',
             'reporter_name',
-            'reporter_phone',
             'reporter_email',
-            'preferred_contact_method',
             'source'
         ]
 
@@ -111,7 +108,8 @@ class ProblemAPIForm(forms.ModelForm):
             'publication_status',
             'source',
             'breach',
-            'commissioned'
+            'commissioned',
+            'relates_to_previous_problem',
         ]
 
         widgets = {

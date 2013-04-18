@@ -3,7 +3,7 @@ import random
 from django.db import transaction, IntegrityError
 from django.core.management.base import BaseCommand, CommandError
 
-from ...models import Problem, IssueModel
+from ...models import Problem
 from organisations.models import Organisation
 
 class Command(BaseCommand):
@@ -12,11 +12,17 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
+        if len(args) != 1:
+            raise RuntimeError("Usage: ./manage.py create_example_problems number_to_create")
+
         number_of_problems = int(args[0])
 
         i = 0
         existing_problems = Problem.objects.all()
         organisations = Organisation.objects.all()
+
+        if not existing_problems.count():
+            raise RuntimeError("There are no existing problems in the database to base the new example ones on")
 
         while i <= number_of_problems:
             i += 1
@@ -41,7 +47,7 @@ class Command(BaseCommand):
                     new_problem.moderated = 1
                     if int(random.random() * 10) < 8:
                         new_problem.publication_status = 1
-            new_problem.category= IssueModel.CATEGORY_CHOICES[int(random.random() * len(IssueModel.CATEGORY_CHOICES))][0]
+            new_problem.category= Problem.CATEGORY_CHOICES[int(random.random() * len(Problem.CATEGORY_CHOICES))][0]
             new_problem.organisation = organisations[int(random.random() * len(organisations))]
             services = new_problem.organisation.services.all()
             if len(services) > 0:

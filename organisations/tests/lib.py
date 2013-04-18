@@ -22,6 +22,7 @@ def create_test_ccg(attributes={}):
     default_attributes = {
         'name':'Test CCG',
         'code':'ABC',
+        'email': 'test-ccg@example.org',
     }
     default_attributes.update(attributes)
     instance = CCG(**dict((k,v) for (k,v) in default_attributes.items() if '__' not in k))
@@ -40,6 +41,8 @@ def create_test_organisation(attributes={}):
         'point': Point(coords['lon'], coords['lat'])
     }
     default_attributes.update(attributes)
+    if 'escalation_ccg' not in attributes:
+        default_attributes['escalation_ccg'] = create_test_ccg({"code": default_attributes['ods_code']})
     instance = Organisation(**dict((k,v) for (k,v) in default_attributes.items() if '__' not in k))
     instance.save()
     return instance
@@ -67,13 +70,15 @@ def create_test_instance(model, attributes):
         if 'organisation' not in attributes:
             # Make a dummy organisation
             attributes['organisation'] = create_test_organisation()
+        if 'category' not in attributes:
+            attributes['category'] = 'staff'
+        if 'preferred_contact_method' not in attributes:
+            attributes['preferred_contact_method'] = 'email'
 
     default_attributes = {
         'description': 'A test problem',
-        'category': 'staff',
         'reporter_name': 'Test User',
         'reporter_email': 'reporter@example.com',
-        'preferred_contact_method': 'email',
         'status': model.NEW
     }
     default_attributes.update(attributes)
@@ -280,14 +285,16 @@ class AuthorizationTestCase(TestCase):
 
         # CCGs
         self.test_ccg = create_test_ccg()
-        self.other_test_ccg = create_test_ccg({'code': 'XYZ'})
+        self.other_test_ccg = create_test_ccg({'name': 'other test ccg', 'code': 'XYZ'})
 
         # Organisations
-        self.test_organisation = create_test_organisation({'ccg': self.test_ccg,
-                                                           'organisation_type': 'hospitals'})
+        self.test_organisation = create_test_organisation({'organisation_type': 'hospitals',
+                                                           'escalation_ccg': self.test_ccg})
+        self.test_organisation.ccgs.add(self.test_ccg)
         self.other_test_organisation = create_test_organisation({'ods_code': '12345',
-                                                                 'ccg': self.other_test_ccg,
-                                                                 'name': 'Other Test Organisation'})
+                                                                 'name': 'Other Test Organisation',
+                                                                 'escalation_ccg': self.other_test_ccg})
+        self.other_test_organisation.ccgs.add(self.other_test_ccg)
 
         self.test_password = 'password'
 
@@ -347,8 +354,11 @@ class AuthorizationTestCase(TestCase):
         self.other_test_ccg.users.add(self.other_ccg_user)
         self.other_test_ccg.save()
 
+        # A Customer Contact Centre user
+        self.customer_contact_centre_user = User.objects.get(pk=15)
+
         # Helpful lists for simpler testing
-        self.users_who_can_access_everything = [self.superuser, self.nhs_superuser, self.case_handler]
+        self.users_who_can_access_everything = [self.superuser, self.nhs_superuser]
 
         # Reference to the login url because lots of tests need it
         self.login_url = reverse('login')

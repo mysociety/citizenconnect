@@ -6,8 +6,6 @@
             {% if object.issue_type == 'Problem' %}
                 <p class="meta-data__sub-title  g  one-half  palm-one-whole">{{ object.service|default_if_none:"General problem" }}</p>
                 <p class="g  one-half  palm-one-whole  align-right--not-palm"><span class="meta-data-label">Category</span> {{ object.get_category_display }}</p>
-            {% else %}
-                <p class="g  one-whole"><span class="meta-data-label">Category</span> {{ object.get_category_display }}</p>
             {% endif %}
         </div>
     </div>
@@ -26,6 +24,9 @@
                     {{ object.get_publication_status_display}},&nbsp;
                     {% if object.requires_second_tier_moderation %}
                         Requires second tier moderation,&nbsp;
+                    {% endif %}
+                    {% if object.relates_to_previous_problem %}
+                        Relates to previous problem,&nbsp;
                     {% endif %}
                     {% if object.commissioned != None %}
                         {{ object.get_commissioned_display }},&nbsp;
@@ -74,6 +75,15 @@
         {% endif %}
     </div>
 </div>
+
+{% if object.issue_type == "Problem" and private and object.moderated_description %}
+<div class="meta-data-wrap">
+    <h3 class="meta-data-label">Moderated Details</h3>
+    <div class="islet  islet--squared">
+        <p>{{ object.moderated_description }}</p>
+    </div>
+</div>
+{% endif %}
 
 <div class="meta-data-wrap">
     {% if object.issue_type == 'Problem' %}

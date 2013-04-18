@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load url from future %}
+{% load staticfiles %}
+{% load render_table from django_tables2 %}
+
+{% block title %}Breach Problems{% endblock %}
+
+{% block bodyclasses %}escalation-breaches{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1>Breach Problems</h1>
+</div>
+
+{% include 'organisations/includes/escalation_tabs.html' with active_tab='breaches' %}
+
+{% render_table table 'organisations/includes/table.html' %}
+
+{% endblock %}

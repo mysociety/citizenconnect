@@ -42,6 +42,7 @@ $c-table-heading-link-active-color: $c-aquablue;
         $c-table-icon-circle-color: $c-darkgrey;
        $c-table-icon-warning-color: $c-nhs_red;
         $c-table-icon-hidden-color: $c-white;
+      $c-table-row-highlight-color: lighten($c-nhs_red-tint, 40%);
 
 /**
  * _typography.scss

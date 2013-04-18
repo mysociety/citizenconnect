@@ -56,6 +56,7 @@ class ProblemCreateFormTests(TestCase):
         self.assertEqual(problem.reporter_name, self.uuid)
         self.assertEqual(problem.reporter_email, 'steve@mysociety.org')
         self.assertEqual(problem.preferred_contact_method, 'phone')
+        self.assertEqual(problem.relates_to_previous_problem, False)
 
     def test_problem_form_respects_name_privacy(self):
         self.test_problem['privacy'] = ProblemForm.PRIVACY_PRIVATE_NAME
@@ -119,11 +120,8 @@ class QuestionCreateFormTests(TestCase):
         self.test_question = {
             'description': 'This is a question',
             'postcode': 'BS32 4NF',
-            'category': 'medicines',
             'reporter_name': self.uuid,
             'reporter_email': 'steve@mysociety.org',
-            'reporter_phone': '01111 111 111',
-            'preferred_contact_method': 'phone',
             'agree_to_terms': True
         }
 
@@ -142,27 +140,11 @@ class QuestionCreateFormTests(TestCase):
         self.assertEqual(question.postcode, 'BS324NF')
         self.assertEqual(question.reporter_name, self.uuid)
         self.assertEqual(question.reporter_email, 'steve@mysociety.org')
-        self.assertEqual(question.preferred_contact_method, 'phone')
 
-    def test_question_form_errors_without_email_or_phone(self):
-        del self.test_question['reporter_email']
-        del self.test_question['reporter_phone']
-        resp = self.client.post(self.form_url, self.test_question)
-        self.assertFormError(resp, 'form', None, 'You must provide either a phone number or an email address')
-
-    def test_question_form_accepts_phone_only(self):
+    def test_question_form_errors_without_email(self):
         del self.test_question['reporter_email']
         resp = self.client.post(self.form_url, self.test_question)
-        question = Question.objects.get(reporter_name=self.uuid)
-        self.assertIsNotNone(question)
-
-    def test_question_form_accepts_email_only(self):
-        del self.test_question['reporter_phone']
-        # Set the preferred contact method to email, else the validation will fail
-        self.test_question['preferred_contact_method'] = Question.CONTACT_EMAIL
-        resp = self.client.post(self.form_url, self.test_question)
-        question = Question.objects.get(reporter_name=self.uuid)
-        self.assertIsNotNone(question)
+        self.assertFormError(resp, 'form', 'reporter_email', 'This field is required.')
 
     def test_question_form_validates_postcode(self):
         self.test_question['postcode'] = 'XXX'

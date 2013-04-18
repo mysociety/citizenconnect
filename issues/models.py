@@ -1,11 +1,19 @@
+import logging
+logger = logging.getLogger(__name__)
+
 from datetime import datetime, timedelta
 import hmac, hashlib
 
 from django.db import models
 from django.conf import settings
+from django.core import mail
 from django.core.exceptions import ValidationError
 from django.db.models import Q
+from django.template import Context
+from django.template.loader import get_template
 from django.utils.timezone import utc
+
+import dirtyfields
 
 from concurrency.fields import IntegerVersionField
 from concurrency.api import concurrency_check
@@ -18,14 +26,6 @@ class IssueModel(AuditedModel):
     Abstract model for base functionality of issues sent to NHS Organisations
     """
 
-    CONTACT_PHONE = 'phone'
-    CONTACT_EMAIL = 'email'
-
-    CONTACT_CHOICES = (
-        (CONTACT_EMAIL, u'By Email'),
-        (CONTACT_PHONE, u'By Phone')
-    )
-
     SOURCE_PHONE = 'phone'
     SOURCE_EMAIL = 'email'
     SOURCE_SMS = 'sms'
@@ -36,41 +36,10 @@ class IssueModel(AuditedModel):
         (SOURCE_SMS, 'SMS')
     )
 
-    CATEGORY_CHOICES = (
-        (u'staff', u'Staff Attitude'),
-        (u'access', u'Access to Service'),
-        (u'delays', u'Delays'),
-        (u'treatment', u'Your Treatment'),
-        (u'communication', u'Communication'),
-        (u'cleanliness', u'Cleanliness'),
-        (u'equipment', u'Equipment'),
-        (u'medicines', u'Medicines'),
-        (u'dignity', u'Dignity and Privacy'),
-        (u'parking', u'Parking'),
-        (u'lostproperty', u'Lost Property'),
-        (u'other', u'Other'),
-    )
-
-    CATEGORY_DESCRIPTIONS = {'staff': 'Bedside manner and attitude of staff',
-                             'access': 'Difficulty getting appointments, long waiting times',
-                             'delays': 'Delays in care, e.g. referrals and test results',
-                             'treatment': 'Wrong advice / unsafe care / refusal of treatment / consent',
-                             'communication': 'Communications and administration e.g. letters',
-                             'cleanliness': 'Cleanliness and facilities',
-                             'equipment': 'Problems with equipment, aids and devices',
-                             'medicines': 'Problems with medicines',
-                             'dignity': 'Privacy, dignity, confidentiality',
-                             'parking': 'Problems with parking / charges',
-                             'lostproperty': 'Lost property',
-                             'other': ''}
 
     description = models.TextField(verbose_name='')
     reporter_name = models.CharField(max_length=200, blank=False, verbose_name='')
-    reporter_phone = models.CharField(max_length=50, blank=True, verbose_name='')
-    reporter_email = models.CharField(max_length=254, blank=True, verbose_name='')
-    preferred_contact_method = models.CharField(max_length=100, choices=CONTACT_CHOICES, default=CONTACT_EMAIL)
     source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True)
-    mailed = models.BooleanField(default=False, blank=False)
 
     @property
     def issue_type(self):
@@ -80,20 +49,6 @@ class IssueModel(AuditedModel):
         # TODO - this could be a custom template filter instead of a model property
         return self.__class__.__name__
 
-    def clean(self):
-        """
-        Custom model validation
-        """
-
-        # Check that one of phone or email is provided
-        if not self.reporter_phone and not self.reporter_email:
-            raise ValidationError('You must provide either a phone number or an email address')
-
-        # Check that whichever prefered_contact_method is chosen, they actually provided it
-        if self.preferred_contact_method == self.CONTACT_EMAIL and not self.reporter_email:
-            raise ValidationError('You must provide an email address if you prefer to be contacted by email')
-        elif self.preferred_contact_method == self.CONTACT_PHONE and not self.reporter_phone:
-            raise ValidationError('You must provide a phone number if you prefer to be contacted by phone')
 
     class Meta:
         abstract = True
@@ -128,11 +83,7 @@ class Question(IssueModel):
     # Which attrs are interesting to compare for revisions
     REVISION_ATTRS = ['status']
 
-    category = models.CharField(max_length=100,
-                                choices=IssueModel.CATEGORY_CHOICES,
-                                default='general',
-                                db_index=True,
-                                verbose_name='Please select the category that best describes your question')
+    reporter_email = models.CharField(max_length=254, blank=False, verbose_name='')
     status = models.IntegerField(default=NEW, choices=STATUS_CHOICES, db_index=True)
     postcode = models.CharField(max_length=25, blank=True)
     organisation = models.ForeignKey('organisations.Organisation', blank=True, null=True)
@@ -182,11 +133,14 @@ class ProblemManager(models.Manager):
         return super(ProblemManager, self).all().filter(requires_second_tier_moderation=True)
 
     def open_escalated_problems(self):
-        # ESCALATION_STATUSES is a subset of OPEN_STATUSES, so
-        # we don't need to filter for open too
-        return super(ProblemManager, self).all().filter(Q(status__in=Problem.ESCALATION_STATUSES) | Q(breach=True))
+        return super(ProblemManager, self).all().filter(Q(status__in=Problem.ESCALATION_STATUSES) &
+                                                        Q(status__in=Problem.OPEN_STATUSES))
 
-class Problem(IssueModel):
+    def open_unescalated_problems(self):
+        return super(ProblemManager, self).all().filter(Q(status__in=Problem.OPEN_STATUSES) &
+                                                        Q(status__in=Problem.NON_ESCALATION_STATUSES))
+
+class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
     # Custom manager
     objects = ProblemManager()
 
@@ -220,6 +174,7 @@ class Problem(IssueModel):
     # Calculated status sets
     ALL_STATUSES = [status for status, description in STATUS_CHOICES]
     OPEN_STATUSES = BASE_OPEN_STATUSES + ESCALATION_STATUSES
+    NON_ESCALATION_STATUSES = [status for status in ALL_STATUSES if status not in ESCALATION_STATUSES]
     VISIBLE_STATUSES = [status for status in ALL_STATUSES if status not in HIDDEN_STATUSES]
     VISIBLE_STATUS_CHOICES = [(status, description) for status, description in STATUS_CHOICES if status in VISIBLE_STATUSES]
 
@@ -241,6 +196,42 @@ class Problem(IssueModel):
     COMMISSIONED_CHOICES = ((LOCALLY_COMMISSIONED, "Locally Commissioned"),
                                    (NATIONALLY_COMMISSIONED, "Nationally Commissioned"))
 
+    CATEGORY_CHOICES = (
+       (u'staff', u'Staff Attitude'),
+       (u'access', u'Access to Service'),
+       (u'delays', u'Delays'),
+       (u'treatment', u'Your Treatment'),
+       (u'communication', u'Communication'),
+       (u'cleanliness', u'Cleanliness'),
+       (u'equipment', u'Equipment'),
+       (u'medicines', u'Medicines'),
+       (u'dignity', u'Dignity and Privacy'),
+       (u'parking', u'Parking'),
+       (u'lostproperty', u'Lost Property'),
+       (u'other', u'Other'),
+    )
+
+    CATEGORY_DESCRIPTIONS = {'staff': 'Bedside manner and attitude of staff',
+                            'access': 'Difficulty getting appointments, long waiting times',
+                            'delays': 'Delays in care, e.g. referrals and test results',
+                            'treatment': 'Wrong advice / unsafe care / refusal of treatment / consent',
+                            'communication': 'Communications and administration e.g. letters',
+                            'cleanliness': 'Cleanliness and facilities',
+                            'equipment': 'Problems with equipment, aids and devices',
+                            'medicines': 'Problems with medicines',
+                            'dignity': 'Privacy, dignity, confidentiality',
+                            'parking': 'Problems with parking / charges',
+                            'lostproperty': 'Lost property',
+                            'other': ''}
+
+    CONTACT_PHONE = 'phone'
+    CONTACT_EMAIL = 'email'
+
+    CONTACT_CHOICES = (
+        (CONTACT_EMAIL, u'By Email'),
+        (CONTACT_PHONE, u'By Phone')
+    )
+
     # Names for transitions between statuses we might want to print
     TRANSITIONS = {
         'status': {
@@ -261,8 +252,11 @@ class Problem(IssueModel):
     # The order of these determines the order they are output as a string
     REVISION_ATTRS = ['moderated', 'publication_status', 'status']
 
+    reporter_phone = models.CharField(max_length=50, blank=True, verbose_name='')
+    reporter_email = models.CharField(max_length=254, blank=True, verbose_name='')
+    preferred_contact_method = models.CharField(max_length=100, choices=CONTACT_CHOICES, default=CONTACT_EMAIL)
     category = models.CharField(max_length=100,
-                                choices=IssueModel.CATEGORY_CHOICES,
+                                choices=CATEGORY_CHOICES,
                                 default='other',
                                 db_index=True,
                                 verbose_name='Please select the category that best describes your problem')
@@ -295,8 +289,14 @@ class Problem(IssueModel):
     survey_sent = models.DateTimeField(null=True, blank=True)
     COBRAND_CHOICES = [(cobrand, cobrand) for cobrand in settings.ALLOWED_COBRANDS]
     cobrand = models.CharField(max_length=30, blank=False, choices=COBRAND_CHOICES)
+    mailed = models.BooleanField(default=False, blank=False)
+    relates_to_previous_problem = models.BooleanField(default=False, blank=False)
 
     version = IntegerVersionField()
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('problem-view', (),  {'pk': self.id, 'cobrand': 'choices'} )
 
     @property
     def reference_number(self):
@@ -327,6 +327,22 @@ class Problem(IssueModel):
             return self.created + timedelta(minutes=self.time_to_address)
         else:
             return None
+
+    def clean(self):
+        """
+        Custom model validation
+        """
+
+        # Check that one of phone or email is provided
+        if not self.reporter_phone and not self.reporter_email:
+            raise ValidationError('You must provide either a phone number or an email address')
+
+        # Check that whichever prefered_contact_method is chosen, they actually provided it
+        if self.preferred_contact_method == self.CONTACT_EMAIL and not self.reporter_email:
+            raise ValidationError('You must provide an email address if you prefer to be contacted by email')
+        elif self.preferred_contact_method == self.CONTACT_PHONE and not self.reporter_phone:
+            raise ValidationError('You must provide a phone number if you prefer to be contacted by phone')
+
 
     def summarise(self, field):
         summary_length = 30
@@ -363,7 +379,26 @@ class Problem(IssueModel):
         if self.created:
             self.set_time_to_values()
 
+        # capture the old state of the problem to use after the actual save has
+        # run. If there is no value it has not been changed since the last save,
+        # so use the current value. Or use None if this is a new entry.
+        if self.pk:
+            previous_status_value = self.get_dirty_fields().get('status', self.status)
+        else:
+            previous_status_value = None
+
         super(Problem, self).save(*args, **kwargs) # Call the "real" save() method.
+
+        # This should be run by the post-save signal, but it does not seem to
+        # run. Adding it here manually to get it working. See https://github.com/smn/django-dirtyfields/blob/master/src/dirtyfields/dirtyfields.py
+        # for the code that should run. This is why django-dirtyfields is pinned to 0.1
+        #
+        # Slightly changed contents of dirtyfields.reset_state:
+        self._original_state = self._as_dict()
+
+        # If we are now ESCALATED, but were not before the save, send email
+        if self.status == self.ESCALATED and previous_status_value != self.ESCALATED:
+            self.send_escalation_email()
 
     def check_token(self, token):
         try:
@@ -390,3 +425,43 @@ class Problem(IssueModel):
         days_in_minutes = timedelta.days * 60 * 24
         seconds_in_minutes = timedelta.seconds / 60
         return days_in_minutes + seconds_in_minutes
+
+
+    def send_escalation_email(self):
+        """
+        Send the escalation email. Throws exception if status is not 'ESCALATED'.
+        """
+        
+        # Safety check to prevent accidentally sending emails when not appropriate
+        if self.status != self.ESCALATED:
+            raise ValueError("Problem status of '{0}' is not 'ESCALATED'".format(self))
+        
+        # gather the templates and create the context for them
+        subject_template = get_template('issues/escalation_email_subject.txt')
+        message_template = get_template('issues/escalation_email_message.txt')
+            
+        context = Context({
+            'object':        self,
+            'site_base_url': settings.SITE_BASE_URL
+        })
+            
+        logger.info('Sending escalation email for {0}'.format(self))
+            
+        kwargs = dict(
+            subject        = subject_template.render(context),
+            message        = message_template.render(context),
+        )
+            
+        if self.commissioned == self.LOCALLY_COMMISSIONED:
+            # Send email to the CCG
+            self.organisation.escalation_ccg.send_mail(**kwargs)
+        elif self.commissioned == self.NATIONALLY_COMMISSIONED:
+            # send email to CCC
+            mail.send_mail(
+                recipient_list=settings.CUSTOMER_CONTACT_CENTRE_EMAIL_ADDRESSES,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                **kwargs
+            )
+        else:
+            raise ValueError("commissioned must be set to select destination for escalation email for {0}".format(self))
+

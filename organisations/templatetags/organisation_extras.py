@@ -1,7 +1,9 @@
 # encoding: utf-8
-
 from __future__ import division
 from django import template
+from django.forms import ChoiceField, TypedChoiceField, ModelChoiceField
+from django.utils.encoding import force_unicode
+
 register = template.Library()
 
 @register.filter(is_safe=True)
@@ -32,6 +34,13 @@ def formatted_boolean(boolean):
         return "False"
     else:
         return None
+
+@register.filter(is_safe=True)
+def row_classes(table, record):
+    try:
+        return table.row_classes(record)
+    except AttributeError:
+        return ""
 
 def paginator(context, adjacent_pages=2):
     """Base function for an ellipsis-capable paginator"""
@@ -86,3 +95,20 @@ def table_paginator(context, adjacent_pages=2):
     return pagination_context
 
 register.inclusion_tag('organisations/includes/table_paginator.html', takes_context=True)(table_paginator)
+
+@register.filter(name='display_value')
+def display_value(field):
+    """
+    Returns the displayed value for this BoundField, as rendered in widgets.
+    """
+    value = field.value()
+    if isinstance(field.field, ChoiceField) or \
+       isinstance(field.field, TypedChoiceField) or \
+       isinstance(field.field, ModelChoiceField):
+        for (val, desc) in field.field.choices:
+            # Have to do a string comparison because value will be a string
+            # This is what the Select widget does too, honest:
+            # https://github.com/django/django/blob/1.4.3/django/forms/widgets.py#L554-L555
+            if force_unicode(val) == value:
+                return desc
+    return value

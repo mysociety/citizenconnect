@@ -6,9 +6,60 @@ from concurrency.utils import ConcurrencyTestMixin
 
 # App imports
 from issues.models import Problem, Question
-from organisations.tests.lib import create_test_instance, create_test_organisation, AuthorizationTestCase
-
 from .models import ProblemResponse
+
+from organisations.tests.lib import create_test_instance, create_test_organisation, AuthorizationTestCase
+from moderation.tests.lib import BaseModerationTestCase
+
+
+# from organisations.models import Organisation
+
+
+class LookupFormTests(BaseModerationTestCase):
+
+    def setUp(self):
+        super(LookupFormTests, self).setUp()
+        self.closed_problem = create_test_instance(Problem, {'organisation':self.test_organisation,
+                                                             'status': Problem.RESOLVED})
+        self.moderated_problem = create_test_instance(Problem, {'organisation':self.test_organisation,
+                                                                'moderated': Problem.MODERATED})
+        self.login_as(self.case_handler)
+
+        self.lookup_url           = reverse('response-lookup')
+        self.problem_response_url = reverse('response-form', kwargs={'pk':self.test_problem.id})
+
+    def test_happy_path(self):
+        resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.test_problem.id)})
+        self.assertRedirects(resp, self.problem_response_url)
+
+    def test_obvious_correction(self):
+        resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX.lower(), self.test_problem.id)})
+        self.assertRedirects(resp, self.problem_response_url)
+
+    def test_form_rejects_empty_submissions(self):
+        resp = self.client.post(self.lookup_url, {})
+        self.assertFormError(resp, 'form', 'reference_number', 'This field is required.')
+
+    def test_form_rejects_unknown_prefixes(self):
+        resp = self.client.post(self.lookup_url, {'reference_number': 'a123'})
+        self.assertFormError(resp, 'form', None, 'Sorry, that reference number is not recognised')
+
+    def test_form_rejects_unknown_problems(self):
+        resp = self.client.post(self.lookup_url, {'reference_number': '{0}12300'.format(Problem.PREFIX)})
+        self.assertFormError(resp, 'form', None, 'Sorry, there are no problems with that reference number')
+
+    def test_form_rejects_questions(self):
+        resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Question.PREFIX, self.test_question.id)})
+        self.assertFormError(resp, 'form', None, 'Sorry, that reference number is not recognised')
+
+    def test_form_allows_moderated_problems(self):
+        resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.moderated_problem.id)})
+        self.assertRedirects(resp, '/private/response/{0}'.format(self.moderated_problem.id))
+
+    def test_form_allows_closed_problems(self):
+        resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.closed_problem.id)})
+        self.assertRedirects(resp, '/private/response/{0}'.format(self.closed_problem.id))
+
 
 class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
 
@@ -210,6 +261,12 @@ class ResponseFormViewTests(AuthorizationTestCase):
         resp = self.client.get(self.response_form_url)
         self.assertEqual(resp.status_code, 403)
 
+    def test_customer_contact_centre_users_can_respond(self):
+        self.client.logout()
+        self.login_as(self.customer_contact_centre_user)
+        resp = self.client.get(self.response_form_url)
+        self.assertEqual(resp.status_code, 200)
+
     def test_version_cleared_when_form_valid_even_if_no_response(self):
         # The view has to call the unset method when no response is given
         # because it doesn't call form.save()
@@ -228,6 +285,49 @@ class ResponseFormViewTests(AuthorizationTestCase):
         resp = self.client.post(self.response_form_url, test_form_values)
         self.assertEqual(resp.status_code, 200)
         self.assertFalse(self.problem.id in self.client.session['object_versions'])
+
+    def test_ISSUE_344_problem_response_access_different_to_problem_access(self):
+        # There was a bug where access to the response page was calling
+        # organisations.auth.check_problem_access(), but for published
+        # public problems, that returns true for _everyone_, so any
+        # authenticated user could respond (authenticated only because we
+        # had login_required on the view)
+
+        # Add a public published problem
+        public_published_problem = create_test_instance(Problem,
+                                                        {
+                                                            'organisation': self.test_organisation,
+                                                            'public': True,
+                                                            'status': Problem.ACKNOWLEDGED,
+                                                            'publication_status': Problem.PUBLISHED,
+                                                            'moderated': Problem.MODERATED
+                                                        })
+        form_which_should_403_for_other_providers = reverse('response-form', kwargs={'pk':public_published_problem.id})
+        self.client.logout()
+        self.login_as(self.other_provider)
+        resp = self.client.get(form_which_should_403_for_other_providers)
+        self.assertEqual(resp.status_code, 403) # This was a 200 with the bug
+
+    def test_response_form_contains_moderated_description_and_description(self):
+        # When a superuser is viewing the page, if there is a moderated
+        # description then that should be shown in addition to the regular
+        # description.
+        moderated_problem = create_test_instance(Problem,
+            {
+                'organisation': self.test_organisation,
+                'public': True,
+                'status': Problem.ACKNOWLEDGED,
+                'publication_status': Problem.PUBLISHED,
+                'moderated': Problem.MODERATED,
+                'description': "A description",
+                'moderated_description': "A moderated description",
+            })
+
+        response_form_url = reverse('response-form', kwargs={'pk':moderated_problem.id})
+        resp = self.client.get(response_form_url)
+        self.assertContains(resp, moderated_problem.description)
+        self.assertContains(resp, moderated_problem.moderated_description)
+
 
 class ResponseModelTests(TransactionTestCase, ConcurrencyTestMixin):
 

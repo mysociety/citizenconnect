@@ -3,7 +3,7 @@ from django.utils.html import conditional_escape
 from django.utils.encoding import force_unicode
 from django.utils.safestring import mark_safe
 
-from .models import IssueModel
+from .models import Problem
 
 class CategoryRadioFieldRenderer(RadioFieldRenderer):
     """
@@ -33,8 +33,8 @@ class CategoryRadioInput(RadioInput):
         name = name or self.name
         value = value or self.value
         attrs = attrs or self.attrs
-        if self.choice_value in IssueModel.CATEGORY_DESCRIPTIONS:
-            description = IssueModel.CATEGORY_DESCRIPTIONS[self.choice_value] or ''
+        if self.choice_value in Problem.CATEGORY_DESCRIPTIONS:
+            description = Problem.CATEGORY_DESCRIPTIONS[self.choice_value] or ''
         else:
             description = ''
         if 'id' in self.attrs:

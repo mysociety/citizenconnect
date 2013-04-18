@@ -3,6 +3,8 @@ from random import randint
 from mock import patch
 
 from django.test import TestCase, TransactionTestCase
+from django.conf import settings
+from django.core import mail
 from django.core.exceptions import ValidationError
 from django.utils.timezone import utc
 
@@ -66,6 +68,14 @@ class ProblemTestCase(AuthorizationTestCase):
 
 class ProblemModelTests(ProblemTestCase):
 
+
+    def test_get_absolute_url(self):
+        self.test_problem.save()
+        self.assertEqual(
+            self.test_problem.get_absolute_url(),
+            '/choices/problem/' + str(self.test_problem.id)
+        )
+
     def test_has_prefix_property(self):
         self.assertEqual(Problem.PREFIX, 'P')
         self.assertEqual(self.test_problem.PREFIX, 'P')
@@ -117,6 +127,9 @@ class ProblemModelTests(ProblemTestCase):
 
     def test_defaults_to_not_mailed(self):
         self.assertFalse(self.test_problem.mailed)
+
+    def test_defaults_to_not_related_to_previous_problem(self):
+        self.assertFalse(self.test_problem.relates_to_previous_problem)
 
     def test_defaults_to_hidden(self):
         self.assertEqual(self.test_problem.publication_status, Problem.HIDDEN)
@@ -245,6 +258,7 @@ class ProblemModelTimeToTests(ProblemTestCase):
 
     def test_does_not_set_time_to_ack_when_saved_in_escalated_status_and_time_to_ack_not_set(self):
         self.test_problem.status = Problem.ESCALATED
+        self.test_problem.commissioned = Problem.LOCALLY_COMMISSIONED
         self.test_problem.save()
         self.assertEqual(self.test_problem.time_to_acknowledge, None)
 
@@ -275,6 +289,7 @@ class ProblemModelTimeToTests(ProblemTestCase):
 
     def test_does_not_set_time_to_address_when_saved_in_escalated_status_and_time_to_address_not_set(self):
         self.test_problem.status = Problem.ESCALATED
+        self.test_problem.commissioned = Problem.LOCALLY_COMMISSIONED
         self.test_problem.save()
         self.assertEqual(self.test_problem.time_to_address, None)
 
@@ -297,15 +312,117 @@ class ProblemModelConcurrencyTests(TransactionTestCase, ConcurrencyTestMixin):
                             'status': Problem.NEW}
 
 
+
+class ProblemModelEscalationTests(ProblemTestCase):
+
+    def setUp(self):
+        super(ProblemModelEscalationTests, self).setUp()        
+        self.test_organisation.email = 'test@example.org'
+        self.test_organisation.save()
+
+        self.test_organisation.escalation_ccg.email = 'ccg@example.org'
+        self.test_organisation.save()
+
+    def test_send_escalation_email_method_raises_when_not_escalated(self):
+        problem = self.test_problem
+        self.assertTrue( problem.status != Problem.ESCALATED )
+        self.assertRaises(ValueError, problem.send_escalation_email)
+
+    def test_send_escalation_email_method_not_commissioned(self):
+        problem = self.test_problem
+        problem.status = Problem.ESCALATED
+        problem.commissioned = None # deliberately not set
+
+        self.assertRaises(ValueError, problem.send_escalation_email)
+
+    def test_send_escalation_email_method_locally_commisioned(self):
+        problem = self.test_problem
+        problem.status = Problem.ESCALATED
+        problem.commissioned = Problem.LOCALLY_COMMISSIONED
+
+        problem.send_escalation_email()
+    
+        self.assertEqual(len(mail.outbox), 2)
+    
+        intro_email      = mail.outbox[0]
+        escalation_email = mail.outbox[1]
+    
+        self.assertTrue( "Problem has been escalated" in escalation_email.subject )
+        self.assertEqual( escalation_email.to, ['ccg@example.org'] )
+
+    def test_send_escalation_email_method_nationally_commissioned(self):
+        problem = self.test_problem
+        problem.status = Problem.ESCALATED
+        problem.commissioned = Problem.NATIONALLY_COMMISSIONED
+
+        problem.send_escalation_email()
+    
+        self.assertEqual(len(mail.outbox), 1)
+    
+        escalation_email = mail.outbox[0]
+    
+        self.assertTrue( "Problem has been escalated" in escalation_email.subject )
+        self.assertEqual( escalation_email.to, settings.CUSTOMER_CONTACT_CENTRE_EMAIL_ADDRESSES )
+
+    def test_send_escalation_email_called_on_save(self):
+        problem = self.test_problem
+        
+        with patch.object(problem, 'send_escalation_email') as mocked_send:
+
+            # Save the problem for the first time, should not send
+            self.assertTrue(problem.status != Problem.ESCALATED)
+            problem.save()
+            self.assertFalse( mocked_send.called )
+
+            # change the status to Escalated
+            problem.status = Problem.ESCALATED
+            problem.save()
+            self.assertTrue( mocked_send.called )
+
+            # Save it again
+            mocked_send.reset_mock()
+            self.assertTrue(problem.status == Problem.ESCALATED)
+            problem.save()
+            self.assertFalse( mocked_send.called )
+
+            # Change it to not escalated
+            mocked_send.reset_mock()
+            problem.status = Problem.ACKNOWLEDGED
+            problem.save()
+            self.assertFalse( mocked_send.called )
+
+            # Escalate again
+            mocked_send.reset_mock()
+            problem.status = Problem.ESCALATED
+            problem.save()
+            self.assertTrue( mocked_send.called )
+
+    def test_send_escalation_email_called_on_create_escalated(self):
+        problem = Problem(
+            organisation=self.test_organisation,
+            description='A Test Problem',
+            category='cleanliness',
+            reporter_name='Test User',
+            reporter_email='reporter@example.com',
+            reporter_phone='01111 111 111',
+            public=True,
+            public_reporter_name=True,
+            preferred_contact_method=Problem.CONTACT_EMAIL,
+            status=Problem.ESCALATED
+        )
+        
+        # save object
+        with patch.object(problem, 'send_escalation_email') as mocked_send:
+            problem.save()
+            self.assertTrue( mocked_send.called )
+
+
 class QuestionModelTests(TestCase):
 
     def setUp(self):
         self.test_question = Question(description='A Test Question',
-                                    category='general',
                                     reporter_name='Test User',
                                     reporter_email='reporter@example.com',
-                                    reporter_phone='01111 111 111',
-                                    preferred_contact_method=Question.CONTACT_EMAIL,
                                     status=Question.NEW)
 
     def test_has_prefix_property(self):
@@ -314,51 +431,6 @@ class QuestionModelTests(TestCase):
 
     def test_has_reference_number_property(self):
         self.assertEqual(self.test_question.reference_number, 'Q{0}'.format(self.test_question.id))
-
-    def test_validates_phone_or_email_present(self):
-        # Remove reporter email, should be fine as phone is set
-        self.test_question.reporter_email = None
-        # Set the preferred contact method to phone, else the validation will fail
-        self.test_question.preferred_contact_method = Question.CONTACT_PHONE
-        self.test_question.clean()
-
-        # Add email back in and remove phone, should also be fine
-        self.test_question.reporter_email = 'reporter@example.com'
-        # Set the preferred contact method to email, else the validation will fail
-        self.test_question.preferred_contact_method = Question.CONTACT_EMAIL
-        self.test_question.reporter_phone = None
-        self.test_question.clean()
-
-        # Remove both, it should error
-        self.test_question.reporter_phone = None
-        self.test_question.reporter_email = None
-        with self.assertRaises(ValidationError) as context_manager:
-            self.test_question.clean()
-
-        self.assertEqual(context_manager.exception.messages[0], 'You must provide either a phone number or an email address')
-
-    def test_validates_contact_method_given(self):
-        # Remove email and set preferred contact method to email
-        self.test_question.reporter_email = None
-        self.test_question.preferred_contact_method = Problem.CONTACT_EMAIL
-
-        with self.assertRaises(ValidationError) as context_manager:
-            self.test_question.clean()
-
-        self.assertEqual(context_manager.exception.messages[0], 'You must provide an email address if you prefer to be contacted by email')
-
-        # Remove phone and set preferred contact method to phone
-        self.test_question.reporter_email = 'reporter@example.com'
-        self.test_question.reporter_phone = None
-        self.test_question.preferred_contact_method = Problem.CONTACT_PHONE
-
-        with self.assertRaises(ValidationError) as context_manager:
-            self.test_question.clean()
-
-        self.assertEqual(context_manager.exception.messages[0], 'You must provide a phone number if you prefer to be contacted by phone')
-
-    def test_defaults_to_not_mailed(self):
-        self.assertFalse(self.test_question.mailed)
 
 class ManagerTest(TestCase):
 
@@ -456,14 +528,16 @@ class ProblemManagerTests(ManagerTest):
             'public':True,
             'moderated':Problem.MODERATED,
             'publication_status':Problem.PUBLISHED,
-            'status': Problem.ESCALATED
+            'status': Problem.ESCALATED,
+            'commissioned': Problem.LOCALLY_COMMISSIONED,
         })
 
         # Unmoderated escalated problems
         self.escalated_private_unmoderated_problem = create_test_instance(Problem, {
             'organisation': self.test_organisation,
             'public':False,
-            'status': Problem.ESCALATED
+            'status': Problem.ESCALATED,
+            'commissioned': Problem.LOCALLY_COMMISSIONED,
         })
 
         # A breach of care standards problem
@@ -545,8 +619,7 @@ class ProblemManagerTests(ManagerTest):
         self.problems_requiring_second_tier_moderation = [self.public_problem_requiring_second_tier_moderation,
                                                     self.private_problem_requiring_second_tier_moderation]
 
-        self.open_escalated_problems = [self.breach_public_moderated_problem_published,
-                                        self.escalated_public_moderated_problem_published,
+        self.open_escalated_problems = [self.escalated_public_moderated_problem_published,
                                         self.escalated_private_unmoderated_problem]
 
     def test_all_problems_returns_correct_problems(self):

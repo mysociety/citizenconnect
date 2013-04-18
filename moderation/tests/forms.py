@@ -19,6 +19,10 @@ class LookupFormTests(BaseModerationTestCase):
         resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.test_problem.id)})
         self.assertRedirects(resp, self.problem_form_url)
 
+    def test_obvious_correction(self):
+        resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX.lower(), self.test_problem.id)})
+        self.assertRedirects(resp, self.problem_form_url)
+
     def test_form_rejects_empty_submissions(self):
         resp = self.client.post(self.lookup_url, {})
         self.assertFormError(resp, 'form', 'reference_number', 'This field is required.')

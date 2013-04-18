@@ -22,12 +22,7 @@
         <h3>Your unique reference number is  {{ object.reference_number }}</h3>
         <p>
           You entered the following details<br>
-          {% if object.reporter_phone %}
-          tel <strong>{{ object.reporter_phone }}</strong><br>
-          {% endif %}
-          {% if object.reporter_email %}
           email <strong>{{ object.reporter_email }}</strong>
-          {% endif %}
         </p>
       </div>
     </div>

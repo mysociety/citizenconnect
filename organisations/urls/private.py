@@ -38,6 +38,10 @@ urlpatterns = patterns('',
                          name='escalation-dashboard',
                          kwargs={'private': True}),
 
+    url(r'^escalation/breaches$', login_required(EscalationBreaches.as_view()),
+                         name='escalation-breaches',
+                         kwargs={'private': True}),
+
     # Authentication related urls
     url(r'^login$',
         'django.contrib.auth.views.login',

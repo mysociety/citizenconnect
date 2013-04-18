@@ -12,9 +12,11 @@
     <h1>Escalated Problems</h1>
 </div>
 
+{% include 'organisations/includes/escalation_tabs.html' with active_tab='dashboard' %}
+
 {% include 'organisations/includes/filters.html' %}
 
-{% render_table table 'organisations/includes/summary_table.html' %}
+{% render_table table 'organisations/includes/table.html' %}
 
 {% endblock %}
 {% block extra_js %}
