@@ -62,6 +62,10 @@ def check_response_access(problem, user):
 def user_can_access_escalation_dashboard(user):
     return (user_is_superuser(user) or user_in_groups(user, [CQC, CCG, CUSTOMER_CONTACT_CENTRE]))
 
+def user_can_access_private_national_summary(user):
+    return (user_is_superuser(user) or user_in_groups(user, [CCG, CUSTOMER_CONTACT_CENTRE]))
+    
+
 def create_unique_username(organisation):
     """
     Try to create a unique username for an organisation.

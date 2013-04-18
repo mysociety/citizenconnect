@@ -22,7 +22,7 @@ from issues.models import Problem, Question
 
 import choices_api
 import auth
-from .auth import user_in_group, user_in_groups, user_is_superuser, check_organisation_access, check_question_access, user_can_access_escalation_dashboard
+from .auth import user_in_group, user_in_groups, user_is_superuser, check_organisation_access, check_question_access, user_can_access_escalation_dashboard, user_can_access_private_national_summary
 from .models import Organisation, Service, CCG, SuperuserLogEntry
 from .forms import OrganisationFinderForm, FilterForm
 from .lib import interval_counts
@@ -317,6 +317,13 @@ class PrivateNationalSummary(Summary):
     permitted_statuses = Problem.ALL_STATUSES
     summary_table_class = PrivateNationalSummaryTable
     
+
+    def dispatch(self, request, *args, **kwargs):
+        if not user_can_access_private_national_summary(request.user):
+            raise PermissionDenied()
+        return super(PrivateNationalSummary, self).dispatch(request, *args, **kwargs)
+
+
     def get_context_data(self, **kwargs):
 
         # default the cobrand

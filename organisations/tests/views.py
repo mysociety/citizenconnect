@@ -694,19 +694,73 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
     def setUp(self):
         super(PrivateNationalSummaryTests, self).setUp()
         self.summary_url = reverse('private-national-summary')
-        print self.summary_url
         create_test_instance(Problem, {'organisation': self.test_organisation})
         create_test_instance(Problem, {'organisation': self.other_test_organisation,
                                        'publication_status': Problem.PUBLISHED,
                                        'moderated': Problem.MODERATED,
                                        'status': Problem.ABUSIVE})
-        # self.login_as(self.provider)
+        self.login_as(self.superuser)
 
-    def test_summary_page_requires_login(self):
-        expected_redirect_url = "{0}?next={1}".format(reverse("login"), self.summary_url)
-        resp = self.client.get(self.summary_url)
-        self.assertRedirects(resp, expected_redirect_url)
+    def test_summary_page_authorization(self):
 
+        tests = (
+            # (user, permitted? )
+            ( None,                               False ),
+            ( self.provider,                      False ),
+            ( self.cqc,                           False ),
+            ( self.case_handler,                  False ),
+            ( self.question_answerer,             False ),
+            ( self.second_tier_moderator,         False ),
+
+            ( self.superuser,                     True  ),
+            ( self.nhs_superuser,                 True  ),
+            ( self.ccg_user,                      True  ),
+            ( self.customer_contact_centre_user,  True  ),
+        )
+        
+        for user, permitted in tests:
+            self.client.logout()
+            if user:
+                self.login_as(user)
+            resp = self.client.get(self.summary_url)
+
+            if permitted:
+                self.assertEqual(resp.status_code, 200, "{0} should be allowed".format(user))
+            elif user: # trying to access and not logged in
+                self.assertEqual(resp.status_code, 403, "{0} should be denied".format(user))
+            else: # trying to access and not logged in
+                expected_redirect_url = "{0}?next={1}".format(reverse("login"), self.summary_url)
+                self.assertRedirects(resp, expected_redirect_url, msg_prefix="{0} should not be allowed".format(user))
+
+    # def test_summary_page_exists(self):
+    #     resp = self.client.get(self.summary_url)
+    #     self.assertEqual(resp.status_code, 200)
+    # 
+    # def test_summary_doesnt_include_hidden_status_problems_in_default_view(self):
+    #     resp = self.client.get(self.summary_url)
+    #     self.assertContains(resp, 'Test Organisation')
+    #     self.assertNotContains(resp, 'Other Test Organisation')
+    #     self.assertContains(resp, '<td class="week">1</td>', count=1, status_code=200)
+    # 
+    # def test_status_filter_only_shows_visible_statuses_in_filters(self):
+    #     resp = self.client.get(self.summary_url)
+    #     self.assertNotContains(resp, 'Referred to Another Provider')
+    #     self.assertNotContains(resp, 'Unable to Contact')
+    # 
+    # def test_summary_page_ignores_hidden_status_filter(self):
+    #     resp = self.client.get(self.summary_url + '?status=7')
+    #     self.assertContains(resp, 'Test Organisation')
+    #     self.assertNotContains(resp, 'Other Test Organisation')
+    #     self.assertContains(resp, '<td class="week">1</td>', count=1, status_code=200)
+    # 
+    # def test_summary_page_applies_threshold_from_settings(self):
+    #     with self.settings(SUMMARY_THRESHOLD=('six_months', 1)):
+    #         resp = self.client.get(self.summary_url)
+    #         self.assertContains(resp, 'Test Organisation')
+    # 
+    #     with self.settings(SUMMARY_THRESHOLD=('six_months', 2)):
+    #         resp = self.client.get(self.summary_url)
+    #         self.assertNotContains(resp, 'Test Organisation')
 
 
 class ProviderPickerTests(TestCase):
