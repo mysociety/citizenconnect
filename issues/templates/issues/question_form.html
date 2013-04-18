@@ -9,6 +9,9 @@
 <div class="header">
     <h1>Ask your question</h1>
 </div>
+<div class="placeholder">
+  <p>If your question relates to a specific provider <a href="{% url 'question-pick-provider' cobrand=cobrand.name %}">click here</a></p>
+</div>
 <div class="question-form">
     <form method="post">
         {% csrf_token %}
