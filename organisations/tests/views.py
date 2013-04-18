@@ -732,27 +732,15 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
                 expected_redirect_url = "{0}?next={1}".format(reverse("login"), self.summary_url)
                 self.assertRedirects(resp, expected_redirect_url, msg_prefix="{0} should not be allowed".format(user))
 
-    # def test_summary_page_exists(self):
-    #     resp = self.client.get(self.summary_url)
-    #     self.assertEqual(resp.status_code, 200)
-    # 
-    # def test_summary_doesnt_include_hidden_status_problems_in_default_view(self):
-    #     resp = self.client.get(self.summary_url)
-    #     self.assertContains(resp, 'Test Organisation')
-    #     self.assertNotContains(resp, 'Other Test Organisation')
-    #     self.assertContains(resp, '<td class="week">1</td>', count=1, status_code=200)
-    # 
-    # def test_status_filter_only_shows_visible_statuses_in_filters(self):
-    #     resp = self.client.get(self.summary_url)
-    #     self.assertNotContains(resp, 'Referred to Another Provider')
-    #     self.assertNotContains(resp, 'Unable to Contact')
-    # 
-    # def test_summary_page_ignores_hidden_status_filter(self):
-    #     resp = self.client.get(self.summary_url + '?status=7')
-    #     self.assertContains(resp, 'Test Organisation')
-    #     self.assertNotContains(resp, 'Other Test Organisation')
-    #     self.assertContains(resp, '<td class="week">1</td>', count=1, status_code=200)
-    # 
+    def test_summary_page_exists(self):
+        resp = self.client.get(self.summary_url)
+        self.assertEqual(resp.status_code, 200)
+    
+    def test_summary_shows_all_statuses_for_problems_in_filters(self):
+        resp = self.client.get(self.summary_url)
+        for status_enum, status_name in Problem.STATUS_CHOICES:
+            self.assertContains(resp, '<option value="{0}">{1}</option>'.format(status_enum, status_name))
+    
     # def test_summary_page_applies_threshold_from_settings(self):
     #     with self.settings(SUMMARY_THRESHOLD=('six_months', 1)):
     #         resp = self.client.get(self.summary_url)
