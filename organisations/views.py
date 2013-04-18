@@ -130,6 +130,10 @@ class Map(PrivateViewMixin, TemplateView):
             else :
                 organisation_dict['type'] = "Unknown"
 
+            # TODO: These COUNT queries are performed for each organisation,
+            # they should be retrieved as part of the original query for
+            # better performance/response times.
+
             # Counts on private map are all open problems, regardless of moderation
             if context['private']:
                 organisation_dict['problem_count'] = organisation.problem_set.open_problems().count()
