@@ -4,6 +4,7 @@ import django_tables2 as tables
 from django_tables2.utils import A
 
 from django.utils.safestring import mark_safe
+from django.utils.html import conditional_escape
 from django.core.urlresolvers import reverse
 
 from issues.models import Problem
@@ -60,7 +61,7 @@ class BaseProblemTable(tables.Table):
 
     def render_summary_as_response_link(self, record):
         response_link = reverse("response-form", kwargs={'pk': record.id})
-        return mark_safe(u'<a href="{0}">{1}'.format(response_link, record.private_summary))
+        return mark_safe(u'<a href="{0}">{1}'.format(response_link, conditional_escape(record.private_summary)))
 
     def render_summary_as_public_link(self, record):
         # self.cobrand might not be set
@@ -69,7 +70,7 @@ class BaseProblemTable(tables.Table):
         except AttributeError:
             cobrand = 'choices'
         detail_link = reverse('problem-view', kwargs={'cobrand': cobrand, 'pk': record.id})
-        return mark_safe('<a href="{0}">{1}'.format(detail_link, record.summary))
+        return mark_safe('<a href="{0}">{1}'.format(detail_link, conditional_escape(record.summary)))
 
 
 class ProblemTable(BaseProblemTable):
@@ -98,7 +99,7 @@ class ProblemTable(BaseProblemTable):
         elif record.public:
             return self.render_summary_as_public_link(record)
         else:
-            return record.summary
+            return conditional_escape(record.summary)
 
     class Meta:
         order_by = ('-created',)
