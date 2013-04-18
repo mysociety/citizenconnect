@@ -287,6 +287,9 @@ class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
         # summary for
         interval_filters = context['selected_filters']
 
+        if 'cobrand' not in kwargs:
+            kwargs['cobrand'] = settings.ALLOWED_COBRANDS[0]
+
         if interval_filters.get('status'):
             # ignore a filter request for a hidden status
             if not interval_filters['status'] in Problem.VISIBLE_STATUSES:
