@@ -4,6 +4,10 @@ from optparse import make_option
 from django.db import transaction
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth.models import User
+from django.template.loader import get_template
+from django.template import Context
+from django.conf import settings
+from django.core import mail
 
 from organisations import auth
 
@@ -28,6 +32,9 @@ class Command(BaseCommand):
         if verbose:
             processed = 0
             skipped = 0
+
+        subject_template = get_template('organisations/generic_intro_email_subject.txt')
+        message_template = get_template('organisations/generic_intro_email_message.txt')
 
         for row in reader:
             rownum += 1
@@ -61,11 +68,23 @@ class Command(BaseCommand):
                 if verbose:
                     processed += 1
                 transaction.commit()
+                if created:
+                    context = Context({
+                        'user': user,
+                        'site_base_url': settings.SITE_BASE_URL
+                    })
+                    mail.send_mail(subject=subject_template.render(context),
+                                   message=message_template.render(context),
+                                   from_email=settings.DEFAULT_FROM_EMAIL,
+                                   recipient_list=[email],
+                                   fail_silently=False)
+
             except Exception as e:
                 if verbose:
                     skipped += 1
                 self.stderr.write("Skipping %s: %s" % (name, e))
                 transaction.rollback()
+
         if verbose:
             # First row is a header, so ignore it in the count
             self.stdout.write("Total records in file: {0}\n".format(rownum-1))
