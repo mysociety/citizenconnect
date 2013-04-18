@@ -24,7 +24,7 @@ import choices_api
 import auth
 from .auth import user_in_group, user_in_groups, user_is_superuser, check_organisation_access, check_question_access, user_can_access_escalation_dashboard
 from .models import Organisation, Service, CCG, SuperuserLogEntry
-from .forms import OrganisationFinderForm, FilterForm
+from .forms import OrganisationFinderForm, FilterForm, OrganisationFilterForm
 from .lib import interval_counts
 from .tables import NationalSummaryTable, ProblemTable, ExtendedProblemTable, QuestionsDashboardTable, ProblemDashboardTable, EscalationDashboardTable, BreachTable
 
@@ -46,11 +46,17 @@ class OrganisationAwareViewMixin(PrivateViewMixin):
     """Mixin class for views which need to have a reference to a particular
     organisation, such as problem forms."""
 
+    def dispatch(self, request, *args, **kwargs):
+        # Set organisation here so that we can use it anywhere in the class
+        # without worrying about whether it has been set yet
+        self.organisation = Organisation.objects.get(ods_code=kwargs['ods_code'])
+        return super(OrganisationAwareViewMixin, self).dispatch(request, *args, **kwargs)
+
     # Get the organisation name
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(OrganisationAwareViewMixin, self).get_context_data(**kwargs)
-        context['organisation'] = Organisation.objects.get(ods_code=self.kwargs['ods_code'])
+        context['organisation'] = self.organisation
         # Check that the user can access the organisation if this is private
         if context['private']:
             check_organisation_access(context['organisation'], self.request.user)
@@ -66,6 +72,10 @@ class FilterFormMixin(FormMixin):
     def get(self, request, *args, **kwargs):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
+        # Note: we call this to get a cleaned_data dict, which we then
+        # pass on into the context for use in filtering, but we don't
+        # care if it fails, because then it won't go into the context
+        # and the views can just ignore any duff selections
         form.is_valid()
         kwargs['form'] = form
         return self.render_to_response(self.get_context_data(**kwargs))
@@ -85,7 +95,12 @@ class FilterFormMixin(FormMixin):
         selected_filters = {}
         if hasattr(form, 'cleaned_data'):
             for name, value in form.cleaned_data.items():
-                if value:
+                # The hasattr deals with ModelChoiceFields, where cleaned_data
+                # will return a model instance, not a single value, but code
+                # which uses it wants only the id
+                if value != None and value != '' and hasattr(value, 'id'):
+                    selected_filters[name] = value.id
+                elif value != None and value != '' :
                     selected_filters[name] = value
         context['selected_filters'] = selected_filters
         return context
@@ -177,35 +192,46 @@ class PickProviderBase(ListView):
                                                                     'issue_type': self.issue_type})
 
 class OrganisationSummary(OrganisationAwareViewMixin,
+                          FilterFormMixin,
                           TemplateView):
     template_name = 'organisations/organisation_summary.html'
+
+    # Use an OrganisationFilterForm instead of a normal one
+    form_class = OrganisationFilterForm
+
+    def get_form_kwargs(self):
+        kwargs = super(OrganisationSummary, self).get_form_kwargs()
+
+        # Only show service_id if the organisation has services
+        if not self.organisation.has_services():
+            kwargs['with_service_id'] = False
+        else:
+            # If we have services, we need to give the form an organisation
+            # to get them from
+            kwargs['organisation'] = self.organisation
+
+        # We don't want a status filter
+        kwargs['with_status'] = False
+
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super(OrganisationSummary, self).get_context_data(**kwargs)
 
         organisation = context['organisation']
 
-        context['services'] = list(organisation.services.all().order_by('name'))
-        selected_service = self.request.GET.get('service')
-        if selected_service:
-            if int(selected_service) in [ service.id for service in context['services'] ]:
-                context['selected_service'] = int(selected_service)
+        # Load the user-selected filters from the form
+        count_filters = context['selected_filters']
 
-        count_filters = {}
-        if context.has_key('selected_service'):
-            count_filters['service_id'] = selected_service
-        category = self.request.GET.get('problems_category')
-        if category in dict(Problem.CATEGORY_CHOICES):
-            context['problems_category'] = category
-            count_filters['category'] = category
-        context['problems_categories'] = Problem.CATEGORY_CHOICES
-
+        # Figure out which statuses to calculate summary stats and lines in
+        # the summary table from
         if context['private']:
             status_rows = Problem.STATUS_CHOICES
             volume_statuses = Problem.ALL_STATUSES
         else:
             status_rows = Problem.VISIBLE_STATUS_CHOICES
             volume_statuses = Problem.VISIBLE_STATUSES
+
         summary_stats_statuses = Problem.VISIBLE_STATUSES
         count_filters['status'] = tuple(volume_statuses)
         context['problems_total'] = interval_counts(issue_type=Problem,
@@ -287,12 +313,12 @@ class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
         # summary for
         interval_filters = context['selected_filters']
 
-        if interval_filters.get('status'):
+        if interval_filters.get('status') != None:
             # ignore a filter request for a hidden status
             if not interval_filters['status'] in Problem.VISIBLE_STATUSES:
                 del interval_filters['status']
 
-        if not interval_filters.get('status'):
+        if interval_filters.get('status') == None:
             # by default the status should filter for visible statuses
             interval_filters['status'] = tuple(Problem.VISIBLE_STATUSES)
 
@@ -469,8 +495,7 @@ class EscalationDashboard(FilterFormMixin, TemplateView):
             if name == 'service_code':
                 filtered_queryset = filtered_queryset.filter(service__service_code=value)
             if name == 'ccg':
-                # ccg is a CCG model instance
-                filtered_queryset = filtered_queryset.filter(organisation__ccgs__id__exact=value.id)
+                filtered_queryset = filtered_queryset.filter(organisation__ccgs__id__exact=value)
             if name == 'breach':
                 filtered_queryset = filtered_queryset.filter(breach=value)
         return filtered_queryset
