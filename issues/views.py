@@ -13,9 +13,6 @@ from .models import Question, Problem
 from .forms import QuestionForm, ProblemForm, QuestionUpdateForm, ProblemSurveyForm
 from .lib import changes_for_model, base32_to_int
 
-class AskQuestion(TemplateView):
-    template_name = 'issues/ask_question.html'
-
 class QuestionPickProvider(PickProviderBase):
     result_link_url_name = 'question-form'
     issue_type = 'question'
