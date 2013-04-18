@@ -307,6 +307,10 @@ class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
         context['table'] = organisations_table
         context['page_obj'] = organisations_table.page
         return context
+        
+        
+class PrivateNationalSummary(Summary):
+    template_name = 'organisations/national_summary.html'
 
 class OrganisationDashboard(OrganisationAwareViewMixin,
                             TemplateView):

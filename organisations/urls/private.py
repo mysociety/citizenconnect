@@ -11,6 +11,11 @@ urlpatterns = patterns('',
         name='org-dashboard',
         kwargs={'private': True}),
 
+    url(r'^summary/$',
+        login_required(PrivateNationalSummary.as_view()),
+        name='private-national-summary',
+        kwargs={'private': True}),
+
     url(r'^summary/(?P<ods_code>\w+)$',
         login_required(OrganisationSummary.as_view()),
         name='private-org-summary',
