@@ -2,22 +2,7 @@ from django import forms
 from django.forms.widgets import HiddenInput
 
 from organisations.models import Organisation, Service
-from issues.models import Problem, Question
-
-class QuestionAPIForm(forms.ModelForm):
-
-    # Make source required
-    source = forms.CharField(required=True)
-
-    class Meta:
-        model = Question
-
-        fields = [
-            'description',
-            'reporter_name',
-            'reporter_email',
-            'source'
-        ]
+from issues.models import Problem
 
 class ProblemAPIForm(forms.ModelForm):
 
