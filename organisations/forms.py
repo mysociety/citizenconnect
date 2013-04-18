@@ -102,8 +102,9 @@ class FilterForm(forms.Form):
     category = forms.ChoiceField(choices=[('', 'Problem category')] + list(Problem.CATEGORY_CHOICES),
                                  required=False)
     problem_statuses = [ [str(status), desc] for (status, desc) in Problem.VISIBLE_STATUS_CHOICES ]
-    status = forms.ChoiceField(choices=[('', 'Problem status')] + problem_statuses,
-                               required=False)
+    status = forms.TypedChoiceField(choices=[('', 'Problem status')] + problem_statuses,
+                                    required=False,
+                                    coerce=int)
     breach = forms.TypedChoiceField(choices=[['', 'Breach problems?'],
                                              [True, 'Breaches'],
                                              [False, 'Non-Breaches']],
@@ -138,7 +139,8 @@ class FilterForm(forms.Form):
             if private:
                 # Set status choices to all choices if we're on a private page
                 # rather than the default of just public statuses
-                self.fields['status'].choices = [ [str(status), desc] for (status, desc) in Problem.STATUS_CHOICES ]
+                all_statuses = [ [str(status), desc] for (status, desc) in Problem.STATUS_CHOICES ]
+                self.fields['status'].choices = [('', 'Problem status')] + all_statuses
 
         if not with_breach:
             del self.fields['breach']
