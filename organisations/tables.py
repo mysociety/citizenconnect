@@ -32,12 +32,27 @@ class NationalSummaryTable(tables.Table):
                                           template_name="organisations/includes/percent_column.html")
 
     def render_name(self, record):
-        url = reverse("public-org-summary", kwargs={'ods_code': record['ods_code'],
-                                                    'cobrand': self.cobrand})
+        url = self.reverse_to_org_summary(record['ods_code'])
         return mark_safe('''<a href="%s">%s</a>''' % (url, record['name']))
+
+    def reverse_to_org_summary(self, ods_code):
+        return reverse(
+            'public-org-summary',
+            kwargs={'ods_code': ods_code, 'cobrand': self.cobrand}
+        )
 
     class Meta:
         order_by = ('name',)
+
+
+class PrivateNationalSummaryTable(NationalSummaryTable):
+
+    def reverse_to_org_summary(self, ods_code):
+        return reverse(
+            'private-org-summary',
+            kwargs={'ods_code': ods_code}
+        )
+
 
 class BaseProblemTable(tables.Table):
     """

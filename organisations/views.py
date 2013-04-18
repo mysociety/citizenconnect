@@ -26,7 +26,7 @@ from .auth import user_in_group, user_in_groups, user_is_superuser, check_organi
 from .models import Organisation, Service, CCG, SuperuserLogEntry
 from .forms import OrganisationFinderForm, FilterForm
 from .lib import interval_counts
-from .tables import NationalSummaryTable, ProblemTable, ExtendedProblemTable, QuestionsDashboardTable, ProblemDashboardTable, EscalationDashboardTable, BreachTable
+from .tables import NationalSummaryTable, PrivateNationalSummaryTable, ProblemTable, ExtendedProblemTable, QuestionsDashboardTable, ProblemDashboardTable, EscalationDashboardTable, BreachTable
 
 class PrivateViewMixin(object):
     """
@@ -278,26 +278,25 @@ class OrganisationReviews(OrganisationAwareViewMixin,
 
 class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
     template_name = 'organisations/summary.html'
+    permitted_statuses = Problem.VISIBLE_STATUSES
+    summary_table_class = NationalSummaryTable
 
     def get_context_data(self, **kwargs):
         context = super(Summary, self).get_context_data(**kwargs)
-
+        
         # Build a dictionary of filters in the format we can pass
         # into interval_counts to filter the problems we make a
         # summary for
         interval_filters = context['selected_filters']
 
-        if 'cobrand' not in kwargs:
-            kwargs['cobrand'] = settings.ALLOWED_COBRANDS[0]
-
         if interval_filters.get('status'):
             # ignore a filter request for a hidden status
-            if not interval_filters['status'] in Problem.VISIBLE_STATUSES:
+            if not interval_filters['status'] in self.permitted_statuses:
                 del interval_filters['status']
 
         if not interval_filters.get('status'):
             # by default the status should filter for visible statuses
-            interval_filters['status'] = tuple(Problem.VISIBLE_STATUSES)
+            interval_filters['status'] = tuple(self.permitted_statuses)
 
         threshold = None
         if settings.SUMMARY_THRESHOLD:
@@ -305,7 +304,8 @@ class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
         organisation_rows = interval_counts(issue_type=Problem,
                                             filters=interval_filters,
                                             threshold=threshold)
-        organisations_table = NationalSummaryTable(organisation_rows, cobrand=kwargs['cobrand'])
+        organisations_table = self.summary_table_class(organisation_rows, cobrand=kwargs['cobrand'])
+
         RequestConfig(self.request, paginate={"per_page": 8}).configure(organisations_table)
         context['table'] = organisations_table
         context['page_obj'] = organisations_table.page
@@ -314,6 +314,17 @@ class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
         
 class PrivateNationalSummary(Summary):
     template_name = 'organisations/national_summary.html'
+    permitted_statuses = Problem.ALL_STATUSES
+    summary_table_class = PrivateNationalSummaryTable
+    
+    def get_context_data(self, **kwargs):
+
+        # default the cobrand
+        if 'cobrand' not in kwargs:
+            kwargs['cobrand'] = None
+
+        return super(PrivateNationalSummary, self).get_context_data(**kwargs)
+
 
 class OrganisationDashboard(OrganisationAwareViewMixin,
                             TemplateView):
