@@ -741,6 +741,23 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
         for status_enum, status_name in Problem.STATUS_CHOICES:
             self.assertContains(resp, '<option value="{0}">{1}</option>'.format(status_enum, status_name))
     
+    def test_ccg_user_only_sees_organisations_they_are_linked_to(self):
+
+        # check that superuser sees both CCGs
+        resp = self.client.get(self.summary_url)
+        self.assertContains(resp, ">{0}<".format(self.test_ccg.name))
+        self.assertContains(resp, ">{0}<".format(self.other_test_ccg.name))
+
+        # change user
+        self.client.logout()
+        self.login_as(self.ccg_user)
+
+        # check they see test_ccg and not other_ccg
+        resp = self.client.get(self.summary_url)
+        self.assertContains(resp,    ">{0}<".format(self.test_ccg.name))
+        self.assertNotContains(resp, ">{0}<".format(self.other_test_ccg.name))
+
+
     def test_summary_page_applies_threshold_from_settings(self):
         with self.settings(SUMMARY_THRESHOLD=('six_months', 1)):
             resp = self.client.get(self.summary_url)

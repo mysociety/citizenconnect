@@ -301,16 +301,20 @@ class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
         threshold = None
         if settings.SUMMARY_THRESHOLD:
             threshold = settings.SUMMARY_THRESHOLD
-        organisation_rows = interval_counts(issue_type=Problem,
-                                            filters=interval_filters,
-                                            threshold=threshold)
+        organisation_rows = self.get_interval_counts(filters=interval_filters, threshold=threshold)
         organisations_table = self.summary_table_class(organisation_rows, cobrand=kwargs['cobrand'])
 
         RequestConfig(self.request, paginate={"per_page": 8}).configure(organisations_table)
         context['table'] = organisations_table
         context['page_obj'] = organisations_table.page
         return context
-        
+    
+    def get_interval_counts(self, filters, threshold):
+        return interval_counts(
+            issue_type=Problem,
+            filters=filters,
+            threshold=threshold
+        )
         
 class PrivateNationalSummary(Summary):
     template_name = 'organisations/national_summary.html'
@@ -331,6 +335,15 @@ class PrivateNationalSummary(Summary):
             kwargs['cobrand'] = None
 
         return super(PrivateNationalSummary, self).get_context_data(**kwargs)
+
+    def get_interval_counts(self, filters, threshold):
+        print "FIXME - add organisation limiting here for CCG users"
+        return interval_counts(
+            issue_type=Problem,
+            filters=filters,
+            threshold=threshold
+        )
+
 
 
 class OrganisationDashboard(OrganisationAwareViewMixin,
