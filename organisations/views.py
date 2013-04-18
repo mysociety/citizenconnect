@@ -14,7 +14,7 @@ from django_tables2 import RequestConfig
 from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Q, Avg
 
 # App imports
 from citizenconnect.shortcuts import render
@@ -112,7 +112,8 @@ class Map(PrivateViewMixin, TemplateView):
         context = super(Map, self).get_context_data(**kwargs)
 
         # TODO - Filter by location
-        organisations = Organisation.objects.all().order_by("id")
+        organisations = Organisation.objects.annotate(
+                average_time_to_address=Avg('problem__time_to_address'))
 
         # Check that the user is a superuser
         if context['private']:
@@ -126,6 +127,7 @@ class Map(PrivateViewMixin, TemplateView):
             organisation_dict['name'] = organisation.name
             organisation_dict['lon'] = organisation.point.coords[0]
             organisation_dict['lat'] = organisation.point.coords[1]
+            organisation_dict['average_time_to_address'] = organisation.average_time_to_address
 
             # If we're showing the private map, link to the organisation's dashboard
             if context['private']:
@@ -140,12 +142,18 @@ class Map(PrivateViewMixin, TemplateView):
             else :
                 organisation_dict['type'] = "Unknown"
 
+            # TODO: These COUNT queries are performed for each organisation,
+            # they should be retrieved as part of the original query for
+            # better performance/response times.
+
             # Counts on private map are all open problems, regardless of moderation
             if context['private']:
                 organisation_dict['problem_count'] = organisation.problem_set.open_problems().count()
+                organisation_dict['closed_problem_count'] = organisation.problem_set.closed_problems().count()
             # Counts on public map don't include un-moderated or hidden issues, but do include private issues
             else:
                 organisation_dict['problem_count'] = organisation.problem_set.open_moderated_published_problems().count()
+                organisation_dict['closed_problem_count'] = organisation.problem_set.closed_moderated_published_problems().count()
 
             organisations_list.append(organisation_dict)
 

@@ -183,13 +183,22 @@ class CreateNonOrganisationAccountTests(TestCase):
             self.assertFalse(auth.user_in_group(user, group))
 
     def test_happy_path(self):
-
-        self._call_command([os.path.join(settings.PROJECT_ROOT, 'organisations', 'fixtures', 'example_accounts.csv')])
+        self._call_command([os.path.join(settings.PROJECT_ROOT,
+                                         'organisations',
+                                         'fixtures',
+                                         'example_accounts.csv')])
         self.expect_groups('spreadsheetsuper@example.com', [auth.NHS_SUPERUSERS])
         self.expect_groups('spreadsheetcasehandler@example.com', [auth.CASE_HANDLERS])
-        self.expect_groups('spreadsheetcasemod@example.com', [auth.CASE_HANDLERS, auth.SECOND_TIER_MODERATORS])
+        self.expect_groups('spreadsheetcasemod@example.com', [auth.CASE_HANDLERS,
+                                                              auth.SECOND_TIER_MODERATORS])
         self.expect_groups('spreadsheetqa@example.com', [auth.QUESTION_ANSWERERS])
         self.expect_groups('spreadsheetcqc@example.com', [auth.CQC])
         self.expect_groups('spreadsheetccc@example.com', [auth.CUSTOMER_CONTACT_CENTRE])
         bad_row_users = User.objects.filter(email='spreadsheetbadrow@example.com')
+        # Should not have created a user if the groups are ambiguous
         self.assertEqual(0, len(bad_row_users))
+        # Should have sent an email to each created user
+        self.assertEqual(len(mail.outbox), 6)
+        first_email = mail.outbox[0]
+        expected_text = "You're receiving this e-mail because an account has been created"
+        self.assertTrue(expected_text in first_email.body)

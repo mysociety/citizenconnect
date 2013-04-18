@@ -31,12 +31,12 @@ class MailSendMixin(models.Model):
         It takes the following arguments which are passed through to mail.send_mail:
 
             subject, message, fail_silently=False
-        
+
         It will auto fill the following arguments:
-        
+
             from_email     - set from settings.DEFAULT_FROM_EMAIL
             recipient_list - set from the organisations details
-        
+
         In addition it will:
 
           * raise an exception if there are no email addresses for the org - ISSUE-329
@@ -57,28 +57,28 @@ class MailSendMixin(models.Model):
             raise ValueError("'{0}' has no email addresses".format(self))
 
         self.ensure_related_user_exists()
-        
+
         if not self.intro_email_sent:
             self.send_intro_email()
 
         return mail.send_mail(**kwargs)
-    
+
 
     def send_intro_email(self):
         """
         Send the intro email and put the current time into intro_email_sent field.
         """
-    
-        subject_template = get_template('organisations/intro_email_subject.txt')
-        message_template = get_template('organisations/intro_email_message.txt')
-    
+
+        subject_template = get_template('organisations/provider_intro_email_subject.txt')
+        message_template = get_template('organisations/provider_intro_email_message.txt')
+
         context = Context({
             'user': self.users.all()[0],
             'site_base_url': settings.SITE_BASE_URL
         })
-    
+
         logger.info('Sending intro email to {0}'.format(self))
-    
+
         kwargs = dict(
             subject        = subject_template.render(context),
             message        = message_template.render(context),
@@ -86,15 +86,15 @@ class MailSendMixin(models.Model):
             from_email     = settings.DEFAULT_FROM_EMAIL,
             recipient_list = filter(bool, [self.email]),
         )
-    
+
         if not len(kwargs['recipient_list']):
             raise ValueError("'{0}' has no email addresses".format(self))
-    
+
         mail.send_mail(**kwargs)
-    
+
         self.intro_email_sent = datetime.datetime.utcnow().replace(tzinfo=utc)
         self.save()
-    
+
         return
 
 
@@ -103,7 +103,7 @@ class UserCreationMixin(models.Model):
 
     class Meta:
         abstract = True
-        
+
     def default_user_group(self):
         """Group to ensure that users are members of"""
         raise NotImplementedError("You should implement 'default_user_group' in your class")
@@ -116,7 +116,7 @@ class UserCreationMixin(models.Model):
         Will raise a ValueError exception if the organisation has no user and
         has no email. ISSUE-329
         """
-        
+
         class_name = self.__class__.__name__
 
         # No need to create if there are already users
