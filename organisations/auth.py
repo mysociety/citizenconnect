@@ -46,6 +46,10 @@ def check_moderation_access(user):
     if not user_is_superuser(user) and not user_in_group(user, CASE_HANDLERS):
         raise PermissionDenied()
 
+def check_second_tier_moderation_access(user):
+    if not user_is_superuser(user) and not user_in_group(user, SECOND_TIER_MODERATORS):
+        raise PermissionDenied()
+
 def check_question_access(user):
     if not user_is_superuser(user) and not user_in_group(user, QUESTION_ANSWERERS):
         raise PermissionDenied()
