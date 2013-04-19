@@ -105,6 +105,29 @@ class FilterFormMixin(FormMixin):
         context['selected_filters'] = selected_filters
         return context
 
+    def filter_problems(self, filters, queryset):
+        """
+        Filter a queryset of problems by the supplied filters
+        """
+        filtered_queryset = queryset
+        for name, value in filters.items():
+            if name == 'status':
+                filtered_queryset = filtered_queryset.filter(status=value)
+            if name == 'category':
+                filtered_queryset = filtered_queryset.filter(category=value)
+            if name == 'organisation_type':
+                filtered_queryset = filtered_queryset.filter(organisation__organisation_type=value)
+            if name == 'service_code':
+                filtered_queryset = filtered_queryset.filter(service__service_code=value)
+            if name == 'service_id':
+                filtered_queryset = filtered_queryset.filter(service__id=value)
+            if name == 'ccg':
+                filtered_queryset = filtered_queryset.filter(organisation__ccgs__id__exact=value)
+            if name == 'breach':
+                filtered_queryset = filtered_queryset.filter(breach=value)
+        return filtered_queryset
+
+
 class Map(PrivateViewMixin, TemplateView):
     template_name = 'organisations/map.html'
 
@@ -276,10 +299,23 @@ class OrganisationSummary(OrganisationAwareViewMixin,
         return context
 
 class OrganisationProblems(OrganisationAwareViewMixin,
+                           FilterFormMixin,
                            TemplateView):
     template_name = 'organisations/organisation_problems.html'
 
-    def get_issues(self, organisation, private):
+    form_class = OrganisationFilterForm
+
+    def get_form_kwargs(self):
+        kwargs = super(OrganisationProblems, self).get_form_kwargs()
+
+        kwargs['organisation'] = self.organisation
+        # Only show service_id if the organisation has services
+        if not self.organisation.has_services():
+            kwargs['with_service_id'] = False
+
+        return kwargs
+
+    def get_problems(self, organisation, private):
         if private:
             return organisation.problem_set.all()
         else:
@@ -288,19 +324,23 @@ class OrganisationProblems(OrganisationAwareViewMixin,
     def get_context_data(self, **kwargs):
         context = super(OrganisationProblems, self).get_context_data(**kwargs)
 
+        # Get a queryset of issues and apply any filters to them
+        problems = self.get_problems(context['organisation'], context['private'])
+        filtered_problems = self.filter_problems(context['selected_filters'], problems)
+
+        # Build a table
         table_args = {'private': context['private']}
         if not context['private']:
             table_args['cobrand'] = kwargs['cobrand']
 
-        issues = self.get_issues(context['organisation'], context['private'])
         if context['organisation'].has_services() and context['organisation'].has_time_limits():
-            issue_table = ExtendedProblemTable(issues, **table_args)
+            problem_table = ExtendedProblemTable(filtered_problems, **table_args)
         else:
-            issue_table = ProblemTable(issues, **table_args)
+            problem_table = ProblemTable(filtered_problems, **table_args)
 
-        RequestConfig(self.request, paginate={'per_page': 8}).configure(issue_table)
-        context['table'] = issue_table
-        context['page_obj'] = issue_table.page
+        RequestConfig(self.request, paginate={'per_page': 8}).configure(problem_table)
+        context['table'] = problem_table
+        context['page_obj'] = problem_table.page
         return context
 
 class OrganisationReviews(OrganisationAwareViewMixin,
@@ -532,7 +572,7 @@ class EscalationDashboard(FilterFormMixin, TemplateView):
             problems = problems.filter(commissioned=Problem.NATIONALLY_COMMISSIONED)
 
         # Apply form filters on top of this
-        filtered_problems = self.apply_filters(context['selected_filters'], problems)
+        filtered_problems = self.filter_problems(context['selected_filters'], problems)
 
         # Setup a table for the problems
         problem_table = EscalationDashboardTable(filtered_problems)
@@ -540,21 +580,6 @@ class EscalationDashboard(FilterFormMixin, TemplateView):
         context['table'] = problem_table
         context['page_obj'] = problem_table.page
         return context
-
-    def apply_filters(self, filters, queryset):
-        filtered_queryset = queryset
-        for name, value in filters.items():
-            if name == 'category':
-                filtered_queryset = filtered_queryset.filter(category=value)
-            if name == 'organisation_type':
-                filtered_queryset = filtered_queryset.filter(organisation__organisation_type=value)
-            if name == 'service_code':
-                filtered_queryset = filtered_queryset.filter(service__service_code=value)
-            if name == 'ccg':
-                filtered_queryset = filtered_queryset.filter(organisation__ccgs__id__exact=value)
-            if name == 'breach':
-                filtered_queryset = filtered_queryset.filter(breach=value)
-        return filtered_queryset
 
 class EscalationBreaches(TemplateView):
 
