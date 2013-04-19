@@ -10,7 +10,9 @@ class ProblemTableTest(TestCase):
     def setUp(self):
         self.organisation = create_test_organisation()
         problem_attributes = {'description': "<script>alert('xss')</script>",
-                              'organisation': self.organisation}
+                              'organisation': self.organisation,
+                              'publication_status': Problem.PUBLISHED,
+                              'moderated_description': "<script>alert('xss')</script>"}
         self.problem = create_test_instance(Problem, problem_attributes)
 
     def test_escaping_private_summary(self):
