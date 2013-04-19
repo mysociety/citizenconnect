@@ -317,7 +317,7 @@ class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(Summary, self).get_context_data(**kwargs)
-        
+
         # Build a dictionary of filters in the format we can pass
         # into interval_counts to filter the problems we make a
         # summary for
@@ -342,23 +342,31 @@ class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
         context['table'] = organisations_table
         context['page_obj'] = organisations_table.page
         return context
-    
+
     def get_interval_counts(self, filters, threshold):
         return interval_counts(
             issue_type=Problem,
             filters=filters,
             threshold=threshold
         )
-        
+
 class PrivateNationalSummary(Summary):
     template_name = 'organisations/national_summary.html'
     permitted_statuses = Problem.ALL_STATUSES
     summary_table_class = PrivateNationalSummaryTable
-    
+
 
     def dispatch(self, request, *args, **kwargs):
-        if not user_can_access_private_national_summary(request.user):
+
+        user = request.user
+
+        if not user_can_access_private_national_summary(user):
             raise PermissionDenied()
+
+        # A CCG user with no CCGs should not be allowed.
+        if user_in_group(user, auth.CCG) and not user.ccgs.count():
+            raise PermissionDenied()
+
         return super(PrivateNationalSummary, self).dispatch(request, *args, **kwargs)
 
 
@@ -371,18 +379,17 @@ class PrivateNationalSummary(Summary):
         return super(PrivateNationalSummary, self).get_context_data(**kwargs)
 
     def get_interval_counts(self, filters, threshold):
-        
+
         user = self.request.user
 
         # If the user is in a CCG Group then filter results to that CCG.
-        if user_is_superuser(user) or user_in_group(user, auth.CUSTOMER_CONTACT_CENTRE):
-            # Can see all - don't apply any CCG filters
-            pass
-        else:
-            # If the user has assigned CCGs then limit to those
+        if user_in_group(user, auth.CCG):
+            # If the user has assigned CCGs then limit to those. If they have
+            # none then throw an exception (they should not have gotten past dispatch)
             ccgs = user.ccgs.all()
-            if len(ccgs):
-                filters['ccg'] = tuple([ ccg.id for ccg in ccgs ])
+            if not len(ccgs):
+                raise Exception("CCG group user '{0}' has no ccgs - they should not have gotten past check in dispatch".format(user))
+            filters['ccg'] = tuple([ ccg.id for ccg in ccgs ])
 
         return interval_counts(
             issue_type=Problem,

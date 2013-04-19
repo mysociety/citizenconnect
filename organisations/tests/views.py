@@ -779,8 +779,11 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
 
             ( self.superuser,                     True  ),
             ( self.nhs_superuser,                 True  ),
-            ( self.ccg_user,                      True  ),
             ( self.customer_contact_centre_user,  True  ),
+
+            # CCG users allowed, but only if they have CCGs attached to them.
+            ( self.ccg_user,                      True  ),
+            ( self.no_ccg_user,                   False ),
         )
 
         for user, permitted in tests:
