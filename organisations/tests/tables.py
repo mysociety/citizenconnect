@@ -21,8 +21,15 @@ class ProblemTableTest(TestCase):
         expected = '<a href="/private/response/{0}">&lt;script&gt;alert(&#39;xss&#39;)&lt;/script&gt;'.format(self.problem.id)
         self.assertEqual(link, expected)
 
-    def test_escaping_summary(self):
+    def test_escaping_public_record_summary(self):
         table = ProblemTable([], private=False, cobrand='choices')
         link = table.render_summary_as_public_link(self.problem)
         expected = '<a href="/choices/problem/{0}">&lt;script&gt;alert(&#39;xss&#39;)&lt;/script&gt;'.format(self.problem.id)
+        self.assertEqual(link, expected)
+
+    def test_escaping_summary(self):
+        table = ProblemTable([], private=False, cobrand='choices')
+        self.problem.public = False
+        link = table.render_summary(self.problem)
+        expected = 'Private'
         self.assertEqual(link, expected)
