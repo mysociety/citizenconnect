@@ -26,6 +26,10 @@
         {{ hidden }}
     {% endfor %}
 
+    {% if form.website.errors %}
+      {% include "message_list.html" with messages=form.website.errors message_type='error' %}
+    {% endif %}
+
     <fieldset class="island">
         <ul class="gw">
             <li class="g  one-whole">
@@ -108,6 +112,16 @@
                 </ul>
                 {% include "message_list.html" with messages=form.preferred_contact_method.errors message_type='error' %}
             </li>
+
+            {#
+              This should never be visible to the user as it has display: none.
+              It is a honeypot and should not be filled in.
+            #}
+            <li class="g  one-half  palm-one-whole" style="display: none">
+                <label for="id_website">Leave blank<span class="info">Please leave this field blank</span></label>
+                {{ form.website }}
+            </li>
+
         </ul>
     </fieldset>
 

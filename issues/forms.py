@@ -68,6 +68,15 @@ class ProblemForm(IssueModelForm):
        required=True
     )
 
+    # This is a honeypot field to catch spam bots. If there is any content in
+    # it the form validation will fail and an appropriate error should be shown to
+    # the user. This field is hidden by CSS in the form so should never be shown to
+    # a user. Hopefully it will not be autofilled either.
+    website = forms.CharField(
+        label = 'Leave this blank',
+        required = False,
+    )
+
     def clean(self):
         cleaned_data = self.cleaned_data
         # Set public and public_reporter_name based on what they chose in privacy
