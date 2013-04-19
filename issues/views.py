@@ -7,7 +7,7 @@ from django.template import RequestContext
 from citizenconnect.shortcuts import render
 from organisations.models import Organisation, Service
 from organisations.views import PickProviderBase, OrganisationAwareViewMixin, PrivateViewMixin
-from organisations.auth import check_question_access, check_problem_access
+from organisations.auth import enforce_question_access_check, enforce_problem_access_check
 
 from .models import Question, Problem
 from .forms import QuestionForm, ProblemForm, QuestionUpdateForm, ProblemSurveyForm
@@ -51,7 +51,7 @@ class QuestionUpdate(PrivateViewMixin, UpdateView):
     confirm_template = 'issues/question_update_confirm.html'
 
     def dispatch(self, request, *args, **kwargs):
-        check_question_access(request.user)
+        enforce_question_access_check(request.user)
         return super(QuestionUpdate, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -106,7 +106,7 @@ class ProblemDetail(DetailView):
 
     def get_object(self, *args, **kwargs):
         obj = super(ProblemDetail, self).get_object(*args, **kwargs)
-        check_problem_access(obj, self.request.user)
+        enforce_problem_access_check(obj, self.request.user)
         return obj
 
 class ProblemSurvey(UpdateView):

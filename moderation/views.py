@@ -15,7 +15,7 @@ from django_tables2 import RequestConfig
 from issues.models import Problem
 from organisations.models import Organisation
 import organisations.auth as auth
-from organisations.auth import user_in_group, user_is_superuser, user_in_groups, check_moderation_access, check_second_tier_moderation_access
+from organisations.auth import user_in_group, user_is_superuser, user_in_groups, enforce_moderation_access_check, enforce_second_tier_moderation_access_check
 
 from .forms import ProblemModerationForm, ProblemResponseInlineFormSet, ProblemSecondTierModerationForm
 from issues.forms import LookupForm
@@ -27,7 +27,7 @@ class ModeratorsOnlyMixin(object):
     """
 
     def dispatch(self, request, *args, **kwargs):
-        check_moderation_access(request.user)
+        enforce_moderation_access_check(request.user)
         return super(ModeratorsOnlyMixin, self).dispatch(request, *args, **kwargs)
 
 class SecondTierModeratorsOnlyMixin(object):
@@ -36,7 +36,7 @@ class SecondTierModeratorsOnlyMixin(object):
     """
 
     def dispatch(self, request, *args, **kwargs):
-        check_second_tier_moderation_access(request.user)
+        enforce_second_tier_moderation_access_check(request.user)
         return super(SecondTierModeratorsOnlyMixin, self).dispatch(request, *args, **kwargs)
 
 class ModerationTableMixin(object):

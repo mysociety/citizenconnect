@@ -22,7 +22,7 @@ from issues.models import Problem, Question
 
 import choices_api
 import auth
-from .auth import user_in_group, user_in_groups, user_is_superuser, check_organisation_access, check_question_access, user_can_access_escalation_dashboard, user_can_access_private_national_summary
+from .auth import user_in_group, user_in_groups, user_is_superuser, enforce_organisation_access_check, enforce_question_access_check, user_can_access_escalation_dashboard, user_can_access_private_national_summary
 from .models import Organisation, Service, CCG, SuperuserLogEntry
 from .forms import OrganisationFinderForm, FilterForm, OrganisationFilterForm
 from .lib import interval_counts
@@ -59,7 +59,7 @@ class OrganisationAwareViewMixin(PrivateViewMixin):
         context['organisation'] = self.organisation
         # Check that the user can access the organisation if this is private
         if context['private']:
-            check_organisation_access(context['organisation'], self.request.user)
+            enforce_organisation_access_check(context['organisation'], self.request.user)
         return context
 
 
@@ -523,7 +523,7 @@ class QuestionsDashboard(ListView):
     context_object_name = "questions"
 
     def dispatch(self, request, *args, **kwargs):
-        check_question_access(request.user)
+        enforce_question_access_check(request.user)
         return super(QuestionsDashboard, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):

@@ -288,7 +288,7 @@ class ResponseFormViewTests(AuthorizationTestCase):
 
     def test_ISSUE_344_problem_response_access_different_to_problem_access(self):
         # There was a bug where access to the response page was calling
-        # organisations.auth.check_problem_access(), but for published
+        # organisations.auth.enforce_problem_access_check(), but for published
         # public problems, that returns true for _everyone_, so any
         # authenticated user could respond (authenticated only because we
         # had login_required on the view)
