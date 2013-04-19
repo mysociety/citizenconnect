@@ -25,8 +25,7 @@ class Command(BaseCommand):
     @transaction.commit_manually
     def handle(self, *args, **options):
         filename = args[0]
-        reader = csv.reader(open(filename), delimiter=',', quotechar='"')
-        rownum = 0
+        reader = csv.DictReader(open(filename), delimiter=',', quotechar='"')
         verbose = options['verbose']
 
         if verbose:
@@ -36,20 +35,22 @@ class Command(BaseCommand):
         subject_template = get_template('organisations/generic_intro_email_subject.txt')
         message_template = get_template('organisations/generic_intro_email_message.txt')
 
+        # Start at 1 as the first row is used to read in the headers.
+        rownum = 1
+
         for row in reader:
             rownum += 1
-            if rownum == 1:
-                continue
-            name = row[0]
-            email = row[1]
+
+            name = row["Name"]
+            email = row["Email"]
             try:
 
-                is_super = self.true_if_x(row[2], rownum)
-                is_case_handler = self.true_if_x(row[3], rownum)
-                is_question_answerer = self.true_if_x(row[4], rownum)
-                is_cqc = self.true_if_x(row[5], rownum)
-                is_second_tier_moderator = self.true_if_x(row[6], rownum)
-                is_ccc = self.true_if_x(row[7], rownum)
+                is_super = self.true_if_x(row["NHS Superusers"], rownum)
+                is_case_handler = self.true_if_x(row["Case Handlers"], rownum)
+                is_question_answerer = self.true_if_x(row["Question Answerers"], rownum)
+                is_cqc = self.true_if_x(row["CQC"], rownum)
+                is_second_tier_moderator = self.true_if_x(row["Second Tier Moderators"], rownum)
+                is_ccc = self.true_if_x(row["Customer Contact Centre"], rownum)
 
                 user, created = User.objects.get_or_create(username=name, email=email)
                 if is_super:
