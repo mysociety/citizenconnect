@@ -61,7 +61,14 @@ def user_can_access_escalation_dashboard(user):
     return (user_is_superuser(user) or user_in_groups(user, [CCG, CUSTOMER_CONTACT_CENTRE]))
 
 def user_can_access_private_national_summary(user):
-    return (user_is_superuser(user) or user_in_groups(user, [CCG, CUSTOMER_CONTACT_CENTRE]))
+    if user_is_superuser(user) or user_in_group(user, CUSTOMER_CONTACT_CENTRE):
+        return True
+
+    # A CCG user with no CCGs should not be allowed.
+    if user_in_group(user, CCG) and user.ccgs.count():
+        return True
+    
+    return False
     
 
 def create_unique_username(organisation):
