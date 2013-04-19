@@ -91,6 +91,16 @@ class ProblemForm(IssueModelForm):
 
         return cleaned_data
 
+
+    def clean_website(self):
+        # The field 'website' is a honeypot - it should be hidden from real
+        # users. Anything that fills it in is probably a bot so reject the
+        # submission.
+        if self.cleaned_data.get('website'):
+            raise forms.ValidationError("submission is probably spam")
+        return ''
+
+
     class Meta:
         model = Problem
 
