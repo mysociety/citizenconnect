@@ -358,13 +358,7 @@ class PrivateNationalSummary(Summary):
 
     def dispatch(self, request, *args, **kwargs):
 
-        user = request.user
-
-        if not user_can_access_private_national_summary(user):
-            raise PermissionDenied()
-
-        # A CCG user with no CCGs should not be allowed.
-        if user_in_group(user, auth.CCG) and not user.ccgs.count():
+        if not user_can_access_private_national_summary(request.user):
             raise PermissionDenied()
 
         return super(PrivateNationalSummary, self).dispatch(request, *args, **kwargs)
@@ -385,7 +379,7 @@ class PrivateNationalSummary(Summary):
         # If the user is in a CCG Group then filter results to that CCG.
         if user_in_group(user, auth.CCG):
             # If the user has assigned CCGs then limit to those. If they have
-            # none then throw an exception (they should not have gotten past dispatch)
+            # none then throw an exception (they should not have gotten past user_can_access_private_national_summary)
             ccgs = user.ccgs.all()
             if not len(ccgs):
                 raise Exception("CCG group user '{0}' has no ccgs - they should not have gotten past check in dispatch".format(user))
