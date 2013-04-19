@@ -112,11 +112,17 @@ class IntervalCountsTest(TestCase):
         return create_test_instance(Problem, default_atts)
 
     def setUp(self):
+        self.test_ccg = create_test_ccg()
+        self.other_test_ccg = create_test_ccg({'name': 'Other test ccg', 'code': 'DEF'})
         self.test_organisation = create_test_organisation({'ods_code': 'XXX999',
                                                            'organisation_type': 'hospital'})
+        self.test_organisation.ccgs.add(self.test_ccg)
+        self.test_organisation.save()
         self.other_test_organisation = create_test_organisation({'ods_code': 'ABC222',
                                                                  'name': 'Other Test Organisation',
                                                                  'organisation_type': 'gppractices'})
+        self.other_test_organisation.ccgs.add(self.other_test_ccg)
+        self.other_test_organisation.save()
         self.test_org_injuries = create_test_service({"service_code": 'ABC123',
                                                       "organisation_id": self.test_organisation.id})
         # Create a spread of problems over time for two organisations
@@ -239,6 +245,80 @@ class IntervalCountsTest(TestCase):
         actual = interval_counts(issue_type=Problem, filters=filters)
         self.assertEqual(expected_counts, actual)
 
+    def test_filter_by_ccg(self):
+        filters = {'ccg': self.other_test_ccg.id}
+        # Stolen from test_filter_by_organisation_type, luckily
+        # the other org is in a different ccg to test_organisation, so I don't
+        # have to work all this out
+        expected_counts = [{'week': 2,
+                            'four_weeks': 3,
+                            'id': self.other_test_organisation.id,
+                            'name': 'Other Test Organisation',
+                            'ods_code': 'ABC222',
+                            'six_months': 5,
+                            'all_time': 5,
+                            'happy_outcome': None,
+                            'happy_outcome_count': 0,
+                            'happy_service': None,
+                            'happy_service_count': 0,
+                            'average_time_to_acknowledge': None,
+                            'average_time_to_address': None }]
+        actual = interval_counts(issue_type=Problem, filters=filters)
+        self.assertEqual(expected_counts, actual)
+
+    def test_filter_by_breach(self):
+        # Add some specific breach problems in for self.test_organisation
+        self.create_problem(self.test_organisation, 1, {'breach': True})
+        self.create_problem(self.test_organisation, 10, {'breach': True})
+        self.create_problem(self.test_organisation, 100, {'breach': True})
+        self.create_problem(self.test_organisation, 365, {'breach': True})
+        filters = {'breach': True}
+        expected_counts = [{'week': 1,
+                            'four_weeks': 2,
+                            'id': self.test_organisation.id,
+                            'name': 'Test Organisation',
+                            'ods_code': 'XXX999',
+                            'six_months': 3,
+                            'all_time': 4,
+                            'happy_outcome': None,
+                            'happy_outcome_count': 0,
+                            'happy_service': None,
+                            'happy_service_count': 0,
+                            'average_time_to_acknowledge': None,
+                            'average_time_to_address': None }]
+        actual = interval_counts(issue_type=Problem, filters=filters)
+        self.assertEqual(expected_counts, actual)
+
+        filters = {'breach': False}
+        expected_counts = [{'week': 2,
+                            'four_weeks': 3,
+                            'id': self.other_test_organisation.id,
+                            'name': 'Other Test Organisation',
+                            'ods_code': 'ABC222',
+                            'six_months': 5,
+                            'all_time': 5,
+                            'happy_outcome': None,
+                            'happy_outcome_count': 0,
+                            'happy_service': None,
+                            'happy_service_count': 0,
+                            'average_time_to_acknowledge': None,
+                            'average_time_to_address': None},
+                           {'week': 3,
+                           'four_weeks': 5,
+                           'id': self.test_organisation.id,
+                           'name': 'Test Organisation',
+                           'ods_code': 'XXX999',
+                           'six_months': 6,
+                           'all_time': 6,
+                           'happy_outcome': 0.5,
+                           'happy_outcome_count': 2,
+                           'happy_service': 1.0,
+                           'happy_service_count': 1,
+                           'average_time_to_acknowledge': Decimal('22.6666666666666667'),
+                           'average_time_to_address': Decimal('240.6666666666666667')}]
+        actual = interval_counts(issue_type=Problem, filters=filters)
+        self.assertEqual(expected_counts, actual)
+
     def test_applies_interval_count_threshold_to_overall_counts(self):
         expected_counts = [{'week': 3,
                            'four_weeks': 5,
@@ -337,9 +417,6 @@ class AuthorizationTestCase(TestCase):
 
         # A Second Tier Moderator
         self.second_tier_moderator = User.objects.get(pk=12)
-
-        # A CQC user
-        self.cqc = User.objects.get(pk=10)
 
         # A CCG user linked to no CCGs
         self.no_ccg = User.objects.get(pk=14)

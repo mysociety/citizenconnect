@@ -1,0 +1,24 @@
+{% load url from future %}
+{% autoescape off %}
+You're receiving this e-mail because an account has been created for you on the  Care Connect website.
+
+To login to Care Connect, go to:
+
+  {{ site_base_url }}{% url 'login' %}
+
+Your details are as follows:
+
+  username:      {{ user.username }}
+  email address: {{ user.email }}
+
+If you have not logged in before you will need to create a new password. Please use the password reset to do this:
+
+  {{ site_base_url }}{% url 'password_reset' %}
+
+(If the email address above is not one that will be delivered to you please contact us)
+
+Thanks for using Care Connect!
+
+The Care Connect team
+
+{% endautoescape %}

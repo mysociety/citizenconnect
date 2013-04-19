@@ -32,14 +32,6 @@
         }
     },
     {
-        "pk": 5,
-        "model": "auth.group",
-        "fields": {
-            "name": "Care Quality Commission",
-            "permissions": []
-        }
-    },
-    {
         "pk": 6,
         "model": "auth.group",
         "fields": {

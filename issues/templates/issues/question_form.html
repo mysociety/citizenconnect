@@ -9,6 +9,15 @@
 <div class="header">
     <h1>Ask your question</h1>
 </div>
+
+<div class="placeholder">
+{% if organisation %}
+  <p>If your question does not relate to a specific provider <a href="{% url 'question-form' cobrand=cobrand.name %}">click here</a></p>
+{% else %}
+  <p>If your question relates to a specific provider <a href="{% url 'question-pick-provider' cobrand=cobrand.name %}">click here</a></p>
+{% endif %}
+</div>
+
 <div class="question-form">
     <form method="post">
         {% csrf_token %}

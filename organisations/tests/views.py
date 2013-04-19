@@ -139,8 +139,8 @@ class OrganisationSummaryTests(AuthorizationTestCase):
     def test_summary_page_applies_problem_category_filter(self):
         for url in self.urls:
             self.login_as(self.provider)
-            resp = self.client.get(url + '?problems_category=cleanliness')
-            self.assertEqual(resp.context['problems_category'], 'cleanliness')
+            resp = self.client.get(url + '?category=cleanliness')
+
             total = resp.context['problems_total']
             self.assertEqual(total['all_time'], 1)
             self.assertEqual(total['week'], 1)
@@ -156,8 +156,21 @@ class OrganisationSummaryTests(AuthorizationTestCase):
     def test_summary_page_applies_department_filter(self):
         for url in self.urls:
             self.login_as(self.provider)
-            resp = self.client.get(url + '?service=%s' % self.service.id)
-            self.assertEqual(resp.context['selected_service'], self.service.id)
+            resp = self.client.get(url + '?service_id=%s' % self.service.id)
+
+            problems_by_status = resp.context['problems_by_status']
+            self.assertEqual(problems_by_status[0]['all_time'], 1)
+            self.assertEqual(problems_by_status[0]['week'], 1)
+            self.assertEqual(problems_by_status[0]['four_weeks'], 1)
+            self.assertEqual(problems_by_status[0]['six_months'], 1)
+
+    def test_summary_page_applies_breach_filter(self):
+        # Add a breach problem
+        create_test_instance(Problem, {'organisation': self.test_organisation,
+                                       'breach': True})
+        for url in self.urls:
+            self.login_as(self.provider)
+            resp = self.client.get(url + '?breach=True')
 
             problems_by_status = resp.context['problems_by_status']
             self.assertEqual(problems_by_status[0]['all_time'], 1)
@@ -652,11 +665,12 @@ class SummaryTests(AuthorizationTestCase):
     def setUp(self):
         super(SummaryTests, self).setUp()
         self.summary_url = reverse('org-all-summary', kwargs={'cobrand':'choices'})
-        create_test_instance(Problem, {'organisation': self.test_organisation})
+        create_test_instance(Problem, {'organisation': self.test_organisation, 'category':'staff'})
         create_test_instance(Problem, {'organisation': self.other_test_organisation,
                                        'publication_status': Problem.PUBLISHED,
                                        'moderated': Problem.MODERATED,
-                                       'status': Problem.ABUSIVE})
+                                       'status': Problem.ABUSIVE,
+                                       'category':'cleanliness'})
     def test_summary_page_exists(self):
         resp = self.client.get(self.summary_url)
         self.assertEqual(resp.status_code, 200)
@@ -686,6 +700,58 @@ class SummaryTests(AuthorizationTestCase):
         with self.settings(SUMMARY_THRESHOLD=('six_months', 2)):
             resp = self.client.get(self.summary_url)
             self.assertNotContains(resp, 'Test Organisation')
+
+    def test_summary_page_filters_by_ccg(self):
+        # Add an issue for other_test_organisation that won't be filtered because
+        # of it's Hidden status bit will be by the other orgs ccg
+        create_test_instance(Problem, {'organisation': self.other_test_organisation})
+
+        ccg_filtered_url = '{0}?ccg={1}'.format(self.summary_url, self.test_ccg.id)
+        resp = self.client.get(ccg_filtered_url)
+        self.assertContains(resp, self.test_organisation.name)
+        self.assertNotContains(resp, self.other_test_organisation.name)
+
+    def test_summary_page_filters_by_organisation_type(self):
+        # Add an issue for other_test_organisation that won't be filtered because
+        # of it's Hidden status but will be by the org_type filter
+        create_test_instance(Problem, {'organisation': self.other_test_organisation})
+
+        org_type_filtered_url = '{0}?organisation_type=hospitals'.format(self.summary_url)
+        resp = self.client.get(org_type_filtered_url)
+        self.assertContains(resp, self.test_organisation.name)
+        self.assertNotContains(resp, self.other_test_organisation.name)
+
+    def test_summary_page_filters_by_category(self):
+        # Add an issue for other_test_organisation that won't be filtered because
+        # of it's Hidden status but will be filtered by our category
+        create_test_instance(Problem, {'organisation': self.other_test_organisation,
+                                       'category':'cleanliness'})
+
+        category_filtered_url = '{0}?category=staff'.format(self.summary_url)
+        resp = self.client.get(category_filtered_url)
+        self.assertContains(resp, self.test_organisation.name)
+        self.assertNotContains(resp, self.other_test_organisation.name)
+
+    def test_summary_page_filters_by_status(self):
+        # Add an issue for other_test_organisation that won't be filtered because
+        # of it's Hidden status, but should be filtered by our status filter
+        create_test_instance(Problem, {'organisation': self.other_test_organisation,
+                                       'status': Problem.ACKNOWLEDGED})
+
+        status_filtered_url = '{0}?status={1}'.format(self.summary_url, Problem.NEW)
+        resp = self.client.get(status_filtered_url)
+        self.assertContains(resp, self.test_organisation.name)
+        self.assertNotContains(resp, self.other_test_organisation.name)
+
+    def test_summary_page_filters_by_breach(self):
+        # Add a breach problem
+        create_test_instance(Problem, {'organisation':self.test_organisation,
+                                       'breach': True})
+
+        breach_filtered_url = '{0}?breach=True'.format(self.summary_url)
+        resp = self.client.get(breach_filtered_url)
+        self.assertContains(resp, self.test_organisation.name)
+        self.assertNotContains(resp, self.other_test_organisation.name)
 
 
 @override_settings(SUMMARY_THRESHOLD=None)
@@ -717,7 +783,7 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
             ( self.ccg_user,                      True  ),
             ( self.customer_contact_centre_user,  True  ),
         )
-        
+
         for user, permitted in tests:
             self.client.logout()
             if user:
@@ -735,12 +801,12 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
     def test_summary_page_exists(self):
         resp = self.client.get(self.summary_url)
         self.assertEqual(resp.status_code, 200)
-    
+
     def test_summary_shows_all_statuses_for_problems_in_filters(self):
         resp = self.client.get(self.summary_url)
         for status_enum, status_name in Problem.STATUS_CHOICES:
             self.assertContains(resp, '<option value="{0}">{1}</option>'.format(status_enum, status_name))
-    
+
     def test_ccg_user_only_sees_organisations_they_are_linked_to(self):
 
         # check that superuser sees both CCGs
@@ -762,7 +828,7 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
         with self.settings(SUMMARY_THRESHOLD=('six_months', 1)):
             resp = self.client.get(self.summary_url)
             self.assertContains(resp, 'Test Organisation')
-    
+
         with self.settings(SUMMARY_THRESHOLD=('six_months', 2)):
             resp = self.client.get(self.summary_url)
             self.assertNotContains(resp, 'Test Organisation')

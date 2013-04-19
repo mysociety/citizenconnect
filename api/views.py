@@ -2,12 +2,13 @@ from django.views.generic import CreateView
 from django.http import HttpResponse
 from django.utils import simplejson as json
 
-from issues.models import Problem, Question
+from issues.models import Problem
 
-from .forms import ProblemAPIForm, QuestionAPIForm
+from .forms import ProblemAPIForm
 
-class APIFormMixin(object):
-    # Mixin for forms which return HTTPResponses with content type as JSON
+class APIProblemCreate(CreateView):
+    model = Problem
+    form_class = ProblemAPIForm
 
     # Limit this view to POST requests, we don't want to show an HTML form for it
     http_method_names = ['post']
@@ -36,11 +37,3 @@ class APIFormMixin(object):
         response = self.render_to_json_response(json.dumps({ 'errors': json.dumps(form.errors) }))
         response.status_code = 400
         return response
-
-class APIProblemCreate(APIFormMixin, CreateView):
-    model = Problem
-    form_class = ProblemAPIForm
-
-class APIQuestionCreate(APIFormMixin, CreateView):
-    model = Question
-    form_class = QuestionAPIForm

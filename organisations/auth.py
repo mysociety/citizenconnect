@@ -11,7 +11,6 @@ PROVIDERS = 1
 NHS_SUPERUSERS = 2
 CASE_HANDLERS = 3
 QUESTION_ANSWERERS = 4
-CQC = 5
 CCG = 6
 SECOND_TIER_MODERATORS = 7
 CUSTOMER_CONTACT_CENTRE = 8
@@ -20,7 +19,6 @@ ALL_GROUPS = [PROVIDERS,
               NHS_SUPERUSERS,
               CASE_HANDLERS,
               QUESTION_ANSWERERS,
-              CQC,
               CCG,
               SECOND_TIER_MODERATORS,
               CUSTOMER_CONTACT_CENTRE]
@@ -60,7 +58,7 @@ def check_response_access(problem, user):
     check_organisation_access(problem.organisation, user)
 
 def user_can_access_escalation_dashboard(user):
-    return (user_is_superuser(user) or user_in_groups(user, [CQC, CCG, CUSTOMER_CONTACT_CENTRE]))
+    return (user_is_superuser(user) or user_in_groups(user, [CCG, CUSTOMER_CONTACT_CENTRE]))
 
 def user_can_access_private_national_summary(user):
     return (user_is_superuser(user) or user_in_groups(user, [CCG, CUSTOMER_CONTACT_CENTRE]))
