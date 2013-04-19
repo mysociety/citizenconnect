@@ -773,7 +773,6 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
             # (user, permitted? )
             ( None,                               False ),
             ( self.provider,                      False ),
-            ( self.cqc,                           False ),
             ( self.case_handler,                  False ),
             ( self.question_answerer,             False ),
             ( self.second_tier_moderator,         False ),
