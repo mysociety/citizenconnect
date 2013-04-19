@@ -371,7 +371,19 @@ class PrivateNationalSummary(Summary):
         return super(PrivateNationalSummary, self).get_context_data(**kwargs)
 
     def get_interval_counts(self, filters, threshold):
-        print "FIXME - add organisation limiting here for CCG users"
+        
+        user = self.request.user
+
+        # If the user is in a CCG Group then filter results to that CCG.
+        if user_is_superuser(user) or user_in_group(user, auth.CUSTOMER_CONTACT_CENTRE):
+            # Can see all - don't apply any CCG filters
+            pass
+        else:
+            # If the user has assigned CCGs then limit to those
+            ccgs = user.ccgs.all()
+            if len(ccgs):
+                filters['ccg'] = tuple([ ccg.id for ccg in ccgs ])
+
         return interval_counts(
             issue_type=Problem,
             filters=filters,

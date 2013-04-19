@@ -808,19 +808,23 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
 
     def test_ccg_user_only_sees_organisations_they_are_linked_to(self):
 
-        # check that superuser sees both CCGs
+        # check that superuser sees both CCGs' organisations
         resp = self.client.get(self.summary_url)
-        self.assertContains(resp, ">{0}<".format(self.test_ccg.name))
-        self.assertContains(resp, ">{0}<".format(self.other_test_ccg.name))
+        for org in self.test_ccg.organisations.all():
+            self.assertContains(resp, org.name)
+        for org in self.other_test_ccg.organisations.all():
+            self.assertContains(resp, org.name)
 
         # change user
         self.client.logout()
         self.login_as(self.ccg_user)
 
-        # check they see test_ccg and not other_ccg
+        # check they see orgs for test_ccg and not for other_ccg
         resp = self.client.get(self.summary_url)
-        self.assertContains(resp,    ">{0}<".format(self.test_ccg.name))
-        self.assertNotContains(resp, ">{0}<".format(self.other_test_ccg.name))
+        for org in self.test_ccg.organisations.all():
+            self.assertContains(resp, org.name)
+        for org in self.other_test_ccg.organisations.all():
+            self.assertNotContains(resp, org.name)
 
 
     def test_summary_page_applies_threshold_from_settings(self):
