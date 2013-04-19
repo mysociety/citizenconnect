@@ -510,7 +510,7 @@ class EscalationDashboard(FilterFormMixin, TemplateView):
 
         # Turn off the ccg filter if the user is a ccg
         user = self.request.user
-        if not user_is_superuser(user) and not user_in_groups(user, [auth.CUSTOMER_CONTACT_CENTRE]):
+        if not user_is_superuser(user) and not user_in_group(user, auth.CUSTOMER_CONTACT_CENTRE):
             kwargs['with_ccg'] = False
 
         # Turn off status too, because all problems on this dashboard have
@@ -526,11 +526,11 @@ class EscalationDashboard(FilterFormMixin, TemplateView):
         user = self.request.user
 
         # Restrict problem queryset for non-superuser users (i.e. CCG users)
-        if not user_is_superuser(user) and not user_in_groups(user, [auth.CUSTOMER_CONTACT_CENTRE]):
+        if not user_is_superuser(user) and not user_in_group(user, auth.CUSTOMER_CONTACT_CENTRE):
             problems = problems.filter(organisation__escalation_ccg__in=(user.ccgs.all()),
                                        commissioned=Problem.LOCALLY_COMMISSIONED)
         # Restrict problem queryset for non-CCG users (i.e. Customer Contact Centre)
-        elif not user_is_superuser(user) and not user_in_groups(user, [auth.CCG]):
+        elif not user_is_superuser(user) and not user_in_group(user, auth.CCG):
             problems = problems.filter(commissioned=Problem.NATIONALLY_COMMISSIONED)
 
         # Apply form filters on top of this
@@ -573,7 +573,7 @@ class EscalationBreaches(TemplateView):
 
         # Restrict problem queryset for non-superuser users (i.e. CCG users)
         user = self.request.user
-        if not user_is_superuser(user) and not user_in_groups(user, [auth.CUSTOMER_CONTACT_CENTRE]):
+        if not user_is_superuser(user) and not user_in_group(user, auth.CUSTOMER_CONTACT_CENTRE):
             problems = problems.filter(organisation__escalation_ccg__in=(user.ccgs.all()))
         # Everyone else see's all breaches
 
