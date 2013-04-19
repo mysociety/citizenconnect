@@ -241,7 +241,7 @@
         "pk": 14,
         "model": "auth.user",
         "fields": {
-            "username": "no_ccg",
+            "username": "no_ccg_user",
             "first_name": "",
             "last_name": "",
             "is_active": true,
@@ -253,7 +253,7 @@
             ],
             "user_permissions": [],
             "password": "pbkdf2_sha256$10000$jWJUa0RaX5zt$bnS2UDpLvK+rPjjrU5zaVymaUnr0Dr1GG4ELTIH4PNg=",
-            "email": "no_ccg@example.com",
+            "email": "no_ccg_user@example.com",
             "date_joined": "2013-03-19T11:28:50Z"
         }
     }   ,

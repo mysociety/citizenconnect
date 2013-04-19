@@ -419,7 +419,7 @@ class AuthorizationTestCase(TestCase):
         self.second_tier_moderator = User.objects.get(pk=12)
 
         # A CCG user linked to no CCGs
-        self.no_ccg = User.objects.get(pk=14)
+        self.no_ccg_user = User.objects.get(pk=14)
 
         # A CCG user for the CCG that test organisation belongs to
         self.ccg_user = User.objects.get(pk=9)

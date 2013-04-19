@@ -43,8 +43,8 @@ class OrganisationModelAuthTests(AuthorizationTestCase):
         self.assertTrue(self.other_test_organisation.can_be_accessed_by(self.pals))
 
     def test_user_with_no_ccgs_cannot_access_providers(self):
-        self.assertFalse(self.test_organisation.can_be_accessed_by(self.no_ccg))
-        self.assertFalse(self.other_test_organisation.can_be_accessed_by(self.no_ccg))
+        self.assertFalse(self.test_organisation.can_be_accessed_by(self.no_ccg_user))
+        self.assertFalse(self.other_test_organisation.can_be_accessed_by(self.no_ccg_user))
 
     def test_user_with_other_ccg_cannot_access_provider_with_no_ccg(self):
         self.assertFalse(self.test_organisation.can_be_accessed_by(self.other_ccg_user))
