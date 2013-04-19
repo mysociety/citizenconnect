@@ -42,6 +42,10 @@ def check_organisation_access(organisation, user):
     if not organisation.can_be_accessed_by(user):
         raise PermissionDenied()
 
+def check_moderation_access(user):
+    if not user_is_superuser(user) and not user_in_group(user, CASE_HANDLERS):
+        raise PermissionDenied()
+
 def check_question_access(user):
     if not user_is_superuser(user) and not user_in_group(user, QUESTION_ANSWERERS):
         raise PermissionDenied()
