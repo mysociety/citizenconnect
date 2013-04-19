@@ -210,13 +210,10 @@ class OrganisationSummary(OrganisationAwareViewMixin,
     def get_form_kwargs(self):
         kwargs = super(OrganisationSummary, self).get_form_kwargs()
 
+        kwargs['organisation'] = self.organisation
         # Only show service_id if the organisation has services
         if not self.organisation.has_services():
             kwargs['with_service_id'] = False
-        else:
-            # If we have services, we need to give the form an organisation
-            # to get them from
-            kwargs['organisation'] = self.organisation
 
         # We don't want a status filter
         kwargs['with_status'] = False
