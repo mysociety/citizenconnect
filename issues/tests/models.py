@@ -616,16 +616,16 @@ class ProblemManagerTests(ManagerTest):
         # Lists that we expect from our manager's methods
         self.unmoderated_problems = self.open_unmoderated_problems + self.closed_unmoderated_problems
         self.open_problems = self.open_unmoderated_problems + self.open_moderated_problems
-        self.open_moderated_published_problems = [self.new_public_moderated_problem_published,
+        self.open_moderated_published_visible_problems = [self.new_public_moderated_problem_published,
                                                   self.new_private_moderated_problem_published,
                                                   self.escalated_public_moderated_problem_published,
                                                   self.breach_public_moderated_problem_published]
 
-        self.closed_moderated_published_problems = [self.closed_public_moderated_problem_published,
+        self.closed_moderated_published_visible_problems = [self.closed_public_moderated_problem_published,
                                                     self.closed_private_moderated_problem_published]
 
         self.all_problems = self.open_problems + self.closed_problems
-        self.all_moderated_published_problems = self.open_moderated_published_problems + [self.closed_public_moderated_problem_published,
+        self.all_moderated_published_problems = self.open_moderated_published_visible_problems + [self.closed_public_moderated_problem_published,
                                                                                           self.closed_private_moderated_problem_published]
         self.problems_requiring_second_tier_moderation = [self.public_problem_requiring_second_tier_moderation,
                                                     self.private_problem_requiring_second_tier_moderation]
@@ -646,13 +646,13 @@ class ProblemManagerTests(ManagerTest):
     def test_unmoderated_problems_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.unmoderated_problems(), self.unmoderated_problems)
 
-    def test_open_moderated_published_problems_returns_correct_problems(self):
-        self.compare_querysets(Problem.objects.open_moderated_published_problems(),
-                               self.open_moderated_published_problems)
+    def test_open_moderated_published_visible_problems_returns_correct_problems(self):
+        self.compare_querysets(Problem.objects.open_moderated_published_visible_problems(),
+                               self.open_moderated_published_visible_problems)
 
-    def test_closed_moderated_published_problems_returns_correct_problems(self):
-        self.compare_querysets(Problem.objects.closed_moderated_published_problems(),
-                               self.closed_moderated_published_problems)
+    def test_closed_moderated_published_visible_problems_returns_correct_problems(self):
+        self.compare_querysets(Problem.objects.closed_moderated_published_visible_problems(),
+                               self.closed_moderated_published_visible_problems)
 
     def test_all_moderated_published_problems_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.all_moderated_published_problems(),
