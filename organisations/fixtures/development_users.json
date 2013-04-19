@@ -20,26 +20,6 @@
         }
     },
     {
-        "pk": 10,
-        "model": "auth.user",
-        "fields": {
-            "username": "cqc",
-            "first_name": "",
-            "last_name": "",
-            "is_active": true,
-            "is_superuser": false,
-            "is_staff": false,
-            "last_login": "2013-03-19T11:23:58Z",
-            "groups": [
-                5
-            ],
-            "user_permissions": [],
-            "password": "pbkdf2_sha256$10000$Ta9c6uS191lx$Vp/KnBrhsBZssbuMCEwRsduOjfEr+CxJDezRM+TLy1I=",
-            "email": "cqc@example.com",
-            "date_joined": "2013-03-19T11:23:58Z"
-        }
-    },
-    {
         "pk": 8,
         "model": "auth.user",
         "fields": {

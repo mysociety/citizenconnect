@@ -418,9 +418,6 @@ class AuthorizationTestCase(TestCase):
         # A Second Tier Moderator
         self.second_tier_moderator = User.objects.get(pk=12)
 
-        # A CQC user
-        self.cqc = User.objects.get(pk=10)
-
         # A CCG user linked to no CCGs
         self.no_ccg = User.objects.get(pk=14)
 

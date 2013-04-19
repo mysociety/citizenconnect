@@ -48,7 +48,6 @@ class Command(BaseCommand):
                 is_super = self.true_if_x(row["NHS Superusers"], rownum)
                 is_case_handler = self.true_if_x(row["Case Handlers"], rownum)
                 is_question_answerer = self.true_if_x(row["Question Answerers"], rownum)
-                is_cqc = self.true_if_x(row["CQC"], rownum)
                 is_second_tier_moderator = self.true_if_x(row["Second Tier Moderators"], rownum)
                 is_ccc = self.true_if_x(row["Customer Contact Centre"], rownum)
 
@@ -59,8 +58,6 @@ class Command(BaseCommand):
                     user.groups.add(auth.CASE_HANDLERS)
                 if is_question_answerer:
                     user.groups.add(auth.QUESTION_ANSWERERS)
-                if is_cqc:
-                    user.groups.add(auth.CQC)
                 if is_second_tier_moderator:
                     user.groups.add(auth.SECOND_TIER_MODERATORS)
                 if is_ccc:

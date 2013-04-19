@@ -1,8 +1,7 @@
-"Name","Email","NHS Superusers","Case Handlers","Question Answerers","CQC","Second Tier Moderators","Customer Contact Centre"
-"A Super User","spreadsheetsuper@example.com","x",,,,,
-"A Case Handler","spreadsheetcasehandler@example.com",,"x",,,,
-"Case Handler/Second Tier","spreadsheetcasemod@example.com",,"x",,,"x",
-"A Question Answerer","spreadsheetqa@example.com",,,"x",,,
-"A CQC","spreadsheetcqc@example.com",,,,"x",,
-"A Customer Contact Centre","spreadsheetccc@example.com",,,,,,"x"
-"A Bad Row","spreadsheetbadrow@example.com",,,,,,"BAD!"
+"Name","Email","NHS Superusers","Case Handlers","Question Answerers","Second Tier Moderators","Customer Contact Centre"
+"A Super User","spreadsheetsuper@example.com",x,,,,
+"A Case Handler","spreadsheetcasehandler@example.com",,x,,,
+"Case Handler/Second Tier","spreadsheetcasemod@example.com",,x,,x,
+"A Question Answerer","spreadsheetqa@example.com",,,x,,
+"A Customer Contact Centre","spreadsheetccc@example.com",,,,,x
+"A Bad Row","spreadsheetbadrow@example.com",,,,,BAD!

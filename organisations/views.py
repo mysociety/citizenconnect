@@ -385,8 +385,8 @@ def login_redirect(request):
     if user_in_group(user, auth.NHS_SUPERUSERS):
         return HttpResponseRedirect(reverse('private-map'))
 
-    # CQC, CCG, and customer contact centre users go to the escalation dashboard
-    elif user_in_groups(user, [auth.CQC, auth.CCG, auth.CUSTOMER_CONTACT_CENTRE]):
+    # CCG, and customer contact centre users go to the escalation dashboard
+    elif user_in_groups(user, [auth.CCG, auth.CUSTOMER_CONTACT_CENTRE]):
         return HttpResponseRedirect(reverse('escalation-dashboard'))
 
     # Moderators go to the moderation queue
@@ -460,7 +460,7 @@ class EscalationDashboard(FilterFormMixin, TemplateView):
 
         # Turn off the ccg filter if the user is a ccg
         user = self.request.user
-        if not user_is_superuser(user) and not user_in_groups(user, [auth.CQC, auth.CUSTOMER_CONTACT_CENTRE]):
+        if not user_is_superuser(user) and not user_in_groups(user, [auth.CUSTOMER_CONTACT_CENTRE]):
             kwargs['with_ccg'] = False
 
         # Turn off status too, because all problems on this dashboard have
@@ -475,12 +475,12 @@ class EscalationDashboard(FilterFormMixin, TemplateView):
         problems = Problem.objects.open_escalated_problems()
         user = self.request.user
 
-        # Restrict problem queryset for non-CQC and non-superuser users (i.e. CCG users)
-        if not user_is_superuser(user) and not user_in_groups(user, [auth.CQC, auth.CUSTOMER_CONTACT_CENTRE]):
+        # Restrict problem queryset for non-superuser users (i.e. CCG users)
+        if not user_is_superuser(user) and not user_in_groups(user, [auth.CUSTOMER_CONTACT_CENTRE]):
             problems = problems.filter(organisation__escalation_ccg__in=(user.ccgs.all()),
                                        commissioned=Problem.LOCALLY_COMMISSIONED)
-        # Restrict problem queryset for non CQC and non-CCG users (i.e. Customer Contact Centre)
-        elif not user_is_superuser(user) and not user_in_groups(user, [auth.CQC, auth.CCG]):
+        # Restrict problem queryset for non-CCG users (i.e. Customer Contact Centre)
+        elif not user_is_superuser(user) and not user_in_groups(user, [auth.CCG]):
             problems = problems.filter(commissioned=Problem.NATIONALLY_COMMISSIONED)
 
         # Apply form filters on top of this
@@ -521,9 +521,9 @@ class EscalationBreaches(TemplateView):
         context = super(EscalationBreaches, self).get_context_data(**kwargs)
         problems = Problem.objects.open_problems().filter(breach=True)
 
-        # Restrict problem queryset for non-CQC and non-superuser users (i.e. CCG users)
+        # Restrict problem queryset for non-superuser users (i.e. CCG users)
         user = self.request.user
-        if not user_is_superuser(user) and not user_in_groups(user, [auth.CQC, auth.CUSTOMER_CONTACT_CENTRE]):
+        if not user_is_superuser(user) and not user_in_groups(user, [auth.CUSTOMER_CONTACT_CENTRE]):
             problems = problems.filter(organisation__escalation_ccg__in=(user.ccgs.all()))
         # Everyone else see's all breaches
 
