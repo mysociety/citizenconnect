@@ -609,7 +609,9 @@ class ProblemManagerTests(ManagerTest):
         self.closed_resolved_problems = self.closed_unmoderated_problems + [self.closed_public_moderated_problem_hidden,
                                                                    self.closed_public_moderated_problem_published,
                                                                    self.closed_private_moderated_problem_hidden,
-                                                                   self.closed_private_moderated_problem_published]
+                                                                   self.closed_private_moderated_problem_published,
+                                                                   self.public_published_unresolvable_problem,
+                                                                   self.public_published_abusive_problem]
 
         # Lists that we expect from our manager's methods
         self.unmoderated_problems = self.open_unmoderated_problems + self.closed_unmoderated_problems
