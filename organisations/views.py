@@ -7,7 +7,7 @@ import json
 from django.views.generic import FormView, TemplateView, UpdateView, ListView
 from django.views.generic.edit import FormMixin
 from django.template.defaultfilters import escape
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, resolve
 from django.core.exceptions import PermissionDenied
 from django.template import RequestContext
 from django_tables2 import RequestConfig
@@ -214,6 +214,7 @@ class PickProviderBase(ListView):
                     context['page_obj'] = page
                     context['is_paginated'] = is_paginated
                     context['organisations'] = queryset
+                    context['current_url'] = resolve(self.request.path_info).url_name
                 return render(self.request, self.template_name, context)
             else:
                 return render(self.request, self.form_template_name, {'form': form,
