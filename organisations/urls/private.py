@@ -11,7 +11,7 @@ urlpatterns = patterns('',
         name='org-dashboard',
         kwargs={'private': True}),
 
-    url(r'^summary/$',
+    url(r'^summary$',
         login_required(PrivateNationalSummary.as_view()),
         name='private-national-summary',
         kwargs={'private': True}),
