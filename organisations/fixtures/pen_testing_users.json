@@ -1,0 +1,162 @@
+[
+    {
+        "pk": 16,
+        "model": "auth.user",
+        "fields": {
+            "username": "pentest_provider",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2013-04-22T15:32:06Z",
+            "groups": [
+                1
+            ],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$zr4iU7AD3qLA$+kCONf2dPlyNQgsFWxAlWzGP4BAc0X1ww70VaobdBXA=",
+            "email": "",
+            "date_joined": "2013-04-22T15:32:06Z"
+        }
+    },
+    {
+        "pk": 17,
+        "model": "auth.user",
+        "fields": {
+            "username": "pentest_nhs_superuser",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2013-04-22T15:34:01Z",
+            "groups": [
+                2
+            ],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$MYKJL28A612Z$UFMB6tLNVpl6jOMaL6FGYXqeEhZcm3tf3Bq5jt2X78E=",
+            "email": "",
+            "date_joined": "2013-04-22T15:34:01Z"
+        }
+    },
+    {
+        "pk": 18,
+        "model": "auth.user",
+        "fields": {
+            "username": "pentest_case_handler",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2013-04-22T15:34:20Z",
+            "groups": [
+                3
+            ],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$MLCpSLxYgQgj$5lRxoHidmBnpP/2vocv5Q57dbFCWDnyu68/7ZjWnchg=",
+            "email": "",
+            "date_joined": "2013-04-22T15:34:20Z"
+        }
+    },
+    {
+        "pk": 19,
+        "model": "auth.user",
+        "fields": {
+            "username": "pentest_question_answerer",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2013-04-22T15:35:31Z",
+            "groups": [
+                4
+            ],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$jmZbxaq6TkMq$go2zGbvFL1nYkjbvy2Ny07KFX2AGKkYfls8GYlVUKB8=",
+            "email": "",
+            "date_joined": "2013-04-22T15:35:31Z"
+        }
+    },
+    {
+        "pk": 20,
+        "model": "auth.user",
+        "fields": {
+            "username": "pentest_ccg",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2013-04-22T15:36:07Z",
+            "groups": [
+                6
+            ],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$3m71Px5gzqyP$szxogAf3k5bKOl+eXUCV5d57sdn5k739Zc1KH5WPJjI=",
+            "email": "",
+            "date_joined": "2013-04-22T15:36:07Z"
+        }
+    },
+    {
+        "pk": 21,
+        "model": "auth.user",
+        "fields": {
+            "username": "pentest_second_tier",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2013-04-22T15:37:13Z",
+            "groups": [
+                7
+            ],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$VRBBIda8V93O$DfkgDA3NX1F9JHsYSvWFgOKNxx58dWa/UqEJbP3zgdo=",
+            "email": "",
+            "date_joined": "2013-04-22T15:37:13Z"
+        }
+    },
+    {
+        "pk": 22,
+        "model": "auth.user",
+        "fields": {
+            "username": "pentest_ccc",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2013-04-22T15:38:03Z",
+            "groups": [
+                8
+            ],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$SPDzSEed3PfU$5xgrwrczoMGMUqeJrOe95ZFQqKAq6ecSoj7Zfh09qK4=",
+            "email": "",
+            "date_joined": "2013-04-22T15:38:03Z"
+        }
+    },
+    {
+        "pk": 23,
+        "model": "auth.user",
+        "fields": {
+            "username": "pentest_cqc",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2013-04-22T15:38:28Z",
+            "groups": [
+                5
+            ],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$e0LR4YwobHId$Y6PqAwp8azZJ6o+z8jvGJUlFYhv31tRw09BJ2p0EAgI=",
+            "email": "",
+            "date_joined": "2013-04-22T15:38:28Z"
+        }
+    }
+]
