@@ -646,15 +646,9 @@ class OrganisationMapTests(AuthorizationTestCase):
         self.hospital = self.test_organisation
         self.other_gp = self.other_test_organisation
         self.map_url = reverse('org-map', kwargs={'cobrand':'choices'})
-        self.private_map_url = reverse('private-map')
 
     def test_map_page_exists(self):
         resp = self.client.get(self.map_url)
-        self.assertEqual(resp.status_code, 200)
-
-    def test_private_map_page_exists(self):
-        self.login_as(self.nhs_superuser)
-        resp = self.client.get(self.private_map_url)
         self.assertEqual(resp.status_code, 200)
 
     def test_organisations_json_displayed(self):
@@ -685,58 +679,11 @@ class OrganisationMapTests(AuthorizationTestCase):
 
         self.assertEqual(response_json[1]['problem_count'], 1)
 
-    def test_private_map_page_is_only_accessible_to_superusers(self):
-        expected_login_url = "{0}?next={1}".format(self.login_url, self.private_map_url)
-        resp = self.client.get(self.private_map_url)
-        self.assertRedirects(resp, expected_login_url)
-
-        self.login_as(self.provider)
-        resp = self.client.get(self.private_map_url)
-        self.assertEqual(resp.status_code, 403)
-
-        self.login_as(self.other_provider)
-        resp = self.client.get(self.private_map_url)
-        self.assertEqual(resp.status_code, 403)
-
-        self.login_as(self.case_handler)
-        resp = self.client.get(self.private_map_url)
-        self.assertEqual(resp.status_code, 403)
-
-    def test_private_map_includes_unmoderated_and_unpublished_problems(self):
-        self.login_as(self.nhs_superuser)
-        create_test_instance(Problem, {'organisation': self.other_gp})
-        create_test_instance(Problem, {'organisation': self.other_gp,
-                                       'publication_status': Problem.HIDDEN,
-                                       'moderated': Problem.MODERATED})
-        create_test_instance(Problem, {'organisation': self.other_gp,
-                                       'publication_status': Problem.PUBLISHED,
-                                       'moderated': Problem.MODERATED,
-                                       'status': Problem.ABUSIVE})
-        create_test_instance(Problem, {'organisation': self.other_gp,
-                                       'publication_status': Problem.PUBLISHED,
-                                       'moderated': Problem.MODERATED})
-
-        resp = self.client.get(self.private_map_url)
-        response_json = json.loads(resp.context['organisations'])
-
-        self.assertEqual(response_json[1]['problem_count'], 3)
-
     def test_public_map_provider_urls_are_to_public_summary_pages(self):
         expected_gp_url = reverse('public-org-summary', kwargs={'ods_code':self.hospital.ods_code, 'cobrand':'choices'})
         expected_other_gp_url = reverse('public-org-summary', kwargs={'ods_code':self.other_gp.ods_code, 'cobrand':'choices'})
 
         resp = self.client.get(self.map_url)
-        response_json = json.loads(resp.context['organisations'])
-
-        self.assertEqual(response_json[0]['url'], expected_gp_url)
-        self.assertEqual(response_json[1]['url'], expected_other_gp_url)
-
-    def test_private_map_provider_urls_are_to_private_dashboards(self):
-        self.login_as(self.nhs_superuser)
-        expected_gp_url = reverse('org-dashboard', kwargs={'ods_code':self.hospital.ods_code})
-        expected_other_gp_url = reverse('org-dashboard', kwargs={'ods_code':self.other_gp.ods_code})
-
-        resp = self.client.get(self.private_map_url)
         response_json = json.loads(resp.context['organisations'])
 
         self.assertEqual(response_json[0]['url'], expected_gp_url)

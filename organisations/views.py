@@ -128,7 +128,7 @@ class FilterFormMixin(FormMixin):
         return filtered_queryset
 
 
-class Map(PrivateViewMixin, TemplateView):
+class Map(TemplateView):
     template_name = 'organisations/map.html'
 
     def get_context_data(self, **kwargs):
@@ -137,11 +137,6 @@ class Map(PrivateViewMixin, TemplateView):
         # TODO - Filter by location
         organisations = Organisation.objects.annotate(
                 average_time_to_address=Avg('problem__time_to_address'))
-
-        # Check that the user is a superuser
-        if context['private']:
-            if not user_is_superuser(self.request.user):
-                raise PermissionDenied()
 
         organisations_list = []
         for organisation in organisations:
@@ -152,11 +147,7 @@ class Map(PrivateViewMixin, TemplateView):
             organisation_dict['lat'] = organisation.point.coords[1]
             organisation_dict['average_time_to_address'] = organisation.average_time_to_address
 
-            # If we're showing the private map, link to the organisation's dashboard
-            if context['private']:
-                organisation_dict['url'] = reverse('org-dashboard', kwargs={'ods_code':organisation.ods_code})
-            else :
-                organisation_dict['url'] = reverse('public-org-summary', kwargs={'ods_code':organisation.ods_code, 'cobrand':kwargs['cobrand']})
+            organisation_dict['url'] = reverse('public-org-summary', kwargs={'ods_code':organisation.ods_code, 'cobrand':kwargs['cobrand']})
 
             if organisation.organisation_type == 'gppractices':
                 organisation_dict['type'] = "GP"
@@ -169,14 +160,8 @@ class Map(PrivateViewMixin, TemplateView):
             # they should be retrieved as part of the original query for
             # better performance/response times.
 
-            # Counts on private map are all open problems, regardless of moderation
-            if context['private']:
-                organisation_dict['problem_count'] = organisation.problem_set.open_problems().count()
-                organisation_dict['closed_problem_count'] = organisation.problem_set.closed_problems().count()
-            # Counts on public map don't include un-moderated or hidden issues, but do include private issues
-            else:
-                organisation_dict['problem_count'] = organisation.problem_set.open_moderated_published_visible_problems().count()
-                organisation_dict['closed_problem_count'] = organisation.problem_set.closed_moderated_published_visible_problems().count()
+            organisation_dict['problem_count'] = organisation.problem_set.open_moderated_published_visible_problems().count()
+            organisation_dict['closed_problem_count'] = organisation.problem_set.closed_moderated_published_visible_problems().count()
 
             organisations_list.append(organisation_dict)
 
