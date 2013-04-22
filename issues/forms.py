@@ -84,6 +84,24 @@ class ProblemForm(IssueModelForm):
         required = False,
     )
 
+
+    def save(self, commit=True):
+        """
+        Handle the save ourselves so we can set the priority (which is not a
+        field we expect back from the form.)
+        """
+
+        problem = super(ProblemForm, self).save(commit=False)
+
+        if self.cleaned_data['priority']:
+            problem.priority = self.cleaned_data['priority']
+
+        if commit:
+            problem.save()
+
+        return problem
+
+
     def clean(self):
         cleaned_data = self.cleaned_data
         # Set public and public_reporter_name based on what they chose in privacy
@@ -97,6 +115,17 @@ class ProblemForm(IssueModelForm):
             cleaned_data['public_reporter_name'] = True
 
         return super(ProblemForm, self).clean()
+
+
+    def clean_elevate_priority(self):
+        # If true, and the category premits it, set priority to true, otherwise
+        # use default.
+        may_elevate = self.cleaned_data['category'] in Problem.CATEGORIES_PERMITTING_SETTING_OF_PRIORITY_AT_SUBMISSION
+
+        if may_elevate and self.cleaned_data.get('elevate_priority'):
+            self.cleaned_data['priority'] = Problem.PRIORITY_HIGH
+        else:
+            self.cleaned_data['priority'] = None
 
 
     def clean_website(self):
