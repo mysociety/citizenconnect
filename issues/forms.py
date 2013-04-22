@@ -96,7 +96,7 @@ class ProblemForm(IssueModelForm):
             cleaned_data['public'] = True
             cleaned_data['public_reporter_name'] = True
 
-        return cleaned_data
+        return super(ProblemForm, self).clean()
 
 
     def clean_website(self):
