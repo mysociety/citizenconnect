@@ -8,16 +8,16 @@
 {% block bodyclasses %}outcomes-map{% endblock %}
 
 {% block content %}
-{% if not private %}
-    <div class="gw">
-        <div class="g  one-half  palm-one-whole  mb__palm">
-            <a href="{% url 'org-pick-provider' cobrand=cobrand.name %}"  class="btn  btn--no-border  btn--big">Search to find the<br/>profile of an NHS service.</a>
-        </div>
-        <div class="g  one-half  palm-one-whole">
-            <a href="{% url 'org-all-summary' cobrand=cobrand.name %}"  class="btn  btn--no-border  btn--big">View Tables of<br/>NHS Service Profiles</a>
-        </div>
+<div class="gw">
+    <div class="g  one-half  palm-one-whole  mb__palm">
+        <a href="{% url 'org-pick-provider' cobrand=cobrand.name %}"  class="btn  btn--no-border  btn--big">Search to find the<br/>profile of an NHS service.</a>
     </div>
-{% endif %}
+    <div class="g  one-half  palm-one-whole">
+        <a href="{% url 'org-all-summary' cobrand=cobrand.name %}"  class="btn  btn--no-border  btn--big">View Tables of<br/>NHS Service Profiles</a>
+    </div>
+</div>
+
+{% include 'organisations/includes/filters.html' %}
 
 <ul class="tab-nav">
     <li><a href="#" id="london" class="active">London</a></li>

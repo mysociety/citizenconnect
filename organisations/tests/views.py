@@ -689,6 +689,57 @@ class OrganisationMapTests(AuthorizationTestCase):
         self.assertEqual(response_json[0]['url'], expected_gp_url)
         self.assertEqual(response_json[1]['url'], expected_other_gp_url)
 
+    def test_map_filters_by_organisation_type(self):
+        org_type_filtered_url = "{0}?organisation_type=hospitals".format(self.map_url)
+
+        resp = self.client.get(org_type_filtered_url)
+        response_json = json.loads(resp.context['organisations'])
+        self.assertEqual(len(response_json), 1)
+        self.assertEqual(response_json[0]['ods_code'], self.hospital.ods_code)
+        self.assertEqual(response_json[0]['problem_count'], 0)
+
+    def test_map_filters_by_category(self):
+        # Create some problems to filter
+        create_test_instance(Problem, {'organisation': self.other_gp,
+                                       'publication_status': Problem.PUBLISHED,
+                                       'moderated': Problem.MODERATED,
+                                       'category': 'staff'})
+        create_test_instance(Problem, {'organisation': self.other_gp,
+                                       'publication_status': Problem.PUBLISHED,
+                                       'moderated': Problem.MODERATED,
+                                       'category': 'cleanliness'})
+
+        category_filtered_url = "{0}?category=staff".format(self.map_url)
+
+        resp = self.client.get(category_filtered_url)
+        response_json = json.loads(resp.context['organisations'])
+        self.assertEqual(len(response_json), 2)
+        self.assertEqual(response_json[0]['ods_code'], self.hospital.ods_code)
+        self.assertEqual(response_json[0]['problem_count'], 0)
+        self.assertEqual(response_json[1]['ods_code'], self.other_gp.ods_code)
+        self.assertEqual(response_json[1]['problem_count'], 1)
+
+    def test_map_filters_by_status(self):
+        # Create some problems to filter
+        create_test_instance(Problem, {'organisation': self.hospital,
+                                       'publication_status': Problem.PUBLISHED,
+                                       'moderated': Problem.MODERATED,
+                                       'status': Problem.NEW})
+        create_test_instance(Problem, {'organisation': self.hospital,
+                                       'publication_status': Problem.PUBLISHED,
+                                       'moderated': Problem.MODERATED,
+                                       'status': Problem.ACKNOWLEDGED})
+
+        status_filtered_url = "{0}?status={1}".format(self.map_url, Problem.ACKNOWLEDGED)
+
+        resp = self.client.get(status_filtered_url)
+        response_json = json.loads(resp.context['organisations'])
+        self.assertEqual(len(response_json), 2)
+        self.assertEqual(response_json[0]['ods_code'], self.hospital.ods_code)
+        self.assertEqual(response_json[0]['problem_count'], 1)
+        self.assertEqual(response_json[1]['ods_code'], self.other_gp.ods_code)
+        self.assertEqual(response_json[1]['problem_count'], 0)
+
 @override_settings(SUMMARY_THRESHOLD=None)
 class SummaryTests(AuthorizationTestCase):
 

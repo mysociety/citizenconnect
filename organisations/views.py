@@ -128,47 +128,90 @@ class FilterFormMixin(FormMixin):
         return filtered_queryset
 
 
-class Map(TemplateView):
+class Map(FilterFormMixin,
+          TemplateView):
     template_name = 'organisations/map.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(Map, self).get_form_kwargs()
+        # Turn off ccg filter
+        kwargs['with_ccg'] = False
+        # Turn off department filter
+        kwargs['with_service_code'] = False
+        # Turn off breach filter
+        kwargs['with_breach'] = False
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super(Map, self).get_context_data(**kwargs)
 
-        # TODO - Filter by location
-        organisations = Organisation.objects.annotate(
-                average_time_to_address=Avg('problem__time_to_address'))
+        # TODO - Filter by map bounds
+        organisations = Organisation.objects.annotate(average_time_to_address=Avg('problem__time_to_address'))
+        filtered_organisations = self.filter_organisations(context['selected_filters'], organisations)
 
         organisations_list = []
-        for organisation in organisations:
-            organisation_dict = {}
-            organisation_dict['ods_code'] = organisation.ods_code
-            organisation_dict['name'] = organisation.name
-            organisation_dict['lon'] = organisation.point.coords[0]
-            organisation_dict['lat'] = organisation.point.coords[1]
-            organisation_dict['average_time_to_address'] = organisation.average_time_to_address
-
-            organisation_dict['url'] = reverse('public-org-summary', kwargs={'ods_code':organisation.ods_code, 'cobrand':kwargs['cobrand']})
-
-            if organisation.organisation_type == 'gppractices':
-                organisation_dict['type'] = "GP"
-            elif organisation.organisation_type == 'hospitals':
-                organisation_dict['type'] = "Hospital"
-            else :
-                organisation_dict['type'] = "Unknown"
-
-            # TODO: These COUNT queries are performed for each organisation,
-            # they should be retrieved as part of the original query for
-            # better performance/response times.
-
-            organisation_dict['problem_count'] = organisation.problem_set.open_moderated_published_visible_problems().count()
-            organisation_dict['closed_problem_count'] = organisation.problem_set.closed_moderated_published_visible_problems().count()
-
-            organisations_list.append(organisation_dict)
+        for organisation in filtered_organisations:
+            organisations_list.append(self.build_organisation_dict(context['selected_filters'], organisation))
 
         # Make it into a JSON string
         context['organisations'] = json.dumps(organisations_list)
 
         return context
+
+    def build_organisation_dict(self, filters, organisation):
+        """
+        Turn an organisation into a dictionary so we can spit it out as JSON
+        """
+        organisation_dict = {}
+        organisation_dict['ods_code'] = organisation.ods_code
+        organisation_dict['name'] = organisation.name
+        organisation_dict['lon'] = organisation.point.coords[0]
+        organisation_dict['lat'] = organisation.point.coords[1]
+        organisation_dict['average_time_to_address'] = organisation.average_time_to_address
+
+        organisation_dict['url'] = reverse('public-org-summary',
+                                            kwargs={'ods_code':organisation.ods_code,
+                                                    'cobrand':self.kwargs['cobrand']})
+
+        if organisation.organisation_type == 'gppractices':
+            organisation_dict['type'] = "GP"
+        elif organisation.organisation_type == 'hospitals':
+            organisation_dict['type'] = "Hospital"
+        else :
+            organisation_dict['type'] = "Unknown"
+
+        problem_counts = self.get_organisation_problem_counts(filters, organisation)
+        organisation_dict['problem_count'] = problem_counts[0]
+        organisation_dict['closed_problem_count'] = problem_counts[1]
+
+        return organisation_dict
+
+    def get_organisation_problem_counts(self, filters, organisation):
+        """
+        Return a tuple of open/closed problem counts for the org
+        """
+        # TODO: These COUNT queries are performed for each organisation,
+        # they should be retrieved as part of the original organisation
+        # query for better performance/response times.
+        # This will probably require custom SQL though.
+
+        # Counts don't include un-moderated or hidden issues, but do include private issues
+        open_problem_queryset = organisation.problem_set.open_moderated_published_visible_problems()
+        closed_problem_queryset = organisation.problem_set.closed_moderated_published_visible_problems()
+
+        filtered_open_problems = self.filter_problems(filters, open_problem_queryset)
+        filtered_closed_problems = self.filter_problems(filters, closed_problem_queryset)
+
+        open_problem_count = filtered_open_problems.count()
+        closed_problem_count = filtered_closed_problems.count()
+
+        return (open_problem_count, closed_problem_count)
+
+    def filter_organisations(self, filters, queryset):
+        filtered_queryset = queryset
+        if 'organisation_type' in filters and filters['organisation_type']:
+            filtered_queryset = filtered_queryset.filter(organisation_type=filters['organisation_type'])
+        return filtered_queryset
 
 class PickProviderBase(ListView):
     template_name = 'provider_results.html'
