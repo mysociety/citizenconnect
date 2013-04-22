@@ -31,8 +31,6 @@ urlpatterns = patterns('',
         name='private-org-reviews',
         kwargs={'private': True}),
 
-    url(r'^map$', login_required(Map.as_view()), name='private-map', kwargs={'private': True}),
-
     url(r'^choose-dashboard$', login_required(DashboardChoice.as_view()), name='dashboard-choice'),
 
     url(r'^access-logs$', login_required(SuperuserLogs.as_view()), name='superuser-logs'),
