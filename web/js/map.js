@@ -179,15 +179,35 @@ $(document).ready(function () {
         });
     };
 
+    // Create a link which reloads the current state of the form, without
+    // the specified filter in it - effectively a link to remove the filter
+    var filterRemoveLink = function(filter) {
+        var formValues = $(".filters form").serializeObject();
+        formValues[$(filter).attr('name')] = '';
+        var queryString = $.param(formValues);
+        var currentUrl = document.URL.split('?')[0];
+        var removeLink = currentUrl + "?" + queryString;
+        return removeLink;
+    }
+
     // Function to add in some html to show the selected filters
     var showSelectedFilters = function() {
+        // Remove anything old
+        $(".filters .current-filters .filter-links").empty();
+
         // Create links for each of the filters currently selected
         $(".filters form select").each(function(index, element) {
-            if($(element).val()) {
-                console.log("Going to add filter deleting thing for: " + $(element));
+            $element = $(element);
+            if($element.val()) {
+                var filter = {
+                    displayValue: $element.children('option:selected').text(),
+                    removeLink: filterRemoveLink(element)
+                };
+                var filterLink = _.template($("script[name=filter-link]").text(), {filter: filter});
+                $(".filters .current-filters .filter-links").append(filterLink);
             }
         });
-
+        // Put new things in
         $(".filters .current-filters").show();
     }
 
@@ -242,6 +262,8 @@ $(document).ready(function () {
         var $form = $(".filters form");
         var form_data = $form.serialize();
 
+        showSelectedFilters();
+
         // Lock the form during the ajax request
         $form.find("select").prop("disabled", "disabled");
 
@@ -258,7 +280,6 @@ $(document).ready(function () {
             data: form_data,
             success: function (response) {
                 drawProviders(response);
-                showSelectedFilters();
             },
             complete: function (jqXHR, textStatus) {
                 $form.find("select").prop("disabled", false);
