@@ -138,25 +138,5 @@
             "email": "",
             "date_joined": "2013-04-22T15:38:03Z"
         }
-    },
-    {
-        "pk": 23,
-        "model": "auth.user",
-        "fields": {
-            "username": "pentest_cqc",
-            "first_name": "",
-            "last_name": "",
-            "is_active": true,
-            "is_superuser": false,
-            "is_staff": false,
-            "last_login": "2013-04-22T15:38:28Z",
-            "groups": [
-                5
-            ],
-            "user_permissions": [],
-            "password": "pbkdf2_sha256$10000$e0LR4YwobHId$Y6PqAwp8azZJ6o+z8jvGJUlFYhv31tRw09BJ2p0EAgI=",
-            "email": "",
-            "date_joined": "2013-04-22T15:38:28Z"
-        }
     }
 ]
