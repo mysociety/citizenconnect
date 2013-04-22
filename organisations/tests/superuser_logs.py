@@ -23,7 +23,6 @@ class SuperuserLogTests(AuthorizationTestCase):
                                                              'publication_status': Problem.HIDDEN})
         self.test_urls = [
             reverse('home', kwargs={'cobrand':'choices'}),
-            reverse('private-map'),
             reverse('org-dashboard', kwargs={'ods_code':self.test_organisation.ods_code}),
             reverse('private-org-problems', kwargs={'ods_code':self.test_organisation.ods_code}),
             reverse('problem-view', kwargs={'cobrand':'choices', 'pk':self.unmoderated_problem.id}),
@@ -63,7 +62,7 @@ class SuperuserLogViewTests(AuthorizationTestCase):
     def setUp(self):
         super(SuperuserLogViewTests, self).setUp()
         self.login_as(self.nhs_superuser)
-        self.logs_url = reverse('private-map')
+        self.logs_url = reverse('private-org-problems', kwargs={'ods_code':self.test_organisation.ods_code})
 
     def test_log_page_exists(self):
         resp = self.client.get(reverse('superuser-logs'))
@@ -72,16 +71,16 @@ class SuperuserLogViewTests(AuthorizationTestCase):
 
     def test_log_page_shows_logs(self):
         # Go to a page so that it'll be logged
-        map_url = self.logs_url
-        self.client.get(map_url)
+        problems_url = self.logs_url
+        self.client.get(problems_url)
 
         resp = self.client.get(reverse('superuser-logs'))
 
-        log_entry = SuperuserLogEntry.objects.get(user=self.nhs_superuser, path=map_url)
+        log_entry = SuperuserLogEntry.objects.get(user=self.nhs_superuser, path=problems_url)
 
         self.assertTrue(log_entry in resp.context['logs'])
         self.assertContains(resp, self.nhs_superuser.username)
-        self.assertContains(resp, map_url)
+        self.assertContains(resp, problems_url)
 
     def test_log_page_only_accessible_to_superusers(self):
         non_superusers = [
@@ -94,5 +93,5 @@ class SuperuserLogViewTests(AuthorizationTestCase):
 
         for user in non_superusers:
             self.login_as(user)
-            resp = self.client.get(self.logs_url)
+            resp = self.client.get(reverse('superuser-logs'))
             self.assertEqual(resp.status_code, 403)
