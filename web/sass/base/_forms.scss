@@ -34,6 +34,11 @@ label,
     display: block;
     font-weight: bold;
     margin-bottom: 0.5em;
+
+    &.disabled {
+      opacity: 0.5;
+    }
+    
 }
 
 /**
