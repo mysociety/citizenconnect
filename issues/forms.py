@@ -68,6 +68,13 @@ class ProblemForm(IssueModelForm):
        required=True
     )
 
+    # For some categories the reporter can elevate the priority of the report.
+    # Javascript is used to disable this input if the category selected does not
+    # permit this.
+    elevate_priority = forms.BooleanField(
+        required = False
+    )
+
     # This is a honeypot field to catch spam bots. If there is any content in
     # it the form validation will fail and an appropriate error should be shown to
     # the user. This field is hidden by CSS in the form so should never be shown to

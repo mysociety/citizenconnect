@@ -35,7 +35,7 @@
             If you have used a program that automatically fills in some details
             please try again without using it.
           </li>
-        </ul>      
+        </ul>
       </fieldset>
     {% endif %}
 
@@ -84,6 +84,14 @@
         </ul>
 
         {% include "message_list.html" with messages=form.category.errors message_type='error' %}
+
+        <p class="info">Additional questions for some categories:</p>
+
+        <ul class="gw">
+            <li class="g  one-whole">
+                <label for="id_elevate_priority">{{ form.elevate_priority }} I am currently in care</label>
+            </li>
+        </ul>
     </fieldset>
 
     <fieldset class="island">
