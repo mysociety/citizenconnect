@@ -249,6 +249,19 @@ class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
                             'lostproperty': 'Lost property',
                             'other': ''}
 
+    # Not all categories may have elevated priorites set when the issue is
+    # reported.
+    CATEGORIES_PERMITTING_SETTING_OF_PRIORITY_AT_SUBMISSION = (
+        'cleanliness',
+        'communication',
+        'delays',
+        'dignity',
+        'food',
+        'staff',
+        'medicines',
+        'treatment',
+    )
+
     CONTACT_PHONE = 'phone'
     CONTACT_EMAIL = 'email'
 
