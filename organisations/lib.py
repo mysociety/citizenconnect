@@ -28,12 +28,17 @@ def _average_value_clause(field, alias):
     clause = "AVG(issues_problem."+ field +") AS " + alias
     return clause
 
-# Return problem counts for an organisation or a set of organisations for the last week, four week
-# and six months based on created date and filters. Filter values can be specified as a single value
-# or a tuple of values. For a set of organisations, a threshold can be expressed as a tuple of interval
-# and value and only organisations where the number of issues reported in the interval equals or exceeds
-# the value will be returned.
-def interval_counts(filters={}, sort='name', organisation_id=None, threshold=None):
+# Return problem counts for a set of organisations for the last week, four weeks
+# and six months based on created date and problem and organisation filters.
+# Filter values can be specified as a single value or a tuple of values. Possible problem_filters
+# are: status, service_id, category, breach, service_code. Possible organisation_filters are
+# organisation_type, ccg.
+# A threshold can be expressed as a tuple of interval and value and only organisations
+# where the number of issues reported in the interval equals or exceeds the value will be returned.
+# By default, all organisations matching the organisation filters will be returned. To get only
+# organisations that have at least one problem matching the problem filters, apply a threshold
+# like ('all_time', 1).
+def interval_counts(problem_filters={}, organisation_filters={}, sort='name', threshold=None):
     cursor = connection.cursor()
 
     now = datetime.utcnow().replace(tzinfo=utc)
@@ -45,8 +50,10 @@ def interval_counts(filters={}, sort='name', organisation_id=None, threshold=Non
 
     average_fields = ['time_to_acknowledge', 'time_to_address']
 
+    organisation_id = organisation_filters.get('organisation_id')
+
     params = []
-    extra_tables = []
+    tables = []
 
     # organisation identifying info
     select_clauses = ["""organisations_organisation.id as id""",
@@ -70,54 +77,59 @@ def interval_counts(filters={}, sort='name', organisation_id=None, threshold=Non
     for field in average_fields:
         select_clauses.append(_average_value_clause(field, "average_" + field))
 
-    criteria_clauses = ["""organisations_organisation.id = issues_problem.organisation_id"""]
+    problem_filter_clauses = ["""organisations_organisation.id = issues_problem.organisation_id"""]
+    organisation_filter_clauses = []
 
-    # Apply simple filters to the issue table
+    # Apply problem filters to the issue table
     for criteria in ['status', 'service_id', 'category']:
-        value = filters.get(criteria)
+        value = problem_filters.get(criteria)
         if value != None:
             if type(value) != tuple:
                 value = (value,)
-            criteria_clauses.append("issues_problem." + criteria + " in %s""")
+            problem_filter_clauses.append("issues_problem." + criteria + " in %s""")
             params.append(value)
 
-    breach = filters.get('breach')
+    breach = problem_filters.get('breach')
     if breach != None:
-        criteria_clauses.append("issues_problem.breach = %s""")
+        problem_filter_clauses.append("issues_problem.breach = %s""")
         params.append(breach)
 
-    service_code = filters.get('service_code')
+    service_code = problem_filters.get('service_code')
     if service_code != None:
         if organisation_id:
             raise NotImplementedError("Filtering for service on a single organisation uses service_id, not service_code")
         else:
             if type(service_code) != tuple:
                 service_code = (service_code,)
-            extra_tables.append('organisations_service')
-            criteria_clauses.append("organisations_service.id = issues_problem.service_id")
-            criteria_clauses.append("organisations_service.service_code in %s")
+            problem_filter_clauses.append("""issues_problem.service_id in (select id from organisations_service where service_code in %s)""")
             params.append(service_code)
 
-    organisation_type = filters.get('organisation_type')
+    # Apply organisation filters to the organisation table
+    if organisation_id != None:
+        organisation_filter_clauses.append("organisations_organisation.id = %s")
+        params.append(organisation_filters['organisation_id'])
+
+    organisation_type = organisation_filters.get('organisation_type')
     if organisation_type != None:
         if organisation_id:
              raise NotImplementedError("Filtering for an organisation type is unnecessary for a single organisation")
         else:
              if type(organisation_type) != tuple:
                 organisation_type = (organisation_type,)
-             criteria_clauses.append("organisations_organisation.organisation_type in %s")
+             organisation_filter_clauses.append("organisations_organisation.organisation_type in %s")
              params.append(organisation_type)
 
-    ccg = filters.get('ccg')
+
+    ccg = organisation_filters.get('ccg')
     if ccg != None:
         if organisation_id:
              raise NotImplementedError("Filtering for a ccg is unnecessary for a single organisation")
         else:
             if type(ccg) != tuple:
                 ccg = (ccg,)
-            extra_tables.append('organisations_organisation_ccgs')
-            criteria_clauses.append("organisations_organisation_ccgs.organisation_id = organisations_organisation.id")
-            criteria_clauses.append("organisations_organisation_ccgs.ccg_id in %s")
+            tables.append('organisations_organisation_ccgs')
+            organisation_filter_clauses.append("organisations_organisation_ccgs.organisation_id = organisations_organisation.id")
+            organisation_filter_clauses.append("organisations_organisation_ccgs.ccg_id in %s")
             params.append(ccg)
 
     # Group by clauses to go with the non-aggregate selects
@@ -146,19 +158,14 @@ def interval_counts(filters={}, sort='name', organisation_id=None, threshold=Non
     # Assemble the SQL
     select_text = "SELECT %s" % ', '.join(select_clauses)
 
-    # For a single organisation, we always want a row returned, so the filter criteria
-    # go in a left join and the organisation is specified in the where clause
-    if organisation_id != None:
-        from_text = """FROM organisations_organisation LEFT JOIN issues_problem"""
-        criteria_text = "ON %s" % " AND ".join(criteria_clauses)
-        criteria_text += " WHERE organisations_organisation.id = %s"
-        params.append(organisation_id)
-    # For multiple organisations we want whatever meets the filter criteria
-    else:
-        from_text = "FROM organisations_organisation, issues_problem "
-        if extra_tables:
-            from_text += ", " + ", ".join(extra_tables)
-        criteria_text = "WHERE %s" % " AND ".join(criteria_clauses)
+    # The problem filter criteria go in a left join and the organisation filter
+    # criteria are specified in the where clause
+    tables.append("organisations_organisation")
+    from_text = """FROM %s""" % ", ".join(tables)
+    from_text += """ LEFT JOIN issues_problem"""
+    criteria_text = "ON %s" % " AND ".join(problem_filter_clauses)
+    if organisation_filter_clauses:
+        criteria_text += " WHERE %s" % " AND ".join(organisation_filter_clauses)
 
     group_text = "GROUP BY %s" % ', '.join(group_by_clauses)
     sort_text = "ORDER BY %s" % sort

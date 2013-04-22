@@ -291,16 +291,17 @@ class OrganisationSummary(OrganisationAwareViewMixin,
 
         summary_stats_statuses = Problem.VISIBLE_STATUSES
         count_filters['status'] = tuple(volume_statuses)
-        context['problems_total'] = interval_counts(filters=count_filters,
-                                                    organisation_id=organisation.id)
+        organisation_filters = {'organisation_id': organisation.id}
+        context['problems_total'] = interval_counts(problem_filters=count_filters,
+                                                    organisation_filters=organisation_filters)
         count_filters['status'] = tuple(summary_stats_statuses)
-        context['problems_summary_stats'] = interval_counts(filters=count_filters,
-                                                            organisation_id=organisation.id)
+        context['problems_summary_stats'] = interval_counts(problem_filters=count_filters,
+                                                            organisation_filters=organisation_filters)
         status_list = []
         for status, description in status_rows:
             count_filters['status'] = (status,)
-            status_counts = interval_counts(filters=count_filters,
-                                            organisation_id=organisation.id)
+            status_counts = interval_counts(problem_filters=count_filters,
+                                            organisation_filters=organisation_filters)
             del count_filters['status']
             status_counts['description'] = description
             status_counts['status'] = status
@@ -381,24 +382,35 @@ class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(Summary, self).get_context_data(**kwargs)
 
-        # Build a dictionary of filters in the format we can pass
-        # into interval_counts to filter the problems we make a
-        # summary for
-        interval_filters = context['selected_filters']
+        # Build dictionaries of filters in the format we can pass
+        # into interval_counts to filter the problems and organisations
+        # we make a summary for
+        problem_filters = context['selected_filters'].copy()
 
-        if interval_filters.get('status') != None:
+        # move the filters that specifically apply to organisations
+        # to another dictionary
+        organisation_attrs = ['ccg', 'organisation_type']
+        organisation_filters = {}
+        for organisation_attr in organisation_attrs:
+            value = problem_filters.pop(organisation_attr, None)
+            if value != None:
+                organisation_filters[organisation_attr] = value
+
+        if problem_filters.get('status') != None:
             # ignore a filter request for a hidden status
-            if not interval_filters['status'] in self.permitted_statuses:
-                del interval_filters['status']
+            if not problem_filters['status'] in self.permitted_statuses:
+                del problem_filters['status']
 
-        if interval_filters.get('status') == None:
+        if problem_filters.get('status') == None:
             # by default the status should filter for visible statuses
-            interval_filters['status'] = tuple(self.permitted_statuses)
+            problem_filters['status'] = tuple(self.permitted_statuses)
 
         threshold = None
         if settings.SUMMARY_THRESHOLD:
             threshold = settings.SUMMARY_THRESHOLD
-        organisation_rows = self.get_interval_counts(filters=interval_filters, threshold=threshold)
+        organisation_rows = self.get_interval_counts(problem_filters=problem_filters,
+                                                     organisation_filters=organisation_filters,
+                                                     threshold=threshold)
         organisations_table = self.summary_table_class(organisation_rows, cobrand=kwargs['cobrand'])
 
         RequestConfig(self.request, paginate={"per_page": 8}).configure(organisations_table)
@@ -406,9 +418,10 @@ class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
         context['page_obj'] = organisations_table.page
         return context
 
-    def get_interval_counts(self, filters, threshold):
+    def get_interval_counts(self, problem_filters, organisation_filters, threshold):
         return interval_counts(
-            filters=filters,
+            problem_filters=problem_filters,
+            organisation_filters=organisation_filters,
             threshold=threshold
         )
 
@@ -434,7 +447,7 @@ class PrivateNationalSummary(Summary):
 
         return super(PrivateNationalSummary, self).get_context_data(**kwargs)
 
-    def get_interval_counts(self, filters, threshold):
+    def get_interval_counts(self, problem_filters, organisation_filters, threshold):
 
         user = self.request.user
 
@@ -445,10 +458,11 @@ class PrivateNationalSummary(Summary):
             ccgs = user.ccgs.all()
             if not len(ccgs):
                 raise Exception("CCG group user '{0}' has no ccgs - they should not have gotten past check in dispatch".format(user))
-            filters['ccg'] = tuple([ ccg.id for ccg in ccgs ])
+            organisation_filters['ccg'] = tuple([ ccg.id for ccg in ccgs ])
 
         return interval_counts(
-            filters=filters,
+            problem_filters=problem_filters,
+            organisation_filters=organisation_filters,
             threshold=threshold
         )
 
@@ -468,8 +482,8 @@ class OrganisationDashboard(OrganisationAwareViewMixin,
         RequestConfig(self.request, paginate={'per_page': 25}).configure(problems_table)
         context['table'] = problems_table
         context['page_obj'] = problems_table.page
-        context['problems_total'] = interval_counts(filters={},
-                                                    organisation_id=context['organisation'].id)
+        organisation_filters = {'organisation_id': context['organisation'].id}
+        context['problems_total'] = interval_counts(organisation_filters=organisation_filters)
         return context
 
 class DashboardChoice(TemplateView):

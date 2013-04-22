@@ -740,7 +740,7 @@ class OrganisationMapTests(AuthorizationTestCase):
         self.assertEqual(response_json[1]['ods_code'], self.other_gp.ods_code)
         self.assertEqual(response_json[1]['problem_count'], 0)
 
-@override_settings(SUMMARY_THRESHOLD=None)
+@override_settings(SUMMARY_THRESHOLD=['all_time', 1])
 class SummaryTests(AuthorizationTestCase):
 
     def setUp(self):

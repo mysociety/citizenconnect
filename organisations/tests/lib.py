@@ -144,6 +144,7 @@ class IntervalCountsTest(TestCase):
             self.create_problem(self.other_test_organisation, age, attributes)
 
     def test_organisation_interval_counts(self):
+        organisation_filters = {'organisation_id': self.test_organisation.id}
         expected_counts = {'week': 3,
                            'four_weeks': 5,
                            'id': self.test_organisation.id,
@@ -157,8 +158,7 @@ class IntervalCountsTest(TestCase):
                            'happy_service_count': 1,
                            'average_time_to_acknowledge': Decimal('22.6666666666666667'),
                            'average_time_to_address': Decimal('240.6666666666666667')}
-        self.assertEqual(expected_counts, interval_counts(filters={},
-                                                          organisation_id=self.test_organisation.id))
+        self.assertEqual(expected_counts, interval_counts(organisation_filters=organisation_filters))
 
     def test_overall_interval_counts(self):
         expected_counts = [{'week': 2,
@@ -187,11 +187,12 @@ class IntervalCountsTest(TestCase):
                            'happy_service_count': 1,
                            'average_time_to_acknowledge': Decimal('22.6666666666666667'),
                            'average_time_to_address': Decimal('240.6666666666666667')}]
-        actual = interval_counts(filters={})
+        actual = interval_counts()
         self.assertEqual(expected_counts, actual)
 
     def test_filter_by_service_code(self):
-        filters = {'service_code': 'ABC123'}
+        problem_filters = {'service_code': 'ABC123'}
+        threshold=['six_months', 1]
         expected_counts = [{'week': 0,
                            'four_weeks': 1,
                            'id': self.test_organisation.id,
@@ -205,10 +206,10 @@ class IntervalCountsTest(TestCase):
                            'happy_service_count': 0,
                            'average_time_to_acknowledge': None,
                            'average_time_to_address': None}]
-        self.assertEqual(expected_counts, interval_counts(filters=filters))
+        self.assertEqual(expected_counts, interval_counts(problem_filters=problem_filters, threshold=threshold))
 
     def test_filter_by_organisation_type(self):
-        filters = {'organisation_type': 'gppractices'}
+        organisation_filters = {'organisation_type': 'gppractices'}
         expected_counts = [{'week': 2,
                             'four_weeks': 3,
                             'id': self.other_test_organisation.id,
@@ -222,10 +223,10 @@ class IntervalCountsTest(TestCase):
                             'happy_service_count': 0,
                             'average_time_to_acknowledge': None,
                             'average_time_to_address': None }]
-        self.assertEqual(expected_counts, interval_counts(filters=filters))
+        self.assertEqual(expected_counts, interval_counts(organisation_filters=organisation_filters))
 
     def test_filter_by_statuses(self):
-        filters = {'status': (Problem.UNABLE_TO_RESOLVE, Problem.ABUSIVE,)}
+        problem_filters = {'status': (Problem.UNABLE_TO_RESOLVE, Problem.ABUSIVE,)}
         expected_counts = [{'week': 1,
                            'four_weeks': 2,
                            'id': self.test_organisation.id,
@@ -239,11 +240,11 @@ class IntervalCountsTest(TestCase):
                            'happy_service_count': 1,
                            'average_time_to_acknowledge': None,
                            'average_time_to_address': None}]
-        actual = interval_counts(filters=filters)
+        actual = interval_counts(problem_filters=problem_filters, threshold=['six_months', 1])
         self.assertEqual(expected_counts, actual)
 
     def test_filter_by_ccg(self):
-        filters = {'ccg': self.other_test_ccg.id}
+        organisation_filters = {'ccg': self.other_test_ccg.id}
         # Stolen from test_filter_by_organisation_type, luckily
         # the other org is in a different ccg to test_organisation, so I don't
         # have to work all this out
@@ -260,7 +261,7 @@ class IntervalCountsTest(TestCase):
                             'happy_service_count': 0,
                             'average_time_to_acknowledge': None,
                             'average_time_to_address': None }]
-        actual = interval_counts(filters=filters)
+        actual = interval_counts(organisation_filters=organisation_filters)
         self.assertEqual(expected_counts, actual)
 
     def test_filter_by_breach(self):
@@ -269,7 +270,8 @@ class IntervalCountsTest(TestCase):
         self.create_problem(self.test_organisation, 10, {'breach': True})
         self.create_problem(self.test_organisation, 100, {'breach': True})
         self.create_problem(self.test_organisation, 365, {'breach': True})
-        filters = {'breach': True}
+        problem_filters = {'breach': True}
+        threshold=['six_months', 1]
         expected_counts = [{'week': 1,
                             'four_weeks': 2,
                             'id': self.test_organisation.id,
@@ -283,10 +285,10 @@ class IntervalCountsTest(TestCase):
                             'happy_service_count': 0,
                             'average_time_to_acknowledge': None,
                             'average_time_to_address': None }]
-        actual = interval_counts(filters=filters)
+        actual = interval_counts(problem_filters=problem_filters, threshold=threshold)
         self.assertEqual(expected_counts, actual)
 
-        filters = {'breach': False}
+        problem_filters = {'breach': False}
         expected_counts = [{'week': 2,
                             'four_weeks': 3,
                             'id': self.other_test_organisation.id,
@@ -313,7 +315,7 @@ class IntervalCountsTest(TestCase):
                            'happy_service_count': 1,
                            'average_time_to_acknowledge': Decimal('22.6666666666666667'),
                            'average_time_to_address': Decimal('240.6666666666666667')}]
-        actual = interval_counts(filters=filters)
+        actual = interval_counts(problem_filters=problem_filters, threshold=threshold)
         self.assertEqual(expected_counts, actual)
 
     def test_applies_interval_count_threshold_to_overall_counts(self):
@@ -330,7 +332,7 @@ class IntervalCountsTest(TestCase):
                            'happy_service_count': 1,
                            'average_time_to_acknowledge': Decimal('22.6666666666666667'),
                            'average_time_to_address': Decimal('240.6666666666666667')}]
-        actual = interval_counts(filters={}, threshold=('six_months', 6))
+        actual = interval_counts(threshold=('six_months', 6))
         self.assertEqual(expected_counts, actual)
 
     def test_applies_all_time_interval_count_threshold_to_overall_counts(self):
@@ -347,7 +349,7 @@ class IntervalCountsTest(TestCase):
                            'happy_service_count': 1,
                            'average_time_to_acknowledge': Decimal('22.6666666666666667'),
                            'average_time_to_address': Decimal('240.6666666666666667')}]
-        actual = interval_counts(filters={}, threshold=('all_time', 6))
+        actual = interval_counts(threshold=('all_time', 6))
         self.assertEqual(expected_counts, actual)
 
 class AuthorizationTestCase(TestCase):
