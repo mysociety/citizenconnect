@@ -177,6 +177,15 @@ class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
         (REFERRED_TO_OMBUDSMAN, 'Referred to Ombudsman'),
     )
 
+    # The numerical value of the priorities should be chosen so that when sorted
+    # ascending higher priorities come first. Please leave gaps in the range so that
+    # future priority levels can be added without changing the existing ones.
+    PRIORITY_NORMAL = 50
+
+    PRIORITY_CHOICES = (
+        (PRIORITY_NORMAL, 'Normal'),
+    )
+
     # Assigning individual statuses to status sets
     BASE_OPEN_STATUSES = [NEW, ACKNOWLEDGED]
     ESCALATION_STATUSES = [ESCALATED, REFERRED_TO_OMBUDSMAN]
@@ -277,6 +286,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
     public = models.BooleanField()
     public_reporter_name = models.BooleanField()
     status = models.IntegerField(default=NEW, choices=STATUS_CHOICES, db_index=True)
+    priority = models.IntegerField(default=PRIORITY_NORMAL, choices=PRIORITY_CHOICES)
     organisation = models.ForeignKey('organisations.Organisation')
     service = models.ForeignKey('organisations.Service',
                                 null=True,
@@ -445,27 +455,27 @@ class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
         """
         Send the escalation email. Throws exception if status is not 'ESCALATED'.
         """
-        
+
         # Safety check to prevent accidentally sending emails when not appropriate
         if self.status != self.ESCALATED:
             raise ValueError("Problem status of '{0}' is not 'ESCALATED'".format(self))
-        
+
         # gather the templates and create the context for them
         subject_template = get_template('issues/escalation_email_subject.txt')
         message_template = get_template('issues/escalation_email_message.txt')
-            
+
         context = Context({
             'object':        self,
             'site_base_url': settings.SITE_BASE_URL
         })
-            
+
         logger.info('Sending escalation email for {0}'.format(self))
-            
+
         kwargs = dict(
             subject        = subject_template.render(context),
             message        = message_template.render(context),
         )
-            
+
         if self.commissioned == self.LOCALLY_COMMISSIONED:
             # Send email to the CCG
             self.organisation.escalation_ccg.send_mail(**kwargs)
