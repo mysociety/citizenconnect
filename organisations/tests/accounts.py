@@ -164,7 +164,7 @@ class LoginRedirectTests(AuthorizationTestCase):
         self.assertRedirects(resp, dashboard_url)
 
     def test_nhs_superuser_goes_to_superuser_page(self):
-        map_url = reverse('private-map')
+        map_url = reverse('private-national-summary')
         self.login_as(self.nhs_superuser)
         resp = self.client.get(self.login_redirect_url)
         self.assertRedirects(resp, map_url)
