@@ -217,6 +217,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
        (u'cleanliness', u'Cleanliness'),
        (u'equipment', u'Equipment'),
        (u'medicines', u'Medicines'),
+       (u'food', u'Food'),
        (u'dignity', u'Dignity and Privacy'),
        (u'parking', u'Parking'),
        (u'lostproperty', u'Lost Property'),
@@ -231,6 +232,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
                             'cleanliness': 'Cleanliness and facilities',
                             'equipment': 'Problems with equipment, aids and devices',
                             'medicines': 'Problems with medicines',
+                            'food': '', # TODO Add long description
                             'dignity': 'Privacy, dignity, confidentiality',
                             'parking': 'Problems with parking / charges',
                             'lostproperty': 'Lost property',
