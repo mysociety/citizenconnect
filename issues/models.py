@@ -180,9 +180,11 @@ class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
     # The numerical value of the priorities should be chosen so that when sorted
     # ascending higher priorities come first. Please leave gaps in the range so that
     # future priority levels can be added without changing the existing ones.
+    PRIORITY_HIGH   = 20
     PRIORITY_NORMAL = 50
 
     PRIORITY_CHOICES = (
+        (PRIORITY_HIGH,   'High'  ),
         (PRIORITY_NORMAL, 'Normal'),
     )
 
