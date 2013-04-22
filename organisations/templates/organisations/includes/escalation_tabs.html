@@ -3,5 +3,5 @@
     <li><a {% if active_tab == 'dashboard' %}class="active"{% endif %} href="{% url 'escalation-dashboard' %}">Dashboard</a></li>
     <li><a {% if active_tab == 'breaches' %}class="active"{% endif %} href="{% url 'escalation-breaches' %}">Breaches</a></li>
     <li><a {% if active_tab == 'lookup' %}class="active"{% endif %} href="{% url 'response-lookup' %}">Problem Lookup</a></li>
-    <li><a {% if active_tab == 'summary' %}class="active"{% endif %} href="{% url 'private-national-summary' %}">National Summary</a></li>
+    <li><a {% if active_tab == 'summary' %}class="active"{% endif %} href="{% url 'private-national-summary' %}">Summary</a></li>
 </ul>
