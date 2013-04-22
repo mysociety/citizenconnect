@@ -472,7 +472,7 @@ def login_redirect(request):
 
     # NHS Super users get a special map page
     if user_in_group(user, auth.NHS_SUPERUSERS):
-        return HttpResponseRedirect(reverse('private-map'))
+        return HttpResponseRedirect(reverse('private-national-summary'))
 
     # CCG, and customer contact centre users go to the escalation dashboard
     elif user_in_groups(user, [auth.CCG, auth.CUSTOMER_CONTACT_CENTRE]):
