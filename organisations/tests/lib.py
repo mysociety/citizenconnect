@@ -115,7 +115,7 @@ class IntervalCountsTest(TestCase):
         self.test_ccg = create_test_ccg()
         self.other_test_ccg = create_test_ccg({'name': 'Other test ccg', 'code': 'DEF'})
         self.test_organisation = create_test_organisation({'ods_code': 'XXX999',
-                                                           'organisation_type': 'hospital'})
+                                                           'organisation_type': 'hospitals'})
         self.test_organisation.ccgs.add(self.test_ccg)
         self.test_organisation.save()
         self.other_test_organisation = create_test_organisation({'ods_code': 'ABC222',
@@ -188,6 +188,42 @@ class IntervalCountsTest(TestCase):
                            'average_time_to_acknowledge': Decimal('22.6666666666666667'),
                            'average_time_to_address': Decimal('240.6666666666666667')}]
         actual = interval_counts()
+        self.assertEqual(expected_counts, actual)
+
+    def test_extra_organisation_data(self):
+        expected_counts = [{'week': 2,
+                            'four_weeks': 3,
+                            'id': self.other_test_organisation.id,
+                            'name': 'Other Test Organisation',
+                            'ods_code': 'ABC222',
+                            'lon': 51.536000000000001,
+                            'lat': -0.062129999999999998,
+                            'type': 'GP',
+                            'six_months': 5,
+                            'all_time': 5,
+                            'happy_outcome': None,
+                            'happy_outcome_count': 0,
+                            'happy_service': None,
+                            'happy_service_count': 0,
+                            'average_time_to_acknowledge': None,
+                            'average_time_to_address': None},
+                           {'week': 3,
+                           'four_weeks': 5,
+                           'id': self.test_organisation.id,
+                           'name': 'Test Organisation',
+                           'ods_code': 'XXX999',
+                           'lon': 51.536000000000001,
+                           'lat': -0.062129999999999998,
+                           'type': 'Hospital',
+                           'six_months': 6,
+                           'all_time': 6,
+                           'happy_outcome': 0.5,
+                           'happy_outcome_count': 2,
+                           'happy_service': 1.0,
+                           'happy_service_count': 1,
+                           'average_time_to_acknowledge': Decimal('22.6666666666666667'),
+                           'average_time_to_address': Decimal('240.6666666666666667')}]
+        actual = interval_counts(extra_organisation_data=['coords', 'type'])
         self.assertEqual(expected_counts, actual)
 
     def test_filter_by_service_code(self):

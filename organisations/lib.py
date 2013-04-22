@@ -38,7 +38,11 @@ def _average_value_clause(field, alias):
 # By default, all organisations matching the organisation filters will be returned. To get only
 # organisations that have at least one problem matching the problem filters, apply a threshold
 # like ('all_time', 1).
-def interval_counts(problem_filters={}, organisation_filters={}, sort='name', threshold=None):
+# Possible list values for extra_organisation_data are 'coords' and 'type'.
+def interval_counts(problem_filters={},
+                    organisation_filters={},
+                    threshold=None,
+                    extra_organisation_data=[]):
     cursor = connection.cursor()
 
     now = datetime.utcnow().replace(tzinfo=utc)
@@ -56,9 +60,27 @@ def interval_counts(problem_filters={}, organisation_filters={}, sort='name', th
     tables = []
 
     # organisation identifying info
-    select_clauses = ["""organisations_organisation.id as id""",
-                      """organisations_organisation.ods_code as ods_code""",
-                      """organisations_organisation.name as name"""]
+    select_clauses = ["""organisations_organisation.id AS id""",
+                      """organisations_organisation.ods_code AS ods_code""",
+                      """organisations_organisation.name AS name"""]
+
+    # Group by clauses to go with the non-aggregate selects
+    group_by_clauses = ["organisations_organisation.id",
+                         "organisations_organisation.name",
+                         "organisations_organisation.ods_code"]
+
+    if 'coords' in extra_organisation_data:
+        select_clauses.append("""ST_X(organisations_organisation.point) AS lon""")
+        select_clauses.append("""ST_Y(organisations_organisation.point) AS lat""")
+        group_by_clauses.append('lon')
+        group_by_clauses.append('lat')
+    if 'type' in extra_organisation_data:
+        select_clauses.append("""(CASE WHEN organisations_organisation.organisation_type = 'gppractices'
+                                  THEN 'GP'
+                                  WHEN organisations_organisation.organisation_type = 'hospitals'
+                                  THEN 'Hospital'
+                                  ELSE 'Unknown' END) AS type""")
+        group_by_clauses.append('type')
 
     # Generate the interval counting select values and params
     for interval in intervals.keys():
@@ -132,10 +154,6 @@ def interval_counts(problem_filters={}, organisation_filters={}, sort='name', th
             organisation_filter_clauses.append("organisations_organisation_ccgs.ccg_id in %s")
             params.append(ccg)
 
-    # Group by clauses to go with the non-aggregate selects
-    group_by_clauses = ["""organisations_organisation.id""",
-                        """organisations_organisation.name""",
-                        """organisations_organisation.ods_code"""]
 
     # Having clauses to implement the threshold
     having_text = ''
@@ -168,7 +186,7 @@ def interval_counts(problem_filters={}, organisation_filters={}, sort='name', th
         criteria_text += " WHERE %s" % " AND ".join(organisation_filter_clauses)
 
     group_text = "GROUP BY %s" % ', '.join(group_by_clauses)
-    sort_text = "ORDER BY %s" % sort
+    sort_text = "ORDER BY name"
     query = "%s %s %s %s %s %s" % (select_text,
                                    from_text,
                                    criteria_text,
