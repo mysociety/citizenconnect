@@ -291,18 +291,15 @@ class OrganisationSummary(OrganisationAwareViewMixin,
 
         summary_stats_statuses = Problem.VISIBLE_STATUSES
         count_filters['status'] = tuple(volume_statuses)
-        context['problems_total'] = interval_counts(issue_type=Problem,
-                                                    filters=count_filters,
+        context['problems_total'] = interval_counts(filters=count_filters,
                                                     organisation_id=organisation.id)
         count_filters['status'] = tuple(summary_stats_statuses)
-        context['problems_summary_stats'] = interval_counts(issue_type=Problem,
-                                                            filters=count_filters,
+        context['problems_summary_stats'] = interval_counts(filters=count_filters,
                                                             organisation_id=organisation.id)
         status_list = []
         for status, description in status_rows:
             count_filters['status'] = (status,)
-            status_counts = interval_counts(issue_type=Problem,
-                                            filters=count_filters,
+            status_counts = interval_counts(filters=count_filters,
                                             organisation_id=organisation.id)
             del count_filters['status']
             status_counts['description'] = description
@@ -411,7 +408,6 @@ class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
 
     def get_interval_counts(self, filters, threshold):
         return interval_counts(
-            issue_type=Problem,
             filters=filters,
             threshold=threshold
         )
@@ -452,7 +448,6 @@ class PrivateNationalSummary(Summary):
             filters['ccg'] = tuple([ ccg.id for ccg in ccgs ])
 
         return interval_counts(
-            issue_type=Problem,
             filters=filters,
             threshold=threshold
         )
@@ -473,8 +468,7 @@ class OrganisationDashboard(OrganisationAwareViewMixin,
         RequestConfig(self.request, paginate={'per_page': 25}).configure(problems_table)
         context['table'] = problems_table
         context['page_obj'] = problems_table.page
-        context['problems_total'] = interval_counts(issue_type=Problem,
-                                                    filters={},
+        context['problems_total'] = interval_counts(filters={},
                                                     organisation_id=context['organisation'].id)
         return context
 

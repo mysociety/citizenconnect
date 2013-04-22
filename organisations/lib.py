@@ -5,37 +5,36 @@ from django.db import connection
 from .models import Organisation
 
 # Return a clause summing the number of records in a table whose field meets a criteria
-def _sum_clause(table, field, criteria):
-    return "SUM(CASE WHEN "+ table +"."+ field + " " + criteria + " THEN 1 ELSE 0 END)"
+def _sum_clause(field, criteria):
+    return "SUM(CASE WHEN issues_problem."+ field + " " + criteria + " THEN 1 ELSE 0 END)"
 
 # Return the number of records created more recently than the date supplied
-def _date_clause(issue_table, alias):
-    return _sum_clause(issue_table, 'created', "> %s") + " AS " + alias
+def _date_clause(alias):
+    return _sum_clause('created', "> %s") + " AS " + alias
 
 # Get fraction of true values over non-null values for boolean field
-def _boolean_clause(issue_table, field):
-    clause = _sum_clause(issue_table, field, "= %s")
+def _boolean_clause(field):
+    clause = _sum_clause(field, "= %s")
     clause += " / "
-    clause += "NULLIF(" + _sum_clause(issue_table, field, "IS NOT NULL") + ", 0)::float" + " AS " + field
+    clause += "NULLIF(" + _sum_clause(field, "IS NOT NULL") + ", 0)::float" + " AS " + field
     return clause
 
 # Return the count of non-null values for a boolean field
-def _count_clause(issue_table, field, alias):
-    return _sum_clause(issue_table, field, "IS NOT NULL") + " AS " + alias
+def _count_clause(field, alias):
+    return _sum_clause(field, "IS NOT NULL") + " AS " + alias
 
 # Return the average of non-null values in an integer field
-def _average_value_clause(issue_table, field, alias):
-    clause = "AVG("+ issue_table +"."+ field +") AS " + alias
+def _average_value_clause(field, alias):
+    clause = "AVG(issues_problem."+ field +") AS " + alias
     return clause
 
-# Return counts for an organisation or a set of organisations for the last week, four week
+# Return problem counts for an organisation or a set of organisations for the last week, four week
 # and six months based on created date and filters. Filter values can be specified as a single value
 # or a tuple of values. For a set of organisations, a threshold can be expressed as a tuple of interval
 # and value and only organisations where the number of issues reported in the interval equals or exceeds
 # the value will be returned.
-def interval_counts(issue_type, filters={}, sort='name', organisation_id=None, threshold=None):
+def interval_counts(filters={}, sort='name', organisation_id=None, threshold=None):
     cursor = connection.cursor()
-    issue_table = issue_type._meta.db_table
 
     now = datetime.utcnow().replace(tzinfo=utc)
     intervals = {'week': now - timedelta(days=7),
@@ -56,22 +55,22 @@ def interval_counts(issue_type, filters={}, sort='name', organisation_id=None, t
 
     # Generate the interval counting select values and params
     for interval in intervals.keys():
-        select_clauses.append(_date_clause(issue_table, interval))
+        select_clauses.append(_date_clause(interval))
         params.append(intervals[interval])
     # Add an all time count
-    select_clauses.append("""count(%s.id) as all_time""" % issue_table)
+    select_clauses.append("""count(issues_problem.id) as all_time""")
 
     # Get the True/False percentages and counts
     for field in boolean_counts:
-        select_clauses.append(_boolean_clause(issue_table,  field))
+        select_clauses.append(_boolean_clause(field))
         params.append(True)
-        select_clauses.append(_count_clause(issue_table, field, '%s_count' % field))
+        select_clauses.append(_count_clause(field, '%s_count' % field))
 
     # Get the averages
     for field in average_fields:
-        select_clauses.append(_average_value_clause(issue_table, field, "average_" + field))
+        select_clauses.append(_average_value_clause(field, "average_" + field))
 
-    criteria_clauses = ["""organisations_organisation.id = %s.organisation_id""" % issue_table]
+    criteria_clauses = ["""organisations_organisation.id = issues_problem.organisation_id"""]
 
     # Apply simple filters to the issue table
     for criteria in ['status', 'service_id', 'category']:
@@ -79,12 +78,12 @@ def interval_counts(issue_type, filters={}, sort='name', organisation_id=None, t
         if value != None:
             if type(value) != tuple:
                 value = (value,)
-            criteria_clauses.append(issue_table + "." + criteria + " in %s""")
+            criteria_clauses.append("issues_problem." + criteria + " in %s""")
             params.append(value)
 
     breach = filters.get('breach')
     if breach != None:
-        criteria_clauses.append(issue_table + ".breach = %s""")
+        criteria_clauses.append("issues_problem.breach = %s""")
         params.append(breach)
 
     service_code = filters.get('service_code')
@@ -95,7 +94,7 @@ def interval_counts(issue_type, filters={}, sort='name', organisation_id=None, t
             if type(service_code) != tuple:
                 service_code = (service_code,)
             extra_tables.append('organisations_service')
-            criteria_clauses.append("organisations_service.id = %s.service_id" % issue_table)
+            criteria_clauses.append("organisations_service.id = issues_problem.service_id")
             criteria_clauses.append("organisations_service.service_code in %s")
             params.append(service_code)
 
@@ -137,9 +136,9 @@ def interval_counts(issue_type, filters={}, sort='name', organisation_id=None, t
             raise NotImplementedError("Threshold can only be set on the value of one of: %s" % allowed_intervals)
 
         if interval == 'all_time':
-            having_clause = "count("+ issue_table + ".id)"
+            having_clause = "count(issues_problem.id)"
         else:
-            having_clause =  _sum_clause(issue_table, 'created', "> %s")
+            having_clause =  _sum_clause('created', "> %s")
             params.append(intervals[interval])
         having_text = "HAVING " + having_clause + " >= %s"
         params.append(cutoff)
@@ -150,13 +149,13 @@ def interval_counts(issue_type, filters={}, sort='name', organisation_id=None, t
     # For a single organisation, we always want a row returned, so the filter criteria
     # go in a left join and the organisation is specified in the where clause
     if organisation_id != None:
-        from_text = """FROM organisations_organisation LEFT JOIN %s""" % issue_table
+        from_text = """FROM organisations_organisation LEFT JOIN issues_problem"""
         criteria_text = "ON %s" % " AND ".join(criteria_clauses)
         criteria_text += " WHERE organisations_organisation.id = %s"
         params.append(organisation_id)
     # For multiple organisations we want whatever meets the filter criteria
     else:
-        from_text = "FROM organisations_organisation, %s " % issue_table
+        from_text = "FROM organisations_organisation, issues_problem "
         if extra_tables:
             from_text += ", " + ", ".join(extra_tables)
         criteria_text = "WHERE %s" % " AND ".join(criteria_clauses)
