@@ -656,10 +656,10 @@ class OrganisationMapTests(AuthorizationTestCase):
         resp = self.client.get(self.map_url)
         response_json = json.loads(resp.context['organisations'])
         self.assertEqual(len(response_json), 2)
-        self.assertEqual(response_json[0]['ods_code'], self.hospital.ods_code)
-        self.assertEqual(response_json[0]['problem_count'], 0)
-        self.assertEqual(response_json[1]['ods_code'], self.other_gp.ods_code)
-        self.assertEqual(response_json[1]['problem_count'], 0)
+        self.assertEqual(response_json[0]['ods_code'], self.other_gp.ods_code)
+        self.assertEqual(response_json[0]['all_time_open'], 0)
+        self.assertEqual(response_json[1]['ods_code'], self.hospital.ods_code)
+        self.assertEqual(response_json[1]['all_time_open'], 0)
 
     def test_public_map_doesnt_include_unmoderated_or_unpublished_or_hidden_status_problems(self):
         create_test_instance(Problem, {'organisation': self.other_gp})
@@ -676,18 +676,17 @@ class OrganisationMapTests(AuthorizationTestCase):
 
         resp = self.client.get(self.map_url)
         response_json = json.loads(resp.context['organisations'])
-
-        self.assertEqual(response_json[1]['problem_count'], 1)
+        self.assertEqual(response_json[0]['all_time_open'], 1)
 
     def test_public_map_provider_urls_are_to_public_summary_pages(self):
-        expected_gp_url = reverse('public-org-summary', kwargs={'ods_code':self.hospital.ods_code, 'cobrand':'choices'})
-        expected_other_gp_url = reverse('public-org-summary', kwargs={'ods_code':self.other_gp.ods_code, 'cobrand':'choices'})
+        expected_hospital_url = reverse('public-org-summary', kwargs={'ods_code':self.hospital.ods_code, 'cobrand':'choices'})
+        expected_gp_url = reverse('public-org-summary', kwargs={'ods_code':self.other_gp.ods_code, 'cobrand':'choices'})
 
         resp = self.client.get(self.map_url)
         response_json = json.loads(resp.context['organisations'])
 
         self.assertEqual(response_json[0]['url'], expected_gp_url)
-        self.assertEqual(response_json[1]['url'], expected_other_gp_url)
+        self.assertEqual(response_json[1]['url'], expected_hospital_url)
 
     def test_map_filters_by_organisation_type(self):
         org_type_filtered_url = "{0}?organisation_type=hospitals".format(self.map_url)
@@ -696,7 +695,7 @@ class OrganisationMapTests(AuthorizationTestCase):
         response_json = json.loads(resp.context['organisations'])
         self.assertEqual(len(response_json), 1)
         self.assertEqual(response_json[0]['ods_code'], self.hospital.ods_code)
-        self.assertEqual(response_json[0]['problem_count'], 0)
+        self.assertEqual(response_json[0]['all_time_open'], 0)
 
     def test_map_filters_by_category(self):
         # Create some problems to filter
@@ -714,10 +713,10 @@ class OrganisationMapTests(AuthorizationTestCase):
         resp = self.client.get(category_filtered_url)
         response_json = json.loads(resp.context['organisations'])
         self.assertEqual(len(response_json), 2)
-        self.assertEqual(response_json[0]['ods_code'], self.hospital.ods_code)
-        self.assertEqual(response_json[0]['problem_count'], 0)
-        self.assertEqual(response_json[1]['ods_code'], self.other_gp.ods_code)
-        self.assertEqual(response_json[1]['problem_count'], 1)
+        self.assertEqual(response_json[0]['ods_code'], self.other_gp.ods_code)
+        self.assertEqual(response_json[0]['all_time_open'], 1)
+        self.assertEqual(response_json[1]['ods_code'], self.hospital.ods_code)
+        self.assertEqual(response_json[1]['all_time_open'], 0)
 
     def test_map_filters_by_status(self):
         # Create some problems to filter
@@ -735,10 +734,10 @@ class OrganisationMapTests(AuthorizationTestCase):
         resp = self.client.get(status_filtered_url)
         response_json = json.loads(resp.context['organisations'])
         self.assertEqual(len(response_json), 2)
-        self.assertEqual(response_json[0]['ods_code'], self.hospital.ods_code)
-        self.assertEqual(response_json[0]['problem_count'], 1)
-        self.assertEqual(response_json[1]['ods_code'], self.other_gp.ods_code)
-        self.assertEqual(response_json[1]['problem_count'], 0)
+        self.assertEqual(response_json[0]['ods_code'], self.other_gp.ods_code)
+        self.assertEqual(response_json[0]['all_time_open'], 0)
+        self.assertEqual(response_json[1]['ods_code'], self.hospital.ods_code)
+        self.assertEqual(response_json[1]['all_time_open'], 1)
 
 @override_settings(SUMMARY_THRESHOLD=['all_time', 1])
 class SummaryTests(AuthorizationTestCase):

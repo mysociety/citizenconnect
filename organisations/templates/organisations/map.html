@@ -57,8 +57,8 @@
   <h1><%= nhsCentre.name %></h1>
   <h2>Problem reports</h2>
   <ul>
-      <li><em><%= nhsCentre.problem_count %></em> Open/In progress issues</li>
-      <li><em><%= nhsCentre.closed_problem_count %></em> Closed issues</li>
+      <li><em><%= nhsCentre.all_time_open %></em> Open/In progress issues</li>
+      <li><em><%= nhsCentre.all_time_closed %></em> Closed issues</li>
       <% if (nhsCentre.average_time_to_address) { %>
       <li><em><%= nhsCentre.average_time_to_address %></em> days average time to close</li>
       <% } %>

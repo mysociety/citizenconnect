@@ -116,16 +116,16 @@ $(document).ready(function () {
             var marker, iconClass;
 
             // Determine the icon colour based on issue count (crudely)
-            if(nhsCentre.problem_count <= 0) {
+            if(nhsCentre.all_time_open <= 0) {
                 iconClass = nhsCentreIcon_5;
             }
-            else if(nhsCentre.problem_count <= 3) {
+            else if(nhsCentre.all_time_open <= 3) {
                 iconClass = nhsCentreIcon_4;
             }
-            else if(nhsCentre.problem_count <= 6) {
+            else if(nhsCentre.all_time_open <= 6) {
                 iconClass = nhsCentreIcon_3;
             }
-            else if(nhsCentre.problem_count <= 12) {
+            else if(nhsCentre.all_time_open <= 12) {
                 iconClass = nhsCentreIcon_2;
             }
             else {

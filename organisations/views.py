@@ -127,10 +127,35 @@ class FilterFormMixin(FormMixin):
                 filtered_queryset = filtered_queryset.filter(breach=value)
         return filtered_queryset
 
+    def interval_count_filters(self, filters):
+        # Build dictionaries of filters in the format we can pass
+        # into interval_counts to filter the problems and organisations
+        problem_filters = filters.copy()
+
+        # move the filters that specifically apply to organisations
+        # to another dictionary
+        organisation_attrs = ['ccg', 'organisation_type']
+        organisation_filters = {}
+        for organisation_attr in organisation_attrs:
+            value = problem_filters.pop(organisation_attr, None)
+            if value != None:
+                organisation_filters[organisation_attr] = value
+
+        if problem_filters.get('status') != None:
+            # ignore a filter request for a status that isn't permitted
+            if not problem_filters['status'] in self.permitted_statuses:
+                del problem_filters['status']
+
+        if problem_filters.get('status') == None:
+            # by default the status should filter for the permitted statuses
+            problem_filters['status'] = tuple(self.permitted_statuses)
+
+        return (problem_filters, organisation_filters)
 
 class Map(FilterFormMixin,
           TemplateView):
     template_name = 'organisations/map.html'
+    permitted_statuses = Problem.VISIBLE_STATUSES
 
     def get_form_kwargs(self):
         kwargs = super(Map, self).get_form_kwargs()
@@ -145,73 +170,26 @@ class Map(FilterFormMixin,
     def get_context_data(self, **kwargs):
         context = super(Map, self).get_context_data(**kwargs)
 
-        # TODO - Filter by map bounds
-        organisations = Organisation.objects.annotate(average_time_to_address=Avg('problem__time_to_address'))
-        filtered_organisations = self.filter_organisations(context['selected_filters'], organisations)
+        problem_filters, organisation_filters = self.interval_count_filters(context['selected_filters'])
 
-        organisations_list = []
-        for organisation in filtered_organisations:
-            organisations_list.append(self.build_organisation_dict(context['selected_filters'], organisation))
+        # Show counts for moderated, published problems
+        problem_filters['moderated'] = Problem.MODERATED
+        problem_filters['publication_status'] = Problem.PUBLISHED
+        # TODO - Filter by map bounds
+        organisations_list = interval_counts(problem_filters=problem_filters,
+                                             organisation_filters=organisation_filters,
+                                             extra_organisation_data=['coords', 'type'],
+                                             problem_data_intervals=['all_time_open', 'all_time_closed'])
+        for org_data in organisations_list:
+            org_data['url'] = reverse('public-org-summary',
+                                      kwargs={'ods_code':org_data['ods_code'],
+                                               'cobrand':self.kwargs['cobrand']})
 
         # Make it into a JSON string
         context['organisations'] = json.dumps(organisations_list)
 
         return context
 
-    def build_organisation_dict(self, filters, organisation):
-        """
-        Turn an organisation into a dictionary so we can spit it out as JSON
-        """
-        organisation_dict = {}
-        organisation_dict['ods_code'] = organisation.ods_code
-        organisation_dict['name'] = organisation.name
-        organisation_dict['lon'] = organisation.point.coords[0]
-        organisation_dict['lat'] = organisation.point.coords[1]
-        organisation_dict['average_time_to_address'] = organisation.average_time_to_address
-
-        organisation_dict['url'] = reverse('public-org-summary',
-                                            kwargs={'ods_code':organisation.ods_code,
-                                                    'cobrand':self.kwargs['cobrand']})
-
-        if organisation.organisation_type == 'gppractices':
-            organisation_dict['type'] = "GP"
-        elif organisation.organisation_type == 'hospitals':
-            organisation_dict['type'] = "Hospital"
-        else :
-            organisation_dict['type'] = "Unknown"
-
-        problem_counts = self.get_organisation_problem_counts(filters, organisation)
-        organisation_dict['problem_count'] = problem_counts[0]
-        organisation_dict['closed_problem_count'] = problem_counts[1]
-
-        return organisation_dict
-
-    def get_organisation_problem_counts(self, filters, organisation):
-        """
-        Return a tuple of open/closed problem counts for the org
-        """
-        # TODO: These COUNT queries are performed for each organisation,
-        # they should be retrieved as part of the original organisation
-        # query for better performance/response times.
-        # This will probably require custom SQL though.
-
-        # Counts don't include un-moderated or hidden issues, but do include private issues
-        open_problem_queryset = organisation.problem_set.open_moderated_published_visible_problems()
-        closed_problem_queryset = organisation.problem_set.closed_moderated_published_visible_problems()
-
-        filtered_open_problems = self.filter_problems(filters, open_problem_queryset)
-        filtered_closed_problems = self.filter_problems(filters, closed_problem_queryset)
-
-        open_problem_count = filtered_open_problems.count()
-        closed_problem_count = filtered_closed_problems.count()
-
-        return (open_problem_count, closed_problem_count)
-
-    def filter_organisations(self, filters, queryset):
-        filtered_queryset = queryset
-        if 'organisation_type' in filters and filters['organisation_type']:
-            filtered_queryset = filtered_queryset.filter(organisation_type=filters['organisation_type'])
-        return filtered_queryset
 
 class PickProviderBase(ListView):
     template_name = 'provider_results.html'
@@ -382,29 +360,7 @@ class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(Summary, self).get_context_data(**kwargs)
 
-        # Build dictionaries of filters in the format we can pass
-        # into interval_counts to filter the problems and organisations
-        # we make a summary for
-        problem_filters = context['selected_filters'].copy()
-
-        # move the filters that specifically apply to organisations
-        # to another dictionary
-        organisation_attrs = ['ccg', 'organisation_type']
-        organisation_filters = {}
-        for organisation_attr in organisation_attrs:
-            value = problem_filters.pop(organisation_attr, None)
-            if value != None:
-                organisation_filters[organisation_attr] = value
-
-        if problem_filters.get('status') != None:
-            # ignore a filter request for a hidden status
-            if not problem_filters['status'] in self.permitted_statuses:
-                del problem_filters['status']
-
-        if problem_filters.get('status') == None:
-            # by default the status should filter for visible statuses
-            problem_filters['status'] = tuple(self.permitted_statuses)
-
+        problem_filters, organisation_filters = self.interval_count_filters(context['selected_filters'])
         threshold = None
         if settings.SUMMARY_THRESHOLD:
             threshold = settings.SUMMARY_THRESHOLD
