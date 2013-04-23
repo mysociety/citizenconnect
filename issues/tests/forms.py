@@ -32,6 +32,7 @@ class ProblemCreateFormTests(TestCase):
             'privacy': ProblemForm.PRIVACY_PRIVATE,
             'preferred_contact_method': 'phone',
             'agree_to_terms': True,
+            'elevate_priority': False,
             'website': '', # honeypot - should be blank
         }
 
@@ -58,6 +59,7 @@ class ProblemCreateFormTests(TestCase):
         self.assertEqual(problem.reporter_email, 'steve@mysociety.org')
         self.assertEqual(problem.preferred_contact_method, 'phone')
         self.assertEqual(problem.relates_to_previous_problem, False)
+        self.assertEqual(problem.priority, Problem.PRIORITY_NORMAL)
 
     def test_problem_form_respects_name_privacy(self):
         self.test_problem['privacy'] = ProblemForm.PRIVACY_PRIVATE_NAME
@@ -104,6 +106,20 @@ class ProblemCreateFormTests(TestCase):
         del self.test_problem['reporter_name']
         resp = self.client.post(self.form_url, self.test_problem)
         self.assertFormError(resp, 'form', 'reporter_name', 'This field is required.')
+
+    def test_problem_can_be_elevated(self):
+        self.test_problem['elevate_priority'] = True
+        self.test_problem['category'] = 'treatment'
+        resp = self.client.post(self.form_url, self.test_problem)
+        problem = Problem.objects.get(reporter_name=self.uuid)
+        self.assertEqual(problem.priority, Problem.PRIORITY_HIGH, 'Problem has wrong priority (should be HIGH)')
+
+    def test_elevated_ignored_if_category_does_not_permit(self):
+        self.test_problem['elevate_priority'] = True
+        self.test_problem['category'] = 'parking'
+        resp = self.client.post(self.form_url, self.test_problem)
+        problem = Problem.objects.get(reporter_name=self.uuid)
+        self.assertEqual(problem.priority, Problem.PRIORITY_NORMAL, 'Problem has wrong priority (should be NORMAL)')
 
     def test_problem_form_saves_cobrand(self):
         resp = self.client.post(self.form_url, self.test_problem)

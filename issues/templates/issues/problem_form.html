@@ -35,7 +35,7 @@
             If you have used a program that automatically fills in some details
             please try again without using it.
           </li>
-        </ul>      
+        </ul>
       </fieldset>
     {% endif %}
 
@@ -84,6 +84,14 @@
         </ul>
 
         {% include "message_list.html" with messages=form.category.errors message_type='error' %}
+
+        <p class="info">Additional questions for some categories (may be greyed out if they do not apply):</p>
+
+        <ul class="gw">
+            <li class="g  one-whole">
+                <label for="id_elevate_priority">{{ form.elevate_priority }} Is this problem happening now?</label>
+            </li>
+        </ul>
     </fieldset>
 
     <fieldset class="island">
@@ -241,6 +249,35 @@
             $(this).parents('li').click();
           }
         });
+      });
+    </script>
+
+    <script type="text/javascript" charset="utf-8">
+      $(function () {
+
+        var priority_categories = {};
+        {% for cat in CATEGORIES_PERMITTING_SETTING_OF_PRIORITY_AT_SUBMISSION %}
+        priority_categories.{{cat}} = true;{% endfor %}
+
+        $('input[name="category"]')
+          .change(function () {
+            var val = $(this).val();
+
+            var $label = $('label[for="id_elevate_priority"]');
+            var $input = $('#id_elevate_priority');
+
+            if ( priority_categories[val] ) {
+              $label.removeClass("disabled");
+              $input.prop("disabled", false);
+            } else {
+              $label.addClass("disabled");
+              $input.prop("disabled", "disabled");
+            }
+          });
+
+        $('input[name="category"]:checked').change();
+
+
       });
     </script>
 {% endblock extra_js %}
