@@ -56,18 +56,21 @@
 </script>
 
 <script type="text/x-underscore-template" name="hover-bubble">
-  <h1><%= nhsCentre.name %></h1>
-  <h2>Problem reports</h2>
-  <ul>
-      <li><em><%= nhsCentre.all_time_open %></em> Open/In progress issues</li>
-      <li><em><%= nhsCentre.all_time_closed %></em> Closed issues</li>
-      <% if (nhsCentre.average_time_to_address) { %>
-      <li><em><%= nhsCentre.average_time_to_address %></em> days average time to close</li>
-      <% } %>
-      <% if (nhsCentre.happy_outcome) { %>
-      <li><em><%= nhsCentre.happy_outcome %></em> users happy with outcome</li>
-      <% } %>
-  </ul>
+    <h1><%= nhsCentre.name %></h1>
+    <h2>Problem reports</h2>
+    <% if (issueType !== '') { %>
+        <h3>Issue Type - <%= issueType %></h3>
+    <% } %>
+    <ul>
+        <li><em><%= nhsCentre.all_time_open %></em> Open/In progress issues</li>
+        <li><em><%= nhsCentre.all_time_closed %></em> Closed issues</li>
+        <% if (nhsCentre.average_time_to_address) { %>
+            <li><em><%= nhsCentre.average_time_to_address %></em> days average time to close</li>
+        <% } %>
+        <% if (nhsCentre.happy_outcome) { %>
+            <li><em><%= nhsCentre.happy_outcome %></em> users happy with outcome</li>
+        <% } %>
+    </ul>
 </script>
 
 <script type="text/x-underscore-template" name="filter-link">

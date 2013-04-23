@@ -126,12 +126,19 @@ $(document).ready(function () {
 
     // Function to draw an array of providers onto the map
     var drawProviders = function(providers) {
+        // current selected issue type, to pass into the popups
+        var issueType = '';
+        var $categoryFilter = $(".filters form select[name=category]");
+        if ($categoryFilter.val() !== '') {
+            issueType = $categoryFilter.children("option:selected").text();
+        }
+
         // Wipe anything that's already on the map
         oms.clearMarkers();
         markersGroup.clearLayers();
 
         providers.forEach(function(nhsCentre){
-            var marker, iconClass;
+            var marker, iconClass, content;
 
             // Determine the icon colour based on issue count (crudely)
             if(nhsCentre.all_time_open <= 0) {
@@ -156,6 +163,8 @@ $(document).ready(function () {
                 icon: iconClass
             });
 
+            content = _.template(hoverBubbleTemplate, {nhsCentre: nhsCentre, issueType: issueType});
+
             // Save some custom data in the marker
             marker.nhsCentre = nhsCentre;
 
@@ -165,9 +174,7 @@ $(document).ready(function () {
                     offset: new L.Point(2,-4),
                     closeButton: false,
                     autoPan: false
-                }).setContent(
-                  _.template(hoverBubbleTemplate, {nhsCentre: nhsCentre})
-                )
+                }).setContent(content)
                 .setLatLng(e.target._latlng)
                 .openOn(map);
             }).on('mouseout', function(e){
