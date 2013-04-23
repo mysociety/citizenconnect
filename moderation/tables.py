@@ -1,11 +1,14 @@
 from django.core.urlresolvers import reverse
 import django_tables2 as tables
+from issues.models import ProblemQuerySet
 
 from issues.table_columns import ReferenceNumberColumn
 
 class BaseModerationTable(tables.Table):
 
-    reference_number = ReferenceNumberColumn()
+    reference_number = ReferenceNumberColumn(
+        order_by=ProblemQuerySet._order_for_moderation_table_fields()
+    )
 
     created = tables.DateTimeColumn(verbose_name="Received")
     private_summary = tables.Column(verbose_name='Text snippet', order_by=("description"))

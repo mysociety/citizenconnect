@@ -108,6 +108,14 @@ class Question(IssueModel):
 
 class ProblemQuerySet(models.query.QuerySet):
 
+
+    @classmethod
+    def _order_for_moderation_table_fields(cls):
+        """
+        The fields to sort by. Used in the tables code.
+        """
+        return ['priority', 'created']
+
     def order_for_moderation_table(self):
         """
         Sort by priority first, then by creation date. This is a crude way to
@@ -124,7 +132,8 @@ class ProblemQuerySet(models.query.QuerySet):
         people submitting the issues as individually they'll get a faster
         response, even if not collectively.
         """
-        return self.order_by('priority', 'created')
+        args = self._order_for_moderation_table_fields()
+        return self.order_by(*args)
 
 
 class ProblemManager(models.Manager):
