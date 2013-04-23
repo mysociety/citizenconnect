@@ -113,16 +113,16 @@ class ProblemManager(models.Manager):
         """
         Return only open problems
         """
-        return super(ProblemManager, self).all().filter(Q(status__in=Problem.OPEN_STATUSES))
+        return self.all().filter(Q(status__in=Problem.OPEN_STATUSES))
 
     def closed_problems(self):
         """
         Return only closed problems
         """
-        return super(ProblemManager, self).all().filter(Q(status__in=Problem.CLOSED_STATUSES))
+        return self.all().filter(Q(status__in=Problem.CLOSED_STATUSES))
 
     def unmoderated_problems(self):
-        return super(ProblemManager, self).all().filter(moderated=Problem.NOT_MODERATED)
+        return self.all().filter(moderated=Problem.NOT_MODERATED)
 
     def open_moderated_published_visible_problems(self):
         return self.open_problems().filter(moderated=Problem.MODERATED,
@@ -135,21 +135,21 @@ class ProblemManager(models.Manager):
                                              status__in=Problem.VISIBLE_STATUSES)
 
     def all_moderated_published_problems(self):
-        return super(ProblemManager, self).all().filter(moderated=Problem.MODERATED,
-                                                        publication_status=Problem.PUBLISHED,
-                                                        status__in=Problem.VISIBLE_STATUSES)
+        return self.all().filter(moderated=Problem.MODERATED,
+                                 publication_status=Problem.PUBLISHED,
+                                 status__in=Problem.VISIBLE_STATUSES)
 
 
     def problems_requiring_second_tier_moderation(self):
-        return super(ProblemManager, self).all().filter(requires_second_tier_moderation=True)
+        return self.all().filter(requires_second_tier_moderation=True)
 
     def open_escalated_problems(self):
-        return super(ProblemManager, self).all().filter(Q(status__in=Problem.ESCALATION_STATUSES) &
-                                                        Q(status__in=Problem.OPEN_STATUSES))
+        return self.all().filter(Q(status__in=Problem.ESCALATION_STATUSES) &
+                                 Q(status__in=Problem.OPEN_STATUSES))
 
     def open_unescalated_problems(self):
-        return super(ProblemManager, self).all().filter(Q(status__in=Problem.OPEN_STATUSES) &
-                                                        Q(status__in=Problem.NON_ESCALATION_STATUSES))
+        return self.all().filter(Q(status__in=Problem.OPEN_STATUSES) &
+                                 Q(status__in=Problem.NON_ESCALATION_STATUSES))
 
 class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
     # Custom manager
