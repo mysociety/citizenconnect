@@ -7,22 +7,6 @@ from responses.models import ProblemResponse
 from ..models import Question, Problem
 from ..lib import int_to_base32
 
-class AskQuestionViewTests(TestCase):
-    def setUp(self):
-        self.url = reverse('ask-question', kwargs={'cobrand':'choices'})
-
-    def test_ask_question_page_exists(self):
-        resp = self.client.get(self.url)
-        self.assertEqual(resp.status_code, 200)
-
-    def test_ask_question_page_links_to_question_form(self):
-        resp = self.client.get(self.url)
-        self.assertContains(resp, '/choices/question/question-form')
-
-    def test_ask_question_page_links_to_question_provider_picker(self):
-        resp = self.client.get(self.url)
-        self.assertContains(resp, '/choices/question/pick-provider')
-
 class QuestionCreateViewTests(TestCase):
 
     def setUp(self):

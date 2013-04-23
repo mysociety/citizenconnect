@@ -82,6 +82,11 @@ def interval_counts(issue_type, filters={}, sort='name', organisation_id=None, t
             criteria_clauses.append(issue_table + "." + criteria + " in %s""")
             params.append(value)
 
+    breach = filters.get('breach')
+    if breach != None:
+        criteria_clauses.append(issue_table + ".breach = %s""")
+        params.append(breach)
+
     service_code = filters.get('service_code')
     if service_code != None:
         if organisation_id:
@@ -103,6 +108,18 @@ def interval_counts(issue_type, filters={}, sort='name', organisation_id=None, t
                 organisation_type = (organisation_type,)
              criteria_clauses.append("organisations_organisation.organisation_type in %s")
              params.append(organisation_type)
+
+    ccg = filters.get('ccg')
+    if ccg != None:
+        if organisation_id:
+             raise NotImplementedError("Filtering for a ccg is unnecessary for a single organisation")
+        else:
+            if type(ccg) != tuple:
+                ccg = (ccg,)
+            extra_tables.append('organisations_organisation_ccgs')
+            criteria_clauses.append("organisations_organisation_ccgs.organisation_id = organisations_organisation.id")
+            criteria_clauses.append("organisations_organisation_ccgs.ccg_id in %s")
+            params.append(ccg)
 
     # Group by clauses to go with the non-aggregate selects
     group_by_clauses = ["""organisations_organisation.id""",

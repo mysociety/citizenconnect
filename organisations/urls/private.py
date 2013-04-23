@@ -11,6 +11,11 @@ urlpatterns = patterns('',
         name='org-dashboard',
         kwargs={'private': True}),
 
+    url(r'^summary$',
+        login_required(PrivateNationalSummary.as_view()),
+        name='private-national-summary',
+        kwargs={'private': True}),
+
     url(r'^summary/(?P<ods_code>\w+)$',
         login_required(OrganisationSummary.as_view()),
         name='private-org-summary',
@@ -25,8 +30,6 @@ urlpatterns = patterns('',
         login_required(OrganisationReviews.as_view()),
         name='private-org-reviews',
         kwargs={'private': True}),
-
-    url(r'^map$', login_required(Map.as_view()), name='private-map', kwargs={'private': True}),
 
     url(r'^choose-dashboard$', login_required(DashboardChoice.as_view()), name='dashboard-choice'),
 

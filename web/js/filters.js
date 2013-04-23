@@ -1,41 +1,34 @@
 $(document).ready(function () {
 
+  var organisation_type_selector = 'select[name=organisation_type]';
+  var service_selector = 'select[name=service_code], select[name=service_id]';
+
   // Departments are only relevant for hospitals
-  // Only GPs belong to CCGs
-  $('select[name=organisation_type]').change(function() {
+  $(organisation_type_selector).change(function() {
     if ($(this).val() == 'gppractices'){
-      $('select[name=service_code]').val('').prop('disabled', 'disabled');
+      $(service_selector).val('').prop('disabled', 'disabled');
     }else{
-      $('select[name=service_code]').prop('disabled', false);
-    }
-    if ($(this).val() == 'hospitals'){
-      $('select[name=ccg]').val('').prop('disabled', 'disabled');
-    }else{
-      $('select[name=ccg]').prop('disabled', false);
+      $(service_selector).prop('disabled', false);
     }
   });
 
-  $('select[name=service]').change(function() {
+  $(service_selector).change(function() {
     if ($(this).val() != ''){
-      $('select[name=organisation_type]').val('hospitals').prop('disabled', 'disabled');
+      $(organisation_type_selector).val('hospitals').prop('disabled', 'disabled');
     }else{
-      $('select[name=organisation_type]').prop('disabled', false);
-    }
-  });
-
-  $('select[name=ccg]').change(function() {
-    if ($(this).val() != ''){
-      $('select[name=organisation_type]').val('gppractices').prop('disabled', 'disabled');
-      $('select[name=service_code]').val('').prop('disabled', 'disabled');
-    }else{
-      $('select[name=organisation_type]').prop('disabled', false);
-      $('select[name=service_code]').prop('disabled', false);
+      $(organisation_type_selector).prop('disabled', false);
     }
   });
 
   // Trigger the change events when the document is ready to set initial values
-  $('select[name=ccg]').change();
-  $('select[name=organisation_type]').change();
-  $('select[name=service_code]').change();
+  $(organisation_type_selector).change();
+  $(service_selector).change();
+
+  // Because we disable the fields they won't be sent through,
+  // but we set values on them that we want, so we have re-enable them just
+  // before the form is submitted
+  $('.filters form').bind('submit', function() {
+    $(this).find('select').removeAttr('disabled');
+  });
 
 });

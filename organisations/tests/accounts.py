@@ -164,7 +164,7 @@ class LoginRedirectTests(AuthorizationTestCase):
         self.assertRedirects(resp, dashboard_url)
 
     def test_nhs_superuser_goes_to_superuser_page(self):
-        map_url = reverse('private-map')
+        map_url = reverse('private-national-summary')
         self.login_as(self.nhs_superuser)
         resp = self.client.get(self.login_redirect_url)
         self.assertRedirects(resp, map_url)
@@ -196,12 +196,6 @@ class LoginRedirectTests(AuthorizationTestCase):
         self.login_as(self.question_answerer)
         resp = self.client.get(self.login_redirect_url)
         self.assertRedirects(resp, questions_dashboard_url)
-
-    def test_cqc_user_goes_to_escalation_dashboard(self):
-        escalation_dashboard_url = reverse('escalation-dashboard')
-        self.login_as(self.cqc)
-        resp = self.client.get(self.login_redirect_url)
-        self.assertRedirects(resp, escalation_dashboard_url)
 
     def test_ccg_user_goes_to_escalation_dashboard(self):
         escalation_dashboard_url = reverse('escalation-dashboard')

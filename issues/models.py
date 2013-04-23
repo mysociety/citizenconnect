@@ -115,13 +115,24 @@ class ProblemManager(models.Manager):
         """
         return super(ProblemManager, self).all().filter(Q(status__in=Problem.OPEN_STATUSES))
 
+    def closed_problems(self):
+        """
+        Return only closed problems
+        """
+        return super(ProblemManager, self).all().filter(Q(status__in=Problem.CLOSED_STATUSES))
+
     def unmoderated_problems(self):
         return super(ProblemManager, self).all().filter(moderated=Problem.NOT_MODERATED)
 
-    def open_moderated_published_problems(self):
+    def open_moderated_published_visible_problems(self):
         return self.open_problems().filter(moderated=Problem.MODERATED,
                                            publication_status=Problem.PUBLISHED,
                                            status__in=Problem.VISIBLE_STATUSES)
+
+    def closed_moderated_published_visible_problems(self):
+        return self.closed_problems().filter(moderated=Problem.MODERATED,
+                                             publication_status=Problem.PUBLISHED,
+                                             status__in=Problem.VISIBLE_STATUSES)
 
     def all_moderated_published_problems(self):
         return super(ProblemManager, self).all().filter(moderated=Problem.MODERATED,
@@ -174,6 +185,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
     # Calculated status sets
     ALL_STATUSES = [status for status, description in STATUS_CHOICES]
     OPEN_STATUSES = BASE_OPEN_STATUSES + ESCALATION_STATUSES
+    CLOSED_STATUSES = [RESOLVED, UNABLE_TO_RESOLVE, UNABLE_TO_CONTACT, ABUSIVE]
     NON_ESCALATION_STATUSES = [status for status in ALL_STATUSES if status not in ESCALATION_STATUSES]
     VISIBLE_STATUSES = [status for status in ALL_STATUSES if status not in HIDDEN_STATUSES]
     VISIBLE_STATUS_CHOICES = [(status, description) for status, description in STATUS_CHOICES if status in VISIBLE_STATUSES]
@@ -205,6 +217,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
        (u'cleanliness', u'Cleanliness'),
        (u'equipment', u'Equipment'),
        (u'medicines', u'Medicines'),
+       (u'food', u'Food'),
        (u'dignity', u'Dignity and Privacy'),
        (u'parking', u'Parking'),
        (u'lostproperty', u'Lost Property'),
@@ -219,6 +232,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
                             'cleanliness': 'Cleanliness and facilities',
                             'equipment': 'Problems with equipment, aids and devices',
                             'medicines': 'Problems with medicines',
+                            'food': '', # TODO Add long description
                             'dignity': 'Privacy, dignity, confidentiality',
                             'parking': 'Problems with parking / charges',
                             'lostproperty': 'Lost property',

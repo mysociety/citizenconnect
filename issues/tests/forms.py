@@ -31,7 +31,8 @@ class ProblemCreateFormTests(TestCase):
             'reporter_phone': '01111 111 111',
             'privacy': ProblemForm.PRIVACY_PRIVATE,
             'preferred_contact_method': 'phone',
-            'agree_to_terms': True
+            'agree_to_terms': True,
+            'website': '', # honeypot - should be blank
         }
 
     def test_problem_form_exists(self):
@@ -108,6 +109,14 @@ class ProblemCreateFormTests(TestCase):
         resp = self.client.post(self.form_url, self.test_problem)
         problem = Problem.objects.get(reporter_name=self.uuid)
         self.assertEqual(problem.cobrand, 'choices')
+
+    def test_problem_form_fails_if_website_given(self):
+        spam_problem = self.test_problem.copy()
+        spam_problem['website'] = 'http://cheap-drugs.com/'
+        resp = self.client.post(self.form_url, spam_problem)
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue('has been rejected' in resp.content)
+
 
 class QuestionCreateFormTests(TestCase):
 

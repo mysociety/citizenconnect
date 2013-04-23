@@ -96,19 +96,29 @@ class FilterForm(forms.Form):
     Form for processing filters on pages which filter issues
     """
     ccg = forms.ModelChoiceField(queryset=CCG.objects.all(), required=False, empty_label='CCG')
+
     organisation_type = forms.ChoiceField(choices=[('', 'Organisation type')] + settings.ORGANISATION_CHOICES,
                                           required=False)
-    service_code = forms.ChoiceField(choices=[],required=False) # Choices set in __init__
+
+    # A service_code, eg: SRV123 which are consistent across the NHS
+    # rather than the id of a specific service in our database, which refers
+    # to an instance of service being provided at a specific organisation.
+    service_code = forms.ChoiceField(choices=[], required=False)
+
     category = forms.ChoiceField(choices=[('', 'Problem category')] + list(Problem.CATEGORY_CHOICES),
                                  required=False)
+
     problem_statuses = [ [str(status), desc] for (status, desc) in Problem.VISIBLE_STATUS_CHOICES ]
-    status = forms.ChoiceField(choices=[('', 'Problem status')] + problem_statuses,
-                               required=False)
+    status = forms.TypedChoiceField(choices=[('', 'Problem status')] + problem_statuses,
+                                    required=False,
+                                    coerce=int)
+
     breach = forms.TypedChoiceField(choices=[['', 'Breach problems?'],
                                              [True, 'Breaches'],
                                              [False, 'Non-Breaches']],
                                     required=False,
-                                    coerce=bool)
+                                    empty_value=None, # Default value is not coerced
+                                    coerce=lambda x: x == 'True') # coerce=bool will return True for 'False'
 
     def __init__(self, private=False, with_ccg=True, with_organisation_type=True,
                  with_service_code=True, with_category=True, with_status=True,
@@ -126,7 +136,7 @@ class FilterForm(forms.Form):
         if not with_service_code:
             del self.fields['service_code']
         else:
-            # Do this at runtime, otherwise we can't test this form
+            # We have to do this at runtime because otherwise we can't test this form
             self.fields['service_code'].choices = [('', 'Department')] + list(Service.service_codes())
 
         if not with_category:
@@ -138,8 +148,34 @@ class FilterForm(forms.Form):
             if private:
                 # Set status choices to all choices if we're on a private page
                 # rather than the default of just public statuses
-                self.fields['status'].choices = [ [str(status), desc] for (status, desc) in Problem.STATUS_CHOICES ]
+                all_statuses = [ [str(status), desc] for (status, desc) in Problem.STATUS_CHOICES ]
+                self.fields['status'].choices = [('', 'Problem status')] + all_statuses
 
         if not with_breach:
             del self.fields['breach']
+
+class OrganisationFilterForm(FilterForm):
+    """
+    Subclass of FilterForm which filters problems when we're looking in the
+    context of one specific organisation
+    """
+
+    def __init__(self, organisation, with_service_id=True, *args, **kwargs):
+        """
+        Overriden init to allow taking an organisation to extract services from
+        """
+        # Turn off things which don't make sense for one org
+        kwargs['with_ccg'] = False
+        kwargs['with_organisation_type'] = False
+        kwargs['with_service_code'] = False
+        super(OrganisationFilterForm, self).__init__(*args, **kwargs)
+
+        if with_service_id:
+            # Set the services from the organisation supplied
+            # By inserting it here, we avoid having to re-order the fields
+            services = organisation.services.all().order_by('name')
+            self.fields.insert(0,'service_id', forms.ModelChoiceField(queryset=services,
+                                                                      required=False,
+                                                                      empty_label="Department"))
+
 

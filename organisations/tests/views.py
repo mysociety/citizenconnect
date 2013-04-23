@@ -139,8 +139,8 @@ class OrganisationSummaryTests(AuthorizationTestCase):
     def test_summary_page_applies_problem_category_filter(self):
         for url in self.urls:
             self.login_as(self.provider)
-            resp = self.client.get(url + '?problems_category=cleanliness')
-            self.assertEqual(resp.context['problems_category'], 'cleanliness')
+            resp = self.client.get(url + '?category=cleanliness')
+
             total = resp.context['problems_total']
             self.assertEqual(total['all_time'], 1)
             self.assertEqual(total['week'], 1)
@@ -156,8 +156,21 @@ class OrganisationSummaryTests(AuthorizationTestCase):
     def test_summary_page_applies_department_filter(self):
         for url in self.urls:
             self.login_as(self.provider)
-            resp = self.client.get(url + '?service=%s' % self.service.id)
-            self.assertEqual(resp.context['selected_service'], self.service.id)
+            resp = self.client.get(url + '?service_id=%s' % self.service.id)
+
+            problems_by_status = resp.context['problems_by_status']
+            self.assertEqual(problems_by_status[0]['all_time'], 1)
+            self.assertEqual(problems_by_status[0]['week'], 1)
+            self.assertEqual(problems_by_status[0]['four_weeks'], 1)
+            self.assertEqual(problems_by_status[0]['six_months'], 1)
+
+    def test_summary_page_applies_breach_filter(self):
+        # Add a breach problem
+        create_test_instance(Problem, {'organisation': self.test_organisation,
+                                       'breach': True})
+        for url in self.urls:
+            self.login_as(self.provider)
+            resp = self.client.get(url + '?breach=True')
 
             problems_by_status = resp.context['problems_by_status']
             self.assertEqual(problems_by_status[0]['all_time'], 1)
@@ -271,7 +284,7 @@ class OrganisationProblemsTests(AuthorizationTestCase):
                                                     kwargs={'ods_code':self.hospital.ods_code,
                                                             'cobrand': 'choices'})
         self.private_hospital_problems_url = reverse('private-org-problems',
-                                                    kwargs={'ods_code':self.hospital.ods_code})
+                                                     kwargs={'ods_code':self.hospital.ods_code})
         self.public_gp_problems_url = reverse('public-org-problems',
                                               kwargs={'ods_code':self.gp.ods_code,
                                                       'cobrand': 'choices'})
@@ -441,6 +454,89 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         resp = self.client.get(self.private_gp_problems_url)
         self.assertEqual(resp.status_code, 200)
 
+    def test_filters_by_status(self):
+        # Add a problem in a different status that would show up
+        resolved_problem = create_test_instance(Problem, {'organisation':self.hospital,
+                                                          'status': Problem.ACKNOWLEDGED,
+                                                          'moderated': Problem.MODERATED,
+                                                          'publication_status': Problem.PUBLISHED,
+                                                          'moderated_description': 'Moderated'})
+        status_filtered_url = "{0}?status={1}".format(self.public_hospital_problems_url, Problem.NEW)
+        resp = self.client.get(status_filtered_url)
+        self.assertContains(resp, self.staff_problem.reference_number)
+        self.assertNotContains(resp, resolved_problem.reference_number)
+
+    def shows_all_statuses_on_private_page(self):
+        self.login_as(self.ccg_user)
+        resp = self.client.get(self.private_hospital_problems_url)
+        for status, label in Problem.STATUS_CHOICES:
+            self.assertContains(resp, '<option value={0}>{1}</option>'.format(status, label))
+
+    def shows_only_public_statuses_on_public_page(self):
+        self.login_as(self.ccg_user)
+        resp = self.client.get(self.private_hospital_problems_url)
+        for status, label in Problem.STATUS_CHOICES:
+            if status in Problem.HIDDEN_STATUSES:
+                self.assertNotContains(resp, '<option value={0}>{1}</option>'.format(status, label))
+
+    def ignores_private_statuses_on_public_page(self):
+        # Even if we manually hack the url, it shouldn't do any filtering
+        # Add a problem in a different status that would show up
+        abusive_problem = create_test_instance(Problem, {'organisation':self.hospital,
+                                                          'status': Problem.ABUSIVE,
+                                                          'moderated': Problem.MODERATED,
+                                                          'publication_status': Problem.PUBLISHED,
+                                                          'moderated_description': 'Moderated'})
+        status_filtered_url = "{0}?status={1}".format(self.public_hospital_problems_url, Problem.ABUSIVE)
+        resp = self.client.get(status_filtered_url)
+        self.assertContains(resp, self.staff_problem.reference_number)
+        # The default status option should still be selected, not any other
+        self.assertContains(resp, '<option value="" selected="selected">Problem status</option>')
+        self.assertNotContains(resp, abusive_problem.reference_number)
+
+    def test_filters_by_category(self):
+        # Add a problem in a different status that would show up
+        cleanliness_problem = create_test_instance(Problem, {'organisation':self.hospital,
+                                                             'category': 'cleanliness',
+                                                             'moderated': Problem.MODERATED,
+                                                             'publication_status': Problem.PUBLISHED,
+                                                             'moderated_description': 'Moderated'})
+        category_filtered_url = "{0}?category=cleanliness".format(self.public_hospital_problems_url)
+        resp = self.client.get(category_filtered_url)
+        self.assertContains(resp, cleanliness_problem.reference_number)
+        self.assertNotContains(resp, self.staff_problem.reference_number)
+
+    def test_filters_by_breach(self):
+        # Add a breach problem
+        breach_problem = create_test_instance(Problem, {'organisation':self.hospital,
+                                                        'breach': True,
+                                                        'moderated': Problem.MODERATED,
+                                                        'publication_status': Problem.PUBLISHED,
+                                                        'moderated_description': 'Moderated'})
+        breach_filtered_url = "{0}?breach=True".format(self.public_hospital_problems_url)
+        resp = self.client.get(breach_filtered_url)
+        self.assertContains(resp, breach_problem.reference_number)
+        self.assertNotContains(resp, self.staff_problem.reference_number)
+
+    def test_doesnt_show_service_for_gp(self):
+        resp = self.client.get(self.public_gp_problems_url)
+        self.assertNotContains(resp, '<select name="service_id" id="id_service_id">')
+
+    def test_filters_by_service_for_hospital(self):
+        # Add a service to the test hospital
+        service = create_test_service({'organisation':self.hospital})
+        # Add a problem about a specific service
+        service_problem = create_test_instance(Problem, {'organisation':self.hospital,
+                                                        'service': service,
+                                                        'moderated': Problem.MODERATED,
+                                                        'publication_status': Problem.PUBLISHED,
+                                                        'moderated_description': 'Moderated'})
+        service_filtered_url = "{0}?service_id={1}".format(self.public_hospital_problems_url, service.id)
+        resp = self.client.get(service_filtered_url)
+        self.assertContains(resp, service_problem.reference_number)
+        self.assertNotContains(resp, self.staff_problem.reference_number)
+
+
 class OrganisationReviewsTests(AuthorizationTestCase):
 
     def setUp(self):
@@ -550,15 +646,9 @@ class OrganisationMapTests(AuthorizationTestCase):
         self.hospital = self.test_organisation
         self.other_gp = self.other_test_organisation
         self.map_url = reverse('org-map', kwargs={'cobrand':'choices'})
-        self.private_map_url = reverse('private-map')
 
     def test_map_page_exists(self):
         resp = self.client.get(self.map_url)
-        self.assertEqual(resp.status_code, 200)
-
-    def test_private_map_page_exists(self):
-        self.login_as(self.nhs_superuser)
-        resp = self.client.get(self.private_map_url)
         self.assertEqual(resp.status_code, 200)
 
     def test_organisations_json_displayed(self):
@@ -589,42 +679,6 @@ class OrganisationMapTests(AuthorizationTestCase):
 
         self.assertEqual(response_json[1]['problem_count'], 1)
 
-    def test_private_map_page_is_only_accessible_to_superusers(self):
-        expected_login_url = "{0}?next={1}".format(self.login_url, self.private_map_url)
-        resp = self.client.get(self.private_map_url)
-        self.assertRedirects(resp, expected_login_url)
-
-        self.login_as(self.provider)
-        resp = self.client.get(self.private_map_url)
-        self.assertEqual(resp.status_code, 403)
-
-        self.login_as(self.other_provider)
-        resp = self.client.get(self.private_map_url)
-        self.assertEqual(resp.status_code, 403)
-
-        self.login_as(self.case_handler)
-        resp = self.client.get(self.private_map_url)
-        self.assertEqual(resp.status_code, 403)
-
-    def test_private_map_includes_unmoderated_and_unpublished_problems(self):
-        self.login_as(self.nhs_superuser)
-        create_test_instance(Problem, {'organisation': self.other_gp})
-        create_test_instance(Problem, {'organisation': self.other_gp,
-                                       'publication_status': Problem.HIDDEN,
-                                       'moderated': Problem.MODERATED})
-        create_test_instance(Problem, {'organisation': self.other_gp,
-                                       'publication_status': Problem.PUBLISHED,
-                                       'moderated': Problem.MODERATED,
-                                       'status': Problem.ABUSIVE})
-        create_test_instance(Problem, {'organisation': self.other_gp,
-                                       'publication_status': Problem.PUBLISHED,
-                                       'moderated': Problem.MODERATED})
-
-        resp = self.client.get(self.private_map_url)
-        response_json = json.loads(resp.context['organisations'])
-
-        self.assertEqual(response_json[1]['problem_count'], 3)
-
     def test_public_map_provider_urls_are_to_public_summary_pages(self):
         expected_gp_url = reverse('public-org-summary', kwargs={'ods_code':self.hospital.ods_code, 'cobrand':'choices'})
         expected_other_gp_url = reverse('public-org-summary', kwargs={'ods_code':self.other_gp.ods_code, 'cobrand':'choices'})
@@ -635,16 +689,56 @@ class OrganisationMapTests(AuthorizationTestCase):
         self.assertEqual(response_json[0]['url'], expected_gp_url)
         self.assertEqual(response_json[1]['url'], expected_other_gp_url)
 
-    def test_private_map_provider_urls_are_to_private_dashboards(self):
-        self.login_as(self.nhs_superuser)
-        expected_gp_url = reverse('org-dashboard', kwargs={'ods_code':self.hospital.ods_code})
-        expected_other_gp_url = reverse('org-dashboard', kwargs={'ods_code':self.other_gp.ods_code})
+    def test_map_filters_by_organisation_type(self):
+        org_type_filtered_url = "{0}?organisation_type=hospitals".format(self.map_url)
 
-        resp = self.client.get(self.private_map_url)
+        resp = self.client.get(org_type_filtered_url)
         response_json = json.loads(resp.context['organisations'])
+        self.assertEqual(len(response_json), 1)
+        self.assertEqual(response_json[0]['ods_code'], self.hospital.ods_code)
+        self.assertEqual(response_json[0]['problem_count'], 0)
 
-        self.assertEqual(response_json[0]['url'], expected_gp_url)
-        self.assertEqual(response_json[1]['url'], expected_other_gp_url)
+    def test_map_filters_by_category(self):
+        # Create some problems to filter
+        create_test_instance(Problem, {'organisation': self.other_gp,
+                                       'publication_status': Problem.PUBLISHED,
+                                       'moderated': Problem.MODERATED,
+                                       'category': 'staff'})
+        create_test_instance(Problem, {'organisation': self.other_gp,
+                                       'publication_status': Problem.PUBLISHED,
+                                       'moderated': Problem.MODERATED,
+                                       'category': 'cleanliness'})
+
+        category_filtered_url = "{0}?category=staff".format(self.map_url)
+
+        resp = self.client.get(category_filtered_url)
+        response_json = json.loads(resp.context['organisations'])
+        self.assertEqual(len(response_json), 2)
+        self.assertEqual(response_json[0]['ods_code'], self.hospital.ods_code)
+        self.assertEqual(response_json[0]['problem_count'], 0)
+        self.assertEqual(response_json[1]['ods_code'], self.other_gp.ods_code)
+        self.assertEqual(response_json[1]['problem_count'], 1)
+
+    def test_map_filters_by_status(self):
+        # Create some problems to filter
+        create_test_instance(Problem, {'organisation': self.hospital,
+                                       'publication_status': Problem.PUBLISHED,
+                                       'moderated': Problem.MODERATED,
+                                       'status': Problem.NEW})
+        create_test_instance(Problem, {'organisation': self.hospital,
+                                       'publication_status': Problem.PUBLISHED,
+                                       'moderated': Problem.MODERATED,
+                                       'status': Problem.ACKNOWLEDGED})
+
+        status_filtered_url = "{0}?status={1}".format(self.map_url, Problem.ACKNOWLEDGED)
+
+        resp = self.client.get(status_filtered_url)
+        response_json = json.loads(resp.context['organisations'])
+        self.assertEqual(len(response_json), 2)
+        self.assertEqual(response_json[0]['ods_code'], self.hospital.ods_code)
+        self.assertEqual(response_json[0]['problem_count'], 1)
+        self.assertEqual(response_json[1]['ods_code'], self.other_gp.ods_code)
+        self.assertEqual(response_json[1]['problem_count'], 0)
 
 @override_settings(SUMMARY_THRESHOLD=None)
 class SummaryTests(AuthorizationTestCase):
@@ -652,11 +746,12 @@ class SummaryTests(AuthorizationTestCase):
     def setUp(self):
         super(SummaryTests, self).setUp()
         self.summary_url = reverse('org-all-summary', kwargs={'cobrand':'choices'})
-        create_test_instance(Problem, {'organisation': self.test_organisation})
+        create_test_instance(Problem, {'organisation': self.test_organisation, 'category':'staff'})
         create_test_instance(Problem, {'organisation': self.other_test_organisation,
                                        'publication_status': Problem.PUBLISHED,
                                        'moderated': Problem.MODERATED,
-                                       'status': Problem.ABUSIVE})
+                                       'status': Problem.ABUSIVE,
+                                       'category':'cleanliness'})
     def test_summary_page_exists(self):
         resp = self.client.get(self.summary_url)
         self.assertEqual(resp.status_code, 200)
@@ -686,6 +781,145 @@ class SummaryTests(AuthorizationTestCase):
         with self.settings(SUMMARY_THRESHOLD=('six_months', 2)):
             resp = self.client.get(self.summary_url)
             self.assertNotContains(resp, 'Test Organisation')
+
+    def test_summary_page_filters_by_ccg(self):
+        # Add an issue for other_test_organisation that won't be filtered because
+        # of it's Hidden status bit will be by the other orgs ccg
+        create_test_instance(Problem, {'organisation': self.other_test_organisation})
+
+        ccg_filtered_url = '{0}?ccg={1}'.format(self.summary_url, self.test_ccg.id)
+        resp = self.client.get(ccg_filtered_url)
+        self.assertContains(resp, self.test_organisation.name)
+        self.assertNotContains(resp, self.other_test_organisation.name)
+
+    def test_summary_page_filters_by_organisation_type(self):
+        # Add an issue for other_test_organisation that won't be filtered because
+        # of it's Hidden status but will be by the org_type filter
+        create_test_instance(Problem, {'organisation': self.other_test_organisation})
+
+        org_type_filtered_url = '{0}?organisation_type=hospitals'.format(self.summary_url)
+        resp = self.client.get(org_type_filtered_url)
+        self.assertContains(resp, self.test_organisation.name)
+        self.assertNotContains(resp, self.other_test_organisation.name)
+
+    def test_summary_page_filters_by_category(self):
+        # Add an issue for other_test_organisation that won't be filtered because
+        # of it's Hidden status but will be filtered by our category
+        create_test_instance(Problem, {'organisation': self.other_test_organisation,
+                                       'category':'cleanliness'})
+
+        category_filtered_url = '{0}?category=staff'.format(self.summary_url)
+        resp = self.client.get(category_filtered_url)
+        self.assertContains(resp, self.test_organisation.name)
+        self.assertNotContains(resp, self.other_test_organisation.name)
+
+    def test_summary_page_filters_by_status(self):
+        # Add an issue for other_test_organisation that won't be filtered because
+        # of it's Hidden status, but should be filtered by our status filter
+        create_test_instance(Problem, {'organisation': self.other_test_organisation,
+                                       'status': Problem.ACKNOWLEDGED})
+
+        status_filtered_url = '{0}?status={1}'.format(self.summary_url, Problem.NEW)
+        resp = self.client.get(status_filtered_url)
+        self.assertContains(resp, self.test_organisation.name)
+        self.assertNotContains(resp, self.other_test_organisation.name)
+
+    def test_summary_page_filters_by_breach(self):
+        # Add a breach problem
+        create_test_instance(Problem, {'organisation':self.test_organisation,
+                                       'breach': True})
+
+        breach_filtered_url = '{0}?breach=True'.format(self.summary_url)
+        resp = self.client.get(breach_filtered_url)
+        self.assertContains(resp, self.test_organisation.name)
+        self.assertNotContains(resp, self.other_test_organisation.name)
+
+
+@override_settings(SUMMARY_THRESHOLD=None)
+class PrivateNationalSummaryTests(AuthorizationTestCase):
+
+    def setUp(self):
+        super(PrivateNationalSummaryTests, self).setUp()
+        self.summary_url = reverse('private-national-summary')
+        create_test_instance(Problem, {'organisation': self.test_organisation})
+        create_test_instance(Problem, {'organisation': self.other_test_organisation,
+                                       'publication_status': Problem.PUBLISHED,
+                                       'moderated': Problem.MODERATED,
+                                       'status': Problem.ABUSIVE})
+        self.login_as(self.superuser)
+
+    def test_summary_page_authorization(self):
+
+        tests = (
+            # (user, permitted? )
+            ( None,                               False ),
+            ( self.provider,                      False ),
+            ( self.case_handler,                  False ),
+            ( self.question_answerer,             False ),
+            ( self.second_tier_moderator,         False ),
+
+            ( self.superuser,                     True  ),
+            ( self.nhs_superuser,                 True  ),
+            ( self.customer_contact_centre_user,  True  ),
+
+            # CCG users allowed, but only if they have CCGs attached to them.
+            ( self.ccg_user,                      True  ),
+            ( self.no_ccg_user,                   False ),
+        )
+
+        for user, permitted in tests:
+            self.client.logout()
+            if user:
+                self.login_as(user)
+            resp = self.client.get(self.summary_url)
+
+            if permitted:
+                self.assertEqual(resp.status_code, 200, "{0} should be allowed".format(user))
+            elif user: # trying to access and not logged in
+                self.assertEqual(resp.status_code, 403, "{0} should be denied".format(user))
+            else: # trying to access and not logged in
+                expected_redirect_url = "{0}?next={1}".format(reverse("login"), self.summary_url)
+                self.assertRedirects(resp, expected_redirect_url, msg_prefix="{0} should not be allowed".format(user))
+
+    def test_summary_page_exists(self):
+        resp = self.client.get(self.summary_url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_summary_shows_all_statuses_for_problems_in_filters(self):
+        resp = self.client.get(self.summary_url)
+        for status_enum, status_name in Problem.STATUS_CHOICES:
+            self.assertContains(resp, '<option value="{0}">{1}</option>'.format(status_enum, status_name))
+
+    def test_ccg_user_only_sees_organisations_they_are_linked_to(self):
+
+        # check that superuser sees both CCGs' organisations
+        resp = self.client.get(self.summary_url)
+        for org in self.test_ccg.organisations.all():
+            self.assertContains(resp, org.name)
+        for org in self.other_test_ccg.organisations.all():
+            self.assertContains(resp, org.name)
+
+        # change user
+        self.client.logout()
+        self.login_as(self.ccg_user)
+
+        # check they see orgs for test_ccg and not for other_ccg
+        resp = self.client.get(self.summary_url)
+        for org in self.test_ccg.organisations.all():
+            self.assertContains(resp, org.name)
+        for org in self.other_test_ccg.organisations.all():
+            self.assertNotContains(resp, org.name)
+
+
+    def test_summary_page_applies_threshold_from_settings(self):
+        with self.settings(SUMMARY_THRESHOLD=('six_months', 1)):
+            resp = self.client.get(self.summary_url)
+            self.assertContains(resp, 'Test Organisation')
+
+        with self.settings(SUMMARY_THRESHOLD=('six_months', 2)):
+            resp = self.client.get(self.summary_url)
+            self.assertNotContains(resp, 'Test Organisation')
+
 
 class ProviderPickerTests(TestCase):
 

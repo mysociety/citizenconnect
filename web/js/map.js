@@ -39,14 +39,15 @@ $(document).ready(function () {
             "https://dnv9my2eseobd.cloudfront.net/v3/jedidiah.map-3lyys17i/{z}/{x}/{y}.png"
         ],
         "webpage": "http://tiles.mapbox.com/jedidiah/map/map-3lyys17i"
-    }
+    };
 
 
     wax.tilejson('https://dnv9my2eseobd.cloudfront.net/v3/jedidiah.map-3lyys17i.jsonp', function(tilejson) {
         map.addLayer(new wax.leaf.connector(httpstilejson)).setView(londonCentre, 1);
+        var nhsCentreIcon_1, nhsCentreIcon_2, nhsCentreIcon_3, nhsCentreIcon_4, nhsCentreIcon_5;
         if(imageBasedMarkers){
             // Image Based: best for backwards compatibility
-            var nhsCentreIcon_1 = L.icon({
+            nhsCentreIcon_1 = L.icon({
                 iconUrl: "/static/img/marker1.png",
                 iconRetinaUrl: "/static/img/marker1@2x.png",
                 iconSize: [16, 16],
@@ -55,7 +56,7 @@ $(document).ready(function () {
                 shadowRetinaUrl: "/static/img/shadow@2x.png",
                 shadowSize: [24, 24]
             });
-            var nhsCentreIcon_2 = L.icon({
+            nhsCentreIcon_2 = L.icon({
                 iconUrl: "/static/img/marker2.png",
                 iconRetinaUrl: "/static/img/marker2@2x.png",
                 iconSize: [16, 16],
@@ -64,7 +65,7 @@ $(document).ready(function () {
                 shadowRetinaUrl: "/static/img/shadow@2x.png",
                 shadowSize: [24, 24]
             });
-            var nhsCentreIcon_3 = L.icon({
+            nhsCentreIcon_3 = L.icon({
                 iconUrl: "/static/img/marker3.png",
                 iconRetinaUrl: "/static/img/marker3@2x.png",
                 iconSize: [16, 16],
@@ -73,7 +74,7 @@ $(document).ready(function () {
                 shadowRetinaUrl: "/static/img/shadow@2x.png",
                 shadowSize: [24, 24]
             });
-            var nhsCentreIcon_4 = L.icon({
+            nhsCentreIcon_4 = L.icon({
                 iconUrl: "/static/img/marker4.png",
                 iconRetinaUrl: "/static/img/marker4@2x.png",
                 iconSize: [16, 16],
@@ -82,7 +83,7 @@ $(document).ready(function () {
                 shadowRetinaUrl: "/static/img/shadow@2x.png",
                 shadowSize: [24, 24]
             });
-            var nhsCentreIcon_5 = L.icon({
+            nhsCentreIcon_5 = L.icon({
                 iconUrl: "/static/img/marker5.png",
                 iconRetinaUrl: "/static/img/marker5@2x.png",
                 iconSize: [16, 16],
@@ -93,11 +94,11 @@ $(document).ready(function () {
             });
         } else {
             // Div Based: Prettier but not as compatible.
-            var nhsCentreIcon_1 = L.divIcon({className: 'marker_m1'});
-            var nhsCentreIcon_2 = L.divIcon({className: 'marker_m2'});
-            var nhsCentreIcon_3 = L.divIcon({className: 'marker_m3'});
-            var nhsCentreIcon_4 = L.divIcon({className: 'marker_m4'});
-            var nhsCentreIcon_5 = L.divIcon({className: 'marker_m5'});
+            nhsCentreIcon_1 = L.divIcon({className: 'marker_m1'});
+            nhsCentreIcon_2 = L.divIcon({className: 'marker_m2'});
+            nhsCentreIcon_3 = L.divIcon({className: 'marker_m3'});
+            nhsCentreIcon_4 = L.divIcon({className: 'marker_m4'});
+            nhsCentreIcon_5 = L.divIcon({className: 'marker_m5'});
         }
 
         map.setView(londonCentre, londonZoomLevel);
@@ -122,13 +123,13 @@ $(document).ready(function () {
                 iconClass = nhsCentreIcon_4;
             }
             else if(nhsCentre.problem_count <= 6) {
-                iconClass = nhsCentreIcon_3
+                iconClass = nhsCentreIcon_3;
             }
             else if(nhsCentre.problem_count <= 12) {
-                iconClass = nhsCentreIcon_2
+                iconClass = nhsCentreIcon_2;
             }
             else {
-                iconClass = nhsCentreIcon_1
+                iconClass = nhsCentreIcon_1;
             }
 
             // Create the marker
@@ -147,10 +148,7 @@ $(document).ready(function () {
                     closeButton: false,
                     autoPan: false
                 }).setContent(
-                    // TODO - if we have to have underscore on the page for debouncing, we should
-                    // use it's templating features to make this nicer
-                    "<strong>" + nhsCentre.name + "</a></strong>" +
-                    "<br><em>" + nhsCentre.problem_count + "</em> Unresolved Problems<br>"
+                  _.template($("script[name=hover-bubble]").text(), {nhsCentre: nhsCentre})
                 )
                 .setLatLng(e.target._latlng)
                 .openOn(map);

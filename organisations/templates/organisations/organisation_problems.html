@@ -12,5 +12,7 @@
 </div>
 {% include "organisations/includes/organisation_tabs.html" with active_tab='problems' %}
 
+{% include "organisations/includes/filters.html" %}
+
 {% render_table table 'organisations/includes/table.html' %}
 {% endblock %}

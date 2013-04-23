@@ -11,7 +11,6 @@ PROVIDERS = 1
 NHS_SUPERUSERS = 2
 CASE_HANDLERS = 3
 QUESTION_ANSWERERS = 4
-CQC = 5
 CCG = 6
 SECOND_TIER_MODERATORS = 7
 CUSTOMER_CONTACT_CENTRE = 8
@@ -20,7 +19,6 @@ ALL_GROUPS = [PROVIDERS,
               NHS_SUPERUSERS,
               CASE_HANDLERS,
               QUESTION_ANSWERERS,
-              CQC,
               CCG,
               SECOND_TIER_MODERATORS,
               CUSTOMER_CONTACT_CENTRE]
@@ -40,27 +38,46 @@ def user_in_groups(user, groups):
 def user_in_group(user, group):
     return user_in_groups(user, [group])
 
-def check_organisation_access(organisation, user):
+def enforce_organisation_access_check(organisation, user):
     if not organisation.can_be_accessed_by(user):
         raise PermissionDenied()
 
-def check_question_access(user):
+def enforce_moderation_access_check(user):
+    if not user_is_superuser(user) and not user_in_group(user, CASE_HANDLERS):
+        raise PermissionDenied()
+
+def enforce_second_tier_moderation_access_check(user):
+    if not user_is_superuser(user) and not user_in_group(user, SECOND_TIER_MODERATORS):
+        raise PermissionDenied()
+
+def enforce_question_access_check(user):
     if not user_is_superuser(user) and not user_in_group(user, QUESTION_ANSWERERS):
         raise PermissionDenied()
 
-def check_problem_access(problem, user):
+def enforce_problem_access_check(problem, user):
     if not problem.can_be_accessed_by(user):
         raise PermissionDenied()
 
-def check_response_access(problem, user):
+def enforce_response_access_check(problem, user):
     """
     Can a user respond to a problem?
     For now, this is equivalent to being able to access the organisation.
     """
-    check_organisation_access(problem.organisation, user)
+    enforce_organisation_access_check(problem.organisation, user)
 
 def user_can_access_escalation_dashboard(user):
-    return (user_is_superuser(user) or user_in_groups(user, [CQC, CCG, CUSTOMER_CONTACT_CENTRE]))
+    return (user_is_superuser(user) or user_in_groups(user, [CCG, CUSTOMER_CONTACT_CENTRE]))
+
+def user_can_access_private_national_summary(user):
+    if user_is_superuser(user) or user_in_group(user, CUSTOMER_CONTACT_CENTRE):
+        return True
+
+    # A CCG user with no CCGs should not be allowed.
+    if user_in_group(user, CCG) and user.ccgs.count():
+        return True
+    
+    return False
+    
 
 def create_unique_username(organisation):
     """
