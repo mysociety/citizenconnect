@@ -367,6 +367,10 @@ class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
         else:
             return None
 
+    @property
+    def has_elevated_priority(self):
+        return self.priority < Problem.PRIORITY_NORMAL
+
     def clean(self):
         """
         Custom model validation
