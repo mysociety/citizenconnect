@@ -22,9 +22,9 @@
         <p>Your reference number for this is {{ object.reference_number }}. If you need to contact us or {{ object.organisation.name }} about this issue in the future, please quote this reference number.</p>
 
         {% if not object.public and not object.public_reporter_name %}
-            <p>As you selected to keep all details of your problem private our <a href="{% url 'org-map' cobrand=cobrand.name %}">live maps</a> just show that an issue has been raised with this service under the category of &OpenCurlyDoubleQuote;{{ object.get_category_display }}&CloseCurlyDoubleQuote;.</p>
+            <p>As you selected to keep all details of your problem private our <a href="{% url 'org-map' cobrand=cobrand.name %}">live maps</a> just show that an issue has been raised with this service under the category of &ldquo;{{ object.get_category_display }}&rdquo;.</p>
         {% else %}
-            <p>Your problem has been added to the <a href="{% url 'org-map' cobrand=cobrand.name %}">live map</a> for {{ object.organisation.name }} under the category of &OpenCurlyDoubleQuote;{{ object.get_category_display }}&CloseCurlyDoubleQuote; and as you selected to allow the publishing of the details of your problem {% if not object.public_reporter_name %}(anonymously, without your name){% endif %} the additional issue content will also appear on our <a href="{% url 'org-map' cobrand=cobrand.name %}">live maps</a> shortly, after it has gone through our moderation process.</p>
+            <p>Your problem has been added to the <a href="{% url 'org-map' cobrand=cobrand.name %}">live map</a> for {{ object.organisation.name }} under the category of &ldquo;{{ object.get_category_display }}&rdquo; and as you selected to allow the publishing of the details of your problem {% if not object.public_reporter_name %}(anonymously, without your name){% endif %} the additional issue content will also appear on our <a href="{% url 'org-map' cobrand=cobrand.name %}">live maps</a> shortly, after it has gone through our moderation process.</p>
             <p>Moderation is a standard process for websites that allow members of the public to submit comments. <a href="{% url 'about' cobrand=cobrand.name %}">See more information on our moderation process</a>.</p>
         {% endif %}
     </div>
