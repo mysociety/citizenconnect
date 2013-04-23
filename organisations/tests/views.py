@@ -739,6 +739,18 @@ class OrganisationMapTests(AuthorizationTestCase):
         self.assertEqual(response_json[1]['ods_code'], self.hospital.ods_code)
         self.assertEqual(response_json[1]['all_time_open'], 1)
 
+    def test_map_returns_json_when_asked(self):
+        json_url = "{0}?format=json".format(self.map_url)
+        resp = self.client.get(json_url)
+        self.assertEqual(resp['Content-Type'], 'application/json')
+        response_json = json.loads(resp.content)
+        self.assertEqual(len(response_json), 2)
+        self.assertEqual(response_json[0]['ods_code'], self.other_gp.ods_code)
+        self.assertEqual(response_json[0]['all_time_open'], 0)
+        self.assertEqual(response_json[1]['ods_code'], self.hospital.ods_code)
+        self.assertEqual(response_json[1]['all_time_open'], 0)
+
+
 @override_settings(SUMMARY_THRESHOLD=['all_time', 1])
 class SummaryTests(AuthorizationTestCase):
 

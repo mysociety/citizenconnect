@@ -13,12 +13,11 @@
             <input type="submit" value="Filter" class="btn  fr  palm-one-whole">
         </div>
     </form>
-    {% if selected_filters %}
-    <div class="current-filters gw">
+    <div class="current-filters gw" {% if not selected_filters %}style="display:none;"{% endif %}>
          <div class="g  one-sixth  palm-one-whole">
              Current filters:
         </div>
-        <div class="g  five-sixths  palm-one-whole">
+        <div class="filter-links  g  five-sixths  palm-one-whole">
 
             {% for field in form.visible_fields %}
                 {% if field.value %}
@@ -29,6 +28,5 @@
             {% endfor %}
         </div>
     </div>
-    {% endif %}
 </div>
 

@@ -12,7 +12,7 @@ from django.core.exceptions import PermissionDenied
 from django.template import RequestContext
 from django_tables2 import RequestConfig
 from django.conf import settings
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Avg
 
@@ -193,6 +193,19 @@ class Map(FilterFormMixin,
         context['organisations'] = json.dumps(organisations_list)
 
         return context
+
+    def render_to_response(self, context, **response_kwargs):
+        """
+        Overriden render_to_response to return JSON if GET['format'] == 'json'
+        and use the standard TemplateView method otherwise.
+        """
+        if self.request.GET.get('format') == 'json':
+            return HttpResponse(context['organisations'],
+                                content_type='application/json',
+                                **response_kwargs)
+        else:
+            return super(Map, self).render_to_response(context, **response_kwargs)
+
 
 
 class PickProviderBase(ListView):

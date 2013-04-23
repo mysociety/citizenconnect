@@ -68,6 +68,13 @@ class ProblemForm(IssueModelForm):
        required=True
     )
 
+    # For some categories the reporter can elevate the priority of the report.
+    # Javascript is used to disable this input if the category selected does not
+    # permit this.
+    elevate_priority = forms.BooleanField(
+        required = False
+    )
+
     # This is a honeypot field to catch spam bots. If there is any content in
     # it the form validation will fail and an appropriate error should be shown to
     # the user. This field is hidden by CSS in the form so should never be shown to
@@ -76,6 +83,24 @@ class ProblemForm(IssueModelForm):
         label = 'Leave this blank',
         required = False,
     )
+
+
+    def save(self, commit=True):
+        """
+        Handle the save ourselves so we can set the priority (which is not a
+        field we expect back from the form.)
+        """
+
+        problem = super(ProblemForm, self).save(commit=False)
+
+        if self.cleaned_data['priority']:
+            problem.priority = self.cleaned_data['priority']
+
+        if commit:
+            problem.save()
+
+        return problem
+
 
     def clean(self):
         cleaned_data = self.cleaned_data
@@ -89,7 +114,18 @@ class ProblemForm(IssueModelForm):
             cleaned_data['public'] = True
             cleaned_data['public_reporter_name'] = True
 
-        return cleaned_data
+        return super(ProblemForm, self).clean()
+
+
+    def clean_elevate_priority(self):
+        # If true, and the category premits it, set priority to true, otherwise
+        # use default.
+        may_elevate = self.cleaned_data['category'] in Problem.CATEGORIES_PERMITTING_SETTING_OF_PRIORITY_AT_SUBMISSION
+
+        if may_elevate and self.cleaned_data.get('elevate_priority'):
+            self.cleaned_data['priority'] = Problem.PRIORITY_HIGH
+        else:
+            self.cleaned_data['priority'] = None
 
 
     def clean_website(self):

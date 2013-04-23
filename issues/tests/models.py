@@ -234,6 +234,14 @@ class ProblemModelTests(ProblemTestCase):
             self.assertTrue(self.test_problem.check_token(token))
             self.assertFalse(self.test_problem.check_token('xro-0ca2b7902598992daf25'))
 
+    def test_has_elevated_priority(self):
+        problem = self.test_problem
+        self.assertEqual( problem.priority, Problem.PRIORITY_NORMAL )
+        self.assertEqual( problem.has_elevated_priority, False )
+        problem.priority = Problem.PRIORITY_HIGH
+        self.assertEqual( problem.priority, Problem.PRIORITY_HIGH )
+        self.assertEqual( problem.has_elevated_priority, True )
+
 class ProblemModelTimeToTests(ProblemTestCase):
 
     def setUp(self):
@@ -316,7 +324,7 @@ class ProblemModelConcurrencyTests(TransactionTestCase, ConcurrencyTestMixin):
 class ProblemModelEscalationTests(ProblemTestCase):
 
     def setUp(self):
-        super(ProblemModelEscalationTests, self).setUp()        
+        super(ProblemModelEscalationTests, self).setUp()
         self.test_organisation.email = 'test@example.org'
         self.test_organisation.save()
 
@@ -341,12 +349,12 @@ class ProblemModelEscalationTests(ProblemTestCase):
         problem.commissioned = Problem.LOCALLY_COMMISSIONED
 
         problem.send_escalation_email()
-    
+
         self.assertEqual(len(mail.outbox), 2)
-    
+
         intro_email      = mail.outbox[0]
         escalation_email = mail.outbox[1]
-    
+
         self.assertTrue( "Problem has been escalated" in escalation_email.subject )
         self.assertEqual( escalation_email.to, ['ccg@example.org'] )
 
@@ -356,17 +364,17 @@ class ProblemModelEscalationTests(ProblemTestCase):
         problem.commissioned = Problem.NATIONALLY_COMMISSIONED
 
         problem.send_escalation_email()
-    
+
         self.assertEqual(len(mail.outbox), 1)
-    
+
         escalation_email = mail.outbox[0]
-    
+
         self.assertTrue( "Problem has been escalated" in escalation_email.subject )
         self.assertEqual( escalation_email.to, settings.CUSTOMER_CONTACT_CENTRE_EMAIL_ADDRESSES )
 
     def test_send_escalation_email_called_on_save(self):
         problem = self.test_problem
-        
+
         with patch.object(problem, 'send_escalation_email') as mocked_send:
 
             # Save the problem for the first time, should not send
@@ -410,7 +418,7 @@ class ProblemModelEscalationTests(ProblemTestCase):
             preferred_contact_method=Problem.CONTACT_EMAIL,
             status=Problem.ESCALATED
         )
-        
+
         # save object
         with patch.object(problem, 'send_escalation_email') as mocked_send:
             problem.save()
