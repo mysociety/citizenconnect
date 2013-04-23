@@ -226,6 +226,35 @@ class IntervalCountsTest(TestCase):
         actual = interval_counts(extra_organisation_data=['coords', 'type'])
         self.assertEqual(expected_counts, actual)
 
+    def test_problem_data_intervals(self):
+        expected_counts = [{'id': self.other_test_organisation.id,
+                            'name': 'Other Test Organisation',
+                            'ods_code': 'ABC222',
+                            'all_time': 5,
+                            'all_time_open': 5,
+                            'all_time_closed': 0,
+                            'happy_outcome': None,
+                            'happy_outcome_count': 0,
+                            'happy_service': None,
+                            'happy_service_count': 0,
+                            'average_time_to_acknowledge': None,
+                            'average_time_to_address': None},
+                           {'id': self.test_organisation.id,
+                           'name': 'Test Organisation',
+                           'ods_code': 'XXX999',
+                           'all_time': 6,
+                           'all_time_open': 4,
+                           'all_time_closed': 2,
+                           'happy_outcome': 0.5,
+                           'happy_outcome_count': 2,
+                           'happy_service': 1.0,
+                           'happy_service_count': 1,
+                           'average_time_to_acknowledge': Decimal('22.6666666666666667'),
+                           'average_time_to_address': Decimal('240.6666666666666667')}]
+        actual = interval_counts(problem_data_intervals=['all_time', 'all_time_open', 'all_time_closed'])
+        self.assertEqual(expected_counts, actual)
+
+
     def test_filter_by_service_code(self):
         problem_filters = {'service_code': 'ABC123'}
         threshold=['six_months', 1]

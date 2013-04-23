@@ -3,6 +3,7 @@ from django.utils.timezone import utc
 from django.db import connection
 
 from .models import Organisation
+from issues.models import Problem
 
 # Return a clause summing the number of records in a table whose field meets a criteria
 def _sum_clause(field, criteria):
@@ -93,6 +94,13 @@ def interval_counts(problem_filters={},
     if 'all_time' in problem_data_intervals:
         select_clauses.append("""count(issues_problem.id) as all_time""")
 
+    if 'all_time_open' in problem_data_intervals:
+        select_clauses.append(_sum_clause('status', "in %s") + """ as all_time_open""")
+        params.append(tuple(Problem.OPEN_STATUSES))
+
+    if 'all_time_closed' in problem_data_intervals:
+        select_clauses.append(_sum_clause('status', "in %s") + """ as all_time_closed""")
+        params.append(tuple(Problem.CLOSED_STATUSES))
 
     # Get the True/False percentages and counts
     for field in boolean_counts:
