@@ -106,8 +106,35 @@ class Question(IssueModel):
         else:
             return self.description
 
+class ProblemQuerySet(models.query.QuerySet):
+
+    def order_for_moderation_table(self):
+        """
+        Sort by priority first, then by creation date. This is a crude way to
+        ensure that the issues at the top of the moderation list are the ones
+        that should be looked at next.
+
+        This sorting could be improved by calculating a deadline for each
+        problem and then sorting by that deadline. This would be the ideal as it
+        would prevent high priority issues blocking long standing low priority
+        ones.
+
+        Note that this will cause the average time to respond to be higher than
+        processing newly created issues first. However it is better for the
+        people submitting the issues as individually they'll get a faster
+        response, even if not collectively.
+        """
+        return self.order_by('priority', 'created')
+
+
 class ProblemManager(models.Manager):
     use_for_related_fields = True
+
+    # Note: it may be desirable in future to move some of the methods from
+    # ProblemManager to ProblemQuerySet.
+
+    def get_query_set(self):
+        return ProblemQuerySet(self.model, using=self._db)
 
     def open_problems(self):
         """
