@@ -42,7 +42,8 @@ def _average_value_clause(field, alias):
 def interval_counts(problem_filters={},
                     organisation_filters={},
                     threshold=None,
-                    extra_organisation_data=[]):
+                    extra_organisation_data=[],
+                    problem_data_intervals=['week', 'four_weeks', 'six_months', 'all_time']):
     cursor = connection.cursor()
 
     now = datetime.utcnow().replace(tzinfo=utc)
@@ -84,10 +85,14 @@ def interval_counts(problem_filters={},
 
     # Generate the interval counting select values and params
     for interval in intervals.keys():
-        select_clauses.append(_date_clause(interval))
-        params.append(intervals[interval])
+        if interval in problem_data_intervals:
+            select_clauses.append(_date_clause(interval))
+            params.append(intervals[interval])
+
     # Add an all time count
-    select_clauses.append("""count(issues_problem.id) as all_time""")
+    if 'all_time' in problem_data_intervals:
+        select_clauses.append("""count(issues_problem.id) as all_time""")
+
 
     # Get the True/False percentages and counts
     for field in boolean_counts:
