@@ -100,6 +100,12 @@ class ProblemCreate(OrganisationAwareViewMixin, CreateView):
             form.fields['service'].empty_label = "None"
         return form
 
+    def get_context_data(self, **kwargs):
+        context = super(ProblemCreate, self).get_context_data(**kwargs)
+        context['CATEGORIES_PERMITTING_SETTING_OF_PRIORITY_AT_SUBMISSION'] = Problem.CATEGORIES_PERMITTING_SETTING_OF_PRIORITY_AT_SUBMISSION
+        return context
+    
+
 class ProblemDetail(DetailView):
 
     model = Problem
