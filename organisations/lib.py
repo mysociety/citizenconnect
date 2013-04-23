@@ -32,8 +32,8 @@ def _average_value_clause(field, alias):
 # Return problem counts for a set of organisations for the last week, four weeks
 # and six months based on created date and problem and organisation filters.
 # Filter values can be specified as a single value or a tuple of values. Possible problem_filters
-# are: status, service_id, category, breach, service_code. Possible organisation_filters are
-# organisation_type, ccg.
+# are: status, service_id, category, breach, service_code, moderated and publication_status.
+# Possible organisation_filters are organisation_type, ccg.
 # A threshold can be expressed as a tuple of interval and value and only organisations
 # where the number of issues reported in the interval equals or exceeds the value will be returned.
 # By default, all organisations matching the organisation filters will be returned. To get only
@@ -116,7 +116,7 @@ def interval_counts(problem_filters={},
     organisation_filter_clauses = []
 
     # Apply problem filters to the issue table
-    for criteria in ['status', 'service_id', 'category']:
+    for criteria in ['status', 'service_id', 'category', 'moderated', 'publication_status']:
         value = problem_filters.get(criteria)
         if value != None:
             if type(value) != tuple:
