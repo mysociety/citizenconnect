@@ -242,6 +242,10 @@ class ProblemModelTests(ProblemTestCase):
         self.assertEqual( problem.priority, Problem.PRIORITY_HIGH )
         self.assertEqual( problem.has_elevated_priority, True )
 
+    def test_referred_to_ombudsman_maps_to_resolved(self):
+        problem = Problem(status=Problem.REFERRED_TO_OMBUDSMAN)
+        self.assertEqual(problem.get_status_display(), 'Closed', msg="Referred to ombudsman status should map to closed")
+
 class ProblemModelTimeToTests(ProblemTestCase):
 
     def setUp(self):
