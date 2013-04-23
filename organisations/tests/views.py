@@ -921,6 +921,29 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
         for org in self.other_test_ccg.organisations.all():
             self.assertNotContains(resp, org.name)
 
+    def test_ccg_user_with_multiple_ccgs_can_still_use_ccg_filter_to_only_view_orgs_for_one(self):
+        # Add ccg user to other_test_ccg as well
+        self.other_test_ccg.users.add(self.ccg_user)
+        self.other_test_ccg.save()
+        # Login
+        self.client.logout()
+        self.login_as(self.ccg_user)
+
+        # Check see both
+        resp = self.client.get(self.summary_url)
+        for org in self.test_ccg.organisations.all():
+            self.assertContains(resp, org.name)
+        for org in self.other_test_ccg.organisations.all():
+            self.assertContains(resp, org.name)
+
+        # Apply CCG filter
+        resp = self.client.get("{0}?ccg={1}".format(self.summary_url, self.test_ccg.id))
+
+        # Check filter applied
+        for org in self.test_ccg.organisations.all():
+            self.assertContains(resp, org.name)
+        for org in self.other_test_ccg.organisations.all():
+            self.assertNotContains(resp, org.name)
 
     def test_summary_page_applies_threshold_from_settings(self):
         with self.settings(SUMMARY_THRESHOLD=('six_months', 1)):
