@@ -7,7 +7,7 @@ from issues.table_columns import ReferenceNumberColumn
 class BaseModerationTable(tables.Table):
 
     reference_number = ReferenceNumberColumn(
-        order_by=ProblemQuerySet.ORDER_FOR_MODERATION_TABLE_FIELDS
+        order_by=ProblemQuerySet.ORDER_BY_FIELDS_FOR_MODERATION_TABLE
     )
 
     created = tables.DateTimeColumn(verbose_name="Received")
