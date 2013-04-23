@@ -164,19 +164,23 @@ class OrganisationSummaryTests(AuthorizationTestCase):
             self.assertEqual(problems_by_status[0]['four_weeks'], 1)
             self.assertEqual(problems_by_status[0]['six_months'], 1)
 
-    def test_summary_page_applies_breach_filter(self):
+    def test_summary_page_applies_breach_filter_on_private_pages(self):
         # Add a breach problem
         create_test_instance(Problem, {'organisation': self.test_organisation,
                                        'breach': True})
-        for url in self.urls:
-            self.login_as(self.provider)
-            resp = self.client.get(url + '?breach=True')
 
-            problems_by_status = resp.context['problems_by_status']
-            self.assertEqual(problems_by_status[0]['all_time'], 1)
-            self.assertEqual(problems_by_status[0]['week'], 1)
-            self.assertEqual(problems_by_status[0]['four_weeks'], 1)
-            self.assertEqual(problems_by_status[0]['six_months'], 1)
+        self.login_as(self.provider)
+        resp = self.client.get(self.private_summary_url + '?breach=True')
+
+        problems_by_status = resp.context['problems_by_status']
+        self.assertEqual(problems_by_status[0]['all_time'], 1)
+        self.assertEqual(problems_by_status[0]['week'], 1)
+        self.assertEqual(problems_by_status[0]['four_weeks'], 1)
+        self.assertEqual(problems_by_status[0]['six_months'], 1)
+
+    def test_public_summary_page_does_not_have_breach_filter(self):
+        resp = self.client.get(self.public_summary_url)
+        self.assertNotContains(resp, '<select name="breach" id="id_breach">')
 
     def test_summary_page_gets_survey_data_for_problems_in_visible_statuses(self):
         for url in self.urls:
@@ -506,17 +510,22 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         self.assertContains(resp, cleanliness_problem.reference_number)
         self.assertNotContains(resp, self.staff_problem.reference_number)
 
-    def test_filters_by_breach(self):
+    def test_private_page_filters_by_breach(self):
         # Add a breach problem
+        self.login_as(self.test_hospital_user)
         breach_problem = create_test_instance(Problem, {'organisation':self.hospital,
                                                         'breach': True,
                                                         'moderated': Problem.MODERATED,
                                                         'publication_status': Problem.PUBLISHED,
                                                         'moderated_description': 'Moderated'})
-        breach_filtered_url = "{0}?breach=True".format(self.public_hospital_problems_url)
+        breach_filtered_url = "{0}?breach=True".format(self.private_hospital_problems_url)
         resp = self.client.get(breach_filtered_url)
         self.assertContains(resp, breach_problem.reference_number)
         self.assertNotContains(resp, self.staff_problem.reference_number)
+
+    def test_public_page_does_not_have_breach_filter(self):
+        resp = self.client.get(self.public_hospital_problems_url)
+        self.assertNotContains(resp, '<select name="breach" id="id_breach">')
 
     def test_doesnt_show_service_for_gp(self):
         resp = self.client.get(self.public_gp_problems_url)
@@ -822,6 +831,7 @@ class SummaryTests(AuthorizationTestCase):
         category_filtered_url = '{0}?category=staff'.format(self.summary_url)
         resp = self.client.get(category_filtered_url)
         self.assertContains(resp, self.test_organisation.name)
+        # NOTE: we rely on the SUMMARY_THRESHOLD setting to make this org disappear
         self.assertNotContains(resp, self.other_test_organisation.name)
 
     def test_summary_page_filters_by_status(self):
@@ -833,17 +843,12 @@ class SummaryTests(AuthorizationTestCase):
         status_filtered_url = '{0}?status={1}'.format(self.summary_url, Problem.NEW)
         resp = self.client.get(status_filtered_url)
         self.assertContains(resp, self.test_organisation.name)
+        # NOTE: we rely on the SUMMARY_THRESHOLD setting to make this org disappear
         self.assertNotContains(resp, self.other_test_organisation.name)
 
-    def test_summary_page_filters_by_breach(self):
-        # Add a breach problem
-        create_test_instance(Problem, {'organisation':self.test_organisation,
-                                       'breach': True})
-
-        breach_filtered_url = '{0}?breach=True'.format(self.summary_url)
-        resp = self.client.get(breach_filtered_url)
-        self.assertContains(resp, self.test_organisation.name)
-        self.assertNotContains(resp, self.other_test_organisation.name)
+    def test_public_summary_page_does_not_have_breach_filter(self):
+        resp = self.client.get(self.summary_url)
+        self.assertNotContains(resp, '<select name="breach" id="id_breach">')
 
 
 @override_settings(SUMMARY_THRESHOLD=None)
@@ -953,6 +958,18 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
         with self.settings(SUMMARY_THRESHOLD=('six_months', 2)):
             resp = self.client.get(self.summary_url)
             self.assertNotContains(resp, 'Test Organisation')
+
+    def test_summary_page_filters_by_breach(self):
+        # Add a breach problem
+        create_test_instance(Problem, {'organisation':self.test_organisation,
+                                       'breach': True})
+
+        breach_filtered_url = '{0}?breach=True'.format(self.summary_url)
+        resp = self.client.get(breach_filtered_url)
+        other_test_org_record = resp.context['table'].rows[0].record
+        test_org_record = resp.context['table'].rows[1].record
+        self.assertEqual(test_org_record['week'], 1)
+        self.assertEqual(other_test_org_record['week'], 0)
 
 
 class ProviderPickerTests(TestCase):
