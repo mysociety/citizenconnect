@@ -64,7 +64,7 @@ class ModerateHome(ModeratorsOnlyMixin,
     def get_context_data(self, **kwargs):
         # Get all the unmoderated problems
         context = super(ModerateHome, self).get_context_data(**kwargs)
-        context['issues'] = Problem.objects.unmoderated_problems().order_by("-created")
+        context['issues'] = Problem.objects.unmoderated_problems().order_for_moderation_table()
         context['title'] = "Moderation"
         self.add_table_to_context(context, ModerationTable)
         return context
@@ -77,7 +77,7 @@ class SecondTierModerateHome(SecondTierModeratorsOnlyMixin,
     def get_context_data(self, **kwargs):
         # Get all the problems flagged for second tier moderation
         context = super(SecondTierModerateHome, self).get_context_data(**kwargs)
-        context['issues'] = Problem.objects.problems_requiring_second_tier_moderation().order_by("-created")
+        context['issues'] = Problem.objects.problems_requiring_second_tier_moderation().order_for_moderation_table()
         context['title'] = "Second Tier Moderation"
         self.add_table_to_context(context, SecondTierModerationTable)
         return context

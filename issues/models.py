@@ -106,23 +106,50 @@ class Question(IssueModel):
         else:
             return self.description
 
+class ProblemQuerySet(models.query.QuerySet):
+
+    # The fields to sort by. Used in the tables code.
+    ORDER_BY_FIELDS_FOR_MODERATION_TABLE = ('priority', 'created')
+
+
+    def order_for_moderation_table(self):
+        """
+        Sort by priority first, then by creation date. This is a crude way to
+        ensure that the issues at the top of the moderation list are the ones
+        that should be looked at next.
+
+        This sorting could be improved by calculating a deadline for each
+        problem and then sorting by that deadline. This would be the ideal as it
+        would prevent high priority issues blocking long standing low priority
+        ones.
+        """
+        args = self.ORDER_BY_FIELDS_FOR_MODERATION_TABLE
+        return self.order_by(*args)
+
+
 class ProblemManager(models.Manager):
     use_for_related_fields = True
+
+    # Note: it may be desirable in future to move some of the methods from
+    # ProblemManager to ProblemQuerySet.
+
+    def get_query_set(self):
+        return ProblemQuerySet(self.model, using=self._db)
 
     def open_problems(self):
         """
         Return only open problems
         """
-        return super(ProblemManager, self).all().filter(Q(status__in=Problem.OPEN_STATUSES))
+        return self.all().filter(Q(status__in=Problem.OPEN_STATUSES))
 
     def closed_problems(self):
         """
         Return only closed problems
         """
-        return super(ProblemManager, self).all().filter(Q(status__in=Problem.CLOSED_STATUSES))
+        return self.all().filter(Q(status__in=Problem.CLOSED_STATUSES))
 
     def unmoderated_problems(self):
-        return super(ProblemManager, self).all().filter(moderated=Problem.NOT_MODERATED)
+        return self.all().filter(moderated=Problem.NOT_MODERATED)
 
     def open_moderated_published_visible_problems(self):
         return self.open_problems().filter(moderated=Problem.MODERATED,
@@ -135,21 +162,21 @@ class ProblemManager(models.Manager):
                                              status__in=Problem.VISIBLE_STATUSES)
 
     def all_moderated_published_problems(self):
-        return super(ProblemManager, self).all().filter(moderated=Problem.MODERATED,
-                                                        publication_status=Problem.PUBLISHED,
-                                                        status__in=Problem.VISIBLE_STATUSES)
+        return self.all().filter(moderated=Problem.MODERATED,
+                                 publication_status=Problem.PUBLISHED,
+                                 status__in=Problem.VISIBLE_STATUSES)
 
 
     def problems_requiring_second_tier_moderation(self):
-        return super(ProblemManager, self).all().filter(requires_second_tier_moderation=True)
+        return self.all().filter(requires_second_tier_moderation=True)
 
     def open_escalated_problems(self):
-        return super(ProblemManager, self).all().filter(Q(status__in=Problem.ESCALATION_STATUSES) &
-                                                        Q(status__in=Problem.OPEN_STATUSES))
+        return self.all().filter(Q(status__in=Problem.ESCALATION_STATUSES) &
+                                 Q(status__in=Problem.OPEN_STATUSES))
 
     def open_unescalated_problems(self):
-        return super(ProblemManager, self).all().filter(Q(status__in=Problem.OPEN_STATUSES) &
-                                                        Q(status__in=Problem.NON_ESCALATION_STATUSES))
+        return self.all().filter(Q(status__in=Problem.OPEN_STATUSES) &
+                                 Q(status__in=Problem.NON_ESCALATION_STATUSES))
 
 class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
     # Custom manager
