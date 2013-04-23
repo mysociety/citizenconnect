@@ -50,7 +50,6 @@
 <script src="{% static 'js/oms.min.js' %}"></script>
 <script src="{% static 'js/spin.min.js' %}"></script>
 <script src="{% static 'js/jquery.spin.js' %}"></script>
-<script src="{% static 'js/jquery.serializeobject.min.js' %}"></script>
 <script type="text/javascript">
     window.CitizenConnect = window.CitizenConnect || {};
     CitizenConnect.providers = {{ organisations|safe }};
@@ -71,7 +70,7 @@
 
 <script type="text/x-underscore-template" name="filter-link">
     <div class="current-filter">
-        <%= filter.displayValue %> <a href="<%= filter.removeLink %>">×</a>
+        <%= filter.displayValue %> <a href="#" data-field-name="<%= filter.fieldName %>">×</a>
     </div>
 </script>
 
