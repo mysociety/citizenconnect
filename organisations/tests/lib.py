@@ -153,9 +153,7 @@ class IntervalCountsTest(TestCase):
                            'six_months': 6,
                            'all_time': 6,
                            'happy_outcome': 0.5,
-                           'happy_outcome_count': 2,
                            'happy_service': 1.0,
-                           'happy_service_count': 1,
                            'average_time_to_acknowledge': Decimal('22.6666666666666667'),
                            'average_time_to_address': Decimal('240.6666666666666667')}
         self.assertEqual(expected_counts, interval_counts(organisation_filters=organisation_filters))
@@ -169,9 +167,7 @@ class IntervalCountsTest(TestCase):
                             'six_months': 5,
                             'all_time': 5,
                             'happy_outcome': None,
-                            'happy_outcome_count': 0,
                             'happy_service': None,
-                            'happy_service_count': 0,
                             'average_time_to_acknowledge': None,
                             'average_time_to_address': None},
                            {'week': 3,
@@ -182,9 +178,7 @@ class IntervalCountsTest(TestCase):
                            'six_months': 6,
                            'all_time': 6,
                            'happy_outcome': 0.5,
-                           'happy_outcome_count': 2,
                            'happy_service': 1.0,
-                           'happy_service_count': 1,
                            'average_time_to_acknowledge': Decimal('22.6666666666666667'),
                            'average_time_to_address': Decimal('240.6666666666666667')}]
         actual = interval_counts()
@@ -202,9 +196,7 @@ class IntervalCountsTest(TestCase):
                             'six_months': 5,
                             'all_time': 5,
                             'happy_outcome': None,
-                            'happy_outcome_count': 0,
                             'happy_service': None,
-                            'happy_service_count': 0,
                             'average_time_to_acknowledge': None,
                             'average_time_to_address': None},
                            {'week': 3,
@@ -218,9 +210,7 @@ class IntervalCountsTest(TestCase):
                            'six_months': 6,
                            'all_time': 6,
                            'happy_outcome': 0.5,
-                           'happy_outcome_count': 2,
                            'happy_service': 1.0,
-                           'happy_service_count': 1,
                            'average_time_to_acknowledge': Decimal('22.6666666666666667'),
                            'average_time_to_address': Decimal('240.6666666666666667')}]
         actual = interval_counts(extra_organisation_data=['coords', 'type'])
@@ -234,9 +224,7 @@ class IntervalCountsTest(TestCase):
                             'all_time_open': 5,
                             'all_time_closed': 0,
                             'happy_outcome': None,
-                            'happy_outcome_count': 0,
                             'happy_service': None,
-                            'happy_service_count': 0,
                             'average_time_to_acknowledge': None,
                             'average_time_to_address': None},
                            {'id': self.test_organisation.id,
@@ -246,9 +234,7 @@ class IntervalCountsTest(TestCase):
                            'all_time_open': 4,
                            'all_time_closed': 2,
                            'happy_outcome': 0.5,
-                           'happy_outcome_count': 2,
                            'happy_service': 1.0,
-                           'happy_service_count': 1,
                            'average_time_to_acknowledge': Decimal('22.6666666666666667'),
                            'average_time_to_address': Decimal('240.6666666666666667')}]
         actual = interval_counts(problem_data_intervals=['all_time', 'all_time_open', 'all_time_closed'])
@@ -266,9 +252,7 @@ class IntervalCountsTest(TestCase):
                            'six_months': 1,
                            'all_time': 1,
                            'happy_outcome': None,
-                           'happy_outcome_count': 0,
                            'happy_service': None,
-                           'happy_service_count': 0,
                            'average_time_to_acknowledge': None,
                            'average_time_to_address': None}]
         self.assertEqual(expected_counts, interval_counts(problem_filters=problem_filters, threshold=threshold))
@@ -283,9 +267,7 @@ class IntervalCountsTest(TestCase):
                             'six_months': 5,
                             'all_time': 5,
                             'happy_outcome': None,
-                            'happy_outcome_count': 0,
                             'happy_service': None,
-                            'happy_service_count': 0,
                             'average_time_to_acknowledge': None,
                             'average_time_to_address': None }]
         self.assertEqual(expected_counts, interval_counts(organisation_filters=organisation_filters))
@@ -300,9 +282,7 @@ class IntervalCountsTest(TestCase):
                            'six_months': 2,
                            'all_time': 2,
                            'happy_outcome': 0.5,
-                           'happy_outcome_count': 2,
                            'happy_service': 1.0,
-                           'happy_service_count': 1,
                            'average_time_to_acknowledge': None,
                            'average_time_to_address': None}]
         actual = interval_counts(problem_filters=problem_filters, threshold=['six_months', 1])
@@ -321,9 +301,7 @@ class IntervalCountsTest(TestCase):
                             'six_months': 5,
                             'all_time': 5,
                             'happy_outcome': None,
-                            'happy_outcome_count': 0,
                             'happy_service': None,
-                            'happy_service_count': 0,
                             'average_time_to_acknowledge': None,
                             'average_time_to_address': None }]
         actual = interval_counts(organisation_filters=organisation_filters)
@@ -345,9 +323,7 @@ class IntervalCountsTest(TestCase):
                             'six_months': 3,
                             'all_time': 4,
                             'happy_outcome': None,
-                            'happy_outcome_count': 0,
                             'happy_service': None,
-                            'happy_service_count': 0,
                             'average_time_to_acknowledge': None,
                             'average_time_to_address': None }]
         actual = interval_counts(problem_filters=problem_filters, threshold=threshold)
@@ -362,9 +338,7 @@ class IntervalCountsTest(TestCase):
                             'six_months': 5,
                             'all_time': 5,
                             'happy_outcome': None,
-                            'happy_outcome_count': 0,
                             'happy_service': None,
-                            'happy_service_count': 0,
                             'average_time_to_acknowledge': None,
                             'average_time_to_address': None},
                            {'week': 3,
@@ -375,9 +349,7 @@ class IntervalCountsTest(TestCase):
                            'six_months': 6,
                            'all_time': 6,
                            'happy_outcome': 0.5,
-                           'happy_outcome_count': 2,
                            'happy_service': 1.0,
-                           'happy_service_count': 1,
                            'average_time_to_acknowledge': Decimal('22.6666666666666667'),
                            'average_time_to_address': Decimal('240.6666666666666667')}]
         actual = interval_counts(problem_filters=problem_filters, threshold=threshold)
@@ -392,9 +364,7 @@ class IntervalCountsTest(TestCase):
                            'six_months': 6,
                            'all_time': 6,
                            'happy_outcome': 0.5,
-                           'happy_outcome_count': 2,
                            'happy_service': 1.0,
-                           'happy_service_count': 1,
                            'average_time_to_acknowledge': Decimal('22.6666666666666667'),
                            'average_time_to_address': Decimal('240.6666666666666667')}]
         actual = interval_counts(threshold=('six_months', 6))
@@ -409,9 +379,7 @@ class IntervalCountsTest(TestCase):
                            'six_months': 6,
                            'all_time': 6,
                            'happy_outcome': 0.5,
-                           'happy_outcome_count': 2,
                            'happy_service': 1.0,
-                           'happy_service_count': 1,
                            'average_time_to_acknowledge': Decimal('22.6666666666666667'),
                            'average_time_to_address': Decimal('240.6666666666666667')}]
         actual = interval_counts(threshold=('all_time', 6))

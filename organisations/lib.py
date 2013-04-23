@@ -20,10 +20,6 @@ def _boolean_clause(field):
     clause += "NULLIF(" + _sum_clause(field, "IS NOT NULL") + ", 0)::float" + " AS " + field
     return clause
 
-# Return the count of non-null values for a boolean field
-def _count_clause(field, alias):
-    return _sum_clause(field, "IS NOT NULL") + " AS " + alias
-
 # Return the average of non-null values in an integer field
 def _average_value_clause(field, alias):
     clause = "AVG(issues_problem."+ field +") AS " + alias
@@ -112,7 +108,6 @@ def interval_counts(problem_filters={},
     for field in boolean_fields:
         select_clauses.append(_boolean_clause(field))
         params.append(True)
-        select_clauses.append(_count_clause(field, '%s_count' % field))
 
     # Get the averages
     for field in average_fields:
