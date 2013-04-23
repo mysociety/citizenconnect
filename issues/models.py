@@ -108,13 +108,9 @@ class Question(IssueModel):
 
 class ProblemQuerySet(models.query.QuerySet):
 
+    # The fields to sort by. Used in the tables code.
+    ORDER_FOR_MODERATION_TABLE_FIELDS = ('priority', 'created')
 
-    @classmethod
-    def _order_for_moderation_table_fields(cls):
-        """
-        The fields to sort by. Used in the tables code.
-        """
-        return ['priority', 'created']
 
     def order_for_moderation_table(self):
         """
@@ -127,7 +123,7 @@ class ProblemQuerySet(models.query.QuerySet):
         would prevent high priority issues blocking long standing low priority
         ones.
         """
-        args = self._order_for_moderation_table_fields()
+        args = self.ORDER_FOR_MODERATION_TABLE_FIELDS
         return self.order_by(*args)
 
 
