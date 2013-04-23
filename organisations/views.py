@@ -426,12 +426,17 @@ class PrivateNationalSummary(Summary):
 
         # If the user is in a CCG Group then filter results to that CCG.
         if user_in_group(user, auth.CCG):
+
             # If the user has assigned CCGs then limit to those. If they have
             # none then throw an exception (they should not have gotten past user_can_access_private_national_summary)
             ccgs = user.ccgs.all()
             if not len(ccgs):
                 raise Exception("CCG group user '{0}' has no ccgs - they should not have gotten past check in dispatch".format(user))
-            organisation_filters['ccg'] = tuple([ ccg.id for ccg in ccgs ])
+            ccg_ids = [ ccg.id for ccg in ccgs ]
+            # Don't remove the ccg filter they've added if it's in their ccgs
+            selected_ccg = organisation_filters.get('ccg')
+            if not selected_ccg or not int(selected_ccg) in ccg_ids:
+                organisation_filters['ccg'] = tuple(ccg_ids)
 
         return interval_counts(
             problem_filters=problem_filters,
