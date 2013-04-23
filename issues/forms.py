@@ -125,6 +125,8 @@ class ProblemForm(IssueModelForm):
         if may_elevate and self.cleaned_data.get('elevate_priority'):
             self.cleaned_data['priority'] = Problem.PRIORITY_HIGH
         else:
+            # None means the priority will fall through to whatever is the
+            # default in the model
             self.cleaned_data['priority'] = None
 
 
