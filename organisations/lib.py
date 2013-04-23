@@ -40,21 +40,27 @@ def _average_value_clause(field, alias):
 # organisations that have at least one problem matching the problem filters, apply a threshold
 # like ('all_time', 1).
 # Possible list values for extra_organisation_data are 'coords' and 'type'.
+# Possible problem_data_intervals are 'week', 'four_weeks', 'six_months', 'all_time', 'all_time_open',
+# and 'all_time_closed'.
+# Possible values for average_fields are 'time_to_acknowledge', 'time_to_address' - returned dicts will
+# include a key 'average_time_to_acknowledge' or 'average_time_to_address, whose value will be
+# the average time in minutes.
+# Possible values for boolean_fields are 'happy_service' and 'happy_outcome' - returned dicts will include
+# a key 'happy_service' or 'happy_outcome' whose value will be the fraction of issues for which the measure
+# is true.
 def interval_counts(problem_filters={},
                     organisation_filters={},
                     threshold=None,
                     extra_organisation_data=[],
-                    problem_data_intervals=['week', 'four_weeks', 'six_months', 'all_time']):
+                    problem_data_intervals=['week', 'four_weeks', 'six_months', 'all_time'],
+                    average_fields=['time_to_acknowledge', 'time_to_address'],
+                    boolean_fields=['happy_service', 'happy_outcome']):
     cursor = connection.cursor()
 
     now = datetime.utcnow().replace(tzinfo=utc)
     intervals = {'week': now - timedelta(days=7),
                  'four_weeks': now - timedelta(days=28),
                  'six_months': now - timedelta(days=365/12*6)}
-
-    boolean_counts = ['happy_service', 'happy_outcome']
-
-    average_fields = ['time_to_acknowledge', 'time_to_address']
 
     organisation_id = organisation_filters.get('organisation_id')
 
@@ -103,7 +109,7 @@ def interval_counts(problem_filters={},
         params.append(tuple(Problem.CLOSED_STATUSES))
 
     # Get the True/False percentages and counts
-    for field in boolean_counts:
+    for field in boolean_fields:
         select_clauses.append(_boolean_clause(field))
         params.append(True)
         select_clauses.append(_count_clause(field, '%s_count' % field))

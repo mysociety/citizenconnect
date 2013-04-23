@@ -27,6 +27,7 @@ from .models import Organisation, Service, CCG, SuperuserLogEntry
 from .forms import OrganisationFinderForm, FilterForm, OrganisationFilterForm
 from .lib import interval_counts
 from .tables import NationalSummaryTable, PrivateNationalSummaryTable, ProblemTable, ExtendedProblemTable, QuestionsDashboardTable, ProblemDashboardTable, EscalationDashboardTable, BreachTable
+from .templatetags.organisation_extras import formatted_time_interval, percent
 
 class PrivateViewMixin(object):
     """
@@ -179,12 +180,15 @@ class Map(FilterFormMixin,
         organisations_list = interval_counts(problem_filters=problem_filters,
                                              organisation_filters=organisation_filters,
                                              extra_organisation_data=['coords', 'type'],
-                                             problem_data_intervals=['all_time_open', 'all_time_closed'])
+                                             problem_data_intervals=['all_time_open', 'all_time_closed'],
+                                             average_fields=['time_to_address'],
+                                             boolean_fields=['happy_outcome'])
         for org_data in organisations_list:
             org_data['url'] = reverse('public-org-summary',
                                       kwargs={'ods_code':org_data['ods_code'],
                                                'cobrand':self.kwargs['cobrand']})
-
+            org_data['average_time_to_address'] = formatted_time_interval(org_data['average_time_to_address'])
+            org_data['happy_outcome'] = percent(org_data['happy_outcome'])
         # Make it into a JSON string
         context['organisations'] = json.dumps(organisations_list)
 
