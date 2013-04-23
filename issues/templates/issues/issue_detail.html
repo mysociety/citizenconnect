@@ -32,6 +32,9 @@
                         {{ object.get_commissioned_display }},&nbsp;
                     {% endif %}
                 {% endif %}
+                {% if object.status == object.ESCALATED %}
+                  <span class="icon-warning"></span>
+                {% endif %}
                 {{ object.get_status_display }}
             </p>
 
