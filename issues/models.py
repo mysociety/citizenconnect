@@ -126,11 +126,6 @@ class ProblemQuerySet(models.query.QuerySet):
         problem and then sorting by that deadline. This would be the ideal as it
         would prevent high priority issues blocking long standing low priority
         ones.
-
-        Note that this will cause the average time to respond to be higher than
-        processing newly created issues first. However it is better for the
-        people submitting the issues as individually they'll get a faster
-        response, even if not collectively.
         """
         args = self._order_for_moderation_table_fields()
         return self.order_by(*args)
