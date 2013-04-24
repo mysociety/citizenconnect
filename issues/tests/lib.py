@@ -2,10 +2,10 @@ from django.test import TestCase
 
 import reversion
 
-from organisations.tests.lib import create_test_instance
+from organisations.tests.lib import create_test_problem
 
 from ..lib import changed_attrs, changes_as_string, changes_for_model, base32_to_int, int_to_base32, MistypedIDException
-from ..models import Problem, Question
+from ..models import Problem
 
 class LibTests(TestCase):
 
@@ -46,13 +46,6 @@ class LibTests(TestCase):
         actual_changed = changed_attrs(self.old_unchanged, self.new_unchanged, Problem.REVISION_ATTRS)
         self.assertEqual(actual_changed, expected_changed)
 
-    def test_changed_attrs_question_attrs(self):
-        expected_changed = {
-            'status': [Problem.NEW, Problem.ACKNOWLEDGED],
-        }
-        actual_changed = changed_attrs(self.old, self.new, Question.REVISION_ATTRS)
-        self.assertEqual(actual_changed, expected_changed)
-
     def test_changes_as_string_happy_path(self):
         expected = "Moderated, Published and Acknowledged"
         changes = changed_attrs(self.old, self.new, Problem.REVISION_ATTRS)
@@ -73,19 +66,10 @@ class LibTests(TestCase):
         actual = changes_as_string(changes, Problem.TRANSITIONS)
         self.assertEqual(actual, expected)
 
-    def test_changes_as_string_question(self):
-        old = {'status':Question.NEW}
-        new = {'status':Question.RESOLVED}
-
-        expected = "Answered"
-        changes = changed_attrs(old, new, Question.REVISION_ATTRS)
-        actual = changes_as_string(changes, Question.TRANSITIONS)
-        self.assertEqual(actual, expected)
-
     def test_changes_for_model(self):
         # Make a problem and give it some history
         with reversion.create_revision():
-            problem = create_test_instance(Problem, {'status': Problem.NEW,
+            problem = create_test_problem({'status': Problem.NEW,
                                                      'moderated': Problem.NOT_MODERATED,
                                                      'publication_status': Problem.HIDDEN})
         problem = Problem.objects.get(pk=problem.id)

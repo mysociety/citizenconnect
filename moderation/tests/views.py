@@ -2,8 +2,8 @@ import logging
 
 from django.core.urlresolvers import reverse
 
-from organisations.tests.lib import create_test_instance, create_test_organisation
-from issues.models import Problem, Question
+from organisations.tests.lib import create_test_problem, create_test_organisation
+from issues.models import Problem
 from responses.models import ProblemResponse
 
 from .lib import BaseModerationTestCase
@@ -70,9 +70,9 @@ class HomeViewTests(BaseModerationTestCase):
     def setUp(self):
         super(HomeViewTests, self).setUp()
 
-        self.closed_problem = create_test_instance(Problem, {'organisation':self.test_organisation,
+        self.closed_problem = create_test_problem({'organisation':self.test_organisation,
                                                              'status': Problem.RESOLVED})
-        self.moderated_problem = create_test_instance(Problem, {'organisation':self.test_organisation,
+        self.moderated_problem = create_test_problem({'organisation':self.test_organisation,
                                                                 'moderated': Problem.MODERATED})
 
         self.login_as(self.case_handler)
@@ -104,8 +104,7 @@ class HomeViewTests(BaseModerationTestCase):
         self.assertNotContains(resp, expected)
 
         # add high priority entry
-        create_test_instance(
-            Problem,
+        create_test_problem(
             {
                 'organisation' : self.test_organisation,
                 'priority'     : Problem.PRIORITY_HIGH
@@ -121,9 +120,9 @@ class SecondTierModerationHomeViewTests(BaseModerationTestCase):
 
     def setUp(self):
         super(SecondTierModerationHomeViewTests, self).setUp()
-        self.second_tier_moderation = create_test_instance(Problem, {'organisation': self.test_organisation,
+        self.second_tier_moderation = create_test_problem({'organisation': self.test_organisation,
                                                                'requires_second_tier_moderation': True})
-        self.no_second_tier_moderation = create_test_instance(Problem, {'organisation': self.test_organisation})
+        self.no_second_tier_moderation = create_test_problem({'organisation': self.test_organisation})
         self.login_as(self.second_tier_moderator)
 
     def test_issues_in_context(self):
@@ -150,9 +149,9 @@ class ModerateFormViewTests(BaseModerationTestCase):
     def setUp(self):
         super(ModerateFormViewTests, self).setUp()
 
-        self.closed_problem = create_test_instance(Problem, {'organisation':self.test_organisation,
+        self.closed_problem = create_test_problem({'organisation':self.test_organisation,
                                                              'status': Problem.RESOLVED})
-        self.moderated_problem = create_test_instance(Problem, {'organisation':self.test_organisation,
+        self.moderated_problem = create_test_problem({'organisation':self.test_organisation,
                                                                 'moderated': Problem.MODERATED})
 
         self.login_as(self.case_handler)

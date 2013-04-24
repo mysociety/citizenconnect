@@ -10,7 +10,6 @@ Helpers to do with authorisation of users
 PROVIDERS = 1
 NHS_SUPERUSERS = 2
 CASE_HANDLERS = 3
-QUESTION_ANSWERERS = 4
 CCG = 6
 SECOND_TIER_MODERATORS = 7
 CUSTOMER_CONTACT_CENTRE = 8
@@ -18,7 +17,6 @@ CUSTOMER_CONTACT_CENTRE = 8
 ALL_GROUPS = [PROVIDERS,
               NHS_SUPERUSERS,
               CASE_HANDLERS,
-              QUESTION_ANSWERERS,
               CCG,
               SECOND_TIER_MODERATORS,
               CUSTOMER_CONTACT_CENTRE]
@@ -48,10 +46,6 @@ def enforce_moderation_access_check(user):
 
 def enforce_second_tier_moderation_access_check(user):
     if not user_is_superuser(user) and not user_in_group(user, SECOND_TIER_MODERATORS):
-        raise PermissionDenied()
-
-def enforce_question_access_check(user):
-    if not user_is_superuser(user) and not user_in_group(user, QUESTION_ANSWERERS):
         raise PermissionDenied()
 
 def enforce_problem_access_check(problem, user):

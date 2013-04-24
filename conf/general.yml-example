@@ -49,9 +49,6 @@ SITE_BASE_URL: 'http://localhost:8000'
 # The default email address which emails sent by the site will appear to come from
 DEFAULT_FROM_EMAIL: 'no-reply@example.com'
 
-# The email address to which questions will be sent for answering
-QUESTION_ANSWERERS_EMAIL: 'questions@example.com'
-
 # How many days to wait after a problem is reported before sending a survey
 SURVEY_INTERVAL_IN_DAYS: 28
 

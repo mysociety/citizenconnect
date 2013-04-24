@@ -4,21 +4,21 @@ from django.core.urlresolvers import reverse
 from issues.models import Problem
 
 from ..models import SuperuserLogEntry
-from .lib import AuthorizationTestCase, create_test_instance
+from .lib import AuthorizationTestCase, create_test_problem
 
 class SuperuserLogTests(AuthorizationTestCase):
 
     def setUp(self):
         super(SuperuserLogTests, self).setUp()
         # Create an unmoderated problem
-        self.unmoderated_problem = create_test_instance(Problem, {'organisation': self.test_organisation})
+        self.unmoderated_problem = create_test_problem({'organisation': self.test_organisation})
         # Create a private problem
-        self.private_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
+        self.private_problem = create_test_problem({'organisation': self.test_organisation,
                                                               'public':False,
                                                               'moderated': True,
                                                               'publication_status': Problem.PUBLISHED})
         # Create a hidden problem
-        self.hidden_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
+        self.hidden_problem = create_test_problem({'organisation': self.test_organisation,
                                                              'moderated': True,
                                                              'publication_status': Problem.HIDDEN})
         self.test_urls = [

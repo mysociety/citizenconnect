@@ -7,63 +7,11 @@ from django.template import RequestContext
 from citizenconnect.shortcuts import render
 from organisations.models import Organisation, Service
 from organisations.views import PickProviderBase, OrganisationAwareViewMixin, PrivateViewMixin
-from organisations.auth import enforce_question_access_check, enforce_problem_access_check
+from organisations.auth import enforce_problem_access_check
 
-from .models import Question, Problem
-from .forms import QuestionForm, ProblemForm, QuestionUpdateForm, ProblemSurveyForm
+from .models import Problem
+from .forms import ProblemForm, ProblemSurveyForm
 from .lib import changes_for_model, base32_to_int
-
-class QuestionPickProvider(PickProviderBase):
-    result_link_url_name = 'question-form'
-    issue_type = 'question'
-
-class QuestionCreate(CreateView):
-    model = Question
-    form_class = QuestionForm
-    confirm_template = 'issues/question_confirm.html'
-
-    def form_valid(self, form):
-        self.object = form.save()
-        context = RequestContext(self.request)
-        context['object'] = self.object
-        return render(self.request, self.confirm_template, context)
-
-    # Get the (optional) organisation name
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super(QuestionCreate, self).get_context_data(**kwargs)
-        if 'ods_code' in self.kwargs and self.kwargs['ods_code']:
-            context['organisation'] = Organisation.objects.get(ods_code=self.kwargs['ods_code'])
-        return context
-
-    def get_initial(self):
-        initial = super(QuestionCreate, self).get_initial()
-        if 'ods_code' in self.kwargs and self.kwargs['ods_code']:
-            initial = initial.copy()
-            initial['organisation'] = get_object_or_404(Organisation, ods_code=self.kwargs['ods_code'])
-        return initial
-
-class QuestionUpdate(PrivateViewMixin, UpdateView):
-    model = Question
-    form_class = QuestionUpdateForm
-    context_object_name = "question"
-    template_name = 'issues/question_update_form.html'
-    confirm_template = 'issues/question_update_confirm.html'
-
-    def dispatch(self, request, *args, **kwargs):
-        enforce_question_access_check(request.user)
-        return super(QuestionUpdate, self).dispatch(request, *args, **kwargs)
-
-    def form_valid(self, form):
-        self.object = form.save()
-        context = RequestContext(self.request)
-        context['object'] = self.object
-        return render(self.request, self.confirm_template, context)
-
-    def get_context_data(self, **kwargs):
-        context = super(QuestionUpdate, self).get_context_data(**kwargs)
-        context['history'] = changes_for_model(context[self.context_object_name])
-        return context
 
 class ProblemPickProvider(PickProviderBase):
     result_link_url_name = 'problem-form'

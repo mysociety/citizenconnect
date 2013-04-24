@@ -18,13 +18,13 @@ class AuthTests(AuthorizationTestCase):
         self.assertTrue(user_is_superuser(self.nhs_superuser))
 
     def test_user_in_group(self):
-        self.assertTrue(user_in_group(self.question_answerer, auth.QUESTION_ANSWERERS))
-        self.assertFalse(user_in_group(self.question_answerer, auth.PROVIDERS))
+        self.assertTrue(user_in_group(self.case_handler, auth.CASE_HANDLERS))
+        self.assertFalse(user_in_group(self.case_handler, auth.PROVIDERS))
 
     def test_user_in_groups(self):
         example_group_list = [auth.NHS_SUPERUSERS, auth.CASE_HANDLERS]
         self.assertTrue(user_in_groups(self.nhs_superuser, example_group_list))
-        self.assertFalse(user_in_groups(self.question_answerer, example_group_list))
+        self.assertFalse(user_in_groups(self.ccg_user, example_group_list))
 
     def test_is_valid_username_char(self):
         for char in string.whitespace:
