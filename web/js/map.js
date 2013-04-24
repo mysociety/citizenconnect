@@ -242,7 +242,7 @@ $(document).ready(function () {
      * @return {Array}
      */
     var getBoundingBoxFromMap = function(map) {
-        var mapBounds, be, sw, bounds;
+        var mapBounds, ne, sw, bounds;
         mapBounds = map.getBounds();
         ne = mapBounds.getNorthEast();
         sw = mapBounds.getSouthWest();
