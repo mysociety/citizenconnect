@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load url from future %}
+{% load staticfiles %}
 
 {% block title %}Report your problem{% endblock %}
 
@@ -13,7 +14,7 @@
     <h1>{{ organisation.name }}</h1>
 </div>
 
-<form method="post">
+<form method="post" class="problem-form">
     {% csrf_token %}
 
     {% if form.non_field_errors %}
@@ -43,6 +44,7 @@
         <ul class="gw">
             <li class="g  one-whole">
                 {{ form.description }}
+                <p class="info align-right description-count"></a>
                 <p class="info">In order to enable us to resolve your problem as quickly and as effectively as possible, please provide as much detail as you can. For example:</p>
                 <ul>
                     <li><span class="info">Date the problem occurred</span></li>
@@ -50,7 +52,9 @@
                     <li><span class="info">Members of staff involved</span></li>
                     <li><span class="info">Name of patient (if not yourself)</span></li>
                 </ul>
-                {% include "message_list.html" with messages=form.description.errors message_type='error' %}
+                <div class="description-errors">
+                    {% include "message_list.html" with messages=form.description.errors message_type='error' %}
+                </div>
             </li>
         </ul>
     </fieldset>
@@ -220,64 +224,11 @@
 
 {% block extra_js %}
     <script type="text/javascript">
-      $(function(){
-        $('.big-radio-group').each(function(){
-          var $t = $(this);
-
-          // add dummy radio element
-          $('input[type=radio]', $t).each(function(){
-            $(this).hide().after('<div class="big-radio-group__cell"><div class="big-radio-group__radio"></div></div>');
-          });
-
-          // bind the click event so we can update the actual inputs
-          $('li', $t).on('click', function(){
-            $('li', $t).removeClass('big-radio-group--active');
-            $('input[type=radio]', $(this)).prop("checked", true);
-            $(this).addClass('big-radio-group--active');
-          });
-        });
-
-
-      });
-
-      // bind the onload event so we can trigger the click on
-      // whichever one is already selected
-      $(window).load(function(){
-        $('.big-radio-group input[type=radio]').each(function(){
-          if($(this).is(':checked')){
-            console.log('checked!!');
-            $(this).parents('li').click();
-          }
-        });
-      });
-    </script>
-
-    <script type="text/javascript" charset="utf-8">
-      $(function () {
-
-        var priority_categories = {};
+        window.CitizenConnect = window.CitizenConnect || {};
+        window.CitizenConnect.priorityCategories = {};
         {% for cat in CATEGORIES_PERMITTING_SETTING_OF_PRIORITY_AT_SUBMISSION %}
-        priority_categories.{{cat}} = true;{% endfor %}
-
-        $('input[name="category"]')
-          .change(function () {
-            var val = $(this).val();
-
-            var $label = $('label[for="id_elevate_priority"]');
-            var $input = $('#id_elevate_priority');
-
-            if ( priority_categories[val] ) {
-              $label.removeClass("disabled");
-              $input.prop("disabled", false);
-            } else {
-              $label.addClass("disabled");
-              $input.prop("disabled", "disabled");
-            }
-          });
-
-        $('input[name="category"]:checked').change();
-
-
-      });
+            window.CitizenConnect.priorityCategories.{{cat}} = true;
+        {% endfor %}
     </script>
+    <script src="{% static 'js/problem-form.js' %}"></script>
 {% endblock extra_js %}
