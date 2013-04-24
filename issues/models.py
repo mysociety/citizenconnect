@@ -8,6 +8,7 @@ from django.db import models
 from django.conf import settings
 from django.core import mail
 from django.core.exceptions import ValidationError
+from django.core.validators import MaxLengthValidator
 from django.db.models import Q
 from django.template import Context
 from django.template.loader import get_template
@@ -244,7 +245,8 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
 
     COBRAND_CHOICES = [(cobrand, cobrand) for cobrand in settings.ALLOWED_COBRANDS]
 
-    description = models.TextField(verbose_name='', max_length=2000)
+    # We need
+    description = models.TextField(verbose_name='', validators=[MaxLengthValidator(2000)])
     source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True)
     reporter_name = models.CharField(max_length=200, blank=False, verbose_name='')
     reporter_phone = models.CharField(max_length=50, blank=True, verbose_name='')

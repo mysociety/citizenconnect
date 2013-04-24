@@ -235,6 +235,14 @@ class ProblemModelTests(ProblemTestCase):
         self.assertEqual( problem.priority, Problem.PRIORITY_HIGH )
         self.assertEqual( problem.has_elevated_priority, True )
 
+    def test_limits_description_to_2000_chars(self):
+        long_problem = self.test_problem
+        long_problem.description = "a" * 2001
+
+        with self.assertRaises(ValidationError) as context_manager:
+            long_problem.full_clean()
+        self.assertEqual(context_manager.exception.messages[1], 'Ensure this value has at most 2000 characters (it has 2001).')
+
 class ProblemModelTimeToTests(ProblemTestCase):
 
     def setUp(self):
