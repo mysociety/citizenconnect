@@ -402,15 +402,8 @@ class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
         """
         Custom model validation
         """
-
-        # Check that one of phone or email is provided
-        if not self.reporter_phone and not self.reporter_email:
-            raise ValidationError('You must provide either a phone number or an email address')
-
-        # Check that whichever prefered_contact_method is chosen, they actually provided it
-        if self.preferred_contact_method == self.CONTACT_EMAIL and not self.reporter_email:
-            raise ValidationError('You must provide an email address if you prefer to be contacted by email')
-        elif self.preferred_contact_method == self.CONTACT_PHONE and not self.reporter_phone:
+        # Check that if they prefer to be contacted by phone, they actually provided a number
+        if self.preferred_contact_method == self.CONTACT_PHONE and not self.reporter_phone:
             raise ValidationError('You must provide a phone number if you prefer to be contacted by phone')
 
 
