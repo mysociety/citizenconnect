@@ -526,6 +526,7 @@ class SuperuserLogs(TemplateView):
             context['logs'] = SuperuserLogEntry.objects.all()
         return context
 
+
 class EscalationDashboard(FilterFormMixin, TemplateView):
 
     template_name = 'organisations/escalation_dashboard.html'

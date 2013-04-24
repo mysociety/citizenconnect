@@ -7,6 +7,10 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
+    depends_on = (
+        ("issues", "0014_auto__add_field_question_response"),
+    )
+
     def forwards(self, orm):
         # Adding model 'QuestionResponse'
         db.create_table('responses_questionresponse', (

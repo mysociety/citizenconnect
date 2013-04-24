@@ -80,26 +80,6 @@
         }
     },
     {
-        "pk": 5,
-        "model": "auth.user",
-        "fields": {
-            "username": "question_answerer",
-            "first_name": "",
-            "last_name": "",
-            "is_active": true,
-            "is_superuser": false,
-            "is_staff": false,
-            "last_login": "2013-03-18T14:39:26Z",
-            "groups": [
-                4
-            ],
-            "user_permissions": [],
-            "password": "pbkdf2_sha256$10000$5vD5LSALMvKR$VB95GRwcd99FQEFJ7/YXiwZvkRx8lCerrCa9VVWJdKE=",
-            "email": "question_answerer@example.com",
-            "date_joined": "2013-03-18T14:38:26Z"
-        }
-    },
-    {
         "pk": 1,
         "model": "auth.user",
         "fields": {
