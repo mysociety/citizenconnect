@@ -303,12 +303,14 @@ $(document).ready(function () {
         // recenter the map to The north east
         e.preventDefault();
         map.setView(northEastCentre, northEastZoomLevel);
+        map.fire('dragend');
         $('ul.tab-nav a').toggleClass('active');
     });
     $('a#london').on('click', function(e) {
         // recenter the map to london
         e.preventDefault();
         map.setView(londonCentre, londonZoomLevel);
+        map.fire('dragend');
         $('ul.tab-nav a').toggleClass('active');
     });
 
