@@ -191,13 +191,12 @@ class CreateNonOrganisationAccountTests(TestCase):
         self.expect_groups('spreadsheetcasehandler@example.com', [auth.CASE_HANDLERS])
         self.expect_groups('spreadsheetcasemod@example.com', [auth.CASE_HANDLERS,
                                                               auth.SECOND_TIER_MODERATORS])
-        self.expect_groups('spreadsheetqa@example.com', [auth.QUESTION_ANSWERERS])
         self.expect_groups('spreadsheetccc@example.com', [auth.CUSTOMER_CONTACT_CENTRE])
         bad_row_users = User.objects.filter(email='spreadsheetbadrow@example.com')
         # Should not have created a user if the groups are ambiguous
         self.assertEqual(0, len(bad_row_users))
         # Should have sent an email to each created user
-        self.assertEqual(len(mail.outbox), 5)
+        self.assertEqual(len(mail.outbox), 4)
         first_email = mail.outbox[0]
         expected_text = "You're receiving this e-mail because an account has been created"
         self.assertTrue(expected_text in first_email.body)
