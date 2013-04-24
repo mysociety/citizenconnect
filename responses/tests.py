@@ -8,7 +8,7 @@ from concurrency.utils import ConcurrencyTestMixin
 from issues.models import Problem
 from .models import ProblemResponse
 
-from organisations.tests.lib import create_test_instance, create_test_organisation, AuthorizationTestCase
+from organisations.tests.lib import create_test_problem, create_test_organisation, AuthorizationTestCase
 from moderation.tests.lib import BaseModerationTestCase
 
 
@@ -19,9 +19,9 @@ class LookupFormTests(BaseModerationTestCase):
 
     def setUp(self):
         super(LookupFormTests, self).setUp()
-        self.closed_problem = create_test_instance(Problem, {'organisation':self.test_organisation,
+        self.closed_problem = create_test_problem({'organisation':self.test_organisation,
                                                              'status': Problem.RESOLVED})
-        self.moderated_problem = create_test_instance(Problem, {'organisation':self.test_organisation,
+        self.moderated_problem = create_test_problem({'organisation':self.test_organisation,
                                                                 'moderated': Problem.MODERATED})
         self.login_as(self.case_handler)
 
@@ -61,7 +61,7 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
 
     def setUp(self):
         super(ResponseFormTests, self).setUp()
-        self.problem = create_test_instance(Problem, {'organisation':self.test_organisation})
+        self.problem = create_test_problem({'organisation':self.test_organisation})
         self.response_form_url = reverse('response-form', kwargs={'pk':self.problem.id})
         self.login_as(self.provider)
         # The form assumes a session variable is set, because it is when you load the form
@@ -212,7 +212,7 @@ class ResponseFormViewTests(AuthorizationTestCase):
 
     def setUp(self):
         super(ResponseFormViewTests, self).setUp()
-        self.problem = create_test_instance(Problem, {'organisation': self.test_organisation})
+        self.problem = create_test_problem({'organisation': self.test_organisation})
         self.response_form_url = reverse('response-form', kwargs={'pk':self.problem.id})
         self.login_as(self.provider)
 
@@ -290,14 +290,13 @@ class ResponseFormViewTests(AuthorizationTestCase):
         # had login_required on the view)
 
         # Add a public published problem
-        public_published_problem = create_test_instance(Problem,
-                                                        {
-                                                            'organisation': self.test_organisation,
-                                                            'public': True,
-                                                            'status': Problem.ACKNOWLEDGED,
-                                                            'publication_status': Problem.PUBLISHED,
-                                                            'moderated': Problem.MODERATED
-                                                        })
+        public_published_problem = create_test_problem({
+                                                           'organisation': self.test_organisation,
+                                                           'public': True,
+                                                           'status': Problem.ACKNOWLEDGED,
+                                                           'publication_status': Problem.PUBLISHED,
+                                                           'moderated': Problem.MODERATED
+                                                       })
         form_which_should_403_for_other_providers = reverse('response-form', kwargs={'pk':public_published_problem.id})
         self.client.logout()
         self.login_as(self.other_provider)
@@ -308,7 +307,7 @@ class ResponseFormViewTests(AuthorizationTestCase):
         # When a superuser is viewing the page, if there is a moderated
         # description then that should be shown in addition to the regular
         # description.
-        moderated_problem = create_test_instance(Problem,
+        moderated_problem = create_test_problem(
             {
                 'organisation': self.test_organisation,
                 'public': True,
@@ -328,7 +327,7 @@ class ResponseFormViewTests(AuthorizationTestCase):
 class ResponseModelTests(TransactionTestCase, ConcurrencyTestMixin):
 
     def setUp(self):
-        self.problem = create_test_instance(Problem, {})
+        self.problem = create_test_problem({})
         # These are needed for ConcurrencyTestMixin to run its' tests
         self.concurrency_model = ProblemResponse
         self.concurrency_kwargs = {'response': 'A response', 'issue': self.problem}

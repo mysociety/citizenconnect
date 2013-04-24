@@ -4,7 +4,7 @@ from django.test import TestCase
 
 from issues.models import Problem
 from ..tables import ProblemTable
-from .lib import create_test_organisation, create_test_instance
+from .lib import create_test_organisation, create_test_problem
 
 class ProblemTableTest(TestCase):
     def setUp(self):
@@ -13,7 +13,7 @@ class ProblemTableTest(TestCase):
                               'organisation': self.organisation,
                               'publication_status': Problem.PUBLISHED,
                               'moderated_description': "<script>alert('xss')</script>"}
-        self.problem = create_test_instance(Problem, problem_attributes)
+        self.problem = create_test_problem(problem_attributes)
 
     def test_escaping_private_summary(self):
         table = ProblemTable([], private=True)

@@ -2,7 +2,7 @@ from django.core.urlresolvers import reverse
 from django.test import TransactionTestCase
 
 from organisations.models import Organisation
-from organisations.tests.lib import create_test_instance, create_test_organisation, AuthorizationTestCase
+from organisations.tests.lib import create_test_problem, create_test_organisation, AuthorizationTestCase
 from issues.models import Problem
 
 class BaseModerationTestCase(AuthorizationTestCase, TransactionTestCase):
@@ -10,8 +10,8 @@ class BaseModerationTestCase(AuthorizationTestCase, TransactionTestCase):
     def setUp(self):
         # Add some issues
         super(BaseModerationTestCase, self).setUp()
-        self.test_problem = create_test_instance(Problem, {'organisation':self.test_organisation})
-        self.test_second_tier_moderation_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
+        self.test_problem = create_test_problem({'organisation':self.test_organisation})
+        self.test_second_tier_moderation_problem = create_test_problem({'organisation': self.test_organisation,
                                                                             'requires_second_tier_moderation': True})
         self.home_url = reverse('moderate-home')
         self.lookup_url = reverse('moderate-lookup')

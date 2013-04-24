@@ -3,7 +3,7 @@ import uuid
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from organisations.tests.lib import create_test_organisation, create_test_service, create_test_instance
+from organisations.tests.lib import create_test_organisation, create_test_service, create_test_problem
 
 from ..models import Problem
 from ..forms import ProblemForm
@@ -137,7 +137,7 @@ class ProblemCreateFormTests(TestCase):
 class ProblemSurveyFormTests(TestCase):
 
     def setUp(self):
-        self.test_problem = create_test_instance(Problem, {})
+        self.test_problem = create_test_problem({})
         self.survey_form_url = reverse('survey-form', kwargs={'cobrand': 'choices',
                                                               'response': 'n',
                                                               'id': int_to_base32(self.test_problem.id),

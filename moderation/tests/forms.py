@@ -1,5 +1,5 @@
 from organisations.models import Organisation
-from organisations.tests.lib import create_test_instance, create_test_organisation
+from organisations.tests.lib import create_test_problem, create_test_organisation
 from issues.models import Problem
 from responses.models import ProblemResponse
 
@@ -9,9 +9,9 @@ class LookupFormTests(BaseModerationTestCase):
 
     def setUp(self):
         super(LookupFormTests, self).setUp()
-        self.closed_problem = create_test_instance(Problem, {'organisation':self.test_organisation,
+        self.closed_problem = create_test_problem({'organisation':self.test_organisation,
                                                              'status': Problem.RESOLVED})
-        self.moderated_problem = create_test_instance(Problem, {'organisation':self.test_organisation,
+        self.moderated_problem = create_test_problem({'organisation':self.test_organisation,
                                                                 'moderated': Problem.MODERATED})
         self.login_as(self.case_handler)
 

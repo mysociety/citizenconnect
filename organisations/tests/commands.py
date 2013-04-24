@@ -10,7 +10,7 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.contrib.auth.models import User
 
-from .lib import create_test_organisation, create_test_ccg, create_test_service, create_test_instance
+from .lib import create_test_organisation, create_test_ccg, create_test_service, create_test_problem
 from ..models import Organisation, CCG
 
 from organisations import auth
@@ -26,13 +26,13 @@ class EmailProblemsToProviderTests(TestCase):
         # Add some test data
         self.test_organisation = create_test_organisation({"email":"recipient@example.com"})
         self.test_service = create_test_service({'organisation': self.test_organisation})
-        self.test_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
+        self.test_problem = create_test_problem({'organisation': self.test_organisation,
                                                            'service': self.test_service,
                                                            'reporter_name': 'Problem reporter',
                                                            'reporter_email': 'problem@example.com',
                                                            'reporter_phone': '123456789'})
 
-        self.other_test_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
+        self.other_test_problem = create_test_problem({'organisation': self.test_organisation,
                                                                  'service': self.test_service,
                                                                  'reporter_name': 'Problem reporter',
                                                                  'reporter_email': 'problem@example.com',

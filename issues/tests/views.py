@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from organisations.tests import create_test_instance, create_test_organisation, AuthorizationTestCase
+from organisations.tests import create_test_problem, create_test_organisation, AuthorizationTestCase
 from responses.models import ProblemResponse
 
 from ..models import Problem
@@ -12,12 +12,12 @@ class ProblemPublicViewTests(AuthorizationTestCase):
 
     def setUp(self):
         super(ProblemPublicViewTests, self).setUp()
-        self.test_moderated_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
+        self.test_moderated_problem = create_test_problem({'organisation': self.test_organisation,
                                                                      'moderated': Problem.MODERATED,
                                                                      'publication_status': Problem.PUBLISHED,
                                                                      'moderated_description': "A moderated description"})
-        self.test_unmoderated_problem = create_test_instance(Problem, {'organisation': self.test_organisation})
-        self.test_private_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
+        self.test_unmoderated_problem = create_test_problem({'organisation': self.test_organisation})
+        self.test_private_problem = create_test_problem({'organisation': self.test_organisation,
                                                                    'public':False,
                                                                    'public_reporter_name':False,
                                                                    'moderated': Problem.MODERATED,
@@ -160,7 +160,7 @@ class ProblemSurveyTests(AuthorizationTestCase):
 
     def setUp(self):
         super(ProblemSurveyTests, self).setUp()
-        self.test_problem = create_test_instance(Problem, {'organisation':self.test_organisation})
+        self.test_problem = create_test_problem({'organisation':self.test_organisation})
         self.form_page = reverse('survey-form', kwargs={'cobrand': 'choices',
                                                         'response': 'n',
                                                         'id': int_to_base32(self.test_problem.id),

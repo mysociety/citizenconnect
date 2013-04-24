@@ -6,7 +6,7 @@ from django.core import mail
 from django.utils.timezone import utc
 from django.conf import settings
 
-from organisations.tests.lib import create_test_organisation, create_test_service, create_test_instance
+from organisations.tests.lib import create_test_organisation, create_test_service, create_test_problem
 from ..models import Problem
 
 class EmailSurveysToReportersTests(TestCase):
@@ -14,7 +14,7 @@ class EmailSurveysToReportersTests(TestCase):
     def setUp(self):
         self.test_organisation = create_test_organisation()
         self.test_service = create_test_service({'organisation': self.test_organisation})
-        self.test_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
+        self.test_problem = create_test_problem({'organisation': self.test_organisation,
                                                            'service': self.test_service,
                                                            'cobrand': 'choices',
                                                            'reporter_name': 'Problem reporter',

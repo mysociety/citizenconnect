@@ -60,35 +60,31 @@ def create_test_service(attributes={}):
 
 # Create a test instance of a Problem or Question model that will fill in
 # default values for attributes not specified.
-def create_test_instance(model, attributes):
-    # Problems need more attributes
-    if model == Problem:
-        if 'public' not in attributes:
-            attributes['public'] = True
-        if 'public_reporter_name' not in attributes:
-            attributes['public_reporter_name'] = True
-        if 'organisation' not in attributes:
-            # Make a dummy organisation
-            attributes['organisation'] = create_test_organisation()
-        if 'category' not in attributes:
-            attributes['category'] = 'staff'
-        if 'preferred_contact_method' not in attributes:
-            attributes['preferred_contact_method'] = 'email'
-
+def create_test_problem(attributes={}):
     default_attributes = {
+        'category': 'staff',
         'description': 'A test problem',
-        'reporter_name': 'Test User',
+        'preferred_contact_method': 'email',
+        'public': True,
+        'public_reporter_name': True,
         'reporter_email': 'reporter@example.com',
-        'status': model.NEW
+        'reporter_name': 'Test User',
+        'status': Problem.NEW,
     }
     default_attributes.update(attributes)
-    instance = model(**dict((k,v) for (k,v) in default_attributes.items() if '__' not in k))
-    instance.save()
+
+    # Add the organisation seperately as otherwise we end up with duplicate orgs
+    # with the same ODS key.
+    if 'organisation' not in default_attributes:
+        default_attributes['organisation'] = create_test_organisation()
+
+    problem = Problem(**dict((k,v) for (k,v) in default_attributes.items() if '__' not in k))
+    problem.save()
     # Override the created value to backdate the issue
     if 'created' in attributes:
-        instance.created = attributes['created']
-        instance.save()
-    return instance
+        problem.created = attributes['created']
+        problem.save()
+    return problem
 
 # Auth helper methods
 
@@ -109,7 +105,7 @@ class IntervalCountsTest(TestCase):
         default_atts = {'created': created,
                         'organisation': organisation}
         default_atts.update(attributes)
-        return create_test_instance(Problem, default_atts)
+        return create_test_problem(default_atts)
 
     def setUp(self):
         self.test_ccg = create_test_ccg()
