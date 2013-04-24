@@ -244,7 +244,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
 
     COBRAND_CHOICES = [(cobrand, cobrand) for cobrand in settings.ALLOWED_COBRANDS]
 
-    description = models.TextField(verbose_name='')
+    description = models.TextField(verbose_name='', max_length=2000)
     source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True)
     reporter_name = models.CharField(max_length=200, blank=False, verbose_name='')
     reporter_phone = models.CharField(max_length=50, blank=True, verbose_name='')
