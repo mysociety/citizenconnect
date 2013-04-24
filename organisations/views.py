@@ -158,7 +158,7 @@ class Map(FilterFormMixin,
           TemplateView):
     template_name = 'organisations/map.html'
     permitted_statuses = Problem.VISIBLE_STATUSES
-    london_area = Polygon.from_bbox((51.291123547147215, 0.56854248046875, -0.7498168945312499, 51.71852107186864))
+    london_area = Polygon.from_bbox((-0.7498168945312499, 51.291123547147215, 0.56854248046875, 51.71852107186864))
 
     def get_form_kwargs(self):
         kwargs = super(Map, self).get_form_kwargs()
