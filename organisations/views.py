@@ -219,6 +219,15 @@ class Map(FilterFormMixin,
         else:
             return super(Map, self).render_to_response(context, **response_kwargs)
 
+    def organisations_within_map_bounds(self):
+        map_bounds = self.request.GET.getlist('bounds[]')
+
+        if len(map_bounds):
+            map_bounds = Polygon.from_bbox(tuple(map_bounds))
+        else:
+            map_bounds = self.london_area
+
+        return Organisation.objects.filter(point__within=map_bounds)
 
 
 class PickProviderBase(ListView):
