@@ -235,6 +235,17 @@ $(document).ready(function () {
         $(".filters .current-filters").hide();
     }
 
+    /**
+     * Perform a GET request.
+     *
+     * This handles disabling map controls and adding a spinner before the
+     * request, then re-enabling controls and removing the spinner after the
+     * request.
+     *
+     * @param {String} url The url to request
+     * @param {String} data Data to include with the request
+     * @return {jqXHR} The promise for the AJAX request
+     */
     var getRequest = function(url, data) {
         // Lock the map
         disableMapControls();
