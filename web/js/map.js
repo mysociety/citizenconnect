@@ -269,6 +269,22 @@ $(document).ready(function () {
 
         map.setView(londonCentre, londonZoomLevel);
 
+        map.on('dragend zoomend', function(e) {
+            var mapBounds, be, sw, bounds;
+
+            mapBounds = map.getBounds();
+            ne = mapBounds.getNorthEast();
+            sw = mapBounds.getSouthWest();
+            bounds = [sw.lng, sw.lat, ne.lng, ne.lat];
+
+            getRequest(window.location.pathname, {bounds: bounds}).done(function(providers) {
+                drawProviders(providers);
+            }).error(function(jqXHR) {
+                // TODO: Let the user know about the server error and/or retry request.
+                console.error(jqXHR);
+            });
+        });
+
         // OverlappingMarkerSpiderifier controls click events on markers
         // because it needs to know whether or not to spiderify them, so
         // we need to tell it what we want to do when someone clicks an already
