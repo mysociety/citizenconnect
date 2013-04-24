@@ -4,8 +4,12 @@ class ReferenceNumberColumn(tables.TemplateColumn):
 
     def __init__(self, *args, **kwargs):
 
-        kwargs['template_name'] = "issues/includes/reference_number_column.html"
-        kwargs['verbose_name']  = "Ref."
-        kwargs['order_by']      = ("id")
+        defaults = {
+            'template_name' : "issues/includes/reference_number_column.html",
+            'verbose_name'  : "Ref.",
+            'order_by'      : ("id"),
+        }
 
-        return super(ReferenceNumberColumn, self).__init__(*args, **kwargs)
+        defaults.update(kwargs)
+
+        return super(ReferenceNumberColumn, self).__init__(*args, **defaults)

@@ -8,6 +8,7 @@ from django.db import models
 from django.conf import settings
 from django.core import mail
 from django.core.exceptions import ValidationError
+from django.core.validators import MaxLengthValidator
 from django.db.models import Q
 from django.template import Context
 from django.template.loader import get_template
@@ -21,108 +22,50 @@ from concurrency.api import concurrency_check
 from citizenconnect.models import AuditedModel
 from .lib import base32_to_int, int_to_base32, MistypedIDException
 
-class IssueModel(AuditedModel):
-    """
-    Abstract model for base functionality of issues sent to NHS Organisations
-    """
+class ProblemQuerySet(models.query.QuerySet):
 
-    SOURCE_PHONE = 'phone'
-    SOURCE_EMAIL = 'email'
-    SOURCE_SMS = 'sms'
-
-    SOURCE_CHOICES = (
-        (SOURCE_EMAIL, 'Email'),
-        (SOURCE_PHONE, 'Phone'),
-        (SOURCE_SMS, 'SMS')
-    )
+    # The fields to sort by. Used in the tables code.
+    ORDER_BY_FIELDS_FOR_MODERATION_TABLE = ('priority', 'created')
 
 
-    description = models.TextField(verbose_name='')
-    reporter_name = models.CharField(max_length=200, blank=False, verbose_name='')
-    source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True)
-
-    @property
-    def issue_type(self):
+    def order_for_moderation_table(self):
         """
-        Return the class name, so that it can be printed
+        Sort by priority first, then by creation date. This is a crude way to
+        ensure that the issues at the top of the moderation list are the ones
+        that should be looked at next.
+
+        This sorting could be improved by calculating a deadline for each
+        problem and then sorting by that deadline. This would be the ideal as it
+        would prevent high priority issues blocking long standing low priority
+        ones.
         """
-        # TODO - this could be a custom template filter instead of a model property
-        return self.__class__.__name__
+        args = self.ORDER_BY_FIELDS_FOR_MODERATION_TABLE
+        return self.order_by(*args)
 
-
-    class Meta:
-        abstract = True
-
-class QuestionManager(models.Manager):
-    use_for_related_fields = True
-
-    def open_questions(self):
-        return super(QuestionManager, self).all().filter(status=Question.NEW)
-
-class Question(IssueModel):
-    # Custom manager
-    objects = QuestionManager()
-
-    NEW = 0
-    RESOLVED = 1
-
-    STATUS_CHOICES = (
-        (NEW, 'Open'),
-        (RESOLVED, 'Resolved'),
-    )
-
-    PREFIX = 'Q'
-
-    # Names for transitions between statuses we might want to print
-    TRANSITIONS = {
-        'status': {
-            'Answered': [[NEW, RESOLVED]]
-        }
-    }
-
-    # Which attrs are interesting to compare for revisions
-    REVISION_ATTRS = ['status']
-
-    reporter_email = models.CharField(max_length=254, blank=False, verbose_name='')
-    status = models.IntegerField(default=NEW, choices=STATUS_CHOICES, db_index=True)
-    postcode = models.CharField(max_length=25, blank=True)
-    organisation = models.ForeignKey('organisations.Organisation', blank=True, null=True)
-    response = models.TextField(blank=True)
-
-    @property
-    def reference_number(self):
-        return '{0}{1}'.format(self.PREFIX, self.id)
-
-    @property
-    def reporter_name_display(self):
-        return self.reporter_name
-
-    @property
-    def summary(self):
-        # TODO - make this a setting?
-        summary_length = 30
-        if len(self.description) > summary_length:
-            return self.description[:summary_length] + '...'
-        else:
-            return self.description
 
 class ProblemManager(models.Manager):
     use_for_related_fields = True
+
+    # Note: it may be desirable in future to move some of the methods from
+    # ProblemManager to ProblemQuerySet.
+
+    def get_query_set(self):
+        return ProblemQuerySet(self.model, using=self._db)
 
     def open_problems(self):
         """
         Return only open problems
         """
-        return super(ProblemManager, self).all().filter(Q(status__in=Problem.OPEN_STATUSES))
+        return self.all().filter(Q(status__in=Problem.OPEN_STATUSES))
 
     def closed_problems(self):
         """
         Return only closed problems
         """
-        return super(ProblemManager, self).all().filter(Q(status__in=Problem.CLOSED_STATUSES))
+        return self.all().filter(Q(status__in=Problem.CLOSED_STATUSES))
 
     def unmoderated_problems(self):
-        return super(ProblemManager, self).all().filter(moderated=Problem.NOT_MODERATED)
+        return self.all().filter(moderated=Problem.NOT_MODERATED)
 
     def open_moderated_published_visible_problems(self):
         return self.open_problems().filter(moderated=Problem.MODERATED,
@@ -135,23 +78,23 @@ class ProblemManager(models.Manager):
                                              status__in=Problem.VISIBLE_STATUSES)
 
     def all_moderated_published_problems(self):
-        return super(ProblemManager, self).all().filter(moderated=Problem.MODERATED,
-                                                        publication_status=Problem.PUBLISHED,
-                                                        status__in=Problem.VISIBLE_STATUSES)
+        return self.all().filter(moderated=Problem.MODERATED,
+                                 publication_status=Problem.PUBLISHED,
+                                 status__in=Problem.VISIBLE_STATUSES)
 
 
     def problems_requiring_second_tier_moderation(self):
-        return super(ProblemManager, self).all().filter(requires_second_tier_moderation=True)
+        return self.all().filter(requires_second_tier_moderation=True)
 
     def open_escalated_problems(self):
-        return super(ProblemManager, self).all().filter(Q(status__in=Problem.ESCALATION_STATUSES) &
-                                                        Q(status__in=Problem.OPEN_STATUSES))
+        return self.all().filter(Q(status__in=Problem.ESCALATION_STATUSES) &
+                                 Q(status__in=Problem.OPEN_STATUSES))
 
     def open_unescalated_problems(self):
-        return super(ProblemManager, self).all().filter(Q(status__in=Problem.OPEN_STATUSES) &
-                                                        Q(status__in=Problem.NON_ESCALATION_STATUSES))
+        return self.all().filter(Q(status__in=Problem.OPEN_STATUSES) &
+                                 Q(status__in=Problem.NON_ESCALATION_STATUSES))
 
-class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
+class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     # Custom manager
     objects = ProblemManager()
 
@@ -290,8 +233,24 @@ class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
     # The order of these determines the order they are output as a string
     REVISION_ATTRS = ['moderated', 'publication_status', 'status']
 
+    SOURCE_PHONE = 'phone'
+    SOURCE_EMAIL = 'email'
+    SOURCE_SMS = 'sms'
+
+    SOURCE_CHOICES = (
+        (SOURCE_EMAIL, 'Email'),
+        (SOURCE_PHONE, 'Phone'),
+        (SOURCE_SMS, 'SMS')
+    )
+
+    COBRAND_CHOICES = [(cobrand, cobrand) for cobrand in settings.ALLOWED_COBRANDS]
+
+    # We need
+    description = models.TextField(verbose_name='', validators=[MaxLengthValidator(2000)])
+    source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True)
+    reporter_name = models.CharField(max_length=200, blank=False, verbose_name='')
     reporter_phone = models.CharField(max_length=50, blank=True, verbose_name='')
-    reporter_email = models.CharField(max_length=254, blank=True, verbose_name='')
+    reporter_email = models.CharField(max_length=254, blank=False, verbose_name='')
     preferred_contact_method = models.CharField(max_length=100, choices=CONTACT_CHOICES, default=CONTACT_EMAIL)
     category = models.CharField(max_length=100,
                                 choices=CATEGORY_CHOICES,
@@ -326,7 +285,6 @@ class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
     requires_second_tier_moderation = models.BooleanField(default=False, blank=False)
     commissioned = models.IntegerField(blank=True, null=True, choices=COMMISSIONED_CHOICES)
     survey_sent = models.DateTimeField(null=True, blank=True)
-    COBRAND_CHOICES = [(cobrand, cobrand) for cobrand in settings.ALLOWED_COBRANDS]
     cobrand = models.CharField(max_length=30, blank=False, choices=COBRAND_CHOICES)
     mailed = models.BooleanField(default=False, blank=False)
     relates_to_previous_problem = models.BooleanField(default=False, blank=False)
@@ -375,15 +333,9 @@ class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
         """
         Custom model validation
         """
-
-        # Check that one of phone or email is provided
-        if not self.reporter_phone and not self.reporter_email:
-            raise ValidationError('You must provide either a phone number or an email address')
-
-        # Check that whichever prefered_contact_method is chosen, they actually provided it
-        if self.preferred_contact_method == self.CONTACT_EMAIL and not self.reporter_email:
-            raise ValidationError('You must provide an email address if you prefer to be contacted by email')
-        elif self.preferred_contact_method == self.CONTACT_PHONE and not self.reporter_phone:
+        super(Problem, self).clean()
+        # Check that if they prefer to be contacted by phone, they actually provided a number
+        if self.preferred_contact_method == self.CONTACT_PHONE and not self.reporter_phone:
             raise ValidationError('You must provide a phone number if you prefer to be contacted by phone')
 
 

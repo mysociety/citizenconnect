@@ -70,6 +70,10 @@ class ProblemAPIForm(forms.ModelForm):
             self._errors['publication_status'] = self.error_class(['A problem that requires second tier moderation cannot be published.'])
             del cleaned_data['publication_status']
 
+        if cleaned_data['priority'] == Problem.PRIORITY_HIGH and not cleaned_data['category'] in Problem.CATEGORIES_PERMITTING_SETTING_OF_PRIORITY_AT_SUBMISSION:
+            self._errors['priority'] = self.error_class(['The problem is not in a category which permits setting of a high priority.'])
+            del cleaned_data['priority']
+
         return cleaned_data
 
     class Meta:
@@ -95,6 +99,7 @@ class ProblemAPIForm(forms.ModelForm):
             'breach',
             'commissioned',
             'relates_to_previous_problem',
+            'priority'
         ]
 
         widgets = {

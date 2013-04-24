@@ -154,18 +154,6 @@ class ExtendedProblemTable(ProblemTable):
                     'happy_outcome',
                     'summary')
 
-class QuestionsDashboardTable(tables.Table):
-
-    reference_number = ReferenceNumberColumn()
-    created = tables.DateTimeColumn(verbose_name="Received")
-    summary = tables.Column(verbose_name='Text snippet', order_by=("description"))
-    organisation = tables.Column(verbose_name="Organisation", default="None")
-    action = tables.TemplateColumn(verbose_name='Actions',
-                                    template_name='organisations/includes/question_link_column.html',
-                                    orderable=False)
-
-    class Meta:
-        order_by = ('-created',)
 
 class ProblemDashboardTable(BaseProblemTable):
     """

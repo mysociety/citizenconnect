@@ -2,13 +2,13 @@
 {% load url from future %}
 
 
-{% block title %}Respond to a {{ issue.issue_type }}{% endblock %}
+{% block title %}Respond to a problem{% endblock %}
 
 {% block bodyclasses %}response-form{% endblock %}
 
 {% block content %}
 <div class="header">
-    <h1>Respond to a {{ issue.issue_type }}</h1>
+    <h1>Respond to a problem</h1>
 </div>
 
 {% include "issues/issue_detail.html" with object=issue private=1 %}

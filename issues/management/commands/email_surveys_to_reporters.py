@@ -28,7 +28,6 @@ class Command(BaseCommand):
         survey_cutoff = now - survey_interval
         surveyable_problems = Problem.objects.filter(Q(survey_sent__isnull=True) &
                                                      Q(created__lte=survey_cutoff) &
-                                                     Q(reporter_email__isnull=False) &
                                                      Q(status__in=Problem.VISIBLE_STATUSES))
 
         logger.info('{0} surveys to email'.format(len(surveyable_problems)))

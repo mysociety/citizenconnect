@@ -19,6 +19,8 @@ $c-body-bg: $c-white;
          $c-big-radio-group-radio-border: $c-white;
       $c-big-radio-group-active-radio-bg: $c-pink;
 $c-big-radio-group-active-green-radio-bg: $c-nhs_green;
+              $c-description-count-error: $c-nhs_red;
+                 $c-description-count-ok: $c-nhs_lightgreen;
 
 
 /**
@@ -108,6 +110,10 @@ $c-back-btn-span-hover-color: $c-grey-tint;
         $c-btn-darkred-color: $c-white;
            $c-btn-darkred-bg: $c-nhs_darkred;
      $c-btn-darkred-hover-bg: $c-nhs_darkred-tint;
+      $c-btn-disabled-border: $c-darkgrey-tint;
+       $c-btn-disabled-color: $c-white;
+          $c-btn-disabled-bg: $c-grey;
+    $c-btn-disabled-hover-bg: $c-grey;
 
 /**
  * _filters.scss

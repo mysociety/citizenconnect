@@ -13,7 +13,7 @@ from django.contrib.gis.measure import Distance
 from django.db.models import Q
 
 # App imports
-from issues.models import Problem, Question
+from issues.models import Problem
 
 from .models import Organisation, CCG, Service
 from .metaphone import dm
@@ -151,7 +151,8 @@ class FilterForm(forms.Form):
                 all_statuses = [ [str(status), desc] for (status, desc) in Problem.STATUS_CHOICES ]
                 self.fields['status'].choices = [('', 'Problem status')] + all_statuses
 
-        if not with_breach:
+        if not private or (private and not with_breach):
+            # Breach is only for private pages
             del self.fields['breach']
 
 class OrganisationFilterForm(FilterForm):

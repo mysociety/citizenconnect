@@ -142,6 +142,16 @@
         &:hover { background: $c-btn-darkred-hover-bg; }
     }
 
+    /**
+     * Disabled button
+     */
+    .btn--disabled {
+        border-color: $c-btn-disabled-border;
+        color: $c-btn-disabled-color;
+        background: $c-btn-disabled-bg;
+        &:hover { background: $c-btn-disabled-hover-bg; }
+    }
+
 
 /**
  * Typically used within the .header div, markup something like this:

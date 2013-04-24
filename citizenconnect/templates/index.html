@@ -23,23 +23,6 @@
     </div>
 </div>
 
-<h3 class="title  title--suck-up">Questions</h3>
-<h2 class="title-bold">I&rsquo;ve got a question about NHS Services in&hellip;</h2>
-
-<div class="island  island--squared  island--half-bordered  mb--b">
-    <div class="gw">
-        <div class="g  one-half  palm-one-whole  mb__palm">
-            {% if cobrand.name == 'choices' %}
-                <a href="http://www.nhslondon.lampuat64-1.rroom.net/faq" class="btn  btn--big  btn--no-border">London</a>
-            {% else %}
-                <a href="{% url 'question-form' cobrand=cobrand.name %}" class="btn  btn--big  btn--no-border">London</a>
-            {% endif %}
-        </div>
-        <div class="g  one-half  palm-one-whole">
-            <a href="{% url 'question-form' cobrand=cobrand.name %}" class="btn  btn--big  btn--no-border">the North East</a>
-        </div>
-    </div>
-</div>
 
 <h3 class="title  title--suck-up">Data</h3>
 <h2 class="title-bold">See how health services are responding to people&rsquo;s issues</h2>
