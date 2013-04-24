@@ -423,11 +423,13 @@ class AuthorizationTestCase(TestCase):
 
         # Organisations
         self.test_organisation = create_test_organisation({'organisation_type': 'hospitals',
-                                                           'escalation_ccg': self.test_ccg})
+                                                           'escalation_ccg': self.test_ccg,
+                                                           'point': Point(-0.2, 51.5)})
         self.test_organisation.ccgs.add(self.test_ccg)
         self.other_test_organisation = create_test_organisation({'ods_code': '12345',
                                                                  'name': 'Other Test Organisation',
-                                                                 'escalation_ccg': self.other_test_ccg})
+                                                                 'escalation_ccg': self.other_test_ccg,
+                                                                 'point': Point(-0.1, 51.5)})
         self.other_test_organisation.ccgs.add(self.other_test_ccg)
 
         self.test_password = 'password'
