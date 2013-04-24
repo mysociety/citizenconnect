@@ -66,7 +66,7 @@ class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Mod
 
     @property
     def open_issues(self):
-        return list(self.problem_set.open_problems()) + list(self.question_set.open_questions())
+        return list(self.problem_set.open_problems())
 
     def has_time_limits(self):
         if self.organisation_type == 'hospitals':

@@ -1,6 +1,6 @@
 from organisations.models import Organisation
-from organisations.tests.lib import create_test_instance, create_test_organisation
-from issues.models import Problem, Question
+from organisations.tests.lib import create_test_problem, create_test_organisation
+from issues.models import Problem
 from responses.models import ProblemResponse
 
 from .lib import BaseModerationTestCase
@@ -9,9 +9,9 @@ class LookupFormTests(BaseModerationTestCase):
 
     def setUp(self):
         super(LookupFormTests, self).setUp()
-        self.closed_problem = create_test_instance(Problem, {'organisation':self.test_organisation,
+        self.closed_problem = create_test_problem({'organisation':self.test_organisation,
                                                              'status': Problem.RESOLVED})
-        self.moderated_problem = create_test_instance(Problem, {'organisation':self.test_organisation,
+        self.moderated_problem = create_test_problem({'organisation':self.test_organisation,
                                                                 'moderated': Problem.MODERATED})
         self.login_as(self.case_handler)
 
@@ -34,10 +34,6 @@ class LookupFormTests(BaseModerationTestCase):
     def test_form_rejects_unknown_problems(self):
         resp = self.client.post(self.lookup_url, {'reference_number': '{0}12300'.format(Problem.PREFIX)})
         self.assertFormError(resp, 'form', None, 'Sorry, there are no problems with that reference number')
-
-    def test_form_rejects_questions(self):
-        resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Question.PREFIX, self.test_question.id)})
-        self.assertFormError(resp, 'form', None, 'Sorry, that reference number is not recognised')
 
     def test_form_allows_moderated_problems(self):
         resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.moderated_problem.id)})

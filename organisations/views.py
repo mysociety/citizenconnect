@@ -18,15 +18,15 @@ from django.db.models import Q, Avg
 
 # App imports
 from citizenconnect.shortcuts import render
-from issues.models import Problem, Question
+from issues.models import Problem
 
 import choices_api
 import auth
-from .auth import user_in_group, user_in_groups, user_is_superuser, enforce_organisation_access_check, enforce_question_access_check, user_can_access_escalation_dashboard, user_can_access_private_national_summary
+from .auth import user_in_group, user_in_groups, user_is_superuser, enforce_organisation_access_check, user_can_access_escalation_dashboard, user_can_access_private_national_summary
 from .models import Organisation, Service, CCG, SuperuserLogEntry
 from .forms import OrganisationFinderForm, FilterForm, OrganisationFilterForm
 from .lib import interval_counts
-from .tables import NationalSummaryTable, PrivateNationalSummaryTable, ProblemTable, ExtendedProblemTable, QuestionsDashboardTable, ProblemDashboardTable, EscalationDashboardTable, BreachTable
+from .tables import NationalSummaryTable, PrivateNationalSummaryTable, ProblemTable, ExtendedProblemTable, ProblemDashboardTable, EscalationDashboardTable, BreachTable
 from .templatetags.organisation_extras import formatted_time_interval, percent
 
 class PrivateViewMixin(object):
@@ -499,10 +499,6 @@ def login_redirect(request):
     elif user_in_group(user, auth.SECOND_TIER_MODERATORS):
         return HttpResponseRedirect(reverse('second-tier-moderate-home'))
 
-    # Question Answerers go to the question answering dashboard
-    elif user_in_group(user, auth.QUESTION_ANSWERERS):
-        return HttpResponseRedirect(reverse('questions-dashboard'))
-
     # Providers
     elif user_in_group(user, auth.PROVIDERS):
         # Providers with only one organisation just go to that organisation's dashboard
@@ -530,24 +526,6 @@ class SuperuserLogs(TemplateView):
             context['logs'] = SuperuserLogEntry.objects.all()
         return context
 
-class QuestionsDashboard(ListView):
-
-    queryset = Question.objects.open_questions()
-    template_name = 'organisations/questions_dashboard.html'
-    context_object_name = "questions"
-
-    def dispatch(self, request, *args, **kwargs):
-        enforce_question_access_check(request.user)
-        return super(QuestionsDashboard, self).dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super(QuestionsDashboard, self).get_context_data(**kwargs)
-        # Setup a table for the questions
-        question_table = QuestionsDashboardTable(context['questions'])
-        RequestConfig(self.request, paginate={'per_page': 25}).configure(question_table)
-        context['table'] = question_table
-        context['page_obj'] = context['table'].page
-        return context
 
 class EscalationDashboard(FilterFormMixin, TemplateView):
 

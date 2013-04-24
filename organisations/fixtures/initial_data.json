@@ -16,14 +16,6 @@
         }
     },
     {
-        "pk": 4,
-        "model": "auth.group",
-        "fields": {
-            "name": "Question Answerers",
-            "permissions": []
-        }
-    },
-    {
         "pk": 3,
         "model": "auth.group",
         "fields": {
