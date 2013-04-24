@@ -235,6 +235,12 @@ $(document).ready(function () {
         $(".filters .current-filters").hide();
     };
 
+    /**
+     * Get a list of the map's bounds.
+     *
+     * @param {L.Map} map The map instance to use
+     * @return {Array}
+     */
     var getBoundingBoxFromMap = function(map) {
         var mapBounds, be, sw, bounds;
         mapBounds = map.getBounds();
