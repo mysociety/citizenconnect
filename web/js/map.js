@@ -235,6 +235,23 @@ $(document).ready(function () {
         $(".filters .current-filters").hide();
     }
 
+    var getRequest = function(url, data) {
+        // Lock the map
+        disableMapControls();
+
+        // Add a spinner to the map
+        $("#map").spin({shadow:true});
+
+        return $.ajax({
+            type: 'GET',
+            url: url,
+            data: data
+        }).always(function() {
+            $("#map").spin(false);
+            enableMapControls();
+        });
+    };
+
     wax.tilejson('https://dnv9my2eseobd.cloudfront.net/v3/jedidiah.map-3lyys17i.jsonp', function(tilejson) {
         map.addLayer(new wax.leaf.connector(httpstilejson)).setView(londonCentre, 1);
 
@@ -278,7 +295,7 @@ $(document).ready(function () {
     // reload the map pins from the results
     $(".filters form select").change(function(e) {
         var $form = $(".filters form");
-        var form_data = $form.serialize();
+        var formData = $form.serialize();
 
         // Lock any filter links and make them look locked
         $(".filter-links a").off('click').css({'cursor': 'default'});
@@ -287,35 +304,20 @@ $(document).ready(function () {
         // Lock the form during the ajax request
         $form.find("select").prop("disabled", "disabled");
 
-        // Lock the map
-        disableMapControls();
-
-        // Add a spinner to the map
-        $("#map").spin({shadow:true});
-
         // Try to get new pins
-        $.ajax({
-            type: 'GET',
-            url: $form.attr('action'),
-            data: form_data,
-            success: function (response) {
-                // Display the links which show selected filters
-                showSelectedFilters();
-                drawProviders(response);
-            },
-            complete: function (jqXHR, textStatus) {
-                // Renable all the things we disabled
-                $form.find("select").prop("disabled", false);
-                $("#map").spin(false);
-                enableMapControls();
-                $(".filter-links").css({'opacity': 1});
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                // We only have to rebind links if there's an error because
-                // if it's successful, they'll get removed and new ones added
-                // anyway.
-                bindFilterRemoveLinks();
-            }
+        getRequest($form.attr('action'), formData).done(function (response) {
+            // Display the links which show selected filters
+            showSelectedFilters();
+            drawProviders(response);
+        }).error(function (jqXHR, textStatus, errorThrown) {
+            // We only have to rebind links if there's an error because
+            // if it's successful, they'll get removed and new ones added
+            // anyway.
+            bindFilterRemoveLinks();
+        }).always(function (jqXHR, textStatus) {
+            // Renable all the things we disabled
+            $form.find("select").prop("disabled", false);
+            $(".filter-links").css({'opacity': 1});
         });
     });
 });
