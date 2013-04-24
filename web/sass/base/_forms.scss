@@ -43,7 +43,7 @@ label,
       -khtml-opacity: 0.5;        // Safari 1.x
       opacity: 0.5;               // Good browsers
     }
-    
+
 }
 
 /**
@@ -251,4 +251,16 @@ textarea {
     padding-right: 0.25em;
   }
   .icon-search { margin-left: 0.25em; }
+}
+
+/**
+ * Problem form
+ */
+.problem-form {
+  .description-count {
+    color: $c-description-count-ok;
+    &.error {
+      color: $c-description-count-error;
+    }
+  }
 }
