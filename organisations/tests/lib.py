@@ -444,9 +444,6 @@ class AuthorizationTestCase(TestCase):
         # A Case Handler
         self.case_handler = User.objects.get(pk=3)
 
-        # A Question Answerer
-        self.question_answerer = User.objects.get(pk=5)
-
         # A Second Tier Moderator
         self.second_tier_moderator = User.objects.get(pk=12)
 

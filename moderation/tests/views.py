@@ -3,7 +3,7 @@ import logging
 from django.core.urlresolvers import reverse
 
 from organisations.tests.lib import create_test_instance, create_test_organisation
-from issues.models import Problem, Question
+from issues.models import Problem
 from responses.models import ProblemResponse
 
 from .lib import BaseModerationTestCase

@@ -4,53 +4,9 @@ from django.core.urlresolvers import reverse
 from organisations.tests import create_test_instance, create_test_organisation, AuthorizationTestCase
 from responses.models import ProblemResponse
 
-from ..models import Question, Problem
+from ..models import Problem
 from ..lib import int_to_base32
 
-class QuestionCreateViewTests(TestCase):
-
-    def setUp(self):
-        self.test_organisation = create_test_organisation()
-        self.url = reverse('question-form', kwargs={'cobrand':'choices'})
-        self.organisation_url = reverse('question-form', kwargs={'cobrand':'choices',
-                                                                 'ods_code': self.test_organisation.ods_code})
-
-    def test_organisation_name_shown(self):
-        resp = self.client.get(self.organisation_url)
-        self.assertContains(resp, self.test_organisation.name)
-
-class QuestionUpdateViewTests(AuthorizationTestCase):
-
-    def setUp(self):
-        super(QuestionUpdateViewTests, self).setUp()
-        self.test_question = create_test_instance(Question, {})
-        self.url = reverse('question-update', kwargs={'pk':self.test_question.id})
-
-    def test_requires_login(self):
-        expected_redirect_url = "{0}?next={1}".format(reverse('login'), self.url)
-        resp = self.client.get(self.url)
-        self.assertRedirects(resp, expected_redirect_url)
-
-    def test_only_question_answerers_and_superusers_can_access(self):
-        users_who_shouldnt_have_access = [self.provider,
-                                          self.other_provider,
-                                          self.case_handler,
-                                          self.no_provider,
-                                          self.pals,
-                                          self.ccg_user,
-                                          self.other_ccg_user]
-        for user in users_who_shouldnt_have_access:
-            self.login_as(user)
-            resp = self.client.get(self.url)
-            self.assertEqual(resp.status_code, 403)
-
-        users_who_should_have_access = [self.question_answerer,
-                                        self.nhs_superuser]
-
-        for user in users_who_should_have_access:
-            self.login_as(user)
-            resp = self.client.get(self.url)
-            self.assertEqual(resp.status_code, 200)
 
 class ProblemPublicViewTests(AuthorizationTestCase):
 
