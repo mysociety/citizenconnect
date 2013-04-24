@@ -15,6 +15,7 @@ from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Avg
+from django.contrib.gis.geos import Polygon
 
 # App imports
 from citizenconnect.shortcuts import render
@@ -157,6 +158,7 @@ class Map(FilterFormMixin,
           TemplateView):
     template_name = 'organisations/map.html'
     permitted_statuses = Problem.VISIBLE_STATUSES
+    london_area = Polygon.from_bbox((51.291123547147215, 0.56854248046875, -0.7498168945312499, 51.71852107186864))
 
     def get_form_kwargs(self):
         kwargs = super(Map, self).get_form_kwargs()
