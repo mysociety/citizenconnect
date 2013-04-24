@@ -77,17 +77,16 @@ class ProblemCreateFormTests(TestCase):
         self.assertEqual(problem.public, True)
         self.assertEqual(problem.public_reporter_name, True)
 
-    def test_problem_form_errors_without_email_or_phone(self):
+    def test_problem_form_requires_email(self):
         del self.test_problem['reporter_email']
-        del self.test_problem['reporter_phone']
         resp = self.client.post(self.form_url, self.test_problem)
-        self.assertFormError(resp, 'form', None, 'You must provide either a phone number or an email address')
+        self.assertFormError(resp, 'form', 'reporter_email', 'This field is required.')
 
-    def test_problem_form_accepts_phone_only(self):
-        del self.test_problem['reporter_email']
+    def test_problem_form_checks_phone_when_phone_prefferred(self):
+        del self.test_problem['reporter_phone']
+        self.test_problem['preferred_contact_method'] = Problem.CONTACT_PHONE
         resp = self.client.post(self.form_url, self.test_problem)
-        problem = Problem.objects.get(reporter_name=self.uuid)
-        self.assertIsNotNone(problem)
+        self.assertFormError(resp, 'form', None, 'You must provide a phone number if you prefer to be contacted by phone')
 
     def test_problem_form_accepts_email_only(self):
         del self.test_problem['reporter_phone']

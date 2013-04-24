@@ -29,7 +29,10 @@ class ProblemTestCase(AuthorizationTestCase):
                                     public=True,
                                     public_reporter_name=True,
                                     preferred_contact_method=Problem.CONTACT_EMAIL,
-                                    status=Problem.NEW)
+                                    status=Problem.NEW,
+                                    time_to_acknowledge=None,
+                                    time_to_address=None,
+                                    cobrand='choices')
 
         self.test_moderated_problem = Problem(organisation=self.test_organisation,
                                               description='A Test Problem',
@@ -42,7 +45,10 @@ class ProblemTestCase(AuthorizationTestCase):
                                               preferred_contact_method=Problem.CONTACT_EMAIL,
                                               status=Problem.NEW,
                                               moderated=Problem.MODERATED,
-                                              publication_status=Problem.PUBLISHED)
+                                              publication_status=Problem.PUBLISHED,
+                                              time_to_acknowledge=None,
+                                              time_to_address=None,
+                                              cobrand='choices')
 
         self.test_private_problem = Problem(organisation=self.test_organisation,
                                             description='A Test Private Problem',
@@ -53,7 +59,11 @@ class ProblemTestCase(AuthorizationTestCase):
                                             public=False,
                                             public_reporter_name=False,
                                             preferred_contact_method=Problem.CONTACT_EMAIL,
-                                            status=Problem.NEW)
+                                            status=Problem.NEW,
+                                            time_to_acknowledge=None,
+                                            time_to_address=None,
+                                            cobrand='choices')
+
         self.test_hidden_status_problem = Problem(organisation=self.test_organisation,
                                                   description='A Test Hidden Problem',
                                                   category='cleanliness',
@@ -64,7 +74,10 @@ class ProblemTestCase(AuthorizationTestCase):
                                                   public_reporter_name=True,
                                                   preferred_contact_method=Problem.CONTACT_EMAIL,
                                                   status=Problem.ABUSIVE,
-                                                  publication_status=Problem.PUBLISHED)
+                                                  publication_status=Problem.PUBLISHED,
+                                                  time_to_acknowledge=None,
+                                                  time_to_address=None,
+                                                  cobrand='choices')
 
 class ProblemModelTests(ProblemTestCase):
 
@@ -83,44 +96,24 @@ class ProblemModelTests(ProblemTestCase):
     def test_has_reference_number_property(self):
         self.assertEqual(self.test_problem.reference_number, 'P{0}'.format(self.test_problem.id))
 
-    def test_validates_phone_or_email_present(self):
-        # Remove reporter email, should be fine as phone is set
+    def test_validates_email_present(self):
+        # Remove reporter email, should error
         self.test_problem.reporter_email = None
-        # Set the preferred contact method to phone, else the validation will fail
-        self.test_problem.preferred_contact_method = Problem.CONTACT_PHONE
-        self.test_problem.clean()
-
-        # Add email back in and remove phone, should also be fine
-        self.test_problem.reporter_email = 'reporter@example.com'
-        # Set the preferred contact method to email, else the validation will fail
-        self.test_problem.preferred_contact_method = Problem.CONTACT_EMAIL
-        self.test_problem.reporter_phone = None
-        self.test_problem.clean()
-
-        # Remove both, it should error
-        self.test_problem.reporter_phone = None
-        self.test_problem.reporter_email = None
-        with self.assertRaises(ValidationError) as context_manager:
-            self.test_problem.clean()
-
-        self.assertEqual(context_manager.exception.messages[0], 'You must provide either a phone number or an email address')
-
-    def test_validates_contact_method_given(self):
-        # Remove email and set preferred contact method to email
-        self.test_problem.reporter_email = None
-        self.test_problem.preferred_contact_method = Problem.CONTACT_EMAIL
 
         with self.assertRaises(ValidationError) as context_manager:
-            self.test_problem.clean()
+            # We need to call full_clean to check required fields
+            self.test_problem.full_clean()
 
-        self.assertEqual(context_manager.exception.messages[0], 'You must provide an email address if you prefer to be contacted by email')
+        self.assertEqual(context_manager.exception.messages[0], 'This field cannot be null.')
 
+    def test_validates_phone_number_if_phone_preferred(self):
         # Remove phone and set preferred contact method to phone
         self.test_problem.reporter_email = 'reporter@example.com'
         self.test_problem.reporter_phone = None
         self.test_problem.preferred_contact_method = Problem.CONTACT_PHONE
 
         with self.assertRaises(ValidationError) as context_manager:
+            # We're only testing our clean() method here, so just call that
             self.test_problem.clean()
 
         self.assertEqual(context_manager.exception.messages[0], 'You must provide a phone number if you prefer to be contacted by phone')
