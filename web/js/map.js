@@ -326,7 +326,7 @@ $(document).ready(function () {
     // reload the map pins from the results
     $(".filters form select").change(function(e) {
         var $form = $(".filters form");
-        var formData = $form.serialize();
+        var formData = [$form.serialize(), $.param({bounds: getBoundingBoxFromMap(map)})].join('&');
 
         // Lock any filter links and make them look locked
         $(".filter-links a").off('click').css({'cursor': 'default'});
