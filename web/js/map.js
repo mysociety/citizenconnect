@@ -276,7 +276,7 @@ $(document).ready(function () {
             sw = mapBounds.getSouthWest();
             bounds = [sw.lng, sw.lat, ne.lng, ne.lat];
 
-            getRequest(window.location.pathname, {bounds: bounds}).done(function(providers) {
+            getRequest(window.location.pathname, {bounds: bounds, format: 'json'}).done(function(providers) {
                 drawProviders(providers);
             }).error(function(jqXHR) {
                 // TODO: Let the user know about the server error and/or retry request.
