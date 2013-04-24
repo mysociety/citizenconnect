@@ -164,19 +164,23 @@ class OrganisationSummaryTests(AuthorizationTestCase):
             self.assertEqual(problems_by_status[0]['four_weeks'], 1)
             self.assertEqual(problems_by_status[0]['six_months'], 1)
 
-    def test_summary_page_applies_breach_filter(self):
+    def test_summary_page_applies_breach_filter_on_private_pages(self):
         # Add a breach problem
         create_test_instance(Problem, {'organisation': self.test_organisation,
                                        'breach': True})
-        for url in self.urls:
-            self.login_as(self.provider)
-            resp = self.client.get(url + '?breach=True')
 
-            problems_by_status = resp.context['problems_by_status']
-            self.assertEqual(problems_by_status[0]['all_time'], 1)
-            self.assertEqual(problems_by_status[0]['week'], 1)
-            self.assertEqual(problems_by_status[0]['four_weeks'], 1)
-            self.assertEqual(problems_by_status[0]['six_months'], 1)
+        self.login_as(self.provider)
+        resp = self.client.get(self.private_summary_url + '?breach=True')
+
+        problems_by_status = resp.context['problems_by_status']
+        self.assertEqual(problems_by_status[0]['all_time'], 1)
+        self.assertEqual(problems_by_status[0]['week'], 1)
+        self.assertEqual(problems_by_status[0]['four_weeks'], 1)
+        self.assertEqual(problems_by_status[0]['six_months'], 1)
+
+    def test_public_summary_page_does_not_have_breach_filter(self):
+        resp = self.client.get(self.public_summary_url)
+        self.assertNotContains(resp, '<select name="breach" id="id_breach">')
 
     def test_summary_page_gets_survey_data_for_problems_in_visible_statuses(self):
         for url in self.urls:
@@ -506,17 +510,22 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         self.assertContains(resp, cleanliness_problem.reference_number)
         self.assertNotContains(resp, self.staff_problem.reference_number)
 
-    def test_filters_by_breach(self):
+    def test_private_page_filters_by_breach(self):
         # Add a breach problem
+        self.login_as(self.test_hospital_user)
         breach_problem = create_test_instance(Problem, {'organisation':self.hospital,
                                                         'breach': True,
                                                         'moderated': Problem.MODERATED,
                                                         'publication_status': Problem.PUBLISHED,
                                                         'moderated_description': 'Moderated'})
-        breach_filtered_url = "{0}?breach=True".format(self.public_hospital_problems_url)
+        breach_filtered_url = "{0}?breach=True".format(self.private_hospital_problems_url)
         resp = self.client.get(breach_filtered_url)
         self.assertContains(resp, breach_problem.reference_number)
         self.assertNotContains(resp, self.staff_problem.reference_number)
+
+    def test_public_page_does_not_have_breach_filter(self):
+        resp = self.client.get(self.public_hospital_problems_url)
+        self.assertNotContains(resp, '<select name="breach" id="id_breach">')
 
     def test_doesnt_show_service_for_gp(self):
         resp = self.client.get(self.public_gp_problems_url)
@@ -656,10 +665,10 @@ class OrganisationMapTests(AuthorizationTestCase):
         resp = self.client.get(self.map_url)
         response_json = json.loads(resp.context['organisations'])
         self.assertEqual(len(response_json), 2)
-        self.assertEqual(response_json[0]['ods_code'], self.hospital.ods_code)
-        self.assertEqual(response_json[0]['problem_count'], 0)
-        self.assertEqual(response_json[1]['ods_code'], self.other_gp.ods_code)
-        self.assertEqual(response_json[1]['problem_count'], 0)
+        self.assertEqual(response_json[0]['ods_code'], self.other_gp.ods_code)
+        self.assertEqual(response_json[0]['all_time_open'], 0)
+        self.assertEqual(response_json[1]['ods_code'], self.hospital.ods_code)
+        self.assertEqual(response_json[1]['all_time_open'], 0)
 
     def test_public_map_doesnt_include_unmoderated_or_unpublished_or_hidden_status_problems(self):
         create_test_instance(Problem, {'organisation': self.other_gp})
@@ -676,18 +685,17 @@ class OrganisationMapTests(AuthorizationTestCase):
 
         resp = self.client.get(self.map_url)
         response_json = json.loads(resp.context['organisations'])
-
-        self.assertEqual(response_json[1]['problem_count'], 1)
+        self.assertEqual(response_json[0]['all_time_open'], 1)
 
     def test_public_map_provider_urls_are_to_public_summary_pages(self):
-        expected_gp_url = reverse('public-org-summary', kwargs={'ods_code':self.hospital.ods_code, 'cobrand':'choices'})
-        expected_other_gp_url = reverse('public-org-summary', kwargs={'ods_code':self.other_gp.ods_code, 'cobrand':'choices'})
+        expected_hospital_url = reverse('public-org-summary', kwargs={'ods_code':self.hospital.ods_code, 'cobrand':'choices'})
+        expected_gp_url = reverse('public-org-summary', kwargs={'ods_code':self.other_gp.ods_code, 'cobrand':'choices'})
 
         resp = self.client.get(self.map_url)
         response_json = json.loads(resp.context['organisations'])
 
         self.assertEqual(response_json[0]['url'], expected_gp_url)
-        self.assertEqual(response_json[1]['url'], expected_other_gp_url)
+        self.assertEqual(response_json[1]['url'], expected_hospital_url)
 
     def test_map_filters_by_organisation_type(self):
         org_type_filtered_url = "{0}?organisation_type=hospitals".format(self.map_url)
@@ -696,7 +704,7 @@ class OrganisationMapTests(AuthorizationTestCase):
         response_json = json.loads(resp.context['organisations'])
         self.assertEqual(len(response_json), 1)
         self.assertEqual(response_json[0]['ods_code'], self.hospital.ods_code)
-        self.assertEqual(response_json[0]['problem_count'], 0)
+        self.assertEqual(response_json[0]['all_time_open'], 0)
 
     def test_map_filters_by_category(self):
         # Create some problems to filter
@@ -714,10 +722,10 @@ class OrganisationMapTests(AuthorizationTestCase):
         resp = self.client.get(category_filtered_url)
         response_json = json.loads(resp.context['organisations'])
         self.assertEqual(len(response_json), 2)
-        self.assertEqual(response_json[0]['ods_code'], self.hospital.ods_code)
-        self.assertEqual(response_json[0]['problem_count'], 0)
-        self.assertEqual(response_json[1]['ods_code'], self.other_gp.ods_code)
-        self.assertEqual(response_json[1]['problem_count'], 1)
+        self.assertEqual(response_json[0]['ods_code'], self.other_gp.ods_code)
+        self.assertEqual(response_json[0]['all_time_open'], 1)
+        self.assertEqual(response_json[1]['ods_code'], self.hospital.ods_code)
+        self.assertEqual(response_json[1]['all_time_open'], 0)
 
     def test_map_filters_by_status(self):
         # Create some problems to filter
@@ -735,12 +743,24 @@ class OrganisationMapTests(AuthorizationTestCase):
         resp = self.client.get(status_filtered_url)
         response_json = json.loads(resp.context['organisations'])
         self.assertEqual(len(response_json), 2)
-        self.assertEqual(response_json[0]['ods_code'], self.hospital.ods_code)
-        self.assertEqual(response_json[0]['problem_count'], 1)
-        self.assertEqual(response_json[1]['ods_code'], self.other_gp.ods_code)
-        self.assertEqual(response_json[1]['problem_count'], 0)
+        self.assertEqual(response_json[0]['ods_code'], self.other_gp.ods_code)
+        self.assertEqual(response_json[0]['all_time_open'], 0)
+        self.assertEqual(response_json[1]['ods_code'], self.hospital.ods_code)
+        self.assertEqual(response_json[1]['all_time_open'], 1)
 
-@override_settings(SUMMARY_THRESHOLD=None)
+    def test_map_returns_json_when_asked(self):
+        json_url = "{0}?format=json".format(self.map_url)
+        resp = self.client.get(json_url)
+        self.assertEqual(resp['Content-Type'], 'application/json')
+        response_json = json.loads(resp.content)
+        self.assertEqual(len(response_json), 2)
+        self.assertEqual(response_json[0]['ods_code'], self.other_gp.ods_code)
+        self.assertEqual(response_json[0]['all_time_open'], 0)
+        self.assertEqual(response_json[1]['ods_code'], self.hospital.ods_code)
+        self.assertEqual(response_json[1]['all_time_open'], 0)
+
+
+@override_settings(SUMMARY_THRESHOLD=['all_time', 1])
 class SummaryTests(AuthorizationTestCase):
 
     def setUp(self):
@@ -811,6 +831,7 @@ class SummaryTests(AuthorizationTestCase):
         category_filtered_url = '{0}?category=staff'.format(self.summary_url)
         resp = self.client.get(category_filtered_url)
         self.assertContains(resp, self.test_organisation.name)
+        # NOTE: we rely on the SUMMARY_THRESHOLD setting to make this org disappear
         self.assertNotContains(resp, self.other_test_organisation.name)
 
     def test_summary_page_filters_by_status(self):
@@ -822,17 +843,12 @@ class SummaryTests(AuthorizationTestCase):
         status_filtered_url = '{0}?status={1}'.format(self.summary_url, Problem.NEW)
         resp = self.client.get(status_filtered_url)
         self.assertContains(resp, self.test_organisation.name)
+        # NOTE: we rely on the SUMMARY_THRESHOLD setting to make this org disappear
         self.assertNotContains(resp, self.other_test_organisation.name)
 
-    def test_summary_page_filters_by_breach(self):
-        # Add a breach problem
-        create_test_instance(Problem, {'organisation':self.test_organisation,
-                                       'breach': True})
-
-        breach_filtered_url = '{0}?breach=True'.format(self.summary_url)
-        resp = self.client.get(breach_filtered_url)
-        self.assertContains(resp, self.test_organisation.name)
-        self.assertNotContains(resp, self.other_test_organisation.name)
+    def test_public_summary_page_does_not_have_breach_filter(self):
+        resp = self.client.get(self.summary_url)
+        self.assertNotContains(resp, '<select name="breach" id="id_breach">')
 
 
 @override_settings(SUMMARY_THRESHOLD=None)
@@ -910,6 +926,29 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
         for org in self.other_test_ccg.organisations.all():
             self.assertNotContains(resp, org.name)
 
+    def test_ccg_user_with_multiple_ccgs_can_still_use_ccg_filter_to_only_view_orgs_for_one(self):
+        # Add ccg user to other_test_ccg as well
+        self.other_test_ccg.users.add(self.ccg_user)
+        self.other_test_ccg.save()
+        # Login
+        self.client.logout()
+        self.login_as(self.ccg_user)
+
+        # Check see both
+        resp = self.client.get(self.summary_url)
+        for org in self.test_ccg.organisations.all():
+            self.assertContains(resp, org.name)
+        for org in self.other_test_ccg.organisations.all():
+            self.assertContains(resp, org.name)
+
+        # Apply CCG filter
+        resp = self.client.get("{0}?ccg={1}".format(self.summary_url, self.test_ccg.id))
+
+        # Check filter applied
+        for org in self.test_ccg.organisations.all():
+            self.assertContains(resp, org.name)
+        for org in self.other_test_ccg.organisations.all():
+            self.assertNotContains(resp, org.name)
 
     def test_summary_page_applies_threshold_from_settings(self):
         with self.settings(SUMMARY_THRESHOLD=('six_months', 1)):
@@ -919,6 +958,18 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
         with self.settings(SUMMARY_THRESHOLD=('six_months', 2)):
             resp = self.client.get(self.summary_url)
             self.assertNotContains(resp, 'Test Organisation')
+
+    def test_summary_page_filters_by_breach(self):
+        # Add a breach problem
+        create_test_instance(Problem, {'organisation':self.test_organisation,
+                                       'breach': True})
+
+        breach_filtered_url = '{0}?breach=True'.format(self.summary_url)
+        resp = self.client.get(breach_filtered_url)
+        other_test_org_record = resp.context['table'].rows[0].record
+        test_org_record = resp.context['table'].rows[1].record
+        self.assertEqual(test_org_record['week'], 1)
+        self.assertEqual(other_test_org_record['week'], 0)
 
 
 class ProviderPickerTests(TestCase):

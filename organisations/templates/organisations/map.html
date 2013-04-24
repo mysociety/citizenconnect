@@ -48,22 +48,35 @@
 <script src="{% static 'js/rrose-src.js' %}"></script>
 <script src="{% static 'js/wax.leaf.min.js' %}"></script>
 <script src="{% static 'js/oms.min.js' %}"></script>
+<script src="{% static 'js/spin.min.js' %}"></script>
+<script src="{% static 'js/jquery.spin.js' %}"></script>
 <script type="text/javascript">
     window.CitizenConnect = window.CitizenConnect || {};
     CitizenConnect.providers = {{ organisations|safe }};
 </script>
 
 <script type="text/x-underscore-template" name="hover-bubble">
-  <h1><%= nhsCentre.name %></h1>
-  <h2>Problem reports</h2>
-  <ul>
-      <li><em><%= nhsCentre.problem_count %></em> Open/In progress issues</li>
-      <li><em><%= nhsCentre.closed_problem_count %></em> Closed issues</li>
-      <% if (nhsCentre.average_time_to_address) { %>
-      <li><em><%= nhsCentre.average_time_to_address %></em> days average time to close</li>
-      <% } %>
-      <!-- <li><em>68%</em> users happy with outcome</li> -->
-  </ul>
+    <h1><%= nhsCentre.name %></h1>
+    <h2>Problem reports</h2>
+    <% if (issueType !== '') { %>
+        <h3>Issue Type - <%= issueType %></h3>
+    <% } %>
+    <ul>
+        <li><em><%= nhsCentre.all_time_open %></em> Open/In progress issues</li>
+        <li><em><%= nhsCentre.all_time_closed %></em> Closed issues</li>
+        <% if (nhsCentre.average_time_to_address) { %>
+            <li><em><%= nhsCentre.average_time_to_address %></em> days average time to close</li>
+        <% } %>
+        <% if (nhsCentre.happy_outcome) { %>
+            <li><em><%= nhsCentre.happy_outcome %></em> users happy with outcome</li>
+        <% } %>
+    </ul>
+</script>
+
+<script type="text/x-underscore-template" name="filter-link">
+    <div class="current-filter">
+        <%= filter.displayValue %> <a href="#" data-field-name="<%= filter.fieldName %>">×</a>
+    </div>
 </script>
 
 <script src="{% static 'js/map.js' %}"></script>

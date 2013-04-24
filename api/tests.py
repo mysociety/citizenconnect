@@ -34,6 +34,7 @@ class ProblemAPITests(TestCase):
             'breach': 1,
             'commissioned': Problem.NATIONALLY_COMMISSIONED,
             'relates_to_previous_problem': True,
+            'priority': Problem.PRIORITY_HIGH
         }
 
         self.problem_api_url = reverse('api-problem-create')
@@ -64,6 +65,7 @@ class ProblemAPITests(TestCase):
         self.assertEqual(problem.breach, True)
         self.assertEqual(problem.commissioned, Problem.NATIONALLY_COMMISSIONED)
         self.assertEqual(problem.relates_to_previous_problem, True)
+        self.assertEqual(problem.priority, Problem.PRIORITY_HIGH)
 
     def test_source_is_required(self):
         problem_without_source = self.test_problem
@@ -210,5 +212,16 @@ class ProblemAPITests(TestCase):
 
         errors = json.loads(content_json['errors'])
         self.assertEqual(errors['source'][0],  u"Value u'telepathy' is not a valid choice.")
+
+    def test_priority_checks_category_is_permitted(self):
+        problem_with_invalid_category = self.test_problem
+        problem_with_invalid_category['category'] = 'parking'
+        resp = self.client.post(self.problem_api_url, problem_with_invalid_category)
+        self.assertEquals(resp.status_code, 400)
+        content_json = json.loads(resp.content)
+
+        errors = json.loads(content_json['errors'])
+        self.assertEqual(errors['priority'][0],  u"The problem is not in a category which permits setting of a high priority.")
+
 
 

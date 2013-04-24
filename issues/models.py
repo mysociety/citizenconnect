@@ -106,23 +106,50 @@ class Question(IssueModel):
         else:
             return self.description
 
+class ProblemQuerySet(models.query.QuerySet):
+
+    # The fields to sort by. Used in the tables code.
+    ORDER_BY_FIELDS_FOR_MODERATION_TABLE = ('priority', 'created')
+
+
+    def order_for_moderation_table(self):
+        """
+        Sort by priority first, then by creation date. This is a crude way to
+        ensure that the issues at the top of the moderation list are the ones
+        that should be looked at next.
+
+        This sorting could be improved by calculating a deadline for each
+        problem and then sorting by that deadline. This would be the ideal as it
+        would prevent high priority issues blocking long standing low priority
+        ones.
+        """
+        args = self.ORDER_BY_FIELDS_FOR_MODERATION_TABLE
+        return self.order_by(*args)
+
+
 class ProblemManager(models.Manager):
     use_for_related_fields = True
+
+    # Note: it may be desirable in future to move some of the methods from
+    # ProblemManager to ProblemQuerySet.
+
+    def get_query_set(self):
+        return ProblemQuerySet(self.model, using=self._db)
 
     def open_problems(self):
         """
         Return only open problems
         """
-        return super(ProblemManager, self).all().filter(Q(status__in=Problem.OPEN_STATUSES))
+        return self.all().filter(Q(status__in=Problem.OPEN_STATUSES))
 
     def closed_problems(self):
         """
         Return only closed problems
         """
-        return super(ProblemManager, self).all().filter(Q(status__in=Problem.CLOSED_STATUSES))
+        return self.all().filter(Q(status__in=Problem.CLOSED_STATUSES))
 
     def unmoderated_problems(self):
-        return super(ProblemManager, self).all().filter(moderated=Problem.NOT_MODERATED)
+        return self.all().filter(moderated=Problem.NOT_MODERATED)
 
     def open_moderated_published_visible_problems(self):
         return self.open_problems().filter(moderated=Problem.MODERATED,
@@ -135,21 +162,21 @@ class ProblemManager(models.Manager):
                                              status__in=Problem.VISIBLE_STATUSES)
 
     def all_moderated_published_problems(self):
-        return super(ProblemManager, self).all().filter(moderated=Problem.MODERATED,
-                                                        publication_status=Problem.PUBLISHED,
-                                                        status__in=Problem.VISIBLE_STATUSES)
+        return self.all().filter(moderated=Problem.MODERATED,
+                                 publication_status=Problem.PUBLISHED,
+                                 status__in=Problem.VISIBLE_STATUSES)
 
 
     def problems_requiring_second_tier_moderation(self):
-        return super(ProblemManager, self).all().filter(requires_second_tier_moderation=True)
+        return self.all().filter(requires_second_tier_moderation=True)
 
     def open_escalated_problems(self):
-        return super(ProblemManager, self).all().filter(Q(status__in=Problem.ESCALATION_STATUSES) &
-                                                        Q(status__in=Problem.OPEN_STATUSES))
+        return self.all().filter(Q(status__in=Problem.ESCALATION_STATUSES) &
+                                 Q(status__in=Problem.OPEN_STATUSES))
 
     def open_unescalated_problems(self):
-        return super(ProblemManager, self).all().filter(Q(status__in=Problem.OPEN_STATUSES) &
-                                                        Q(status__in=Problem.NON_ESCALATION_STATUSES))
+        return self.all().filter(Q(status__in=Problem.OPEN_STATUSES) &
+                                 Q(status__in=Problem.NON_ESCALATION_STATUSES))
 
 class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
     # Custom manager
@@ -175,6 +202,17 @@ class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
         (UNABLE_TO_CONTACT, 'Unable to Contact'),
         (ABUSIVE, 'Abusive/Vexatious'),
         (REFERRED_TO_OMBUDSMAN, 'Referred to Ombudsman'),
+    )
+
+    # The numerical value of the priorities should be chosen so that when sorted
+    # ascending higher priorities come first. Please leave gaps in the range so that
+    # future priority levels can be added without changing the existing ones.
+    PRIORITY_HIGH   = 20
+    PRIORITY_NORMAL = 50
+
+    PRIORITY_CHOICES = (
+        (PRIORITY_HIGH,   'High'  ),
+        (PRIORITY_NORMAL, 'Normal'),
     )
 
     # Assigning individual statuses to status sets
@@ -238,6 +276,19 @@ class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
                             'lostproperty': 'Lost property',
                             'other': ''}
 
+    # Not all categories may have elevated priorites set when the issue is
+    # reported.
+    CATEGORIES_PERMITTING_SETTING_OF_PRIORITY_AT_SUBMISSION = (
+        'cleanliness',
+        'communication',
+        'delays',
+        'dignity',
+        'food',
+        'staff',
+        'medicines',
+        'treatment',
+    )
+
     CONTACT_PHONE = 'phone'
     CONTACT_EMAIL = 'email'
 
@@ -277,6 +328,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
     public = models.BooleanField()
     public_reporter_name = models.BooleanField()
     status = models.IntegerField(default=NEW, choices=STATUS_CHOICES, db_index=True)
+    priority = models.IntegerField(default=PRIORITY_NORMAL, choices=PRIORITY_CHOICES)
     organisation = models.ForeignKey('organisations.Organisation')
     service = models.ForeignKey('organisations.Service',
                                 null=True,
@@ -341,6 +393,10 @@ class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
             return self.created + timedelta(minutes=self.time_to_address)
         else:
             return None
+
+    @property
+    def has_elevated_priority(self):
+        return self.priority < Problem.PRIORITY_NORMAL
 
     def clean(self):
         """
@@ -445,27 +501,27 @@ class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
         """
         Send the escalation email. Throws exception if status is not 'ESCALATED'.
         """
-        
+
         # Safety check to prevent accidentally sending emails when not appropriate
         if self.status != self.ESCALATED:
             raise ValueError("Problem status of '{0}' is not 'ESCALATED'".format(self))
-        
+
         # gather the templates and create the context for them
         subject_template = get_template('issues/escalation_email_subject.txt')
         message_template = get_template('issues/escalation_email_message.txt')
-            
+
         context = Context({
             'object':        self,
             'site_base_url': settings.SITE_BASE_URL
         })
-            
+
         logger.info('Sending escalation email for {0}'.format(self))
-            
+
         kwargs = dict(
             subject        = subject_template.render(context),
             message        = message_template.render(context),
         )
-            
+
         if self.commissioned == self.LOCALLY_COMMISSIONED:
             # Send email to the CCG
             self.organisation.escalation_ccg.send_mail(**kwargs)
