@@ -8,6 +8,7 @@ from django.db import models
 from django.conf import settings
 from django.core import mail
 from django.core.exceptions import ValidationError
+from django.core.validators import MaxLengthValidator
 from django.db.models import Q
 from django.template import Context
 from django.template.loader import get_template
@@ -242,7 +243,10 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         (SOURCE_SMS, 'SMS')
     )
 
-    description = models.TextField(verbose_name='')
+    COBRAND_CHOICES = [(cobrand, cobrand) for cobrand in settings.ALLOWED_COBRANDS]
+
+    # We need
+    description = models.TextField(verbose_name='', validators=[MaxLengthValidator(2000)])
     source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True)
     reporter_name = models.CharField(max_length=200, blank=False, verbose_name='')
     reporter_phone = models.CharField(max_length=50, blank=True, verbose_name='')
@@ -281,7 +285,6 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     requires_second_tier_moderation = models.BooleanField(default=False, blank=False)
     commissioned = models.IntegerField(blank=True, null=True, choices=COMMISSIONED_CHOICES)
     survey_sent = models.DateTimeField(null=True, blank=True)
-    COBRAND_CHOICES = [(cobrand, cobrand) for cobrand in settings.ALLOWED_COBRANDS]
     cobrand = models.CharField(max_length=30, blank=False, choices=COBRAND_CHOICES)
     mailed = models.BooleanField(default=False, blank=False)
     relates_to_previous_problem = models.BooleanField(default=False, blank=False)
