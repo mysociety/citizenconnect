@@ -318,7 +318,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
     REVISION_ATTRS = ['moderated', 'publication_status', 'status']
 
     reporter_phone = models.CharField(max_length=50, blank=True, verbose_name='')
-    reporter_email = models.CharField(max_length=254, blank=True, verbose_name='')
+    reporter_email = models.CharField(max_length=254, blank=False, verbose_name='')
     preferred_contact_method = models.CharField(max_length=100, choices=CONTACT_CHOICES, default=CONTACT_EMAIL)
     category = models.CharField(max_length=100,
                                 choices=CATEGORY_CHOICES,
