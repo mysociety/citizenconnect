@@ -385,6 +385,33 @@ class IntervalCountsTest(TestCase):
         actual = interval_counts(threshold=('all_time', 6))
         self.assertEqual(expected_counts, actual)
 
+    def test_filtering_with_organisation_ids(self):
+        organisation_filters = {'organisation_ids': (self.other_test_organisation.id,self.test_organisation.id)}
+        expected_counts = [{'week': 2,
+                            'four_weeks': 3,
+                            'id': self.other_test_organisation.id,
+                            'name': 'Other Test Organisation',
+                            'ods_code': 'ABC222',
+                            'six_months': 5,
+                            'all_time': 5,
+                            'happy_outcome': None,
+                            'happy_service': None,
+                            'average_time_to_acknowledge': None,
+                            'average_time_to_address': None},
+                           {'week': 3,
+                           'four_weeks': 5,
+                           'id': self.test_organisation.id,
+                           'name': 'Test Organisation',
+                           'ods_code': 'XXX999',
+                           'six_months': 6,
+                           'all_time': 6,
+                           'happy_outcome': 0.5,
+                           'happy_service': 1.0,
+                           'average_time_to_acknowledge': Decimal('22.6666666666666667'),
+                           'average_time_to_address': Decimal('240.6666666666666667')}]
+        actual = interval_counts(organisation_filters=organisation_filters)
+        self.assertEqual(expected_counts, actual)
+
 class AuthorizationTestCase(TestCase):
     """
     A test case which sets up some dummy data useful for testing authorization
