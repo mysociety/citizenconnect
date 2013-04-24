@@ -247,6 +247,7 @@ $(document).ready(function () {
      * @return {jqXHR} The promise for the AJAX request
      */
     var getRequest = function(url, data) {
+        data.format = 'json';
         // Lock the map
         disableMapControls();
 
@@ -298,9 +299,6 @@ $(document).ready(function () {
     // Filters
     // Hide the submit button
     $(".filters input[type=submit]").hide();
-
-    // Add a hidden "format" field to pass via ajax
-    $(".filters form").append('<input type="hidden" name="format" value="json" />');
 
     // Submit the form via ajax on any select change and
     // reload the map pins from the results
