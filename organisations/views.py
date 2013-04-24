@@ -179,12 +179,10 @@ class Map(FilterFormMixin,
         problem_filters['moderated'] = Problem.MODERATED
         problem_filters['publication_status'] = Problem.PUBLISHED
 
-        # Filter by map bounds
-        london_area_organisations = Organisation.objects.filter(point__within=self.london_area)
-        london_area_organisations_ids = [col.id for col in london_area_organisations]
-        if len(london_area_organisations_ids) > 0:
+        organisations_within_map_bounds_ids = [col.id for col in self.organisations_within_map_bounds()]
+        if len(organisations_within_map_bounds_ids):
             # Query for summary counts for the organisations within the map bounds.
-            organisation_filters['organisation_ids'] = tuple(london_area_organisations_ids)
+            organisation_filters['organisation_ids'] = tuple(organisations_within_map_bounds_ids)
 
             organisations_list = interval_counts(problem_filters=problem_filters,
                                                 organisation_filters=organisation_filters,
