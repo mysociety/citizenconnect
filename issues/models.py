@@ -402,6 +402,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
         """
         Custom model validation
         """
+        super(Problem, self).clean()
         # Check that if they prefer to be contacted by phone, they actually provided a number
         if self.preferred_contact_method == self.CONTACT_PHONE and not self.reporter_phone:
             raise ValidationError('You must provide a phone number if you prefer to be contacted by phone')
