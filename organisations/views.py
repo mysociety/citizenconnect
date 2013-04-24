@@ -215,7 +215,6 @@ class PickProviderBase(ListView):
     paginate_by = 10
     model = Organisation
     context_object_name = 'organisations'
-    issue_type = 'problem'
 
     def get(self, *args, **kwargs):
         super(PickProviderBase, self).get(*args, **kwargs)
@@ -240,11 +239,9 @@ class PickProviderBase(ListView):
                     context['current_url'] = resolve(self.request.path_info).url_name
                 return render(self.request, self.template_name, context)
             else:
-                return render(self.request, self.form_template_name, {'form': form,
-                                                                      'issue_type': self.issue_type})
+                return render(self.request, self.form_template_name, {'form': form})
         else:
-              return render(self.request, self.form_template_name, {'form': OrganisationFinderForm(),
-                                                                    'issue_type': self.issue_type})
+              return render(self.request, self.form_template_name, {'form': OrganisationFinderForm()})
 
 class OrganisationSummary(OrganisationAwareViewMixin,
                           FilterFormMixin,
