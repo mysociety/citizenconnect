@@ -218,6 +218,10 @@ class Map(FilterFormMixin,
             return super(Map, self).render_to_response(context, **response_kwargs)
 
     def organisations_within_map_bounds(self):
+        """
+        Get a QuerySet of all the organisations within the current map
+        bounds, defaulting to the London area.
+        """
         map_bounds = self.request.GET.getlist('bounds[]')
 
         if len(map_bounds):
