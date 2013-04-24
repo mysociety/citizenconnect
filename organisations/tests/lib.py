@@ -58,8 +58,7 @@ def create_test_service(attributes={}):
     instance.save()
     return instance
 
-# Create a test instance of a Problem or Question model that will fill in
-# default values for attributes not specified.
+
 def create_test_problem(attributes={}):
     default_attributes = {
         'category': 'staff',
