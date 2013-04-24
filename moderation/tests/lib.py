@@ -3,7 +3,7 @@ from django.test import TransactionTestCase
 
 from organisations.models import Organisation
 from organisations.tests.lib import create_test_instance, create_test_organisation, AuthorizationTestCase
-from issues.models import Problem, Question
+from issues.models import Problem
 
 class BaseModerationTestCase(AuthorizationTestCase, TransactionTestCase):
 
@@ -13,7 +13,6 @@ class BaseModerationTestCase(AuthorizationTestCase, TransactionTestCase):
         self.test_problem = create_test_instance(Problem, {'organisation':self.test_organisation})
         self.test_second_tier_moderation_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
                                                                             'requires_second_tier_moderation': True})
-        self.test_question = create_test_instance(Question, {})
         self.home_url = reverse('moderate-home')
         self.lookup_url = reverse('moderate-lookup')
         self.problem_form_url = reverse('moderate-form', kwargs={'pk':self.test_problem.id})

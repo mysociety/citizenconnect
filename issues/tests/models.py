@@ -13,7 +13,7 @@ from concurrency.utils import ConcurrencyTestMixin
 
 from organisations.tests.lib import create_test_organisation, create_test_instance, AuthorizationTestCase
 
-from ..models import Problem, Question
+from ..models import Problem
 from ..lib import MistypedIDException
 
 class ProblemTestCase(AuthorizationTestCase):
@@ -425,21 +425,6 @@ class ProblemModelEscalationTests(ProblemTestCase):
             self.assertTrue( mocked_send.called )
 
 
-class QuestionModelTests(TestCase):
-
-    def setUp(self):
-        self.test_question = Question(description='A Test Question',
-                                    reporter_name='Test User',
-                                    reporter_email='reporter@example.com',
-                                    status=Question.NEW)
-
-    def test_has_prefix_property(self):
-        self.assertEqual(Question.PREFIX, 'Q')
-        self.assertEqual(self.test_question.PREFIX, 'Q')
-
-    def test_has_reference_number_property(self):
-        self.assertEqual(self.test_question.reference_number, 'Q{0}'.format(self.test_question.id))
-
 class ManagerTest(TestCase):
 
     def compare_querysets(self, actual, expected):
@@ -673,21 +658,3 @@ class ProblemManagerTests(ManagerTest):
     def test_escalated_problems_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.open_escalated_problems(),
                                self.open_escalated_problems)
-
-class QuestionManagerTests(ManagerTest):
-
-    def setUp(self):
-        self.open_question = create_test_instance(Question, {})
-        self.closed_question = create_test_instance(Question, {
-            'status': Question.RESOLVED
-        })
-
-        self.open_questions = [self.open_question]
-        self.closed_questions = [self.closed_question]
-        self.all_questions = self.open_questions + self.closed_questions
-
-    def test_open_questions_returns_correct_questions(self):
-        self.compare_querysets(Question.objects.open_questions(), self.open_questions)
-
-    def test_all_questions_returns_correct_questions(self):
-        self.compare_querysets(Question.objects.all(), self.all_questions)

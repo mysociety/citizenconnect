@@ -12,7 +12,7 @@ from django.contrib.auth.models import User, AnonymousUser, Group
 from django.core.urlresolvers import reverse
 
 # App imports
-from issues.models import Problem, Question
+from issues.models import Problem
 
 from ..lib import interval_counts
 from ..models import Organisation, Service, CCG
