@@ -178,13 +178,24 @@ class Map(FilterFormMixin,
         # Show counts for moderated, published problems
         problem_filters['moderated'] = Problem.MODERATED
         problem_filters['publication_status'] = Problem.PUBLISHED
-        # TODO - Filter by map bounds
-        organisations_list = interval_counts(problem_filters=problem_filters,
-                                             organisation_filters=organisation_filters,
-                                             extra_organisation_data=['coords', 'type'],
-                                             problem_data_intervals=['all_time_open', 'all_time_closed'],
-                                             average_fields=['time_to_address'],
-                                             boolean_fields=['happy_outcome'])
+
+        # Filter by map bounds
+        london_area_organisations = Organisation.objects.filter(point__within=self.london_area)
+        london_area_organisations_ids = [col.id for col in london_area_organisations]
+        if len(london_area_organisations_ids) > 0:
+            # Query for summary counts for the organisations within the map bounds.
+            organisation_filters['organisation_ids'] = tuple(london_area_organisations_ids)
+
+            organisations_list = interval_counts(problem_filters=problem_filters,
+                                                organisation_filters=organisation_filters,
+                                                extra_organisation_data=['coords', 'type'],
+                                                problem_data_intervals=['all_time_open', 'all_time_closed'],
+                                                average_fields=['time_to_address'],
+                                                boolean_fields=['happy_outcome'])
+        else:
+            # If there are no organisations found within the bounds, return nothing.
+            organisations_list = []
+
         for org_data in organisations_list:
             org_data['url'] = reverse('public-org-summary',
                                       kwargs={'ods_code':org_data['ods_code'],
