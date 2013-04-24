@@ -5,51 +5,15 @@ from ukpostcodeutils import validation
 from django import forms
 from django.forms.widgets import HiddenInput, RadioSelect, Textarea, TextInput
 
-from .models import Question, Problem
+from .models import Problem
 from .widgets import CategoryRadioFieldRenderer
 
-class IssueModelForm(forms.ModelForm):
-    """
-    ModelForm implementation that does the basics for IssueModel model forms
-    """
+
+class ProblemForm(forms.ModelForm):
 
     # A check to make sure that people have read the T's & C's
     agree_to_terms = forms.BooleanField(required=True,
                                         error_messages={'required': 'You must agree to the terms and conditions to use this service.'})
-
-class QuestionForm(IssueModelForm):
-
-    def clean_postcode(self):
-        # Check that the postcode is valid
-        postcode = self.cleaned_data['postcode']
-        if postcode and not postcode == '':
-            postcode = re.sub('\s+', '', postcode.upper())
-            if not validation.is_valid_postcode(postcode):
-                raise forms.ValidationError('Sorry, that doesn\'t seem to be a valid postcode.')
-        return postcode
-
-    class Meta:
-        model = Question
-
-        fields = [
-            'organisation',
-            'description',
-            'postcode',
-            'reporter_name',
-            'reporter_email',
-        ]
-
-        widgets = {
-            'organisation': HiddenInput,
-            # Add placeholder for description
-            'description': Textarea({'placeholder': 'Please write the details of your question in this box.'}),
-            'postcode': TextInput(attrs={'class': 'text-input'}),
-            'reporter_name': TextInput(attrs={'class': 'text-input'}),
-            # Add placeholder for email
-            'reporter_email': TextInput(attrs={'class': 'text-input'}),
-        }
-
-class ProblemForm(IssueModelForm):
 
     # States of privacy
     PRIVACY_PRIVATE = '0'
@@ -177,18 +141,6 @@ class ProblemForm(IssueModelForm):
             'public_reporter_name': HiddenInput,
         }
 
-class QuestionUpdateForm(forms.ModelForm):
-    """
-    Form for updating questions (by question-answerers)
-    """
-
-    class Meta:
-        model = Question
-
-        fields = [
-            'response',
-            'status'
-        ]
 
 class ProblemSurveyForm(forms.ModelForm):
     """Form for handling problem survey responses.

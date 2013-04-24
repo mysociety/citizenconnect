@@ -13,7 +13,7 @@ from django.contrib.gis.measure import Distance
 from django.db.models import Q
 
 # App imports
-from issues.models import Problem, Question
+from issues.models import Problem
 
 from .models import Organisation, CCG, Service
 from .metaphone import dm

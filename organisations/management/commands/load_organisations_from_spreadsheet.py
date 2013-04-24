@@ -21,7 +21,7 @@ class Command(BaseCommand):
             action='store_true',
             dest='clean',
             default=False,
-            help='Delete existing organisations and services, and associated problems and questions'),
+            help='Delete existing organisations and services, and associated problems'),
         ) + (
         make_option('--update',
             action='store_true',

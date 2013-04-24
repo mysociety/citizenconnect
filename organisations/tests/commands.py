@@ -10,7 +10,7 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.contrib.auth.models import User
 
-from .lib import create_test_organisation, create_test_ccg, create_test_service, create_test_instance
+from .lib import create_test_organisation, create_test_ccg, create_test_service, create_test_problem
 from ..models import Organisation, CCG
 
 from organisations import auth
@@ -26,13 +26,13 @@ class EmailProblemsToProviderTests(TestCase):
         # Add some test data
         self.test_organisation = create_test_organisation({"email":"recipient@example.com"})
         self.test_service = create_test_service({'organisation': self.test_organisation})
-        self.test_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
+        self.test_problem = create_test_problem({'organisation': self.test_organisation,
                                                            'service': self.test_service,
                                                            'reporter_name': 'Problem reporter',
                                                            'reporter_email': 'problem@example.com',
                                                            'reporter_phone': '123456789'})
 
-        self.other_test_problem = create_test_instance(Problem, {'organisation': self.test_organisation,
+        self.other_test_problem = create_test_problem({'organisation': self.test_organisation,
                                                                  'service': self.test_service,
                                                                  'reporter_name': 'Problem reporter',
                                                                  'reporter_email': 'problem@example.com',
@@ -191,13 +191,12 @@ class CreateNonOrganisationAccountTests(TestCase):
         self.expect_groups('spreadsheetcasehandler@example.com', [auth.CASE_HANDLERS])
         self.expect_groups('spreadsheetcasemod@example.com', [auth.CASE_HANDLERS,
                                                               auth.SECOND_TIER_MODERATORS])
-        self.expect_groups('spreadsheetqa@example.com', [auth.QUESTION_ANSWERERS])
         self.expect_groups('spreadsheetccc@example.com', [auth.CUSTOMER_CONTACT_CENTRE])
         bad_row_users = User.objects.filter(email='spreadsheetbadrow@example.com')
         # Should not have created a user if the groups are ambiguous
         self.assertEqual(0, len(bad_row_users))
         # Should have sent an email to each created user
-        self.assertEqual(len(mail.outbox), 5)
+        self.assertEqual(len(mail.outbox), 4)
         first_email = mail.outbox[0]
         expected_text = "You're receiving this e-mail because an account has been created"
         self.assertTrue(expected_text in first_email.body)

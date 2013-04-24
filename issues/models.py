@@ -21,91 +21,6 @@ from concurrency.api import concurrency_check
 from citizenconnect.models import AuditedModel
 from .lib import base32_to_int, int_to_base32, MistypedIDException
 
-class IssueModel(AuditedModel):
-    """
-    Abstract model for base functionality of issues sent to NHS Organisations
-    """
-
-    SOURCE_PHONE = 'phone'
-    SOURCE_EMAIL = 'email'
-    SOURCE_SMS = 'sms'
-
-    SOURCE_CHOICES = (
-        (SOURCE_EMAIL, 'Email'),
-        (SOURCE_PHONE, 'Phone'),
-        (SOURCE_SMS, 'SMS')
-    )
-
-
-    description = models.TextField(verbose_name='')
-    reporter_name = models.CharField(max_length=200, blank=False, verbose_name='')
-    source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True)
-
-    @property
-    def issue_type(self):
-        """
-        Return the class name, so that it can be printed
-        """
-        # TODO - this could be a custom template filter instead of a model property
-        return self.__class__.__name__
-
-
-    class Meta:
-        abstract = True
-
-class QuestionManager(models.Manager):
-    use_for_related_fields = True
-
-    def open_questions(self):
-        return super(QuestionManager, self).all().filter(status=Question.NEW)
-
-class Question(IssueModel):
-    # Custom manager
-    objects = QuestionManager()
-
-    NEW = 0
-    RESOLVED = 1
-
-    STATUS_CHOICES = (
-        (NEW, 'Open'),
-        (RESOLVED, 'Resolved'),
-    )
-
-    PREFIX = 'Q'
-
-    # Names for transitions between statuses we might want to print
-    TRANSITIONS = {
-        'status': {
-            'Answered': [[NEW, RESOLVED]]
-        }
-    }
-
-    # Which attrs are interesting to compare for revisions
-    REVISION_ATTRS = ['status']
-
-    reporter_email = models.CharField(max_length=254, blank=False, verbose_name='')
-    status = models.IntegerField(default=NEW, choices=STATUS_CHOICES, db_index=True)
-    postcode = models.CharField(max_length=25, blank=True)
-    organisation = models.ForeignKey('organisations.Organisation', blank=True, null=True)
-    response = models.TextField(blank=True)
-
-    @property
-    def reference_number(self):
-        return '{0}{1}'.format(self.PREFIX, self.id)
-
-    @property
-    def reporter_name_display(self):
-        return self.reporter_name
-
-    @property
-    def summary(self):
-        # TODO - make this a setting?
-        summary_length = 30
-        if len(self.description) > summary_length:
-            return self.description[:summary_length] + '...'
-        else:
-            return self.description
-
 class ProblemQuerySet(models.query.QuerySet):
 
     # The fields to sort by. Used in the tables code.
@@ -178,7 +93,7 @@ class ProblemManager(models.Manager):
         return self.all().filter(Q(status__in=Problem.OPEN_STATUSES) &
                                  Q(status__in=Problem.NON_ESCALATION_STATUSES))
 
-class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
+class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     # Custom manager
     objects = ProblemManager()
 
@@ -317,8 +232,21 @@ class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
     # The order of these determines the order they are output as a string
     REVISION_ATTRS = ['moderated', 'publication_status', 'status']
 
+    SOURCE_PHONE = 'phone'
+    SOURCE_EMAIL = 'email'
+    SOURCE_SMS = 'sms'
+
+    SOURCE_CHOICES = (
+        (SOURCE_EMAIL, 'Email'),
+        (SOURCE_PHONE, 'Phone'),
+        (SOURCE_SMS, 'SMS')
+    )
+
+    description = models.TextField(verbose_name='')
+    source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True)
+    reporter_name = models.CharField(max_length=200, blank=False, verbose_name='')
     reporter_phone = models.CharField(max_length=50, blank=True, verbose_name='')
-    reporter_email = models.CharField(max_length=254, blank=True, verbose_name='')
+    reporter_email = models.CharField(max_length=254, blank=False, verbose_name='')
     preferred_contact_method = models.CharField(max_length=100, choices=CONTACT_CHOICES, default=CONTACT_EMAIL)
     category = models.CharField(max_length=100,
                                 choices=CATEGORY_CHOICES,
@@ -402,15 +330,9 @@ class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
         """
         Custom model validation
         """
-
-        # Check that one of phone or email is provided
-        if not self.reporter_phone and not self.reporter_email:
-            raise ValidationError('You must provide either a phone number or an email address')
-
-        # Check that whichever prefered_contact_method is chosen, they actually provided it
-        if self.preferred_contact_method == self.CONTACT_EMAIL and not self.reporter_email:
-            raise ValidationError('You must provide an email address if you prefer to be contacted by email')
-        elif self.preferred_contact_method == self.CONTACT_PHONE and not self.reporter_phone:
+        super(Problem, self).clean()
+        # Check that if they prefer to be contacted by phone, they actually provided a number
+        if self.preferred_contact_method == self.CONTACT_PHONE and not self.reporter_phone:
             raise ValidationError('You must provide a phone number if you prefer to be contacted by phone')
 
 
