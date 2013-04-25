@@ -46,7 +46,7 @@ $(document).ready(function () {
         shadowSize: [24, 24]
     });
     var hoverBubbleTemplate = $("script[name=hover-bubble]").text();
-    var filterLinkTemplate = $("script[name=filter-link]").text()
+    var filterLinkTemplate = $("script[name=filter-link]").text();
     var londonCentre = new L.LatLng(51.505, -0.09);
     var northEastCentre = new L.LatLng(54.95, -1.62);
     var londonZoomLevel = 10;
@@ -227,13 +227,13 @@ $(document).ready(function () {
 
         // Make links work
         bindFilterRemoveLinks();
-    }
+    };
 
     // Function to hide the selected filters away again
     var hideSelectedFilters = function() {
         $(".filters .current-filters .filter-links").empty();
         $(".filters .current-filters").hide();
-    }
+    };
 
     wax.tilejson('https://dnv9my2eseobd.cloudfront.net/v3/jedidiah.map-3lyys17i.jsonp', function(tilejson) {
         map.addLayer(new wax.leaf.connector(httpstilejson)).setView(londonCentre, 1);
