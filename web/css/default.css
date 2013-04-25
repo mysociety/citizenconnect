@@ -516,9 +516,9 @@ table .icon-warning { font-size: 1.375em; color: #d81e05; }
 .one-half, .two-quarters, .three-sixths, .four-eighths, .five-tenths, .six-twelfths { width: 50%; }
 
 /** Thirds */
-.one-third, .two-sixths, .four-twelfths, .stats-number { width: 33.333%; }
+.one-third, .two-sixths, .four-twelfths { width: 33.333%; }
 
-.two-thirds, .four-sixths, .eight-twelfths, .stats-text { width: 66.666%; }
+.two-thirds, .four-sixths, .eight-twelfths { width: 66.666%; }
 
 /** Quarters */
 .one-quarter, .two-eighths, .three-twelfths { width: 25%; }
@@ -542,9 +542,9 @@ table .icon-warning { font-size: 1.375em; color: #d81e05; }
 /** Eighths */
 .one-eighth { width: 12.5%; }
 
-.three-eighths { width: 37.5%; }
+.three-eighths, .stats-number { width: 37.5%; }
 
-.five-eighths { width: 62.5%; }
+.five-eighths, .stats-text { width: 62.5%; }
 
 .seven-eighths { width: 87.5%; }
 
