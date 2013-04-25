@@ -5,7 +5,8 @@ from django.db import transaction, IntegrityError
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.gis.geos import Point
 
-from ...models import Organisation, Service
+from ...models import Organisation, Service, CCG
+
 
 class Command(BaseCommand):
     help = 'Load organisations from a spreadsheet extracted from the NHS Choices database'
@@ -57,6 +58,10 @@ class Command(BaseCommand):
 
         type_mappings = {'HOS': 'hospitals',
                          'GPB': 'gppractices'}
+
+        # ISSUE-343 - remove this when we have real ccg data in the spreadsheet
+        demo_ccg = CCG.objects.get(pk=1)
+
         for row in reader:
             rownum += 1
             choices_id = row[0]
@@ -78,13 +83,12 @@ class Command(BaseCommand):
             service_name = row[16]
             organisation_contact = row[17]
 
-
             if organisation_type_text not in type_mappings:
                 if verbose:
                     print "Unknown organisation type %s, skipping" % organisation_type_text
                 continue
             organisation_type = type_mappings[organisation_type_text]
-            organisation_defaults = {'choices_id':choices_id,
+            organisation_defaults = {'choices_id': choices_id,
                                      'name': name,
                                      'organisation_type': organisation_type,
                                      'point': Point(float(lon), float(lat)),
@@ -93,17 +97,19 @@ class Command(BaseCommand):
                                      'address_line3': address_line3,
                                      'city': city,
                                      'county': county,
-                                     'postcode': postcode}
+                                     'postcode': postcode,
+                                     # ISSUE-343 - remove this when we have real ccg associations
+                                     'escalation_ccg': demo_ccg}
             try:
                 organisation, organisation_created = Organisation.objects.get_or_create(ods_code=ods_code,
-                                                                           defaults=organisation_defaults)
+                                                                                        defaults=organisation_defaults)
                 if update:
                     Organisation.objects.filter(id=organisation.id).update(**organisation_defaults)
                 service = None
                 # Only hospitals have services
                 if organisation_type == 'hospitals':
                     if service_name and service_name != 'NULL':
-                        service_defaults = {'name': service_name }
+                        service_defaults = {'name': service_name}
                         service, service_created = Service.objects.get_or_create(organisation=organisation,
                                                                                  service_code=service_code,
                                                                                  defaults=service_defaults)
