@@ -117,7 +117,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         (REFERRED_TO_OTHER_PROVIDER, 'Referred to Another Provider'),
         (UNABLE_TO_CONTACT, 'Unable to Contact'),
         (ABUSIVE, 'Abusive/Vexatious'),
-        (REFERRED_TO_OMBUDSMAN, 'Referred to Ombudsman'),
+        (REFERRED_TO_OMBUDSMAN, 'Closed'),
     )
 
     # The numerical value of the priorities should be chosen so that when sorted
@@ -139,7 +139,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     # Calculated status sets
     ALL_STATUSES = [status for status, description in STATUS_CHOICES]
     OPEN_STATUSES = BASE_OPEN_STATUSES + ESCALATION_STATUSES
-    CLOSED_STATUSES = [RESOLVED, UNABLE_TO_RESOLVE, UNABLE_TO_CONTACT, ABUSIVE]
+    CLOSED_STATUSES = [RESOLVED, UNABLE_TO_RESOLVE, UNABLE_TO_CONTACT, ABUSIVE, REFERRED_TO_OMBUDSMAN]
     NON_ESCALATION_STATUSES = [status for status in ALL_STATUSES if status not in ESCALATION_STATUSES]
     VISIBLE_STATUSES = [status for status in ALL_STATUSES if status not in HIDDEN_STATUSES]
     VISIBLE_STATUS_CHOICES = [(status, description) for status, description in STATUS_CHOICES if status in VISIBLE_STATUSES]

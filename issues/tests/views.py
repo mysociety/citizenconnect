@@ -146,6 +146,12 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         self.assertNotContains(resp, self.test_moderated_problem.description)
         self.assertContains(resp, self.test_moderated_problem.moderated_description)
 
+    def test_referred_to_ombudsman_shows_as_closed(self):
+        self.test_moderated_problem.status = Problem.REFERRED_TO_OMBUDSMAN
+        self.test_moderated_problem.save()
+        resp = self.client.get(self.test_moderated_problem_url)
+        self.assertContains(resp, 'Closed')
+
 class ProblemProviderPickerTests(TestCase):
 
     def setUp(self):

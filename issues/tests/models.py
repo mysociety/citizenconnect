@@ -243,6 +243,10 @@ class ProblemModelTests(ProblemTestCase):
             long_problem.full_clean()
         self.assertEqual(context_manager.exception.messages[1], 'Ensure this value has at most 2000 characters (it has 2001).')
 
+    def test_referred_to_ombudsman_maps_to_resolved(self):
+        problem = Problem(status=Problem.REFERRED_TO_OMBUDSMAN)
+        self.assertEqual(problem.get_status_display(), 'Closed', msg="Referred to ombudsman status should map to closed")
+
 class ProblemModelTimeToTests(ProblemTestCase):
 
     def setUp(self):
