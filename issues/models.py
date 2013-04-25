@@ -117,7 +117,6 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         (REFERRED_TO_OTHER_PROVIDER, 'Referred to Another Provider'),
         (UNABLE_TO_CONTACT, 'Unable to Contact'),
         (ABUSIVE, 'Abusive/Vexatious'),
-        (REFERRED_TO_OMBUDSMAN, 'Referred to Ombudsman'),
     )
 
     # The numerical value of the priorities should be chosen so that when sorted
