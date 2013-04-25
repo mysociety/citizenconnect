@@ -15,6 +15,7 @@ from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Avg
+from django.contrib.gis.geos import Polygon
 
 # App imports
 from citizenconnect.shortcuts import render
@@ -157,6 +158,7 @@ class Map(FilterFormMixin,
           TemplateView):
     template_name = 'organisations/map.html'
     permitted_statuses = Problem.VISIBLE_STATUSES
+    london_area = Polygon.from_bbox((-0.7498168945312499, 51.291123547147215, 0.56854248046875, 51.71852107186864))
 
     def get_form_kwargs(self):
         kwargs = super(Map, self).get_form_kwargs()
@@ -176,13 +178,22 @@ class Map(FilterFormMixin,
         # Show counts for moderated, published problems
         problem_filters['moderated'] = Problem.MODERATED
         problem_filters['publication_status'] = Problem.PUBLISHED
-        # TODO - Filter by map bounds
-        organisations_list = interval_counts(problem_filters=problem_filters,
-                                             organisation_filters=organisation_filters,
-                                             extra_organisation_data=['coords', 'type'],
-                                             problem_data_intervals=['all_time_open', 'all_time_closed'],
-                                             average_fields=['time_to_address'],
-                                             boolean_fields=['happy_outcome'])
+
+        organisations_within_map_bounds_ids = [col.id for col in self.organisations_within_map_bounds()]
+        if len(organisations_within_map_bounds_ids):
+            # Query for summary counts for the organisations within the map bounds.
+            organisation_filters['organisation_ids'] = tuple(organisations_within_map_bounds_ids)
+
+            organisations_list = interval_counts(problem_filters=problem_filters,
+                                                organisation_filters=organisation_filters,
+                                                extra_organisation_data=['coords', 'type'],
+                                                problem_data_intervals=['all_time_open', 'all_time_closed'],
+                                                average_fields=['time_to_address'],
+                                                boolean_fields=['happy_outcome'])
+        else:
+            # If there are no organisations found within the bounds, return nothing.
+            organisations_list = []
+
         for org_data in organisations_list:
             org_data['url'] = reverse('public-org-summary',
                                       kwargs={'ods_code':org_data['ods_code'],
@@ -206,6 +217,19 @@ class Map(FilterFormMixin,
         else:
             return super(Map, self).render_to_response(context, **response_kwargs)
 
+    def organisations_within_map_bounds(self):
+        """
+        Get a QuerySet of all the organisations within the current map
+        bounds, defaulting to the London area.
+        """
+        map_bounds = self.request.GET.getlist('bounds[]')
+
+        if len(map_bounds):
+            map_bounds = Polygon.from_bbox(tuple(map_bounds))
+        else:
+            map_bounds = self.london_area
+
+        return Organisation.objects.filter(point__within=map_bounds)
 
 
 class PickProviderBase(ListView):
@@ -215,7 +239,6 @@ class PickProviderBase(ListView):
     paginate_by = 10
     model = Organisation
     context_object_name = 'organisations'
-    issue_type = 'problem'
 
     def get(self, *args, **kwargs):
         super(PickProviderBase, self).get(*args, **kwargs)
@@ -240,11 +263,9 @@ class PickProviderBase(ListView):
                     context['current_url'] = resolve(self.request.path_info).url_name
                 return render(self.request, self.template_name, context)
             else:
-                return render(self.request, self.form_template_name, {'form': form,
-                                                                      'issue_type': self.issue_type})
+                return render(self.request, self.form_template_name, {'form': form})
         else:
-              return render(self.request, self.form_template_name, {'form': OrganisationFinderForm(),
-                                                                    'issue_type': self.issue_type})
+              return render(self.request, self.form_template_name, {'form': OrganisationFinderForm()})
 
 class OrganisationSummary(OrganisationAwareViewMixin,
                           FilterFormMixin,

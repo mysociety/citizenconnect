@@ -8,6 +8,7 @@ from django.db import models
 from django.conf import settings
 from django.core import mail
 from django.core.exceptions import ValidationError
+from django.core.validators import MaxLengthValidator
 from django.db.models import Q
 from django.template import Context
 from django.template.loader import get_template
@@ -20,39 +21,6 @@ from concurrency.api import concurrency_check
 
 from citizenconnect.models import AuditedModel
 from .lib import base32_to_int, int_to_base32, MistypedIDException
-
-class IssueModel(AuditedModel):
-    """
-    Abstract model for base functionality of issues sent to NHS Organisations
-    """
-
-    SOURCE_PHONE = 'phone'
-    SOURCE_EMAIL = 'email'
-    SOURCE_SMS = 'sms'
-
-    SOURCE_CHOICES = (
-        (SOURCE_EMAIL, 'Email'),
-        (SOURCE_PHONE, 'Phone'),
-        (SOURCE_SMS, 'SMS')
-    )
-
-
-    description = models.TextField(verbose_name='')
-    reporter_name = models.CharField(max_length=200, blank=False, verbose_name='')
-    source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True)
-
-    @property
-    def issue_type(self):
-        """
-        Return the class name, so that it can be printed
-        """
-        # TODO - this could be a custom template filter instead of a model property
-        return self.__class__.__name__
-
-
-    class Meta:
-        abstract = True
-
 
 class ProblemQuerySet(models.query.QuerySet):
 
@@ -126,7 +94,7 @@ class ProblemManager(models.Manager):
         return self.all().filter(Q(status__in=Problem.OPEN_STATUSES) &
                                  Q(status__in=Problem.NON_ESCALATION_STATUSES))
 
-class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
+class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     # Custom manager
     objects = ProblemManager()
 
@@ -149,7 +117,6 @@ class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
         (REFERRED_TO_OTHER_PROVIDER, 'Referred to Another Provider'),
         (UNABLE_TO_CONTACT, 'Unable to Contact'),
         (ABUSIVE, 'Abusive/Vexatious'),
-        (REFERRED_TO_OMBUDSMAN, 'Referred to Ombudsman'),
     )
 
     # The numerical value of the priorities should be chosen so that when sorted
@@ -265,6 +232,22 @@ class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
     # The order of these determines the order they are output as a string
     REVISION_ATTRS = ['moderated', 'publication_status', 'status']
 
+    SOURCE_PHONE = 'phone'
+    SOURCE_EMAIL = 'email'
+    SOURCE_SMS = 'sms'
+
+    SOURCE_CHOICES = (
+        (SOURCE_EMAIL, 'Email'),
+        (SOURCE_PHONE, 'Phone'),
+        (SOURCE_SMS, 'SMS')
+    )
+
+    COBRAND_CHOICES = [(cobrand, cobrand) for cobrand in settings.ALLOWED_COBRANDS]
+
+    # We need
+    description = models.TextField(verbose_name='', validators=[MaxLengthValidator(2000)])
+    source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True)
+    reporter_name = models.CharField(max_length=200, blank=False, verbose_name='')
     reporter_phone = models.CharField(max_length=50, blank=True, verbose_name='')
     reporter_email = models.CharField(max_length=254, blank=False, verbose_name='')
     preferred_contact_method = models.CharField(max_length=100, choices=CONTACT_CHOICES, default=CONTACT_EMAIL)
@@ -301,7 +284,6 @@ class Problem(dirtyfields.DirtyFieldsMixin, IssueModel):
     requires_second_tier_moderation = models.BooleanField(default=False, blank=False)
     commissioned = models.IntegerField(blank=True, null=True, choices=COMMISSIONED_CHOICES)
     survey_sent = models.DateTimeField(null=True, blank=True)
-    COBRAND_CHOICES = [(cobrand, cobrand) for cobrand in settings.ALLOWED_COBRANDS]
     cobrand = models.CharField(max_length=30, blank=False, choices=COBRAND_CHOICES)
     mailed = models.BooleanField(default=False, blank=False)
     relates_to_previous_problem = models.BooleanField(default=False, blank=False)

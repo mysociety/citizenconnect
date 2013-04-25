@@ -152,7 +152,7 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         }
         resp = self.client.post(self.response_form_url, test_form_values)
         self.assertEqual(resp.status_code, 200)
-        self.assertContains(resp, "the Problem status has been updated")
+        self.assertContains(resp, "the problem status has been updated")
         self.assertContains(resp, reverse('org-dashboard', kwargs={'ods_code':self.test_organisation.ods_code}))
 
     def test_initial_version_set_when_form_loads(self):
@@ -223,7 +223,6 @@ class ResponseFormViewTests(AuthorizationTestCase):
     def test_response_form_contains_issue_data(self):
         resp = self.client.get(self.response_form_url)
         self.assertContains(resp, self.problem.reference_number)
-        self.assertContains(resp, self.problem.issue_type)
         self.assertContains(resp, self.problem.reporter_name)
         self.assertContains(resp, self.problem.description)
 

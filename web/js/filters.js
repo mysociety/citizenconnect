@@ -13,7 +13,7 @@ $(document).ready(function () {
   });
 
   $(service_selector).change(function() {
-    if ($(this).val() != ''){
+    if ($(this).val() !== ''){
       $(organisation_type_selector).val('hospitals').prop('disabled', 'disabled');
     }else{
       $(organisation_type_selector).prop('disabled', false);

@@ -15,7 +15,6 @@ from .lib import changes_for_model, base32_to_int
 
 class ProblemPickProvider(PickProviderBase):
     result_link_url_name = 'problem-form'
-    issue_type = 'problem'
 
 class ProblemCreate(OrganisationAwareViewMixin, CreateView):
     model = Problem
@@ -52,7 +51,7 @@ class ProblemCreate(OrganisationAwareViewMixin, CreateView):
         context = super(ProblemCreate, self).get_context_data(**kwargs)
         context['CATEGORIES_PERMITTING_SETTING_OF_PRIORITY_AT_SUBMISSION'] = Problem.CATEGORIES_PERMITTING_SETTING_OF_PRIORITY_AT_SUBMISSION
         return context
-    
+
 
 class ProblemDetail(DetailView):
 
