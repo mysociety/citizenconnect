@@ -380,6 +380,33 @@ class IntervalCountsTest(TestCase):
         actual = interval_counts(threshold=('all_time', 6))
         self.assertEqual(expected_counts, actual)
 
+    def test_filtering_with_organisation_ids(self):
+        organisation_filters = {'organisation_ids': (self.other_test_organisation.id,self.test_organisation.id)}
+        expected_counts = [{'week': 2,
+                            'four_weeks': 3,
+                            'id': self.other_test_organisation.id,
+                            'name': 'Other Test Organisation',
+                            'ods_code': 'ABC222',
+                            'six_months': 5,
+                            'all_time': 5,
+                            'happy_outcome': None,
+                            'happy_service': None,
+                            'average_time_to_acknowledge': None,
+                            'average_time_to_address': None},
+                           {'week': 3,
+                           'four_weeks': 5,
+                           'id': self.test_organisation.id,
+                           'name': 'Test Organisation',
+                           'ods_code': 'XXX999',
+                           'six_months': 6,
+                           'all_time': 6,
+                           'happy_outcome': 0.5,
+                           'happy_service': 1.0,
+                           'average_time_to_acknowledge': Decimal('22.6666666666666667'),
+                           'average_time_to_address': Decimal('240.6666666666666667')}]
+        actual = interval_counts(organisation_filters=organisation_filters)
+        self.assertEqual(expected_counts, actual)
+
 class AuthorizationTestCase(TestCase):
     """
     A test case which sets up some dummy data useful for testing authorization
@@ -396,11 +423,13 @@ class AuthorizationTestCase(TestCase):
 
         # Organisations
         self.test_organisation = create_test_organisation({'organisation_type': 'hospitals',
-                                                           'escalation_ccg': self.test_ccg})
+                                                           'escalation_ccg': self.test_ccg,
+                                                           'point': Point(-0.2, 51.5)})
         self.test_organisation.ccgs.add(self.test_ccg)
         self.other_test_organisation = create_test_organisation({'ods_code': '12345',
                                                                  'name': 'Other Test Organisation',
-                                                                 'escalation_ccg': self.other_test_ccg})
+                                                                 'escalation_ccg': self.other_test_ccg,
+                                                                 'point': Point(-0.1, 51.5)})
         self.other_test_organisation.ccgs.add(self.other_test_ccg)
 
         self.test_password = 'password'

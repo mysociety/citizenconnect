@@ -59,6 +59,7 @@ def interval_counts(problem_filters={},
                  'six_months': now - timedelta(days=365/12*6)}
 
     organisation_id = organisation_filters.get('organisation_id')
+    organisation_ids = organisation_filters.get('organisation_ids')
 
     params = []
     tables = []
@@ -144,6 +145,10 @@ def interval_counts(problem_filters={},
     if organisation_id != None:
         organisation_filter_clauses.append("organisations_organisation.id = %s")
         params.append(organisation_filters['organisation_id'])
+
+    if organisation_ids != None:
+        organisation_filter_clauses.append("organisations_organisation.id in %s")
+        params.append(organisation_ids)
 
     organisation_type = organisation_filters.get('organisation_type')
     if organisation_type != None:

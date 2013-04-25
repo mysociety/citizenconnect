@@ -46,7 +46,7 @@ $(document).ready(function () {
         shadowSize: [24, 24]
     });
     var hoverBubbleTemplate = $("script[name=hover-bubble]").text();
-    var filterLinkTemplate = $("script[name=filter-link]").text()
+    var filterLinkTemplate = $("script[name=filter-link]").text();
     var londonCentre = new L.LatLng(51.505, -0.09);
     var northEastCentre = new L.LatLng(54.95, -1.62);
     var londonZoomLevel = 10;
@@ -227,18 +227,70 @@ $(document).ready(function () {
 
         // Make links work
         bindFilterRemoveLinks();
-    }
+    };
 
     // Function to hide the selected filters away again
     var hideSelectedFilters = function() {
         $(".filters .current-filters .filter-links").empty();
         $(".filters .current-filters").hide();
-    }
+    };
+
+    /**
+     * Get a list of the map's bounds.
+     *
+     * @param {L.Map} map The map instance to use
+     * @return {Array}
+     */
+    var getBoundingBoxFromMap = function(map) {
+        var mapBounds, ne, sw, bounds;
+        mapBounds = map.getBounds();
+        ne = mapBounds.getNorthEast();
+        sw = mapBounds.getSouthWest();
+        return [sw.lng, sw.lat, ne.lng, ne.lat];
+    };
+
+    /**
+     * Perform a GET request.
+     *
+     * This handles disabling map controls and adding a spinner before the
+     * request, then re-enabling controls and removing the spinner after the
+     * request.
+     *
+     * @param {String} url The url to request
+     * @param {String} data Data to include with the request
+     * @return {jqXHR} The promise for the AJAX request
+     */
+    var getRequest = function(url, data) {
+        // Lock the map
+        disableMapControls();
+
+        // Add a spinner to the map
+        $("#map").spin({shadow:true});
+
+        return $.ajax({
+            type: 'GET',
+            url: url,
+            data: data
+        }).always(function() {
+            $("#map").spin(false);
+            enableMapControls();
+        });
+    };
 
     wax.tilejson('https://dnv9my2eseobd.cloudfront.net/v3/jedidiah.map-3lyys17i.jsonp', function(tilejson) {
         map.addLayer(new wax.leaf.connector(httpstilejson)).setView(londonCentre, 1);
 
         map.setView(londonCentre, londonZoomLevel);
+
+        map.on('dragend zoomend', function(e) {
+
+            getRequest(window.location.pathname, {bounds: getBoundingBoxFromMap(map), format: 'json'}).done(function(providers) {
+                drawProviders(providers);
+            }).error(function(jqXHR) {
+                // TODO: Let the user know about the server error and/or retry request.
+                console.error(jqXHR);
+            });
+        });
 
         // OverlappingMarkerSpiderifier controls click events on markers
         // because it needs to know whether or not to spiderify them, so
@@ -258,12 +310,14 @@ $(document).ready(function () {
         // recenter the map to The north east
         e.preventDefault();
         map.setView(northEastCentre, northEastZoomLevel);
+        map.fire('dragend');
         $('ul.tab-nav a').toggleClass('active');
     });
     $('a#london').on('click', function(e) {
         // recenter the map to london
         e.preventDefault();
         map.setView(londonCentre, londonZoomLevel);
+        map.fire('dragend');
         $('ul.tab-nav a').toggleClass('active');
     });
 
@@ -278,7 +332,7 @@ $(document).ready(function () {
     // reload the map pins from the results
     $(".filters form select").change(function(e) {
         var $form = $(".filters form");
-        var form_data = $form.serialize();
+        var formData = [$form.serialize(), $.param({bounds: getBoundingBoxFromMap(map)})].join('&');
 
         // Lock any filter links and make them look locked
         $(".filter-links a").off('click').css({'cursor': 'default'});
@@ -287,35 +341,20 @@ $(document).ready(function () {
         // Lock the form during the ajax request
         $form.find("select").prop("disabled", "disabled");
 
-        // Lock the map
-        disableMapControls();
-
-        // Add a spinner to the map
-        $("#map").spin({shadow:true});
-
         // Try to get new pins
-        $.ajax({
-            type: 'GET',
-            url: $form.attr('action'),
-            data: form_data,
-            success: function (response) {
-                // Display the links which show selected filters
-                showSelectedFilters();
-                drawProviders(response);
-            },
-            complete: function (jqXHR, textStatus) {
-                // Renable all the things we disabled
-                $form.find("select").prop("disabled", false);
-                $("#map").spin(false);
-                enableMapControls();
-                $(".filter-links").css({'opacity': 1});
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                // We only have to rebind links if there's an error because
-                // if it's successful, they'll get removed and new ones added
-                // anyway.
-                bindFilterRemoveLinks();
-            }
+        getRequest($form.attr('action'), formData).done(function (response) {
+            // Display the links which show selected filters
+            showSelectedFilters();
+            drawProviders(response);
+        }).error(function (jqXHR, textStatus, errorThrown) {
+            // We only have to rebind links if there's an error because
+            // if it's successful, they'll get removed and new ones added
+            // anyway.
+            bindFilterRemoveLinks();
+        }).always(function (jqXHR, textStatus) {
+            // Renable all the things we disabled
+            $form.find("select").prop("disabled", false);
+            $(".filter-links").css({'opacity': 1});
         });
     });
 });
