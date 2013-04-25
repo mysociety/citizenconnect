@@ -1,16 +1,9 @@
 from django.contrib import admin
 from organisations import models
 
-# tweak to taste - simple at the top and more custom below
+import reversion
 
+class OrganisationAdmin(reversion.VersionAdmin):
+    list_display = ('id', 'name', 'organisation_type', 'county', 'postcode')
 
-# admin.site.register(models.FooBar)
-
-
-
-# class FooBarAdmin(admin.ModelAdmin):
-#     prepopulated_fields = {"slug": ["name"]}
-#     list_display  = [ 'slug', 'name', ]
-#     search_fields = ['name']
-# 
-# admin.site.register( models.FooBar, FooBarAdmin )
+admin.site.register(models.Organisation, OrganisationAdmin)

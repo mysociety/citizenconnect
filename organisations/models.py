@@ -62,7 +62,7 @@ class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Mod
     ccgs = models.ManyToManyField(CCG, related_name='organisations')
 
     # Calculated double_metaphone field, for search by provider name
-    name_metaphone = models.TextField()
+    name_metaphone = models.TextField(editable=False)
 
     @property
     def open_issues(self):
