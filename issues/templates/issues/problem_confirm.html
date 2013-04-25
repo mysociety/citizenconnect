@@ -37,6 +37,29 @@
 
 </div>
 
+<div class="header">
+  <h2>{{ object.organisation.name }}</h2>
+</div>
+
+<div class="gw">
+    <div class="g one-eighth">&nbsp;</div>
+    <div class="g  three-eighths  palm-one-whole">
+        <div class="stats-box">
+            <span class="stats-number">50%</span>
+            <span class="stats-text">of users happy with outcome</span>
+        </div>
+    </div>
+    <div class="g  three-eighths  palm-one-whole">
+        <div class="stats-box">
+            <span class="stats-number">96%</span>
+            <span class="stats-text">of users happy with service</span>
+        </div>
+    </div>
+    <div class="g one-eighth">&nbsp;</div>
+</div>
+
+<div class="header"></div>
+
 <div class="break-bar">
     <p>
         <a href="{% url 'public-org-summary' cobrand=cobrand.name ods_code=object.organisation.ods_code %}" class="standout-link">See the summary page</a> for {{ object.organisation.name }} to see how they are responding to problems raised. {% if not object.private %}Once your issue has completed the moderation process you will be able to see the details listed on this page, and view its status.
