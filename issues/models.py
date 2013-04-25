@@ -106,7 +106,6 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     REFERRED_TO_OTHER_PROVIDER = 5
     UNABLE_TO_CONTACT = 6
     ABUSIVE = 7
-    REFERRED_TO_OMBUDSMAN = 8
 
     STATUS_CHOICES = (
         (NEW, 'Open'),
@@ -132,7 +131,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
 
     # Assigning individual statuses to status sets
     BASE_OPEN_STATUSES = [NEW, ACKNOWLEDGED]
-    ESCALATION_STATUSES = [ESCALATED, REFERRED_TO_OMBUDSMAN]
+    ESCALATION_STATUSES = [ESCALATED]
     HIDDEN_STATUSES = [UNABLE_TO_RESOLVE, REFERRED_TO_OTHER_PROVIDER, UNABLE_TO_CONTACT, ABUSIVE]
 
     # Calculated status sets
