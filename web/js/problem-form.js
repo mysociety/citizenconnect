@@ -16,13 +16,13 @@
             if(typeof $descriptionErrors !== 'undefined') {
                 $descriptionErrors.empty();
             }
-            $(".problem-form button[type=submit]").prop('disabled', false).removeClass('btn--disabled');;
+            $(".problem-form button[type=submit]").prop('disabled', false).removeClass('btn--disabled');
         }
     };
 
     var renderError = function(error) {
         return '<ul class="message-list"><li class="message-list__error">' + error + '</li></ul>';
-    }
+    };
 
     $(function() {
         // Big radio buttons
@@ -43,21 +43,20 @@
         });
 
         // Category fields
-        $('input[name="category"]')
-          .change(function () {
+        $('input[name="category"]').change(function () {
             var val = $(this).val();
 
             var $label = $('label[for="id_elevate_priority"]');
             var $input = $('#id_elevate_priority');
 
             if ( priorityCategories[val] ) {
-              $label.removeClass("disabled");
-              $input.prop("disabled", false);
+                $label.removeClass("disabled");
+                $input.prop("disabled", false);
             } else {
-              $label.addClass("disabled");
-              $input.prop("disabled", "disabled");
+                $label.addClass("disabled");
+                $input.prop("disabled", "disabled");
             }
-          });
+        });
 
         $('input[name="category"]:checked').change();
 
