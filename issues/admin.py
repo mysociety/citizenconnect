@@ -5,5 +5,6 @@ import reversion
 from .models import Problem
 
 class ProblemAdmin(reversion.VersionAdmin):
-        pass
+    list_display = ('reference_number', 'public', 'status', 'organisation')
+
 admin.site.register(Problem, ProblemAdmin)

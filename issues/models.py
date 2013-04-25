@@ -298,6 +298,9 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     def reference_number(self):
         return '{0}{1}'.format(self.PREFIX, self.id)
 
+    def __unicode__(self):
+        return self.reference_number
+
     @property
     def reporter_name_display(self):
         if self.public_reporter_name:

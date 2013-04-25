@@ -171,16 +171,33 @@ class ModerationFormTests(BaseModerationTestCase):
         resp = self.client.post(self.problem_form_url, self.form_values)
         self.assertFormError(resp, 'form', 'moderated_description', 'You must moderate a version of the problem details when publishing public problems.')
 
+
     def test_moderation_form_doesnt_requires_moderated_description_for_private_problems(self):
+        # make the problem public
         self.test_problem.public = False
         self.test_problem.save()
+
         # Re-Get the form as the client to set the initial session vars
-        self.client.get(self.problem_form_url)
-        expected_status = Problem.PUBLISHED
-        del self.form_values['moderated_description']
+        resp = self.client.get(self.problem_form_url)
+
+        # test that the no moderated desrciption message is shown
+        self.assertContains(resp, "no need for a moderated description")
+
+        # check that posting a moderated_description is ignored
+        self.form_values['moderated_description'] = 'this should be ignored'
         resp = self.client.post(self.problem_form_url, self.form_values)
         problem = Problem.objects.get(pk=self.test_problem.id)
-        self.assertEqual(problem.publication_status, expected_status)
+        self.assertEqual(problem.moderated_description, '')
+        self.assertEqual(problem.publication_status, Problem.PUBLISHED)
+
+        # submit again, but without the moderated_description field
+        del self.form_values['moderated_description']
+        resp = self.client.get(self.problem_form_url)
+        resp = self.client.post(self.problem_form_url, self.form_values)
+        problem = Problem.objects.get(pk=self.test_problem.id)
+        self.assertEqual(problem.moderated_description, '')
+        self.assertEqual(problem.publication_status, Problem.PUBLISHED)
+
 
     def test_moderation_form_doesnt_require_moderated_description_when_hiding_problems(self):
         expected_status = Problem.HIDDEN
