@@ -8,6 +8,7 @@ from citizenconnect.shortcuts import render
 from organisations.models import Organisation, Service
 from organisations.views import PickProviderBase, OrganisationAwareViewMixin, PrivateViewMixin
 from organisations.auth import enforce_problem_access_check
+from organisations.lib import interval_counts
 
 from .models import Problem
 from .forms import ProblemForm, ProblemSurveyForm
@@ -28,6 +29,7 @@ class ProblemCreate(OrganisationAwareViewMixin, CreateView):
         self.object.cobrand = context['cobrand']['name']
         self.object.save()
         context['object'] = self.object
+        context['summary'] = interval_counts(organisation_filters={'organisation_id': self.object.organisation.id})
         return render(self.request, self.confirm_template, context)
 
     def get_initial(self):
@@ -90,3 +92,7 @@ class ProblemSurvey(UpdateView):
          context = RequestContext(self.request)
          context['object'] = self.object
          return render(self.request, self.confirm_template, context)
+
+
+class CommonQuestions(TemplateView):
+    template_name = 'issues/common_questions.html'

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load url from future %}
+
+{% block title %}Ask a question{% endblock %}
+
+{% block bodyclasses %}ask-question{% endblock %}
+
+{% block content %}
+
+<div class="header">
+    <h1>Common questions</h1>
+</div>
+
+<ul class="gw  gridded-list">
+  <li class="g  one-third  palm-one-whole">
+    <a href="http://www.nhs.uk/Service-Search/Hub/Hub" class="btn  btn--med  btn--no-border  btn--light-green">I need the contact details for my local GP</a>
+  </li>
+  <li class="g  one-third  palm-one-whole">
+    <a href="http://www.nhs.uk/Service-Search/Hub/Hub" class="btn  btn--med  btn--no-border  btn--red">Where is my nearest hospital?</a>
+  </li>
+  <li class="g  one-third  palm-one-whole">
+    <a href="http://www.nhs.uk/Conditions/Pages/hub.aspx" class="btn  btn--med  btn--no-border  btn--purple">What could my symptoms be?</a>
+  </li>
+  <li class="g  one-third  palm-one-whole  cl">
+    <a href="http://www.nhs.uk/nhsengland/healthcareabroad/ehic/pages/about-the-ehic.aspx" class="btn  btn--med  btn--no-border  btn--dark-pink">How do I get an EHIC health travel card?</a>
+  </li>
+  <li class="g  one-third  palm-one-whole ">
+    <a href="http://www.nhs.uk/nhsengland/healthcareabroad/ehic/pages/about-the-ehic.aspx" class="btn  btn--med  btn--no-border">Why do dentists charge for NHS services?</a>
+  </li>
+  <li class="g  one-third  palm-one-whole">
+    <a href="http://www.nhs.uk/tools/pages/healthyweightcalculator.aspx" class="btn  btn--med  btn--no-border  btn--dark-green">Am I a healthy weight? Calculate my BMI</a>
+  </li>
+  <li class="g  one-third  palm-one-whole  cl">
+    <a href="http://www.nhs.uk/conditions/pregnancy-and-baby/pages/pregnancy-and-baby-care.aspx" class="btn  btn--med  btn--no-border  btn--blue">I want pregnancy advice</a>
+  </li>
+  <li class="g  one-third  palm-one-whole">
+    <a href="http://www.nhs.uk/conditions/pregnancy-and-baby/pages/pregnancy-and-baby-care.aspx" class="btn  btn--med  btn--no-border  btn--dark-blue">I want advice for my baby&rsquo;s health</a>
+  </li>
+  <li class="g  one-third  palm-one-whole">
+    <a href="http://www.nhs.uk/conditions/chickenpox/pages/introduction.aspx" class="btn  btn--med  btn--no-border  btn--dark-red">How long is chickenpox contagious?</a>
+  </li>
+</ul>
+<p class='info'>
+    Please note this feature is currently limited to services only within London and the North East of England. As the service develops we will be expanding to include more areas.
+</p>
+{% endblock %}
