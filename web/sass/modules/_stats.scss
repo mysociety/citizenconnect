@@ -1,0 +1,20 @@
+// Stats on the problem confirmation page.
+
+.stats-box {
+  color: $c-aquablue;
+}
+
+.stats-number {
+  @extend .grid;
+  @extend .one-third;
+  text-align: right;
+  font-size: 3em;
+  font-weight: bold;
+}
+
+.stats-text {
+  @extend .grid;
+  @extend .two-thirds;
+  font-size: 1.5em;
+  vertical-align: center;
+}
