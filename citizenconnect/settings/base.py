@@ -137,7 +137,7 @@ INSTALLED_APPS = (
     'pagination',
     'organisations',
     'issues',
-    'reviews',
+    'reviews-submit',
     'moderation',
     'api',
     'responses',
