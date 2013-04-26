@@ -534,6 +534,24 @@ class ProblemManagerTests(ManagerTest):
             'commissioned': Problem.LOCALLY_COMMISSIONED,
         })
 
+        self.escalated_acknowledged_public_moderated_problem_published = create_test_problem({
+            'organisation': self.test_organisation,
+            'public': True,
+            'moderated': Problem.MODERATED,
+            'publication_status': Problem.PUBLISHED,
+            'status': Problem.ESCALATED_ACKNOWLEDGED,
+            'commissioned': Problem.LOCALLY_COMMISSIONED,
+        })
+
+        self.escalated_resolved_public_moderated_problem_published = create_test_problem({
+            'organisation': self.test_organisation,
+            'public': True,
+            'moderated': Problem.MODERATED,
+            'publication_status': Problem.PUBLISHED,
+            'status': Problem.ESCALATED_RESOLVED,
+            'commissioned': Problem.LOCALLY_COMMISSIONED,
+        })
+
         # Unmoderated escalated problems
         self.escalated_private_unmoderated_problem = create_test_problem({
             'organisation': self.test_organisation,
@@ -596,6 +614,7 @@ class ProblemManagerTests(ManagerTest):
                                         self.new_private_moderated_problem_hidden,
                                         self.new_private_moderated_problem_published,
                                         self.escalated_public_moderated_problem_published,
+                                        self.escalated_acknowledged_public_moderated_problem_published,
                                         self.public_problem_requiring_second_tier_moderation,
                                         self.private_problem_requiring_second_tier_moderation,
                                         self.breach_public_moderated_problem_published]
@@ -604,14 +623,16 @@ class ProblemManagerTests(ManagerTest):
                                                                    self.closed_private_moderated_problem_hidden,
                                                                    self.closed_private_moderated_problem_published,
                                                                    self.public_published_unresolvable_problem,
-                                                                   self.public_published_abusive_problem]
+                                                                   self.public_published_abusive_problem,
+                                                                   self.escalated_resolved_public_moderated_problem_published]
 
         self.closed_resolved_problems = self.closed_unmoderated_problems + [self.closed_public_moderated_problem_hidden,
                                                                             self.closed_public_moderated_problem_published,
                                                                             self.closed_private_moderated_problem_hidden,
                                                                             self.closed_private_moderated_problem_published,
                                                                             self.public_published_unresolvable_problem,
-                                                                            self.public_published_abusive_problem]
+                                                                            self.public_published_abusive_problem,
+                                                                            self.escalated_resolved_public_moderated_problem_published]
 
         # Lists that we expect from our manager's methods
         self.unmoderated_problems = self.open_unmoderated_problems + self.closed_unmoderated_problems
@@ -619,19 +640,23 @@ class ProblemManagerTests(ManagerTest):
         self.open_moderated_published_visible_problems = [self.new_public_moderated_problem_published,
                                                           self.new_private_moderated_problem_published,
                                                           self.escalated_public_moderated_problem_published,
+                                                          self.escalated_acknowledged_public_moderated_problem_published,
                                                           self.breach_public_moderated_problem_published]
 
         self.closed_moderated_published_visible_problems = [self.closed_public_moderated_problem_published,
-                                                            self.closed_private_moderated_problem_published]
+                                                            self.closed_private_moderated_problem_published,
+                                                            self.escalated_resolved_public_moderated_problem_published]
 
         self.all_problems = self.open_problems + self.closed_problems
         self.all_moderated_published_problems = self.open_moderated_published_visible_problems + [self.closed_public_moderated_problem_published,
-                                                                                                  self.closed_private_moderated_problem_published]
+                                                                                                  self.closed_private_moderated_problem_published,
+                                                                                                  self.escalated_resolved_public_moderated_problem_published]
         self.problems_requiring_second_tier_moderation = [self.public_problem_requiring_second_tier_moderation,
                                                           self.private_problem_requiring_second_tier_moderation]
 
         self.open_escalated_problems = [self.escalated_public_moderated_problem_published,
-                                        self.escalated_private_unmoderated_problem]
+                                        self.escalated_private_unmoderated_problem,
+                                        self.escalated_acknowledged_public_moderated_problem_published]
 
     def test_all_problems_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.all(), self.all_problems)
