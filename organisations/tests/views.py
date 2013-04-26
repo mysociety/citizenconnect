@@ -1118,7 +1118,6 @@ class EscalationDashboardTests(AuthorizationTestCase):
         self.org_local_escalated_problem = create_test_problem({'organisation': self.test_organisation,
                                                                 'status': Problem.ESCALATED,
                                                                 'commissioned': Problem.LOCALLY_COMMISSIONED})
-
         self.org_national_escalated_problem = create_test_problem({'organisation': self.test_organisation,
                                                                    'status': Problem.ESCALATED,
                                                                    'commissioned': Problem.NATIONALLY_COMMISSIONED})
@@ -1128,6 +1127,13 @@ class EscalationDashboardTests(AuthorizationTestCase):
         self.other_org_national_escalated_problem = create_test_problem({'organisation': self.other_test_organisation,
                                                                          'status': Problem.ESCALATED,
                                                                          'commissioned': Problem.NATIONALLY_COMMISSIONED})
+
+        self.org_local_escalated_acknowledged_problem = create_test_problem({'organisation': self.test_organisation,
+                                                                             'status': Problem.ESCALATED_ACKNOWLEDGED,
+                                                                             'commissioned': Problem.LOCALLY_COMMISSIONED})
+        self.org_local_escalated_resolved_problem = create_test_problem({'organisation': self.test_organisation,
+                                                                         'status': Problem.ESCALATED_RESOLVED,
+                                                                         'commissioned': Problem.LOCALLY_COMMISSIONED})
         # Add two services to the test org
         self.service_one = create_test_service({'organisation': self.test_organisation})
         self.service_two = create_test_service({'organisation': self.test_organisation,
@@ -1152,8 +1158,14 @@ class EscalationDashboardTests(AuthorizationTestCase):
         resp = self.client.get(self.escalation_dashboard_url)
         self.assertContains(resp, self.org_local_escalated_problem.reference_number)
         self.assertContains(resp, self.org_national_escalated_problem.reference_number)
+        self.assertContains(resp, self.org_local_escalated_acknowledged_problem.reference_number)
         self.assertContains(resp, self.other_org_local_escalated_problem.reference_number)
         self.assertContains(resp, self.other_org_national_escalated_problem.reference_number)
+
+    def test_dashboard_doesnt_show_escalated_resolved_problem(self):
+        self.login_as(self.nhs_superuser)
+        resp = self.client.get(self.escalation_dashboard_url)
+        self.assertNotContains(resp, self.org_local_escalated_resolved_problem.reference_number)
 
     def test_dashboard_only_shows_locally_commissioned_problems_to_escalation_ccg_organisations(self):
         self.login_as(self.ccg_user)
