@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 from django.db import models
 
 from citizenconnect.models import AuditedModel
@@ -14,13 +16,13 @@ class Review(AuditedModel):
 class Rating(models.Model):
     review = models.ForeignKey('Review')
     question = models.ForeignKey('Question')
-    answer = models.ForeignKey('AnswerOption')
+    answer = models.ForeignKey('Answer')
 
 class Question(models.Model):
     title = models.CharField(max_length=255)
-    updated = models.DateTimeField()
+    updated = models.DateTimeField(default=timezone.now)
 
-class AnswerOption(models.Model):
+class Answer(models.Model):
     text = models.CharField(max_length=255)
     value = models.IntegerField()
     question = models.ForeignKey('Question')
