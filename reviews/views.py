@@ -6,7 +6,7 @@ from citizenconnect.shortcuts import render
 from organisations.views import PickProviderBase
 
 class PickProvider(PickProviderBase):
-    result_link_url_name = 'reviews-pick-provider'
+    result_link_url_name = 'review-form'
 
 class ReviewForm(TemplateView):
     template_name = 'reviews/review-form.html'
