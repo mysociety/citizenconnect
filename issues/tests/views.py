@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from organisations.tests import create_test_problem, create_test_organisation, AuthorizationTestCase
+from organisations.tests import create_test_problem, AuthorizationTestCase
 from responses.models import ProblemResponse
 
 from ..models import Problem
@@ -13,22 +13,22 @@ class ProblemPublicViewTests(AuthorizationTestCase):
     def setUp(self):
         super(ProblemPublicViewTests, self).setUp()
         self.test_moderated_problem = create_test_problem({'organisation': self.test_organisation,
-                                                                     'moderated': Problem.MODERATED,
-                                                                     'publication_status': Problem.PUBLISHED,
-                                                                     'moderated_description': "A moderated description"})
+                                                           'moderated': Problem.MODERATED,
+                                                           'publication_status': Problem.PUBLISHED,
+                                                           'moderated_description': "A moderated description"})
         self.test_unmoderated_problem = create_test_problem({'organisation': self.test_organisation})
         self.test_private_problem = create_test_problem({'organisation': self.test_organisation,
-                                                                   'public':False,
-                                                                   'public_reporter_name':False,
-                                                                   'moderated': Problem.MODERATED,
-                                                                   'publication_status': Problem.PUBLISHED})
+                                                         'public': False,
+                                                         'public_reporter_name': False,
+                                                         'moderated': Problem.MODERATED,
+                                                         'publication_status': Problem.PUBLISHED})
 
         self.test_moderated_problem_url = reverse('problem-view', kwargs={'pk': self.test_moderated_problem.id,
-                                                                            'cobrand':'choices'})
+                                                                          'cobrand': 'choices'})
         self.test_unmoderated_problem_url = reverse('problem-view', kwargs={'pk': self.test_unmoderated_problem.id,
-                                                                              'cobrand':'choices'})
+                                                                            'cobrand': 'choices'})
         self.test_private_problem_url = reverse('problem-view', kwargs={'pk': self.test_private_problem.id,
-                                                                          'cobrand':'choices'})
+                                                                        'cobrand': 'choices'})
 
     def test_public_problem_page_exists(self):
         resp = self.client.get(self.test_moderated_problem_url)
@@ -146,21 +146,23 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         self.assertNotContains(resp, self.test_moderated_problem.description)
         self.assertContains(resp, self.test_moderated_problem.moderated_description)
 
+
 class ProblemProviderPickerTests(TestCase):
 
     def setUp(self):
-        pick_provider_url = reverse('problems-pick-provider', kwargs={'cobrand':'choices'})
+        pick_provider_url = reverse('problems-pick-provider', kwargs={'cobrand': 'choices'})
         self.results_url = "{0}?organisation_type={1}&location={2}".format(pick_provider_url, 'gppractices', 'London')
 
     def test_results_page_exists(self):
         resp = self.client.get(self.results_url)
         self.assertEqual(resp.status_code, 200)
 
+
 class ProblemSurveyTests(AuthorizationTestCase):
 
     def setUp(self):
         super(ProblemSurveyTests, self).setUp()
-        self.test_problem = create_test_problem({'organisation':self.test_organisation})
+        self.test_problem = create_test_problem({'organisation': self.test_organisation})
         self.form_page = reverse('survey-form', kwargs={'cobrand': 'choices',
                                                         'response': 'n',
                                                         'id': int_to_base32(self.test_problem.id),
@@ -181,7 +183,7 @@ class ProblemSurveyTests(AuthorizationTestCase):
 
     def test_form_page_records_the_happy_service_no_response(self):
         self.assertEqual(self.test_problem.happy_service, None)
-        resp = self.client.get(self.form_page)
+        self.client.get(self.form_page)
         test_problem = Problem.objects.get(id=self.test_problem.id)
         self.assertEqual(test_problem.happy_service, False)
 
@@ -191,6 +193,6 @@ class ProblemSurveyTests(AuthorizationTestCase):
                                                    'id': int_to_base32(self.test_problem.id),
                                                    'token': self.test_problem.make_token(5555)})
         self.assertEqual(self.test_problem.happy_service, None)
-        resp = self.client.get(form_page)
+        self.client.get(form_page)
         test_problem = Problem.objects.get(id=self.test_problem.id)
         self.assertEqual(test_problem.happy_service, True)
