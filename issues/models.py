@@ -2,7 +2,8 @@ import logging
 logger = logging.getLogger(__name__)
 
 from datetime import datetime, timedelta
-import hmac, hashlib
+import hmac
+import hashlib
 
 from django.db import models
 from django.conf import settings
@@ -20,13 +21,13 @@ from concurrency.fields import IntegerVersionField
 from concurrency.api import concurrency_check
 
 from citizenconnect.models import AuditedModel
-from .lib import base32_to_int, int_to_base32, MistypedIDException
+from .lib import base32_to_int, int_to_base32
+
 
 class ProblemQuerySet(models.query.QuerySet):
 
     # The fields to sort by. Used in the tables code.
     ORDER_BY_FIELDS_FOR_MODERATION_TABLE = ('priority', 'created')
-
 
     def order_for_moderation_table(self):
         """
@@ -82,7 +83,6 @@ class ProblemManager(models.Manager):
                                  publication_status=Problem.PUBLISHED,
                                  status__in=Problem.VISIBLE_STATUSES)
 
-
     def problems_requiring_second_tier_moderation(self):
         return self.all().filter(requires_second_tier_moderation=True)
 
@@ -93,6 +93,7 @@ class ProblemManager(models.Manager):
     def open_unescalated_problems(self):
         return self.all().filter(Q(status__in=Problem.OPEN_STATUSES) &
                                  Q(status__in=Problem.NON_ESCALATION_STATUSES))
+
 
 class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     # Custom manager
@@ -106,6 +107,8 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     REFERRED_TO_OTHER_PROVIDER = 5
     UNABLE_TO_CONTACT = 6
     ABUSIVE = 7
+    ESCALATED_ACKNOWLEDGED = 8
+    ESCALATED_RESOLVED = 9
 
     STATUS_CHOICES = (
         (NEW, 'Open'),
@@ -116,28 +119,31 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         (REFERRED_TO_OTHER_PROVIDER, 'Referred to Another Provider'),
         (UNABLE_TO_CONTACT, 'Unable to Contact'),
         (ABUSIVE, 'Abusive/Vexatious'),
+        (ESCALATED_ACKNOWLEDGED, 'Escalated - In Progress'),
+        (ESCALATED_RESOLVED, 'Escalated - Resolved'),
     )
 
     # The numerical value of the priorities should be chosen so that when sorted
     # ascending higher priorities come first. Please leave gaps in the range so that
     # future priority levels can be added without changing the existing ones.
-    PRIORITY_HIGH   = 20
+    PRIORITY_HIGH = 20
     PRIORITY_NORMAL = 50
 
     PRIORITY_CHOICES = (
-        (PRIORITY_HIGH,   'High'  ),
+        (PRIORITY_HIGH, 'High'),
         (PRIORITY_NORMAL, 'Normal'),
     )
 
     # Assigning individual statuses to status sets
     BASE_OPEN_STATUSES = [NEW, ACKNOWLEDGED]
-    ESCALATION_STATUSES = [ESCALATED]
+    OPEN_ESCALATION_STATUSES = [ESCALATED, ESCALATED_ACKNOWLEDGED]
     HIDDEN_STATUSES = [UNABLE_TO_RESOLVE, REFERRED_TO_OTHER_PROVIDER, UNABLE_TO_CONTACT, ABUSIVE]
 
     # Calculated status sets
     ALL_STATUSES = [status for status, description in STATUS_CHOICES]
-    OPEN_STATUSES = BASE_OPEN_STATUSES + ESCALATION_STATUSES
-    CLOSED_STATUSES = [RESOLVED, UNABLE_TO_RESOLVE, UNABLE_TO_CONTACT, ABUSIVE]
+    OPEN_STATUSES = BASE_OPEN_STATUSES + OPEN_ESCALATION_STATUSES
+    CLOSED_STATUSES = [RESOLVED, UNABLE_TO_RESOLVE, UNABLE_TO_CONTACT, ABUSIVE, ESCALATED_RESOLVED]
+    ESCALATION_STATUSES = OPEN_ESCALATION_STATUSES + [ESCALATED_RESOLVED]
     NON_ESCALATION_STATUSES = [status for status in ALL_STATUSES if status not in ESCALATION_STATUSES]
     VISIBLE_STATUSES = [status for status in ALL_STATUSES if status not in HIDDEN_STATUSES]
     VISIBLE_STATUS_CHOICES = [(status, description) for status, description in STATUS_CHOICES if status in VISIBLE_STATUSES]
@@ -158,37 +164,37 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     NATIONALLY_COMMISSIONED = 1
 
     COMMISSIONED_CHOICES = ((LOCALLY_COMMISSIONED, "Locally Commissioned"),
-                                   (NATIONALLY_COMMISSIONED, "Nationally Commissioned"))
+                            (NATIONALLY_COMMISSIONED, "Nationally Commissioned"))
 
     CATEGORY_CHOICES = (
-       (u'staff', u'Staff Attitude'),
-       (u'access', u'Access to Service'),
-       (u'delays', u'Delays'),
-       (u'treatment', u'Your Treatment'),
-       (u'communication', u'Communication'),
-       (u'cleanliness', u'Cleanliness'),
-       (u'equipment', u'Equipment'),
-       (u'medicines', u'Medicines'),
-       (u'food', u'Food'),
-       (u'dignity', u'Dignity and Privacy'),
-       (u'parking', u'Parking'),
-       (u'lostproperty', u'Lost Property'),
-       (u'other', u'Other'),
+        (u'staff', u'Staff Attitude'),
+        (u'access', u'Access to Service'),
+        (u'delays', u'Delays'),
+        (u'treatment', u'Your Treatment'),
+        (u'communication', u'Communication'),
+        (u'cleanliness', u'Cleanliness'),
+        (u'equipment', u'Equipment'),
+        (u'medicines', u'Medicines'),
+        (u'food', u'Food'),
+        (u'dignity', u'Dignity and Privacy'),
+        (u'parking', u'Parking'),
+        (u'lostproperty', u'Lost Property'),
+        (u'other', u'Other'),
     )
 
     CATEGORY_DESCRIPTIONS = {'staff': 'Bedside manner and attitude of staff',
-                            'access': 'Difficulty getting appointments, long waiting times',
-                            'delays': 'Delays in care, e.g. referrals and test results',
-                            'treatment': 'Wrong advice / unsafe care / refusal of treatment / consent',
-                            'communication': 'Communications and administration e.g. letters',
-                            'cleanliness': 'Cleanliness and facilities',
-                            'equipment': 'Problems with equipment, aids and devices',
-                            'medicines': 'Problems with medicines',
-                            'food': '', # TODO Add long description
-                            'dignity': 'Privacy, dignity, confidentiality',
-                            'parking': 'Problems with parking / charges',
-                            'lostproperty': 'Lost property',
-                            'other': ''}
+                             'access': 'Difficulty getting appointments, long waiting times',
+                             'delays': 'Delays in care, e.g. referrals and test results',
+                             'treatment': 'Wrong advice / unsafe care / refusal of treatment / consent',
+                             'communication': 'Communications and administration e.g. letters',
+                             'cleanliness': 'Cleanliness and facilities',
+                             'equipment': 'Problems with equipment, aids and devices',
+                             'medicines': 'Problems with medicines',
+                             'food': '',  # TODO Add long description
+                             'dignity': 'Privacy, dignity, confidentiality',
+                             'parking': 'Problems with parking / charges',
+                             'lostproperty': 'Lost property',
+                             'other': ''}
 
     # Not all categories may have elevated priorites set when the issue is
     # reported.
@@ -214,16 +220,16 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     # Names for transitions between statuses we might want to print
     TRANSITIONS = {
         'status': {
-            'Acknowledged': [[NEW, ACKNOWLEDGED]],
+            'Acknowledged': [[NEW, ACKNOWLEDGED], [ESCALATED, ESCALATED_ACKNOWLEDGED]],
             'Escalated': [[NEW, ESCALATED], [ACKNOWLEDGED, ESCALATED]],
-            'Resolved': [[ACKNOWLEDGED, RESOLVED], [ESCALATED, RESOLVED]]
+            'Resolved': [[ACKNOWLEDGED, RESOLVED], [ESCALATED_ACKNOWLEDGED, ESCALATED_RESOLVED]]
         },
         'publication_status': {
-            'Published':[[HIDDEN, PUBLISHED]],
-            'Hidden':[[PUBLISHED, HIDDEN]]
+            'Published': [[HIDDEN, PUBLISHED]],
+            'Hidden': [[PUBLISHED, HIDDEN]]
         },
         'moderated': {
-            'Moderated':[[NOT_MODERATED, MODERATED]]
+            'Moderated': [[NOT_MODERATED, MODERATED]]
         }
     }
 
@@ -291,7 +297,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('problem-view', (),  {'pk': self.id, 'cobrand': 'choices'} )
+        return ('problem-view', (),  {'pk': self.id, 'cobrand': 'choices'})
 
     @property
     def reference_number(self):
@@ -339,7 +345,6 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         if self.preferred_contact_method == self.CONTACT_PHONE and not self.reporter_phone:
             raise ValidationError('You must provide a phone number if you prefer to be contacted by phone')
 
-
     def summarise(self, field):
         summary_length = 30
         if len(field) > summary_length:
@@ -354,23 +359,29 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         in a visible status and has been moderated to be publically available,
         otherwise only people with access to the organisation it is assigned to can access it.
         """
-        return (self.public \
-                and self.publication_status == Problem.PUBLISHED and \
+        return (self.public
+                and self.publication_status == Problem.PUBLISHED and
                 int(self.status) in Problem.VISIBLE_STATUSES) \
                 or self.organisation.can_be_accessed_by(user)
 
     def set_time_to_values(self):
         now = datetime.utcnow().replace(tzinfo=utc)
         minutes_since_created = self.timedelta_to_minutes(now - self.created)
-        if self.time_to_acknowledge == None and int(self.status) in [Problem.ACKNOWLEDGED, Problem.RESOLVED]:
+        statuses_which_indicate_acknowledgement = [Problem.ACKNOWLEDGED,
+                                                   Problem.RESOLVED,
+                                                   Problem.ESCALATED_ACKNOWLEDGED,
+                                                   Problem.ESCALATED_RESOLVED]
+        statuses_which_indicate_resolution = [Problem.RESOLVED,
+                                              Problem.ESCALATED_RESOLVED]
+        if self.time_to_acknowledge is None and int(self.status) in statuses_which_indicate_acknowledgement:
             self.time_to_acknowledge = minutes_since_created
-        if self.time_to_address == None and int(self.status) == Problem.RESOLVED:
+        if self.time_to_address is None and int(self.status) in statuses_which_indicate_resolution:
             self.time_to_address = minutes_since_created
 
     def save(self, *args, **kwargs):
         """Override the default model save() method in order to populate time_to_acknowledge
         or time_to_address if appropriate."""
-        concurrency_check(self, *args, **kwargs) # Do a concurrency check
+        concurrency_check(self, *args, **kwargs)  # Do a concurrency check
 
         if self.created:
             self.set_time_to_values()
@@ -383,7 +394,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         else:
             previous_status_value = None
 
-        super(Problem, self).save(*args, **kwargs) # Call the "real" save() method.
+        super(Problem, self).save(*args, **kwargs)  # Call the "real" save() method.
 
         # This should be run by the post-save signal, but it does not seem to
         # run. Adding it here manually to get it working. See https://github.com/smn/django-dirtyfields/blob/master/src/dirtyfields/dirtyfields.py
@@ -422,7 +433,6 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         seconds_in_minutes = timedelta.seconds / 60
         return days_in_minutes + seconds_in_minutes
 
-
     def send_escalation_email(self):
         """
         Send the escalation email. Throws exception if status is not 'ESCALATED'.
@@ -444,8 +454,8 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         logger.info('Sending escalation email for {0}'.format(self))
 
         kwargs = dict(
-            subject        = subject_template.render(context),
-            message        = message_template.render(context),
+            subject=subject_template.render(context),
+            message=message_template.render(context),
         )
 
         if self.commissioned == self.LOCALLY_COMMISSIONED:
@@ -460,4 +470,3 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
             )
         else:
             raise ValueError("commissioned must be set to select destination for escalation email for {0}".format(self))
-

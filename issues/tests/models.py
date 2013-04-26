@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-from random import randint
 from mock import patch
 
 from django.test import TestCase, TransactionTestCase
@@ -8,13 +7,12 @@ from django.core import mail
 from django.core.exceptions import ValidationError
 from django.utils.timezone import utc
 
-from concurrency.exceptions import RecordModifiedError
 from concurrency.utils import ConcurrencyTestMixin
 
 from organisations.tests.lib import create_test_organisation, create_test_problem, AuthorizationTestCase
 
 from ..models import Problem
-from ..lib import MistypedIDException
+
 
 class ProblemTestCase(AuthorizationTestCase):
 
@@ -79,8 +77,8 @@ class ProblemTestCase(AuthorizationTestCase):
                                                   time_to_address=None,
                                                   cobrand='choices')
 
-class ProblemModelTests(ProblemTestCase):
 
+class ProblemModelTests(ProblemTestCase):
 
     def test_get_absolute_url(self):
         self.test_problem.save()
@@ -229,11 +227,11 @@ class ProblemModelTests(ProblemTestCase):
 
     def test_has_elevated_priority(self):
         problem = self.test_problem
-        self.assertEqual( problem.priority, Problem.PRIORITY_NORMAL )
-        self.assertEqual( problem.has_elevated_priority, False )
+        self.assertEqual(problem.priority, Problem.PRIORITY_NORMAL)
+        self.assertEqual(problem.has_elevated_priority, False)
         problem.priority = Problem.PRIORITY_HIGH
-        self.assertEqual( problem.priority, Problem.PRIORITY_HIGH )
-        self.assertEqual( problem.has_elevated_priority, True )
+        self.assertEqual(problem.priority, Problem.PRIORITY_HIGH)
+        self.assertEqual(problem.has_elevated_priority, True)
 
     def test_limits_description_to_2000_chars(self):
         long_problem = self.test_problem
@@ -242,6 +240,7 @@ class ProblemModelTests(ProblemTestCase):
         with self.assertRaises(ValidationError) as context_manager:
             long_problem.full_clean()
         self.assertEqual(context_manager.exception.messages[1], 'Ensure this value has at most 2000 characters (it has 2001).')
+
 
 class ProblemModelTimeToTests(ProblemTestCase):
 
@@ -276,8 +275,18 @@ class ProblemModelTimeToTests(ProblemTestCase):
         self.test_problem.save()
         self.assertEqual(self.test_problem.time_to_acknowledge, 7200)
 
+    def test_sets_time_to_ack_when_saved_in_escalated_ack_status_and_time_to_ack_not_set(self):
+        self.test_problem.status = Problem.ESCALATED_ACKNOWLEDGED
+        self.test_problem.save()
+        self.assertEqual(self.test_problem.time_to_acknowledge, 7200)
+
     def test_sets_time_to_address_when_saved_in_resolved_status_and_time_to_address_not_set(self):
         self.test_problem.status = Problem.RESOLVED
+        self.test_problem.save()
+        self.assertEqual(self.test_problem.time_to_address, 7200)
+
+    def test_sets_time_to_address_when_saved_in_escalated_resolved_status_and_time_to_address_not_set(self):
+        self.test_problem.status = Problem.ESCALATED_RESOLVED
         self.test_problem.save()
         self.assertEqual(self.test_problem.time_to_address, 7200)
 
@@ -310,16 +319,15 @@ class ProblemModelConcurrencyTests(TransactionTestCase, ConcurrencyTestMixin):
         # These are needed for ConcurrencyTestMixin to run its' tests
         self.concurrency_model = Problem
         self.concurrency_kwargs = {'organisation': self.test_organisation,
-                            'description': 'A Test Problem',
-                            'category': 'cleanliness',
-                            'reporter_name': 'Test User',
-                            'reporter_email': 'reporter@example.com',
-                            'reporter_phone': '01111 111 111',
-                            'public': True,
-                            'public_reporter_name': True,
-                            'preferred_contact_method': Problem.CONTACT_EMAIL,
-                            'status': Problem.NEW}
-
+                                   'description': 'A Test Problem',
+                                   'category': 'cleanliness',
+                                   'reporter_name': 'Test User',
+                                   'reporter_email': 'reporter@example.com',
+                                   'reporter_phone': '01111 111 111',
+                                   'public': True,
+                                   'public_reporter_name': True,
+                                   'preferred_contact_method': Problem.CONTACT_EMAIL,
+                                   'status': Problem.NEW}
 
 
 class ProblemModelEscalationTests(ProblemTestCase):
@@ -334,13 +342,13 @@ class ProblemModelEscalationTests(ProblemTestCase):
 
     def test_send_escalation_email_method_raises_when_not_escalated(self):
         problem = self.test_problem
-        self.assertTrue( problem.status != Problem.ESCALATED )
+        self.assertTrue(problem.status != Problem.ESCALATED)
         self.assertRaises(ValueError, problem.send_escalation_email)
 
     def test_send_escalation_email_method_not_commissioned(self):
         problem = self.test_problem
         problem.status = Problem.ESCALATED
-        problem.commissioned = None # deliberately not set
+        problem.commissioned = None  # deliberately not set
 
         self.assertRaises(ValueError, problem.send_escalation_email)
 
@@ -353,11 +361,10 @@ class ProblemModelEscalationTests(ProblemTestCase):
 
         self.assertEqual(len(mail.outbox), 2)
 
-        intro_email      = mail.outbox[0]
         escalation_email = mail.outbox[1]
 
-        self.assertTrue( "Problem has been escalated" in escalation_email.subject )
-        self.assertEqual( escalation_email.to, ['ccg@example.org'] )
+        self.assertTrue("Problem has been escalated" in escalation_email.subject)
+        self.assertEqual(escalation_email.to, ['ccg@example.org'])
 
     def test_send_escalation_email_method_nationally_commissioned(self):
         problem = self.test_problem
@@ -370,8 +377,8 @@ class ProblemModelEscalationTests(ProblemTestCase):
 
         escalation_email = mail.outbox[0]
 
-        self.assertTrue( "Problem has been escalated" in escalation_email.subject )
-        self.assertEqual( escalation_email.to, settings.CUSTOMER_CONTACT_CENTRE_EMAIL_ADDRESSES )
+        self.assertTrue("Problem has been escalated" in escalation_email.subject)
+        self.assertEqual(escalation_email.to, settings.CUSTOMER_CONTACT_CENTRE_EMAIL_ADDRESSES)
 
     def test_send_escalation_email_called_on_save(self):
         problem = self.test_problem
@@ -381,30 +388,30 @@ class ProblemModelEscalationTests(ProblemTestCase):
             # Save the problem for the first time, should not send
             self.assertTrue(problem.status != Problem.ESCALATED)
             problem.save()
-            self.assertFalse( mocked_send.called )
+            self.assertFalse(mocked_send.called)
 
             # change the status to Escalated
             problem.status = Problem.ESCALATED
             problem.save()
-            self.assertTrue( mocked_send.called )
+            self.assertTrue(mocked_send.called)
 
             # Save it again
             mocked_send.reset_mock()
             self.assertTrue(problem.status == Problem.ESCALATED)
             problem.save()
-            self.assertFalse( mocked_send.called )
+            self.assertFalse(mocked_send.called)
 
             # Change it to not escalated
             mocked_send.reset_mock()
             problem.status = Problem.ACKNOWLEDGED
             problem.save()
-            self.assertFalse( mocked_send.called )
+            self.assertFalse(mocked_send.called)
 
             # Escalate again
             mocked_send.reset_mock()
             problem.status = Problem.ESCALATED
             problem.save()
-            self.assertTrue( mocked_send.called )
+            self.assertTrue(mocked_send.called)
 
     def test_send_escalation_email_called_on_create_escalated(self):
         problem = Problem(
@@ -423,7 +430,7 @@ class ProblemModelEscalationTests(ProblemTestCase):
         # save object
         with patch.object(problem, 'send_escalation_email') as mocked_send:
             problem.save()
-            self.assertTrue( mocked_send.called )
+            self.assertTrue(mocked_send.called)
 
 
 class ManagerTest(TestCase):
@@ -433,6 +440,7 @@ class ManagerTest(TestCase):
         for model in expected:
             self.assertTrue(model in actual)
 
+
 class ProblemManagerTests(ManagerTest):
 
     def setUp(self):
@@ -441,95 +449,113 @@ class ProblemManagerTests(ManagerTest):
         # Brand new problems
         self.new_public_unmoderated_problem = create_test_problem({
             'organisation': self.test_organisation,
-            'public':True
+            'public': True
         })
         self.new_private_unmoderated_problem = create_test_problem({
             'organisation': self.test_organisation,
-            'public':False
+            'public': False
         })
 
         # Problems that have been closed before being moderated
         self.closed_public_unmoderated_problem = create_test_problem({
             'organisation': self.test_organisation,
-            'public':True,
-            'status':Problem.RESOLVED
+            'public': True,
+            'status': Problem.RESOLVED
         })
         self.closed_private_unmoderated_problem = create_test_problem({
             'organisation': self.test_organisation,
-            'public':False,
-            'status':Problem.RESOLVED
+            'public': False,
+            'status': Problem.RESOLVED
         })
 
         # Problems that have been moderated
         self.new_public_moderated_problem_hidden = create_test_problem({
             'organisation': self.test_organisation,
-            'public':True,
-            'moderated':Problem.MODERATED,
-            'publication_status':Problem.HIDDEN
+            'public': True,
+            'moderated': Problem.MODERATED,
+            'publication_status': Problem.HIDDEN
         })
         self.new_public_moderated_problem_published = create_test_problem({
             'organisation': self.test_organisation,
-            'public':True,
-            'moderated':Problem.MODERATED,
-            'publication_status':Problem.PUBLISHED
+            'public': True,
+            'moderated': Problem.MODERATED,
+            'publication_status': Problem.PUBLISHED
         })
         self.new_private_moderated_problem_hidden = create_test_problem({
             'organisation': self.test_organisation,
-            'public':False,
-            'moderated':Problem.MODERATED,
-            'publication_status':Problem.HIDDEN
+            'public': False,
+            'moderated': Problem.MODERATED,
+            'publication_status': Problem.HIDDEN
         })
         self.new_private_moderated_problem_published = create_test_problem({
             'organisation': self.test_organisation,
-            'public':False,
-            'moderated':Problem.MODERATED,
-            'publication_status':Problem.PUBLISHED
+            'public': False,
+            'moderated': Problem.MODERATED,
+            'publication_status': Problem.PUBLISHED
         })
 
         # Problems that have been closed and moderated
         self.closed_public_moderated_problem_hidden = create_test_problem({
             'organisation': self.test_organisation,
-            'public':True,
-            'moderated':Problem.MODERATED,
-            'publication_status':Problem.HIDDEN,
+            'public': True,
+            'moderated': Problem.MODERATED,
+            'publication_status': Problem.HIDDEN,
             'status': Problem.RESOLVED
         })
         self.closed_public_moderated_problem_published = create_test_problem({
             'organisation': self.test_organisation,
-            'public':True,
-            'moderated':Problem.MODERATED,
-            'publication_status':Problem.PUBLISHED,
+            'public': True,
+            'moderated': Problem.MODERATED,
+            'publication_status': Problem.PUBLISHED,
             'status': Problem.RESOLVED
         })
         self.closed_private_moderated_problem_hidden = create_test_problem({
             'organisation': self.test_organisation,
-            'public':False,
-            'moderated':Problem.MODERATED,
-            'publication_status':Problem.HIDDEN,
+            'public': False,
+            'moderated': Problem.MODERATED,
+            'publication_status': Problem.HIDDEN,
             'status': Problem.RESOLVED
         })
         self.closed_private_moderated_problem_published = create_test_problem({
             'organisation': self.test_organisation,
-            'public':False,
-            'moderated':Problem.MODERATED,
-            'publication_status':Problem.PUBLISHED,
+            'public': False,
+            'moderated': Problem.MODERATED,
+            'publication_status': Problem.PUBLISHED,
             'status': Problem.RESOLVED
         })
 
         # Problems that have been escalated and moderated
         self.escalated_public_moderated_problem_published = create_test_problem({
             'organisation': self.test_organisation,
-            'public':True,
-            'moderated':Problem.MODERATED,
-            'publication_status':Problem.PUBLISHED,
+            'public': True,
+            'moderated': Problem.MODERATED,
+            'publication_status': Problem.PUBLISHED,
             'status': Problem.ESCALATED,
+            'commissioned': Problem.LOCALLY_COMMISSIONED,
+        })
+
+        self.escalated_acknowledged_public_moderated_problem_published = create_test_problem({
+            'organisation': self.test_organisation,
+            'public': True,
+            'moderated': Problem.MODERATED,
+            'publication_status': Problem.PUBLISHED,
+            'status': Problem.ESCALATED_ACKNOWLEDGED,
+            'commissioned': Problem.LOCALLY_COMMISSIONED,
+        })
+
+        self.escalated_resolved_public_moderated_problem_published = create_test_problem({
+            'organisation': self.test_organisation,
+            'public': True,
+            'moderated': Problem.MODERATED,
+            'publication_status': Problem.PUBLISHED,
+            'status': Problem.ESCALATED_RESOLVED,
             'commissioned': Problem.LOCALLY_COMMISSIONED,
         })
 
         # Unmoderated escalated problems
         self.escalated_private_unmoderated_problem = create_test_problem({
             'organisation': self.test_organisation,
-            'public':False,
+            'public': False,
             'status': Problem.ESCALATED,
             'commissioned': Problem.LOCALLY_COMMISSIONED,
         })
@@ -547,15 +573,15 @@ class ProblemManagerTests(ManagerTest):
         # Problems requiring second tier moderation
         self.public_problem_requiring_second_tier_moderation = create_test_problem({
             'organisation': self.test_organisation,
-            'public':True,
-            'moderated':Problem.MODERATED,
+            'public': True,
+            'moderated': Problem.MODERATED,
             'requires_second_tier_moderation': True,
             'publication_status': Problem.HIDDEN
         })
         self.private_problem_requiring_second_tier_moderation = create_test_problem({
             'organisation': self.test_organisation,
-            'public':False,
-            'moderated':Problem.MODERATED,
+            'public': False,
+            'moderated': Problem.MODERATED,
             'requires_second_tier_moderation': True,
             'publication_status': Problem.HIDDEN
         })
@@ -577,8 +603,6 @@ class ProblemManagerTests(ManagerTest):
             'status': Problem.ABUSIVE
         })
 
-
-
         # Intermediate helper lists
         self.open_unmoderated_problems = [self.new_public_unmoderated_problem,
                                           self.new_private_unmoderated_problem,
@@ -590,6 +614,7 @@ class ProblemManagerTests(ManagerTest):
                                         self.new_private_moderated_problem_hidden,
                                         self.new_private_moderated_problem_published,
                                         self.escalated_public_moderated_problem_published,
+                                        self.escalated_acknowledged_public_moderated_problem_published,
                                         self.public_problem_requiring_second_tier_moderation,
                                         self.private_problem_requiring_second_tier_moderation,
                                         self.breach_public_moderated_problem_published]
@@ -598,34 +623,40 @@ class ProblemManagerTests(ManagerTest):
                                                                    self.closed_private_moderated_problem_hidden,
                                                                    self.closed_private_moderated_problem_published,
                                                                    self.public_published_unresolvable_problem,
-                                                                   self.public_published_abusive_problem]
+                                                                   self.public_published_abusive_problem,
+                                                                   self.escalated_resolved_public_moderated_problem_published]
 
         self.closed_resolved_problems = self.closed_unmoderated_problems + [self.closed_public_moderated_problem_hidden,
-                                                                   self.closed_public_moderated_problem_published,
-                                                                   self.closed_private_moderated_problem_hidden,
-                                                                   self.closed_private_moderated_problem_published,
-                                                                   self.public_published_unresolvable_problem,
-                                                                   self.public_published_abusive_problem]
+                                                                            self.closed_public_moderated_problem_published,
+                                                                            self.closed_private_moderated_problem_hidden,
+                                                                            self.closed_private_moderated_problem_published,
+                                                                            self.public_published_unresolvable_problem,
+                                                                            self.public_published_abusive_problem,
+                                                                            self.escalated_resolved_public_moderated_problem_published]
 
         # Lists that we expect from our manager's methods
         self.unmoderated_problems = self.open_unmoderated_problems + self.closed_unmoderated_problems
         self.open_problems = self.open_unmoderated_problems + self.open_moderated_problems
         self.open_moderated_published_visible_problems = [self.new_public_moderated_problem_published,
-                                                  self.new_private_moderated_problem_published,
-                                                  self.escalated_public_moderated_problem_published,
-                                                  self.breach_public_moderated_problem_published]
+                                                          self.new_private_moderated_problem_published,
+                                                          self.escalated_public_moderated_problem_published,
+                                                          self.escalated_acknowledged_public_moderated_problem_published,
+                                                          self.breach_public_moderated_problem_published]
 
         self.closed_moderated_published_visible_problems = [self.closed_public_moderated_problem_published,
-                                                    self.closed_private_moderated_problem_published]
+                                                            self.closed_private_moderated_problem_published,
+                                                            self.escalated_resolved_public_moderated_problem_published]
 
         self.all_problems = self.open_problems + self.closed_problems
         self.all_moderated_published_problems = self.open_moderated_published_visible_problems + [self.closed_public_moderated_problem_published,
-                                                                                          self.closed_private_moderated_problem_published]
+                                                                                                  self.closed_private_moderated_problem_published,
+                                                                                                  self.escalated_resolved_public_moderated_problem_published]
         self.problems_requiring_second_tier_moderation = [self.public_problem_requiring_second_tier_moderation,
-                                                    self.private_problem_requiring_second_tier_moderation]
+                                                          self.private_problem_requiring_second_tier_moderation]
 
         self.open_escalated_problems = [self.escalated_public_moderated_problem_published,
-                                        self.escalated_private_unmoderated_problem]
+                                        self.escalated_private_unmoderated_problem,
+                                        self.escalated_acknowledged_public_moderated_problem_published]
 
     def test_all_problems_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.all(), self.all_problems)
@@ -635,7 +666,7 @@ class ProblemManagerTests(ManagerTest):
 
     def test_closed_problems_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.closed_problems(),
-                self.closed_resolved_problems)
+                               self.closed_resolved_problems)
 
     def test_unmoderated_problems_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.unmoderated_problems(), self.unmoderated_problems)
