@@ -14,26 +14,31 @@
 </div>
 <div class="review-form">
     <form action="{% url 'review-confirm' cobrand=cobrand.name %}">
-        <div>
-            <select>
-                <option value="">Please select the category best describes your question from the drop-down list</option>
-            </select>
-        </div>
-        <div>
-            <input type="text" placeholder="Review title">
-        </div>
-        <div>
-            <textarea class="message-input" type="text" name="message" placeholder="Please write the details of your review in this box"></textarea>
-        </div>
-        <div>
-            <input type="text" placeholder="Your Email Address (you must enter a contact number OR email address)">
-        </div>
-        <div>
-            <label>I would recommend <input type="radio"></label>
-            <label>I would not recommend <input type="radio"></label>
-            <label>I am neutral <input type="radio"></label>
-        <div>
-        <button type="submit">Submit</button>
+        <fieldset class="island">
+            <div>
+                <input type="text" placeholder="Review title" class="text-input">
+            </div>
+
+            <div>
+                <textarea class="message-input" type="text" name="message" placeholder="Please write the details of your review in this box"></textarea>
+            </div>
+
+            <div>
+                <input type="text" placeholder="Your Email Address (you must enter a contact number OR email address)" class="text-input">
+            </div>
+
+            <div>
+                <label for="overall_rating">Overall rating</label>
+                <ul class="radio-list">
+                    <li><label>I would recommend <input type="radio" name="overall_rating"></label></li>
+                    <li><label>I would not recommend <input type="radio" name="overall_rating"></label></li>
+                    <li><label>I am neutral <input type="radio" name="overall_rating"></label></li>
+                </ul>
+            </div>
+        </fieldset>
+        <fieldset>
+            <button class="btn  fr" type="submit">Submit</button>
+        </fieldset>
     </form>
 </div>
 {% endblock %}
