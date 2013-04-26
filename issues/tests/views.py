@@ -146,6 +146,20 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         self.assertNotContains(resp, self.test_moderated_problem.description)
         self.assertContains(resp, self.test_moderated_problem.moderated_description)
 
+    def test_escalated_statuses_highlighted(self):
+        for status in Problem.ESCALATION_STATUSES:
+            problem = create_test_problem({'organisation': self.test_organisation,
+                                           'moderated': Problem.MODERATED,
+                                           'publication_status': Problem.PUBLISHED,
+                                           'moderated_description': "A moderated description",
+                                           'status': status,
+                                           'commissioned': Problem.LOCALLY_COMMISSIONED})
+            problem_url = reverse('problem-view', kwargs={'cobrand': 'choices',
+                                                          'pk': problem.id})
+            resp = self.client.get(problem_url)
+            expected_text = '<span class="icon-warning"></span>{0}'.format(problem.get_status_display())
+            self.assertContains(resp, expected_text)
+
 
 class ProblemProviderPickerTests(TestCase):
 
