@@ -1,6 +1,6 @@
 # encoding: utf-8
 import os
-from mock import Mock, MagicMock, patch
+from mock import MagicMock
 import json
 import urllib
 from decimal import Decimal
@@ -18,6 +18,7 @@ from issues.models import Problem
 import organisations
 from ..models import Organisation
 from . import create_test_problem, create_test_organisation, create_test_service, create_test_ccg, AuthorizationTestCase
+
 
 class OrganisationSummaryTests(AuthorizationTestCase):
 
@@ -41,14 +42,14 @@ class OrganisationSummaryTests(AuthorizationTestCase):
                      'time_to_address': None})
         self.staff_problem = create_test_problem(atts)
         atts.update({'category': 'other',
-                     'service_id' : self.service.id,
+                     'service_id': self.service.id,
                      'happy_service': False,
                      'happy_outcome': True,
                      'time_to_acknowledge': 7100,
                      'time_to_address': None})
         self.other_dept_problem = create_test_problem(atts)
         atts.update({'category': 'access',
-                     'service_id' : None,
+                     'service_id': None,
                      'happy_service': False,
                      'happy_outcome': False,
                      'time_to_acknowledge': 2100,
@@ -56,9 +57,9 @@ class OrganisationSummaryTests(AuthorizationTestCase):
                      'status': Problem.ABUSIVE})
         self.hidden_status_access_problem = create_test_problem(atts)
 
-        self.public_summary_url = reverse('public-org-summary', kwargs={'ods_code':self.test_organisation.ods_code,
+        self.public_summary_url = reverse('public-org-summary', kwargs={'ods_code': self.test_organisation.ods_code,
                                                                         'cobrand': 'choices'})
-        self.private_summary_url = reverse('private-org-summary', kwargs={'ods_code':self.test_organisation.ods_code})
+        self.private_summary_url = reverse('private-org-summary', kwargs={'ods_code': self.test_organisation.ods_code})
         self.urls = [self.public_summary_url, self.private_summary_url]
 
     def test_summary_page_exists(self):
@@ -135,7 +136,6 @@ class OrganisationSummaryTests(AuthorizationTestCase):
         self.assertEqual(problems_by_status[2]['six_months'], 0)
         self.assertEqual(problems_by_status[2]['description'], 'Responded to')
 
-
     def test_summary_page_applies_problem_category_filter(self):
         for url in self.urls:
             self.login_as(self.provider)
@@ -167,7 +167,7 @@ class OrganisationSummaryTests(AuthorizationTestCase):
     def test_summary_page_applies_breach_filter_on_private_pages(self):
         # Add a breach problem
         create_test_problem({'organisation': self.test_organisation,
-                                       'breach': True})
+                             'breach': True})
 
         self.login_as(self.provider)
         resp = self.client.get(self.private_summary_url + '?breach=True')
@@ -273,6 +273,7 @@ class OrganisationSummaryTests(AuthorizationTestCase):
         resp = self.client.get(self.private_summary_url)
         self.assertEqual(resp.status_code, 200)
 
+
 class OrganisationProblemsTests(AuthorizationTestCase):
 
     def setUp(self):
@@ -285,20 +286,20 @@ class OrganisationProblemsTests(AuthorizationTestCase):
                                             'ods_code': 'DEF456'})
         self.gp.ccgs.add(self.gp_ccg)
         self.public_hospital_problems_url = reverse('public-org-problems',
-                                                    kwargs={'ods_code':self.hospital.ods_code,
+                                                    kwargs={'ods_code': self.hospital.ods_code,
                                                             'cobrand': 'choices'})
         self.private_hospital_problems_url = reverse('private-org-problems',
-                                                     kwargs={'ods_code':self.hospital.ods_code})
+                                                     kwargs={'ods_code': self.hospital.ods_code})
         self.public_gp_problems_url = reverse('public-org-problems',
-                                              kwargs={'ods_code':self.gp.ods_code,
+                                              kwargs={'ods_code': self.gp.ods_code,
                                                       'cobrand': 'choices'})
         self.private_gp_problems_url = reverse('private-org-problems',
-                                               kwargs={'ods_code':self.gp.ods_code})
+                                               kwargs={'ods_code': self.gp.ods_code})
         self.staff_problem = create_test_problem({'category': 'staff',
-                                                            'organisation': self.hospital,
-                                                            'moderated': Problem.MODERATED,
-                                                            'publication_status': Problem.PUBLISHED,
-                                                            'moderated_description': "Moderated description"})
+                                                  'organisation': self.hospital,
+                                                  'moderated': Problem.MODERATED,
+                                                  'publication_status': Problem.PUBLISHED,
+                                                  'moderated_description': "Moderated description"})
 
         # Add some users to test access rights
         self.test_hospital_user = User.objects.create_user("Test hospital user", 'hospital@example.com', self.test_password)
@@ -323,8 +324,8 @@ class OrganisationProblemsTests(AuthorizationTestCase):
 
         # Add an explicitly public and an explicitly private problem to test
         # privacy is respected
-        self.public_problem = create_test_problem({'organisation':self.hospital})
-        self.private_problem = create_test_problem({'organisation':self.hospital, 'public':False})
+        self.public_problem = create_test_problem({'organisation': self.hospital})
+        self.private_problem = create_test_problem({'organisation': self.hospital, 'public': False})
 
     def test_shows_services_for_hospitals(self):
         for url in [self.public_hospital_problems_url, self.private_hospital_problems_url]:
@@ -357,19 +358,19 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_public_page_links_to_public_problems(self):
-        staff_problem_url = reverse('problem-view', kwargs={'pk':self.staff_problem.id,
-                                                              'cobrand': 'choices'})
+        staff_problem_url = reverse('problem-view', kwargs={'pk': self.staff_problem.id,
+                                                            'cobrand': 'choices'})
         resp = self.client.get(self.public_hospital_problems_url)
         self.assertContains(resp, staff_problem_url)
 
     def test_public_page_shows_private_problems_without_links(self):
         # Add a private problem
         private_problem = create_test_problem({'organisation': self.hospital,
-                                       'moderated': Problem.MODERATED,
-                                       'publication_status': Problem.PUBLISHED,
-                                       'public': False})
-        private_problem_url = reverse('problem-view', kwargs={'pk':self.private_problem.id,
-                                                                    'cobrand': 'choices'})
+                                               'moderated': Problem.MODERATED,
+                                               'publication_status': Problem.PUBLISHED,
+                                               'public': False})
+        private_problem_url = reverse('problem-view', kwargs={'pk': self.private_problem.id,
+                                                              'cobrand': 'choices'})
         resp = self.client.get(self.public_hospital_problems_url)
         self.assertTrue(private_problem.reference_number in resp.content)
         self.assertTrue(private_problem.summary in resp.content)
@@ -378,13 +379,13 @@ class OrganisationProblemsTests(AuthorizationTestCase):
     def test_public_page_doesnt_show_hidden_or_unmoderated_problems(self):
         # Add some problems which shouldn't show up
         unmoderated_problem = create_test_problem({'organisation': self.hospital})
-        unmoderated_problem_url = reverse('problem-view', kwargs={'pk':unmoderated_problem.id,
-                                                                    'cobrand': 'choices'})
+        unmoderated_problem_url = reverse('problem-view', kwargs={'pk': unmoderated_problem.id,
+                                                                  'cobrand': 'choices'})
         hidden_problem = create_test_problem({'organisation': self.hospital,
-                                       'moderated': Problem.MODERATED,
-                                       'publication_status': Problem.HIDDEN})
-        hidden_problem_url = reverse('problem-view', kwargs={'pk':hidden_problem.id,
-                                                                    'cobrand': 'choices'})
+                                              'moderated': Problem.MODERATED,
+                                              'publication_status': Problem.HIDDEN})
+        hidden_problem_url = reverse('problem-view', kwargs={'pk': hidden_problem.id,
+                                                             'cobrand': 'choices'})
         resp = self.client.get(self.public_hospital_problems_url)
         self.assertTrue(unmoderated_problem_url not in resp.content)
         self.assertTrue(hidden_problem_url not in resp.content)
@@ -396,23 +397,23 @@ class OrganisationProblemsTests(AuthorizationTestCase):
 
     def test_private_page_links_to_problems(self):
         self.login_as(self.test_hospital_user)
-        response_url = reverse('response-form', kwargs={'pk':self.staff_problem.id})
+        response_url = reverse('response-form', kwargs={'pk': self.staff_problem.id})
         resp = self.client.get(self.private_hospital_problems_url)
         self.assertTrue(response_url in resp.content)
 
     def test_private_page_shows_hidden_private_and_unmoderated_problems(self):
         # Add some extra problems
         unmoderated_problem = create_test_problem({'organisation': self.hospital})
-        unmoderated_response_url = reverse('response-form', kwargs={'pk':unmoderated_problem.id})
+        unmoderated_response_url = reverse('response-form', kwargs={'pk': unmoderated_problem.id})
         hidden_problem = create_test_problem({'organisation': self.hospital,
-                                       'moderated': Problem.MODERATED,
-                                       'publication_status': Problem.HIDDEN})
-        hidden_response_url = reverse('response-form', kwargs={'pk':hidden_problem.id})
+                                              'moderated': Problem.MODERATED,
+                                              'publication_status': Problem.HIDDEN})
+        hidden_response_url = reverse('response-form', kwargs={'pk': hidden_problem.id})
         private_problem = create_test_problem({'organisation': self.hospital,
-                                       'moderated': Problem.MODERATED,
-                                       'publication_status': Problem.PUBLISHED,
-                                       'public': False})
-        private_response_url = reverse('response-form', kwargs={'pk':self.private_problem.id})
+                                               'moderated': Problem.MODERATED,
+                                               'publication_status': Problem.PUBLISHED,
+                                               'public': False})
+        private_response_url = reverse('response-form', kwargs={'pk': self.private_problem.id})
         self.login_as(self.test_hospital_user)
         resp = self.client.get(self.private_hospital_problems_url)
         self.assertTrue(unmoderated_response_url in resp.content)
@@ -429,16 +430,16 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         for user in self.users_who_can_access_everything:
             self.login_as(user)
             resp = self.client.get(self.private_hospital_problems_url)
-            self.assertEqual(resp.status_code,200)
+            self.assertEqual(resp.status_code, 200)
             resp = self.client.get(self.private_gp_problems_url)
-            self.assertEqual(resp.status_code,200)
+            self.assertEqual(resp.status_code, 200)
 
     def test_private_pages_are_accessible_to_pals_users(self):
         self.login_as(self.pals)
         resp = self.client.get(self.private_hospital_problems_url)
-        self.assertEqual(resp.status_code,200)
+        self.assertEqual(resp.status_code, 200)
         resp = self.client.get(self.private_gp_problems_url)
-        self.assertEqual(resp.status_code,200)
+        self.assertEqual(resp.status_code, 200)
 
     def test_private_page_is_inaccessible_to_other_providers(self):
         self.login_as(self.test_gp_user)
@@ -460,11 +461,11 @@ class OrganisationProblemsTests(AuthorizationTestCase):
 
     def test_filters_by_status(self):
         # Add a problem in a different status that would show up
-        resolved_problem = create_test_problem({'organisation':self.hospital,
-                                                          'status': Problem.ACKNOWLEDGED,
-                                                          'moderated': Problem.MODERATED,
-                                                          'publication_status': Problem.PUBLISHED,
-                                                          'moderated_description': 'Moderated'})
+        resolved_problem = create_test_problem({'organisation': self.hospital,
+                                                'status': Problem.ACKNOWLEDGED,
+                                                'moderated': Problem.MODERATED,
+                                                'publication_status': Problem.PUBLISHED,
+                                                'moderated_description': 'Moderated'})
         status_filtered_url = "{0}?status={1}".format(self.public_hospital_problems_url, Problem.NEW)
         resp = self.client.get(status_filtered_url)
         self.assertContains(resp, self.staff_problem.reference_number)
@@ -486,11 +487,11 @@ class OrganisationProblemsTests(AuthorizationTestCase):
     def ignores_private_statuses_on_public_page(self):
         # Even if we manually hack the url, it shouldn't do any filtering
         # Add a problem in a different status that would show up
-        abusive_problem = create_test_problem({'organisation':self.hospital,
-                                                          'status': Problem.ABUSIVE,
-                                                          'moderated': Problem.MODERATED,
-                                                          'publication_status': Problem.PUBLISHED,
-                                                          'moderated_description': 'Moderated'})
+        abusive_problem = create_test_problem({'organisation': self.hospital,
+                                               'status': Problem.ABUSIVE,
+                                               'moderated': Problem.MODERATED,
+                                               'publication_status': Problem.PUBLISHED,
+                                               'moderated_description': 'Moderated'})
         status_filtered_url = "{0}?status={1}".format(self.public_hospital_problems_url, Problem.ABUSIVE)
         resp = self.client.get(status_filtered_url)
         self.assertContains(resp, self.staff_problem.reference_number)
@@ -500,11 +501,11 @@ class OrganisationProblemsTests(AuthorizationTestCase):
 
     def test_filters_by_category(self):
         # Add a problem in a different status that would show up
-        cleanliness_problem = create_test_problem({'organisation':self.hospital,
-                                                             'category': 'cleanliness',
-                                                             'moderated': Problem.MODERATED,
-                                                             'publication_status': Problem.PUBLISHED,
-                                                             'moderated_description': 'Moderated'})
+        cleanliness_problem = create_test_problem({'organisation': self.hospital,
+                                                   'category': 'cleanliness',
+                                                   'moderated': Problem.MODERATED,
+                                                   'publication_status': Problem.PUBLISHED,
+                                                   'moderated_description': 'Moderated'})
         category_filtered_url = "{0}?category=cleanliness".format(self.public_hospital_problems_url)
         resp = self.client.get(category_filtered_url)
         self.assertContains(resp, cleanliness_problem.reference_number)
@@ -513,11 +514,11 @@ class OrganisationProblemsTests(AuthorizationTestCase):
     def test_private_page_filters_by_breach(self):
         # Add a breach problem
         self.login_as(self.test_hospital_user)
-        breach_problem = create_test_problem({'organisation':self.hospital,
-                                                        'breach': True,
-                                                        'moderated': Problem.MODERATED,
-                                                        'publication_status': Problem.PUBLISHED,
-                                                        'moderated_description': 'Moderated'})
+        breach_problem = create_test_problem({'organisation': self.hospital,
+                                              'breach': True,
+                                              'moderated': Problem.MODERATED,
+                                              'publication_status': Problem.PUBLISHED,
+                                              'moderated_description': 'Moderated'})
         breach_filtered_url = "{0}?breach=True".format(self.private_hospital_problems_url)
         resp = self.client.get(breach_filtered_url)
         self.assertContains(resp, breach_problem.reference_number)
@@ -533,13 +534,13 @@ class OrganisationProblemsTests(AuthorizationTestCase):
 
     def test_filters_by_service_for_hospital(self):
         # Add a service to the test hospital
-        service = create_test_service({'organisation':self.hospital})
+        service = create_test_service({'organisation': self.hospital})
         # Add a problem about a specific service
-        service_problem = create_test_problem({'organisation':self.hospital,
-                                                        'service': service,
-                                                        'moderated': Problem.MODERATED,
-                                                        'publication_status': Problem.PUBLISHED,
-                                                        'moderated_description': 'Moderated'})
+        service_problem = create_test_problem({'organisation': self.hospital,
+                                               'service': service,
+                                               'moderated': Problem.MODERATED,
+                                               'publication_status': Problem.PUBLISHED,
+                                               'moderated_description': 'Moderated'})
         service_filtered_url = "{0}?service_id={1}".format(self.public_hospital_problems_url, service.id)
         resp = self.client.get(service_filtered_url)
         self.assertContains(resp, service_problem.reference_number)
@@ -550,9 +551,9 @@ class OrganisationReviewsTests(AuthorizationTestCase):
 
     def setUp(self):
         super(OrganisationReviewsTests, self).setUp()
-        self.public_reviews_url = reverse('public-org-reviews', kwargs={'ods_code':self.test_organisation.ods_code,
-                                                                        'cobrand':'choices'})
-        self.private_reviews_url = reverse('private-org-reviews', kwargs={'ods_code':self.test_organisation.ods_code})
+        self.public_reviews_url = reverse('public-org-reviews', kwargs={'ods_code': self.test_organisation.ods_code,
+                                                                        'cobrand': 'choices'})
+        self.private_reviews_url = reverse('private-org-reviews', kwargs={'ods_code': self.test_organisation.ods_code})
 
     def test_public_page_exists_and_is_accessible_to_anyone(self):
         resp = self.client.get(self.public_reviews_url)
@@ -587,12 +588,13 @@ class OrganisationReviewsTests(AuthorizationTestCase):
         resp = self.client.get(self.private_reviews_url)
         self.assertEqual(resp.status_code, 403)
 
+
 class OrganisationDashboardTests(AuthorizationTestCase):
 
     def setUp(self):
         super(OrganisationDashboardTests, self).setUp()
         self.problem = create_test_problem({'organisation': self.test_organisation})
-        self.dashboard_url = reverse('org-dashboard', kwargs={'ods_code':self.test_organisation.ods_code})
+        self.dashboard_url = reverse('org-dashboard', kwargs={'ods_code': self.test_organisation.ods_code})
 
     def test_dashboard_page_exists(self):
         self.login_as(self.provider)
@@ -606,23 +608,23 @@ class OrganisationDashboardTests(AuthorizationTestCase):
 
     def test_dashboard_shows_problems(self):
         self.login_as(self.provider)
-        response_url = reverse('response-form', kwargs={'pk':self.problem.id})
+        response_url = reverse('response-form', kwargs={'pk': self.problem.id})
         resp = self.client.get(self.dashboard_url)
         self.assertTrue(response_url in resp.content)
 
     def test_dashboard_doesnt_show_closed_problems(self):
         self.closed_problem = create_test_problem({'organisation': self.test_organisation,
-                                                             'status': Problem.RESOLVED})
-        closed_problem_response_url = reverse('response-form', kwargs={'pk':self.closed_problem.id})
+                                                   'status': Problem.RESOLVED})
+        closed_problem_response_url = reverse('response-form', kwargs={'pk': self.closed_problem.id})
         self.login_as(self.provider)
         resp = self.client.get(self.dashboard_url)
         self.assertTrue(closed_problem_response_url not in resp.content)
 
     def test_dashboard_doesnt_show_escalated_problems(self):
         self.escalated_problem = create_test_problem({'organisation': self.test_organisation,
-                                                                'status': Problem.ESCALATED,
-                                                                'commissioned': Problem.LOCALLY_COMMISSIONED})
-        escalated_problem_response_url = reverse('response-form', kwargs={'pk':self.escalated_problem.id})
+                                                      'status': Problem.ESCALATED,
+                                                      'commissioned': Problem.LOCALLY_COMMISSIONED})
+        escalated_problem_response_url = reverse('response-form', kwargs={'pk': self.escalated_problem.id})
         self.login_as(self.provider)
         resp = self.client.get(self.dashboard_url)
         self.assertTrue(escalated_problem_response_url not in resp.content)
@@ -648,13 +650,14 @@ class OrganisationDashboardTests(AuthorizationTestCase):
         resp = self.client.get(self.dashboard_url)
         self.assertEqual(resp.status_code, 403)
 
+
 class OrganisationMapTests(AuthorizationTestCase):
 
     def setUp(self):
         super(OrganisationMapTests, self).setUp()
         self.hospital = self.test_organisation
         self.other_gp = self.other_test_organisation
-        self.map_url = reverse('org-map', kwargs={'cobrand':'choices'})
+        self.map_url = reverse('org-map', kwargs={'cobrand': 'choices'})
 
     def test_map_page_exists(self):
         resp = self.client.get(self.map_url)
@@ -673,23 +676,25 @@ class OrganisationMapTests(AuthorizationTestCase):
     def test_public_map_doesnt_include_unmoderated_or_unpublished_or_hidden_status_problems(self):
         create_test_problem({'organisation': self.other_gp})
         create_test_problem({'organisation': self.other_gp,
-                                       'publication_status': Problem.HIDDEN,
-                                       'moderated': Problem.MODERATED})
+                             'publication_status': Problem.HIDDEN,
+                             'moderated': Problem.MODERATED})
         create_test_problem({'organisation': self.other_gp,
-                                       'publication_status': Problem.PUBLISHED,
-                                       'moderated': Problem.MODERATED,
-                                       'status': Problem.ABUSIVE})
+                             'publication_status': Problem.PUBLISHED,
+                             'moderated': Problem.MODERATED,
+                             'status': Problem.ABUSIVE})
         create_test_problem({'organisation': self.other_gp,
-                                       'publication_status': Problem.PUBLISHED,
-                                       'moderated': Problem.MODERATED})
+                            'publication_status': Problem.PUBLISHED,
+                            'moderated': Problem.MODERATED})
 
         resp = self.client.get(self.map_url)
         response_json = json.loads(resp.context['organisations'])
         self.assertEqual(response_json[0]['all_time_open'], 1)
 
     def test_public_map_provider_urls_are_to_public_summary_pages(self):
-        expected_hospital_url = reverse('public-org-summary', kwargs={'ods_code':self.hospital.ods_code, 'cobrand':'choices'})
-        expected_gp_url = reverse('public-org-summary', kwargs={'ods_code':self.other_gp.ods_code, 'cobrand':'choices'})
+        expected_hospital_url = reverse('public-org-summary', kwargs={'ods_code': self.hospital.ods_code,
+                                                                      'cobrand': 'choices'})
+        expected_gp_url = reverse('public-org-summary', kwargs={'ods_code': self.other_gp.ods_code,
+                                                                'cobrand': 'choices'})
 
         resp = self.client.get(self.map_url)
         response_json = json.loads(resp.context['organisations'])
@@ -709,13 +714,13 @@ class OrganisationMapTests(AuthorizationTestCase):
     def test_map_filters_by_category(self):
         # Create some problems to filter
         create_test_problem({'organisation': self.other_gp,
-                                       'publication_status': Problem.PUBLISHED,
-                                       'moderated': Problem.MODERATED,
-                                       'category': 'staff'})
+                             'publication_status': Problem.PUBLISHED,
+                             'moderated': Problem.MODERATED,
+                             'category': 'staff'})
         create_test_problem({'organisation': self.other_gp,
-                                       'publication_status': Problem.PUBLISHED,
-                                       'moderated': Problem.MODERATED,
-                                       'category': 'cleanliness'})
+                             'publication_status': Problem.PUBLISHED,
+                             'moderated': Problem.MODERATED,
+                             'category': 'cleanliness'})
 
         category_filtered_url = "{0}?category=staff".format(self.map_url)
 
@@ -730,13 +735,13 @@ class OrganisationMapTests(AuthorizationTestCase):
     def test_map_filters_by_status(self):
         # Create some problems to filter
         create_test_problem({'organisation': self.hospital,
-                                       'publication_status': Problem.PUBLISHED,
-                                       'moderated': Problem.MODERATED,
-                                       'status': Problem.NEW})
+                             'publication_status': Problem.PUBLISHED,
+                             'moderated': Problem.MODERATED,
+                             'status': Problem.NEW})
         create_test_problem({'organisation': self.hospital,
-                                       'publication_status': Problem.PUBLISHED,
-                                       'moderated': Problem.MODERATED,
-                                       'status': Problem.ACKNOWLEDGED})
+                             'publication_status': Problem.PUBLISHED,
+                             'moderated': Problem.MODERATED,
+                             'status': Problem.ACKNOWLEDGED})
 
         status_filtered_url = "{0}?status={1}".format(self.map_url, Problem.ACKNOWLEDGED)
 
@@ -760,8 +765,10 @@ class OrganisationMapTests(AuthorizationTestCase):
         self.assertEqual(response_json[1]['all_time_open'], 0)
 
     def test_map_returns_json_for_orgs_within_bounds(self):
-        test_org_inside_bounds = create_test_organisation({'point': Point(0.0, 0.0), 'ods_code': 'XYZ987'})
-        test_org_outside_bounds = create_test_organisation({'point': Point(1.0, 1.0), 'ods_code': 'XYZ988'})
+        # Create an org inside the bounds
+        create_test_organisation({'point': Point(0.0, 0.0), 'ods_code': 'XYZ987'})
+        # Create an org outside the bounds
+        create_test_organisation({'point': Point(1.0, 1.0), 'ods_code': 'XYZ988'})
         json_url = "{0}?format=json&bounds[]=-0.1&bounds[]=-0.1&bounds[]=0.1&bounds[]=0.1".format(self.map_url)
         resp = self.client.get(json_url)
         self.assertEqual(resp['Content-Type'], 'application/json')
@@ -774,13 +781,14 @@ class SummaryTests(AuthorizationTestCase):
 
     def setUp(self):
         super(SummaryTests, self).setUp()
-        self.summary_url = reverse('org-all-summary', kwargs={'cobrand':'choices'})
-        create_test_problem({'organisation': self.test_organisation, 'category':'staff'})
+        self.summary_url = reverse('org-all-summary', kwargs={'cobrand': 'choices'})
+        create_test_problem({'organisation': self.test_organisation, 'category': 'staff'})
         create_test_problem({'organisation': self.other_test_organisation,
-                                       'publication_status': Problem.PUBLISHED,
-                                       'moderated': Problem.MODERATED,
-                                       'status': Problem.ABUSIVE,
-                                       'category':'cleanliness'})
+                             'publication_status': Problem.PUBLISHED,
+                             'moderated': Problem.MODERATED,
+                             'status': Problem.ABUSIVE,
+                             'category': 'cleanliness'})
+
     def test_summary_page_exists(self):
         resp = self.client.get(self.summary_url)
         self.assertEqual(resp.status_code, 200)
@@ -835,7 +843,7 @@ class SummaryTests(AuthorizationTestCase):
         # Add an issue for other_test_organisation that won't be filtered because
         # of it's Hidden status but will be filtered by our category
         create_test_problem({'organisation': self.other_test_organisation,
-                                       'category':'cleanliness'})
+                             'category': 'cleanliness'})
 
         category_filtered_url = '{0}?category=staff'.format(self.summary_url)
         resp = self.client.get(category_filtered_url)
@@ -847,7 +855,7 @@ class SummaryTests(AuthorizationTestCase):
         # Add an issue for other_test_organisation that won't be filtered because
         # of it's Hidden status, but should be filtered by our status filter
         create_test_problem({'organisation': self.other_test_organisation,
-                                       'status': Problem.ACKNOWLEDGED})
+                             'status': Problem.ACKNOWLEDGED})
 
         status_filtered_url = '{0}?status={1}'.format(self.summary_url, Problem.NEW)
         resp = self.client.get(status_filtered_url)
@@ -868,9 +876,9 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
         self.summary_url = reverse('private-national-summary')
         create_test_problem({'organisation': self.test_organisation})
         create_test_problem({'organisation': self.other_test_organisation,
-                                       'publication_status': Problem.PUBLISHED,
-                                       'moderated': Problem.MODERATED,
-                                       'status': Problem.ABUSIVE})
+                             'publication_status': Problem.PUBLISHED,
+                             'moderated': Problem.MODERATED,
+                             'status': Problem.ABUSIVE})
         self.login_as(self.superuser)
 
     def test_summary_page_authorization(self):
@@ -899,9 +907,9 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
 
             if permitted:
                 self.assertEqual(resp.status_code, 200, "{0} should be allowed".format(user))
-            elif user: # trying to access and not logged in
+            elif user:  # trying to access and not logged in
                 self.assertEqual(resp.status_code, 403, "{0} should be denied".format(user))
-            else: # trying to access and not logged in
+            else:  # trying to access and not logged in
                 expected_redirect_url = "{0}?next={1}".format(reverse("login"), self.summary_url)
                 self.assertRedirects(resp, expected_redirect_url, msg_prefix="{0} should not be allowed".format(user))
 
@@ -969,8 +977,8 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
 
     def test_summary_page_filters_by_breach(self):
         # Add a breach problem
-        create_test_problem({'organisation':self.test_organisation,
-                                       'breach': True})
+        create_test_problem({'organisation': self.test_organisation,
+                             'breach': True})
 
         breach_filtered_url = '{0}?breach=True'.format(self.summary_url)
         resp = self.client.get(breach_filtered_url)
@@ -992,27 +1000,27 @@ class ProviderPickerTests(TestCase):
     def setUp(self):
         self._organisations_path = os.path.abspath(organisations.__path__[0])
         self.mapit_example = open(os.path.join(self._organisations_path,
-                                          'fixtures',
-                                          'mapit_api',
-                                          'SW1A1AA.json')).read()
+                                  'fixtures',
+                                  'mapit_api',
+                                  'SW1A1AA.json')).read()
 
         self. mock_api_response(self.mapit_example, 200)
         self.nearby_gp = create_test_organisation({
             'name': 'Nearby GP',
             'organisation_type': 'gppractices',
-            'ods_code':'ABC123',
+            'ods_code': 'ABC123',
             'point': Point(-0.13, 51.5)
         })
         self.faraway_gp = create_test_organisation({
             'name': 'Far GP',
             'organisation_type': 'gppractices',
-            'ods_code':'DEF456',
+            'ods_code': 'DEF456',
             'point': Point(-0.15, 51.4)
         })
         self.nearby_hospital = create_test_organisation({
             'name': 'Nearby Hospital',
             'organisation_type': 'hospitals',
-            'ods_code':'HOS123',
+            'ods_code': 'HOS123',
             'point': Point(-0.13, 51.5)
         })
         self.base_url = reverse('org-pick-provider', kwargs={'cobrand': 'choices'})
@@ -1043,7 +1051,7 @@ class ProviderPickerTests(TestCase):
             create_test_organisation({
                 'name': 'Multi GP',
                 'organisation_type': 'gppractices',
-                'ods_code':'ABC{0}'.format(i)
+                'ods_code': 'ABC{0}'.format(i)
             })
         resp = self.client.get("%s?organisation_type=gppractices&location=multi" % self.base_url)
         self.assertContains(resp, 'Multi GP', count=10, status_code=200)
@@ -1108,23 +1116,23 @@ class EscalationDashboardTests(AuthorizationTestCase):
         super(EscalationDashboardTests, self).setUp()
         self.escalation_dashboard_url = reverse('escalation-dashboard')
         self.org_local_escalated_problem = create_test_problem({'organisation': self.test_organisation,
-                                                                          'status': Problem.ESCALATED,
-                                                                          'commissioned': Problem.LOCALLY_COMMISSIONED})
+                                                                'status': Problem.ESCALATED,
+                                                                'commissioned': Problem.LOCALLY_COMMISSIONED})
 
         self.org_national_escalated_problem = create_test_problem({'organisation': self.test_organisation,
-                                                                             'status': Problem.ESCALATED,
-                                                                             'commissioned': Problem.NATIONALLY_COMMISSIONED})
+                                                                   'status': Problem.ESCALATED,
+                                                                   'commissioned': Problem.NATIONALLY_COMMISSIONED})
         self.other_org_local_escalated_problem = create_test_problem({'organisation': self.other_test_organisation,
-                                                                                'status': Problem.ESCALATED,
-                                                                                'commissioned': Problem.LOCALLY_COMMISSIONED})
+                                                                      'status': Problem.ESCALATED,
+                                                                      'commissioned': Problem.LOCALLY_COMMISSIONED})
         self.other_org_national_escalated_problem = create_test_problem({'organisation': self.other_test_organisation,
-                                                                                   'status': Problem.ESCALATED,
-                                                                                   'commissioned': Problem.NATIONALLY_COMMISSIONED})
+                                                                         'status': Problem.ESCALATED,
+                                                                         'commissioned': Problem.NATIONALLY_COMMISSIONED})
         # Add two services to the test org
         self.service_one = create_test_service({'organisation': self.test_organisation})
         self.service_two = create_test_service({'organisation': self.test_organisation,
-                                           'name': 'service two',
-                                           'service_code': 'SRV222'})
+                                                'name': 'service two',
+                                                'service_code': 'SRV222'})
         self.test_organisation.services.add(self.service_one)
         self.test_organisation.services.add(self.service_two)
         self.test_organisation.save()
@@ -1182,7 +1190,6 @@ class EscalationDashboardTests(AuthorizationTestCase):
         resp = self.client.get(self.escalation_dashboard_url)
         self.assertContains(resp, ccg_filter_to_look_for)
 
-
         self.login_as(self.customer_contact_centre_user)
         resp = self.client.get(self.escalation_dashboard_url)
         self.assertContains(resp, ccg_filter_to_look_for)
@@ -1221,13 +1228,13 @@ class EscalationDashboardTests(AuthorizationTestCase):
     def test_filters_by_department(self):
         # Add some problems to the test org against specific services
         service_one_problem = create_test_problem({'organisation': self.test_organisation,
-                                                             'service': self.service_one,
-                                                             'status': Problem.ESCALATED,
-                                                             'commissioned': Problem.LOCALLY_COMMISSIONED})
+                                                   'service': self.service_one,
+                                                   'status': Problem.ESCALATED,
+                                                   'commissioned': Problem.LOCALLY_COMMISSIONED})
         service_two_problem = create_test_problem({'organisation': self.test_organisation,
-                                                             'service': self.service_two,
-                                                             'status': Problem.ESCALATED,
-                                                             'commissioned': Problem.LOCALLY_COMMISSIONED})
+                                                   'service': self.service_two,
+                                                   'status': Problem.ESCALATED,
+                                                   'commissioned': Problem.LOCALLY_COMMISSIONED})
         department_filtered_url = '{0}?service_code={1}'.format(self.escalation_dashboard_url, self.service_one.service_code)
 
         # We'll do this as the ccg user, because we should be able to
@@ -1241,15 +1248,15 @@ class EscalationDashboardTests(AuthorizationTestCase):
 
     def test_filters_by_problem_category(self):
         cleanliness_problem = create_test_problem({'organisation': self.test_organisation,
-                                                             'service': self.service_one,
-                                                             'status': Problem.ESCALATED,
-                                                             'commissioned': Problem.LOCALLY_COMMISSIONED,
-                                                             'category': 'cleanliness'})
+                                                   'service': self.service_one,
+                                                   'status': Problem.ESCALATED,
+                                                   'commissioned': Problem.LOCALLY_COMMISSIONED,
+                                                   'category': 'cleanliness'})
         delays_problem = create_test_problem({'organisation': self.test_organisation,
-                                                       'service': self.service_two,
-                                                       'status': Problem.ESCALATED,
-                                                       'commissioned': Problem.LOCALLY_COMMISSIONED,
-                                                       'category': 'delays'})
+                                              'service': self.service_two,
+                                              'status': Problem.ESCALATED,
+                                              'commissioned': Problem.LOCALLY_COMMISSIONED,
+                                              'category': 'delays'})
         category_filtered_url = '{0}?category=delays'.format(self.escalation_dashboard_url)
 
         # We'll do this as the ccg user, because we should be able to
@@ -1263,10 +1270,10 @@ class EscalationDashboardTests(AuthorizationTestCase):
 
     def test_filters_by_breach(self):
         breach_problem = create_test_problem({'organisation': self.test_organisation,
-                                                        'service': self.service_two,
-                                                        'status': Problem.ESCALATED,
-                                                        'commissioned': Problem.LOCALLY_COMMISSIONED,
-                                                        'breach': True})
+                                              'service': self.service_two,
+                                              'status': Problem.ESCALATED,
+                                              'commissioned': Problem.LOCALLY_COMMISSIONED,
+                                              'breach': True})
         breach_filtered_url = '{0}?breach=True'.format(self.escalation_dashboard_url)
 
         # We'll do this as the ccg user, because we should be able to
@@ -1277,15 +1284,16 @@ class EscalationDashboardTests(AuthorizationTestCase):
         # This is not a breach, so shouldn't show
         self.assertNotContains(resp, self.org_local_escalated_problem.reference_number)
 
+
 class BreachDashboardTests(AuthorizationTestCase):
 
     def setUp(self):
         super(BreachDashboardTests, self).setUp()
         self.breach_dashboard_url = reverse('escalation-breaches')
         self.org_breach_problem = create_test_problem({'organisation': self.test_organisation,
-                                                                 'breach': True})
+                                                       'breach': True})
         self.other_org_breach_problem = create_test_problem({'organisation': self.other_test_organisation,
-                                                                       'breach': True})
+                                                             'breach': True})
         self.org_problem = create_test_problem({'organisation': self.test_organisation})
 
     def test_dashboard_accessible_to_ccg_users(self):
