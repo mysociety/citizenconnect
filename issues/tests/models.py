@@ -275,8 +275,18 @@ class ProblemModelTimeToTests(ProblemTestCase):
         self.test_problem.save()
         self.assertEqual(self.test_problem.time_to_acknowledge, 7200)
 
+    def test_sets_time_to_ack_when_saved_in_escalated_ack_status_and_time_to_ack_not_set(self):
+        self.test_problem.status = Problem.ESCALATED_ACKNOWLEDGED
+        self.test_problem.save()
+        self.assertEqual(self.test_problem.time_to_acknowledge, 7200)
+
     def test_sets_time_to_address_when_saved_in_resolved_status_and_time_to_address_not_set(self):
         self.test_problem.status = Problem.RESOLVED
+        self.test_problem.save()
+        self.assertEqual(self.test_problem.time_to_address, 7200)
+
+    def test_sets_time_to_address_when_saved_in_escalated_resolved_status_and_time_to_address_not_set(self):
+        self.test_problem.status = Problem.ESCALATED_RESOLVED
         self.test_problem.save()
         self.assertEqual(self.test_problem.time_to_address, 7200)
 
