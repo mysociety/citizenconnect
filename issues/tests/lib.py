@@ -7,6 +7,7 @@ from organisations.tests.lib import create_test_problem
 from ..lib import changed_attrs, changes_as_string, changes_for_model, base32_to_int, int_to_base32, MistypedIDException
 from ..models import Problem
 
+
 class LibTests(TestCase):
 
     def setUp(self):
@@ -27,7 +28,6 @@ class LibTests(TestCase):
         }
         actual_changed = changed_attrs(self.old, self.new, Problem.REVISION_ATTRS)
         self.assertEqual(actual_changed, expected_changed)
-
 
     def test_changed_attrs_missing_attrs(self):
         expected_changed = {
@@ -59,7 +59,9 @@ class LibTests(TestCase):
         self.assertEqual(actual, expected)
 
     def test_changes_as_string_escalated(self):
-        new_escalated = {'status':Problem.ESCALATED, 'publication_status': Problem.HIDDEN, 'moderated': Problem.MODERATED}
+        new_escalated = {'status': Problem.ESCALATED,
+                         'publication_status': Problem.HIDDEN,
+                         'moderated': Problem.MODERATED}
 
         expected = "Moderated and Escalated"
         changes = changed_attrs(self.old, new_escalated, Problem.REVISION_ATTRS)
@@ -70,8 +72,8 @@ class LibTests(TestCase):
         # Make a problem and give it some history
         with reversion.create_revision():
             problem = create_test_problem({'status': Problem.NEW,
-                                                     'moderated': Problem.NOT_MODERATED,
-                                                     'publication_status': Problem.HIDDEN})
+                                           'moderated': Problem.NOT_MODERATED,
+                                           'publication_status': Problem.HIDDEN})
         problem = Problem.objects.get(pk=problem.id)
         problem.status = Problem.ACKNOWLEDGED
         with reversion.create_revision():
@@ -108,5 +110,3 @@ class LibTests(TestCase):
             base32_to_int('bcso')
         exception = context_manager.exception
         self.assertEqual(str(exception), '373536')
-
-
