@@ -11,7 +11,7 @@ class ReviewTest(TestCase):
     def test_creating_a_review(self):
         organisation = create_test_organisation()
 
-        test_question = Question(title="Everything ok?", api_question_id=1)
+        test_question = Question(title="Everything ok?", api_question_id=1, org_type='hospitals')
         test_question.save()
         test_answer = Answer(text="Yes", api_answer_id=1)
         test_question.answer_set.add(test_answer)

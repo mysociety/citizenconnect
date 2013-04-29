@@ -10,10 +10,15 @@ class Command(BaseCommand):
     help = 'Import questions from the provided XML file'
 
     def handle(self, *args, **options):
-        if len(args) < 1:
-            raise CommandError("Usage: ./manage.py import_questions ./path/to/questions.xml")
+        if len(args) < 2:
+            raise CommandError("Usage: ./manage.py import_questions <org_type> </path/to/questions.xml>")
 
-        tree = ET.parse(args[0])
+        org_type, xml_file = args[:2]
+        try:
+            tree = ET.parse(xml_file)
+        except IOError:
+            raise CommandError("File does not exist: %s" % xml_file)
+
         root = tree.getroot()
 
         for entry in root.findall('{http://www.w3.org/2005/Atom}entry'):
@@ -21,9 +26,9 @@ class Command(BaseCommand):
             title = entry.find('{http://www.w3.org/2005/Atom}title').text
 
             try:
-                question = Question.objects.get(api_question_id=api_question_id)
+                question = Question.objects.get(api_question_id=api_question_id, org_type=org_type)
             except Question.DoesNotExist:
-                question = Question(api_question_id=api_question_id)
+                question = Question(api_question_id=api_question_id, org_type=org_type)
 
             question.title = title
             question.save()

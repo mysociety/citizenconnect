@@ -34,8 +34,16 @@ class Question(models.Model):
 
     """Represents a multiple choice question in a Review."""
 
+    GPS = 'gps'
+    HOSPITALS = 'hospitals'
+    ORG_TYPE_CHOICES = (
+        (GPS, 'GPs'),
+        (HOSPITALS, 'Hospitals'),
+    )
+
     title = models.CharField(max_length=255)
     api_question_id = models.IntegerField()
+    org_type = models.CharField(max_length=100, choices=ORG_TYPE_CHOICES, blank=False)
     updated = models.DateTimeField(default=timezone.now)
 
 
