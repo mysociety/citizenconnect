@@ -1,5 +1,5 @@
 from django.contrib import admin
-from reviews import models
+from reviews_submit import models
 
 # tweak to taste - simple at the top and more custom below
 
