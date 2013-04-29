@@ -4,6 +4,7 @@ Models for reviews submitted on the site.
 
 from django.utils import timezone
 from django.db import models
+from django.conf import settings
 
 from citizenconnect.models import AuditedModel
 
@@ -34,17 +35,10 @@ class Question(models.Model):
 
     """A multiple choice Question in a Review."""
 
-    GPS = 'gps'
-    HOSPITALS = 'hospitals'
-    ORG_TYPE_CHOICES = (
-        (GPS, 'GPs'),
-        (HOSPITALS, 'Hospitals'),
-    )
-
     title = models.CharField(max_length=255)
     api_question_id = models.IntegerField()
     org_type = models.CharField(max_length=100,
-                                choices=ORG_TYPE_CHOICES,
+                                choices=settings.ORGANISATION_CHOICES,
                                 blank=False)
     updated = models.DateTimeField(default=timezone.now)
 
