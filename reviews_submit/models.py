@@ -35,6 +35,7 @@ class Question(models.Model):
     """Represents a multiple choice question in a Review."""
 
     title = models.CharField(max_length=255)
+    api_question_id = models.IntegerField()
     updated = models.DateTimeField(default=timezone.now)
 
 
@@ -43,5 +44,5 @@ class Answer(models.Model):
     """Represents an answer to a Question."""
 
     text = models.CharField(max_length=255)
-    value = models.IntegerField()
+    api_answer_id = models.IntegerField()
     question = models.ForeignKey('Question')
