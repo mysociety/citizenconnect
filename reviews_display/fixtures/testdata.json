@@ -32,5 +32,53 @@
       "api_posting_id": "12346", 
       "api_category": "comment"
     }
+  }, 
+  {
+    "pk": 1, 
+    "model": "reviews_display.rating", 
+    "fields": {
+      "created": "2013-04-29T10:13:07.533Z", 
+      "review": 1, 
+      "question": "Was the area you were treated in clean?", 
+      "modified": "2013-04-29T10:13:07.533Z", 
+      "score": 1, 
+      "answer": "No - very dirty"
+    }
+  }, 
+  {
+    "pk": 2, 
+    "model": "reviews_display.rating", 
+    "fields": {
+      "created": "2013-04-29T10:13:21.876Z", 
+      "review": 2, 
+      "question": "Was the area you were treated in clean?", 
+      "modified": "2013-04-29T10:13:21.876Z", 
+      "score": 5, 
+      "answer": "Yes - spotless"
+    }
+  }, 
+  {
+    "pk": 3, 
+    "model": "reviews_display.rating", 
+    "fields": {
+      "created": "2013-04-29T10:54:14.263Z", 
+      "review": 2, 
+      "question": "Were you kept informed about your treatment?", 
+      "modified": "2013-04-29T10:54:14.263Z", 
+      "score": 4, 
+      "answer": "Fairly well informed"
+    }
+  }, 
+  {
+    "pk": 4, 
+    "model": "reviews_display.rating", 
+    "fields": {
+      "created": "2013-04-29T10:54:25.618Z", 
+      "review": 1, 
+      "question": "Were you kept informed about your treatment?", 
+      "modified": "2013-04-29T10:54:25.618Z", 
+      "score": 2, 
+      "answer": "Not well informed"
+    }
   }
 ]
