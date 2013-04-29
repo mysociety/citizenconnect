@@ -21,9 +21,12 @@ class ReviewOrganisationList(ListView):
     model = Review
     context_object_name = 'reviews'
 
-    def get_queryset(self):
+    def get(self, request, *args, **kwargs):
         self.organisation = get_object_or_404(Organisation, ods_code=self.kwargs['ods_code'])
-        return Review.objects.filter(organisation=self.organisation)
+        return super(ReviewOrganisationList, self).get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return self.organisation.review_set.all()
 
     def get_context_data(self, **kwargs):
             """Add organisation to the context"""
