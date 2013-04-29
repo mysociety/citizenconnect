@@ -6,7 +6,7 @@ from reviews_submit.models import Question, Answer
 
 
 class Command(BaseCommand):
-    args = '<file>'
+    args = '<org_type> <xml_file>'
     help = 'Import questions from the provided XML file'
 
     def handle(self, *args, **options):
