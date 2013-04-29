@@ -546,47 +546,6 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         self.assertNotContains(resp, self.staff_problem.reference_number)
 
 
-class OrganisationReviewsTests(AuthorizationTestCase):
-
-    def setUp(self):
-        super(OrganisationReviewsTests, self).setUp()
-        self.public_reviews_url = reverse('public-org-reviews', kwargs={'ods_code':self.test_organisation.ods_code,
-                                                                        'cobrand':'choices'})
-        self.private_reviews_url = reverse('private-org-reviews', kwargs={'ods_code':self.test_organisation.ods_code})
-
-    def test_public_page_exists_and_is_accessible_to_anyone(self):
-        resp = self.client.get(self.public_reviews_url)
-        self.assertEqual(resp.status_code, 200)
-
-    def test_private_page_exists_and_is_accessible_to_allowed_users(self):
-        self.login_as(self.provider)
-        resp = self.client.get(self.private_reviews_url)
-        self.assertEqual(resp.status_code, 200)
-        self.login_as(self.ccg_user)
-        resp = self.client.get(self.private_reviews_url)
-        self.assertEqual(resp.status_code, 200)
-
-    def test_private_page_is_inaccessible_to_anon_users(self):
-        expected_login_url = "{0}?next={1}".format(self.login_url, self.private_reviews_url)
-        resp = self.client.get(self.private_reviews_url)
-        self.assertRedirects(resp, expected_login_url)
-
-    def test_private_page_is_accessible_to_superusers(self):
-        for user in self.users_who_can_access_everything:
-            self.login_as(user)
-            resp = self.client.get(self.private_reviews_url)
-            self.assertEqual(resp.status_code, 200)
-
-    def test_private_page_is_inaccessible_to_other_providers(self):
-        self.login_as(self.other_provider)
-        resp = self.client.get(self.private_reviews_url)
-        self.assertEqual(resp.status_code, 403)
-
-    def test_private_page_is_inaccessible_to_other_ccgs(self):
-        self.login_as(self.other_ccg_user)
-        resp = self.client.get(self.private_reviews_url)
-        self.assertEqual(resp.status_code, 403)
-
 class OrganisationDashboardTests(AuthorizationTestCase):
 
     def setUp(self):

@@ -386,9 +386,6 @@ class OrganisationProblems(OrganisationAwareViewMixin,
         context['page_obj'] = problem_table.page
         return context
 
-class OrganisationReviews(OrganisationAwareViewMixin,
-                          TemplateView):
-    template_name = 'organisations/organisation_reviews.html'
 
 class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
     template_name = 'organisations/summary.html'
