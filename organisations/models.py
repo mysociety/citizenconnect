@@ -4,16 +4,14 @@ logger = logging.getLogger(__name__)
 from django.contrib.gis.db import models as geomodels
 from django.conf import settings
 from django.db import models
-from django.db.models import Q
 from django.db import connection
 from django.contrib.auth.models import User, Group
-from django.core.exceptions import ValidationError
 
 from citizenconnect.models import AuditedModel
 from .mixins import MailSendMixin, UserCreationMixin
 
 import auth
-from .auth import user_in_group, user_in_groups, user_is_superuser
+from .auth import user_in_groups
 from .metaphone import dm
 
 
@@ -34,6 +32,7 @@ class CCG(MailSendMixin, UserCreationMixin, AuditedModel):
 
     def __unicode__(self):
         return self.name
+
 
 class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Model):
 
@@ -56,7 +55,7 @@ class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Mod
 
     users = models.ManyToManyField(User, related_name='organisations')
 
-    point =  geomodels.PointField()
+    point = geomodels.PointField()
     objects = geomodels.GeoManager()
     escalation_ccg = models.ForeignKey(CCG, blank=False, null=False, related_name='escalation_organisations')
     ccgs = models.ManyToManyField(CCG, related_name='organisations')
@@ -108,7 +107,6 @@ class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Mod
         # Everyone else - NO
         return False
 
-
     def save(self, *args, **kwargs):
         """
         Overriden save to calculate double metaphones for name
@@ -119,17 +117,16 @@ class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Mod
         else:
             unicode_name = unicode(self.name, encoding='utf-8', errors='ignore')
         name_metaphones = dm(unicode_name)
-        self.name_metaphone = name_metaphones[0] # Ignoring the alternative for now
+        self.name_metaphone = name_metaphones[0]  # Ignoring the alternative for now
         super(Organisation, self).save(*args, **kwargs)
-
 
     def default_user_group(self):
         """Group to ensure that users are members of"""
         return Group.objects.get(pk=auth.PROVIDERS)
 
-
     def __unicode__(self):
         return self.name
+
 
 class Service(AuditedModel):
     name = models.TextField()
@@ -149,6 +146,7 @@ class Service(AuditedModel):
 
     class Meta:
         unique_together = (("service_code", "organisation"),)
+
 
 class SuperuserLogEntry(AuditedModel):
     """
