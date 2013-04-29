@@ -16,6 +16,7 @@ class ChoicesAPI():
         self.atom_namespace = '{http://www.w3.org/2005/Atom}'
         self.services_namespace = '{http://syndication.nhschoices.nhs.uk/services}'
         self.syndication_namespace = '{http://schemas.datacontract.org/2004/07/NHSChoices.Syndication.Resources}'
+        self.organisation_namespace = '{http://schemas.datacontract.org/2004/07/NHSChoices.Syndication.Resources.Orgs}'
 
     def search_types(self):
         return ['postcode', 'name', 'all']
@@ -73,7 +74,8 @@ class ChoicesAPI():
                          organisation_type,
                          choices_id + '.xml']
         data = self._query_api(path_elements, {})
-        return self.parse_organisation(data)
+        organisation = self.parse_organisation(data)
+        return organisation['name']
 
     def get_organisation_services(self, organisation_type, choices_id):
         path_elements = ['organisations',
@@ -82,6 +84,14 @@ class ChoicesAPI():
                          'services.xml']
         data = self._query_api(path_elements, {})
         return self.parse_services(data)
+
+    def get_organisation_recommendation_rating(self, organisation_type, choices_id):
+        path_elements = ['organisations',
+                         organisation_type,
+                         choices_id + '.xml']
+        data = self._query_api(path_elements, {})
+        organisation = self.parse_organisation(data)
+        return organisation['rating']
 
     def parse_services(self, document):
         services = []
@@ -129,12 +139,28 @@ class ChoicesAPI():
         return organisations
 
     def parse_organisation(self, document):
+        organisation_dict = {}
+
         # TODO: error handling
-        name = None
         tree = ET.parse(document)
         organisation = tree.getroot()
+
+        # Name
         link = organisation.find('%sLink' % self.syndication_namespace)
         text = link.find('%sText' % self.syndication_namespace)
-        name = text.text
+        organisation_dict['name'] = text.text
 
-        return name
+        # FiveStarRecommendationRating (aka: Friends and Family recommendation)
+        # A number between 1 and 5
+        organisation_dict['rating'] = None
+        five_star_rating = organisation.find('%sFiveStarRecommendationRating' % self.organisation_namespace)
+        if five_star_rating is not None:
+            rating = five_star_rating.find('%sValue' % self.organisation_namespace)
+            if rating is not None:
+                try:
+                    organisation_dict['rating'] = float(rating.text)
+                except ValueError:
+                    # Probably an empty string - ignore it
+                    pass
+
+        return organisation_dict
