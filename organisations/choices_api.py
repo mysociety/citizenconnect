@@ -88,7 +88,7 @@ class ChoicesAPI():
     def get_organisation_recommendation_rating(self, organisation_type, choices_id):
         path_elements = ['organisations',
                          organisation_type,
-                         choices_id + '.xml']
+                         str(choices_id) + '.xml']
         data = self._query_api(path_elements, {})
         organisation = self.parse_organisation(data)
         return organisation['rating']
