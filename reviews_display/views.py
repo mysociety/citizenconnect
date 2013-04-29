@@ -1,5 +1,5 @@
 
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from django.shortcuts import get_object_or_404
 
 from .models              import Review
@@ -37,3 +37,7 @@ class ReviewOrganisationList(ReviewLoadOrganisationBase, ListView):
     paginate_by = 10
     model = Review
     context_object_name = 'reviews'
+
+
+class ReviewDetail(ReviewLoadOrganisationBase, DetailView):
+    pass

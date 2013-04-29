@@ -4,8 +4,8 @@ from .views import *
 
 urlpatterns = patterns('',
 
-    url('^$',                                      ReviewList.as_view(),              name="review-list"),
-    url('^/(?P<ods_code>\w+)$',                    ReviewOrganisationList.as_view(),  name="review-organisation-list"),
-    # url('^/(?P<ods_code>\w+)/(?P<review_id>\w+)$', ReviewDetail.as_view(),            name="review-detail"),
+    url('^$',                               ReviewList.as_view(),              name="review-list"),
+    url('^/(?P<ods_code>\w+)$',             ReviewOrganisationList.as_view(),  name="review-organisation-list"),
+    url('^/(?P<ods_code>\w+)/(?P<pk>\w+)$', ReviewDetail.as_view(),            name="review-detail"),
 
 )
