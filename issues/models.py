@@ -107,6 +107,8 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     REFERRED_TO_OTHER_PROVIDER = 5
     UNABLE_TO_CONTACT = 6
     ABUSIVE = 7
+    ESCALATED_ACKNOWLEDGED = 8
+    ESCALATED_RESOLVED = 9
 
     STATUS_CHOICES = (
         (NEW, 'Open'),
@@ -117,6 +119,8 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         (REFERRED_TO_OTHER_PROVIDER, 'Referred to Another Provider'),
         (UNABLE_TO_CONTACT, 'Unable to Contact'),
         (ABUSIVE, 'Abusive/Vexatious'),
+        (ESCALATED_ACKNOWLEDGED, 'Escalated - In Progress'),
+        (ESCALATED_RESOLVED, 'Escalated - Resolved'),
     )
 
     # The numerical value of the priorities should be chosen so that when sorted
@@ -132,13 +136,14 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
 
     # Assigning individual statuses to status sets
     BASE_OPEN_STATUSES = [NEW, ACKNOWLEDGED]
-    ESCALATION_STATUSES = [ESCALATED]
+    OPEN_ESCALATION_STATUSES = [ESCALATED, ESCALATED_ACKNOWLEDGED]
     HIDDEN_STATUSES = [UNABLE_TO_RESOLVE, REFERRED_TO_OTHER_PROVIDER, UNABLE_TO_CONTACT, ABUSIVE]
 
     # Calculated status sets
     ALL_STATUSES = [status for status, description in STATUS_CHOICES]
-    OPEN_STATUSES = BASE_OPEN_STATUSES + ESCALATION_STATUSES
-    CLOSED_STATUSES = [RESOLVED, UNABLE_TO_RESOLVE, UNABLE_TO_CONTACT, ABUSIVE]
+    OPEN_STATUSES = BASE_OPEN_STATUSES + OPEN_ESCALATION_STATUSES
+    CLOSED_STATUSES = [RESOLVED, UNABLE_TO_RESOLVE, UNABLE_TO_CONTACT, ABUSIVE, ESCALATED_RESOLVED]
+    ESCALATION_STATUSES = OPEN_ESCALATION_STATUSES + [ESCALATED_RESOLVED]
     NON_ESCALATION_STATUSES = [status for status in ALL_STATUSES if status not in ESCALATION_STATUSES]
     VISIBLE_STATUSES = [status for status in ALL_STATUSES if status not in HIDDEN_STATUSES]
     VISIBLE_STATUS_CHOICES = [(status, description) for status, description in STATUS_CHOICES if status in VISIBLE_STATUSES]
@@ -215,9 +220,9 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     # Names for transitions between statuses we might want to print
     TRANSITIONS = {
         'status': {
-            'Acknowledged': [[NEW, ACKNOWLEDGED]],
+            'Acknowledged': [[NEW, ACKNOWLEDGED], [ESCALATED, ESCALATED_ACKNOWLEDGED]],
             'Escalated': [[NEW, ESCALATED], [ACKNOWLEDGED, ESCALATED]],
-            'Resolved': [[ACKNOWLEDGED, RESOLVED], [ESCALATED, RESOLVED]]
+            'Resolved': [[ACKNOWLEDGED, RESOLVED], [ESCALATED_ACKNOWLEDGED, ESCALATED_RESOLVED]]
         },
         'publication_status': {
             'Published': [[HIDDEN, PUBLISHED]],
@@ -362,9 +367,15 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     def set_time_to_values(self):
         now = datetime.utcnow().replace(tzinfo=utc)
         minutes_since_created = self.timedelta_to_minutes(now - self.created)
-        if self.time_to_acknowledge is None and int(self.status) in [Problem.ACKNOWLEDGED, Problem.RESOLVED]:
+        statuses_which_indicate_acknowledgement = [Problem.ACKNOWLEDGED,
+                                                   Problem.RESOLVED,
+                                                   Problem.ESCALATED_ACKNOWLEDGED,
+                                                   Problem.ESCALATED_RESOLVED]
+        statuses_which_indicate_resolution = [Problem.RESOLVED,
+                                              Problem.ESCALATED_RESOLVED]
+        if self.time_to_acknowledge is None and int(self.status) in statuses_which_indicate_acknowledgement:
             self.time_to_acknowledge = minutes_since_created
-        if self.time_to_address is None and int(self.status) == Problem.RESOLVED:
+        if self.time_to_address is None and int(self.status) in statuses_which_indicate_resolution:
             self.time_to_address = minutes_since_created
 
     def save(self, *args, **kwargs):
