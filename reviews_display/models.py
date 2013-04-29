@@ -46,3 +46,27 @@ class Review(AuditedModel):
 
     def __unicode__(self):
         return "{0}, {1} ({2})".format(self.title, self.author_display_name, self.id)
+
+
+
+class Rating(AuditedModel):
+    """
+    A review of a provider, attached to a Review.
+
+    This is a somewhat inelegant de-normalised way to store the ratings, ideally
+    a RatingCategory model would have been used to store the questions and
+    response wordings and that would have been linked to from each Rating.
+    However the source of these ratings (the Choices API) does not (in the
+    examples available at the time of writing) provide sufficient information to
+    do this confidently. As we don't initially require aggregation of results,
+    we want to be sure we display the correct data and disk is cheap we use this
+    inefficient model.
+    """
+
+    review   = models.ForeignKey(Review)
+    question = models.CharField(max_length=1000)  # e.g. "Was the area clean?"
+    answer   = models.CharField(max_length=100)   # e.g. "Very clean"
+    score    = models.IntegerField()              # e.g. 5
+
+    def __unicode__(self):
+        return "{0} ({1})".format(self.question, self.score)
