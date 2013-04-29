@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 {% load url from future %}
 
-{% block title %}Reviews{% endblock %}
+{% block title %}{{ organisation.name }} Reviews ({{ object_list.count }}){% endblock %}
 
-{% block bodyclasses %}review_list{% endblock %}
+{% block bodyclasses %}review_organisation_list{% endblock %}
 
 {% block content %}
 
   <div class="header">
-      <h1>{{ organisation }} Reviews ({{ object_list.count }})</h1>
+      <h1>{{ organisation.name }} Reviews ({{ object_list.count }})</h1>
   </div>
 
   <ul>
