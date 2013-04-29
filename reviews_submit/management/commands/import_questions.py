@@ -3,6 +3,7 @@ from django.core.management.base import BaseCommand, CommandError
 
 from reviews_submit.models import Question, Answer
 
+
 class Command(BaseCommand):
     args = '<file>'
     help = 'Import questions from the provided XML file'
@@ -16,8 +17,7 @@ class Command(BaseCommand):
 
         for entry in root.findall('{http://www.w3.org/2005/Atom}entry'):
             title = entry.find('{http://www.w3.org/2005/Atom}title').text
-            question = Question(title=title)
-            question.save()
+            question = Question.objects.create(title=title)
 
             for answer in entry.findall('{http://syndication.nhschoices.nhs.uk/schemas/answer}Answer'):
                 question.answer_set.create(text=answer.text, value=answer.get('id'))
