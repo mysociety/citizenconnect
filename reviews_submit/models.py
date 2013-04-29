@@ -33,7 +33,7 @@ class Rating(models.Model):
 
 class Question(models.Model):
 
-    """A multiple choice Question in a Review."""
+    """Organisations type specific questions for ratings."""
 
     title = models.CharField(max_length=255)
     api_question_id = models.IntegerField()
@@ -45,7 +45,7 @@ class Question(models.Model):
 
 class Answer(models.Model):
 
-    """A single multiple choice answer for a Question."""
+    """An answer for a ratings question."""
 
     text = models.CharField(max_length=255)
     api_answer_id = models.IntegerField()
