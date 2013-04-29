@@ -13,28 +13,70 @@
     <p>Reviewing <strong>{{ organisation.name }}</strong>
 </div>
 <div class="review-form">
-    <form action="{% url 'review-confirm' cobrand=cobrand.name %}">
+    <form action="{% url 'review-form' cobrand=cobrand.name ods_code=organisation.ods_code %}" method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <fieldset class="island">
+                {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
+            </fieldset>
+        {% endif %}
+
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+
+        {% for question in questions %}
         <fieldset class="island">
-            <div>
-                <input type="text" placeholder="Review title" class="text-input">
-            </div>
+            <p class="info">{{ question.title }}</p>
 
-            <div>
-                <textarea class="message-input" type="text" name="message" placeholder="Please write the details of your review in this box"></textarea>
-            </div>
+            <ul class="radio-list">
+                {% for answer in question.answer_set.all %}
+                <li><input type="radio" name="questions[{{ question.api_question_id }}]" value="{{ answer.api_answer_id }}" /> {{ answer.text }}</li>
+                {% endfor %}
+            </ul>
 
-            <div>
-                <input type="text" placeholder="Your Email Address (you must enter a contact number OR email address)" class="text-input">
-            </div>
+        </fieldset>
+        {% endfor %}
 
-            <div>
-                <label for="overall_rating">Overall rating</label>
-                <ul class="radio-list">
-                    <li><label>I would recommend <input type="radio" name="overall_rating"></label></li>
-                    <li><label>I would not recommend <input type="radio" name="overall_rating"></label></li>
-                    <li><label>I am neutral <input type="radio" name="overall_rating"></label></li>
-                </ul>
-            </div>
+
+        <fieldset class="island">
+            <ul class="gw">
+                <li class="g  one-whole">
+                    {{ form.email.label_tag }}
+                    {{ form.email }}
+                    {% include "message_list.html" with messages=form.email.errors message_type='error' %}
+                </li>
+
+                <li class="g  one-whole">
+                    {{ form.display_name.label_tag }}
+                    {{ form.display_name }}
+                    {% include "message_list.html" with messages=form.display_name.errors message_type='error' %}
+                </li>
+
+                <li class="g  one-whole">
+                    <label for="id_is_anonymous">{{ form.is_anonymous }} Send anonymously</label>
+                    {% include "message_list.html" with messages=form.is_anonymous.errors message_type='error' %}
+                </li>
+
+                <li class="g  one-whole">
+                    {{ form.title.label_tag }}
+                    {{ form.title }}
+                    {% include "message_list.html" with messages=form.title.errors message_type='error' %}
+                </li>
+
+                <li class="g  one-whole">
+                    {{ form.comment.label_tag }}
+                    {{ form.comment }}
+                    {% include "message_list.html" with messages=form.comment.errors message_type='error' %}
+                </li>
+
+                <li class="g  one-whole">
+                    {{ form.month_year_of_visit.label_tag }}
+                    {{ form.month_year_of_visit }}
+                    {% include "message_list.html" with messages=form.month_year_of_visit.errors message_type='error' %}
+                </li>
+            </ul>
         </fieldset>
         <fieldset>
             <button class="btn  fr" type="submit">Submit</button>
