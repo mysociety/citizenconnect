@@ -1,9 +1,10 @@
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from django.contrib.gis.geos import Point
 from django.db import transaction
 
 from ...choices_api import ChoicesAPI
 from ...models import Organisation, Service
+
 
 class Command(BaseCommand):
     help = 'Load organisations from the Choices API'

@@ -2,16 +2,18 @@ from datetime import datetime, timedelta
 from django.utils.timezone import utc
 from django.db import connection
 
-from .models import Organisation
 from issues.models import Problem
+
 
 # Return a clause summing the number of records in a table whose field meets a criteria
 def _sum_clause(field, criteria):
-    return "SUM(CASE WHEN issues_problem."+ field + " " + criteria + " THEN 1 ELSE 0 END)"
+    return "SUM(CASE WHEN issues_problem." + field + " " + criteria + " THEN 1 ELSE 0 END)"
+
 
 # Return the number of records created more recently than the date supplied
 def _date_clause(alias):
     return _sum_clause('created', "> %s") + " AS " + alias
+
 
 # Get fraction of true values over non-null values for boolean field
 def _boolean_clause(field):
@@ -20,10 +22,12 @@ def _boolean_clause(field):
     clause += "NULLIF(" + _sum_clause(field, "IS NOT NULL") + ", 0)::float" + " AS " + field
     return clause
 
+
 # Return the average of non-null values in an integer field
 def _average_value_clause(field, alias):
-    clause = "AVG(issues_problem."+ field +") AS " + alias
+    clause = "AVG(issues_problem." + field + ") AS " + alias
     return clause
+
 
 # Return problem counts for a set of organisations for the last week, four weeks
 # and six months based on created date and problem and organisation filters.
@@ -35,7 +39,7 @@ def _average_value_clause(field, alias):
 # By default, all organisations matching the organisation filters will be returned. To get only
 # organisations that have at least one problem matching the problem filters, apply a threshold
 # like ('all_time', 1).
-# Possible list values for extra_organisation_data are 'coords' and 'type'.
+# Possible list values for extra_organisation_data are 'coords', 'type' and 'average_recommendation_rating'.
 # Possible problem_data_intervals are 'week', 'four_weeks', 'six_months', 'all_time', 'all_time_open',
 # and 'all_time_closed'.
 # Possible values for average_fields are 'time_to_acknowledge', 'time_to_address' - returned dicts will
@@ -71,8 +75,8 @@ def interval_counts(problem_filters={},
 
     # Group by clauses to go with the non-aggregate selects
     group_by_clauses = ["organisations_organisation.id",
-                         "organisations_organisation.name",
-                         "organisations_organisation.ods_code"]
+                        "organisations_organisation.name",
+                        "organisations_organisation.ods_code"]
 
     if 'coords' in extra_organisation_data:
         select_clauses.append("""ST_X(organisations_organisation.point) AS lon""")
@@ -86,6 +90,9 @@ def interval_counts(problem_filters={},
                                   THEN 'Hospital'
                                   ELSE 'Unknown' END) AS type""")
         group_by_clauses.append('type')
+    if 'average_recommendation_rating' in extra_organisation_data:
+        select_clauses.append("""organisations_organisation.average_recommendation_rating as average_recommendation_rating""")
+        group_by_clauses.append("organisations_organisation.average_recommendation_rating")
 
     # Generate the interval counting select values and params
     for interval in intervals.keys():
@@ -120,19 +127,19 @@ def interval_counts(problem_filters={},
     # Apply problem filters to the issue table
     for criteria in ['status', 'service_id', 'category', 'moderated', 'publication_status']:
         value = problem_filters.get(criteria)
-        if value != None:
+        if value is not None:
             if type(value) != tuple:
                 value = (value,)
             problem_filter_clauses.append("issues_problem." + criteria + " in %s""")
             params.append(value)
 
     breach = problem_filters.get('breach')
-    if breach != None:
+    if breach is not None:
         problem_filter_clauses.append("issues_problem.breach = %s""")
         params.append(breach)
 
     service_code = problem_filters.get('service_code')
-    if service_code != None:
+    if service_code is not None:
         if organisation_id:
             raise NotImplementedError("Filtering for service on a single organisation uses service_id, not service_code")
         else:
@@ -142,29 +149,28 @@ def interval_counts(problem_filters={},
             params.append(service_code)
 
     # Apply organisation filters to the organisation table
-    if organisation_id != None:
+    if organisation_id is not None:
         organisation_filter_clauses.append("organisations_organisation.id = %s")
         params.append(organisation_filters['organisation_id'])
 
-    if organisation_ids != None:
+    if organisation_ids is not None:
         organisation_filter_clauses.append("organisations_organisation.id in %s")
         params.append(organisation_ids)
 
     organisation_type = organisation_filters.get('organisation_type')
-    if organisation_type != None:
+    if organisation_type is not None:
         if organisation_id:
-             raise NotImplementedError("Filtering for an organisation type is unnecessary for a single organisation")
+            raise NotImplementedError("Filtering for an organisation type is unnecessary for a single organisation")
         else:
-             if type(organisation_type) != tuple:
+            if type(organisation_type) != tuple:
                 organisation_type = (organisation_type,)
-             organisation_filter_clauses.append("organisations_organisation.organisation_type in %s")
-             params.append(organisation_type)
-
+            organisation_filter_clauses.append("organisations_organisation.organisation_type in %s")
+            params.append(organisation_type)
 
     ccg = organisation_filters.get('ccg')
-    if ccg != None:
+    if ccg is not None:
         if organisation_id:
-             raise NotImplementedError("Filtering for a ccg is unnecessary for a single organisation")
+            raise NotImplementedError("Filtering for a ccg is unnecessary for a single organisation")
         else:
             if type(ccg) != tuple:
                 ccg = (ccg,)
@@ -173,10 +179,9 @@ def interval_counts(problem_filters={},
             organisation_filter_clauses.append("organisations_organisation_ccgs.ccg_id in %s")
             params.append(ccg)
 
-
     # Having clauses to implement the threshold
     having_text = ''
-    if threshold != None:
+    if threshold is not None:
         if organisation_id:
             raise NotImplementedError("Threshold is not implemented for a single organisation")
         interval, cutoff = threshold
@@ -187,7 +192,7 @@ def interval_counts(problem_filters={},
         if interval == 'all_time':
             having_clause = "count(issues_problem.id)"
         else:
-            having_clause =  _sum_clause('created', "> %s")
+            having_clause = _sum_clause('created', "> %s")
             params.append(intervals[interval])
         having_text = "HAVING " + having_clause + " >= %s"
         params.append(cutoff)
@@ -216,8 +221,8 @@ def interval_counts(problem_filters={},
     cursor.execute(query, params)
     desc = cursor.description
     # Return a list of dictionaries
-    counts = [ dict(zip([col[0] for col in desc], row)) for row in cursor.fetchall() ]
+    counts = [dict(zip([col[0] for col in desc], row)) for row in cursor.fetchall()]
     # Or for a single organisation, just one
     if organisation_id:
-         counts = counts[0]
+        counts = counts[0]
     return counts

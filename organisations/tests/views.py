@@ -200,9 +200,12 @@ class OrganisationSummaryTests(AuthorizationTestCase):
 
     def test_public_summary_page_shows_only_visible_status_rows(self):
         resp = self.client.get(self.public_summary_url)
-        self.assertContains(resp, 'Responded to', count=1, status_code=200)
-        self.assertNotContains(resp, 'Unable to Resolve')
-        self.assertNotContains(resp, 'Abusive/Vexatious')
+
+        for status in Problem.VISIBLE_STATUSES:
+            self.assertContains(resp, Problem.STATUS_CHOICES[status][1])
+
+        for status in Problem.HIDDEN_STATUSES:
+            self.assertNotContains(resp, Problem.STATUS_CHOICES[status][1])
 
     def test_private_summary_page_shows_visible_and_hidden_status_rows(self):
         self.login_as(self.provider)
@@ -801,11 +804,11 @@ class SummaryTests(AuthorizationTestCase):
 
     def test_status_filter_only_shows_visible_statuses_in_filters(self):
         resp = self.client.get(self.summary_url)
-        self.assertNotContains(resp, 'Referred to Another Provider')
-        self.assertNotContains(resp, 'Unable to Contact')
+        for status in Problem.HIDDEN_STATUSES:
+            self.assertNotContains(resp, Problem.STATUS_CHOICES[status][1])
 
     def test_summary_page_ignores_hidden_status_filter(self):
-        resp = self.client.get(self.summary_url + '?status=7')
+        resp = self.client.get(self.summary_url + '?status={0}'.format(Problem.ABUSIVE))
         self.assertContains(resp, 'Test Organisation')
         self.assertNotContains(resp, 'Other Test Organisation')
         self.assertContains(resp, '<td class="week">1</td>', count=1, status_code=200)

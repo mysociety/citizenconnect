@@ -587,13 +587,6 @@ class ProblemManagerTests(ManagerTest):
         })
 
         # Problems in hidden statuses
-        self.public_published_unresolvable_problem = create_test_problem({
-            'organisation': self.test_organisation,
-            'public': True,
-            'moderated': Problem.MODERATED,
-            'publication_status': Problem.PUBLISHED,
-            'status': Problem.UNABLE_TO_RESOLVE
-        })
 
         self.public_published_abusive_problem = create_test_problem({
             'organisation': self.test_organisation,
@@ -622,7 +615,6 @@ class ProblemManagerTests(ManagerTest):
                                                                    self.closed_public_moderated_problem_published,
                                                                    self.closed_private_moderated_problem_hidden,
                                                                    self.closed_private_moderated_problem_published,
-                                                                   self.public_published_unresolvable_problem,
                                                                    self.public_published_abusive_problem,
                                                                    self.escalated_resolved_public_moderated_problem_published]
 
@@ -630,7 +622,6 @@ class ProblemManagerTests(ManagerTest):
                                                                             self.closed_public_moderated_problem_published,
                                                                             self.closed_private_moderated_problem_hidden,
                                                                             self.closed_private_moderated_problem_published,
-                                                                            self.public_published_unresolvable_problem,
                                                                             self.public_published_abusive_problem,
                                                                             self.escalated_resolved_public_moderated_problem_published]
 
