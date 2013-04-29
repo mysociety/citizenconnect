@@ -9,6 +9,7 @@ from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
+
 class ChoicesAPI():
 
     def __init__(self):
@@ -28,7 +29,7 @@ class ChoicesAPI():
         parameters['apikey'] = settings.NHS_CHOICES_API_KEY
         path = '/'.join(path_elements)
         querystring = urllib.urlencode(parameters)
-        url = "%(base_url)s%(path)s?%(querystring)s" % {'path' : path,
+        url = "%(base_url)s%(path)s?%(querystring)s" % {'path': path,
                                                         'querystring': querystring,
                                                         'base_url': settings.NHS_CHOICES_BASE_URL}
         return urllib.urlopen(url)
@@ -60,7 +61,7 @@ class ChoicesAPI():
         if search_value:
             path_elements.append(search_value)
         # Add the format suffix to the last path element
-        path_elements[-1] =  path_elements[-1] + '.xml'
+        path_elements[-1] = path_elements[-1] + '.xml'
         parameters = {}
         if search_type == 'postcode':
             parameters['range'] = 5
@@ -96,7 +97,6 @@ class ChoicesAPI():
             service['service_code'] = type_element.attrib['code']
             services.append(service)
 
-
         return services
 
     def parse_organisations(self, document, organisation_type):
@@ -115,13 +115,13 @@ class ChoicesAPI():
             ods_variants = ['odscode', 'odsCode']
             for ods_variant in ods_variants:
                 ods_element = summary.find('%s%s' % (self.services_namespace, ods_variant))
-                if ods_element != None:
+                if ods_element is not None:
                     organisation['ods_code'] = ods_element.text
             organisation['organisation_type'] = organisation_type
             coordinates = summary.find('%sgeographicCoordinates' % self.services_namespace)
             lon = float(coordinates.find('%slongitude' % self.services_namespace).text)
             lat = float(coordinates.find('%slatitude' % self.services_namespace).text)
-            organisation['coordinates'] = {'lon':lon, 'lat':lat}
+            organisation['coordinates'] = {'lon': lon, 'lat': lat}
             # alternate_link = entry_element.find("%slink[@rel='alternate']" % self.atom_namespace)
             # organisation['choices_review_url'] = alternate_link.attr['href']
             organisations.append(organisation)
