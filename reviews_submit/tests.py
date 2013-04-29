@@ -30,6 +30,10 @@ class ReviewTest(TestCase):
 
         self.assertEqual(review.rating_set.count(), 1)
 
-class ReviewQuestionImportTest(TestCase):
-    def test_importing_questions(self):
+class ReviewFormTest(TestCase):
+    def setUp(self):
+        self.organisation = create_test_organisation({'ods_code': 'A111'})
 
+    def test_leaving_a_review(self):
+        resp = self.client.get('/choices/review/review-form/A111')
+        self.assertEqual(resp.status_code, 200)
