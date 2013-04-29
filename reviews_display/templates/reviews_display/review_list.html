@@ -14,8 +14,15 @@
 <ul>
   {% for review in object_list %}
     <li>
-      <a href="{% url 'review-organisation-list' cobrand=cobrand.name ods_code=review.organisation.ods_code %}">{{ review.organisation.name }}</a>
-      {{ review.title }}
+
+      <a href="{% url 'review-organisation-list' cobrand=cobrand.name ods_code=review.organisation.ods_code %}">
+        {{ review.organisation.name }}
+      </a>:
+
+      <a href="{% url 'review-detail' cobrand=cobrand.name ods_code=review.organisation.ods_code pk=review.id %}">
+        {{ review.title }}
+      </a>
+
     </li>
   {% endfor %}
 </ul>
