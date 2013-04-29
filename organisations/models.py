@@ -63,6 +63,9 @@ class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Mod
     # Calculated double_metaphone field, for search by provider name
     name_metaphone = models.TextField()
 
+    # Average review rating from "Would you recommend this provider to your friends and family?"
+    average_recommendation_rating = models.IntegerField(blank=True, null=True)
+
     @property
     def open_issues(self):
         return list(self.problem_set.open_problems())
