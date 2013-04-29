@@ -11,10 +11,6 @@ class ReviewList(ListView):
     model = Review
     context_object_name = 'reviews'
 
-    # def get(self, *args, **kwargs):
-    #     super(PickProviderBase, self).get(*args, **kwargs)
-    #     return render(self.request, self.form_template_name, {'form': form})
-
 
 class ReviewLoadOrganisationBase(object):
 
