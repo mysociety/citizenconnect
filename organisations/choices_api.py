@@ -9,12 +9,14 @@ from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
+
 class ChoicesAPI():
 
     def __init__(self):
         self.atom_namespace = '{http://www.w3.org/2005/Atom}'
         self.services_namespace = '{http://syndication.nhschoices.nhs.uk/services}'
         self.syndication_namespace = '{http://schemas.datacontract.org/2004/07/NHSChoices.Syndication.Resources}'
+        self.organisation_namespace = '{http://schemas.datacontract.org/2004/07/NHSChoices.Syndication.Resources.Orgs}'
 
     def search_types(self):
         return ['postcode', 'name', 'all']
@@ -28,7 +30,7 @@ class ChoicesAPI():
         parameters['apikey'] = settings.NHS_CHOICES_API_KEY
         path = '/'.join(path_elements)
         querystring = urllib.urlencode(parameters)
-        url = "%(base_url)s%(path)s?%(querystring)s" % {'path' : path,
+        url = "%(base_url)s%(path)s?%(querystring)s" % {'path': path,
                                                         'querystring': querystring,
                                                         'base_url': settings.NHS_CHOICES_BASE_URL}
         return urllib.urlopen(url)
@@ -60,7 +62,7 @@ class ChoicesAPI():
         if search_value:
             path_elements.append(search_value)
         # Add the format suffix to the last path element
-        path_elements[-1] =  path_elements[-1] + '.xml'
+        path_elements[-1] = path_elements[-1] + '.xml'
         parameters = {}
         if search_type == 'postcode':
             parameters['range'] = 5
@@ -72,7 +74,8 @@ class ChoicesAPI():
                          organisation_type,
                          choices_id + '.xml']
         data = self._query_api(path_elements, {})
-        return self.parse_organisation(data)
+        organisation = self.parse_organisation(data)
+        return organisation['name']
 
     def get_organisation_services(self, organisation_type, choices_id):
         path_elements = ['organisations',
@@ -81,6 +84,14 @@ class ChoicesAPI():
                          'services.xml']
         data = self._query_api(path_elements, {})
         return self.parse_services(data)
+
+    def get_organisation_recommendation_rating(self, organisation_type, choices_id):
+        path_elements = ['organisations',
+                         organisation_type,
+                         str(choices_id) + '.xml']
+        data = self._query_api(path_elements, {})
+        organisation = self.parse_organisation(data)
+        return organisation['rating']
 
     def parse_services(self, document):
         services = []
@@ -95,7 +106,6 @@ class ChoicesAPI():
             service['name'] = type_element.text
             service['service_code'] = type_element.attrib['code']
             services.append(service)
-
 
         return services
 
@@ -115,13 +125,13 @@ class ChoicesAPI():
             ods_variants = ['odscode', 'odsCode']
             for ods_variant in ods_variants:
                 ods_element = summary.find('%s%s' % (self.services_namespace, ods_variant))
-                if ods_element != None:
+                if ods_element is not None:
                     organisation['ods_code'] = ods_element.text
             organisation['organisation_type'] = organisation_type
             coordinates = summary.find('%sgeographicCoordinates' % self.services_namespace)
             lon = float(coordinates.find('%slongitude' % self.services_namespace).text)
             lat = float(coordinates.find('%slatitude' % self.services_namespace).text)
-            organisation['coordinates'] = {'lon':lon, 'lat':lat}
+            organisation['coordinates'] = {'lon': lon, 'lat': lat}
             # alternate_link = entry_element.find("%slink[@rel='alternate']" % self.atom_namespace)
             # organisation['choices_review_url'] = alternate_link.attr['href']
             organisations.append(organisation)
@@ -129,12 +139,28 @@ class ChoicesAPI():
         return organisations
 
     def parse_organisation(self, document):
+        organisation_dict = {}
+
         # TODO: error handling
-        name = None
         tree = ET.parse(document)
         organisation = tree.getroot()
+
+        # Name
         link = organisation.find('%sLink' % self.syndication_namespace)
         text = link.find('%sText' % self.syndication_namespace)
-        name = text.text
+        organisation_dict['name'] = text.text
 
-        return name
+        # FiveStarRecommendationRating (aka: Friends and Family recommendation)
+        # A number between 1 and 5
+        organisation_dict['rating'] = None
+        five_star_rating = organisation.find('%sFiveStarRecommendationRating' % self.organisation_namespace)
+        if five_star_rating is not None:
+            rating = five_star_rating.find('%sValue' % self.organisation_namespace)
+            if rating is not None:
+                try:
+                    organisation_dict['rating'] = float(rating.text)
+                except ValueError:
+                    # Probably an empty string - ignore it
+                    pass
+
+        return organisation_dict

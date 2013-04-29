@@ -11,33 +11,35 @@ from django.conf import settings
 from django.contrib.auth.models import User
 
 from .lib import create_test_organisation, create_test_ccg, create_test_service, create_test_problem
-from ..models import Organisation, CCG
+from .choices_api import ExampleFileAPITest
+from ..models import Organisation
 
 from organisations import auth
 from issues.models import Problem
+
 
 class DevNull(object):
     def write(self, data):
         pass
 
+
 class EmailProblemsToProviderTests(TestCase):
 
     def setUp(self):
         # Add some test data
-        self.test_organisation = create_test_organisation({"email":"recipient@example.com"})
+        self.test_organisation = create_test_organisation({"email": "recipient@example.com"})
         self.test_service = create_test_service({'organisation': self.test_organisation})
         self.test_problem = create_test_problem({'organisation': self.test_organisation,
-                                                           'service': self.test_service,
-                                                           'reporter_name': 'Problem reporter',
-                                                           'reporter_email': 'problem@example.com',
-                                                           'reporter_phone': '123456789'})
+                                                 'service': self.test_service,
+                                                 'reporter_name': 'Problem reporter',
+                                                 'reporter_email': 'problem@example.com',
+                                                 'reporter_phone': '123456789'})
 
         self.other_test_problem = create_test_problem({'organisation': self.test_organisation,
-                                                                 'service': self.test_service,
-                                                                 'reporter_name': 'Problem reporter',
-                                                                 'reporter_email': 'problem@example.com',
-                                                                 'reporter_phone': '123456789'})
-
+                                                       'service': self.test_service,
+                                                       'reporter_name': 'Problem reporter',
+                                                       'reporter_email': 'problem@example.com',
+                                                       'reporter_phone': '123456789'})
 
     def _call_command(self):
         args = []
@@ -50,7 +52,6 @@ class EmailProblemsToProviderTests(TestCase):
         # intro mail, problem mail, other problem mail
         self.assertEqual(len(mail.outbox), 3)
 
-        intro_mail = mail.outbox[0]
         first_mail = mail.outbox[1]
         self.assertEqual(first_mail.subject, 'Care Connect: New Problem')
         self.assertEqual(first_mail.from_email, settings.DEFAULT_FROM_EMAIL)
@@ -59,7 +60,8 @@ class EmailProblemsToProviderTests(TestCase):
         self.assertTrue(self.test_problem.reporter_email in first_mail.body)
         self.assertTrue(self.test_problem.category in first_mail.body)
         self.assertTrue(self.test_problem.description in first_mail.body)
-        dashboard_url = settings.SITE_BASE_URL + reverse('org-dashboard', kwargs={'ods_code':self.test_problem.organisation.ods_code})
+        dashboard_url = settings.SITE_BASE_URL + reverse('org-dashboard',
+                                                         kwargs={'ods_code': self.test_problem.organisation.ods_code})
         self.assertTrue(dashboard_url in first_mail.body)
 
         # Check that problems were marked as mailed
@@ -90,7 +92,6 @@ class EmailProblemsToProviderTests(TestCase):
         self.test_problem.save()
         self._call_command()
 
-        intro_mail = mail.outbox[0]
         first_mail = mail.outbox[1]
 
         self.assertTrue(self.test_problem.reporter_phone in first_mail.body)
@@ -100,7 +101,6 @@ class EmailProblemsToProviderTests(TestCase):
         # Quiet logging for this test
         logging.disable(logging.CRITICAL)
         # Make send_mail throw an exception for the first call
-        old_send_mail = mail.send_mail
         with patch.object(mail, 'send_mail') as mock_send_mail:
 
             # intro mail, intro mail again, other problem mail
@@ -125,41 +125,40 @@ class CreateAccountsForOrganisationsAndCCGsTests(TestCase):
         opts = {}
         call_command('create_accounts_for_organisations_and_ccgs', *args, **opts)
 
-
     def test_happy_path(self):
         # Quiet logging for this test - there a CCGs loaded that don't have email
         logging.disable(logging.CRITICAL)
 
         test_organisation_with_email = create_test_organisation({"email": "org@example.com"})
-        test_ccg_with_email          = create_test_ccg({         "email": "ccg@example.com"})
+        test_ccg_with_email = create_test_ccg({"email": "ccg@example.com"})
 
         self._call_command()
 
         # Check that user was created
-        for obj in [ test_organisation_with_email, test_ccg_with_email]:
+        for obj in [test_organisation_with_email, test_ccg_with_email]:
             users = obj.__class__.objects.get(pk=obj.id).users
             self.assertEqual(users.count(), 1)
             self.assertEqual(users.all()[0].email, obj.email)
 
         logging.disable(logging.NOTSET)
 
-
     def test_handles_orgs_with_no_email(self):  # ISSUE-329
         # Quiet logging for this test
         logging.disable(logging.CRITICAL)
 
         test_organisation_no_email = create_test_organisation({"email": ""})
-        test_ccg_no_email     = create_test_ccg({"email": ""})
+        test_ccg_no_email = create_test_ccg({"email": ""})
 
         # This would raise an error if it didn't handle it
         self._call_command()
 
         # Check that user was created
-        for obj in [ test_organisation_no_email, test_ccg_no_email]:
+        for obj in [test_organisation_no_email, test_ccg_no_email]:
             users = obj.__class__.objects.get(pk=obj.id).users
             self.assertEqual(users.count(), 0)
 
         logging.disable(logging.NOTSET)
+
 
 class CreateNonOrganisationAccountTests(TestCase):
 
@@ -168,17 +167,17 @@ class CreateNonOrganisationAccountTests(TestCase):
     def setUp(self):
         self.old_stderr = sys.stderr
         sys.stderr = DevNull()
-    
+
     def tearDown(self):
         sys.stderr = self.old_stderr
-    
+
     def _call_command(self, args=[], opts={}):
         call_command('create_non_organisation_accounts', *args, **opts)
 
     def expect_groups(self, email, expected_groups):
         user = User.objects.get(email=email)
         self.assertTrue(auth.user_in_groups(user, expected_groups))
-        other_groups = [ group for group in auth.ALL_GROUPS if not group in expected_groups ]
+        other_groups = [group for group in auth.ALL_GROUPS if not group in expected_groups]
         for group in other_groups:
             self.assertFalse(auth.user_in_group(user, group))
 
@@ -200,3 +199,31 @@ class CreateNonOrganisationAccountTests(TestCase):
         first_email = mail.outbox[0]
         expected_text = "You're receiving this e-mail because an account has been created"
         self.assertTrue(expected_text in first_email.body)
+
+
+class GetOrganisationRatingsFromChoicesAPITests(ExampleFileAPITest):
+
+    @classmethod
+    def setUpClass(cls):
+        # Fixture for a particular organisation
+        cls._example_file = '41265.xml'
+        super(GetOrganisationRatingsFromChoicesAPITests, cls).setUpClass()
+
+    def _call_command(self, args=[], opts={}):
+        call_command('get_organisation_ratings_from_choices_api', *args, **opts)
+
+    def test_happy_path(self):
+        # Add an organisation to pull the ratings for
+        organisation = create_test_organisation({'organisation_type': 'hospitals',
+                                                 'choices_id': 41265})
+        self.assertEqual(organisation.average_recommendation_rating, None)
+
+        self._call_command()
+
+        organisation = Organisation.objects.get(pk=organisation.id)
+
+        # Because we store things in a float field, there will be some rounding
+        # that happens on different systems, but realistically, 3 D.P. is
+        # sufficient - I just didn't want to be explicit so that we keep the
+        # data they give us as it is.
+        self.assertAlmostEqual(organisation.average_recommendation_rating, 4.2857142857142856, places=3)
