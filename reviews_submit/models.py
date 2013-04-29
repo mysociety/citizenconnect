@@ -10,7 +10,7 @@ from citizenconnect.models import AuditedModel
 
 class Review(AuditedModel):
 
-    """Persists submitted reviews for organisations."""
+    """A Review of a provider that has been left on the site."""
 
     email = models.CharField(max_length=100)
     display_name = models.CharField(max_length=100)
@@ -23,7 +23,7 @@ class Review(AuditedModel):
 
 class Rating(models.Model):
 
-    """Represents ratings for a Review."""
+    """A rating of an aspect of the provider, associated with a Review."""
 
     review = models.ForeignKey('Review')
     question = models.ForeignKey('Question')
@@ -32,7 +32,7 @@ class Rating(models.Model):
 
 class Question(models.Model):
 
-    """Represents a multiple choice question in a Review."""
+    """A multiple choice Question in a Review."""
 
     GPS = 'gps'
     HOSPITALS = 'hospitals'
@@ -51,7 +51,7 @@ class Question(models.Model):
 
 class Answer(models.Model):
 
-    """Represents an answer to a Question."""
+    """A single multiple choice answer for a Question."""
 
     text = models.CharField(max_length=255)
     api_answer_id = models.IntegerField()
