@@ -43,7 +43,9 @@ class Question(models.Model):
 
     title = models.CharField(max_length=255)
     api_question_id = models.IntegerField()
-    org_type = models.CharField(max_length=100, choices=ORG_TYPE_CHOICES, blank=False)
+    org_type = models.CharField(max_length=100,
+                                choices=ORG_TYPE_CHOICES,
+                                blank=False)
     updated = models.DateTimeField(default=timezone.now)
 
 
