@@ -1,6 +1,7 @@
 import datetime
 
 from django.test import TestCase
+from django.core.urlresolvers import reverse
 
 from organisations.tests.models import create_test_organisation
 from .models import Review, Question, Answer, Rating
@@ -30,10 +31,15 @@ class ReviewTest(TestCase):
 
         self.assertEqual(review.rating_set.count(), 1)
 
+
 class ReviewFormTest(TestCase):
     def setUp(self):
         self.organisation = create_test_organisation({'ods_code': 'A111'})
+        self.review_form_url = reverse('review-form', kwargs={'cobrand': 'choices',
+                                                              'ods_code': self.organisation.ods_code})
 
-    def test_leaving_a_review(self):
-        resp = self.client.get('/choices/review/review-form/A111')
-        self.assertEqual(resp.status_code, 200)
+    def test_review_form_exists(self):
+        resp = self.client.get(self.review_form_url)
+        self.assertContains(resp, 'Reviewing <strong>%s</strong>' % self.organisation.name, count=1, status_code=200)
+        self.assertTrue('organisation' in resp.context)
+        self.assertEquals(resp.context['organisation'].pk, self.organisation.pk)
