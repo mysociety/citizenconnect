@@ -18,7 +18,7 @@
         <ul class="message-list">
             <li class="message-list__success">Thank you for reporting your problem.</li>
         </ul>
-        <p>It has been forwarded immediately to <a href="{% url 'public-org-summary' cobrand=cobrand.name ods_code=object.organisation.ods_code %}">{{ object.organisation.name }}</a> and you should receive a response from them directly using the contact details you included.</p>
+        <p>It has been forwarded immediately to <a href="{% url 'public-org-summary' cobrand=cobrand.name ods_code=object.organisation.ods_code %}">{{ object.organisation.name }}</a> and you should receive a response from them directly using the contact details you included. <a href="{% url 'public-org-summary' cobrand=cobrand.name ods_code=object.organisation.ods_code %}">{{ object.organisation.name }}</a> should acknowledge your report within 24 hours.</p>
         <p>If you have opted to make your issue public, then once it has been moderated you can track your problem on <a href="{% url 'public-org-problems' cobrand=cobrand.name ods_code=object.organisation.ods_code %}">the public problem page for {{ object.organisation.name }}</a>.</p>
         <p>Your reference number for this is {{ object.reference_number }}. If you need to contact us or {{ object.organisation.name }} about this issue in the future, please quote this reference number.</p>
         <p>Moderation is a standard process for websites that allow members of the public to submit comments. <a href="{% url 'about' cobrand=cobrand.name %}">See more information on our moderation process</a>.</p>
