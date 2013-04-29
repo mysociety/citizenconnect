@@ -10,7 +10,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'Organisation.average_recommendation_rating'
         db.add_column('organisations_organisation', 'average_recommendation_rating',
-                      self.gf('django.db.models.fields.IntegerField')(null=True, blank=True),
+                      self.gf('django.db.models.fields.FloatField')(null=True, blank=True),
                       keep_default=False)
 
 
@@ -72,7 +72,7 @@ class Migration(SchemaMigration):
             'address_line1': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
             'address_line2': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
             'address_line3': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'average_recommendation_rating': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'average_recommendation_rating': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
             'ccgs': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'organisations'", 'symmetrical': 'False', 'to': "orm['organisations.CCG']"}),
             'choices_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True'}),
             'city': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),

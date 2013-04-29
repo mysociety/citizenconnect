@@ -64,7 +64,7 @@ class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Mod
     name_metaphone = models.TextField()
 
     # Average review rating from "Would you recommend this provider to your friends and family?"
-    average_recommendation_rating = models.IntegerField(blank=True, null=True)
+    average_recommendation_rating = models.FloatField(blank=True, null=True)
 
     @property
     def open_issues(self):
