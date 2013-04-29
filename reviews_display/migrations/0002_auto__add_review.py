@@ -7,6 +7,10 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
+    depends_on = (
+        ("organisations", "0023_auto__add_field_ccg_intro_email_sent"),
+    )
+
     def forwards(self, orm):
         # Adding model 'Review'
         db.create_table('reviews_display_review', (
