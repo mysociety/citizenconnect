@@ -47,6 +47,16 @@
     </div>
 </div>
 
+{% if organisation.average_recommendation_rating %}
+    <div class="island  mt">
+        <div class="gw">
+            <p class="g  one-whole  feature">
+                <span class="feature__num">{{ organisation.average_recommendation_rating|floatformat }} / 5</span>  <span class="feature__text">users would recommend to a friend</span>
+            </p>
+        </div>
+    </div>
+{% endif %}
+
 {% include 'organisations/includes/filters.html' %}
 
 <div class="header">
