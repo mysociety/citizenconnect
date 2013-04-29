@@ -6,16 +6,18 @@ from citizenconnect.shortcuts import render
 from organisations.views import PickProviderBase
 from organisations.models import Organisation
 from .models import Question
+from .forms import ReviewForm
 
 
 class PickProvider(PickProviderBase):
     result_link_url_name = 'review-form'
 
 
-class ReviewForm(TemplateView):
+class ReviewForm(FormView):
     template_name = 'reviews/review-form.html'
     choices_id = None
     org_type = None
+    form_class = ReviewForm
 
     def dispatch(self, request, *args, **kwargs):
         # Set organisation here so that we can use it anywhere in the class
