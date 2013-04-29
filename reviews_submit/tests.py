@@ -8,13 +8,13 @@ from .models import Review, Question, Answer, Rating
 
 
 class ReviewTest(TestCase):
+    fixtures = ['questions_and_answers.json']
+
     def test_creating_a_review(self):
         organisation = create_test_organisation()
 
-        test_question = Question(title="Everything ok?", api_question_id=1, org_type='hospitals')
-        test_question.save()
-        test_answer = Answer(text="Yes", api_answer_id=1)
-        test_question.answer_set.add(test_answer)
+        test_question = Question.objects.all()[0]
+        test_answer = test_question.answer_set.all()[0]
 
         review = Review.objects.create(
             email="bob@example.com",
@@ -32,6 +32,8 @@ class ReviewTest(TestCase):
 
 
 class ReviewFormTest(TestCase):
+    fixtures = ['questions_and_answers.json']
+
     def setUp(self):
         self.organisation = create_test_organisation({'ods_code': 'A111'})
         self.review_form_url = reverse('review-form', kwargs={'cobrand': 'choices',
