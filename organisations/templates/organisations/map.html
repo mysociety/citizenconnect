@@ -65,7 +65,7 @@
         <li><em><%= nhsCentre.all_time_open %></em> Open/In progress issues</li>
         <li><em><%= nhsCentre.all_time_closed %></em> Closed issues</li>
         <% if (nhsCentre.average_recommendation_rating) { %>
-            <li><em><%= Math.round(nhsCentre.average_recommendation_rating*4)/4 %></em> out of 5 users would recommend</li>
+            <li><em><%= nhsCentre.average_recommendation_rating.toFixed(1) %></em> out of 5 users would recommend</li>
         <% } %>
         <% if (nhsCentre.average_time_to_address) { %>
             <li><em><%= nhsCentre.average_time_to_address %></em> days average time to close</li>
