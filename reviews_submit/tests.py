@@ -44,3 +44,5 @@ class ReviewFormTest(TestCase):
         self.assertContains(resp, 'Reviewing <strong>%s</strong>' % self.organisation.name, count=1, status_code=200)
         self.assertTrue('organisation' in resp.context)
         self.assertEquals(resp.context['organisation'].pk, self.organisation.pk)
+        self.assertTrue('questions' in resp.context)
+        self.assertEqual(resp.context['questions'].count(), 7)

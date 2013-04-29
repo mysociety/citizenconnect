@@ -5,6 +5,7 @@ from django.views.generic import FormView, TemplateView
 from citizenconnect.shortcuts import render
 from organisations.views import PickProviderBase
 from organisations.models import Organisation
+from .models import Question
 
 
 class PickProvider(PickProviderBase):
@@ -25,6 +26,7 @@ class ReviewForm(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(ReviewForm, self).get_context_data(**kwargs)
         context['organisation'] = self.organisation
+        context['questions'] = Question.objects.filter(org_type=self.organisation.organisation_type)
         return context
 
 
