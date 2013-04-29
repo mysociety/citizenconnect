@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load url from future %}
+
+{% block title %}Reviews{% endblock %}
+
+{% block bodyclasses %}review_list{% endblock %}
+
+{% block content %}
+
+  <div class="header">
+      <h1>{{ organisation }} Reviews ({{ object_list.count }})</h1>
+  </div>
+
+  <ul>
+    {% for review in object_list %}
+      <li>
+        {{ review.title }}
+      </li>
+    {% endfor %}
+  </ul>
+
+{% endblock %}
