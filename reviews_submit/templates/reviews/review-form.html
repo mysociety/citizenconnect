@@ -27,8 +27,6 @@
         {% endfor %}
 
         {{ rating_forms.management_form }}
-        {{ rating_forms.errors }}
-        {{ form.errors }}
         {% for question in form.questions %}
         {% with forloop.counter0 as index %}
         <fieldset class="island">
