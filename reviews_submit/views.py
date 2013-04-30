@@ -6,7 +6,7 @@ from citizenconnect.shortcuts import render
 from organisations.views import PickProviderBase
 from organisations.models import Organisation
 from .models import Question
-from .forms import ReviewForm, RatingFormSet
+from . import forms
 
 
 class PickProvider(PickProviderBase):
@@ -17,7 +17,7 @@ class ReviewForm(FormView):
     template_name = 'reviews/review-form.html'
     choices_id = None
     org_type = None
-    form_class = ReviewForm
+    form_class = forms.ReviewForm
 
     def dispatch(self, request, *args, **kwargs):
         # Set organisation here so that we can use it anywhere in the class
@@ -30,13 +30,16 @@ class ReviewForm(FormView):
         context['organisation'] = self.organisation
 
         if self.request.POST:
-            context['rating_forms'] = RatingFormSet(data=self.request.POST)
+            context['rating_forms'] = forms.RatingFormSet(data=self.request.POST)
         else:
-            context['rating_forms'] = RatingFormSet()
-
-        context['questions'] = Question.objects.filter(org_type=self.organisation.organisation_type)
+            context['rating_forms'] = forms.RatingFormSet()
 
         return context
+
+    def get_form(self, form_class):
+        kwargs = self.get_form_kwargs()
+        kwargs['questions'] = Question.objects.filter(org_type=self.organisation.organisation_type)
+        return form_class(**kwargs)
 
 
 class ReviewConfirm(TemplateView):
