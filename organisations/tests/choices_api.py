@@ -1,6 +1,6 @@
 # Standard imports
 import os.path
-from mock import MagicMock, patch
+from mock import MagicMock
 import urllib
 
 # Django imports
@@ -37,6 +37,7 @@ class ExampleFileAPITest(TestCase):
     @classmethod
     def tearDownClass(cls):
         cls._example_data.close()
+
 
 class ChoicesAPIOrganisationsSearchResultExampleFileTests(ExampleFileAPITest):
 
@@ -83,8 +84,8 @@ class ChoicesAPIOrganisationsSearchResultExampleFileTests(ExampleFileAPITest):
     def test_parses_coordinates(self):
         results = self.parse_example_file('hospitals')
         first_expected_coordinates = {
-            'lon':-0.137492403388023,
-            'lat':51.4915466308594
+            'lon': -0.137492403388023,
+            'lat': 51.4915466308594
         }
         self.assertEqual(results[0]['coordinates'], first_expected_coordinates)
 
@@ -114,11 +115,12 @@ class ChoicesAPIOrganisationsSearchResultExampleFileTests(ExampleFileAPITest):
 
     def test_finds_all_organisations(self):
         # Mock find_organisations to return a dummy result
-        self._api.find_organisations = MagicMock(return_value=[{'name':'Test Organisation'}])
+        self._api.find_organisations = MagicMock(return_value=[{'name': 'Test Organisation'}])
         # We expect it to be called once for each organisation type
         expected_number_of_results = len(settings.ORGANISATION_TYPES)
         organisations = self._api.find_all_organisations("postcode", "SW1A1AA")
         self.assertEqual(len(organisations), expected_number_of_results)
+
 
 class ChoicesAPIOrganisationsAllResultExampleFileTests(ExampleFileAPITest):
 
@@ -136,6 +138,7 @@ class ChoicesAPIOrganisationsAllResultExampleFileTests(ExampleFileAPITest):
         self.assertEqual(results[0]['ods_code'], first_expected_id)
         self.assertEqual(results[-1]['ods_code'], last_expected_id)
 
+
 class ChoicesAPIOneOrganisationExampleFileTests(ExampleFileAPITest):
 
     @classmethod
@@ -146,7 +149,12 @@ class ChoicesAPIOneOrganisationExampleFileTests(ExampleFileAPITest):
 
     def test_parses_organisation_name(self):
         result = self._api.parse_organisation(self._example_data)
-        self.assertEqual('Darent Valley Hospital', result)
+        self.assertEqual('Darent Valley Hospital', result['name'])
+
+    def test_parses_recommendation_rating(self):
+        result = self._api.parse_organisation(self._example_data)
+        self.assertEqual(4.2857142857142856, result['rating'])
+
 
 class ChoicesAPIOrganisationServicesExampleFileTests(ExampleFileAPITest):
 

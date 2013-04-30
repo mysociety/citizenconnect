@@ -1,34 +1,29 @@
 # Standard imports
-from itertools import chain
-from operator import attrgetter
 import json
 
 # Django imports
-from django.views.generic import FormView, TemplateView, UpdateView, ListView
+from django.views.generic import TemplateView, ListView
 from django.views.generic.edit import FormMixin
-from django.template.defaultfilters import escape
 from django.core.urlresolvers import reverse, resolve
 from django.core.exceptions import PermissionDenied
-from django.template import RequestContext
 from django_tables2 import RequestConfig
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q, Avg
 from django.contrib.gis.geos import Polygon
 
 # App imports
 from citizenconnect.shortcuts import render
 from issues.models import Problem
 
-import choices_api
 import auth
 from .auth import user_in_group, user_in_groups, user_is_superuser, enforce_organisation_access_check, user_can_access_escalation_dashboard, user_can_access_private_national_summary
-from .models import Organisation, Service, CCG, SuperuserLogEntry
+from .models import Organisation, SuperuserLogEntry
 from .forms import OrganisationFinderForm, FilterForm, OrganisationFilterForm
 from .lib import interval_counts
 from .tables import NationalSummaryTable, PrivateNationalSummaryTable, ProblemTable, ExtendedProblemTable, ProblemDashboardTable, EscalationDashboardTable, BreachTable
 from .templatetags.organisation_extras import formatted_time_interval, percent
+
 
 class PrivateViewMixin(object):
     """
@@ -38,11 +33,12 @@ class PrivateViewMixin(object):
 
     def get_context_data(self, **kwargs):
         context = super(PrivateViewMixin, self).get_context_data(**kwargs)
-        if 'private' in kwargs and kwargs['private'] == True:
+        if 'private' in kwargs and kwargs['private'] is True:
             context['private'] = True
         else:
             context['private'] = False
         return context
+
 
 class OrganisationAwareViewMixin(PrivateViewMixin):
     """Mixin class for views which need to have a reference to a particular
@@ -87,7 +83,7 @@ class FilterFormMixin(FormMixin):
         kwargs = {'initial': self.get_initial()}
         if self.request.GET:
             kwargs['data'] = self.request.GET
-        if 'private' in self.kwargs and self.kwargs['private'] == True:
+        if 'private' in self.kwargs and self.kwargs['private'] is True:
             kwargs['private'] = True
         return kwargs
 
@@ -100,9 +96,9 @@ class FilterFormMixin(FormMixin):
                 # The hasattr deals with ModelChoiceFields, where cleaned_data
                 # will return a model instance, not a single value, but code
                 # which uses it wants only the id
-                if value != None and value != '' and hasattr(value, 'id'):
+                if value is not None and value != '' and hasattr(value, 'id'):
                     selected_filters[name] = value.id
-                elif value != None and value != '' :
+                elif value is not None and value != '':
                     selected_filters[name] = value
         context['selected_filters'] = selected_filters
         return context
@@ -140,19 +136,20 @@ class FilterFormMixin(FormMixin):
         organisation_filters = {}
         for organisation_attr in organisation_attrs:
             value = problem_filters.pop(organisation_attr, None)
-            if value != None:
+            if value is not None:
                 organisation_filters[organisation_attr] = value
 
-        if problem_filters.get('status') != None:
+        if problem_filters.get('status') is not None:
             # ignore a filter request for a status that isn't permitted
             if not problem_filters['status'] in self.permitted_statuses:
                 del problem_filters['status']
 
-        if problem_filters.get('status') == None:
+        if problem_filters.get('status') is None:
             # by default the status should filter for the permitted statuses
             problem_filters['status'] = tuple(self.permitted_statuses)
 
         return (problem_filters, organisation_filters)
+
 
 class Map(FilterFormMixin,
           TemplateView):
@@ -185,19 +182,19 @@ class Map(FilterFormMixin,
             organisation_filters['organisation_ids'] = tuple(organisations_within_map_bounds_ids)
 
             organisations_list = interval_counts(problem_filters=problem_filters,
-                                                organisation_filters=organisation_filters,
-                                                extra_organisation_data=['coords', 'type'],
-                                                problem_data_intervals=['all_time_open', 'all_time_closed'],
-                                                average_fields=['time_to_address'],
-                                                boolean_fields=['happy_outcome'])
+                                                 organisation_filters=organisation_filters,
+                                                 extra_organisation_data=['coords', 'type', 'average_recommendation_rating'],
+                                                 problem_data_intervals=['all_time_open', 'all_time_closed'],
+                                                 average_fields=['time_to_address'],
+                                                 boolean_fields=['happy_outcome'])
         else:
             # If there are no organisations found within the bounds, return nothing.
             organisations_list = []
 
         for org_data in organisations_list:
             org_data['url'] = reverse('public-org-summary',
-                                      kwargs={'ods_code':org_data['ods_code'],
-                                               'cobrand':self.kwargs['cobrand']})
+                                      kwargs={'ods_code': org_data['ods_code'],
+                                              'cobrand': self.kwargs['cobrand']})
             org_data['average_time_to_address'] = formatted_time_interval(org_data['average_time_to_address'])
             org_data['happy_outcome'] = percent(org_data['happy_outcome'])
         # Make it into a JSON string
@@ -244,7 +241,7 @@ class PickProviderBase(ListView):
         super(PickProviderBase, self).get(*args, **kwargs)
         if self.request.GET:
             form = OrganisationFinderForm(self.request.GET)
-            if form.is_valid(): # All validation rules pass
+            if form.is_valid():  # All validation rules pass
                 context = {'location': form.cleaned_data['location'],
                            'organisation_type': form.cleaned_data['organisation_type'],
                            'organisations': form.cleaned_data['organisations'],
@@ -265,7 +262,8 @@ class PickProviderBase(ListView):
             else:
                 return render(self.request, self.form_template_name, {'form': form})
         else:
-              return render(self.request, self.form_template_name, {'form': OrganisationFinderForm()})
+            return render(self.request, self.form_template_name, {'form': OrganisationFinderForm()})
+
 
 class OrganisationSummary(OrganisationAwareViewMixin,
                           FilterFormMixin,
@@ -341,6 +339,7 @@ class OrganisationSummary(OrganisationAwareViewMixin,
 
         return context
 
+
 class OrganisationProblems(OrganisationAwareViewMixin,
                            FilterFormMixin,
                            TemplateView):
@@ -387,6 +386,11 @@ class OrganisationProblems(OrganisationAwareViewMixin,
         return context
 
 
+class OrganisationReviews(OrganisationAwareViewMixin,
+                          TemplateView):
+    template_name = 'organisations/organisation_reviews.html'
+
+
 class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
     template_name = 'organisations/summary.html'
     permitted_statuses = Problem.VISIBLE_STATUSES
@@ -416,11 +420,11 @@ class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
             threshold=threshold
         )
 
+
 class PrivateNationalSummary(Summary):
     template_name = 'organisations/national_summary.html'
     permitted_statuses = Problem.ALL_STATUSES
     summary_table_class = PrivateNationalSummaryTable
-
 
     def dispatch(self, request, *args, **kwargs):
 
@@ -428,7 +432,6 @@ class PrivateNationalSummary(Summary):
             raise PermissionDenied()
 
         return super(PrivateNationalSummary, self).dispatch(request, *args, **kwargs)
-
 
     def get_context_data(self, **kwargs):
 
@@ -450,7 +453,7 @@ class PrivateNationalSummary(Summary):
             ccgs = user.ccgs.all()
             if not len(ccgs):
                 raise Exception("CCG group user '{0}' has no ccgs - they should not have gotten past check in dispatch".format(user))
-            ccg_ids = [ ccg.id for ccg in ccgs ]
+            ccg_ids = [ccg.id for ccg in ccgs]
             # Don't remove the ccg filter they've added if it's in their ccgs
             selected_ccg = organisation_filters.get('ccg')
             if not selected_ccg or not int(selected_ccg) in ccg_ids:
@@ -461,7 +464,6 @@ class PrivateNationalSummary(Summary):
             organisation_filters=organisation_filters,
             threshold=threshold
         )
-
 
 
 class OrganisationDashboard(OrganisationAwareViewMixin,
@@ -482,6 +484,7 @@ class OrganisationDashboard(OrganisationAwareViewMixin,
         context['problems_total'] = interval_counts(organisation_filters=organisation_filters)
         return context
 
+
 class DashboardChoice(TemplateView):
 
     template_name = 'organisations/dashboard_choice.html'
@@ -491,6 +494,7 @@ class DashboardChoice(TemplateView):
         # Get all the organisations the user can see
         context['organisations'] = self.request.user.organisations.all()
         return context
+
 
 @login_required
 def login_redirect(request):
@@ -522,14 +526,15 @@ def login_redirect(request):
         # Providers with only one organisation just go to that organisation's dashboard
         if user.organisations.count() == 1:
             organisation = user.organisations.all()[0]
-            return HttpResponseRedirect(reverse('org-dashboard', kwargs={'ods_code':organisation.ods_code}))
+            return HttpResponseRedirect(reverse('org-dashboard', kwargs={'ods_code': organisation.ods_code}))
         # Providers with more than one provider attached
         # go to a page to choose which one to see
         elif user.organisations.count() > 1:
             return HttpResponseRedirect(reverse('dashboard-choice'))
 
     # Anyone else goes to the normal homepage
-    return HttpResponseRedirect(reverse('home', kwargs={'cobrand':'choices'}))
+    return HttpResponseRedirect(reverse('home', kwargs={'cobrand': 'choices'}))
+
 
 class SuperuserLogs(TemplateView):
 
@@ -591,6 +596,7 @@ class EscalationDashboard(FilterFormMixin, TemplateView):
         context['table'] = problem_table
         context['page_obj'] = problem_table.page
         return context
+
 
 class EscalationBreaches(TemplateView):
 
