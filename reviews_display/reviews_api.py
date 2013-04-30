@@ -20,10 +20,12 @@ class ReviewsAPI(object):
     of the XML and lets us use an iterator to access the reviews.
     """
 
-    def __init__(self, organisation_type="hospitals", start_page=None):
+    def __init__(self, organisation_type="hospitals", start_page=None, max_fetch=5):
         self.api = ChoicesAPI()
 
         self.organisation_type = organisation_type
+
+        self.fetches_remaining = max_fetch
 
         # create the start page if not specified
         if not start_page:
@@ -51,6 +53,12 @@ class ReviewsAPI(object):
             raise StopIteration
 
     def fetch_from_api(self, url):
+
+        # Check that we can fetch more
+        if not self.fetches_remaining:
+            return None
+        self.fetches_remaining -= 1
+
         data = urllib.urlopen(url).read()
 
         # There does not appear to be a way to tell ElementTree to ignore the
@@ -58,7 +66,6 @@ class ReviewsAPI(object):
         data = re.sub(r'xmlns=".*?"', '', data)
 
         return data
-
 
     def convert_entry_to_review(self, entry):
         review = {
@@ -90,13 +97,16 @@ class ReviewsAPI(object):
 
         return review
 
-
     def load_next_page(self):
 
         if not self.next_page_url:
             return None
 
         data = self.fetch_from_api(self.next_page_url)
+
+        # error with fetching, or have fetched up to our limit
+        if not data:
+            return None
 
         root = ET.fromstring(data)
 
