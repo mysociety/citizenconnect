@@ -9,7 +9,7 @@ from django.template import Context
 from django.template.loader import get_template
 from django.utils.timezone import utc
 
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 
 import auth
 
@@ -46,11 +46,11 @@ class MailSendMixin(models.Model):
         """
 
         kwargs = dict(
-            subject        = subject,
-            message        = message,
-            fail_silently  = fail_silently,
-            from_email     = settings.DEFAULT_FROM_EMAIL,
-            recipient_list = filter(bool, [self.email]),
+            subject=subject,
+            message=message,
+            fail_silently=fail_silently,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=filter(bool, [self.email]),
         )
 
         if not len(kwargs['recipient_list']):
@@ -62,7 +62,6 @@ class MailSendMixin(models.Model):
             self.send_intro_email()
 
         return mail.send_mail(**kwargs)
-
 
     def send_intro_email(self):
         """
@@ -80,11 +79,11 @@ class MailSendMixin(models.Model):
         logger.info('Sending intro email to {0}'.format(self))
 
         kwargs = dict(
-            subject        = subject_template.render(context),
-            message        = message_template.render(context),
-            fail_silently  = False,
-            from_email     = settings.DEFAULT_FROM_EMAIL,
-            recipient_list = filter(bool, [self.email]),
+            subject=subject_template.render(context),
+            message=message_template.render(context),
+            fail_silently=False,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=filter(bool, [self.email]),
         )
 
         if not len(kwargs['recipient_list']):
@@ -98,7 +97,6 @@ class MailSendMixin(models.Model):
         return
 
 
-
 class UserCreationMixin(models.Model):
 
     class Meta:
@@ -107,7 +105,6 @@ class UserCreationMixin(models.Model):
     def default_user_group(self):
         """Group to ensure that users are members of"""
         raise NotImplementedError("You should implement 'default_user_group' in your class")
-
 
     def ensure_related_user_exists(self):
         """
@@ -120,10 +117,11 @@ class UserCreationMixin(models.Model):
         class_name = self.__class__.__name__
 
         # No need to create if there are already users
-        if self.users.count(): return
+        if self.users.count():
+            return
 
         # We can't attach a user if we don't have an email address
-        if not self.email: # ISSUE-329
+        if not self.email:  # ISSUE-329
             raise ValueError("{0} {1} needs an email to find/create related user".format(class_name, self.id))
 
         logger.info('Creating account for {0}'.format(self))
@@ -138,5 +136,3 @@ class UserCreationMixin(models.Model):
 
         # Add the user to this org
         self.users.add(user)
-
-
