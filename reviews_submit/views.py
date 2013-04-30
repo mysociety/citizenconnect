@@ -19,8 +19,6 @@ class PickProvider(PickProviderBase):
 
 class ReviewForm(CreateView):
     template_name = 'reviews/review-form.html'
-    choices_id = None
-    org_type = None
     form_class = forms.ReviewForm
 
     def dispatch(self, request, *args, **kwargs):
