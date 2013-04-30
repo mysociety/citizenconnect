@@ -7,6 +7,11 @@ import xml.etree.ElementTree as ET
 
 import urllib
 
+# TODO
+
+# * stop at the last page
+# * add in ratings
+
 
 class ReviewsAPI(object):
 
@@ -36,6 +41,15 @@ class ReviewsAPI(object):
         except IndexError:
             raise StopIteration
 
+    def fetch_from_api(self, url):
+        data = urllib.urlopen(url).read()
+
+        # There does not appear to be a way to tell ElementTree to ignore the
+        # namespaces. Use a regex to fix the raw XML string.
+        data = re.sub(r'xmlns=".*?"', '', data)
+
+        return data
+
     def load_next_page(self):
 
         # If we have a page then just return (deal with pagination later)
@@ -50,11 +64,7 @@ class ReviewsAPI(object):
         else:
             url = self.next_page_url
 
-        data = urllib.urlopen(url).read()
-
-        # There does not appear to be a way to tell ElementTree to ignore the
-        # namespaces. Use a regex to fix the raw XML string.
-        data = re.sub(r'xmlns=".*?"', '', data)
+        data = self.fetch_from_api(url)
 
         root = ET.fromstring(data)
 
