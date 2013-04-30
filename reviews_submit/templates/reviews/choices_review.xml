@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Opinions xmlns="http://v1.syndication.nhschoices.nhs.uk/Comments">
+    {% load tz %}
+    {% for review in reviews %}
+    <Opinion>
+        <Author>{{ review.email }}</Author>
+        <DisplayName>{{ review.display_name }}</DisplayName>
+        <Title>{{ review.title }}</Title>
+        <Comment>{{ review.comment }}</Comment>
+        <MonthYearOfVisit>{{ review.month_year_of_visit|date:"m/Y" }}</MonthYearOfVisit>
+        <PostingID>{{ review.id }}</PostingID>
+        <PostingOrganisationID>{{ posting_organisation_id }}</PostingOrganisationID>
+        <DateSubmitted>{{ review.created|utc|date:"c" }}</DateSubmitted>
+        <Ratings>
+            {% for rating in review.rating_set.all %}<Rating QuestionID="{{ rating.question.api_question_id }}">{{ rating.answer.api_answer_id }}</Rating>
+            {% endfor %}
+        </Ratings>
+    </Opinion>
+    {% endfor %}
+</Opinions>
