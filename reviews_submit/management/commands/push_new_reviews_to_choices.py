@@ -11,12 +11,12 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         reviews = Review.objects.all()
-        xmlString = render_to_string('reviews/choices_review.xml', {
+        xml_string = render_to_string('reviews/choices_review.xml', {
             'reviews': reviews,
             'posting_organisation_id': settings.NHS_CHOICES_POSTING_ORGANISATION_ID
         })
 
-        response = requests.post(self.choices_api_url(), data=xmlString, headers={'content-type': 'application/xml'})
+        response = requests.post(self.choices_api_url(), data=xml_string, headers={'content-type': 'application/xml'})
 
         print("Response status: %s" % response.status_code)
 
