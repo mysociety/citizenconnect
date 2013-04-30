@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from django.core.management.base import BaseCommand
 from django.contrib.gis.geos import Point
 from django.db import transaction
@@ -15,3 +17,4 @@ class Command(BaseCommand):
 
         for review in reviews:
             print "{api_posting_id} ({api_category})".format(**review)
+            pprint(review)

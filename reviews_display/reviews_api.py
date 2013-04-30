@@ -7,11 +7,6 @@ import xml.etree.ElementTree as ET
 
 import urllib
 
-# TODO
-
-# * stop at the last page
-# * add in ratings
-
 
 class ReviewsAPI(object):
 
@@ -94,6 +89,14 @@ class ReviewsAPI(object):
 
         review['organisation_choices_id'] = re.search(
             r'/(\d+)\?', org_url).group(1)
+
+        review["ratings"] = []
+        for rating in entry.iter("rating"):
+            review['ratings'].append({
+                "question": rating.find("questionText").text,
+                "answer": rating.find("answerText").text,
+                "score": rating.find("answerMetric").get('value'),
+            })
 
         return review
 
