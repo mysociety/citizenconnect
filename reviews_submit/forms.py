@@ -1,6 +1,5 @@
 from django import forms
 from django.forms.widgets import HiddenInput
-from django.forms.models import inlineformset_factory
 
 from .models import Review, Rating
 
@@ -39,5 +38,3 @@ class RatingForm(forms.ModelForm):
             'answer'
         ]
 
-
-RatingFormSet = inlineformset_factory(Review, Rating, form=RatingForm, max_num=0)
