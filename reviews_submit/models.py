@@ -21,6 +21,9 @@ class Review(AuditedModel):
     month_year_of_visit = models.DateField()
     organisation = models.ForeignKey('organisations.Organisation')
 
+    def __unicode__(self):
+        return "{0} - {1}".format(self.display_name, self.title)
+
 
 class Rating(models.Model):
 
@@ -30,6 +33,8 @@ class Rating(models.Model):
     question = models.ForeignKey('Question')
     answer = models.ForeignKey('Answer')
 
+    def __unicode__(self):
+        return "{0} - {1}".format(self.question.title, self.answer.text)
 
 class Question(models.Model):
 
@@ -42,6 +47,9 @@ class Question(models.Model):
                                 blank=False)
     updated = models.DateTimeField(default=timezone.now)
 
+    def __unicode__(self):
+        return self.title
+
 
 class Answer(models.Model):
 
@@ -50,3 +58,6 @@ class Answer(models.Model):
     text = models.CharField(max_length=255)
     api_answer_id = models.IntegerField()
     question = models.ForeignKey('Question')
+
+    def __unicode__(self):
+        return self.text
