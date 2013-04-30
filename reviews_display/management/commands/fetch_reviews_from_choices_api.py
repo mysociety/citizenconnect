@@ -13,5 +13,4 @@ class Command(BaseCommand):
         reviews = ReviewsAPI()
 
         for review in reviews:
-            print review
-            break
+            print review['api_posting_id']
