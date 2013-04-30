@@ -45,12 +45,17 @@ class MailSendMixin(models.Model):
           * will send the email
         """
 
+        # Organisations send emails to two email addresses
+        recipient_list = [self.email]
+        if hasattr(self, 'secondary_email'):
+            recipient_list.append(self.secondary_email)
+
         kwargs = dict(
             subject=subject,
             message=message,
             fail_silently=fail_silently,
             from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=filter(bool, [self.email]),
+            recipient_list=filter(bool, recipient_list),
         )
 
         if not len(kwargs['recipient_list']):
