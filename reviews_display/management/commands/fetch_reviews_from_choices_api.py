@@ -4,6 +4,7 @@ from django.db import transaction
 
 from ...reviews_api import ReviewsAPI
 
+
 class Command(BaseCommand):
     help = 'Fetch reviews from choices API'
 
@@ -13,4 +14,4 @@ class Command(BaseCommand):
         reviews = ReviewsAPI()
 
         for review in reviews:
-            print review['api_posting_id']
+            print "{api_posting_id} ({api_category})".format(**review)
