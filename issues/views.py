@@ -1,21 +1,24 @@
-from django.views.generic import TemplateView, CreateView, DetailView, UpdateView, FormView
+from django.views.generic import TemplateView, CreateView, DetailView, UpdateView
 from django.shortcuts import get_object_or_404
 from django.forms.widgets import HiddenInput
 from django.template import RequestContext
+from django.http import Http404
 
 # App imports
 from citizenconnect.shortcuts import render
 from organisations.models import Organisation, Service
-from organisations.views import PickProviderBase, OrganisationAwareViewMixin, PrivateViewMixin
+from organisations.views import PickProviderBase, OrganisationAwareViewMixin
 from organisations.auth import enforce_problem_access_check
 from organisations.lib import interval_counts
 
 from .models import Problem
 from .forms import ProblemForm, ProblemSurveyForm
-from .lib import changes_for_model, base32_to_int
+from .lib import base32_to_int
+
 
 class ProblemPickProvider(PickProviderBase):
     result_link_url_name = 'problem-form'
+
 
 class ProblemCreate(OrganisationAwareViewMixin, CreateView):
     model = Problem
@@ -64,6 +67,7 @@ class ProblemDetail(DetailView):
         enforce_problem_access_check(obj, self.request.user)
         return obj
 
+
 class ProblemSurvey(UpdateView):
     model = Problem
     form_class = ProblemSurveyForm
@@ -88,10 +92,10 @@ class ProblemSurvey(UpdateView):
         return problem
 
     def form_valid(self, form):
-         self.object = form.save()
-         context = RequestContext(self.request)
-         context['object'] = self.object
-         return render(self.request, self.confirm_template, context)
+        self.object = form.save()
+        context = RequestContext(self.request)
+        context['object'] = self.object
+        return render(self.request, self.confirm_template, context)
 
 
 class CommonQuestions(TemplateView):

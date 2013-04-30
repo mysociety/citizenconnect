@@ -275,8 +275,9 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     happy_outcome = models.NullBooleanField()
 
     # Integer values represent time in minutes
-    time_to_acknowledge = models.IntegerField(null=True)
-    time_to_address = models.IntegerField(null=True)
+    time_to_acknowledge = models.IntegerField(blank=True, null=True)
+    time_to_address = models.IntegerField(blank=True, null=True)
+    resolved = models.DateTimeField(blank=True, null=True)
 
     publication_status = models.IntegerField(default=HIDDEN,
                                              blank=False,
@@ -325,14 +326,6 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         return self.summarise(self.description)
 
     @property
-    def resolved(self):
-        """When the issue was resolved - calculated from created + time_to_address"""
-        if self.time_to_address:
-            return self.created + timedelta(minutes=self.time_to_address)
-        else:
-            return None
-
-    @property
     def has_elevated_priority(self):
         return self.priority < Problem.PRIORITY_NORMAL
 
@@ -365,6 +358,10 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
                 or self.organisation.can_be_accessed_by(user)
 
     def set_time_to_values(self):
+        """
+        Set the time_to_address, time_to_acknowledge and resolved
+        times
+        """
         now = datetime.utcnow().replace(tzinfo=utc)
         minutes_since_created = self.timedelta_to_minutes(now - self.created)
         statuses_which_indicate_acknowledgement = [Problem.ACKNOWLEDGED,
@@ -377,6 +374,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
             self.time_to_acknowledge = minutes_since_created
         if self.time_to_address is None and int(self.status) in statuses_which_indicate_resolution:
             self.time_to_address = minutes_since_created
+            self.resolved = now
 
     def save(self, *args, **kwargs):
         """Override the default model save() method in order to populate time_to_acknowledge
