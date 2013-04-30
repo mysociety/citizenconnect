@@ -1,9 +1,11 @@
 from django import forms
+from django.forms.models import inlineformset_factory
 
-from .models import Review
+from .models import Review, Rating
 
 
 class ReviewForm(forms.ModelForm):
+
     class Meta:
         model = Review
 
@@ -15,3 +17,12 @@ class ReviewForm(forms.ModelForm):
             'comment',
             'month_year_of_visit'
         ]
+
+
+class RatingForm(forms.ModelForm):
+
+    class Meta:
+        model = Rating
+
+
+RatingFormSet = inlineformset_factory(Review, Rating, form=RatingForm, extra=7)

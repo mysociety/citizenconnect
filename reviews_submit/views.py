@@ -6,7 +6,7 @@ from citizenconnect.shortcuts import render
 from organisations.views import PickProviderBase
 from organisations.models import Organisation
 from .models import Question
-from .forms import ReviewForm
+from .forms import ReviewForm, RatingFormSet
 
 
 class PickProvider(PickProviderBase):
@@ -28,7 +28,14 @@ class ReviewForm(FormView):
     def get_context_data(self, **kwargs):
         context = super(ReviewForm, self).get_context_data(**kwargs)
         context['organisation'] = self.organisation
+
+        if self.request.POST:
+            context['rating_forms'] = RatingFormSet(data=self.request.POST)
+        else:
+            context['rating_forms'] = RatingFormSet()
+
         context['questions'] = Question.objects.filter(org_type=self.organisation.organisation_type)
+
         return context
 
 

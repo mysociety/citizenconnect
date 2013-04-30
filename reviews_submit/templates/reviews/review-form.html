@@ -26,16 +26,10 @@
             {{ hidden }}
         {% endfor %}
 
-        {% for question in questions %}
+        {{ ratings_form.management_form }}
+        {% for rating_form in rating_forms %}
         <fieldset class="island">
-            <p class="info">{{ question.title }}</p>
-
-            <ul class="radio-list">
-                {% for answer in question.answer_set.all %}
-                <li><input type="radio" name="questions[{{ question.api_question_id }}]" value="{{ answer.api_answer_id }}" /> {{ answer.text }}</li>
-                {% endfor %}
-            </ul>
-
+            {{ rating_form }}
         </fieldset>
         {% endfor %}
 
