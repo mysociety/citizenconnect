@@ -1,4 +1,5 @@
 from django.db import models
+from django.forms.models import model_to_dict
 
 from organisations.models import Organisation
 from citizenconnect.models import AuditedModel
@@ -110,6 +111,20 @@ class Review(AuditedModel):
             for field in api_review.keys():
                 setattr(review, field, api_review[field])  # ick-ity yuck :(
             review.save()
+
+        # check if the ratings have changed, if they have delete them all and
+        # reinsert
+        current_ratings = [
+            model_to_dict(x, exclude=['id', 'review'])
+            for x
+            in review.rating_set.all().order_by('question')
+        ]
+
+        if current_ratings != api_review['ratings']:
+            review.rating_set.all().delete()
+
+        for rating in api_review['ratings']:
+            review.rating_set.create(**rating)
 
         return True
 
