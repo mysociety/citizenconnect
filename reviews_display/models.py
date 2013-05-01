@@ -31,8 +31,8 @@ class Review(AuditedModel):
     # This is provided in the api and is meant to identify what the review is.
     API_CATEGORY_CHOICES = (
         ('comment',  'comment'),
-        ('reply',    'reply'),
-        ('deletion', 'deletion'),
+        # ('reply',    'reply'),     # not implemented yet
+        # ('deletion', 'deletion'),  # entry is just deleted from db atm
     )
     api_category = models.CharField(
         max_length=10,
@@ -73,6 +73,19 @@ class Review(AuditedModel):
         if api_review['api_category'] == 'reply':
             return
 
+        unique_args = dict(
+            api_posting_id=api_review['api_posting_id'],
+            api_postingorganisationid=api_review['api_postingorganisationid']
+        )
+
+        # If this is a deletion then delete from the db
+        if api_review['api_category'] == 'deletion':
+            try:
+                cls.objects.get(**unique_args).delete()
+            except cls.DoesNotExist:
+                pass  # if it was not in db then no need to delete it
+            return
+
         # Load the org. If not possible skip this review.
         try:
             organisation = Organisation.objects.get(
@@ -85,17 +98,13 @@ class Review(AuditedModel):
             )
 
         defaults = api_review.copy()
-
         del defaults['ratings']
         del defaults['organisation_choices_id']
         del defaults['in_reply_to_id']
         defaults['organisation'] = organisation
 
         review, created = cls.objects.get_or_create(
-            api_posting_id=api_review['api_posting_id'],
-            api_postingorganisationid=api_review['api_postingorganisationid'],
-            defaults=defaults
-        )
+            defaults=defaults, **unique_args)
 
         if not created:
             for field in api_review.keys():

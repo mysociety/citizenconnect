@@ -95,10 +95,23 @@ class ReviewSaveFromAPITests(TestCase):
         self.assertEqual(review.title, new_title)
 
     def test_takedowns(self):
-        self.assertTrue(False)
-        # upsert a takedown, check reviews and ratings are deleted
+        # insert entry
+        Review.upsert_from_api_data(self.sample_review)
 
-        # upsert a takedown, check reviews and ratings are deleted
+        # upsert a takedown, check review is deleted
+        sample_review = self.sample_review.copy()
+        sample_review['api_category'] = 'deletion'
+        Review.upsert_from_api_data(sample_review)
+        self.assertEqual(
+            Review.objects.filter(
+                api_posting_id=sample_review['api_posting_id']
+            ).count(),
+            0
+        )
+
+        # check that calling it without anything is db is ok too
+        Review.upsert_from_api_data(sample_review)
+
 
     def test_replies(self):
         sample_review = self.sample_review.copy()
