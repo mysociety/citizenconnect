@@ -20,6 +20,7 @@ class Review(AuditedModel):
     comment = models.TextField()
     month_year_of_visit = models.DateField()
     organisation = models.ForeignKey('organisations.Organisation')
+    last_sent_to_api = models.DateTimeField(null=True)
 
     def __unicode__(self):
         return "{0} - {1}".format(self.display_name, self.title)
