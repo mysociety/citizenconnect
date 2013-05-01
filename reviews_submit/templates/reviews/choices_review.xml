@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Opinions xmlns="http://v1.syndication.nhschoices.nhs.uk/Comments">
     {% load tz %}
-    {% for review in reviews %}
     <Opinion>
         <Author>{{ review.email }}</Author>
         <DisplayName>{{ review.display_name }}</DisplayName>
@@ -16,5 +15,4 @@
             {% endfor %}
         </Ratings>
     </Opinion>
-    {% endfor %}
 </Opinions>

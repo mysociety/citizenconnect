@@ -105,7 +105,7 @@ class PushNewReviewToChoicesCommandTest(TestCase):
         call_command('push_new_reviews_to_choices', stdout=self.stdout, stderr=self.stderr)
         review = Review.objects.get(pk=self.review.pk)
         self.assertIsNotNone(review.last_sent_to_api)
-        self.assertEquals("202: Sent review to the Choices API id={0} ods_code=A111\n".format(review.id), self.stdout.getvalue())
+        self.assertEquals("{0}: Sent review to the Choices API\n".format(review.id), self.stdout.getvalue())
 
     def test_api_returns_invalid_xml_error(self):
         self.mock_api_post_request(400)
