@@ -91,17 +91,25 @@ class PushNewReviewToChoicesCommandTest(TestCase):
             comment="Not bad",
             month_year_of_visit=datetime.date.today(),
         )
+        self.stdout = StringIO()
+        self.stderr = StringIO()
 
-    def test_succesful_post_to_api(self):
+    def mock_api_post_request(self, status, body=''):
         mock_response = MagicMock()
-        mock_response.status_code = 202
+        mock_response.status_code = status
+        mock_response.text = body
         requests.post = MagicMock(return_value=mock_response)
 
-        stdout = StringIO()
-        stderr = StringIO()
-        call_command('push_new_reviews_to_choices', stdout=stdout, stderr=stderr)
-
+    def test_succesful_post_to_api(self):
+        self.mock_api_post_request(202)
+        call_command('push_new_reviews_to_choices', stdout=self.stdout, stderr=self.stderr)
         review = Review.objects.get(pk=self.review.pk)
-
         self.assertIsNotNone(review.last_sent_to_api)
-        self.assertEquals("Sent 1 review to the Choices API\n", stderr.getvalue())
+        self.assertEquals("202: Sent 1 review to the Choices API\n", self.stdout.getvalue())
+
+    def test_api_returns_invalid_xml_error(self):
+        self.mock_api_post_request(400)
+        call_command('push_new_reviews_to_choices', stdout=self.stdout, stderr=self.stderr)
+        review = Review.objects.get(pk=self.review.pk)
+        self.assertIsNone(review.last_sent_to_api)
+        self.assertEquals("400: The XML has invalid fields\n", self.stderr.getvalue())
