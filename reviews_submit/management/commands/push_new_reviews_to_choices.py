@@ -1,8 +1,10 @@
 import requests
+
 from django.core.management.base import BaseCommand, CommandError
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.db.models import Count
+from django.utils import timezone
 
 from organisations.models import Organisation
 
@@ -14,9 +16,12 @@ class Command(BaseCommand):
         organisations = Organisation.objects.annotate(num_reviews=Count('review')).filter(num_reviews__gt=0)
 
         for organisation in organisations:
-            self.stdout.write("Posting {0} reviews to {1}\n".format(organisation.review_set.count(), self.choices_api_url(organisation.ods_code)))
-            response = requests.post(self.choices_api_url(organisation.ods_code), data=self.xml_encoded_reviews(organisation.review_set.all()), headers={'content-type': 'application/xml'})
-            self.stdout.write("Response status code: {0}\n".format(response.status_code))
+            reviews = organisation.review_set.filter(last_sent_to_api__isnull=True)
+
+            response = requests.post(self.choices_api_url(organisation.ods_code), data=self.xml_encoded_reviews(reviews), headers={'content-type': 'application/xml'})
+            self.stderr.write("Sent {0} review to the Choices API\n".format(reviews.count()))
+
+            reviews.update(last_sent_to_api=timezone.now())
 
     def choices_api_url(self, ods_code):
         return "{0}comment/{1}?apikey={2}".format(settings.NHS_CHOICES_BASE_URL, ods_code, settings.NHS_CHOICES_API_KEY)

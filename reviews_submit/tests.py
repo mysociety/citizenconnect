@@ -1,7 +1,12 @@
 import datetime
+from StringIO import StringIO
+
+import requests
+from mock import MagicMock
 
 from django.test import TestCase
 from django.core.urlresolvers import reverse
+from django.core.management import call_command
 
 from organisations.tests.models import create_test_organisation
 from .models import Review, Question, Answer, Rating
@@ -73,3 +78,30 @@ class ReviewFormViewTest(TestCase):
 
         self.assertEquals(resp.status_code, 302)
         self.assertEquals(self.organisation.review_set.count(), 1)
+
+
+class PushNewReviewToChoicesCommandTest(TestCase):
+
+    def setUp(self):
+        self.organisation = create_test_organisation({'ods_code': 'A111'})
+        self.review = self.organisation.review_set.create(
+            email="bob@example.com",
+            display_name="Bob Smith",
+            title="Good review",
+            comment="Not bad",
+            month_year_of_visit=datetime.date.today(),
+        )
+
+    def test_succesful_post_to_api(self):
+        mock_response = MagicMock()
+        mock_response.status_code = 202
+        requests.post = MagicMock(return_value=mock_response)
+
+        stdout = StringIO()
+        stderr = StringIO()
+        call_command('push_new_reviews_to_choices', stdout=stdout, stderr=stderr)
+
+        review = Review.objects.get(pk=self.review.pk)
+
+        self.assertIsNotNone(review.last_sent_to_api)
+        self.assertEquals("Sent 1 review to the Choices API\n", stderr.getvalue())
