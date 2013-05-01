@@ -36,6 +36,7 @@ class Rating(models.Model):
     def __unicode__(self):
         return "{0} - {1}".format(self.question.title, self.answer.text)
 
+
 class Question(models.Model):
 
     """Organisations type specific questions for ratings."""
