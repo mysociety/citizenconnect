@@ -239,15 +239,16 @@ class ProblemModelTests(ProblemTestCase):
 
         with self.assertRaises(ValidationError) as context_manager:
             long_problem.full_clean()
-        self.assertEqual(context_manager.exception.messages[1], 'Ensure this value has at most 2000 characters (it has 2001).')
+        self.assertEqual(len(context_manager.exception.messages), 1)
+        self.assertEqual(context_manager.exception.messages[0], 'Ensure this value has at most 2000 characters (it has 2001).')
 
 
 class ProblemModelTimeToTests(ProblemTestCase):
 
     def setUp(self):
-        now = datetime.utcnow().replace(tzinfo=utc)
+        self.now = datetime.utcnow().replace(tzinfo=utc)
         super(ProblemModelTimeToTests, self).setUp()
-        self.test_problem.created = now - timedelta(days=5)
+        self.test_problem.created = self.now - timedelta(days=5)
 
     def test_sets_time_to_ack_when_saved_in_ack_status_and_time_to_ack_not_set(self):
         self.test_problem.status = Problem.ACKNOWLEDGED
@@ -289,6 +290,16 @@ class ProblemModelTimeToTests(ProblemTestCase):
         self.test_problem.status = Problem.ESCALATED_RESOLVED
         self.test_problem.save()
         self.assertEqual(self.test_problem.time_to_address, 7200)
+
+    def test_sets_resolved_when_saved_in_resolved_status_and_time_to_address_not_set(self):
+        self.test_problem.status = Problem.RESOLVED
+        self.test_problem.save()
+        self.assertAlmostEqual(self.test_problem.resolved, self.now, delta=timedelta(seconds=10))
+
+    def test_sets_resolved_when_saved_in_escalated_resolved_status_and_time_to_address_not_set(self):
+        self.test_problem.status = Problem.ESCALATED_RESOLVED
+        self.test_problem.save()
+        self.assertAlmostEqual(self.test_problem.resolved, self.now, delta=timedelta(seconds=10))
 
     def test_does_not_set_time_to_address_when_saved_in_resolved_status_and_time_to_address_set(self):
         self.test_problem.time_to_address = 3000

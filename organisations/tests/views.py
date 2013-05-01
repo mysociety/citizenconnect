@@ -549,6 +549,26 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         self.assertContains(resp, service_problem.reference_number)
         self.assertNotContains(resp, self.staff_problem.reference_number)
 
+    def test_column_sorting(self):
+        # Test that each of the columns we expect to be sortable, is.
+        # ISSUE-498 - this raised a 500 on 'resolved' because resolved was not a model field
+        columns = ('reference_number',
+                   'created',
+                   'status',
+                   'resolved',
+                   'category',
+                   'service',
+                   'time_to_acknowledge',
+                   'time_to_address',
+                   'happy_service',
+                   'happy_outcome',
+                   'summary')
+        for column in columns:
+            sorted_url = "{0}?sort={1}".format(self.public_hospital_problems_url, column)
+            resp = self.client.get(sorted_url)
+            self.assertEqual(resp.status_code, 200)
+            self.assertEqual(resp.context['table'].data.ordering, [column])
+
 
 class OrganisationReviewsTests(AuthorizationTestCase):
 
