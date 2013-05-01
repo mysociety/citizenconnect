@@ -5,6 +5,7 @@ from django.contrib.gis.geos import Point
 from django.db import transaction
 
 from ...reviews_api import ReviewsAPI
+from ...models import Review
 
 
 class Command(BaseCommand):
@@ -18,3 +19,6 @@ class Command(BaseCommand):
         for review in reviews:
             print "{api_posting_id} ({api_category})".format(**review)
             pprint(review)
+
+            if Review.upsert_from_api_data(review):
+                break

@@ -4,7 +4,12 @@ from organisations.models import Organisation
 from citizenconnect.models import AuditedModel
 
 
+class OrganisationFromApiDoesNotExist(Exception):
+    pass
+
+
 class Review(AuditedModel):
+
     """
     A review of a provider which we have retrieved from the choices API. May
     have several ratings associated with.
@@ -51,6 +56,49 @@ class Review(AuditedModel):
     def __unicode__(self):
         return "{0}, {1} ({2})".format(self.title, self.author_display_name, self.id)
 
+    @classmethod
+    def upsert_from_api_data(cls, api_review):
+        """
+
+        Given a review scraped from the API creates or updates an entry in the
+        database for it, and related reviews.
+
+        If the organisation cannot be found (which is likely as initially not
+        all orgs will be part of this project) then it will throw an
+        OrganisationFromApiDoesNotExist exception.
+
+        """
+
+        # Load the org. If not possible skip the comment.
+        try:
+            organisation = Organisation.objects.get(
+                choices_id=api_review['organisation_choices_id'])
+        except Organisation.DoesNotExist:
+            raise OrganisationFromApiDoesNotExist(
+                "Could not find organisation with choices_id = '{0}'".format(
+                    api_review['organisation_choices_id']
+                )
+            )
+
+        defaults = api_review.copy()
+
+        del defaults['ratings']
+        del defaults['organisation_choices_id']
+        del defaults['in_reply_to_id']
+        defaults['organisation'] = organisation
+
+        review, created = cls.objects.get_or_create(
+            api_posting_id=api_review['api_posting_id'],
+            api_postingorganisationid=api_review['api_postingorganisationid'],
+            defaults=defaults
+        )
+
+        if not created:
+            for field in api_review.keys():
+                setattr(review, field, api_review[field])  # ick-ity yuck :(
+            review.save()
+
+        return True
 
 
 class Rating(AuditedModel):
