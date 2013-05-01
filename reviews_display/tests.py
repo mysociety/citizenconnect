@@ -4,7 +4,7 @@ from django.test import TestCase
 
 from organisations.tests.lib import create_test_organisation
 
-from .models import Review
+from .models import Review, OrganisationFromApiDoesNotExist
 
 
 class ReviewSaveFromAPITests(TestCase):
@@ -105,4 +105,10 @@ class ReviewSaveFromAPITests(TestCase):
         # upsert a reply, check raises IgnoredCategory exception
 
     def test_not_found_organisation(self):
-        self.assertTrue(False)
+        sample_review = self.sample_review.copy()
+        sample_review['organisation_choices_id'] = '12345678'  # won't be in db
+        self.assertRaises(
+            OrganisationFromApiDoesNotExist,
+            Review.upsert_from_api_data,
+            sample_review
+        )

@@ -69,7 +69,7 @@ class Review(AuditedModel):
 
         """
 
-        # Load the org. If not possible skip the comment.
+        # Load the org. If not possible skip this review.
         try:
             organisation = Organisation.objects.get(
                 choices_id=api_review['organisation_choices_id'])
