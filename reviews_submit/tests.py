@@ -105,11 +105,39 @@ class PushNewReviewToChoicesCommandTest(TestCase):
         call_command('push_new_reviews_to_choices', stdout=self.stdout, stderr=self.stderr)
         review = Review.objects.get(pk=self.review.pk)
         self.assertIsNotNone(review.last_sent_to_api)
-        self.assertEquals("202: Sent 1 review to the Choices API\n", self.stdout.getvalue())
+        self.assertEquals("202: Sent review to the Choices API id={0} ods_code=A111\n".format(review.id), self.stdout.getvalue())
 
     def test_api_returns_invalid_xml_error(self):
         self.mock_api_post_request(400)
         call_command('push_new_reviews_to_choices', stdout=self.stdout, stderr=self.stderr)
         review = Review.objects.get(pk=self.review.pk)
         self.assertIsNone(review.last_sent_to_api)
-        self.assertEquals("400: The XML has invalid fields\n", self.stderr.getvalue())
+        self.assertEquals("{0}: The XML has invalid fields\n".format(review.id), self.stderr.getvalue())
+
+    def test_api_returns_api_key_error(self):
+        self.mock_api_post_request(401)
+        call_command('push_new_reviews_to_choices', stdout=self.stdout, stderr=self.stderr)
+        review = Review.objects.get(pk=self.review.pk)
+        self.assertIsNone(review.last_sent_to_api)
+        self.assertEquals("{0}: The API key does not have permission\n".format(review.id), self.stderr.getvalue())
+
+    def test_api_returns_posting_id_error(self):
+        self.mock_api_post_request(403)
+        call_command('push_new_reviews_to_choices', stdout=self.stdout, stderr=self.stderr)
+        review = Review.objects.get(pk=self.review.pk)
+        self.assertIsNone(review.last_sent_to_api)
+        self.assertEquals("{0}: PostingID is a duplicate\n".format(review.id), self.stderr.getvalue())
+
+    def test_api_returns_nacs_code_error(self):
+        self.mock_api_post_request(404)
+        call_command('push_new_reviews_to_choices', stdout=self.stdout, stderr=self.stderr)
+        review = Review.objects.get(pk=self.review.pk)
+        self.assertIsNone(review.last_sent_to_api)
+        self.assertEquals("{0}: The NACS code A111 is not valid\n".format(review.id), self.stderr.getvalue())
+
+    def test_api_returns_generic_error(self):
+        self.mock_api_post_request(500)
+        call_command('push_new_reviews_to_choices', stdout=self.stdout, stderr=self.stderr)
+        review = Review.objects.get(pk=self.review.pk)
+        self.assertIsNone(review.last_sent_to_api)
+        self.assertEquals("{0}: Server error\n".format(review.id), self.stderr.getvalue())
