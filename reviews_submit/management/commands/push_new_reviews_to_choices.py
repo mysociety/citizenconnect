@@ -19,7 +19,7 @@ class Command(BaseCommand):
             self.stdout.write("Response status code: {0}\n".format(response.status_code))
 
     def choices_api_url(self, ods_code):
-        return "{0}comments/{1}?apikey={2}".format(settings.NHS_CHOICES_BASE_URL, ods_code, settings.NHS_CHOICES_API_KEY)
+        return "{0}comment/{1}?apikey={2}".format(settings.NHS_CHOICES_BASE_URL, ods_code, settings.NHS_CHOICES_API_KEY)
 
     def xml_encoded_reviews(self, reviews):
         return render_to_string('reviews/choices_review.xml', {
