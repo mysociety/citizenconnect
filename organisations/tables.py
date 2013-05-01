@@ -1,7 +1,4 @@
-# encoding: utf-8
-
 import django_tables2 as tables
-from django_tables2.utils import A
 
 from django.utils.safestring import mark_safe
 from django.utils.html import conditional_escape
@@ -10,6 +7,7 @@ from django.core.urlresolvers import reverse
 from issues.models import Problem
 from issues.table_columns import ReferenceNumberColumn
 
+
 class NationalSummaryTable(tables.Table):
 
     def __init__(self, *args, **kwargs):
@@ -17,16 +15,16 @@ class NationalSummaryTable(tables.Table):
         super(NationalSummaryTable, self).__init__(*args, **kwargs)
 
     name = tables.Column(verbose_name='Provider name',
-                             attrs={'th': {'class': 'table__first'},
-                                    'td': {'class': 'table__first'}})
+                         attrs={'th': {'class': 'table__first'},
+                                'td': {'class': 'table__first'}})
     week = tables.Column(verbose_name='Last 7 days')
     four_weeks = tables.Column(verbose_name='Last 4 weeks')
     six_months = tables.Column(verbose_name='Last 6 months')
     all_time = tables.Column(verbose_name='All time')
     average_time_to_acknowledge = tables.TemplateColumn(verbose_name='Average time to acknowledge (days)',
-                                                template_name='organisations/includes/time_interval_column.html')
+                                                        template_name='organisations/includes/time_interval_column.html')
     average_time_to_address = tables.TemplateColumn(verbose_name='Average time to address (days)',
-                                            template_name='organisations/includes/time_interval_column.html')
+                                                    template_name='organisations/includes/time_interval_column.html')
     happy_service = tables.TemplateColumn(verbose_name='% Happy with service',
                                           template_name="organisations/includes/percent_column.html")
     happy_outcome = tables.TemplateColumn(verbose_name='% Happy with outcome',
@@ -73,7 +71,6 @@ class BaseProblemTable(tables.Table):
         else:
             return ''
 
-
     def render_summary_as_response_link(self, record):
         response_link = reverse("response-form", kwargs={'pk': record.id})
         return mark_safe(u'<a href="{0}">{1}'.format(response_link, conditional_escape(record.private_summary)))
@@ -95,9 +92,9 @@ class ProblemTable(BaseProblemTable):
     is implied or the primary focus.
     """
     happy_service = tables.TemplateColumn(verbose_name='Happy with service',
-                                         template_name="organisations/includes/boolean_column.html")
+                                          template_name="organisations/includes/boolean_column.html")
     happy_outcome = tables.TemplateColumn(verbose_name='Happy with outcome',
-                                         template_name="organisations/includes/boolean_column.html")
+                                          template_name="organisations/includes/boolean_column.html")
 
     def __init__(self, *args, **kwargs):
         self.private = kwargs.pop('private')
@@ -126,6 +123,7 @@ class ProblemTable(BaseProblemTable):
                     'happy_service',
                     'happy_outcome',
                     'summary')
+
 
 class ExtendedProblemTable(ProblemTable):
     """
@@ -183,6 +181,7 @@ class ProblemDashboardTable(BaseProblemTable):
                     'breach',
                     'summary')
 
+
 class EscalationDashboardTable(ProblemDashboardTable):
     provider_name = tables.Column(verbose_name='Provider name',
                                   accessor='organisation.name',
@@ -202,6 +201,7 @@ class EscalationDashboardTable(ProblemDashboardTable):
                     'category',
                     'breach',
                     'summary')
+
 
 class BreachTable(ProblemTable):
     """
