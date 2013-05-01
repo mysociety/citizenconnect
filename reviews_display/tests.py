@@ -101,8 +101,15 @@ class ReviewSaveFromAPITests(TestCase):
         # upsert a takedown, check reviews and ratings are deleted
 
     def test_replies(self):
-        self.assertTrue(False)
-        # upsert a reply, check raises IgnoredCategory exception
+        sample_review = self.sample_review.copy()
+        sample_review['api_category'] = 'reply'
+        Review.upsert_from_api_data(sample_review)
+        self.assertEqual(
+            Review.objects.filter(
+                api_posting_id=sample_review['api_posting_id']
+            ).count(),
+            0
+        )
 
     def test_not_found_organisation(self):
         sample_review = self.sample_review.copy()

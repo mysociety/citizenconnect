@@ -69,6 +69,10 @@ class Review(AuditedModel):
 
         """
 
+        # We don't do anything with replies - just return
+        if api_review['api_category'] == 'reply':
+            return
+
         # Load the org. If not possible skip this review.
         try:
             organisation = Organisation.objects.get(
