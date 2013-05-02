@@ -2,7 +2,7 @@
 from django.views.generic import ListView, DetailView
 from django.shortcuts import get_object_or_404
 
-from .models              import Review
+from .models import Review
 from organisations.models import Organisation
 
 
