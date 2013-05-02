@@ -11,6 +11,15 @@ from django.core.management import call_command
 from organisations.tests.models import create_test_organisation
 from .models import Review, Question, Rating
 
+def create_review(organisation, **kwargs):
+    attrs = {'email': "bob@example.com",
+            'display_name': "Bob Smith",
+            'title': "Good review",
+            'comment': "Not bad",
+            'month_year_of_visit': datetime.date.today()}
+    attrs.update(kwargs)
+    return organisation.reviews.create(**attrs)
+
 
 class ReviewTest(TestCase):
     fixtures = ['questions_and_answers.json']
@@ -91,13 +100,7 @@ class PushNewReviewToChoicesCommandTest(TestCase):
 
     def setUp(self):
         self.organisation = create_test_organisation({'ods_code': 'A111'})
-        self.review = self.organisation.reviews.create(
-            email="bob@example.com",
-            display_name="Bob Smith",
-            title="Good review",
-            comment="Not bad",
-            month_year_of_visit=datetime.date.today(),
-        )
+        self.review = create_review(self.organisation)
         self.stdout = StringIO()
         self.stderr = StringIO()
 
