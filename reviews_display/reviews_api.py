@@ -66,6 +66,9 @@ class ReviewsAPI(object):
         namespaces. Use a regex to fix the raw XML string.
         """
         xml = re.sub(r'xmlns=".*?"', '', xml)
+
+        # xml = xml.decode('utf8')
+
         return xml
 
     def convert_entry_to_review(self, entry):
@@ -82,8 +85,12 @@ class ReviewsAPI(object):
 
             "author_display_name": entry.find("author/name").text,
             "title":   h.unescape(entry.find('title').text or ""),
-            "content": h.unescape(entry.find('content').text or ""),
         }
+
+        content = ET.tostring(entry.find('content'), method="text", encoding='utf8')
+        content = content.decode('utf8')
+        content = content or ""
+        review['content'] = h.unescape(content)
 
         # for replies we should extract what it is a reply to
         if review['api_category'] == 'reply':
