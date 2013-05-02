@@ -2,6 +2,7 @@ from django import forms
 from django.forms.widgets import HiddenInput
 
 from .models import Review, Rating
+from .widgets import MonthYearWidget
 
 
 class ReviewForm(forms.ModelForm):
@@ -24,7 +25,8 @@ class ReviewForm(forms.ModelForm):
         ]
 
         widgets = {
-            'organisation': HiddenInput
+            'organisation': HiddenInput,
+            'month_year_of_visit': MonthYearWidget
         }
 
 
@@ -37,4 +39,3 @@ class RatingForm(forms.ModelForm):
             'question',
             'answer'
         ]
-
