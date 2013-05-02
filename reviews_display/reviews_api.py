@@ -56,11 +56,16 @@ class ReviewsAPI(object):
 
         data = urllib.urlopen(url).read()
 
-        # There does not appear to be a way to tell ElementTree to ignore the
-        # namespaces. Use a regex to fix the raw XML string.
-        data = re.sub(r'xmlns=".*?"', '', data)
-
+        data = self.cleanup_xml(data)
         return data
+
+    def cleanup_xml(self, xml):
+        """
+        There does not appear to be a way to tell ElementTree to ignore the
+        namespaces. Use a regex to fix the raw XML string.
+        """
+        xml = re.sub(r'xmlns=".*?"', '', xml)
+        return xml
 
     def convert_entry_to_review(self, entry):
         review = {
@@ -100,32 +105,41 @@ class ReviewsAPI(object):
 
         return review
 
+    def extract_reviews_from_xml(self, xml):
+        root = ET.fromstring(xml)
+        reviews = []
+        for entry in root.iter('entry'):
+            review = self.convert_entry_to_review(entry)
+            reviews.append(review)
+        return reviews
+
+    def extract_next_page_url(self, xml):
+        root = ET.fromstring(xml)
+        next_page_url = root.find('link[@rel="next"]').get('href')
+        last_page_url = root.find('link[@rel="last"]').get('href')
+        if next_page_url == last_page_url:
+            next_page_url = None
+        else:
+            if not re.search(r'\.atom', next_page_url):
+                next_page_url = re.sub(
+                    r'comments', 'comments.atom', next_page_url)
+
+        return next_page_url
+
     def load_next_page(self):
 
         if not self.next_page_url:
             return None
 
-        data = self.fetch_from_api(self.next_page_url)
+        xml = self.fetch_from_api(self.next_page_url)
 
         # error with fetching, or have fetched up to our limit
-        if not data:
+        if not xml:
             return None
 
-        root = ET.fromstring(data)
+        reviews_from_xml = self.extract_reviews_from_xml(xml)
+        self.reviews.extend(reviews_from_xml)
 
-        for entry in root.iter('entry'):
-            review = self.convert_entry_to_review(entry)
-            self.reviews.append(review)
-
-        # Get the next page url. Be sure to add in the .atom if needed.
-        next_page_url = root.find('link[@rel="next"]').get('href')
-        last_page_url = root.find('link[@rel="last"]').get('href')
-        if next_page_url == last_page_url:
-            self.next_page_url = None
-        else:
-            if not re.search(r'\.atom', next_page_url):
-                next_page_url = re.sub(
-                    r'comments', 'comments.atom', next_page_url)
-            self.next_page_url = next_page_url
+        self.next_page_url = self.extract_next_page_url(xml)
 
         return None

@@ -1,0 +1,782 @@
+[
+    {
+        "api_category": "reply",
+        "api_posting_id": "80452R",
+        "api_postingorganisationid": "0",
+        "api_published": "2011-06-29T09:42:30+01:00",
+        "api_updated": "2011-06-29T09:42:30+01:00",
+        "author_display_name": "South London Healthcare NHS Trust",
+        "content": "Thank you for your comment. We are delighted at your positive experience at the trust, and your father&apos;s improvement. The Hyper Acute Stroke Unit (HASU) has only just opened and we are very proud of the service it provides to patients, which, as you have experienced, can be life-saving and have a significant impact on outcomes for stroke patients.",
+        "in_reply_to_id": "80452",
+        "organisation_choices_id": "43861",
+        "ratings": [],
+        "title": "South London Healthcare NHS Trust replies:"
+    },
+    {
+        "api_category": "reply",
+        "api_posting_id": "80466R",
+        "api_postingorganisationid": "0",
+        "api_published": "2011-06-29T09:40:05+01:00",
+        "api_updated": "2011-06-29T09:40:05+01:00",
+        "author_display_name": "South London Healthcare NHS Trust",
+        "content": "Thank you for your comment. I&apos;m sorry you couldn&apos;t find the information you were looking for on our website. We know that some of the information on the website needs updating, and we are working on this. If you have any other comments on the website, or would like to get involved in reviewing the pages, you can contact us at slh.communications@nhs.net I will also pass on your comment about the telephone to the manager of that service.",
+        "in_reply_to_id": "80466",
+        "organisation_choices_id": "43861",
+        "ratings": [],
+        "title": "South London Healthcare NHS Trust replies:"
+    },
+    {
+        "api_category": "comment",
+        "api_posting_id": "81057",
+        "api_postingorganisationid": "0",
+        "api_published": "2011-06-29T07:08:39+01:00",
+        "api_updated": "2011-06-29T12:59:04+01:00",
+        "author_display_name": "LanaC",
+        "content": null,
+        "in_reply_to_id": null,
+        "organisation_choices_id": "42476",
+        "ratings": [
+            {
+                "answer": "I'd recommend this hospital",
+                "question": "Overall rating",
+                "score": "1"
+            },
+            {
+                "answer": "clean",
+                "question": "How satisfied are you with the cleanliness of the area you were treated in?",
+                "score": "3"
+            },
+            {
+                "answer": "all of the time",
+                "question": "Doctors and nurses worked well together\u2026",
+                "score": "5"
+            },
+            {
+                "answer": "all of the time",
+                "question": "How satisfied are you that you were treated with dignity and respect by the staff?",
+                "score": "5"
+            },
+            {
+                "answer": "Very satisfied",
+                "question": "How satisfied are you that the hospital provides same-sex accommodation?",
+                "score": "5"
+            }
+        ],
+        "title": "I was very pleased with the service and treatment I received."
+    },
+    {
+        "api_category": "comment",
+        "api_posting_id": "81055",
+        "api_postingorganisationid": "0",
+        "api_published": "2011-06-29T00:46:20+01:00",
+        "api_updated": "2011-06-29T12:59:04+01:00",
+        "author_display_name": "Karl Price",
+        "content": null,
+        "in_reply_to_id": null,
+        "organisation_choices_id": "41247",
+        "ratings": [
+            {
+                "answer": "Fairly satisfied",
+                "question": "How satisfied are you with the cleanliness of the area you were treated in?",
+                "score": "4"
+            },
+            {
+                "answer": "all of the time",
+                "question": "Doctors and nurses worked well together\u2026",
+                "score": "5"
+            },
+            {
+                "answer": "all of the time",
+                "question": "How satisfied are you that you were treated with dignity and respect by the staff?",
+                "score": "5"
+            },
+            {
+                "answer": "Neither satisfied nor dissatisfied",
+                "question": "How satisfied are you that you were involved in decisions about your care?",
+                "score": "3"
+            },
+            {
+                "answer": "Fairly satisfied",
+                "question": "How satisfied are you that the hospital provides same-sex accommodation?",
+                "score": "4"
+            }
+        ],
+        "title": "Good service mostly but a few things could be improved."
+    },
+    {
+        "api_category": "comment",
+        "api_posting_id": "81049",
+        "api_postingorganisationid": "0",
+        "api_published": "2011-06-28T22:54:59+01:00",
+        "api_updated": "2011-06-30T13:57:18+01:00",
+        "author_display_name": "jason clements",
+        "content": null,
+        "in_reply_to_id": null,
+        "organisation_choices_id": "42645",
+        "ratings": [
+            {
+                "answer": "I'd recommend this hospital",
+                "question": "Overall rating",
+                "score": "1"
+            },
+            {
+                "answer": "exceptionally clean",
+                "question": "How satisfied are you with the cleanliness of the area you were treated in?",
+                "score": "5"
+            },
+            {
+                "answer": "all of the time",
+                "question": "Doctors and nurses worked well together\u2026",
+                "score": "5"
+            },
+            {
+                "answer": "all of the time",
+                "question": "How satisfied are you that you were treated with dignity and respect by the staff?",
+                "score": "5"
+            },
+            {
+                "answer": "Fairly satisfied",
+                "question": "How satisfied are you that you were involved in decisions about your care?",
+                "score": "4"
+            },
+            {
+                "answer": "Very satisfied",
+                "question": "How satisfied are you that the hospital provides same-sex accommodation?",
+                "score": "5"
+            }
+        ],
+        "title": "Simply the Best hospital care I have experienced ever.  Thank you F7"
+    },
+    {
+        "api_category": "comment",
+        "api_posting_id": "81048",
+        "api_postingorganisationid": "0",
+        "api_published": "2011-06-28T22:49:04+01:00",
+        "api_updated": "2011-06-29T12:59:04+01:00",
+        "author_display_name": "Karmens",
+        "content": null,
+        "in_reply_to_id": null,
+        "organisation_choices_id": "41265",
+        "ratings": [
+            {
+                "answer": "I'd recommend this hospital",
+                "question": "Overall rating",
+                "score": "1"
+            },
+            {
+                "answer": "exceptionally clean",
+                "question": "How satisfied are you with the cleanliness of the area you were treated in?",
+                "score": "5"
+            },
+            {
+                "answer": "all of the time",
+                "question": "Doctors and nurses worked well together\u2026",
+                "score": "5"
+            },
+            {
+                "answer": "all of the time",
+                "question": "How satisfied are you that you were treated with dignity and respect by the staff?",
+                "score": "5"
+            },
+            {
+                "answer": "all of the time",
+                "question": "How satisfied are you that you were involved in decisions about your care?",
+                "score": "5"
+            }
+        ],
+        "title": "Excellent!"
+    },
+    {
+        "api_category": "comment",
+        "api_posting_id": "81043",
+        "api_postingorganisationid": "0",
+        "api_published": "2011-06-28T21:45:25+01:00",
+        "api_updated": "2011-06-29T12:59:03+01:00",
+        "author_display_name": "Anonymous",
+        "content": null,
+        "in_reply_to_id": null,
+        "organisation_choices_id": "39970",
+        "ratings": [
+            {
+                "answer": "I wouldn't recommend it",
+                "question": "Overall rating",
+                "score": "2"
+            },
+            {
+                "answer": "Fairly dissatisfied",
+                "question": "How satisfied are you with the cleanliness of the area you were treated in?",
+                "score": "2"
+            },
+            {
+                "answer": "never",
+                "question": "Doctors and nurses worked well together\u2026",
+                "score": "1"
+            },
+            {
+                "answer": "Fairly satisfied",
+                "question": "How satisfied are you that you were treated with dignity and respect by the staff?",
+                "score": "4"
+            },
+            {
+                "answer": "Neither satisfied nor dissatisfied",
+                "question": "How satisfied are you that you were involved in decisions about your care?",
+                "score": "3"
+            }
+        ],
+        "title": "Poor"
+    },
+    {
+        "api_category": "comment",
+        "api_posting_id": "81019",
+        "api_postingorganisationid": "0",
+        "api_published": "2011-06-28T18:10:11+01:00",
+        "api_updated": "2011-06-29T12:59:01+01:00",
+        "author_display_name": "Emma L McMahon",
+        "content": null,
+        "in_reply_to_id": null,
+        "organisation_choices_id": "41862",
+        "ratings": [
+            {
+                "answer": "I'd recommend this hospital",
+                "question": "Overall rating",
+                "score": "1"
+            },
+            {
+                "answer": "exceptionally clean",
+                "question": "How satisfied are you with the cleanliness of the area you were treated in?",
+                "score": "5"
+            },
+            {
+                "answer": "all of the time",
+                "question": "Doctors and nurses worked well together\u2026",
+                "score": "5"
+            },
+            {
+                "answer": "all of the time",
+                "question": "How satisfied are you that you were treated with dignity and respect by the staff?",
+                "score": "5"
+            },
+            {
+                "answer": "all of the time",
+                "question": "How satisfied are you that you were involved in decisions about your care?",
+                "score": "5"
+            },
+            {
+                "answer": "Very satisfied",
+                "question": "How satisfied are you that the hospital provides same-sex accommodation?",
+                "score": "5"
+            }
+        ],
+        "title": "You cant beat the Freemans and Ward 29, its the best hospital in the NorthEast"
+    },
+    {
+        "api_category": "comment",
+        "api_posting_id": "81016",
+        "api_postingorganisationid": "0",
+        "api_published": "2011-06-28T17:50:05+01:00",
+        "api_updated": "2011-06-29T12:59:02+01:00",
+        "author_display_name": "Anonymous",
+        "content": null,
+        "in_reply_to_id": null,
+        "organisation_choices_id": "41533",
+        "ratings": [
+            {
+                "answer": "clean",
+                "question": "How satisfied are you with the cleanliness of the area you were treated in?",
+                "score": "3"
+            },
+            {
+                "answer": "Neither satisfied nor dissatisfied",
+                "question": "Doctors and nurses worked well together\u2026",
+                "score": "3"
+            },
+            {
+                "answer": "all of the time",
+                "question": "How satisfied are you that you were treated with dignity and respect by the staff?",
+                "score": "5"
+            },
+            {
+                "answer": "Fairly satisfied",
+                "question": "How satisfied are you that you were involved in decisions about your care?",
+                "score": "4"
+            }
+        ],
+        "title": "Grin and bear it!"
+    },
+    {
+        "api_category": "comment",
+        "api_posting_id": "81013",
+        "api_postingorganisationid": "0",
+        "api_published": "2011-06-28T17:36:40+01:00",
+        "api_updated": "2011-06-29T12:59:01+01:00",
+        "author_display_name": "Anonymous",
+        "content": null,
+        "in_reply_to_id": null,
+        "organisation_choices_id": "41583",
+        "ratings": [
+            {
+                "answer": "I wouldn't recommend it",
+                "question": "Overall rating",
+                "score": "2"
+            },
+            {
+                "answer": "clean",
+                "question": "How satisfied are you with the cleanliness of the area you were treated in?",
+                "score": "3"
+            },
+            {
+                "answer": "never",
+                "question": "Doctors and nurses worked well together\u2026",
+                "score": "1"
+            },
+            {
+                "answer": "not at all",
+                "question": "How satisfied are you that you were treated with dignity and respect by the staff?",
+                "score": "1"
+            },
+            {
+                "answer": "never",
+                "question": "How satisfied are you that you were involved in decisions about your care?",
+                "score": "1"
+            },
+            {
+                "answer": "Neither satisfied nor dissatisfied",
+                "question": "How satisfied are you that the hospital provides same-sex accommodation?",
+                "score": "3"
+            }
+        ],
+        "title": "Angry and disapoonted with how my boyfriend was treated &quot;appalling&quot;"
+    },
+    {
+        "api_category": "comment",
+        "api_posting_id": "80997",
+        "api_postingorganisationid": "0",
+        "api_published": "2011-06-28T16:16:39+01:00",
+        "api_updated": "2011-06-29T12:59:01+01:00",
+        "author_display_name": "Anonymous",
+        "content": null,
+        "in_reply_to_id": null,
+        "organisation_choices_id": "39985",
+        "ratings": [
+            {
+                "answer": "I'd recommend this hospital",
+                "question": "Overall rating",
+                "score": "1"
+            },
+            {
+                "answer": "Fairly satisfied",
+                "question": "Doctors and nurses worked well together\u2026",
+                "score": "4"
+            }
+        ],
+        "title": "An exceptionally good hospital"
+    },
+    {
+        "api_category": "reply",
+        "api_posting_id": "78490R",
+        "api_postingorganisationid": "0",
+        "api_published": "2011-06-28T16:05:56+01:00",
+        "api_updated": "2011-06-28T16:05:56+01:00",
+        "author_display_name": "Royal Free London NHS Foundation Trust",
+        "content": "Thank you so much for your feedback, apologies for the delay in getting back to you. We are very glad that you had a positive experience at the Royal Free and we will pass on your comments to our staff.",
+        "in_reply_to_id": "78490",
+        "organisation_choices_id": "40073",
+        "ratings": [],
+        "title": "Royal Free London NHS Foundation Trust replies:"
+    },
+    {
+        "api_category": "reply",
+        "api_posting_id": "80873R",
+        "api_postingorganisationid": "0",
+        "api_published": "2011-06-28T16:00:46+01:00",
+        "api_updated": "2011-06-28T16:00:46+01:00",
+        "author_display_name": "Royal Free London NHS Foundation Trust",
+        "content": "We are sorry to hear that you were unhappy with the care you received. Thank you very much for taking the time to give us your feedback. Your comments have been forwarded on to the senior management team and will be used to improve our services in the future. If you would like to talk to someone about your experience in more detail, please contact our Patient Advice and Liaison Service (PALS) on 020 7472 6446 / 6447. More information on PALS is available here: http://www.royalfree.org.uk/default.aspx?top_nav_id=5&amp;sel_left_nav=50&amp;tab_id=13#contact",
+        "in_reply_to_id": "80873",
+        "organisation_choices_id": "40073",
+        "ratings": [],
+        "title": "Royal Free London NHS Foundation Trust replies:"
+    },
+    {
+        "api_category": "comment",
+        "api_posting_id": "80994",
+        "api_postingorganisationid": "0",
+        "api_published": "2011-06-28T15:50:57+01:00",
+        "api_updated": "2011-06-28T15:54:55+01:00",
+        "author_display_name": "Mike Welburn",
+        "content": null,
+        "in_reply_to_id": null,
+        "organisation_choices_id": "41016",
+        "ratings": [
+            {
+                "answer": "I'd recommend this hospital",
+                "question": "Overall rating",
+                "score": "1"
+            },
+            {
+                "answer": "Fairly satisfied",
+                "question": "How satisfied are you with the cleanliness of the area you were treated in?",
+                "score": "4"
+            },
+            {
+                "answer": "all of the time",
+                "question": "Doctors and nurses worked well together\u2026",
+                "score": "5"
+            },
+            {
+                "answer": "all of the time",
+                "question": "How satisfied are you that you were treated with dignity and respect by the staff?",
+                "score": "5"
+            },
+            {
+                "answer": "all of the time",
+                "question": "How satisfied are you that you were involved in decisions about your care?",
+                "score": "5"
+            }
+        ],
+        "title": "Excellent service from an under used and under publicised facility"
+    },
+    {
+        "api_category": "reply",
+        "api_posting_id": "78027R",
+        "api_postingorganisationid": "0",
+        "api_published": "2011-06-28T15:36:18+01:00",
+        "api_updated": "2011-06-28T15:36:18+01:00",
+        "author_display_name": "Surrey and Sussex Healthcare NHS Trust",
+        "content": "Thank you for taking the time to comment on your experience at East Surrey Hospital. We&apos;re sorry to read of your experience as this is not the experience we want for our patients, and in fact the vast majority do report receiving good to excellent care. We aim to ensure the patients are triaged by a nurse within 15 mins of their arrival to ascertain the severity of their condition. Unfortunately there can be some delays in the subsequent medical review, but again we aim to ensure this is undertaken within 1 hour of arrival. We would like to investigate why this didn&apos;t happen on your visit and would ask that you contact our Patient Advice and Liaison Service (PALS) which is available to listen to concerns, suggestions or queries and can help sort out problems quickly on your behalf. You can contact PALS by telephone on 01737 231958, email: pals@sash.nhs.uk, or by writing to: PALS, East Surrey Hospital, Canada Avenue, Redhill, Surrey RH1 5RH.",
+        "in_reply_to_id": "78027",
+        "organisation_choices_id": "42066",
+        "ratings": [],
+        "title": "Surrey and Sussex Healthcare NHS Trust replies:"
+    },
+    {
+        "api_category": "comment",
+        "api_posting_id": "80985",
+        "api_postingorganisationid": "0",
+        "api_published": "2011-06-28T15:16:30+01:00",
+        "api_updated": "2011-06-28T15:31:41+01:00",
+        "author_display_name": "Anonymous",
+        "content": null,
+        "in_reply_to_id": null,
+        "organisation_choices_id": "42682",
+        "ratings": [
+            {
+                "answer": "I wouldn't recommend it",
+                "question": "Overall rating",
+                "score": "2"
+            },
+            {
+                "answer": "Fairly dissatisfied",
+                "question": "How satisfied are you with the cleanliness of the area you were treated in?",
+                "score": "2"
+            },
+            {
+                "answer": "Neither satisfied nor dissatisfied",
+                "question": "Doctors and nurses worked well together\u2026",
+                "score": "3"
+            },
+            {
+                "answer": "Neither satisfied nor dissatisfied",
+                "question": "How satisfied are you that you were treated with dignity and respect by the staff?",
+                "score": "3"
+            },
+            {
+                "answer": "never",
+                "question": "How satisfied are you that you were involved in decisions about your care?",
+                "score": "1"
+            },
+            {
+                "answer": "Fairly satisfied",
+                "question": "How satisfied are you that the hospital provides same-sex accommodation?",
+                "score": "4"
+            }
+        ],
+        "title": "Horrible,rude,not caring,midwifes are rubbish"
+    },
+    {
+        "api_category": "reply",
+        "api_posting_id": "80669R",
+        "api_postingorganisationid": "0",
+        "api_published": "2011-06-28T14:44:00+01:00",
+        "api_updated": "2011-06-28T14:44:00+01:00",
+        "author_display_name": "South London Healthcare NHS Trust",
+        "content": "I am very sorry for your poor experience at the trust. You clearly should have been able to expect better treatment in the clinic. If you have not already done so, you can make a complaint via our PALs department on 01689 863252 or email: slh-tr.br-pals@nhs.net By making a formal complaint, we can investigate your case and respond to you directly. It will also enable us to speak to the individuals concerned.\n",
+        "in_reply_to_id": "80669",
+        "organisation_choices_id": "43861",
+        "ratings": [],
+        "title": "South London Healthcare NHS Trust replies:"
+    },
+    {
+        "api_category": "reply",
+        "api_posting_id": "80858R",
+        "api_postingorganisationid": "0",
+        "api_published": "2011-06-28T14:33:01+01:00",
+        "api_updated": "2011-06-28T14:33:01+01:00",
+        "author_display_name": "South London Healthcare NHS Trust",
+        "content": "Thank you for your comment. We are very pleased that you had a positive experience at the trust. I will pass on your thanks to the team.",
+        "in_reply_to_id": "80858",
+        "organisation_choices_id": "43861",
+        "ratings": [],
+        "title": "South London Healthcare NHS Trust replies:"
+    },
+    {
+        "api_category": "reply",
+        "api_posting_id": "80942R",
+        "api_postingorganisationid": "0",
+        "api_published": "2011-06-28T14:23:19+01:00",
+        "api_updated": "2011-06-28T14:23:19+01:00",
+        "author_display_name": "South London Healthcare NHS Trust",
+        "content": "I am very sorry for the poor service you received when you went for a blood test at the hospital. I will pass your comment on to the manager concerned so that she can look into this and improve the service for all patients, including pregnant women. If you would like to talk to someone about your experience, you can contact our PALs department on 01689 863252 or email: slh-tr.br-pals@nhs.net\n",
+        "in_reply_to_id": "80942",
+        "organisation_choices_id": "43861",
+        "ratings": [],
+        "title": "South London Healthcare NHS Trust replies:"
+    },
+    {
+        "api_category": "reply",
+        "api_posting_id": "80405R",
+        "api_postingorganisationid": "0",
+        "api_published": "2011-06-28T12:18:09+01:00",
+        "api_updated": "2011-06-28T12:18:09+01:00",
+        "author_display_name": "South London Healthcare NHS Trust",
+        "content": "We are very sorry for your experience at the Trust. I have sent your comment to our Chief Midwife for her attention, however, she will not be able to investigate your case fully without more details. I would encourage you to contact our PALs department on 01689 863252 or email: slh-tr.br-pals@nhs.net This will enable us to send you an individual response and also ensure that these issues can be discussed with the staff involved.\n",
+        "in_reply_to_id": "80405",
+        "organisation_choices_id": "43861",
+        "ratings": [],
+        "title": "South London Healthcare NHS Trust replies:"
+    },
+    {
+        "api_category": "comment",
+        "api_posting_id": "80960",
+        "api_postingorganisationid": "0",
+        "api_published": "2011-06-28T11:56:44+01:00",
+        "api_updated": "2011-06-29T12:50:30+01:00",
+        "author_display_name": "Anonymous",
+        "content": null,
+        "in_reply_to_id": null,
+        "organisation_choices_id": "42643",
+        "ratings": [
+            {
+                "answer": "I'd recommend this hospital",
+                "question": "Overall rating",
+                "score": "1"
+            },
+            {
+                "answer": "Fairly satisfied",
+                "question": "How satisfied are you with the cleanliness of the area you were treated in?",
+                "score": "4"
+            },
+            {
+                "answer": "all of the time",
+                "question": "Doctors and nurses worked well together\u2026",
+                "score": "5"
+            },
+            {
+                "answer": "all of the time",
+                "question": "How satisfied are you that you were treated with dignity and respect by the staff?",
+                "score": "5"
+            },
+            {
+                "answer": "Fairly satisfied",
+                "question": "How satisfied are you that you were involved in decisions about your care?",
+                "score": "4"
+            },
+            {
+                "answer": "Neither satisfied nor dissatisfied",
+                "question": "How satisfied are you that the hospital provides same-sex accommodation?",
+                "score": "3"
+            }
+        ],
+        "title": "fairfield genral treat me right and with respect"
+    },
+    {
+        "api_category": "reply",
+        "api_posting_id": "80472R",
+        "api_postingorganisationid": "0",
+        "api_published": "2011-06-28T10:21:36+01:00",
+        "api_updated": "2011-06-28T10:21:36+01:00",
+        "author_display_name": "Royal Free London NHS Foundation Trust",
+        "content": "Thank you for your positive feeback, it is much appreciated. We have passed on your comments to our staff.",
+        "in_reply_to_id": "80472",
+        "organisation_choices_id": "40073",
+        "ratings": [],
+        "title": "Royal Free London NHS Foundation Trust replies:"
+    },
+    {
+        "api_category": "reply",
+        "api_posting_id": "78578R",
+        "api_postingorganisationid": "0",
+        "api_published": "2011-06-28T09:51:20+01:00",
+        "api_updated": "2011-06-28T09:51:20+01:00",
+        "author_display_name": "Luton and Dunstable Hospital NHS Foundation Trust",
+        "content": "Thank you very much for taking the time to leave such kind comments about your time at the L&amp;D and we are very pleased to hear your experience was such a positive one. Your feedback has been passed onto the consultant as well as the staff on the ward involved in your care. As a day case ward, the staff are extremely busy with a quick turnaround of patients yet endeavour to provide the highest level of care from pre-assessment right through to recovery and discharge.",
+        "in_reply_to_id": "78578",
+        "organisation_choices_id": "40233",
+        "ratings": [],
+        "title": "Luton and Dunstable Hospital NHS Foundation Trust replies:"
+    },
+    {
+        "api_category": "comment",
+        "api_posting_id": "80942",
+        "api_postingorganisationid": "0",
+        "api_published": "2011-06-28T09:08:34+01:00",
+        "api_updated": "2011-06-28T11:30:19+01:00",
+        "author_display_name": "Anonymous",
+        "content": null,
+        "in_reply_to_id": null,
+        "organisation_choices_id": "43861",
+        "ratings": [
+            {
+                "answer": "clean",
+                "question": "How satisfied are you with the cleanliness of the area you were treated in?",
+                "score": "3"
+            },
+            {
+                "answer": "Neither satisfied nor dissatisfied",
+                "question": "How satisfied are you that you were treated with dignity and respect by the staff?",
+                "score": "3"
+            }
+        ],
+        "title": "It literally made me cry."
+    },
+    {
+        "api_category": "reply",
+        "api_posting_id": "80800R",
+        "api_postingorganisationid": "0",
+        "api_published": "2011-06-28T08:21:14+01:00",
+        "api_updated": "2011-06-28T08:21:14+01:00",
+        "author_display_name": "The Newcastle Upon Tyne Hospitals NHS Foundation Trust",
+        "content": "Thank you for posting your comments about your experiences within the Accident and Emergency Department at the RVI. We are extremely sorry to hear that your experience fell short of the standard expected and apologise for this.  The issues that you have outlined will be shared with the staff in the department and the importance of good communication will be highlighted.\n\nIt is difficult for us to address your specific concerns without knowing further details. Please be assured that if you wish us to investigate further you can contact the Directorate Manger, Miss C Hesketh or the Patient Relations Manager, Mr Paul Anderson on 0191 233 6161.\n\n",
+        "in_reply_to_id": "80800",
+        "organisation_choices_id": "41863",
+        "ratings": [],
+        "title": "The Newcastle Upon Tyne Hospitals NHS Foundation Trust replies:"
+    },
+    {
+        "api_category": "comment",
+        "api_posting_id": "80924",
+        "api_postingorganisationid": "0",
+        "api_published": "2011-06-28T04:26:10+01:00",
+        "api_updated": "2011-06-28T11:30:18+01:00",
+        "author_display_name": "Anthony Holland",
+        "content": null,
+        "in_reply_to_id": null,
+        "organisation_choices_id": "41261",
+        "ratings": [
+            {
+                "answer": "I'd recommend this hospital",
+                "question": "Overall rating",
+                "score": "1"
+            },
+            {
+                "answer": "Fairly satisfied",
+                "question": "How satisfied are you with the cleanliness of the area you were treated in?",
+                "score": "4"
+            },
+            {
+                "answer": "all of the time",
+                "question": "Doctors and nurses worked well together\u2026",
+                "score": "5"
+            },
+            {
+                "answer": "all of the time",
+                "question": "How satisfied are you that you were treated with dignity and respect by the staff?",
+                "score": "5"
+            },
+            {
+                "answer": "all of the time",
+                "question": "How satisfied are you that you were involved in decisions about your care?",
+                "score": "5"
+            }
+        ],
+        "title": "An excellent experience"
+    },
+    {
+        "api_category": "comment",
+        "api_posting_id": "80923",
+        "api_postingorganisationid": "0",
+        "api_published": "2011-06-28T01:53:33+01:00",
+        "api_updated": "2011-06-30T10:06:43+01:00",
+        "author_display_name": "sunsworth1975",
+        "content": null,
+        "in_reply_to_id": null,
+        "organisation_choices_id": "40560",
+        "ratings": [
+            {
+                "answer": "I'd recommend this hospital",
+                "question": "Overall rating",
+                "score": "1"
+            },
+            {
+                "answer": "exceptionally clean",
+                "question": "How satisfied are you with the cleanliness of the area you were treated in?",
+                "score": "5"
+            },
+            {
+                "answer": "all of the time",
+                "question": "Doctors and nurses worked well together\u2026",
+                "score": "5"
+            },
+            {
+                "answer": "all of the time",
+                "question": "How satisfied are you that you were treated with dignity and respect by the staff?",
+                "score": "5"
+            },
+            {
+                "answer": "all of the time",
+                "question": "How satisfied are you that you were involved in decisions about your care?",
+                "score": "5"
+            },
+            {
+                "answer": "Very satisfied",
+                "question": "How satisfied are you that the hospital provides same-sex accommodation?",
+                "score": "5"
+            }
+        ],
+        "title": "Great treatment top class care."
+    },
+    {
+        "api_category": "comment",
+        "api_posting_id": "80912",
+        "api_postingorganisationid": "0",
+        "api_published": "2011-06-27T21:03:21+01:00",
+        "api_updated": "2011-06-28T11:30:18+01:00",
+        "author_display_name": "John Nottingham",
+        "content": null,
+        "in_reply_to_id": null,
+        "organisation_choices_id": "43683",
+        "ratings": [
+            {
+                "answer": "I'd recommend this hospital",
+                "question": "Overall rating",
+                "score": "1"
+            },
+            {
+                "answer": "exceptionally clean",
+                "question": "How satisfied are you with the cleanliness of the area you were treated in?",
+                "score": "5"
+            },
+            {
+                "answer": "all of the time",
+                "question": "Doctors and nurses worked well together\u2026",
+                "score": "5"
+            },
+            {
+                "answer": "all of the time",
+                "question": "How satisfied are you that you were treated with dignity and respect by the staff?",
+                "score": "5"
+            },
+            {
+                "answer": "Fairly satisfied",
+                "question": "How satisfied are you that you were involved in decisions about your care?",
+                "score": "4"
+            },
+            {
+                "answer": "Neither satisfied nor dissatisfied",
+                "question": "How satisfied are you that the hospital provides same-sex accommodation?",
+                "score": "3"
+            }
+        ],
+        "title": "A brilliant hospital in all respects.  If I have to go in hospital again, I hope"
+    }
+]

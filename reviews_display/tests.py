@@ -1,4 +1,6 @@
 import copy
+import os
+import json
 
 from django.test import TestCase
 from django.forms.models import model_to_dict
@@ -6,6 +8,34 @@ from django.forms.models import model_to_dict
 from organisations.tests.lib import create_test_organisation
 
 from .models import Review, OrganisationFromApiDoesNotExist
+from .reviews_api import ReviewsAPI
+
+
+class ReviewParseApiXmlTests(TestCase):
+
+    def setUp(self):
+        sample_dir = os.path.join(
+            os.path.dirname(__file__),
+            'test_sample_data'
+        )
+
+        sample_xml_filename = os.path.join(sample_dir, 'sample.xml')
+        sample_json_filename = os.path.join(sample_dir, 'sample.json')
+
+        self.xml = open(sample_xml_filename).read()
+        self.json = json.loads(open(sample_json_filename).read())
+
+    def test_parse_sample_xml(self):
+        expected = self.json
+
+        api = ReviewsAPI()
+        xml = api.cleanup_xml(self.xml)
+        actual = api.extract_reviews_from_xml(xml)
+
+        # print json.dumps(actual, sort_keys=True, indent=4, separators=(',', ': '))
+
+        self.maxDiff = None
+        self.assertEqual(actual, expected)
 
 
 class ReviewSaveFromAPITests(TestCase):
