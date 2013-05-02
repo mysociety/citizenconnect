@@ -43,6 +43,28 @@ class ReviewFormViewTest(TestCase):
         self.organisation = create_test_organisation({'ods_code': 'A111'})
         self.review_form_url = reverse('review-form', kwargs={'cobrand': 'choices',
                                                               'ods_code': self.organisation.ods_code})
+        self.review_post_data = {'email': 'bob@example.com',
+                                 'display_name': 'Bob Smith',
+                                 'is_anonymous': False,
+                                 'title': 'Good review',
+                                 'comment': 'Not bad',
+                                 'month_year_of_visit_month': 1,
+                                 'month_year_of_visit_year': 2013,
+                                 'organisation': self.organisation.id,
+                                 '1-question': 1,
+                                 '1-answer': 1,
+                                 '2-question':2,
+                                 '2-answer': 4,
+                                 '3-question': 3,
+                                 '3-answer': 10,
+                                 '4-question': 4,
+                                 '4-answer': 16,
+                                 '5-question': 5,
+                                 '5-answer': 22,
+                                 '6-question': 6,
+                                 '6-answer': 26,
+                                 '7-question': 7,
+                                 '7-answer': 30}
 
     def test_review_form_exists(self):
         resp = self.client.get(self.review_form_url)
@@ -53,30 +75,16 @@ class ReviewFormViewTest(TestCase):
 
     def test_submitting_a_valid_review(self):
         self.assertEquals(self.organisation.review_set.count(), 0)
-        resp = self.client.post(self.review_form_url, {'email': 'bob@example.com',
-                                                       'display_name': 'Bob Smith',
-                                                       'is_anonymous': False,
-                                                       'title': 'Good review',
-                                                       'comment': 'Not bad',
-                                                       'month_year_of_visit_month': 1,
-                                                       'month_year_of_visit_year': 2013,
-                                                       'organisation': self.organisation.id,
-                                                       '1-question': 1,
-                                                       '1-answer': 1,
-                                                       '2-question':2,
-                                                       '2-answer': 4,
-                                                       '3-question': 3,
-                                                       '3-answer': 10,
-                                                       '4-question': 4,
-                                                       '4-answer': 16,
-                                                       '5-question': 5,
-                                                       '5-answer': 22,
-                                                       '6-question': 6,
-                                                       '6-answer': 26,
-                                                       '7-question': 7,
-                                                       '7-answer': 30})
+        resp = self.client.post(self.review_form_url, self.review_post_data)
 
         self.assertEquals(self.organisation.review_set.count(), 1)
+
+
+    def test_submitting_a_review_with_a_future_date(self):
+        self.assertEquals(self.organisation.review_set.count(), 0)
+        self.review_post_data['month_year_of_visit_year'] = str((datetime.datetime.now() + datetime.timedelta(weeks=53)).year)
+        resp = self.client.post(self.review_form_url, self.review_post_data)
+        self.assertEquals(self.organisation.review_set.count(), 0)
 
 
 class PushNewReviewToChoicesCommandTest(TestCase):

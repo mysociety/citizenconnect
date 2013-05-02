@@ -1,3 +1,5 @@
+import datetime
+
 from django import forms
 from django.forms.widgets import RadioSelect, HiddenInput
 
@@ -6,6 +8,12 @@ from .widgets import MonthYearWidget
 
 
 class ReviewForm(forms.ModelForm):
+
+    def clean_month_year_of_visit(self):
+        month_year_of_visit = self.cleaned_data['month_year_of_visit']
+        if month_year_of_visit > datetime.date.today():
+            raise forms.ValidationError("The month and year of visit can't be in the future")
+        return month_year_of_visit
 
     class Meta:
         model = Review
