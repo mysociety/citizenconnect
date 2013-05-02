@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load url from future %}
+
+{% block title %}Submit your review{% endblock %}
+
+{% block bodyclasses %}review-form{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1>Submit your review</h1>
+</div>
+<div class="hero">
+    <p>Reviewing <strong>{{ organisation.name }}</strong>
+</div>
+<div class="review-form">
+    <form action="{% url 'review-form' cobrand=cobrand.name ods_code=organisation.ods_code %}" method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <fieldset class="island">
+                {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
+            </fieldset>
+        {% endif %}
+
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+
+        {% for form in rating_forms %}
+        <fieldset class="island">
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+            <p class="info">{{ form.question.label }}</p>
+
+            <ul class="radio-list">
+                {% for choice in form.answer %}
+                <li>
+                    {{ choice }}
+                </li>
+                {% endfor %}
+                {% include "message_list.html" with messages=form.answer.errors message_type='error' %}
+            </ul>
+
+        </fieldset>
+        {% endfor %}
+
+
+        <fieldset class="island">
+            <ul class="gw">
+                <li class="g  one-whole">
+                    {{ form.email.label_tag }}
+                    {{ form.email }}
+                    {% include "message_list.html" with messages=form.email.errors message_type='error' %}
+                </li>
+
+                <li class="g  one-whole">
+                    {{ form.display_name.label_tag }}
+                    {{ form.display_name }}
+                    {% include "message_list.html" with messages=form.display_name.errors message_type='error' %}
+                </li>
+
+                <li class="g  one-whole">
+                    <label for="id_is_anonymous">{{ form.is_anonymous }} Send anonymously</label>
+                    {% include "message_list.html" with messages=form.is_anonymous.errors message_type='error' %}
+                </li>
+
+                <li class="g  one-whole">
+                    {{ form.title.label_tag }}
+                    {{ form.title }}
+                    {% include "message_list.html" with messages=form.title.errors message_type='error' %}
+                </li>
+
+                <li class="g  one-whole">
+                    {{ form.comment.label_tag }}
+                    {{ form.comment }}
+                    {% include "message_list.html" with messages=form.comment.errors message_type='error' %}
+                </li>
+
+                <li class="g  one-whole">
+                    {{ form.month_year_of_visit.label_tag }}
+                    {{ form.month_year_of_visit }}
+                    {% include "message_list.html" with messages=form.month_year_of_visit.errors message_type='error' %}
+                </li>
+            </ul>
+        </fieldset>
+        <fieldset>
+            <button class="btn  fr" type="submit">Submit</button>
+        </fieldset>
+    </form>
+</div>
+{% endblock %}
