@@ -43,7 +43,6 @@ class ReviewForm(CreateView):
 
     def get_form(self, form_class):
         kwargs = self.get_form_kwargs()
-        kwargs['questions'] = self.questions
         kwargs['instance'] = self.get_object()
         return form_class(**kwargs)
 

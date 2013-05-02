@@ -7,10 +7,6 @@ from .widgets import MonthYearWidget
 
 class ReviewForm(forms.ModelForm):
 
-    def __init__(self, questions=None, *args, **kwargs):
-        super(ReviewForm, self).__init__(*args, **kwargs)
-        self.questions = questions
-
     class Meta:
         model = Review
 
