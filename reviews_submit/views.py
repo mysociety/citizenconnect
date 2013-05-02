@@ -56,5 +56,6 @@ class ReviewForm(CreateView):
             rating_form.save()
         return HttpResponseRedirect(self.get_success_url())
 
+
 class ReviewConfirm(TemplateView):
     template_name = 'reviews/review-confirm.html'

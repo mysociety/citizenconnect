@@ -47,5 +47,6 @@ class RatingForm(forms.ModelForm):
             'answer': RadioSelect
         }
 
+
 def ratings_forms_for_review(review, request, questions):
     return [RatingForm(q, data=request.POST or None, prefix=q.id, instance=Rating(question=q, review=review)) for q in questions]
