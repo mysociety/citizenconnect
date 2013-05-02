@@ -55,7 +55,7 @@ class Review(AuditedModel):
     #                    know which comment it refers to.
 
     def __unicode__(self):
-        return "{0}, {1} ({2})".format(self.title, self.author_display_name, self.id)
+        return u"{0}, {1} ({2})".format(self.title, self.author_display_name, self.id)
 
     @classmethod
     def upsert_from_api_data(cls, api_review):
@@ -153,4 +153,4 @@ class Rating(AuditedModel):
     score = models.IntegerField()                 # e.g. 5
 
     def __unicode__(self):
-        return "{0} ({1})".format(self.question, self.score)
+        return u"{0} ({1})".format(self.question, self.score)
