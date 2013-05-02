@@ -17,9 +17,7 @@ class Command(BaseCommand):
         reviews = ReviewsAPI()
 
         for review in reviews:
-            print "{api_posting_id} ({api_category})".format(**review)
-            pprint(review)
-
+            # print "Looking at {api_posting_id} ({api_category})".format(**review)
             try:
                 Review.upsert_from_api_data(review)
             except OrganisationFromApiDoesNotExist:
