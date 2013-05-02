@@ -28,7 +28,7 @@ class ReviewParseApiXmlTests(TestCase):
     def test_parse_sample_xml(self):
         expected = self.json
 
-        api = ReviewsAPI()
+        api = ReviewsAPI(organisation_type="hospitals")
         xml = api.cleanup_xml(self.xml)
         actual = api.extract_reviews_from_xml(xml)
 

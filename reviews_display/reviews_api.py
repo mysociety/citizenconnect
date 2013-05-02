@@ -16,7 +16,7 @@ class ReviewsAPI(object):
     of the XML and lets us use an iterator to access the reviews.
     """
 
-    def __init__(self, organisation_type="hospitals", start_page=None, max_fetch=5):
+    def __init__(self, organisation_type, start_page=None, max_fetch=5):
         self.api = ChoicesAPI()
 
         self.organisation_type = organisation_type
