@@ -38,13 +38,7 @@ class ReviewForm(CreateView):
     def get_context_data(self, **kwargs):
         context = super(ReviewForm, self).get_context_data(**kwargs)
         context['organisation'] = self.organisation
-
-        RatingFormSet = inlineformset_factory(Review, Rating, form=forms.RatingForm, extra=self.questions.count())
-
-        if self.request.POST:
-            context['rating_forms'] = RatingFormSet(data=self.request.POST, instance=self.get_object())
-        else:
-            context['rating_forms'] = RatingFormSet(instance=self.get_object())
+        context['ratings_forms'] = forms.ratings_forms_for_review(self.get_object(), self.request, self.questions)
 
         return context
 
