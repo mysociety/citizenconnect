@@ -138,6 +138,7 @@ INSTALLED_APPS = (
     'organisations',
     'issues',
     'reviews',
+    'reviews_display',
     'moderation',
     'api',
     'responses',

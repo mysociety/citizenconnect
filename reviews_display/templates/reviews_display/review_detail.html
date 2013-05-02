@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load url from future %}
+
+{% block title %}Review of {{ organisation.name }}{% endblock %}
+
+{% block bodyclasses %}review_detail{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1>Review of {{ organisation.name }}</h1>
+</div>
+
+
+<h2>{{ review.title }}</h2>
+
+<p>{{ review.content }}</p>
+
+{% endblock %}
