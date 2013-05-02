@@ -19,7 +19,7 @@ class Review(AuditedModel):
     title = models.CharField(max_length=255, blank=True)
     comment = models.TextField()
     month_year_of_visit = models.DateField()
-    organisation = models.ForeignKey('organisations.Organisation')
+    organisation = models.ForeignKey('organisations.Organisation', related_name='reviews')
     last_sent_to_api = models.DateTimeField(null=True)
 
     def __unicode__(self):
@@ -30,8 +30,8 @@ class Rating(models.Model):
 
     """A rating of an aspect of the provider, associated with a Review."""
 
-    review = models.ForeignKey('Review')
-    question = models.ForeignKey('Question')
+    review = models.ForeignKey('Review', related_name='ratings')
+    question = models.ForeignKey('Question', related_name='ratings')
     answer = models.ForeignKey('Answer', blank=True, null=True)
 
     def __unicode__(self):
@@ -59,7 +59,7 @@ class Answer(models.Model):
 
     text = models.CharField(max_length=255)
     api_answer_id = models.IntegerField()
-    question = models.ForeignKey('Question')
+    question = models.ForeignKey('Question', related_name='answers')
 
     def __unicode__(self):
         return self.text

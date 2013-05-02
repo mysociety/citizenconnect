@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from django.core.management import call_command
 
 from organisations.tests.models import create_test_organisation
-from .models import Review, Question, Answer, Rating
+from .models import Review, Question, Rating
 
 
 class ReviewTest(TestCase):
@@ -19,7 +19,7 @@ class ReviewTest(TestCase):
         organisation = create_test_organisation()
 
         test_question = Question.objects.all()[0]
-        test_answer = test_question.answer_set.all()[0]
+        test_answer = test_question.answers.all()[0]
 
         review = Review.objects.create(
             email="bob@example.com",
@@ -31,9 +31,9 @@ class ReviewTest(TestCase):
         )
 
         rating = Rating(question=test_question, answer=test_answer)
-        review.rating_set.add(rating)
+        review.ratings.add(rating)
 
-        self.assertEqual(review.rating_set.count(), 1)
+        self.assertEqual(review.ratings.count(), 1)
 
 
 class ReviewFormViewTest(TestCase):
@@ -74,24 +74,22 @@ class ReviewFormViewTest(TestCase):
         self.assertTrue('rating_forms' in resp.context)
 
     def test_submitting_a_valid_review(self):
-        self.assertEquals(self.organisation.review_set.count(), 0)
+        self.assertEquals(self.organisation.reviews.count(), 0)
         resp = self.client.post(self.review_form_url, self.review_post_data)
-
-        self.assertEquals(self.organisation.review_set.count(), 1)
-
+        self.assertEquals(self.organisation.reviews.count(), 1)
 
     def test_submitting_a_review_with_a_future_date(self):
-        self.assertEquals(self.organisation.review_set.count(), 0)
+        self.assertEquals(self.organisation.reviews.count(), 0)
         self.review_post_data['month_year_of_visit_year'] = str((datetime.datetime.now() + datetime.timedelta(weeks=53)).year)
         resp = self.client.post(self.review_form_url, self.review_post_data)
-        self.assertEquals(self.organisation.review_set.count(), 0)
+        self.assertEquals(self.organisation.reviews.count(), 0)
 
 
 class PushNewReviewToChoicesCommandTest(TestCase):
 
     def setUp(self):
         self.organisation = create_test_organisation({'ods_code': 'A111'})
-        self.review = self.organisation.review_set.create(
+        self.review = self.organisation.reviews.create(
             email="bob@example.com",
             display_name="Bob Smith",
             title="Good review",
