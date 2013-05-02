@@ -13,9 +13,12 @@
 
 <div class="gw">
     <div class="g  one-whole">
-      <ul class="message-list">
-        <li class="message-list__success">Thanks for answering our questions.</a></li>
-      </ul>
+        <ul class="message-list">
+            <li class="message-list__success">Thanks for answering our questions.</a></li>
+        </ul>
+        {% if not object.happy_service %}
+            <p>Would you like to <a href="{% url 'problem-form' cobrand=cobrand.name ods_code=object.organisation.ods_code %}">report this as another problem?</a></p>
+        {% endif %}
     </div>
 </div>
 

@@ -18,6 +18,7 @@ from issues.models import Problem
 from .models import Organisation, CCG, Service
 from .metaphone import dm
 
+
 class OrganisationFinderForm(forms.Form):
     organisation_type = forms.ChoiceField(choices=settings.ORGANISATION_CHOICES, initial='hospitals')
     location = forms.CharField(required=True, error_messages={'required': 'Please enter a location'})
@@ -51,7 +52,6 @@ class OrganisationFinderForm(forms.Form):
             validation_message = 'Sorry, our postcode lookup service is temporarily unavailable. Please try later or search by provider name'
             raise forms.ValidationError(validation_message)
 
-
     def clean(self):
         cleaned_data = super(OrganisationFinderForm, self).clean()
         location = cleaned_data.get('location', None)
@@ -67,7 +67,7 @@ class OrganisationFinderForm(forms.Form):
             else:
                 organisations = Organisation.objects.filter(name__icontains=location,
                                                             organisation_type=organisation_type)
-                if len(organisations) < 5 :
+                if len(organisations) < 5:
                     # Try a metaphone search to give more results
                     location_metaphone = dm(location)
                     # First do a __startswith or __endswith
@@ -91,6 +91,7 @@ class OrganisationFinderForm(forms.Form):
 
         return cleaned_data
 
+
 class FilterForm(forms.Form):
     """
     Form for processing filters on pages which filter issues
@@ -108,7 +109,7 @@ class FilterForm(forms.Form):
     category = forms.ChoiceField(choices=[('', 'Problem category')] + list(Problem.CATEGORY_CHOICES),
                                  required=False)
 
-    problem_statuses = [ [str(status), desc] for (status, desc) in Problem.VISIBLE_STATUS_CHOICES ]
+    problem_statuses = [[str(status), desc] for (status, desc) in Problem.VISIBLE_STATUS_CHOICES]
     status = forms.TypedChoiceField(choices=[('', 'Problem status')] + problem_statuses,
                                     required=False,
                                     coerce=int)
@@ -117,8 +118,8 @@ class FilterForm(forms.Form):
                                              [True, 'Breaches'],
                                              [False, 'Non-Breaches']],
                                     required=False,
-                                    empty_value=None, # Default value is not coerced
-                                    coerce=lambda x: x == 'True') # coerce=bool will return True for 'False'
+                                    empty_value=None,  # Default value is not coerced
+                                    coerce=lambda x: x == 'True')  # coerce=bool will return True for 'False'
 
     def __init__(self, private=False, with_ccg=True, with_organisation_type=True,
                  with_service_code=True, with_category=True, with_status=True,
@@ -148,12 +149,13 @@ class FilterForm(forms.Form):
             if private:
                 # Set status choices to all choices if we're on a private page
                 # rather than the default of just public statuses
-                all_statuses = [ [str(status), desc] for (status, desc) in Problem.STATUS_CHOICES ]
+                all_statuses = [[str(status), desc] for (status, desc) in Problem.STATUS_CHOICES]
                 self.fields['status'].choices = [('', 'Problem status')] + all_statuses
 
         if not private or (private and not with_breach):
             # Breach is only for private pages
             del self.fields['breach']
+
 
 class OrganisationFilterForm(FilterForm):
     """
@@ -175,8 +177,6 @@ class OrganisationFilterForm(FilterForm):
             # Set the services from the organisation supplied
             # By inserting it here, we avoid having to re-order the fields
             services = organisation.services.all().order_by('name')
-            self.fields.insert(0,'service_id', forms.ModelChoiceField(queryset=services,
-                                                                      required=False,
-                                                                      empty_label="Department"))
-
-
+            self.fields.insert(0, 'service_id', forms.ModelChoiceField(queryset=services,
+                                                                       required=False,
+                                                                       empty_label="Department"))
