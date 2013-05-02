@@ -1,6 +1,6 @@
 import requests
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.db.models import Count
@@ -13,11 +13,11 @@ class Command(BaseCommand):
     help = 'Push new reviews to the Choices API'
 
     def handle(self, *args, **options):
-        organisations = Organisation.objects.annotate(num_reviews=Count('review')).filter(num_reviews__gt=0)
+        organisations = Organisation.objects.annotate(num_reviews=Count('reviews')).filter(num_reviews__gt=0)
 
         for organisation in organisations:
             url = self.choices_api_url(organisation.ods_code)
-            reviews = organisation.review_set.filter(last_sent_to_api__isnull=True)
+            reviews = organisation.reviews.filter(last_sent_to_api__isnull=True)
             if reviews is not None:
                 self.push_reviews(url, reviews)
 

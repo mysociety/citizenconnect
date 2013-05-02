@@ -31,7 +31,7 @@ class RatingForm(forms.ModelForm):
     def __init__(self, question, *args, **kwargs):
         super(RatingForm, self).__init__(*args, **kwargs)
         self.fields['question'].label = question.title
-        self.fields['answer'].queryset = question.answer_set.all()
+        self.fields['answer'].queryset = question.answers.all()
         self.fields['answer'].empty_label = None
 
     class Meta:
