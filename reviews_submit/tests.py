@@ -7,6 +7,7 @@ from mock import MagicMock
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.core.management import call_command
+from django.utils import timezone
 
 from organisations.tests.models import create_test_organisation
 from .models import Review, Question, Rating
@@ -151,3 +152,17 @@ class PushNewReviewToChoicesCommandTest(TestCase):
         review = Review.objects.get(pk=self.review.pk)
         self.assertIsNone(review.last_sent_to_api)
         self.assertEquals("{0}: Server error\n".format(review.id), self.stderr.getvalue())
+
+
+class RemoveReviewsSentToApiTest(TestCase):
+    def setUp(self):
+        self.stdout = StringIO()
+        self.stderr = StringIO()
+        self.organisation = create_test_organisation()
+        self.review = create_review(self.organisation, last_sent_to_api=(timezone.now() - datetime.timedelta(weeks=2)))
+        self.other_review = create_review(self.organisation, last_sent_to_api=(timezone.now() - datetime.timedelta(weeks=1)))
+
+    def test_removes_old_reviews(self):
+        self.assertEquals(self.organisation.reviews.count(), 2)
+        call_command('remove_reviews_sent_to_choices', stdout=self.stdout, stderr=self.stderr)
+        self.assertEquals(self.organisation.reviews.count(), 1)
