@@ -32,7 +32,7 @@
         "api_published": "2011-06-29T07:08:39+01:00",
         "api_updated": "2011-06-29T12:59:04+01:00",
         "author_display_name": "LanaC",
-        "content": null,
+        "content": "",
         "in_reply_to_id": null,
         "organisation_choices_id": "42476",
         "ratings": [
@@ -71,7 +71,7 @@
         "api_published": "2011-06-29T00:46:20+01:00",
         "api_updated": "2011-06-29T12:59:04+01:00",
         "author_display_name": "Karl Price",
-        "content": null,
+        "content": "",
         "in_reply_to_id": null,
         "organisation_choices_id": "41247",
         "ratings": [
@@ -110,7 +110,7 @@
         "api_published": "2011-06-28T22:54:59+01:00",
         "api_updated": "2011-06-30T13:57:18+01:00",
         "author_display_name": "jason clements",
-        "content": null,
+        "content": "",
         "in_reply_to_id": null,
         "organisation_choices_id": "42645",
         "ratings": [
@@ -154,7 +154,7 @@
         "api_published": "2011-06-28T22:49:04+01:00",
         "api_updated": "2011-06-29T12:59:04+01:00",
         "author_display_name": "Karmens",
-        "content": null,
+        "content": "",
         "in_reply_to_id": null,
         "organisation_choices_id": "41265",
         "ratings": [
@@ -193,7 +193,7 @@
         "api_published": "2011-06-28T21:45:25+01:00",
         "api_updated": "2011-06-29T12:59:03+01:00",
         "author_display_name": "Anonymous",
-        "content": null,
+        "content": "",
         "in_reply_to_id": null,
         "organisation_choices_id": "39970",
         "ratings": [
@@ -232,7 +232,7 @@
         "api_published": "2011-06-28T18:10:11+01:00",
         "api_updated": "2011-06-29T12:59:01+01:00",
         "author_display_name": "Emma L McMahon",
-        "content": null,
+        "content": "",
         "in_reply_to_id": null,
         "organisation_choices_id": "41862",
         "ratings": [
@@ -276,7 +276,7 @@
         "api_published": "2011-06-28T17:50:05+01:00",
         "api_updated": "2011-06-29T12:59:02+01:00",
         "author_display_name": "Anonymous",
-        "content": null,
+        "content": "",
         "in_reply_to_id": null,
         "organisation_choices_id": "41533",
         "ratings": [
@@ -310,7 +310,7 @@
         "api_published": "2011-06-28T17:36:40+01:00",
         "api_updated": "2011-06-29T12:59:01+01:00",
         "author_display_name": "Anonymous",
-        "content": null,
+        "content": "",
         "in_reply_to_id": null,
         "organisation_choices_id": "41583",
         "ratings": [
@@ -354,7 +354,7 @@
         "api_published": "2011-06-28T16:16:39+01:00",
         "api_updated": "2011-06-29T12:59:01+01:00",
         "author_display_name": "Anonymous",
-        "content": null,
+        "content": "",
         "in_reply_to_id": null,
         "organisation_choices_id": "39985",
         "ratings": [
@@ -404,7 +404,7 @@
         "api_published": "2011-06-28T15:50:57+01:00",
         "api_updated": "2011-06-28T15:54:55+01:00",
         "author_display_name": "Mike Welburn",
-        "content": null,
+        "content": "",
         "in_reply_to_id": null,
         "organisation_choices_id": "41016",
         "ratings": [
@@ -456,7 +456,7 @@
         "api_published": "2011-06-28T15:16:30+01:00",
         "api_updated": "2011-06-28T15:31:41+01:00",
         "author_display_name": "Anonymous",
-        "content": null,
+        "content": "",
         "in_reply_to_id": null,
         "organisation_choices_id": "42682",
         "ratings": [
@@ -552,7 +552,7 @@
         "api_published": "2011-06-28T11:56:44+01:00",
         "api_updated": "2011-06-29T12:50:30+01:00",
         "author_display_name": "Anonymous",
-        "content": null,
+        "content": "",
         "in_reply_to_id": null,
         "organisation_choices_id": "42643",
         "ratings": [
@@ -622,7 +622,7 @@
         "api_published": "2011-06-28T09:08:34+01:00",
         "api_updated": "2011-06-28T11:30:19+01:00",
         "author_display_name": "Anonymous",
-        "content": null,
+        "content": "",
         "in_reply_to_id": null,
         "organisation_choices_id": "43861",
         "ratings": [
@@ -659,7 +659,7 @@
         "api_published": "2011-06-28T04:26:10+01:00",
         "api_updated": "2011-06-28T11:30:18+01:00",
         "author_display_name": "Anthony Holland",
-        "content": null,
+        "content": "",
         "in_reply_to_id": null,
         "organisation_choices_id": "41261",
         "ratings": [
@@ -698,7 +698,7 @@
         "api_published": "2011-06-28T01:53:33+01:00",
         "api_updated": "2011-06-30T10:06:43+01:00",
         "author_display_name": "sunsworth1975",
-        "content": null,
+        "content": "",
         "in_reply_to_id": null,
         "organisation_choices_id": "40560",
         "ratings": [
@@ -742,7 +742,7 @@
         "api_published": "2011-06-27T21:03:21+01:00",
         "api_updated": "2011-06-28T11:30:18+01:00",
         "author_display_name": "John Nottingham",
-        "content": null,
+        "content": "",
         "in_reply_to_id": null,
         "organisation_choices_id": "43683",
         "ratings": [

@@ -78,8 +78,8 @@ class ReviewsAPI(object):
             "api_category": entry.find("category").get("term"),
 
             "author_display_name": entry.find("author/name").text,
-            "title": entry.find('title').text,
-            "content": entry.find('content').text,
+            "title":   entry.find('title').text or "",
+            "content": entry.find('content').text or "",
         }
 
         # for replies we should extract what it is a reply to
