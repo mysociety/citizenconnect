@@ -47,6 +47,7 @@ class ReviewSaveFromAPITests(TestCase):
             api_posting_id=self.sample_review['api_posting_id']
         )
         self.assertEqual(review.title, self.sample_review['title'])
+        self.assertEqual(review.content, self.sample_review['content'])
 
         # do it again (unchanged) and check it is still there
         self.assertTrue(Review.upsert_from_api_data(self.sample_review))

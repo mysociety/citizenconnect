@@ -104,6 +104,9 @@ class Review(AuditedModel):
         del defaults['in_reply_to_id']
         defaults['organisation'] = organisation
 
+        if defaults['content'] is None:
+            defaults['content'] = ''
+
         review, created = cls.objects.get_or_create(
             defaults=defaults, **unique_args)
 
