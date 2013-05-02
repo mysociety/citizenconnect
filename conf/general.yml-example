@@ -29,6 +29,9 @@ NHS_CHOICES_API_KEY: 'XXXXXX'
 # NHS Choices API base url
 NHS_CHOICES_BASE_URL: 'http://v1.syndication.nhschoices.nhs.uk/'
 
+# Posting Organisation ID for the NHS Choices API
+NHS_CHOICES_POSTING_ORGANISATION_ID: 15
+
 # Cobrands
 ALLOWED_COBRANDS:
   - choices
