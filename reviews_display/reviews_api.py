@@ -1,11 +1,12 @@
 
-from organisations.choices_api import ChoicesAPI
 from pprint import pprint
 import re
-
+from HTMLParser import HTMLParser
 import xml.etree.ElementTree as ET
 
 import urllib
+
+from organisations.choices_api import ChoicesAPI
 
 
 class ReviewsAPI(object):
@@ -68,6 +69,8 @@ class ReviewsAPI(object):
         return xml
 
     def convert_entry_to_review(self, entry):
+        h = HTMLParser()
+
         review = {
             "api_posting_id": entry.find('id').text,
             "api_postingorganisationid": entry.find('postingorganisationid').text,
@@ -78,8 +81,8 @@ class ReviewsAPI(object):
             "api_category": entry.find("category").get("term"),
 
             "author_display_name": entry.find("author/name").text,
-            "title":   entry.find('title').text or "",
-            "content": entry.find('content').text or "",
+            "title":   h.unescape(entry.find('title').text or ""),
+            "content": h.unescape(entry.find('content').text or ""),
         }
 
         # for replies we should extract what it is a reply to

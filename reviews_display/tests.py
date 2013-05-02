@@ -19,11 +19,11 @@ class ReviewParseApiXmlTests(TestCase):
             'test_sample_data'
         )
 
-        sample_xml_filename = os.path.join(sample_dir, 'sample.xml')
-        sample_json_filename = os.path.join(sample_dir, 'sample.json')
+        self.sample_xml_filename = os.path.join(sample_dir, 'sample.xml')
+        self.sample_json_filename = os.path.join(sample_dir, 'sample.json')
 
-        self.xml = open(sample_xml_filename).read()
-        self.json = json.loads(open(sample_json_filename).read())
+        self.xml = open(self.sample_xml_filename).read()
+        self.json = json.loads(open(self.sample_json_filename).read())
 
     def test_parse_sample_xml(self):
         expected = self.json
@@ -32,7 +32,14 @@ class ReviewParseApiXmlTests(TestCase):
         xml = api.cleanup_xml(self.xml)
         actual = api.extract_reviews_from_xml(xml)
 
-        # print json.dumps(actual, sort_keys=True, indent=4, separators=(',', ': '))
+        # # Handy for recreating the JSON when testing
+        # open(
+        #     self.sample_json_filename, 'w'
+        # ).write(
+        #     json.dumps(
+        #         actual, sort_keys=True, indent=4, separators=(',', ': ')
+        #     )
+        # )
 
         self.maxDiff = None
         self.assertEqual(actual, expected)
