@@ -1,5 +1,5 @@
 from django import forms
-from django.forms.widgets import HiddenInput
+from django.forms.widgets import RadioSelect, HiddenInput
 
 from .models import Review, Rating
 from .widgets import MonthYearWidget
@@ -32,6 +32,10 @@ class ReviewForm(forms.ModelForm):
 
 class RatingForm(forms.ModelForm):
 
+    def __init__(self, question, *args, **kwargs):
+        super(RatingForm, self).__init__(*args, **kwargs)
+        self.fields['answer'].queryset = question.answer_set.all()
+
     class Meta:
         model = Rating
 
@@ -39,3 +43,11 @@ class RatingForm(forms.ModelForm):
             'question',
             'answer'
         ]
+
+        widgets = {
+            'question': HiddenInput,
+            'answer': RadioSelect
+        }
+
+def ratings_forms_for_review(review, request, questions):
+    return [RatingForm(q, data=request.POST, prefix=q.id) for q in questions]
