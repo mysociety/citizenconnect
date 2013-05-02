@@ -159,10 +159,12 @@ class RemoveReviewsSentToApiTest(TestCase):
         self.stdout = StringIO()
         self.stderr = StringIO()
         self.organisation = create_test_organisation()
-        self.review = create_review(self.organisation, last_sent_to_api=(timezone.now() - datetime.timedelta(weeks=2)))
-        self.other_review = create_review(self.organisation, last_sent_to_api=(timezone.now() - datetime.timedelta(weeks=1)))
+        self.unsubmitted_review = create_review(self.organisation)
+        self.old_review = create_review(self.organisation, last_sent_to_api=(timezone.now() - datetime.timedelta(weeks=2)))
+        self.other_old_review = create_review(self.organisation, last_sent_to_api=(timezone.now() - datetime.timedelta(weeks=4)))
+        self.newer_review = create_review(self.organisation, last_sent_to_api=(timezone.now() - datetime.timedelta(weeks=1)))
 
     def test_removes_old_reviews(self):
-        self.assertEquals(self.organisation.reviews.count(), 2)
+        self.assertEquals(self.organisation.reviews.count(), 4)
         call_command('remove_reviews_sent_to_choices', stdout=self.stdout, stderr=self.stderr)
-        self.assertEquals(self.organisation.reviews.count(), 1)
+        self.assertEquals(self.organisation.reviews.count(), 2)
