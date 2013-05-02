@@ -51,4 +51,4 @@ class RatingForm(forms.ModelForm):
         }
 
 def ratings_forms_for_review(review, request, questions):
-    return [RatingForm(q, data=request.POST, prefix=q.id) for q in questions]
+    return [RatingForm(q, data=request.POST, prefix=q.id, instance=Rating(question=q, review=review)) for q in questions]

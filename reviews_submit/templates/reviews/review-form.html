@@ -26,21 +26,18 @@
             {{ hidden }}
         {% endfor %}
 
-        {{ rating_forms.management_form }}
-        {% for question in form.questions %}
-        {% with forloop.counter0 as index %}
+        {% for form in ratings_forms %}
         <fieldset class="island">
-            <p class="info">{{ question.title }}</p>
-            <input type="hidden" name="rating_set-{{ index }}-question" value="{{ question.id }}" />
+            <p class="info">{{ form.question.value }}</p>
+            {{ form.question }}
 
             <ul class="radio-list">
-                {% for answer in question.answer_set.all %}
-                <li><input type="radio" name="rating_set-{{ index }}-answer" value="{{ answer.id }}" /> {{ answer.text }}</li>
+                {% for choice in form.answer %}
+                <li>{{ choice }}</li>
                 {% endfor %}
             </ul>
 
         </fieldset>
-        {% endwith %}
         {% endfor %}
 
 
