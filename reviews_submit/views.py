@@ -3,7 +3,6 @@ from django.views.generic import FormView, TemplateView
 from django.views.generic.edit import CreateView
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from django.forms.models import inlineformset_factory
 
 # App imports
 from citizenconnect.shortcuts import render
