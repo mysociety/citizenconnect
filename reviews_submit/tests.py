@@ -53,7 +53,7 @@ class ReviewFormViewTest(TestCase):
                                  'organisation': self.organisation.id,
                                  '1-question': 1,
                                  '1-answer': 1,
-                                 '2-question':2,
+                                 '2-question': 2,
                                  '2-answer': 4,
                                  '3-question': 3,
                                  '3-answer': 10,
@@ -75,7 +75,7 @@ class ReviewFormViewTest(TestCase):
 
     def test_submitting_a_valid_review(self):
         self.assertEquals(self.organisation.reviews.count(), 0)
-        resp = self.client.post(self.review_form_url, self.review_post_data)
+        self.client.post(self.review_form_url, self.review_post_data)
         self.assertEquals(self.organisation.reviews.count(), 1)
 
     def test_submitting_a_review_with_a_future_date(self):
@@ -83,6 +83,8 @@ class ReviewFormViewTest(TestCase):
         self.review_post_data['month_year_of_visit_year'] = str((datetime.datetime.now() + datetime.timedelta(weeks=53)).year)
         resp = self.client.post(self.review_form_url, self.review_post_data)
         self.assertEquals(self.organisation.reviews.count(), 0)
+        # For some reason, assertFormError doesn't like this error
+        self.assertContains(resp, "The month and year of visit can&#39;t be in the future")
 
 
 class PushNewReviewToChoicesCommandTest(TestCase):
