@@ -32,7 +32,7 @@ class Rating(models.Model):
 
     review = models.ForeignKey('Review')
     question = models.ForeignKey('Question')
-    answer = models.ForeignKey('Answer')
+    answer = models.ForeignKey('Answer', blank=True, null=True)
 
     def __unicode__(self):
         return "{0} - {1}".format(self.question.title, self.answer.text)
