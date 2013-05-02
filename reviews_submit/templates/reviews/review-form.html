@@ -26,15 +26,20 @@
             {{ hidden }}
         {% endfor %}
 
-        {% for form in ratings_forms %}
+        {% for form in rating_forms %}
         <fieldset class="island">
-            <p class="info">{{ form.question.value }}</p>
-            {{ form.question }}
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+            <p class="info">{{ form.question.label }}</p>
 
             <ul class="radio-list">
                 {% for choice in form.answer %}
-                <li>{{ choice }}</li>
+                <li>
+                    {{ choice }}
+                </li>
                 {% endfor %}
+                {% include "message_list.html" with messages=form.answer.errors message_type='error' %}
             </ul>
 
         </fieldset>

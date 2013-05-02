@@ -30,6 +30,7 @@ class RatingForm(forms.ModelForm):
 
     def __init__(self, question, *args, **kwargs):
         super(RatingForm, self).__init__(*args, **kwargs)
+        self.fields['question'].label = question.title
         self.fields['answer'].queryset = question.answer_set.all()
         self.fields['answer'].empty_label = None
 
@@ -47,4 +48,4 @@ class RatingForm(forms.ModelForm):
         }
 
 def ratings_forms_for_review(review, request, questions):
-    return [RatingForm(q, data=request.POST, prefix=q.id, instance=Rating(question=q, review=review)) for q in questions]
+    return [RatingForm(q, data=request.POST or None, prefix=q.id, instance=Rating(question=q, review=review)) for q in questions]

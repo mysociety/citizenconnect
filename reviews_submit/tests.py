@@ -58,25 +58,24 @@ class ReviewFormViewTest(TestCase):
                                                        'is_anonymous': False,
                                                        'title': 'Good review',
                                                        'comment': 'Not bad',
-                                                       'month_year_of_visit': '30/05/2013',
+                                                       'month_year_of_visit_month': 1,
+                                                       'month_year_of_visit_year': 2013,
                                                        'organisation': self.organisation.id,
-                                                       'rating_set-TOTAL_FORMS': 0,
-                                                       'rating_set-INITIAL_FORMS': 0,
-                                                       'rating_set-MAX_NUM_FORMS': 0,
-                                                       'rating_set-0-question': 8,
-                                                       'rating_set-1-question': 9,
-                                                       'rating_set-1-answer': 36,
-                                                       'rating_set-2-question': 10,
-                                                       'rating_set-2-answer': 42,
-                                                       'rating_set-3-question': 11,
-                                                       'rating_set-3-answer': 48,
-                                                       'rating_set-4-question': 12,
-                                                       'rating_set-5-question': 13,
-                                                       'rating_set-0-answer': 55,
-                                                       'rating_set-6-question': 14,
-                                                       'rating_set-4-answer': 64})
+                                                       '1-question': 1,
+                                                       '1-answer': 1,
+                                                       '2-question':2,
+                                                       '2-answer': 4,
+                                                       '3-question': 3,
+                                                       '3-answer': 10,
+                                                       '4-question': 4,
+                                                       '4-answer': 16,
+                                                       '5-question': 5,
+                                                       '5-answer': 22,
+                                                       '6-question': 6,
+                                                       '6-answer': 26,
+                                                       '7-question': 7,
+                                                       '7-answer': 30})
 
-        self.assertEquals(resp.status_code, 302)
         self.assertEquals(self.organisation.review_set.count(), 1)
 
 

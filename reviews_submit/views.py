@@ -37,7 +37,7 @@ class ReviewForm(CreateView):
     def get_context_data(self, **kwargs):
         context = super(ReviewForm, self).get_context_data(**kwargs)
         context['organisation'] = self.organisation
-        context['ratings_forms'] = forms.ratings_forms_for_review(self.get_object(), self.request, self.questions)
+        context['rating_forms'] = forms.ratings_forms_for_review(self.get_object(), self.request, self.questions)
 
         return context
 
@@ -47,16 +47,14 @@ class ReviewForm(CreateView):
         return form_class(**kwargs)
 
     def form_valid(self, form):
-        context = self.get_context_data()
-        rating_forms = context['rating_forms']
-        if rating_forms.is_valid():
-            self.object = form.save()
-            rating_forms.instance = self.object
-            rating_forms.save()
-            return HttpResponseRedirect(self.get_success_url())
-        else:
-            return self.render_to_response(self.get_context_data(form=form))
+        review = form.save()
+        rating_forms = forms.ratings_forms_for_review(review, self.request, self.questions)
+        for rating_form in rating_forms:
+            if not rating_form.is_valid():
+                return self.render_to_response(self.get_context_data(form=form))
 
+            rating_form.save()
+        return HttpResponseRedirect(self.get_success_url())
 
 class ReviewConfirm(TemplateView):
     template_name = 'reviews/review-confirm.html'
