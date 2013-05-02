@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from django.core.management import call_command
 
 from organisations.tests.models import create_test_organisation
-from .models import Review, Question, Answer, Rating
+from .models import Review, Question, Rating
 
 
 class ReviewTest(TestCase):
@@ -53,28 +53,28 @@ class ReviewFormViewTest(TestCase):
 
     def test_submitting_a_valid_review(self):
         self.assertEquals(self.organisation.review_set.count(), 0)
-        resp = self.client.post(self.review_form_url, {'email': 'bob@example.com',
-                                                       'display_name': 'Bob Smith',
-                                                       'is_anonymous': False,
-                                                       'title': 'Good review',
-                                                       'comment': 'Not bad',
-                                                       'month_year_of_visit_month': 1,
-                                                       'month_year_of_visit_year': 2013,
-                                                       'organisation': self.organisation.id,
-                                                       '1-question': 1,
-                                                       '1-answer': 1,
-                                                       '2-question':2,
-                                                       '2-answer': 4,
-                                                       '3-question': 3,
-                                                       '3-answer': 10,
-                                                       '4-question': 4,
-                                                       '4-answer': 16,
-                                                       '5-question': 5,
-                                                       '5-answer': 22,
-                                                       '6-question': 6,
-                                                       '6-answer': 26,
-                                                       '7-question': 7,
-                                                       '7-answer': 30})
+        self.client.post(self.review_form_url, {'email': 'bob@example.com',
+                                                'display_name': 'Bob Smith',
+                                                'is_anonymous': False,
+                                                'title': 'Good review',
+                                                'comment': 'Not bad',
+                                                'month_year_of_visit_month': 1,
+                                                'month_year_of_visit_year': 2013,
+                                                'organisation': self.organisation.id,
+                                                '1-question': 1,
+                                                '1-answer': 1,
+                                                '2-question': 2,
+                                                '2-answer': 4,
+                                                '3-question': 3,
+                                                '3-answer': 10,
+                                                '4-question': 4,
+                                                '4-answer': 16,
+                                                '5-question': 5,
+                                                '5-answer': 22,
+                                                '6-question': 6,
+                                                '6-answer': 26,
+                                                '7-question': 7,
+                                                '7-answer': 30})
 
         self.assertEquals(self.organisation.review_set.count(), 1)
 
