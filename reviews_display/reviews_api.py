@@ -1,5 +1,3 @@
-
-from pprint import pprint
 import re
 from HTMLParser import HTMLParser
 import xml.etree.ElementTree as ET
