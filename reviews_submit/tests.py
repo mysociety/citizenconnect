@@ -66,6 +66,12 @@ class ReviewFormViewTest(TestCase):
                                  '7-question': 7,
                                  '7-answer': 30}
 
+    def test_homepage_links_to_reviews(self):
+        home_url = reverse('home', kwargs={'cobrand': 'choices'})
+        reviews_url = reverse('reviews-pick-provider', kwargs={'cobrand': 'choices'})
+        resp = self.client.get(home_url)
+        self.assertContains(resp, reviews_url)
+
     def test_review_form_exists(self):
         resp = self.client.get(self.review_form_url)
         self.assertContains(resp, 'Reviewing <strong>%s</strong>' % self.organisation.name, count=1, status_code=200)
