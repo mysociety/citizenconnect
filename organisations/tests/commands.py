@@ -2,6 +2,7 @@ import logging
 from mock import patch
 import os
 import sys
+from StringIO import StringIO
 
 from django.test import TestCase
 from django.core import mail
@@ -215,7 +216,7 @@ class GetOrganisationRatingsFromChoicesAPITests(ExampleFileAPITest):
         cls._example_file = '41265.xml'
         super(GetOrganisationRatingsFromChoicesAPITests, cls).setUpClass()
 
-    def _call_command(self, args=[], opts={}):
+    def _call_command(self, *args, **opts):
         call_command('get_organisation_ratings_from_choices_api', *args, **opts)
 
     def test_happy_path(self):
@@ -224,7 +225,9 @@ class GetOrganisationRatingsFromChoicesAPITests(ExampleFileAPITest):
                                                  'choices_id': 41265})
         self.assertEqual(organisation.average_recommendation_rating, None)
 
-        self._call_command()
+        stdout = StringIO()
+        self._call_command(stdout=stdout)
+        self.assertEquals(stdout.getvalue(), 'Updated rating for organisation Test Organisation\n')
 
         organisation = Organisation.objects.get(pk=organisation.id)
 
