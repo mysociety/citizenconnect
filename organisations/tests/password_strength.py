@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from ..auth import StrongSetPasswordForm, StrongPasswordChangeForm
 
 
-class PasswordStrengthTestsBase(TestCase):
+class PasswordStrengthTestsBase(object):
 
     unacceptable_passwords = [
         '123456789',  # too short
@@ -66,9 +66,9 @@ class PasswordStrengthTestsBase(TestCase):
             )
 
 
-class StrongSetPasswordFormTests(PasswordStrengthTestsBase):
+class StrongSetPasswordFormTests(PasswordStrengthTestsBase, TestCase):
     form_class = StrongSetPasswordForm
 
 
-class StrongPasswordChangeFormTests(PasswordStrengthTestsBase):
+class StrongPasswordChangeFormTests(PasswordStrengthTestsBase, TestCase):
     form_class = StrongPasswordChangeForm
