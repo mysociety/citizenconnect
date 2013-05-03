@@ -29,12 +29,13 @@ class ProblemAPITests(TestCase):
             'public': 1,
             'public_reporter_name': 1,
             'preferred_contact_method': Problem.CONTACT_PHONE,
-            'source':Problem.SOURCE_PHONE,
+            'source': Problem.SOURCE_PHONE,
             'requires_second_tier_moderation': 0,
             'breach': 1,
             'commissioned': Problem.NATIONALLY_COMMISSIONED,
             'relates_to_previous_problem': True,
-            'priority': Problem.PRIORITY_HIGH
+            'priority': Problem.PRIORITY_HIGH,
+            'escalated': 1
         }
 
         self.problem_api_url = reverse('api-problem-create')
@@ -66,6 +67,7 @@ class ProblemAPITests(TestCase):
         self.assertEqual(problem.commissioned, Problem.NATIONALLY_COMMISSIONED)
         self.assertEqual(problem.relates_to_previous_problem, True)
         self.assertEqual(problem.priority, Problem.PRIORITY_HIGH)
+        self.assertEqual(problem.status, Problem.ESCALATED)
 
     def test_source_is_required(self):
         problem_without_source = self.test_problem
@@ -127,7 +129,7 @@ class ProblemAPITests(TestCase):
         other_service = create_test_service({'organisation': self.test_organisation, 'service_code': 'other'})
         problem_with_service_id = self.test_problem
         problem_with_service_id['service'] = other_service.id
-        resp = self.client.post(self.problem_api_url, problem_with_service_id)
+        self.client.post(self.problem_api_url, problem_with_service_id)
         problem = Problem.objects.get(reporter_name=self.problem_uuid)
         self.assertEquals(problem.service, self.test_service)
 
@@ -136,7 +138,7 @@ class ProblemAPITests(TestCase):
         problem_with_service_id = self.test_problem
         problem_with_service_id['service'] = other_service.id
         del problem_with_service_id['service_code']
-        resp = self.client.post(self.problem_api_url, problem_with_service_id)
+        self.client.post(self.problem_api_url, problem_with_service_id)
         problem = Problem.objects.get(reporter_name=self.problem_uuid)
         self.assertIsNone(problem.service)
 
@@ -233,5 +235,28 @@ class ProblemAPITests(TestCase):
         errors = json.loads(content_json['errors'])
         self.assertEqual(errors['priority'][0],  u"The problem is not in a category which permits setting of a high priority.")
 
+    def test_escalated_is_optional(self):
+        problem_without_escalated = self.test_problem
+        del problem_without_escalated['escalated']
+        resp = self.client.post(self.problem_api_url, problem_without_escalated)
+        self.assertEquals(resp.status_code, 201)
 
+        problem = Problem.objects.get(reporter_name=self.problem_uuid)
+        expected_reference_number = '{0}{1}'.format(Problem.PREFIX, problem.id)
 
+        content_json = json.loads(resp.content)
+        self.assertEqual(content_json['reference_number'], expected_reference_number)
+        self.assertEqual(problem.status, Problem.NEW)
+
+    def test_status_is_ignored(self):
+        self.test_problem['status'] = Problem.ACKNOWLEDGED
+        del self.test_problem['escalated']
+        resp = self.client.post(self.problem_api_url, self.test_problem)
+        self.assertEquals(resp.status_code, 201)
+
+        problem = Problem.objects.get(reporter_name=self.problem_uuid)
+        expected_reference_number = '{0}{1}'.format(Problem.PREFIX, problem.id)
+
+        content_json = json.loads(resp.content)
+        self.assertEqual(content_json['reference_number'], expected_reference_number)
+        self.assertEqual(problem.status, Problem.NEW)
