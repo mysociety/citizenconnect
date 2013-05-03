@@ -47,7 +47,7 @@ class PasswordStrengthTests(TestCase):
         'ab3$efvadzrk',  # no upper case
         'aBc$efvadzrk',  # no numbers
         'aB3defvadzrk',  # no punctuation
-        'AB3DEFVADZRK',  # no lower case
+        'AB3$EFVADZRK',  # no lower case
 
         'username1@Xl',  # contains username
         # 'uSErnAMe1@Xl',  # contains username (in mixed case)
