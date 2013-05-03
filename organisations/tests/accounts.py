@@ -28,6 +28,9 @@ class BasicAccountTests(TestCase):
         self.password_change_url = reverse('password_change')
         self.password_change_done_url = reverse('password_change_done')
 
+        self.weak_password = 'secret'
+        self.strong_password = 'aB3$stduthadu'
+
     def test_login_page_exists(self):
         resp = self.client.get(self.login_url)
         self.assertEqual(resp.status_code, 200)
@@ -88,17 +91,25 @@ class BasicAccountTests(TestCase):
 
         # Post a new password to the reset form
         confirm_url = reverse('password_reset_confirm', kwargs={'uidb36':uidb36, 'token':token})
-        test_new_values = {
-            'new_password1': 'new_password',
-            'new_password2': 'new_password',
-        }
 
-        resp = self.client.post(confirm_url, test_new_values)
+        test_weak_passwords = {
+            'new_password1': self.weak_password,
+            'new_password2': self.weak_password,
+        }
+        resp = self.client.post(confirm_url, test_weak_passwords)
+
+        self.assertContains(resp, 'Must be 10 characters or more')
+
+        test_strong_passwords = {
+            'new_password1': self.strong_password,
+            'new_password2': self.strong_password,
+        }
+        resp = self.client.post(confirm_url, test_strong_passwords)
 
         self.assertRedirects(resp, self.reset_complete_url)
 
         self.test_user = User.objects.get(pk=self.test_user.id)
-        self.assertTrue(self.test_user.check_password('new_password'))
+        self.assertTrue(self.test_user.check_password(self.strong_password))
 
     def test_password_change_form_exists(self):
         # Login first
@@ -115,17 +126,26 @@ class BasicAccountTests(TestCase):
         logged_in = self.client.login(username=self.test_user.username, password='password')
         self.assertTrue(logged_in)
 
-        test_values = {
+        test_weak_passwords = {
             'old_password': 'password',
-            'new_password1': 'new_password',
-            'new_password2': 'new_password'
+            'new_password1': self.weak_password,
+            'new_password2': self.weak_password,
         }
-        resp = self.client.post(self.password_change_url, test_values)
+        resp = self.client.post(self.password_change_url, test_weak_passwords)
+
+        self.assertContains(resp, 'Must be 10 characters or more')
+
+        test_strong_passwords = {
+            'old_password': 'password',
+            'new_password1': self.strong_password,
+            'new_password2': self.strong_password,
+        }
+        resp = self.client.post(self.password_change_url, test_strong_passwords)
 
         self.assertRedirects(resp, self.password_change_done_url)
 
         self.test_user = User.objects.get(pk=self.test_user.id)
-        self.assertTrue(self.test_user.check_password('new_password'))
+        self.assertTrue(self.test_user.check_password(self.strong_password))
 
 class LoginRedirectTests(AuthorizationTestCase):
 

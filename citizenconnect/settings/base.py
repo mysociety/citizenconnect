@@ -200,5 +200,19 @@ LOGIN_REDIRECT_URL = '/private/login-redirect'
 # Makes sense to have this as a setting too
 LOGOUT_REDIRECT_URL = '/'
 
+# Password related settings - see https://github.com/dstufft/django-passwords
+# and our derived PasswordField implementation for details. Note that
+# PASSWORD_DICTIONARY and PASSWORD_MATCH_THRESHOLD are ommited as they cause
+# the validation to be extreemly slow ( >5s per password on a fast dev box)
+PASSWORD_MIN_LENGTH = 10
+PASSWORD_MAX_LENGTH = None
+PASSWORD_COMPLEXITY = {
+    "UPPER": 1,
+    "LOWER": 1,
+    "DIGITS": 1,
+    "PUNCTUATION": 1,
+}
+
+
 # Now get the mySociety configuration
 from .mysociety import *
