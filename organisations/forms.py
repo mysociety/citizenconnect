@@ -23,7 +23,7 @@ class OrganisationFinderForm(forms.Form):
     organisation_type = forms.ChoiceField(choices=settings.ORGANISATION_CHOICES, initial='hospitals')
     location = forms.CharField(required=True, error_messages={'required': 'Please enter a location'})
 
-    PILOT_SEARCH_CAVEAT = 'The provider or postcode may not be covered by this service - more will be added soon.'
+    PILOT_SEARCH_CAVEAT = 'The provider or postcode may not be covered by Care Connect.'
 
     def organisations_from_postcode(self, postcode, organisation_type, partial=False):
         path_elements = ['postcode']
