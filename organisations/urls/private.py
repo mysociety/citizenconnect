@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 
 from organisations.views import *
+from organisations.auth import StrongSetPasswordForm, StrongPasswordChangeForm
 
 urlpatterns = patterns('',
 
@@ -68,20 +69,30 @@ urlpatterns = patterns('',
         name='password_reset_done',
         kwargs={'template_name': 'organisations/auth/password_reset_done.html'}),
 
-    url(r'^password-reset-confirm/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)$',
+    url(
+        r'^password-reset-confirm/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)$',
         'django.contrib.auth.views.password_reset_confirm',
         name='password_reset_confirm',
-        kwargs={'template_name': 'organisations/auth/password_reset_confirm.html'}),
+        kwargs={
+            'template_name': 'organisations/auth/password_reset_confirm.html',
+            'set_password_form': StrongSetPasswordForm,
+        }
+    ),
 
     url(r'^password-reset-complete$',
         'django.contrib.auth.views.password_reset_complete',
         name='password_reset_complete',
         kwargs={'template_name': 'organisations/auth/password_reset_complete.html'}),
 
-    url(r'^password-change$',
+    url(
+        r'^password-change$',
         'django.contrib.auth.views.password_change',
         name='password_change',
-        kwargs={'template_name': 'organisations/auth/password_change_form.html'}),
+        kwargs={
+            'template_name': 'organisations/auth/password_change_form.html',
+            'password_change_form': StrongPasswordChangeForm,
+        }
+    ),
 
     url(r'^password-change-done$',
         'django.contrib.auth.views.password_change_done',
