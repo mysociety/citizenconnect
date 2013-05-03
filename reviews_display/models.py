@@ -104,16 +104,12 @@ class Review(AuditedModel):
         del defaults['in_reply_to_id']
         defaults['organisation'] = organisation
 
-        if defaults['content'] is None:
-            defaults['content'] = ''
-
         review, created = cls.objects.get_or_create(
             defaults=defaults, **unique_args)
 
         if not created:
-            for field in api_review.keys():
-                if field != 'ratings':
-                    setattr(review, field, api_review[field])  # ick-ity yuck :(
+            for field in defaults.keys():
+                setattr(review, field, defaults[field])  # ick-ity yuck :(
             review.save()
 
         # check if the ratings have changed, if they have delete them all and
