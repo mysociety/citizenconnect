@@ -19,7 +19,7 @@
         {% if not object.happy_service %}
             <p>Would you like to <a href="{% url 'problem-form' cobrand=cobrand.name ods_code=object.organisation.ods_code %}">report this as another problem</a>?</p>
         {% else %}
-            <p>Would you like to <a href="{% url 'review-form' cobrand=cobrand.name ods_code=object.organisation.ods_code %}">review and rate an NHS service</a>?</p>
+            <p>Would you like to <a href="{% url 'review-form' cobrand=cobrand.name ods_code=object.organisation.ods_code %}">review this provider</a>?</p>
         {% endif %}
     </div>
 </div>
