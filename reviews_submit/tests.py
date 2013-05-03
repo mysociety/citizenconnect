@@ -24,7 +24,6 @@ def create_review(organisation, **kwargs):
 
 
 class ReviewTest(TestCase):
-    fixtures = ['questions_and_answers.json']
 
     def test_creating_a_review(self):
         organisation = create_test_organisation()
@@ -48,7 +47,6 @@ class ReviewTest(TestCase):
 
 
 class ReviewFormViewTest(TestCase):
-    fixtures = ['questions_and_answers.json']
 
     def setUp(self):
         self.organisation = create_test_organisation({'ods_code': 'A111'})
