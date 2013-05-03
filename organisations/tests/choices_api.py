@@ -7,6 +7,7 @@ import urllib
 from django.test import TestCase
 from django.conf import settings
 from django.test.utils import override_settings
+from django.conf import settings
 
 # App imports
 import organisations
@@ -104,13 +105,13 @@ class ChoicesAPIOrganisationsSearchResultExampleFileTests(ExampleFileAPITest):
     @override_settings(NHS_CHOICES_API_KEY='OURKEY')
     def test_generates_api_url_for_postcode(self):
         self._api.find_organisations('gppractices', 'postcode', 'SW1A')
-        expected = 'http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/postcode/SW1A.xml?range=5&apikey=OURKEY'
+        expected = '{0}organisations/gppractices/postcode/SW1A.xml?range=5&apikey=OURKEY'.format(settings.NHS_CHOICES_BASE_URL)
         urllib.urlopen.assert_called_once_with(expected)
 
     @override_settings(NHS_CHOICES_API_KEY='OURKEY')
     def test_generates_api_url_for_all(self):
         self._api.find_organisations('gppractices', 'all')
-        expected = 'http://v1.syndication.nhschoices.nhs.uk/organisations/gppractices/all.xml?apikey=OURKEY'
+        expected = '{0}organisations/gppractices/all.xml?apikey=OURKEY'.format(settings.NHS_CHOICES_BASE_URL)
         urllib.urlopen.assert_called_once_with(expected)
 
     def test_finds_all_organisations(self):
