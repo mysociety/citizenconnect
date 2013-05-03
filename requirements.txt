@@ -18,6 +18,7 @@ django-tables2
 django-reversion==1.6.5  # compatible with Django 1.4.3
 django-concurrency
 django-dirtyfields==0.1  # see issues.models.Problems.save for reason it is pinned
+django-passwords
 
 ### Testing
 mock

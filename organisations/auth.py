@@ -1,5 +1,13 @@
+import re
+
+from django import forms
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import PermissionDenied
+from django.contrib.auth.forms import SetPasswordForm, PasswordChangeForm
+from django.contrib.auth.forms import SetPasswordForm, PasswordChangeForm
+from django.utils.translation import ugettext_lazy as _
+
+from passwords.fields import PasswordField
 
 """
 Helpers to do with authorisation of users
@@ -69,9 +77,9 @@ def user_can_access_private_national_summary(user):
     # A CCG user with no CCGs should not be allowed.
     if user_in_group(user, CCG) and user.ccgs.count():
         return True
-    
+
     return False
-    
+
 
 def create_unique_username(organisation):
     """
@@ -97,3 +105,88 @@ def is_valid_username_char(char):
     Only letters and underscores are allowed
     """
     return char.isalpha() or char == '_'
+
+
+
+
+
+# note trying to create a form mixin that inherits from 'object' does not work
+# - see http://stackoverflow.com/q/7114710 - instead we repeat a little bit of
+# the code in each form class below
+
+
+def validate_username_not_in_password(username, password):
+
+    # Ignore case in this test
+    username = username.lower()
+    password = password.lower()
+
+    if username in password:
+        raise forms.ValidationError(
+            "Password may not contain {0}".format(username))
+
+    # list of characters that could be substituted for others
+    substitutions = {
+        '0': ['o'],
+        '1': ['i', 'l'],
+        '3': ['e'],
+        '5': ['s'],
+        '8': ['b'],
+        '!': ['i', 'l'],
+        '$': ['s'],
+    }
+
+    # generate the variations
+    variations = [password]
+    for from_char, to_array in substitutions.items():
+        new_variations = []
+        for variant in variations:
+            for replacement in to_array:
+                new_variant = re.sub(from_char, replacement, variant)
+                new_variations.append(new_variant)
+        variations = new_variations
+
+    for variant in variations:
+        if username in variant:
+            raise forms.ValidationError(
+                "Password may not contain {0} (even with some letters substituted".format(username))
+
+
+def validate_password_allowed_chars(password):
+
+    bad_chars = [' ', ',']
+
+    for bad in bad_chars:
+        if bad in password:
+            raise forms.ValidationError(
+                "Password may not contain '{0}'".format(bad))
+
+
+class StrongSetPasswordForm(SetPasswordForm):
+
+    new_password1 = PasswordField(label=_("New password"),
+                                  widget=forms.PasswordInput)
+
+    def clean_new_password1(self):
+        if 'clean_new_password1' in dir(super(StrongSetPasswordForm, self)):
+            super(StrongSetPasswordForm, self).clean_new_password1()
+        password = self.cleaned_data['new_password1']
+        validate_username_not_in_password(
+            self.user.username, password)
+        validate_password_allowed_chars(password)
+        return password
+
+
+class StrongPasswordChangeForm(PasswordChangeForm):
+
+    new_password1 = PasswordField(label=_("New password"),
+                                  widget=forms.PasswordInput)
+
+    def clean_new_password1(self):
+        if 'clean_new_password1' in dir(super(StrongPasswordChangeForm, self)):
+            super(StrongPasswordChangeForm, self).clean_new_password1()
+        password = self.cleaned_data['new_password1']
+        validate_username_not_in_password(
+            self.user.username, password)
+        validate_password_allowed_chars(password)
+        return password
