@@ -253,7 +253,7 @@ class ProblemSurveyTests(AuthorizationTestCase):
         expected_review_url = reverse('review-form',
                                       kwargs={'cobrand': 'choices',
                                               'ods_code': self.test_organisation.ods_code})
-        self.assertContains(resp, 'review and rate an NHS service')
+        self.assertContains(resp, 'review this provider')
         self.assertContains(resp, expected_review_url)
 
     def test_confirm_page_doesnt_link_to_reviews_if_unhappy(self):
@@ -268,5 +268,5 @@ class ProblemSurveyTests(AuthorizationTestCase):
         expected_review_url = reverse('review-form',
                                       kwargs={'cobrand': 'choices',
                                               'ods_code': self.test_organisation.ods_code})
-        self.assertNotContains(resp, 'review and rate an NHS service')
+        self.assertNotContains(resp, 'review this provider')
         self.assertNotContains(resp, expected_review_url)
