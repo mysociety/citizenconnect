@@ -41,7 +41,7 @@ class Review(AuditedModel):
     )
 
     # The organisation that this review concerns
-    organisation = models.ForeignKey(Organisation)
+    organisation = models.ForeignKey(Organisation, related_name='reviews')
 
     # The name to display for the author. May be 'Anonymous'
     author_display_name = models.TextField()
@@ -112,7 +112,8 @@ class Review(AuditedModel):
 
         if not created:
             for field in api_review.keys():
-                setattr(review, field, api_review[field])  # ick-ity yuck :(
+                if field != 'ratings':
+                    setattr(review, field, api_review[field])  # ick-ity yuck :(
             review.save()
 
         # check if the ratings have changed, if they have delete them all and
@@ -120,14 +121,14 @@ class Review(AuditedModel):
         current_ratings = [
             model_to_dict(x, exclude=['id', 'review'])
             for x
-            in review.rating_set.all().order_by('question')
+            in review.ratings.all().order_by('question')
         ]
 
         if current_ratings != api_review['ratings']:
-            review.rating_set.all().delete()
+            review.ratings.all().delete()
 
         for rating in api_review['ratings']:
-            review.rating_set.create(**rating)
+            review.ratings.create(**rating)
 
         return True
 
@@ -147,7 +148,7 @@ class Rating(AuditedModel):
     inefficient model.
     """
 
-    review = models.ForeignKey(Review)
+    review = models.ForeignKey(Review, related_name='ratings')
     question = models.CharField(max_length=1000)  # e.g. "Was the area clean?"
     answer = models.CharField(max_length=100)     # e.g. "Very clean"
     score = models.IntegerField()                 # e.g. 5

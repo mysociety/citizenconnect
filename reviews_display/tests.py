@@ -175,7 +175,7 @@ class ReviewSaveFromAPITests(TestCase):
         ratings = [
             model_to_dict(x, exclude=['id', 'review'])
             for x
-            in review.rating_set.all().order_by('question')
+            in review.ratings.all().order_by('question')
         ]
         self.assertEqual(ratings, self.sample_ratings)
 
@@ -201,7 +201,7 @@ class ReviewSaveFromAPITests(TestCase):
         ratings = [
             model_to_dict(x, exclude=['id', 'review'])
             for x
-            in review.rating_set.all().order_by('question')
+            in review.ratings.all().order_by('question')
         ]
         self.assertEqual(ratings, ratings_copy)
 
