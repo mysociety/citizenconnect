@@ -20,6 +20,11 @@ class PasswordField(PasswordFieldOriginal):
 
 
 def validate_username_not_in_password(username, password):
+
+    # Ignore case in this test
+    username = username.lower()
+    password = password.lower()
+
     if username in password:
         raise forms.ValidationError("Password may not contain variation of username")
 
@@ -37,7 +42,7 @@ class StrongSetPasswordForm(SetPasswordForm):
 
 class PasswordStrengthTests(TestCase):
 
-    test_username = 'username'
+    test_username = 'UserName'
 
     unacceptable_passwords = [
         '123456789',  # too short
@@ -50,7 +55,7 @@ class PasswordStrengthTests(TestCase):
         'AB3$EFVADZRK',  # no lower case
 
         'username1@Xl',  # contains username
-        # 'uSErnAMe1@Xl',  # contains username (in mixed case)
+        'uSErnAMe1@Xl',  # contains username (in mixed case)
         # 'u53rname1@Xl',  # contains username (with number subs)
 
         # 'aB3$e gVad9r',  # spaces not allowed
