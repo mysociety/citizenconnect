@@ -20,7 +20,8 @@ class PasswordField(PasswordFieldOriginal):
 
 
 def validate_username_not_in_password(username, password):
-    pass
+    if username in password:
+        raise forms.ValidationError("Password may not contain variation of username")
 
 
 class StrongSetPasswordForm(SetPasswordForm):
@@ -30,8 +31,8 @@ class StrongSetPasswordForm(SetPasswordForm):
     def clean_new_password1(self):
         if 'clean_new_password1' in dir(super(StrongSetPasswordForm, self)):
             super(StrongSetPasswordForm, self).clean_new_password1()
-        # validate_username_not_in_password(
-        #     self.user.username, self.cleaned_data['new_password1'])
+        validate_username_not_in_password(
+            self.user.username, self.cleaned_data['new_password1'])
 
 
 class PasswordStrengthTests(TestCase):
@@ -48,7 +49,7 @@ class PasswordStrengthTests(TestCase):
         'aB3defvadzrk',  # no punctuation
         'AB3DEFVADZRK',  # no lower case
 
-        # 'username1@Xl',  # contains username
+        'username1@Xl',  # contains username
         # 'uSErnAMe1@Xl',  # contains username (in mixed case)
         # 'u53rname1@Xl',  # contains username (with number subs)
 
@@ -63,7 +64,7 @@ class PasswordStrengthTests(TestCase):
 
     def is_password_valid(self, password):
         form = StrongSetPasswordForm(
-            User(username='bob'),
+            User(username=self.test_username),
             {
                 "new_password1": password,
                 "new_password2": password,
