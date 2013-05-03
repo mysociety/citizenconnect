@@ -4,6 +4,7 @@ from mock import MagicMock
 import json
 import urllib
 from decimal import Decimal
+import logging
 
 # Django imports
 from django.test import TestCase
@@ -1373,3 +1374,17 @@ class BreachDashboardTests(AuthorizationTestCase):
             resp = self.client.get(self.breach_dashboard_url)
             self.assertContains(resp, self.org_breach_problem.reference_number)
             self.assertContains(resp, self.other_org_breach_problem.reference_number)
+
+class NotFoundTest(TestCase):
+
+    def setUp(self):
+        self.logger = logging.getLogger('django.request')
+        self.previous_level = self.logger.getEffectiveLevel()
+        self.logger.setLevel(logging.ERROR)
+
+    def tearDown(self):
+        self.logger.setLevel(self.previous_level)
+
+    def test_page_not_found_returns_404_status(self):
+        resp = self.client.get('/somthing-that-doesnt-exist')
+        self.assertEquals(404, resp.status_code)
