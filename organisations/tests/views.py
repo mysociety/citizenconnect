@@ -19,6 +19,7 @@ from issues.models import Problem
 import organisations
 from ..models import Organisation
 from . import create_test_problem, create_test_organisation, create_test_service, create_test_ccg, AuthorizationTestCase
+from organisations.forms import OrganisationFinderForm
 
 
 class OrganisationSummaryTests(AuthorizationTestCase):
@@ -1057,6 +1058,7 @@ class ProviderPickerTests(TestCase):
     def test_shows_message_on_no_results(self):
         resp = self.client.get("%s?organisation_type=gppractices&location=non-existent" % self.base_url)
         self.assertContains(resp, "We couldn&#39;t find any matches", count=1, status_code=200)
+        self.assertContains(resp, OrganisationFinderForm.PILOT_SEARCH_CAVEAT)
 
     def test_handles_the_case_where_the_mapit_api_cannot_be_connected_to(self):
         urllib.urlopen = MagicMock(side_effect=IOError('foo'))
@@ -1090,6 +1092,7 @@ class ProviderPickerTests(TestCase):
         resp = self.client.get(self.results_url)
         expected_message = 'Sorry, there are no matches within 5 miles of SW1A 1AA. Please try again'
         self.assertContains(resp, expected_message, count=1, status_code=200)
+        self.assertContains(resp, OrganisationFinderForm.PILOT_SEARCH_CAVEAT)
 
 
 class EscalationDashboardTests(AuthorizationTestCase):

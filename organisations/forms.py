@@ -23,6 +23,8 @@ class OrganisationFinderForm(forms.Form):
     organisation_type = forms.ChoiceField(choices=settings.ORGANISATION_CHOICES, initial='hospitals')
     location = forms.CharField(required=True, error_messages={'required': 'Please enter a location'})
 
+    PILOT_SEARCH_CAVEAT = 'The provider or postcode may not be covered by this service - more will be added soon.'
+
     def organisations_from_postcode(self, postcode, organisation_type, partial=False):
         path_elements = ['postcode']
         if partial:
@@ -60,10 +62,10 @@ class OrganisationFinderForm(forms.Form):
             postcode = re.sub('\s+', '', location.upper())
             if validation.is_valid_postcode(postcode):
                 organisations = self.organisations_from_postcode(postcode, organisation_type)
-                validation_message = "Sorry, there are no matches within 5 miles of %s. Please try again." % (location)
+                validation_message = "Sorry, there are no matches within 5 miles of %s. Please try again. %s" % (location, self.PILOT_SEARCH_CAVEAT)
             elif validation.is_valid_partial_postcode(postcode):
                 organisations = self.organisations_from_postcode(postcode, organisation_type, partial=True)
-                validation_message = "Sorry, there are no matches within 5 miles of %s. Please try again." % (location)
+                validation_message = "Sorry, there are no matches within 5 miles of %s. Please try again. %s" % (location, self.PILOT_SEARCH_CAVEAT)
             else:
                 organisations = Organisation.objects.filter(name__icontains=location,
                                                             organisation_type=organisation_type)
@@ -83,7 +85,7 @@ class OrganisationFinderForm(forms.Form):
                                                                 ~Q(pk__in=list([a.id for a in organisations])))
                         organisations = list(chain(organisations, more_orgs))
 
-                validation_message = "We couldn't find any matches for '%s'. Please try again." % (location)
+                validation_message = "We couldn't find any matches for '%s'. Please try again. %s" % (location, self.PILOT_SEARCH_CAVEAT)
             if len(organisations) == 0:
                 raise forms.ValidationError(validation_message)
 
