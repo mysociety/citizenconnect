@@ -1,11 +1,13 @@
 from django import forms
 from django.test import TestCase
 
+from passwords.fields import PasswordField as PasswordFieldOriginal
+
 # create a test form to use to check the validation
 
 
 # replace with something that actually works
-class PasswordField(forms.CharField):
+class PasswordField(PasswordFieldOriginal):
     pass
 
 
@@ -13,7 +15,7 @@ class TestingForm(forms.Form):
     password = PasswordField()
 
 
-class PasswordTests(TestCase):
+class PasswordStrengthTests(TestCase):
 
     test_username = 'username'
 
@@ -22,10 +24,10 @@ class PasswordTests(TestCase):
         'snohj*&A3',  # too short
         'aB3$efghi',  # too short
 
-        'ab3$efVad9rk',  # no upper case
-        'aBc$efVad9rk',  # no numbers
-        'aB3defVad9rk',  # no punctuation
-        'AB3DEFVad9rk',  # no lower case
+        'ab3$efvadzrk',  # no upper case
+        'aBc$efvadzrk',  # no numbers
+        'aB3defvadzrk',  # no punctuation
+        'AB3DEFVADZRK',  # no lower case
 
         'username1@Xl',  # contains username
         'uSErnAMe1@Xl',  # contains username (in mixed case)
@@ -51,8 +53,11 @@ class PasswordTests(TestCase):
             )
 
     def test_acceptable_passwords(self):
-        for password in self.unacceptable_passwords:
+        for password in self.acceptable_passwords:
             self.assertTrue(
                 self.is_password_valid(password),
                 "password '{0}' should validate".format(password)
             )
+
+
+# Test that missing dict causes warning to be printed.
