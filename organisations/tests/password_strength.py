@@ -1,6 +1,9 @@
 from django import forms
 from django.test import TestCase
 
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import SetPasswordForm
+
 from passwords.fields import PasswordField as PasswordFieldOriginal
 
 # create a test form to use to check the validation
@@ -11,8 +14,24 @@ class PasswordField(PasswordFieldOriginal):
     pass
 
 
-class TestingForm(forms.Form):
-    password = PasswordField()
+# note trying to create a form mixin that inherits from 'object' does not work
+# - see http://stackoverflow.com/q/7114710 - instead testing that the code
+# works when directly inheriting from the forms we want to override
+
+
+def validate_username_not_in_password(username, password):
+    pass
+
+
+class StrongSetPasswordForm(SetPasswordForm):
+
+    new_password1 = PasswordField()
+
+    def clean_new_password1(self):
+        if 'clean_new_password1' in dir(super(StrongSetPasswordForm, self)):
+            super(StrongSetPasswordForm, self).clean_new_password1()
+        # validate_username_not_in_password(
+        #     self.user.username, self.cleaned_data['new_password1'])
 
 
 class PasswordStrengthTests(TestCase):
@@ -29,20 +48,27 @@ class PasswordStrengthTests(TestCase):
         'aB3defvadzrk',  # no punctuation
         'AB3DEFVADZRK',  # no lower case
 
-        'username1@Xl',  # contains username
-        'uSErnAMe1@Xl',  # contains username (in mixed case)
-        'u53rname1@Xl',  # contains username (with number subs)
+        # 'username1@Xl',  # contains username
+        # 'uSErnAMe1@Xl',  # contains username (in mixed case)
+        # 'u53rname1@Xl',  # contains username (with number subs)
 
-        'aB3$e gVad9r',  # no spaces
-        'aB3$e,gVad9r',  # no commas
+        # 'aB3$e gVad9r',  # spaces not allowed
+        # 'aB3$e,gVad9r',  # commas not allowed
     ]
 
     acceptable_passwords = [
-        'fhNzyH&%WtVVad9rkzE7Am'
+        'fhNzyH&%WtVVad9rkzE7Am',   # proper random gibberish
+        'EveryoneShould<3TheNHS!',  # concatenated words is ok
     ]
 
     def is_password_valid(self, password):
-        form = TestingForm({"password": password})
+        form = StrongSetPasswordForm(
+            User(username='bob'),
+            {
+                "new_password1": password,
+                "new_password2": password,
+            }
+        )
         return form.is_valid()
 
     def test_unacceptable_passwords(self):
@@ -58,6 +84,3 @@ class PasswordStrengthTests(TestCase):
                 self.is_password_valid(password),
                 "password '{0}' should validate".format(password)
             )
-
-
-# Test that missing dict causes warning to be printed.
