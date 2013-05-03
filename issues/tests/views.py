@@ -240,3 +240,18 @@ class ProblemSurveyTests(AuthorizationTestCase):
                                             'ods_code': self.test_organisation.ods_code})
         self.assertNotContains(resp, 'report this as another problem')
         self.assertNotContains(resp, expected_form_url)
+
+    def test_confirm_page_links_to_reviews_if_unhappy(self):
+        # Load the page to say we're unhappy
+        form_page = reverse('survey-form', kwargs={'cobrand': 'choices',
+                                                   'response': 'n',
+                                                   'id': int_to_base32(self.test_problem.id),
+                                                   'token': self.test_problem.make_token(5555)})
+        self.client.get(form_page)
+        # Now post to it to get the confirmation page
+        resp = self.client.post(form_page, {})
+        expected_review_url = reverse('review-form',
+                                    kwargs={'cobrand': 'choices',
+                                            'ods_code': self.test_organisation.ods_code})
+        self.assertContains(resp, 'review and rate an NHS service')
+        self.assertContains(resp, expected_review_url)
