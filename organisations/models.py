@@ -62,7 +62,7 @@ class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Mod
     ccgs = models.ManyToManyField(CCG, related_name='organisations')
 
     # Calculated double_metaphone field, for search by provider name
-    name_metaphone = models.TextField()
+    name_metaphone = models.TextField(editable=False)
 
     # Average review rating from "Would you recommend this provider to your friends and family?"
     average_recommendation_rating = models.FloatField(blank=True, null=True)
