@@ -26,7 +26,7 @@ class ChoicesAPI():
         organisations = self.parse_organisations(example_data, 'hospitals')
         return organisations
 
-    def _construct_url(self, path_elements, parameters={}):
+    def construct_url(self, path_elements, parameters={}):
         parameters['apikey'] = settings.NHS_CHOICES_API_KEY
         path = '/'.join(path_elements)
         querystring = urllib.urlencode(parameters)
@@ -36,7 +36,7 @@ class ChoicesAPI():
         return url
 
     def _query_api(self, path_elements, parameters):
-        url = self._construct_url(path_elements, parameters)
+        url = self.construct_url(path_elements, parameters)
         return urllib.urlopen(url)
 
     def find_all_organisations(self, search_type, search_value=None):
