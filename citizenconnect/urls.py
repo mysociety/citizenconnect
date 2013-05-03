@@ -11,14 +11,15 @@ admin.autodiscover()
 
 allowed_cobrands = settings.ALLOWED_COBRANDS
 cobrand_pattern = '(?P<cobrand>%s)' % '|'.join(allowed_cobrands)
-urlpatterns = patterns('',
-    # Examples:
+urlpatterns = patterns(
+    '',
     url(r'^$', CobrandChoice.as_view(), name='cobrand-choice'),
     url(r'^' + cobrand_pattern + r'/?$', Home.as_view(), name='home'),
     url(r'^' + cobrand_pattern + r'/about$', About.as_view(), name='about'),
 
     url(r'^' + cobrand_pattern + r'/', include('issues.urls.public')),
     url(r'^' + cobrand_pattern + r'/review/', include('reviews_submit.urls')),
+    url(r'^' + cobrand_pattern + r'/reviews', include('reviews_display.urls')),
     url(r'^' + cobrand_pattern + r'/stats/', include('organisations.urls.public')),
 
     # private is the namespace for NHS-staff only pages
@@ -35,4 +36,3 @@ urlpatterns = patterns('',
 
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load url from future %}
+
+{% block title %}{{ organisation.name }} Reviews ({{ object_list.count }}){% endblock %}
+
+{% block bodyclasses %}review_organisation_list{% endblock %}
+
+{% block content %}
+
+  <div class="header">
+      <h1>{{ organisation.name }} Reviews ({{ object_list.count }})</h1>
+  </div>
+
+  <ul>
+    {% for review in object_list %}
+      <li>
+          <a href="{% url 'review-detail' cobrand=cobrand.name ods_code=review.organisation.ods_code pk=review.id %}">
+            {{ review.title }}
+          </a>
+      </li>
+    {% endfor %}
+  </ul>
+
+{% endblock %}
