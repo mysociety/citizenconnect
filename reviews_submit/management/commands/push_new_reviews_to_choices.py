@@ -13,11 +13,11 @@ class Command(BaseCommand):
     help = 'Push new reviews to the Choices API'
 
     def handle(self, *args, **options):
-        organisations = Organisation.objects.annotate(num_reviews=Count('reviews')).filter(num_reviews__gt=0)
+        organisations = Organisation.objects.annotate(num_reviews=Count('submitted_reviews')).filter(num_reviews__gt=0)
 
         for organisation in organisations:
             url = self.choices_api_url(organisation.ods_code)
-            reviews = organisation.reviews.filter(last_sent_to_api__isnull=True)
+            reviews = organisation.submitted_reviews.filter(last_sent_to_api__isnull=True)
             if reviews is not None:
                 self.push_reviews(url, reviews)
 

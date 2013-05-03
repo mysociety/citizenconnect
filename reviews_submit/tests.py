@@ -7,13 +7,23 @@ from mock import MagicMock
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.core.management import call_command
+from django.utils import timezone
 
 from organisations.tests.models import create_test_organisation
 from .models import Review, Question, Rating
 
 
+def create_review(organisation, **kwargs):
+    attrs = {'email': "bob@example.com",
+             'display_name': "Bob Smith",
+             'title': "Good review",
+             'comment': "Not bad",
+             'month_year_of_visit': datetime.date.today()}
+    attrs.update(kwargs)
+    return organisation.submitted_reviews.create(**attrs)
+
+
 class ReviewTest(TestCase):
-    fixtures = ['questions_and_answers.json']
 
     def test_creating_a_review(self):
         organisation = create_test_organisation()
@@ -37,7 +47,6 @@ class ReviewTest(TestCase):
 
 
 class ReviewFormViewTest(TestCase):
-    fixtures = ['questions_and_answers.json']
 
     def setUp(self):
         self.organisation = create_test_organisation({'ods_code': 'A111'})
@@ -66,6 +75,12 @@ class ReviewFormViewTest(TestCase):
                                  '7-question': 7,
                                  '7-answer': 30}
 
+    def test_homepage_links_to_reviews(self):
+        home_url = reverse('home', kwargs={'cobrand': 'choices'})
+        reviews_url = reverse('reviews-pick-provider', kwargs={'cobrand': 'choices'})
+        resp = self.client.get(home_url)
+        self.assertContains(resp, reviews_url)
+
     def test_review_form_exists(self):
         resp = self.client.get(self.review_form_url)
         self.assertContains(resp, 'Reviewing <strong>%s</strong>' % self.organisation.name, count=1, status_code=200)
@@ -74,15 +89,15 @@ class ReviewFormViewTest(TestCase):
         self.assertTrue('rating_forms' in resp.context)
 
     def test_submitting_a_valid_review(self):
-        self.assertEquals(self.organisation.reviews.count(), 0)
+        self.assertEquals(self.organisation.submitted_reviews.count(), 0)
         self.client.post(self.review_form_url, self.review_post_data)
-        self.assertEquals(self.organisation.reviews.count(), 1)
+        self.assertEquals(self.organisation.submitted_reviews.count(), 1)
 
     def test_submitting_a_review_with_a_future_date(self):
-        self.assertEquals(self.organisation.reviews.count(), 0)
+        self.assertEquals(self.organisation.submitted_reviews.count(), 0)
         self.review_post_data['month_year_of_visit_year'] = str((datetime.datetime.now() + datetime.timedelta(weeks=53)).year)
         resp = self.client.post(self.review_form_url, self.review_post_data)
-        self.assertEquals(self.organisation.reviews.count(), 0)
+        self.assertEquals(self.organisation.submitted_reviews.count(), 0)
         # For some reason, assertFormError doesn't like this error
         self.assertContains(resp, "The month and year of visit can&#39;t be in the future")
 
@@ -91,13 +106,7 @@ class PushNewReviewToChoicesCommandTest(TestCase):
 
     def setUp(self):
         self.organisation = create_test_organisation({'ods_code': 'A111'})
-        self.review = self.organisation.reviews.create(
-            email="bob@example.com",
-            display_name="Bob Smith",
-            title="Good review",
-            comment="Not bad",
-            month_year_of_visit=datetime.date.today(),
-        )
+        self.review = create_review(self.organisation)
         self.stdout = StringIO()
         self.stderr = StringIO()
 
@@ -148,3 +157,19 @@ class PushNewReviewToChoicesCommandTest(TestCase):
         review = Review.objects.get(pk=self.review.pk)
         self.assertIsNone(review.last_sent_to_api)
         self.assertEquals("{0}: Server error\n".format(review.id), self.stderr.getvalue())
+
+
+class RemoveReviewsSentToApiTest(TestCase):
+    def setUp(self):
+        self.stdout = StringIO()
+        self.stderr = StringIO()
+        self.organisation = create_test_organisation()
+        self.unsubmitted_review = create_review(self.organisation)
+        self.old_review = create_review(self.organisation, last_sent_to_api=(timezone.now() - datetime.timedelta(weeks=2)))
+        self.other_old_review = create_review(self.organisation, last_sent_to_api=(timezone.now() - datetime.timedelta(weeks=4)))
+        self.newer_review = create_review(self.organisation, last_sent_to_api=(timezone.now() - datetime.timedelta(weeks=1)))
+
+    def test_removes_old_reviews(self):
+        self.assertEquals(self.organisation.submitted_reviews.count(), 4)
+        call_command('remove_reviews_sent_to_choices', stdout=self.stdout, stderr=self.stderr)
+        self.assertEquals(self.organisation.submitted_reviews.count(), 2)

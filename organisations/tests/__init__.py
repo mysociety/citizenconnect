@@ -8,3 +8,4 @@ from .accounts import *
 from .superuser_logs import *
 from .auth import *
 from .tables import *
+from .password_strength import *

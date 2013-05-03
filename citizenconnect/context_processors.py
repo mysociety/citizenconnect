@@ -1,7 +1,7 @@
 import os
 
 from django.conf import settings
-from django.core.urlresolvers import resolve
+from django.core.urlresolvers import resolve, Resolver404
 
 def add_settings( request ):
     """Add some selected settings values to the context"""
@@ -13,7 +13,11 @@ def add_settings( request ):
 
 def add_cobrand( request ):
     """Add a cobrand if one is indicated by the url"""
-    func, args, kwargs = resolve(request.path)
+    try:
+        func, args, kwargs = resolve(request.path)
+    except Resolver404:
+        return {}
+
     cobrand_info = {}
     if 'cobrand' in kwargs:
         cobrand = kwargs['cobrand']

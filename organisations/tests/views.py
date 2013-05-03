@@ -4,6 +4,7 @@ from mock import MagicMock
 import json
 import urllib
 from decimal import Decimal
+import logging
 
 # Django imports
 from django.test import TestCase
@@ -18,6 +19,7 @@ from issues.models import Problem
 import organisations
 from ..models import Organisation
 from . import create_test_problem, create_test_organisation, create_test_service, create_test_ccg, AuthorizationTestCase
+from organisations.forms import OrganisationFinderForm
 
 
 class OrganisationSummaryTests(AuthorizationTestCase):
@@ -570,48 +572,6 @@ class OrganisationProblemsTests(AuthorizationTestCase):
             self.assertEqual(resp.context['table'].data.ordering, [column])
 
 
-class OrganisationReviewsTests(AuthorizationTestCase):
-
-    def setUp(self):
-        super(OrganisationReviewsTests, self).setUp()
-        self.public_reviews_url = reverse('public-org-reviews', kwargs={'ods_code': self.test_organisation.ods_code,
-                                                                        'cobrand': 'choices'})
-        self.private_reviews_url = reverse('private-org-reviews', kwargs={'ods_code': self.test_organisation.ods_code})
-
-    def test_public_page_exists_and_is_accessible_to_anyone(self):
-        resp = self.client.get(self.public_reviews_url)
-        self.assertEqual(resp.status_code, 200)
-
-    def test_private_page_exists_and_is_accessible_to_allowed_users(self):
-        self.login_as(self.provider)
-        resp = self.client.get(self.private_reviews_url)
-        self.assertEqual(resp.status_code, 200)
-        self.login_as(self.ccg_user)
-        resp = self.client.get(self.private_reviews_url)
-        self.assertEqual(resp.status_code, 200)
-
-    def test_private_page_is_inaccessible_to_anon_users(self):
-        expected_login_url = "{0}?next={1}".format(self.login_url, self.private_reviews_url)
-        resp = self.client.get(self.private_reviews_url)
-        self.assertRedirects(resp, expected_login_url)
-
-    def test_private_page_is_accessible_to_superusers(self):
-        for user in self.users_who_can_access_everything:
-            self.login_as(user)
-            resp = self.client.get(self.private_reviews_url)
-            self.assertEqual(resp.status_code, 200)
-
-    def test_private_page_is_inaccessible_to_other_providers(self):
-        self.login_as(self.other_provider)
-        resp = self.client.get(self.private_reviews_url)
-        self.assertEqual(resp.status_code, 403)
-
-    def test_private_page_is_inaccessible_to_other_ccgs(self):
-        self.login_as(self.other_ccg_user)
-        resp = self.client.get(self.private_reviews_url)
-        self.assertEqual(resp.status_code, 403)
-
-
 class OrganisationDashboardTests(AuthorizationTestCase):
 
     def setUp(self):
@@ -1098,6 +1058,7 @@ class ProviderPickerTests(TestCase):
     def test_shows_message_on_no_results(self):
         resp = self.client.get("%s?organisation_type=gppractices&location=non-existent" % self.base_url)
         self.assertContains(resp, "We couldn&#39;t find any matches", count=1, status_code=200)
+        self.assertContains(resp, OrganisationFinderForm.PILOT_SEARCH_CAVEAT)
 
     def test_handles_the_case_where_the_mapit_api_cannot_be_connected_to(self):
         urllib.urlopen = MagicMock(side_effect=IOError('foo'))
@@ -1131,6 +1092,7 @@ class ProviderPickerTests(TestCase):
         resp = self.client.get(self.results_url)
         expected_message = 'Sorry, there are no matches within 5 miles of SW1A 1AA. Please try again'
         self.assertContains(resp, expected_message, count=1, status_code=200)
+        self.assertContains(resp, OrganisationFinderForm.PILOT_SEARCH_CAVEAT)
 
 
 class EscalationDashboardTests(AuthorizationTestCase):
@@ -1373,3 +1335,17 @@ class BreachDashboardTests(AuthorizationTestCase):
             resp = self.client.get(self.breach_dashboard_url)
             self.assertContains(resp, self.org_breach_problem.reference_number)
             self.assertContains(resp, self.other_org_breach_problem.reference_number)
+
+class NotFoundTest(TestCase):
+
+    def setUp(self):
+        self.logger = logging.getLogger('django.request')
+        self.previous_level = self.logger.getEffectiveLevel()
+        self.logger.setLevel(logging.ERROR)
+
+    def tearDown(self):
+        self.logger.setLevel(self.previous_level)
+
+    def test_page_not_found_returns_404_status(self):
+        resp = self.client.get('/somthing-that-doesnt-exist')
+        self.assertEquals(404, resp.status_code)

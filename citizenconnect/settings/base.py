@@ -79,14 +79,12 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -138,6 +136,7 @@ INSTALLED_APPS = (
     'organisations',
     'issues',
     'reviews_submit',
+    'reviews_display',
     'moderation',
     'api',
     'responses',
@@ -148,7 +147,7 @@ INSTALLED_APPS = (
 # Only test some of the apps by default. Anything in INSTALLED_APPS starting
 # 'django' is ignored and you can add additional apps to ignore to
 # IGNORE_APPS_FOR_TESTING
-IGNORE_APPS_FOR_TESTING = ( 'south','pagination','reversion' )
+IGNORE_APPS_FOR_TESTING = ('south', 'pagination', 'reversion')
 TEST_RUNNER = 'citizenconnect.tests.runner.AppsTestSuiteRunner'
 
 
@@ -174,12 +173,12 @@ LOGGING = {
     },
     'loggers': {
         '': {
-            'handlers': [ 'mail_admins', 'console' ],
+            'handlers': ['mail_admins', 'console'],
             'level': 'WARN',
             'propagate': True,
         },
         'django.request': {
-            'handlers': [ 'mail_admins', 'console' ],
+            'handlers': ['mail_admins', 'console'],
             'level': 'WARN',
             'propagate': True,
         },
@@ -200,6 +199,20 @@ LOGIN_URL = '/private/login'
 LOGIN_REDIRECT_URL = '/private/login-redirect'
 # Makes sense to have this as a setting too
 LOGOUT_REDIRECT_URL = '/'
+
+# Password related settings - see https://github.com/dstufft/django-passwords
+# and our derived PasswordField implementation for details. Note that
+# PASSWORD_DICTIONARY and PASSWORD_MATCH_THRESHOLD are ommited as they cause
+# the validation to be extreemly slow ( >5s per password on a fast dev box)
+PASSWORD_MIN_LENGTH = 10
+PASSWORD_MAX_LENGTH = None
+PASSWORD_COMPLEXITY = {
+    "UPPER": 1,
+    "LOWER": 1,
+    "DIGITS": 1,
+    "PUNCTUATION": 1,
+}
+
 
 # Now get the mySociety configuration
 from .mysociety import *
