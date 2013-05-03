@@ -170,9 +170,11 @@ class StrongSetPasswordForm(SetPasswordForm):
     def clean_new_password1(self):
         if 'clean_new_password1' in dir(super(StrongSetPasswordForm, self)):
             super(StrongSetPasswordForm, self).clean_new_password1()
+        password = self.cleaned_data['new_password1']
         validate_username_not_in_password(
-            self.user.username, self.cleaned_data['new_password1'])
-        validate_password_allowed_chars(self.cleaned_data['new_password1'])
+            self.user.username, password)
+        validate_password_allowed_chars(password)
+        return password
 
 
 class StrongPasswordChangeForm(PasswordChangeForm):
@@ -183,6 +185,8 @@ class StrongPasswordChangeForm(PasswordChangeForm):
     def clean_new_password1(self):
         if 'clean_new_password1' in dir(super(StrongPasswordChangeForm, self)):
             super(StrongPasswordChangeForm, self).clean_new_password1()
+        password = self.cleaned_data['new_password1']
         validate_username_not_in_password(
-            self.user.username, self.cleaned_data['new_password1'])
-        validate_password_allowed_chars(self.cleaned_data['new_password1'])
+            self.user.username, password)
+        validate_password_allowed_chars(password)
+        return password

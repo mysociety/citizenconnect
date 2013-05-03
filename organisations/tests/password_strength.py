@@ -44,7 +44,12 @@ class PasswordStrengthTestsBase(TestCase):
                 "old_password": 'old_password',  # Needed for password change form validation
             }
         )
-        return form.is_valid()
+        if not form.is_valid():
+            return False
+
+        self.assertEqual(form.cleaned_data['new_password1'], password)
+
+        return True
 
     def test_unacceptable_passwords(self):
         for password in self.unacceptable_passwords:
