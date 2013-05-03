@@ -7,6 +7,7 @@ from django.db.models import Count
 from django.utils import timezone
 
 from organisations.models import Organisation
+from organisations.choices_api import ChoicesAPI
 
 
 class Command(BaseCommand):
@@ -47,9 +48,7 @@ class Command(BaseCommand):
                 self.stderr.write("{0}: Server error\n".format(review.id, review.organisation.ods_code))
 
     def choices_api_url(self, ods_code):
-        return "{0}comment/{1}?apikey={2}".format(
-            settings.NHS_CHOICES_BASE_URL, ods_code,
-            settings.NHS_CHOICES_API_KEY)
+        return ChoicesAPI().construct_url(['comment', ods_code])
 
     def xml_encode(self, review):
         return render_to_string('reviews/choices_review.xml', {

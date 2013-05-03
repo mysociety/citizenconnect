@@ -8,9 +8,11 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.core.management import call_command
 from django.utils import timezone
+from django.conf import settings
 
 from organisations.tests.models import create_test_organisation
 from .models import Review, Question, Rating
+from .management.commands.push_new_reviews_to_choices import Command as PushReviewsCommand
 
 
 def create_review(organisation, **kwargs):
@@ -115,6 +117,13 @@ class PushNewReviewToChoicesCommandTest(TestCase):
         mock_response.status_code = status
         mock_response.text = body
         requests.post = MagicMock(return_value=mock_response)
+
+    def test_posts_to_correct_url(self):
+        command = PushReviewsCommand()
+        self.assertEquals(command.choices_api_url('A111'), "{0}comment/A111?apikey={1}".format(
+            settings.NHS_CHOICES_BASE_URL,
+            settings.NHS_CHOICES_API_KEY
+        ))
 
     def test_succesful_post_to_api(self):
         self.mock_api_post_request(202)
