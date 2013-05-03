@@ -6,14 +6,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import SetPasswordForm, PasswordChangeForm
 
-from passwords.fields import PasswordField as PasswordFieldOriginal
-
-# create a test form to use to check the validation
-
-
-# replace with something that actually works
-class PasswordField(PasswordFieldOriginal):
-    pass
+from passwords.fields import PasswordField
 
 
 # note trying to create a form mixin that inherits from 'object' does not work
@@ -128,7 +121,7 @@ class PasswordStrengthTestsBase(TestCase):
             {
                 "new_password1": password,
                 "new_password2": password,
-                "old_password": 'old_password', # Needed for password change form validation
+                "old_password": 'old_password',  # Needed for password change form validation
             }
         )
         return form.is_valid()
