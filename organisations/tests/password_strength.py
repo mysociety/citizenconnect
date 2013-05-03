@@ -1,88 +1,8 @@
-import re
-
-from django import forms
 from django.test import TestCase
 
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import SetPasswordForm, PasswordChangeForm
 
-from passwords.fields import PasswordField
-
-
-# note trying to create a form mixin that inherits from 'object' does not work
-# - see http://stackoverflow.com/q/7114710 - instead testing that the code
-# works when directly inheriting from the forms we want to override
-
-
-def validate_username_not_in_password(username, password):
-
-    # Ignore case in this test
-    username = username.lower()
-    password = password.lower()
-
-    if username in password:
-        raise forms.ValidationError(
-            "Password may not contain {0}".format(username))
-
-    # list of characters that could be substituted for others
-    substitutions = {
-        '0': ['o'],
-        '1': ['i', 'l'],
-        '3': ['e'],
-        '5': ['s'],
-        '8': ['b'],
-        '!': ['i', 'l'],
-        '$': ['s'],
-    }
-
-    # generate the variations
-    variations = [password]
-    for from_char, to_array in substitutions.items():
-        new_variations = []
-        for variant in variations:
-            for replacement in to_array:
-                new_variant = re.sub(from_char, replacement, variant)
-                new_variations.append(new_variant)
-        variations = new_variations
-
-    for variant in variations:
-        if username in variant:
-            raise forms.ValidationError(
-                "Password may not contain {0} (even with some letters substituted".format(username))
-
-
-def validate_password_allowed_chars(password):
-
-    bad_chars = [' ', ',']
-
-    for bad in bad_chars:
-        if bad in password:
-            raise forms.ValidationError(
-                "Password may not contain '{0}'".format(bad))
-
-
-class StrongSetPasswordForm(SetPasswordForm):
-
-    new_password1 = PasswordField()
-
-    def clean_new_password1(self):
-        if 'clean_new_password1' in dir(super(StrongSetPasswordForm, self)):
-            super(StrongSetPasswordForm, self).clean_new_password1()
-        validate_username_not_in_password(
-            self.user.username, self.cleaned_data['new_password1'])
-        validate_password_allowed_chars(self.cleaned_data['new_password1'])
-
-
-class StrongPasswordChangeForm(PasswordChangeForm):
-
-    new_password1 = PasswordField()
-
-    def clean_new_password1(self):
-        if 'clean_new_password1' in dir(super(StrongPasswordChangeForm, self)):
-            super(StrongPasswordChangeForm, self).clean_new_password1()
-        validate_username_not_in_password(
-            self.user.username, self.cleaned_data['new_password1'])
-        validate_password_allowed_chars(self.cleaned_data['new_password1'])
+from ..auth import StrongSetPasswordForm, StrongPasswordChangeForm
 
 
 class PasswordStrengthTestsBase(TestCase):
