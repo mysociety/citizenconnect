@@ -57,6 +57,15 @@ def validate_username_not_in_password(username, password):
                 "Password may not contain username (even with some letters substituted")
 
 
+def validate_password_allowed_chars(password):
+
+    bad_chars = [' ', ',']
+
+    for bad in bad_chars:
+        if bad in password:
+            raise forms.ValidationError("Password may not contain '{0}'".format(bad))
+
+
 class StrongSetPasswordForm(SetPasswordForm):
 
     new_password1 = PasswordField()
@@ -66,6 +75,7 @@ class StrongSetPasswordForm(SetPasswordForm):
             super(StrongSetPasswordForm, self).clean_new_password1()
         validate_username_not_in_password(
             self.user.username, self.cleaned_data['new_password1'])
+        validate_password_allowed_chars(self.cleaned_data['new_password1'])
 
 
 class PasswordStrengthTests(TestCase):
@@ -86,8 +96,8 @@ class PasswordStrengthTests(TestCase):
         'xxbILlyx1@Xl',  # contains username (in mixed case)
         'xx81L!yx1@Xl',  # contains username (with number subs)
 
-        # 'aB3$e gVad9r',  # spaces not allowed
-        # 'aB3$e,gVad9r',  # commas not allowed
+        'aB3$ef adzrk',  # spaces not allowed
+        'aB3$ef,adzrk',  # commas not allowed
     ]
 
     acceptable_passwords = [
