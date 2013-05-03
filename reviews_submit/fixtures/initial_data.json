@@ -1,15 +1,5 @@
 [
     {
-        "pk": 1,
-        "model": "reviews_submit.question",
-        "fields": {
-            "org_type": "hospitals",
-            "updated": "2013-04-29T11:58:37.097Z",
-            "api_question_id": 1,
-            "title": "Overall rating"
-        }
-    },
-    {
         "pk": 2,
         "model": "reviews_submit.question",
         "fields": {
@@ -70,16 +60,6 @@
         }
     },
     {
-        "pk": 8,
-        "model": "reviews_submit.question",
-        "fields": {
-            "org_type": "gppractices",
-            "updated": "2013-04-29T11:58:50.048Z",
-            "api_question_id": 1,
-            "title": "Overall recommendation "
-        }
-    },
-    {
         "pk": 9,
         "model": "reviews_submit.question",
         "fields": {
@@ -137,24 +117,6 @@
             "updated": "2013-04-29T11:58:50.212Z",
             "api_question_id": 8,
             "title": "This GP practice provides accurate and up to date information on services and opening hours"
-        }
-    },
-    {
-        "pk": 1,
-        "model": "reviews_submit.answer",
-        "fields": {
-            "text": "I'd recommend this hospital",
-            "api_answer_id": 1,
-            "question": 1
-        }
-    },
-    {
-        "pk": 2,
-        "model": "reviews_submit.answer",
-        "fields": {
-            "text": "I wouldn't recommend it",
-            "api_answer_id": 2,
-            "question": 1
         }
     },
     {
@@ -425,24 +387,6 @@
             "text": "Extremely likely",
             "api_answer_id": 5,
             "question": 7
-        }
-    },
-    {
-        "pk": 33,
-        "model": "reviews_submit.answer",
-        "fields": {
-            "text": "I would recommend this GP practice to a friend",
-            "api_answer_id": 1,
-            "question": 8
-        }
-    },
-    {
-        "pk": 34,
-        "model": "reviews_submit.answer",
-        "fields": {
-            "text": "I would not recommend it",
-            "api_answer_id": 2,
-            "question": 8
         }
     },
     {
