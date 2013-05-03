@@ -7,9 +7,20 @@ from mock import MagicMock
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.core.management import call_command
+from django.utils import timezone
 
 from organisations.tests.models import create_test_organisation
 from .models import Review, Question, Rating
+
+
+def create_review(organisation, **kwargs):
+    attrs = {'email': "bob@example.com",
+             'display_name': "Bob Smith",
+             'title': "Good review",
+             'comment': "Not bad",
+             'month_year_of_visit': datetime.date.today()}
+    attrs.update(kwargs)
+    return organisation.submitted_reviews.create(**attrs)
 
 
 class ReviewTest(TestCase):
@@ -97,13 +108,7 @@ class PushNewReviewToChoicesCommandTest(TestCase):
 
     def setUp(self):
         self.organisation = create_test_organisation({'ods_code': 'A111'})
-        self.review = self.organisation.submitted_reviews.create(
-            email="bob@example.com",
-            display_name="Bob Smith",
-            title="Good review",
-            comment="Not bad",
-            month_year_of_visit=datetime.date.today(),
-        )
+        self.review = create_review(self.organisation)
         self.stdout = StringIO()
         self.stderr = StringIO()
 
@@ -154,3 +159,19 @@ class PushNewReviewToChoicesCommandTest(TestCase):
         review = Review.objects.get(pk=self.review.pk)
         self.assertIsNone(review.last_sent_to_api)
         self.assertEquals("{0}: Server error\n".format(review.id), self.stderr.getvalue())
+
+
+class RemoveReviewsSentToApiTest(TestCase):
+    def setUp(self):
+        self.stdout = StringIO()
+        self.stderr = StringIO()
+        self.organisation = create_test_organisation()
+        self.unsubmitted_review = create_review(self.organisation)
+        self.old_review = create_review(self.organisation, last_sent_to_api=(timezone.now() - datetime.timedelta(weeks=2)))
+        self.other_old_review = create_review(self.organisation, last_sent_to_api=(timezone.now() - datetime.timedelta(weeks=4)))
+        self.newer_review = create_review(self.organisation, last_sent_to_api=(timezone.now() - datetime.timedelta(weeks=1)))
+
+    def test_removes_old_reviews(self):
+        self.assertEquals(self.organisation.submitted_reviews.count(), 4)
+        call_command('remove_reviews_sent_to_choices', stdout=self.stdout, stderr=self.stderr)
+        self.assertEquals(self.organisation.submitted_reviews.count(), 2)
