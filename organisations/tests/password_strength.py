@@ -1,3 +1,5 @@
+import re
+
 from django import forms
 from django.test import TestCase
 
@@ -26,7 +28,33 @@ def validate_username_not_in_password(username, password):
     password = password.lower()
 
     if username in password:
-        raise forms.ValidationError("Password may not contain variation of username")
+        raise forms.ValidationError("Password may not contain username")
+
+    # list of characters that could be substituted for others
+    substitutions = {
+        '0': ['o'],
+        '1': ['i', 'l'],
+        '3': ['e'],
+        '5': ['s'],
+        '8': ['b'],
+        '!': ['i', 'l'],
+        '$': ['s'],
+    }
+
+    # generate the variations
+    variations = [password]
+    for from_char, to_array in substitutions.items():
+        new_variations = []
+        for variant in variations:
+            for replacement in to_array:
+                new_variant = re.sub(from_char, replacement, variant)
+                new_variations.append(new_variant)
+        variations = new_variations
+
+    for variant in variations:
+        if username in variant:
+            raise forms.ValidationError(
+                "Password may not contain username (even with some letters substituted")
 
 
 class StrongSetPasswordForm(SetPasswordForm):
@@ -42,7 +70,7 @@ class StrongSetPasswordForm(SetPasswordForm):
 
 class PasswordStrengthTests(TestCase):
 
-    test_username = 'UserName'
+    test_username = 'Billy'
 
     unacceptable_passwords = [
         '123456789',  # too short
@@ -54,9 +82,9 @@ class PasswordStrengthTests(TestCase):
         'aB3defvadzrk',  # no punctuation
         'AB3$EFVADZRK',  # no lower case
 
-        'username1@Xl',  # contains username
-        'uSErnAMe1@Xl',  # contains username (in mixed case)
-        # 'u53rname1@Xl',  # contains username (with number subs)
+        'xxbillyx1@Xl',  # contains username
+        'xxbILlyx1@Xl',  # contains username (in mixed case)
+        'xx81L!yx1@Xl',  # contains username (with number subs)
 
         # 'aB3$e gVad9r',  # spaces not allowed
         # 'aB3$e,gVad9r',  # commas not allowed
