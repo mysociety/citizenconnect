@@ -253,7 +253,7 @@ class ReviewOrganisationListTests(TestCase):
         self.org_review = create_test_review({'organisation': self.test_organisation}, {})
         self.other_org_review = create_test_review({'organisation': self.test_other_organisation}, {})
 
-    def test_organisation_reviews_page_exists(self):
+    def test_organisation_reviews_page(self):
         reviews_list_url = reverse('review-organisation-list',
                                    kwargs={'ods_code': self.test_organisation.ods_code,
                                            'cobrand': 'choices'})
@@ -261,3 +261,36 @@ class ReviewOrganisationListTests(TestCase):
         self.assertEqual(resp.context['organisation'], self.test_organisation)
         self.assertEqual(len(resp.context['object_list']), 1)
         self.assertEqual(resp.context['object_list'][0], self.org_review)
+
+
+class ReviewDetailTests(TestCase):
+
+    def setUp(self):
+        self.test_organisation = create_test_organisation({'ods_code': 'ABC'})
+        self.org_review = create_test_review({'organisation': self.test_organisation}, {})
+
+    def test_organisation_reviews_page(self):
+        review_detail_url = reverse('review-detail',
+                                    kwargs={'ods_code': self.test_organisation.ods_code,
+                                            'pk': self.org_review.id,
+                                            'cobrand': 'choices'})
+        resp = self.client.get(review_detail_url)
+        self.assertEqual(resp.context['organisation'], self.test_organisation)
+        self.assertEqual(resp.context['object'], self.org_review)
+
+
+class ReviewListTests(TestCase):
+
+    def setUp(self):
+        self.test_organisation = create_test_organisation({'ods_code': 'ABC'})
+        self.test_other_organisation = create_test_organisation({'ods_code': 'DEF'})
+        self.org_review = create_test_review({'organisation': self.test_organisation}, {})
+        self.other_org_review = create_test_review({'organisation': self.test_other_organisation}, {})
+
+    def test_organisation_reviews_page(self):
+        review_list_url = reverse('review-list',
+                                  kwargs={'cobrand': 'choices'})
+        resp = self.client.get(review_list_url)
+        self.assertEqual(len(resp.context['object_list']), 2)
+        self.assertEqual(resp.context['object_list'][0], self.org_review)
+        self.assertEqual(resp.context['object_list'][1], self.other_org_review)
