@@ -6,10 +6,11 @@ import datetime
 from django.test import TestCase
 from django.forms.models import model_to_dict
 from django.core.urlresolvers import reverse
+from django.utils.timezone import utc
 
 from organisations.tests.lib import create_test_organisation
 
-from .models import Review, Rating, OrganisationFromApiDoesNotExist
+from .models import Review, OrganisationFromApiDoesNotExist
 from .reviews_api import ReviewsAPI
 
 
@@ -17,12 +18,12 @@ def create_test_rating(attributes, review):
 
     """Create a test rating instance for a review, with optional attributes"""
 
-    default_attributes = [
-        {'answer': 'Extremely likely',
-         'question': 'Friends and Family',
-         'score': 5,
-         'review': review}
-    ]
+    default_attributes = {
+        'answer': 'Extremely likely',
+        'question': 'Friends and Family',
+        'score': 5,
+        'review': review
+    }
     default_attributes.update(attributes)
     instance = review.ratings.create(**dict((k, v) for (k, v) in default_attributes.items() if '__' not in k))
     review.save()
@@ -34,24 +35,24 @@ def create_test_review(attributes, ratings_attributes):
     """Create a test review instance, with optional attributes"""
 
     # Create a test org to assign the rating to if one's not supplied
-    if not attributes.organisation:
+    if not attributes.get('organisation'):
         organisation = create_test_organisation({})
         attributes['organisation'] = organisation
 
+    now = datetime.datetime.utcnow().replace(tzinfo=utc)
     default_attributes = {
         'api_category': 'comment',
         'api_posting_id': '185684',
         'api_postingorganisationid': '0',
-        'api_published': datetime.datetime.now(),
-        'api_updated': datetime.datetime.now(),
+        'api_published': now,
+        'api_updated': now,
         'author_display_name': 'Fred Smith',
         'title': 'Wonderful staff and treatment',
         'content': 'What a marvelous service the NHS is!',
-        'in_reply_to_id': None,
     }
 
     default_attributes.update(attributes)
-    instance = Rating(**dict((k, v) for (k, v) in default_attributes.items() if '__' not in k))
+    instance = Review(**dict((k, v) for (k, v) in default_attributes.items() if '__' not in k))
     instance.save()
 
     # Create some dummy ratings if there are none supplied
@@ -254,7 +255,9 @@ class ReviewOrganisationListTests(TestCase):
 
     def test_organisation_reviews_page_exists(self):
         reviews_list_url = reverse('review-organisation-list',
-                                   kwargs={'ods_code': self.test_organisation.ods_code})
+                                   kwargs={'ods_code': self.test_organisation.ods_code,
+                                           'cobrand': 'choices'})
         resp = self.client.get(reviews_list_url)
         self.assertEqual(resp.context['organisation'], self.test_organisation)
-        self.assertEqual(resp.context['object_list'], [self.org_review])
+        self.assertEqual(len(resp.context['object_list']), 1)
+        self.assertEqual(resp.context['object_list'][0], self.org_review)
