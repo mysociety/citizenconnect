@@ -18,7 +18,7 @@
     SideNavView.prototype.addActiveClass = function(e) {
         this.el.find('li.active').removeClass('active');
         $(e.target).closest('li').addClass('active');
-    }
+    };
 
     /**
      * Check if the side nav has scrolled to the top of the window, if it
@@ -30,7 +30,7 @@
         } else {
             this.el.removeClass('fixed');
         }
-    }
+    };
 
     /**
      * Get the top offset of the parent of the side nav.
@@ -39,7 +39,7 @@
      */
     SideNavView.prototype.topOffset = function() {
         return this.el.parent().offset().top;
-    }
+    };
 
     window.SideNavView = SideNavView;
 })(window.jQuery, window);
