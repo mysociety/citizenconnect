@@ -280,3 +280,11 @@
     </div>
 </div>
 {% endblock content %}
+
+{% load staticfiles %}
+{% block extra_js %}
+{{ block.super }}
+
+<script src="{% static 'js/about.js' %}"></script>
+
+{% endblock extra_js %}
