@@ -5,9 +5,16 @@
 {% block bodyclasses %}problem-report{% endblock %}
 
 {% block content %}
-<div class="header">
-    <h2 class="header__pre-heading">{{ object.organisation.name }}</h2>
-    <h1>Problem report</h1>
+<div class="header gw">
+    <div class="g  hard--left two-thirds  lap-one-half  palm-one-whole">
+        <h1>Problem</h1>
+    </div>
+    <div class="g  one-third  lap-one-half  palm-one-whole">
+        <p class="escalation  align-right--not-palm"><span class="icon-arrow-up-right" aria-hidden="true"></span> This problem has been escalated</p>
+        {% if object.status in object.ESCALATION_STATUSES %}
+            <p class="escalation"><span class="icon-arrow-up-right" aria-hidden="true"></span> This problem has been escalated</p>
+        {% endif %}
+    </div>
 </div>
 
 {% include "issues/issue_detail.html" with object=object %}
