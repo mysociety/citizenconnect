@@ -286,5 +286,10 @@
 {{ block.super }}
 
 <script src="{% static 'js/about.js' %}"></script>
+<script>
+    jQuery(document).ready(function($) {
+        new SideNavView($('.side-nav'));
+    });
+</script>
 
 {% endblock extra_js %}
