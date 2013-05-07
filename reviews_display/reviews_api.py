@@ -28,7 +28,7 @@ class ReviewsAPI(object):
                 self.organisation_type,
                 'comments.atom'  # add '.atom' so we get a consistent format, which includes ratings
             ]
-            start_page = self.api._construct_url(path_elements)
+            start_page = self.api.construct_url(path_elements)
 
         self.next_page_url = start_page
         self.reviews = []

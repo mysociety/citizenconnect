@@ -4,6 +4,7 @@ from django.forms.widgets import HiddenInput
 from organisations.models import Organisation, Service
 from issues.models import Problem
 
+
 class ProblemAPIForm(forms.ModelForm):
 
     # Make organisation a char field so that we can supply ods_codes to it
@@ -16,7 +17,9 @@ class ProblemAPIForm(forms.ModelForm):
     moderated = forms.IntegerField(required=False)
     # Make commissioned required
     commissioned = forms.ChoiceField(required=True, choices=Problem.COMMISSIONED_CHOICES)
-
+    # Add an escalated flag with which we'll set the Problem status
+    escalated = forms.BooleanField(required=False)
+    status = forms.IntegerField(required=False)
 
     # Pull out the organisation ods_code and turn it into a real organisation
     def clean_organisation(self):
@@ -32,6 +35,11 @@ class ProblemAPIForm(forms.ModelForm):
         # Force the service foreign key field to be ignored, because we only
         # want to accept services via the service_code field we've added
         return None
+
+    def clean_status(self):
+        # Always set status to Problem.New. Note that if escalated is set
+        # we will modify this in clean
+        return Problem.NEW
 
     def clean_moderated(self):
         # If you are submitting the form, you have moderated it, so always return MODERATED
@@ -60,19 +68,23 @@ class ProblemAPIForm(forms.ModelForm):
         # If we are publishing the problem and the reporter wants it public,
         # it must have a moderated_description so that we have something to show for it
         # on public pages
-        if cleaned_data['public'] == True and cleaned_data['publication_status'] == Problem.PUBLISHED:
+        if cleaned_data['public'] is True and cleaned_data['publication_status'] == Problem.PUBLISHED:
             if not 'moderated_description' in cleaned_data or not cleaned_data['moderated_description']:
                 self._errors['moderated_description'] = self.error_class(['You must moderate a version of the problem details when publishing public problems.'])
                 del cleaned_data['moderated_description']
 
         # If a problem is flagged as requiring second tier moderation, it can't be published
-        if cleaned_data['requires_second_tier_moderation'] == True and cleaned_data['publication_status'] == Problem.PUBLISHED:
+        if cleaned_data['requires_second_tier_moderation'] is True and cleaned_data['publication_status'] == Problem.PUBLISHED:
             self._errors['publication_status'] = self.error_class(['A problem that requires second tier moderation cannot be published.'])
             del cleaned_data['publication_status']
 
         if cleaned_data['priority'] == Problem.PRIORITY_HIGH and not cleaned_data['category'] in Problem.CATEGORIES_PERMITTING_SETTING_OF_PRIORITY_AT_SUBMISSION:
             self._errors['priority'] = self.error_class(['The problem is not in a category which permits setting of a high priority.'])
             del cleaned_data['priority']
+
+        # Set 'status' from the escalated flag if it's passed in
+        if cleaned_data['escalated'] is True:
+            cleaned_data['status'] = Problem.ESCALATED
 
         return cleaned_data
 
@@ -99,10 +111,12 @@ class ProblemAPIForm(forms.ModelForm):
             'breach',
             'commissioned',
             'relates_to_previous_problem',
-            'priority'
+            'priority',
+            'status'
         ]
 
         widgets = {
             'service': HiddenInput,
-            'organisation': HiddenInput
+            'organisation': HiddenInput,
+            'status': HiddenInput
         }
