@@ -384,18 +384,18 @@ img { vertical-align: middle; }
 
 .ie6, .ie6 *, .ie7, .ie7 * { behavior: url(/static/boxsizing.htc); }
 
-@font-face { font-family: 'icomoon'; src: url("../fonts/icomoon.eot"); src: url("../fonts/icomoon.eot?#iefix") format("embedded-opentype"), url("../fonts/icomoon.woff") format("woff"), url("../fonts/icomoon.ttf") format("truetype"), url("../fonts/icomoon.svg#icomoon") format("svg"); font-weight: normal; font-style: normal; }
+@font-face { font-family: 'icons'; src: url("../fonts/icons.eot"); src: url("../fonts/icons.eot?#iefix") format("embedded-opentype"), url("../fonts/icons.ttf") format("truetype"), url("../fonts/icons.svg#icomoon") format("svg"); font-weight: normal; font-style: normal; }
 
 /* Use the following CSS code if you want to use data attributes for inserting your icons */
-[data-icon]:before { font-family: 'icomoon'; content: attr(data-icon); speak: none; font-weight: normal; line-height: 1; -webkit-font-smoothing: antialiased; }
+[data-icon]:before { font-family: 'icons'; content: attr(data-icon); speak: none; font-weight: normal; font-variant: normal; text-transform: none; line-height: 1; -webkit-font-smoothing: antialiased; }
 
 /* Use the following CSS code if you want to have a class per icon */
 /*
 Instead of a list of all class selectors,
 you can use the generic selector below, but it's slower:
-[class*="icon-"]:before {
+[class*="icon-"] {
 */
-.i, table th.sortable a:after, .message-list li:before, .icon-search:before, .icon-x:before, .icon-checkmark:before, .icon-circle:before, .icon-caret-up:before, .icon-caret-down:before, .icon-caret-right:before, .icon-caret-left:before, .icon-chevron-right:before, .icon-double-chevron-right:before, .icon-chevron-left:before, .icon-double-chevron-left:before, .icon-warning:before, .icon-home:before { font-family: 'icomoon'; speak: none; font-style: normal; font-weight: normal; font-variant: normal; text-transform: none; line-height: 1; -webkit-font-smoothing: antialiased; }
+.i, table th.sortable a:after, .message-list li:before, .icon-search, .icon-x, .icon-checkmark, .icon-circle, .icon-caret-up, .icon-caret-down, .icon-caret-right, .icon-caret-left, .icon-chevron-right, .icon-double-chevron-right, .icon-chevron-left, .icon-double-chevron-left, .icon-warning, .icon-home, .icon-stack, .icon-calendar, .icon-arrow-up-right, .icon-star, .icon-star-2, .icon-tag, .icon-user, .icon-star-3 { font-family: 'icons'; speak: none; font-style: normal; font-weight: normal; font-variant: normal; text-transform: none; line-height: 1; -webkit-font-smoothing: antialiased; }
 
 .icon-search:before { content: "\e000"; }
 
@@ -424,6 +424,22 @@ you can use the generic selector below, but it's slower:
 .icon-warning:before { content: "\e00c"; }
 
 .icon-home:before { content: "\e00d"; }
+
+.icon-stack:before { content: "\e00f"; }
+
+.icon-calendar:before { content: "\e010"; }
+
+.icon-arrow-up-right:before { content: "\e011"; }
+
+.icon-star:before { content: "\e013"; }
+
+.icon-star-2:before { content: "\e012"; }
+
+.icon-tag:before { content: "\e015"; }
+
+.icon-user:before { content: "\e00e"; }
+
+.icon-star-3:before { content: "\e014"; }
 
 .table-container, .table-wrapper { overflow: auto; }
 

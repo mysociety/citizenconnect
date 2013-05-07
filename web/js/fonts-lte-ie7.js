@@ -1,9 +1,9 @@
-/* Use this script if you need to support IE 7 and IE 6. */
+/* Load this script using conditional IE comments if you need to support IE 7 and IE 6. */
 
 window.onload = function() {
 	function addIcon(el, entity) {
 		var html = el.innerHTML;
-		el.innerHTML = '<span class="i">' + entity + '</span>' + html;
+		el.innerHTML = '<span style="font-family: \'icons\'">' + entity + '</span>' + html;
 	}
 	var icons = {
 			'icon-search' : '&#xe000;',
@@ -19,12 +19,23 @@ window.onload = function() {
 			'icon-chevron-left' : '&#xe00a;',
 			'icon-double-chevron-left' : '&#xe00b;',
 			'icon-warning' : '&#xe00c;',
-			'icon-home' : '&#xe00d;'
+			'icon-home' : '&#xe00d;',
+			'icon-stack' : '&#xe00f;',
+			'icon-calendar' : '&#xe010;',
+			'icon-arrow-up-right' : '&#xe011;',
+			'icon-star' : '&#xe013;',
+			'icon-star-2' : '&#xe012;',
+			'icon-tag' : '&#xe015;',
+			'icon-user' : '&#xe00e;',
+			'icon-star-3' : '&#xe014;'
 		},
 		els = document.getElementsByTagName('*'),
 		i, attr, html, c, el;
-	for (i = 0; i < els.length; i += 1) {
+	for (i = 0; ; i += 1) {
 		el = els[i];
+		if(!el) {
+			break;
+		}
 		attr = el.getAttribute('data-icon');
 		if (attr) {
 			addIcon(el, attr);
