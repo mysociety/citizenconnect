@@ -6,6 +6,7 @@
      */
     function SideNavView(el) {
         this.el = el;
+        this.fixed = false;
         el.find('a').on('click', $.proxy(this.clickHandler, this));
         $(window).on('scroll', $.proxy(this.scrollSpy, this));
     }
@@ -26,11 +27,29 @@
      */
     SideNavView.prototype.scrollSpy = function() {
         if ($(window).scrollTop() >= this.topOffset()) {
-            this.el.addClass('fixed');
+            this.scrollEnter();
         } else {
-            this.el.removeClass('fixed');
+            this.scrollLeave();
         }
     };
+
+    /**
+     * Fired when the element get to the top of the document.
+     */
+    SideNavView.prototype.scrollEnter = function() {
+        if (this.fixed) { return; }
+        this.el.addClass('fixed');
+        this.fixed = true;
+    }
+
+    /**
+     * Fired when the element leaves the top of the document.
+     */
+    SideNavView.prototype.scrollLeave = function() {
+        if (!this.fixed) { return; }
+        this.el.removeClass('fixed');
+        this.fixed = false;
+    }
 
     /**
      * Get the top offset of the parent of the side nav.
