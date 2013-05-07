@@ -6,8 +6,8 @@
      */
     function SideNavView(el) {
         this.el = el;
-        el.find('a').on('click', $.proxy(this.addActiveClass, this));
-        $(window).on('scroll', $.proxy(this.checkOffset, this));
+        el.find('a').on('click', $.proxy(this.clickHandler, this));
+        $(window).on('scroll', $.proxy(this.scrollSpy, this));
     }
 
     /**
@@ -15,7 +15,7 @@
      *
      * @param {Event} e
      */
-    SideNavView.prototype.addActiveClass = function(e) {
+    SideNavView.prototype.clickHandler = function(e) {
         this.el.find('li.active').removeClass('active');
         $(e.target).closest('li').addClass('active');
     };
@@ -24,7 +24,7 @@
      * Check if the side nav has scrolled to the top of the window, if it
      * has then add .fixed class to it.
      */
-    SideNavView.prototype.checkOffset = function() {
+    SideNavView.prototype.scrollSpy = function() {
         if ($(window).scrollTop() >= this.topOffset()) {
             this.el.addClass('fixed');
         } else {
