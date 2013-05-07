@@ -29,6 +29,8 @@ class NationalSummaryTable(tables.Table):
                                           template_name="organisations/includes/percent_column.html")
     happy_outcome = tables.TemplateColumn(verbose_name='% Happy with outcome',
                                           template_name="organisations/includes/percent_column.html")
+    average_recommendation_rating = tables.TemplateColumn(verbose_name='Average recommendation rating (out of 5)',
+                                                          template_name='organisations/includes/rounded_column.html')
 
     def render_name(self, record):
         url = self.reverse_to_org_summary(record['ods_code'])

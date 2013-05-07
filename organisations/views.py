@@ -417,7 +417,8 @@ class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
         return interval_counts(
             problem_filters=problem_filters,
             organisation_filters=organisation_filters,
-            threshold=threshold
+            threshold=threshold,
+            extra_organisation_data=['average_recommendation_rating']
         )
 
 
@@ -462,7 +463,8 @@ class PrivateNationalSummary(Summary):
         return interval_counts(
             problem_filters=problem_filters,
             organisation_filters=organisation_filters,
-            threshold=threshold
+            threshold=threshold,
+            extra_organisation_data=['average_recommendation_rating']
         )
 
 
