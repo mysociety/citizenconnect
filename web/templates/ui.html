@@ -23,7 +23,7 @@
 
 
         <!--[if lte IE 7]>
-            <script type="text/javascript" src="/js/fonts-lte-ie7.js"></script>
+            <script type="text/javascript" src="/web/js/fonts-lte-ie7.js"></script>
         <![endif]-->
     </head>
 
@@ -599,7 +599,7 @@
                             </tr>
                             <tr>
                                 <td class="dashboard-table__heavy-text">P64823</td>
-                                <td>Acklam Road Surgery</td>
+                                <td><a href="http://google.co.uk" class="table-link__link">Acklam Road Surgery</a></td>
                                 <td class="dashboard-table__light-text"><em>04.03.2013</em></td>
                                 <td>Staff Attitude</td>
                                 <td>Rheumatology</td>
@@ -721,7 +721,7 @@
                             </tr>
                             <tr>
                                 <td class="dashboard-table__heavy-text dashboard-table__hightlight">P64823</td>
-                                <td>Acklam Road Surgery</td>
+                                <td><a href="http://google.com" class="table-link__link">Acklam Road Surgery</a></td>
                                 <td class="dashboard-table__light-text"><em>04.03.2013</em></td>
                                 <td>Staff Attitude</td>
                                 <td>Rheumatology</td>
@@ -761,7 +761,7 @@
                             </tr>
                             <tr>
                                 <td class="dashboard-table__heavy-text">P64823</td>
-                                <td>Acklam Road Surgery</td>
+                                <td><a href="http://example.com" class="table-link__link">Acklam Road Surgery</a></td>
                                 <td class="dashboard-table__light-text"><em>04.03.2013</em></td>
                                 <td>Staff Attitude</td>
                                 <td>Rheumatology</td>
@@ -793,5 +793,17 @@
 
             <!-- end block content -->
         </div>
+
+        <script type="text/javascript" src="/web/js/jquery-1.9.0.min.js"></script>
+        <script type="text/javascript">
+        $(function(){
+            $('.table-link__link').each(function(i){
+                var $t = $(this);
+                $t.parents('tr').on('click', function(){
+                    top.window.location = $t.prop('href');
+                }).addClass('table-link__row');
+            });
+        });
+        </script>
     </body>
 </html>

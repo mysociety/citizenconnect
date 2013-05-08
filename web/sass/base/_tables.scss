@@ -234,6 +234,7 @@ table {
     &:first-child { @include vendor(border-radius, 0 0 0 5px ); }
   }
 
+  // text styles
   .dashboard-table__danger-text {
     color: #c50e12;
     font-weight: bold;
@@ -243,8 +244,14 @@ table {
   .dashboard-table__hightlight {
     background: #c50e12;
     border-color: #c50e12 !important;
+    color: #fff;
+  }
+  a {
+    color: $c-aquablue;
+    &:hover { color: $c-aquablue-tint; }
   }
 
+  // flags
   .dashboard-table__flag {
     padding: 0 0 0 10px;
     position: relative;
@@ -285,4 +292,12 @@ table {
     td:first-child { @include vendor(border-radius, 5px 0 0 5px); }
     td:last-child { @include vendor(border-radius, 0 5px 5px 0); }
   }
+}
+
+
+
+.table-link__row:hover td {
+  background-color: #f9f9f9;
+  cursor: pointer;
+  &.dashboard-table__hightlight {background: #c50e12;}
 }
