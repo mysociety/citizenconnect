@@ -215,7 +215,7 @@
 
                 <div class="filters__dropdown-wrap  g  two-twelfths  palm-one-half">
                     <label for="filter-status">Status:</label>
-                    <div class="filters__dropdown  filters__dropdown--default">
+                    <div class="filters__dropdown  filters__dropdown--default  filters__dropdown--last">
                         <select name="filter-status" id="filter-status">
                             <option value="" selected="selected">All</option>
                             <option value="0">Open</option>
@@ -239,8 +239,8 @@
             </form>
 
 
-            <div class="table-wrapper  dashboard-table">
-                <table>
+            <div class="table-wrapper">
+                <table class="dashboard-table">
                     <thead>
                         <tr>
                             <th class="two-twelfths asc orderable sortable"><a href="#">Provider Name:</a></th>
@@ -251,10 +251,10 @@
                             <th class="two-twelfths orderable sortable"><a href="#">Average Review:</a></th>
                         </tr>
 
-                        <tr class="subhead">
+                        <tr class="dashboard-table__subhead">
                             <th></th>
-                            <th class="filter">
-                                <div class="dropdown">
+                            <th class="filters__dropdown-wrap">
+                                <div class="filters__dropdown  filters__dropdown--last">
                                     <select>
                                         <option>In the last week</option>
                                         <option>In the last 30 days</option>
@@ -266,15 +266,14 @@
                             </th>
 
 
+                            <th class="dashboard-table__split-left  orderable  sortable"><a href="#">Acknowledge</a></th>
+                            <th class="dashboard-table__split-right  orderable  sortable"><a href="#">Respond</a></th>
 
-                            <th class="split-left orderable sortable"><a href="#">Acknowledge</a></th>
-                            <th class="split-right orderable sortable"><a href="#">Respond</a></th>
+                            <th class="dashboard-table__split-left  orderable  sortable"><a href="#">Service</a></th>
+                            <th class="dashboard-table__split-right  orderable  sortable"><a href="#">Outcome</a></th>
 
-                            <th class="split-left orderable sortable"><a href="#">Service</a></th>
-                            <th class="split-right orderable sortable"><a href="#">Outcome</a></th>
-
-                            <th class="filter">
-                                <div class="dropdown">
+                            <th class="filters__dropdown-wrap">
+                                <div class="filters__dropdown  filters__dropdown--last">
                                     <select>
                                         <option>In the last week</option>
                                         <option>In the last 30 days</option>
@@ -292,148 +291,148 @@
                         <tr>
                             <td>Dr Grannell &amp; Partners</td>
                             <td>13</td>
-                            <td class="split-left">3 days</td>
-                            <td class="split-right">4 days</td>
-                            <td class="split-left">60%</td>
-                            <td class="split-right">40%</td>
+                            <td class="dashboard-table__split-left">3 days</td>
+                            <td class="dashboard-table__split-right">4 days</td>
+                            <td class="dashboard-table__split-left">60%</td>
+                            <td class="dashboard-table__split-right">40%</td>
                             <td>9</td>
                             <td class="rating">
-                                <img src="star-full@2x.png" width="19" height="17" alt="">
-                                <img src="star-full@2x.png" width="19" height="17" alt="">
-                                <img src="star-full@2x.png" width="19" height="17" alt="">
-                                <img src="star-full@2x.png" width="19" height="17" alt="">
-                                <img src="star-empty@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-full@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-full@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-full@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-full@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-empty@2x.png" width="19" height="17" alt="">
                             </td>
                         </tr>
 
 
 
-                        <tr class="breech_highlight">
+                        <tr class="dashboard-table__highlight">
                             <td>Dr Grannell &amp; Partners</td>
                             <td>13</td>
-                            <td class="split-left">3 days</td>
-                            <td class="split-right">4 days</td>
-                            <td class="split-left">60%</td>
-                            <td class="split-right">40%</td>
+                            <td class="dashboard-table__split-left">3 days</td>
+                            <td class="dashboard-table__split-right">4 days</td>
+                            <td class="dashboard-table__split-left">60%</td>
+                            <td class="dashboard-table__split-right">40%</td>
                             <td>9</td>
                             <td class="rating">
-                                <img src="star-full@2x.png" width="19" height="17" alt="">
-                                <img src="star-full@2x.png" width="19" height="17" alt="">
-                                <img src="star-full@2x.png" width="19" height="17" alt="">
-                                <img src="star-full@2x.png" width="19" height="17" alt="">
-                                <img src="star-empty@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-full@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-full@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-full@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-full@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-empty@2x.png" width="19" height="17" alt="">
                             </td>
                         </tr>
                         <tr>
                             <td>Dr Grannell &amp; Partners</td>
                             <td>13</td>
-                            <td class="split-left">3 days</td>
-                            <td class="split-right">4 days</td>
-                            <td class="split-left">60%</td>
-                            <td class="split-right">40%</td>
+                            <td class="dashboard-table__split-left">3 days</td>
+                            <td class="dashboard-table__split-right">4 days</td>
+                            <td class="dashboard-table__split-left">60%</td>
+                            <td class="dashboard-table__split-right">40%</td>
                             <td>9</td>
                             <td class="rating">
-                                <img src="star-full@2x.png" width="19" height="17" alt="">
-                                <img src="star-full@2x.png" width="19" height="17" alt="">
-                                <img src="star-full@2x.png" width="19" height="17" alt="">
-                                <img src="star-full@2x.png" width="19" height="17" alt="">
-                                <img src="star-empty@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-full@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-full@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-full@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-full@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-empty@2x.png" width="19" height="17" alt="">
                             </td>
                         </tr>
                         <tr>
                             <td>Dr Grannell &amp; Partners</td>
                             <td>13</td>
-                            <td class="split-left">3 days</td>
-                            <td class="split-right">4 days</td>
-                            <td class="split-left">60%</td>
-                            <td class="split-right">40%</td>
+                            <td class="dashboard-table__split-left">3 days</td>
+                            <td class="dashboard-table__split-right">4 days</td>
+                            <td class="dashboard-table__split-left">60%</td>
+                            <td class="dashboard-table__split-right">40%</td>
                             <td>9</td>
                             <td class="rating">
-                                <img src="star-full@2x.png" width="19" height="17" alt="">
-                                <img src="star-full@2x.png" width="19" height="17" alt="">
-                                <img src="star-empty@2x.png" width="19" height="17" alt="">
-                                <img src="star-empty@2x.png" width="19" height="17" alt="">
-                                <img src="star-empty@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-full@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-full@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-empty@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-empty@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-empty@2x.png" width="19" height="17" alt="">
                             </td>
                         </tr>
                         <tr>
                             <td>Dr Grannell &amp; Partners</td>
                             <td>13</td>
-                            <td class="split-left">3 days</td>
-                            <td class="split-right">4 days</td>
-                            <td class="split-left">60%</td>
-                            <td class="split-right">40%</td>
+                            <td class="dashboard-table__split-left">3 days</td>
+                            <td class="dashboard-table__split-right">4 days</td>
+                            <td class="dashboard-table__split-left">60%</td>
+                            <td class="dashboard-table__split-right">40%</td>
                             <td>9</td>
                             <td class="rating">
-                                <img src="star-full@2x.png" width="19" height="17" alt="">
-                                <img src="star-full@2x.png" width="19" height="17" alt="">
-                                <img src="star-full@2x.png" width="19" height="17" alt="">
-                                <img src="star-empty@2x.png" width="19" height="17" alt="">
-                                <img src="star-empty@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-full@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-full@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-full@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-empty@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-empty@2x.png" width="19" height="17" alt="">
                             </td>
                         </tr>
                         <tr>
                             <td>Dr Grannell &amp; Partners</td>
                             <td>13</td>
-                            <td class="split-left">3 days</td>
-                            <td class="split-right">4 days</td>
-                            <td class="split-left">60%</td>
-                            <td class="split-right">40%</td>
+                            <td class="dashboard-table__split-left">3 days</td>
+                            <td class="dashboard-table__split-right">4 days</td>
+                            <td class="dashboard-table__split-left">60%</td>
+                            <td class="dashboard-table__split-right">40%</td>
                             <td>9</td>
                             <td class="rating">
-                                <img src="star-full@2x.png" width="19" height="17" alt="">
-                                <img src="star-empty@2x.png" width="19" height="17" alt="">
-                                <img src="star-empty@2x.png" width="19" height="17" alt="">
-                                <img src="star-empty@2x.png" width="19" height="17" alt="">
-                                <img src="star-empty@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-full@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-empty@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-empty@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-empty@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-empty@2x.png" width="19" height="17" alt="">
                             </td>
                         </tr>
                         <tr>
                             <td>Dr Grannell &amp; Partners</td>
                             <td>13</td>
-                            <td class="split-left">3 days</td>
-                            <td class="split-right">4 days</td>
-                            <td class="split-left">60%</td>
-                            <td class="split-right">40%</td>
+                            <td class="dashboard-table__split-left">3 days</td>
+                            <td class="dashboard-table__split-right">4 days</td>
+                            <td class="dashboard-table__split-left">60%</td>
+                            <td class="dashboard-table__split-right">40%</td>
                             <td>9</td>
                             <td class="rating">
-                                <img src="star-full@2x.png" width="19" height="17" alt="">
-                                <img src="star-full@2x.png" width="19" height="17" alt="">
-                                <img src="star-full@2x.png" width="19" height="17" alt="">
-                                <img src="star-empty@2x.png" width="19" height="17" alt="">
-                                <img src="star-empty@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-full@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-full@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-full@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-empty@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-empty@2x.png" width="19" height="17" alt="">
                             </td>
                         </tr>
                         <tr>
                             <td>Dr Grannell &amp; Partners</td>
                             <td>13</td>
-                            <td class="split-left">3 days</td>
-                            <td class="split-right">4 days</td>
-                            <td class="split-left">60%</td>
-                            <td class="split-right">40%</td>
+                            <td class="dashboard-table__split-left">3 days</td>
+                            <td class="dashboard-table__split-right">4 days</td>
+                            <td class="dashboard-table__split-left">60%</td>
+                            <td class="dashboard-table__split-right">40%</td>
                             <td>9</td>
                             <td class="rating">
-                                <img src="star-full@2x.png" width="19" height="17" alt="">
-                                <img src="star-full@2x.png" width="19" height="17" alt="">
-                                <img src="star-full@2x.png" width="19" height="17" alt="">
-                                <img src="star-full@2x.png" width="19" height="17" alt="">
-                                <img src="star-empty@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-full@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-full@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-full@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-full@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-empty@2x.png" width="19" height="17" alt="">
                             </td>
                         </tr>
                         <tr>
                             <td>Dr Grannell &amp; Partners</td>
                             <td>13</td>
-                            <td class="split-left">3 days</td>
-                            <td class="split-right">4 days</td>
-                            <td class="split-left">60%</td>
-                            <td class="split-right">40%</td>
+                            <td class="dashboard-table__split-left">3 days</td>
+                            <td class="dashboard-table__split-right">4 days</td>
+                            <td class="dashboard-table__split-left">60%</td>
+                            <td class="dashboard-table__split-right">40%</td>
                             <td>9</td>
                             <td class="rating">
-                                <img src="star-full@2x.png" width="19" height="17" alt="">
-                                <img src="star-full@2x.png" width="19" height="17" alt="">
-                                <img src="star-empty@2x.png" width="19" height="17" alt="">
-                                <img src="star-empty@2x.png" width="19" height="17" alt="">
-                                <img src="star-empty@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-full@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-full@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-empty@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-empty@2x.png" width="19" height="17" alt="">
+                                <img src="/web/img/star-empty@2x.png" width="19" height="17" alt="">
                             </td>
                         </tr>
 
