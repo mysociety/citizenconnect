@@ -989,6 +989,8 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 /** Markup specific to the about page */
 .step-title { color: #5bbf21; }
 
+.about-section { padding-top: 5px; }
+
 /* ========================================================================== Print styles. Inlined to avoid required HTTP connection: h5bp.com/r ========================================================================== */
 @media print { * { background: transparent !important; color: black !important; /* Black prints faster: h5bp.com/s */ box-shadow: none !important; text-shadow: none !important; }
   a, a:visited { text-decoration: underline; }
