@@ -234,8 +234,6 @@ table {
     &:first-child { @include vendor(border-radius, 0 0 0 5px ); }
   }
 
-
-
   .dashboard-table__light-text { color: #999999; }
   .dashboard-table__heavy-text { font-weight: bold; }
   .dashboard-table__hightlight { background: #c50e12; }
@@ -264,4 +262,20 @@ table {
       background: #000;
       bottom: 0;
     }
+}
+
+/**
+ * To be used with .dashboard-table, this has expanded rows
+ */
+.dashboard-table--expanded {
+  border-spacing: 0 20px;
+
+  // hide spacer if its there now we're border-spacing
+  .dashboard-table__spacer { display: none; }
+
+  td { border-top: 1px solid #e6e6e6; }
+  tr, tr:first-child, tr:last-child {
+    td:first-child { @include vendor(border-radius, 5px 0 0 5px); }
+    td:last-child { @include vendor(border-radius, 0 5px 5px 0); }
+  }
 }
