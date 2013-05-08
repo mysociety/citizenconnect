@@ -1,4 +1,4 @@
-;(function(jQuery, window) {
+;(function($, window) {
     /**
      * SideNavView fixes the sidebar to the top of the window when scrolling.
      *
@@ -40,7 +40,7 @@
         if (this.fixed) { return; }
         this.el.addClass('fixed');
         this.fixed = true;
-    }
+    };
 
     /**
      * Fired when the element leaves the top of the document.
@@ -49,7 +49,7 @@
         if (!this.fixed) { return; }
         this.el.removeClass('fixed');
         this.fixed = false;
-    }
+    };
 
     /**
      * Get the top offset of the parent of the side nav.
