@@ -427,6 +427,7 @@ you can use the generic selector below, but it's slower:
 
 .table-container, .table-wrapper { overflow: auto; }
 
+/** Standard table styles */
 table { width: 100%; margin-bottom: 2.5em; }
 @media only screen and (max-width: 480px) { table { width: 60em; } }
 table tr.table__heading { font-weight: bold; }
@@ -459,6 +460,55 @@ table .icon-warning { font-size: 1.375em; color: #d81e05; }
 
 .organisation-problems .problem-table tr.highlight { background-color: #fda397; }
 
+/** A square table with options for split cols and highlights */
+.summary-table { border-bottom: 2px solid #bbb; }
+.summary-table th { font-weight: bold; border-left: 2px solid #bbb; border-right: 2px solid #bbb; border-top: 2px solid #bbb; padding: 0; }
+.summary-table th a { display: block; padding: 1em 0.5em; }
+.summary-table .summary-table__subhead th { font-weight: normal; padding: 0.5em 0; background-color: #e6e6e6; }
+.summary-table .summary-table__subhead th a { display: block; padding: 0 0.5em; }
+.summary-table td { border-left: 2px solid #bbb; border-right: 2px solid #bbb; }
+.summary-table .summary-table__split-left { border-right: 1px solid #e6e6e6; }
+.summary-table .summary-table__split-right { border-left: 1px solid #e6e6e6; }
+.summary-table tbody tr:nth-of-type(even) td { background: #f2f2f2; }
+.summary-table tbody tr.summary-table__highlight td { background-color: #ff4554; color: #fff; font-weight: bold; border-color: #c52430; }
+.summary-table .filters__dropdown { margin: -0.5em 0; }
+
+/** A rounded table with options for expanded rows, flags and highlights */
+.dashboard-table { border-collapse: separate; border-spacing: 0; }
+.dashboard-table td, .dashboard-table th { text-align: left; padding: 10px; }
+.dashboard-table td.align-center, .dashboard-table th.align-center { text-align: center; }
+.dashboard-table th { border: 0; }
+.dashboard-table .dashboard-table__head th { font-weight: bold; padding: 0 10px; }
+.dashboard-table .dashboard-table__subhead th { border-bottom: 3px solid #e6e6e6; text-align: center; color: #999999; font-size: 0.6875em; padding: 5px 10px; }
+.dashboard-table td { border-bottom: 1px solid #e6e6e6; }
+.dashboard-table td:first-child { border-left: 1px solid #e6e6e6; }
+.dashboard-table td:last-child { border-right: 1px solid #e6e6e6; }
+.dashboard-table tr:first-child td { border-top: 1px solid #e6e6e6; }
+.dashboard-table tr:first-child td:first-child { -webkit-border-radius: 5px 0 0 0; -moz-border-radius: 5px 0 0 0; -ms-border-radius: 5px 0 0 0; -o-border-radius: 5px 0 0 0; border-radius: 5px 0 0 0; }
+.dashboard-table tr:first-child td:last-child { -webkit-border-radius: 0 5px 0 0; -moz-border-radius: 0 5px 0 0; -ms-border-radius: 0 5px 0 0; -o-border-radius: 0 5px 0 0; border-radius: 0 5px 0 0; }
+.dashboard-table tr:last-child td:last-child { -webkit-border-radius: 0 0 5px 0; -moz-border-radius: 0 0 5px 0; -ms-border-radius: 0 0 5px 0; -o-border-radius: 0 0 5px 0; border-radius: 0 0 5px 0; }
+.dashboard-table tr:last-child td:first-child { -webkit-border-radius: 0 0 0 5px; -moz-border-radius: 0 0 0 5px; -ms-border-radius: 0 0 0 5px; -o-border-radius: 0 0 0 5px; border-radius: 0 0 0 5px; }
+.dashboard-table .dashboard-table__danger-text { color: #c50e12; font-weight: bold; }
+.dashboard-table .dashboard-table__light-text { color: #999999; }
+.dashboard-table .dashboard-table__heavy-text { font-weight: bold; }
+.dashboard-table .dashboard-table__hightlight { background: #c50e12; border-color: #c50e12 !important; color: #fff; }
+.dashboard-table a { color: #2f9aa8; }
+.dashboard-table a:hover { color: #27808c; }
+.dashboard-table .dashboard-table__flag { padding: 0 0 0 10px; position: relative; overflow: hidden; width: 25px; }
+.dashboard-table div { position: absolute; width: 100%; right: 0; text-transform: uppercase; color: #fff; text-align: center; padding-top: 5px; height: 28px; }
+.dashboard-table .dashboard-table__flag__breach { background: #ff8b00; top: 0; }
+.dashboard-table .dashboard-table__flag__escalate { background: #000; bottom: 0; }
+
+/** To be used with .dashboard-table, this has expanded rows */
+.dashboard-table--expanded { border-spacing: 0 20px; }
+.dashboard-table--expanded .dashboard-table__spacer { display: none; }
+.dashboard-table--expanded td { border-top: 1px solid #e6e6e6; }
+.dashboard-table--expanded tr td:first-child, .dashboard-table--expanded tr:first-child td:first-child, .dashboard-table--expanded tr:last-child td:first-child { -webkit-border-radius: 5px 0 0 5px; -moz-border-radius: 5px 0 0 5px; -ms-border-radius: 5px 0 0 5px; -o-border-radius: 5px 0 0 5px; border-radius: 5px 0 0 5px; }
+.dashboard-table--expanded tr td:last-child, .dashboard-table--expanded tr:first-child td:last-child, .dashboard-table--expanded tr:last-child td:last-child { -webkit-border-radius: 0 5px 5px 0; -moz-border-radius: 0 5px 5px 0; -ms-border-radius: 0 5px 5px 0; -o-border-radius: 0 5px 5px 0; border-radius: 0 5px 5px 0; }
+
+.table-link__row:hover td { background-color: #f9f9f9; cursor: pointer; }
+.table-link__row:hover td.dashboard-table__hightlight { background: #c50e12; }
+
 /*------------------------------------*\ $GRIDS
 \*------------------------------------*/
 /** From inuit.css (https://github.com/csswizardry/inuit.css/)  Fluid and nestable grid system, e.g.:  <div class=gw>
@@ -482,6 +532,10 @@ table .icon-warning { font-size: 1.375em; color: #d81e05; }
 
 /** Grid  Shorthand and verbose */
 .g, .radio-list li, .grid, .stats-number, .stats-text { float: left; padding-left: 20px; }
+
+/** Gutterless grid - should extend `.gw` */
+.gw--no-gutters, .grid-wrapper--no-gutters { margin-left: 0; }
+.gw--no-gutters .g, .gw--no-gutters .radio-list li, .radio-list .gw--no-gutters li, .gw--no-gutters .grid, .gw--no-gutters .stats-number, .gw--no-gutters .stats-text, .grid-wrapper--no-gutters .g, .grid-wrapper--no-gutters .radio-list li, .radio-list .grid-wrapper--no-gutters li, .grid-wrapper--no-gutters .grid, .grid-wrapper--no-gutters .stats-number, .grid-wrapper--no-gutters .stats-text { padding-left: 0; }
 
 /*------------------------------------*\ Island
 \*------------------------------------*/
@@ -823,12 +877,21 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .header h1, .header h2, .header h3, .header h4, .header h5, .header h6 { line-height: 1.1; margin: 0 0 0.25em 0; }
 .header .header__pre-heading { font-size: 1.25em; font-weight: normal; color: #aaaaaa; margin-bottom: 0; }
 
-/** Mainly used on summary pages, this is just some borders and margin/padding tweaks for a horizontal filter form made using the grid. */
-.filters { border-top: #dddddd solid 0.25em; border-bottom: #dddddd solid 0.25em; padding: 0.625em 0; margin: 2.5em 0; }
+/** Filter bar with styled select elements */
+.filters { margin-top: 2.5em; margin-bottom: 2.5em; }
 .filters p { margin: 0; font-size: 1.25em; }
 
-.current-filter { display: inline-block; -webkit-border-radius: 0.41667em; -moz-border-radius: 0.41667em; -ms-border-radius: 0.41667em; -o-border-radius: 0.41667em; border-radius: 0.41667em; background-color: #2f9aa8; color: white; padding: 0.25em 0.41667em 0.25em 0.625em; font-size: 0.875em; }
-.current-filter a { text-decoration: none; color: white; }
+.filters__dropdown-wrap label { font-weight: normal; font-size: 0.75em; color: #666; margin-bottom: 0; }
+.filters__dropdown-wrap .filters__dropdown { border-right: 2px solid #fff; background: #2f9aa8 url(../img/select_arrow.png) 95% center no-repeat; font-weight: bold; -webkit-text-overflow: ellipsis; -moz-text-overflow: ellipsis; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; }
+.filters__dropdown-wrap .filters__dropdown select { color: #fff; }
+.filters__dropdown-wrap .filters__dropdown select:focus { color: #fff; }
+.filters__dropdown-wrap .filters__dropdown--last { border-right: 0; }
+.filters__dropdown-wrap .filters__dropdown--default { background-color: #e6e6e6; background-image: url(../img/select_arrow-default.png); font-weight: normal; }
+.filters__dropdown-wrap .filters__dropdown--default select { color: #333; }
+.filters__dropdown-wrap .filters__dropdown--default select:focus { color: #333; }
+.filters__dropdown-wrap select { background-color: transparent; -webkit-appearance: none; -moz-appearance: window; appearance: none; border: none; width: 100%; padding: 1em 2.5em 1em 0.5em; margin: 0; font-size: 0.8125em; -webkit-border-radius: 0; -moz-border-radius: 0; -ms-border-radius: 0; -o-border-radius: 0; border-radius: 0; }
+
+.filters__button { padding: 0.7em 1.5em; margin: 1.15em 0 0.5em 20px; }
 
 .pagination { list-style: none; padding: 0; width: 100%; text-align: center; }
 .pagination li { display: inline-block; *display: inline; *zoom: 1; margin: 0 0.125em; }
@@ -1005,8 +1068,3 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
   @page { margin: 0.5cm; }
   p, h2, h3 { orphans: 3; widows: 3; }
   h2, h3 { page-break-after: avoid; } }
-.header { border-bottom: #dddddd solid 0.25em; margin-bottom: 1.25em; }
-.header h1, .header h2 { margin-bottom: 0.25em; }
-
-.filters { border-top: #dddddd solid 0.25em; border-bottom: #dddddd solid 0.25em; padding: 0.625em 0; margin: 2.5em 0; }
-.filters p { margin: 0; font-size: 1.25em; }
