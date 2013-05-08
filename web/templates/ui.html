@@ -46,14 +46,15 @@
 
             <!-- block content -->
 
-            <h1>UI Page</h1>
+            <div class="header">
+                <h1>UI Page</h1>
+            </div>
 
+            <form class="filters  gw  gw--no-gutters">
 
-            <form class="filters gw">
-
-                <div class="filter g  two-twelfths  palm-one-half">
+                <div class="filters__dropdown-wrap  g  two-twelfths  palm-one-half">
                     <label for="filter-org_type">Organisation Type:</label>
-                    <div class="dropdown default">
+                    <div class="filters__dropdown  filters__dropdown--default">
                         <select name="filter-org_type" id="filter-org_type">
                             <option value="" selected>All</option>
                             <option value="1">GP</option>
@@ -62,9 +63,9 @@
                     </div>
                 </div>
 
-                <div class="filter g  two-twelfths  palm-one-half">
+                <div class="filters__dropdown-wrap  g  two-twelfths  palm-one-half">
                     <label for="filter-department">Department:</label>
-                    <div class="dropdown default">
+                    <div class="filters__dropdown">
                         <select name="filter-department" id="filter-department">
                             <option value="" selected>All</option>
                             <option value="79">2WW</option>
@@ -190,9 +191,9 @@
                     </div>
                 </div>
 
-                <div class="filter g  two-twelfths  palm-one-half">
+                <div class="filters__dropdown-wrap  g  two-twelfths  palm-one-half">
                     <label for="filter-category">Category</label>
-                    <div class="dropdown default">
+                    <div class="filters__dropdown  filters__dropdown--default">
                         <select name="filter-category" id="filter-category">
                             <option value="" selected="selected">All</option>
                             <option value="staff">Staff Attitude</option>
@@ -212,9 +213,9 @@
                     </div>
                 </div>
 
-                <div class="filter g  two-twelfths  palm-one-half">
+                <div class="filters__dropdown-wrap  g  two-twelfths  palm-one-half">
                     <label for="filter-status">Status:</label>
-                    <div class="dropdown default">
+                    <div class="filters__dropdown  filters__dropdown--default">
                         <select name="filter-status" id="filter-status">
                             <option value="" selected="selected">All</option>
                             <option value="0">Open</option>
@@ -229,11 +230,10 @@
                             <option value="9">Escalated - Resolved</option>
                         </select>
                     </div>
-
                 </div>
 
-                <div class="filter submit g  two-twelfths  palm-one-half">
-                    <input type="submit" value="Filter" class="btn palm-one-whole">
+                <div class="g  two-twelfths  palm-one-half">
+                    <input type="submit" value="Filter" class="btn  filters__button  palm-one-whole">
                 </div>
 
             </form>
