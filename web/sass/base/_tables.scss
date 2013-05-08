@@ -237,28 +237,31 @@ table {
 
 
   .dashboard-table__light-text { color: #999999; }
+  .dashboard-table__heavy-text { font-weight: bold; }
   .dashboard-table__hightlight { background: #c50e12; }
 
   .dashboard-table__flag {
     padding: 0 0 0 10px;
     position: relative;
+    overflow: hidden;
+    width: 25px;
   }
     div {
       position: absolute;
-      width: 20px;
+      width: 100%;
       right: 0;
       text-transform: uppercase;
       color: #fff;
       text-align: center;
+      padding-top: 5px;
+      height: 28px;
     }
     .dashboard-table__flag__breach {
       background: #ff8b00;
       top: 0;
-      bottom: 50%;
     }
     .dashboard-table__flag__escalate {
       background: #000;
-      top: 50%;
       bottom: 0;
     }
 }
