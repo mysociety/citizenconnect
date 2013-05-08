@@ -19,8 +19,7 @@
     }
     .filters__dropdown {
       border-right: 2px solid #fff;
-
-      background: #2f9aa8 url(../img/select_arrow.png) 95% center no-repeat;
+      background: $c-aquablue url(../img/select_arrow.png) 95% center no-repeat;
       font-weight: bold;
       @include vendor(text-overflow, ellipsis);
       select {
