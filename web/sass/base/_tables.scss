@@ -234,9 +234,16 @@ table {
     &:first-child { @include vendor(border-radius, 0 0 0 5px ); }
   }
 
+  .dashboard-table__danger-text {
+    color: #c50e12;
+    font-weight: bold;
+  }
   .dashboard-table__light-text { color: #999999; }
   .dashboard-table__heavy-text { font-weight: bold; }
-  .dashboard-table__hightlight { background: #c50e12; }
+  .dashboard-table__hightlight {
+    background: #c50e12;
+    border-color: #c50e12 !important;
+  }
 
   .dashboard-table__flag {
     padding: 0 0 0 10px;
