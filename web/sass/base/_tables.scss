@@ -136,15 +136,11 @@ table {
  * A square table with options for split cols and highlights
  */
 .summary-table {
-  border-bottom: 2px solid #bbb;
-
   // standard headings
   th {
     font-weight: bold;
-    border-left: 2px solid #bbb;
-    border-right: 2px solid #bbb;
-    border-top: 2px solid #bbb;
     padding: 0;
+    border-bottom: 0;
     a {
       display: block;
       padding: 1em 0.5em;
@@ -164,13 +160,13 @@ table {
 
   // standard cell
   td {
-    border-left: 2px solid #bbb;
-    border-right: 2px solid #bbb;
+    border-left: 1px solid $c-table-border;
+    &:first-child { border-left: 0; }
   }
+  tr:last-child td { border-bottom: 0; }
 
   // used for cells in double column
-  .summary-table__split-left { border-right: 1px solid #e6e6e6; }
-  .summary-table__split-right { border-left: 1px solid #e6e6e6; }
+  .summary-table__cell-no-border { border-left: 0; }
 
   // colour every other row
   tbody tr:nth-of-type(even) td { background: #f2f2f2; }
@@ -181,6 +177,8 @@ table {
     color: #fff;
     font-weight: bold;
     border-color: #c52430;
+    border-top: 2px solid #c52430;
+    border-bottom: 2px solid #c52430;
   }
 
   // pull full height any filters
