@@ -430,8 +430,8 @@ you can use the generic selector below, but it's slower:
 /** Standard table styles */
 table { width: 100%; margin-bottom: 2.5em; }
 @media only screen and (max-width: 480px) { table { width: 60em; } }
-table tr.table__heading { font-weight: bold; }
-table tr.table__footer td { border-bottom: #dddddd solid 2px; }
+table tr.table__heading, table tr.table__heading * { font-weight: bold; }
+table tr.table__footer td { border-bottom: #dddddd solid 3px; }
 table td.table__first, table th.table__first { padding-left: 0; text-align: left; }
 table td.table__last, table th.table__last { padding-right: 0; }
 table td { font-size: 0.75em; text-align: center; border-bottom: #dddddd solid 1px; padding: 10px 0; }
@@ -440,18 +440,18 @@ table td a:hover { color: #333333; }
 table td.table__label { text-align: left; }
 table td.created, table td.resolved { color: #aaaaaa; }
 table td.happy_service, table td.happy_outcome, table td.time_to_acknowledge, table td.time_to_address, table td.breach { vertical-align: middle; text-align: center; }
-table th { font-size: 0.75em; font-weight: normal; padding: 20px 10px; border-bottom: #dddddd solid 2px; }
+table th { font-size: 0.75em; font-weight: normal; padding: 20px 10px; border-bottom: #dddddd solid 3px; }
 table th.table__title { font-weight: bold; text-align: left; padding-left: 0; font-size: 1.3125em; }
 table th a { color: #333333; text-decoration: none; }
 table th a:hover { color: #2f9aa8; }
 table th.sortable a:after { margin-left: 0.5em; content: "\e005"; }
 table th.asc a, table th.desc a { color: #2f9aa8; }
 table th.asc a:after { content: "\e004"; }
-table .icon-x { font-size: 1.375em; color: #d81e05; }
-table .icon-checkmark { font-size: 1.375em; color: #009e49; }
-table .icon-circle { font-size: 1.375em; color: #aaaaaa; }
-table .icon-hidden { color: white; }
-table .icon-warning { font-size: 1.375em; color: #d81e05; }
+table .icon-x { font-size: 1.375em; color: #d81e05; line-height: 0; }
+table .icon-checkmark { font-size: 1.375em; color: #009e49; line-height: 0; }
+table .icon-circle { font-size: 1.375em; color: #aaaaaa; line-height: 0; }
+table .icon-hidden { color: white; line-height: 0; }
+table .icon-warning { font-size: 1.375em; color: #d81e05; line-height: 0; }
 
 /** Public Problem table */
 .problem-table th, .problem-table td { vertical-align: top; text-align: left; padding-left: 10px; padding-right: 10px; }

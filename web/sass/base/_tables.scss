@@ -13,8 +13,12 @@ table {
   // force table to be 960px wide on mobile, as inside the table-wrapper
   @include media-query(palm){ width: $page-width-max + em; }
   tr {
-    &.table__heading { font-weight: bold; }
-    &.table__footer td { border-bottom: $c-table-border solid 2px; }
+    &.table__heading {
+      &, *, {
+        font-weight: bold;
+      }
+    }
+    &.table__footer td { border-bottom: $c-table-border solid 3px; }
   }
   td, th {
     &.table__first {
@@ -53,7 +57,7 @@ table {
     font-size: (12px / $font-size-base) + em;
     font-weight: normal;
     padding: 20px 10px;
-    border-bottom: $c-table-border solid 2px;
+    border-bottom: $c-table-border solid 3px;
     &.table__title {
       font-weight: bold;
       text-align: left;
@@ -79,21 +83,26 @@ table {
   .icon-x {
     font-size: (22px / $font-size-base) + em;
     color: $c-table-icon-x-color;
+    line-height: 0;
   }
   .icon-checkmark {
     font-size: (22px / $font-size-base) + em;
     color: $c-table-icon-checkmark-color;
+    line-height: 0;
   }
   .icon-circle {
     font-size: (22px / $font-size-base) + em;
     color: $c-table-icon-circle-color;
+    line-height: 0;
   }
   .icon-hidden{
     color: $c-table-icon-hidden-color;
+    line-height: 0;
   }
   .icon-warning {
     font-size: (22px / $font-size-base) + em;
     color: $c-table-icon-warning-color;
+    line-height: 0;
   }
 
 }
