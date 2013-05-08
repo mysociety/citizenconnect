@@ -28,6 +28,7 @@
         &:focus { color: #fff; }
       }
     }
+    .filters__dropdown--last { border-right: 0; }
     .filters__dropdown--default {
       background-color: #e6e6e6;
       background-image: url(../img/select_arrow-default.png);
