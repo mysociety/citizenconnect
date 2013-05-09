@@ -371,6 +371,7 @@ label.disabled, .label.disabled { -ms-filter: "progid:DXImageTransform.Microsoft
 /** Problem form */
 .problem-form .description-count { color: #5bbf21; }
 .problem-form .description-count.error { color: #d81e05; }
+.problem-form .label-checkbox { font-weight: normal; }
 .problem-form .island-list li { margin-bottom: 30px; }
 .problem-form .steps-list { list-style: none; }
 .problem-form .steps-list li { padding: 15px 0; border-bottom: 1px solid #999999; }

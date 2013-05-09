@@ -45,7 +45,7 @@
     <fieldset class="island">
         <label for="id_service" class="island-label">Your problem</label>
 
-        <label for="id_relates_to_previous_problem">{{ form.relates_to_previous_problem }} Does your problem relate to a previous problem?</label>
+        <label for="id_relates_to_previous_problem" class="label-checkbox">{{ form.relates_to_previous_problem }} Does your problem relate to a previous problem?</label>
         {% include "message_list.html" with messages=form.relates_to_previous_problem.errors message_type='error' %}
 
         <ul class="gw">
