@@ -225,6 +225,12 @@ class ProblemAPITests(TestCase):
         errors = json.loads(content_json['errors'])
         self.assertEqual(errors['source'][0],  u"Value u'telepathy' is not a valid choice.")
 
+    def test_priority_is_optional(self):
+        problem_without_priority = self.test_problem
+        del problem_without_priority['priority']
+        resp = self.client.post(self.problem_api_url, problem_without_priority)
+        self.assertEquals(resp.status_code, 201)
+
     def test_priority_checks_category_is_permitted(self):
         problem_with_invalid_category = self.test_problem
         problem_with_invalid_category['category'] = 'parking'
