@@ -490,7 +490,7 @@ table .icon-warning { font-size: 1.375em; color: #d81e05; line-height: 0; }
 .summary-table tr:last-child td { border-bottom: 0; }
 .summary-table .summary-table__cell-no-border { border-left: 0; }
 .summary-table tbody tr:nth-of-type(even) td { background: #f2f2f2; }
-.summary-table tbody tr.summary-table__highlight td { background-color: #ff4554; color: #fff; font-weight: bold; border-color: #c52430; border-top: 2px solid #c52430; border-bottom: 2px solid #c52430; }
+.summary-table tbody tr.summary-table__highlight td { background-color: #d81e05; color: #fff; font-weight: bold; border-color: #931638; border-top: 2px solid #931638; border-bottom: 2px solid #931638; }
 .summary-table .filters__dropdown { margin: -0.5em 0; }
 
 /** A rounded table with options for expanded rows, flags and highlights */
@@ -508,10 +508,10 @@ table .icon-warning { font-size: 1.375em; color: #d81e05; line-height: 0; }
 .dashboard-table tr:first-child td:last-child { -webkit-border-radius: 0 5px 0 0; -moz-border-radius: 0 5px 0 0; -ms-border-radius: 0 5px 0 0; -o-border-radius: 0 5px 0 0; border-radius: 0 5px 0 0; }
 .dashboard-table tr:last-child td:last-child { -webkit-border-radius: 0 0 5px 0; -moz-border-radius: 0 0 5px 0; -ms-border-radius: 0 0 5px 0; -o-border-radius: 0 0 5px 0; border-radius: 0 0 5px 0; }
 .dashboard-table tr:last-child td:first-child { -webkit-border-radius: 0 0 0 5px; -moz-border-radius: 0 0 0 5px; -ms-border-radius: 0 0 0 5px; -o-border-radius: 0 0 0 5px; border-radius: 0 0 0 5px; }
-.dashboard-table .dashboard-table__danger-text { color: #c50e12; font-weight: bold; }
+.dashboard-table .dashboard-table__danger-text { color: #d81e05; font-weight: bold; }
 .dashboard-table .dashboard-table__light-text { color: #999999; }
 .dashboard-table .dashboard-table__heavy-text { font-weight: bold; }
-.dashboard-table .dashboard-table__hightlight { background: #c50e12; border-color: #c50e12 !important; color: #fff; }
+.dashboard-table .dashboard-table__hightlight { background: #d81e05; border-color: #d81e05 !important; color: #fff; }
 .dashboard-table a { color: #2f9aa8; }
 .dashboard-table a:hover { color: #27808c; }
 .dashboard-table .dashboard-table__flag { padding: 0 0 0 10px; position: relative; overflow: hidden; width: 25px; }
@@ -1105,6 +1105,18 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 </div>  */
 .rating span { color: #f7e214; font-size: 18px; text-align: center; font-weight: normal; display: inline-block; *display: inline; *zoom: 1; margin: 0 1px; }
 .rating span.rating__grey { color: #aaaaaa; }
+
+/** Alerts - see moderator pages */
+.alert { font-size: 0.875em; font-weight: bold; text-align: center; text-transform: uppercase; margin: 0 0 20px 0; color: #fff; background: #333; padding: 0.5em 0.75em; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
+.alert span { font-weight: normal; display: inline-block; *display: inline; *zoom: 1; margin-right: 0.75em; }
+
+.alert--sml { font-size: 0.6875em; }
+
+.alert--lrg { font-size: 1.5625em; }
+
+.alert--orange { background: #e28c05; }
+
+.alert--red { background: #d81e05; }
 
 /* ========================================================================== Print styles. Inlined to avoid required HTTP connection: h5bp.com/r ========================================================================== */
 @media print { * { background: transparent !important; color: #000 !important; /* Black prints faster: h5bp.com/s */ box-shadow: none !important; text-shadow: none !important; }
