@@ -27,7 +27,8 @@ window.onload = function() {
 			'icon-star-2' : '&#xe012;',
 			'icon-tag' : '&#xe015;',
 			'icon-user' : '&#xe00e;',
-			'icon-star-3' : '&#xe014;'
+			'icon-star-3' : '&#xe014;',
+			'icon-eye' : '&#xe016;'
 		},
 		els = document.getElementsByTagName('*'),
 		i, attr, html, c, el;
