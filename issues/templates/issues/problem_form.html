@@ -182,33 +182,15 @@
     <fieldset class="island">
         <label class="island-label">What happens next?</label>
         <div class="gw">
-            <div class="g  one-third">
+            <div class="g  one-quarter">
                 <img src="{% static 'img/problem-progress.png' %}" alt="Problem progress steps" />
             </div>
-            <div class="g  two-thirds">
-                <p>All problems posted through this website are highlighted on our live maps. When you submit your problem here, it will be flagged on a marker representing the NHS service you have selected. If you wish, you can publish the content of your issue online, either anonymously, or with your name.</p>
-
-                <p>Publishing your issue details publicly will make it easier for you to find it and follow its status. It will also help other people too, especially if they are experiencing similar problems to you.</p>
-
-                <p>The contact details you have provided will never be published and we only allow the service you have selected above to contact you to resolve the problem.</p>
-
-                <p>All problems marked both private and public are:</p>
-                <ul>
-                    <li>Instantly sent to the relevant provider</li>
-                    <li>Flagged on the live dashboard next to the relevant organisation - identifiable only by the category given and are automatically marked with the status &lsquo;open&rsquo;</li>
-                </ul>
-                <p>All problems marked public are:</p>
-                <ul>
-                    <li>Passed to the case handling team to be moderated (<a href="{% url 'about' cobrand=cobrand.name %}">See the moderation rules</a>)</li>
-                    <li>If your problem passes moderation it will published on the website in the section marked xxx on the relevant organisation’s dashboard. ( this can take up to 24 hours)</li>
-                    <li>Your name will be published on the website next to the problem only is you tick the box to allow this.</li>
-                </ul>
-                <p>If you are still not sure about which privacy option below to select, please do nothing - the default option is for everything to be private.</p>
-                <p>Problem resolution</p>
-                <ul>
-                    <li>The organisation will contact you using your preferred method of communication to find a suitable resolution. The organisation may at this point change the status of the problem to &lsquo;in progress&rsquo;</li>
-                    <li>Once a resolution has been achieved the organisation will remove the flag on the live map. The details of the case will be visible in on the organisation's dashboard with the status &lsquo;resolved&rsquo; applied.</li>
-                    <li>You will receive a short questionnaire by email a few weeks after posting your problem to find out how satisfied you were with both the outcome and the service.</li>
+            <div class="g  three-quarters">
+                <ul class="steps-list">
+                    <li>The NHS Service provider receives details of your problem. The case appears on the live map with its current status.</li>
+                    <li>The NHS Service provider contacts you to discuss how your problem can be resolved. You should get a response in X working days.</li>
+                    <li>The NHS service provider carries out what you have agreed should happen. If uou are not satisfied with the response you receive, or you do not get a response at all you can re-log your problem.</li>
+                    <li>We send you a short questionnaire to say whether you were happy with the solution to your problem.</li>
                 </ul>
             </div>
         </div>
@@ -217,15 +199,14 @@
 
     <fieldset class="island">
         <ul class="gw">
-            <li class="g  one-whole">
+            <li class="g  two-halfs">
                 <label for="id_agree_to_terms">{{ form.agree_to_terms }} I have read and agree to the <a href="{% url 'about' cobrand=cobrand.name %}">Terms and Conditions</a></label>
                 {% include "message_list.html" with messages=form.agree_to_terms.errors message_type='error' %}
             </li>
+            <li class="g  one-half">
+                <button class="btn  fr" type="submit">Submit</button>
+            </li>
         </ul>
-    </fieldset>
-
-    <fieldset>
-        <button class="btn  fr" type="submit">Submit</button>
     </fieldset>
 </form>
 {% endblock content %}
