@@ -6,9 +6,12 @@
      */
     function SideNavView(el) {
         this.el = el;
-        this.fixed = false;
         el.find('a').on('click', $.proxy(this.clickHandler, this));
-        $(window).on('scroll', $.proxy(this.scrollSpy, this));
+        el.scrollspy({
+            min: this.topOffset(),
+            onEnter: $.proxy(this.scrollEnter, this),
+            onLeave: $.proxy(this.scrollLeave, this)
+        });
     }
 
     /**
@@ -22,33 +25,17 @@
     };
 
     /**
-     * Check if the side nav has scrolled to the top of the window, if it
-     * has then add .fixed class to it.
-     */
-    SideNavView.prototype.scrollSpy = function() {
-        if ($(window).scrollTop() >= this.topOffset()) {
-            this.scrollEnter();
-        } else {
-            this.scrollLeave();
-        }
-    };
-
-    /**
      * Fired when the element get to the top of the document.
      */
     SideNavView.prototype.scrollEnter = function() {
-        if (this.fixed) { return; }
         this.el.addClass('fixed');
-        this.fixed = true;
     };
 
     /**
      * Fired when the element leaves the top of the document.
      */
     SideNavView.prototype.scrollLeave = function() {
-        if (!this.fixed) { return; }
         this.el.removeClass('fixed');
-        this.fixed = false;
     };
 
     /**
