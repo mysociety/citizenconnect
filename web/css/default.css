@@ -47,16 +47,16 @@
 
 /* Contain floats: h5bp.com/q */
 /* mySociety change: rename to cf */
-.cf:before, .gw:before, .radio-list:before, .grid-wrapper:before, .island:before, .islet:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { content: ""; display: table; }
+.cf:before, .gw:before, .radio-list:before, .grid-wrapper:before, .island:before, .islet:before, .moderator-box:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .moderator-box:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { content: ""; display: table; }
 
-.cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { clear: both; }
+.cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .moderator-box:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { clear: both; }
 
-.cf, .gw, .radio-list, .grid-wrapper, .island, .islet, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar { *zoom: 1; }
+.cf, .gw, .radio-list, .grid-wrapper, .island, .islet, .moderator-box, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar { *zoom: 1; }
 
 /** From inuit.css (https://github.com/csswizardry/inuit.css/)  Micro clearfix, as per: nicolasgallagher.com/micro-clearfix-hack Extend the clearfix class with Sass to avoid the `.cf` class appearing over and over in your markup. */
-.cf, .gw, .radio-list, .grid-wrapper, .island, .islet, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar { zoom: 1; }
-.cf:before, .gw:before, .radio-list:before, .grid-wrapper:before, .island:before, .islet:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { content: " "; display: table; }
-.cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { clear: both; }
+.cf, .gw, .radio-list, .grid-wrapper, .island, .islet, .moderator-box, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar { zoom: 1; }
+.cf:before, .gw:before, .radio-list:before, .grid-wrapper:before, .island:before, .islet:before, .moderator-box:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .moderator-box:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { content: " "; display: table; }
+.cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .moderator-box:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { clear: both; }
 
 .fr { float: right; }
 
@@ -260,7 +260,7 @@ textarea { overflow: auto; /* 1 */ vertical-align: top; /* 2 */ }
 /** Remove most spacing between table cells. */
 table { border-collapse: collapse; border-spacing: 0; }
 
-html { font-family: "Frutiger", "Frutiger Linotype", "Helvetica Neue", "Myriad Pro", Myriad, Arial, Calibri, Helvetica, sans-serif; }
+html { font-family: Arial, sans-serif; }
 
 html, button, input, select, textarea { color: #333333; }
 
@@ -395,7 +395,7 @@ Instead of a list of all class selectors,
 you can use the generic selector below, but it's slower:
 [class*="icon-"] {
 */
-.i, table th.sortable a:after, .message-list li:before, .icon-search, .icon-x, .icon-checkmark, .icon-circle, .icon-caret-up, .icon-caret-down, .icon-caret-right, .icon-caret-left, .icon-chevron-right, .icon-double-chevron-right, .icon-chevron-left, .icon-double-chevron-left, .icon-warning, .icon-home, .icon-stack, .icon-calendar, .icon-arrow-up-right, .icon-star, .icon-star-2, .icon-tag, .icon-user, .icon-star-3 { font-family: 'icons'; speak: none; font-style: normal; font-weight: normal; font-variant: normal; text-transform: none; line-height: 1; -webkit-font-smoothing: antialiased; }
+.i, table th.sortable a:after, .message-list li:before, .icon-search, .icon-x, .icon-checkmark, .icon-circle, .icon-caret-up, .icon-caret-down, .icon-caret-right, .icon-caret-left, .icon-chevron-right, .icon-double-chevron-right, .icon-chevron-left, .icon-double-chevron-left, .icon-warning, .icon-home, .icon-stack, .icon-calendar, .icon-arrow-up-right, .icon-star, .icon-star-2, .icon-tag, .icon-user, .icon-star-3, .icon-eye { font-family: 'icons'; speak: none; font-style: normal; font-weight: normal; font-variant: normal; text-transform: none; line-height: 1; -webkit-font-smoothing: antialiased; }
 
 .icon-search:before { content: "\e000"; }
 
@@ -440,6 +440,8 @@ you can use the generic selector below, but it's slower:
 .icon-user:before { content: "\e00e"; }
 
 .icon-star-3:before { content: "\e014"; }
+
+.icon-eye:before { content: "\e016"; }
 
 .table-container, .table-wrapper { overflow: auto; }
 
@@ -556,17 +558,17 @@ table .icon-warning { font-size: 1.375em; color: #d81e05; line-height: 0; }
 /*------------------------------------*\ Island
 \*------------------------------------*/
 /** From inuit.css (https://github.com/csswizardry/inuit.css/)  A padded box with a grey background and rounded corners */
-.island, .islet { display: block; background: #f2f2f2; -webkit-border-radius: 0.625em; -moz-border-radius: 0.625em; -ms-border-radius: 0.625em; -o-border-radius: 0.625em; border-radius: 0.625em; }
+.island, .islet, .moderator-box { display: block; background: #f2f2f2; -webkit-border-radius: 0.625em; -moz-border-radius: 0.625em; -ms-border-radius: 0.625em; -o-border-radius: 0.625em; border-radius: 0.625em; }
 
 .island { padding: 1.25em; }
 
-.island > :last-child, .islet > :last-child { margin-bottom: 0; }
+.island > :last-child, .islet > :last-child, .moderator-box > :last-child { margin-bottom: 0; }
 
 /** Just like `.island`, only smaller. */
-.islet { padding: 0.625em; }
+.islet, .moderator-box { padding: 0.625em; }
 
 /** Take off border radius */
-.island--squared, .islet--squared { -webkit-border-radius: 0; -moz-border-radius: 0; -ms-border-radius: 0; -o-border-radius: 0; border-radius: 0; }
+.island--squared, .islet--squared, .moderator-box { -webkit-border-radius: 0; -moz-border-radius: 0; -ms-border-radius: 0; -o-border-radius: 0; border-radius: 0; }
 
 /** Add a border to top and bottom */
 .island--half-bordered, .islet--half-bordered { border-top: 0.25em solid #dddddd; border-bottom: 0.25em solid #dddddd; }
@@ -575,6 +577,8 @@ table .icon-warning { font-size: 1.375em; color: #d81e05; line-height: 0; }
 .island--aquablue, .islet--aquablue { background: #2f9aa8; color: white; }
 
 .island--white, .islet--white { background: white; border: 0.25em solid #dddddd; }
+
+.island--grey, .islet--grey, .moderator-box { background: #f9f9f9; }
 
 /*------------------------------------*\ $WIDTHS
 \*------------------------------------*/
@@ -1069,6 +1073,29 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .step-title { color: #5bbf21; }
 
 .about-section { padding-top: 5px; }
+
+/** A collection of objects used on moderator pages */
+/** Grey box with an optional title space */
+.moderator-box { margin-bottom: 1.25em; }
+
+.moderator-box__title { font-size: 1.0625em; font-weight: bold; text-transform: uppercase; color: #999; background: #f2f2f2; margin: -0.625em; margin-bottom: 0.625em; padding: 0.625em; }
+
+/** A list that supports icons with colours */
+.moderator-list { list-style: none; padding: 0; }
+.moderator-list li { font-size: 0.875em; margin-bottom: 0.625em; }
+.moderator-list span { display: inline-block; *display: inline; *zoom: 1; vertical-align: middle; margin-top: -5px; width: 20px; font-size: 1.14286em; color: #ccc; margin-right: 0.3125em; }
+.moderator-list span.moderator-list__icon-pink { color: #e70285; }
+.moderator-list span.moderator-list__icon-green { color: #5bbf21; }
+
+.moderator-list--heavy { font-weight: bold; }
+.moderator-list--heavy span { font-weight: normal; }
+
+/** Literally creates a circle out of an element which gives us the ability to have borders */
+.bordered-circle { display: inline-block; *display: inline; *zoom: 1; vertical-align: top; width: 20px; height: 20px; -webkit-border-radius: 20px; -moz-border-radius: 20px; -ms-border-radius: 20px; -o-border-radius: 20px; border-radius: 20px; background: #333; border: 3px solid #fff; }
+
+.bordered-circle--pink { background: #e70285; }
+
+.bordered-circle--green { background: #5bbf21; }
 
 /* ========================================================================== Print styles. Inlined to avoid required HTTP connection: h5bp.com/r ========================================================================== */
 @media print { * { background: transparent !important; color: #000 !important; /* Black prints faster: h5bp.com/s */ box-shadow: none !important; text-shadow: none !important; }
