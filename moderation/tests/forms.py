@@ -173,14 +173,14 @@ class ModerationFormTests(BaseModerationTestCase):
 
 
     def test_moderation_form_doesnt_requires_moderated_description_for_private_problems(self):
-        # make the problem public
+        # make the problem private
         self.test_problem.public = False
         self.test_problem.save()
 
         # Re-Get the form as the client to set the initial session vars
         resp = self.client.get(self.problem_form_url)
 
-        # test that the no moderated desrciption message is shown
+        # test that the no moderated description message is shown
         self.assertContains(resp, "no need for a moderated description")
 
         # check that posting a moderated_description is ignored
