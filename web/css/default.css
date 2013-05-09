@@ -1100,6 +1100,12 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 
 .bordered-circle--green { background: #5bbf21; }
 
+/** A three star rating object that uses this markup: 
+<div class="rating"> <span class="icon-star" aria-hidden="true"></span> <span class="icon-star" aria-hidden="true"></span> <span class="icon-star" aria-hidden="true"></span> <span class="icon-star-2" aria-hidden="true"></span> <span class="icon-star-3" aria-hidden="true"></span>
+</div>  */
+.rating span { color: #f7e214; font-size: 18px; text-align: center; font-weight: normal; display: inline-block; *display: inline; *zoom: 1; margin: 0 1px; }
+.rating span.rating__grey { color: #aaaaaa; }
+
 /* ========================================================================== Print styles. Inlined to avoid required HTTP connection: h5bp.com/r ========================================================================== */
 @media print { * { background: transparent !important; color: #000 !important; /* Black prints faster: h5bp.com/s */ box-shadow: none !important; text-shadow: none !important; }
   a, a:visited { text-decoration: underline; }
