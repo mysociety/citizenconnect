@@ -68,12 +68,14 @@
 
     <div class="meta-data-sidebar  g  one-third  palm-one-whole">
 
-        <p class="alert  alert--lrg  alert--grey  align-right--not-palm">
-            {% if private and object.priority == object.PRIORITY_HIGH %}
-                <span class="alert--red">Priority</span>&nbsp;
-            {% endif %}
-            {{ object.reference_number }}
-        </p>
+        <div class="split-box  split-box--alert  split-box--alert--lrg">
+            <div class="split-box__inner">
+                {% if private and object.priority == object.PRIORITY_HIGH %}
+                    <p class="split-box__left  split-box--red">Priority</p>
+                {% endif %}
+                <p class="split-box__right">{{ object.reference_number }}</p>
+            </div>
+        </div>
 
         {% if private and object.breach %}
             <p class="alert  alert--sml  alert--orange">Breach</p>
