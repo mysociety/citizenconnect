@@ -583,6 +583,8 @@ table .icon-warning { font-size: 1.375em; color: #d81e05; line-height: 0; }
 
 .island--grey, .islet--grey, .moderator-box { background: #f9f9f9; }
 
+.island-label { font-size: 1.5em; margin: 0 0 0.83em; color: #00adc6; }
+
 /*------------------------------------*\ $WIDTHS
 \*------------------------------------*/
 /** Sizes in human readable format. These are used in conjunction with other objects and abstractions found in inuit.css, most commonly the grid system and faux flexbox. */
