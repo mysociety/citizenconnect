@@ -272,7 +272,7 @@ textarea {
     }
   }
 
-  .slim-select select {
+  .slim-select > :first-child {
     margin-left: 20px;
     width: 45%;
   }
