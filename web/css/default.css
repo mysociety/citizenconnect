@@ -48,16 +48,16 @@
 
 /* Contain floats: h5bp.com/q */
 /* mySociety change: rename to cf */
-.cf:before, .gw:before, .radio-list:before, .grid-wrapper:before, .island:before, .islet:before, .moderator-box:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .moderator-box:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { content: ""; display: table; }
+.cf:before, .gw:before, .radio-list:before, .grid-wrapper:before, .island:before, .islet:before, .meta-data-sidebar .meta-data-wrap:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { content: ""; display: table; }
 
-.cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .moderator-box:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { clear: both; }
+.cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { clear: both; }
 
-.cf, .gw, .radio-list, .grid-wrapper, .island, .islet, .moderator-box, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar { *zoom: 1; }
+.cf, .gw, .radio-list, .grid-wrapper, .island, .islet, .meta-data-sidebar .meta-data-wrap, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar { *zoom: 1; }
 
 /** From inuit.css (https://github.com/csswizardry/inuit.css/)  Micro clearfix, as per: nicolasgallagher.com/micro-clearfix-hack Extend the clearfix class with Sass to avoid the `.cf` class appearing over and over in your markup. */
-.cf, .gw, .radio-list, .grid-wrapper, .island, .islet, .moderator-box, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar { zoom: 1; }
-.cf:before, .gw:before, .radio-list:before, .grid-wrapper:before, .island:before, .islet:before, .moderator-box:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .moderator-box:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { content: " "; display: table; }
-.cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .moderator-box:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { clear: both; }
+.cf, .gw, .radio-list, .grid-wrapper, .island, .islet, .meta-data-sidebar .meta-data-wrap, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar { zoom: 1; }
+.cf:before, .gw:before, .radio-list:before, .grid-wrapper:before, .island:before, .islet:before, .meta-data-sidebar .meta-data-wrap:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { content: " "; display: table; }
+.cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { clear: both; }
 
 .fr { float: right; }
 
@@ -563,17 +563,17 @@ table .icon-warning { font-size: 1.375em; color: #d81e05; line-height: 0; }
 /*------------------------------------*\ Island
 \*------------------------------------*/
 /** From inuit.css (https://github.com/csswizardry/inuit.css/)  A padded box with a grey background and rounded corners */
-.island, .islet, .moderator-box { display: block; background: #f2f2f2; -webkit-border-radius: 0.625em; -moz-border-radius: 0.625em; -ms-border-radius: 0.625em; -o-border-radius: 0.625em; border-radius: 0.625em; }
+.island, .islet, .meta-data-sidebar .meta-data-wrap { display: block; background: #f2f2f2; -webkit-border-radius: 0.625em; -moz-border-radius: 0.625em; -ms-border-radius: 0.625em; -o-border-radius: 0.625em; border-radius: 0.625em; }
 
 .island { padding: 1.25em; }
 
-.island > :last-child, .islet > :last-child, .moderator-box > :last-child { margin-bottom: 0; }
+.island > :last-child, .islet > :last-child, .meta-data-sidebar .meta-data-wrap > :last-child { margin-bottom: 0; }
 
 /** Just like `.island`, only smaller. */
-.islet, .moderator-box { padding: 0.625em; }
+.islet, .meta-data-sidebar .meta-data-wrap { padding: 0.625em; }
 
 /** Take off border radius */
-.island--squared, .islet--squared, .moderator-box { -webkit-border-radius: 0; -moz-border-radius: 0; -ms-border-radius: 0; -o-border-radius: 0; border-radius: 0; }
+.island--squared, .islet--squared, .meta-data-sidebar .meta-data-wrap { -webkit-border-radius: 0; -moz-border-radius: 0; -ms-border-radius: 0; -o-border-radius: 0; border-radius: 0; }
 
 /** Add a border to top and bottom */
 .island--half-bordered, .islet--half-bordered { border-top: 0.25em solid #dddddd; border-bottom: 0.25em solid #dddddd; }
@@ -583,7 +583,7 @@ table .icon-warning { font-size: 1.375em; color: #d81e05; line-height: 0; }
 
 .island--white, .islet--white { background: white; border: 0.25em solid #dddddd; }
 
-.island--grey, .islet--grey, .moderator-box { background: #f9f9f9; }
+.island--grey, .islet--grey, .meta-data-sidebar .meta-data-wrap { background: #f9f9f9; }
 
 .island-label { font-size: 1.5em; font-weight: normal; margin: 0 0 0.83em; color: #00adc6; }
 
@@ -957,13 +957,26 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .meta-data--response p { margin: 1em 0; }
 .meta-data--response .meta-data__foot { margin: 0; }
 
-.meta-data-wrap { margin: 1em 0 2em 0; }
+.meta-data-wrap { margin: 1em 0; }
 
-.meta-data-label { font-size: 0.6875em; font-weight: normal; text-transform: uppercase; color: #aaaaaa; }
+.meta-data-label { font-size: 0.875em; font-weight: normal; text-transform: uppercase; color: #aaaaaa; }
 
 .meta-data-label--bordered { border-bottom: 2px solid #dddddd; }
 
 .meta-data-spacer { display: inline-block; *display: inline; *zoom: 1; width: 1em; }
+
+/** Things which sit in the sidebar of problem's detail page, statuses etc */
+.meta-data-sidebar .meta-data-wrap { margin-bottom: 1.25em; }
+.meta-data-sidebar .meta-data-label { color: #8d8d8d; background: #dbdbdb; margin: -0.625em; margin-bottom: 0.625em; padding: 0.3125em 0.625em; }
+.meta-data-sidebar .meta-data { padding-left: 0.625em; padding-right: 0.625em; border: none; /** A list that supports icons with colours */ }
+.meta-data-sidebar .meta-data .meta-data-list { list-style: none; padding: 0; }
+.meta-data-sidebar .meta-data .meta-data-list li { font-size: 0.875em; margin-bottom: 0.625em; }
+.meta-data-sidebar .meta-data .meta-data-list span { display: inline-block; *display: inline; *zoom: 1; vertical-align: middle; margin-top: -5px; width: 20px; font-size: 1.14286em; color: #aaaaaa; margin-right: 0.3125em; }
+.meta-data-sidebar .meta-data .meta-data-list span.meta-data-list__icon-pink { color: #e70285; }
+.meta-data-sidebar .meta-data .meta-data-list span.meta-data-list__icon-green { color: #5bbf21; }
+.meta-data-sidebar .meta-data .meta-data-list span.meta-data-list__icon-red { color: #d81e05; }
+.meta-data-sidebar .meta-data .meta-data-list--heavy { font-weight: bold; }
+.meta-data-sidebar .meta-data .meta-data-list--heavy span { font-weight: normal; }
 
 /** Used on the homepage, a link containing an image with an icon over the top: 
 <a href="/choices/stats/summary" class="icon-overlay"> <img src="/web/img/homepage-summary-table.png"> <span class="icon-search" aria-hidden="true"></span>
@@ -1092,23 +1105,6 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .step-title { color: #5bbf21; }
 
 .about-section { padding-top: 5px; }
-
-/** A collection of objects used on moderator pages */
-/** Grey box with an optional title space */
-.moderator-box { margin-bottom: 1.25em; }
-
-.moderator-box__title { font-size: 1.0625em; font-weight: bold; text-transform: uppercase; color: #999; background: #f2f2f2; margin: -0.625em; margin-bottom: 0.625em; padding: 0.3125em 0.625em; }
-
-/** A list that supports icons with colours */
-.moderator-list { list-style: none; padding: 0; }
-.moderator-list li { font-size: 0.875em; margin-bottom: 0.625em; }
-.moderator-list span { display: inline-block; *display: inline; *zoom: 1; vertical-align: middle; margin-top: -5px; width: 20px; font-size: 1.14286em; color: #ccc; margin-right: 0.3125em; }
-.moderator-list span.moderator-list__icon-pink { color: #e70285; }
-.moderator-list span.moderator-list__icon-green { color: #5bbf21; }
-.moderator-list span.moderator-list__icon-red { color: #d81e05; }
-
-.moderator-list--heavy { font-weight: bold; }
-.moderator-list--heavy span { font-weight: normal; }
 
 /** Literally creates a circle out of an element which gives us the ability to have borders */
 .bordered-circle { display: inline-block; *display: inline; *zoom: 1; vertical-align: top; width: 20px; height: 20px; -webkit-border-radius: 20px; -moz-border-radius: 20px; -ms-border-radius: 20px; -o-border-radius: 20px; border-radius: 20px; background: #333; border: 3px solid white; }

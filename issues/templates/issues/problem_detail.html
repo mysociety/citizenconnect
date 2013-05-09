@@ -5,11 +5,7 @@
 {% block bodyclasses %}problem-report{% endblock %}
 
 {% block content %}
-<div class="header">
-    <h2 class="header__pre-heading">{{ object.organisation.name }}</h2>
-    <h1>Problem report</h1>
-</div>
 
-{% include "issues/issue_detail.html" with object=object %}
+{% include "issues/issue_detail.html" with object=object title="Problem" %}
 
 {% endblock %}
