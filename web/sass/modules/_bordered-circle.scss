@@ -1,0 +1,21 @@
+/**
+ * Literally creates a circle out of an element
+ * which gives us the ability to have borders
+ */
+@mixin circle($size){
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+  vertical-align: top;
+  width: $size;
+  height: $size;
+  @include vendor(border-radius, $size);
+}
+.bordered-circle {
+  @include circle(20px);
+  background: #333;
+  border: 3px solid #fff;
+}
+
+.bordered-circle--pink { background: $c-pink; }
+.bordered-circle--green { background: $c-nhs_lightgreen; }
