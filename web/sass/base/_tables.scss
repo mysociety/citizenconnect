@@ -2,14 +2,23 @@
 .table-container,
 .table-wrapper { overflow: auto; }
 
+
+
+/**
+ * Standard table styles
+ */
 table {
   width: 100%;
   margin-bottom: ($grid-gutter * 2) + em;
   // force table to be 960px wide on mobile, as inside the table-wrapper
   @include media-query(palm){ width: $page-width-max + em; }
   tr {
-    &.table__heading { font-weight: bold; }
-    &.table__footer td { border-bottom: $c-table-border solid 2px; }
+    &.table__heading {
+      &, *, {
+        font-weight: bold;
+      }
+    }
+    &.table__footer td { border-bottom: $c-table-border solid 3px; }
   }
   td, th {
     &.table__first {
@@ -48,7 +57,7 @@ table {
     font-size: (12px / $font-size-base) + em;
     font-weight: normal;
     padding: 20px 10px;
-    border-bottom: $c-table-border solid 2px;
+    border-bottom: $c-table-border solid 3px;
     &.table__title {
       font-weight: bold;
       text-align: left;
@@ -74,21 +83,26 @@ table {
   .icon-x {
     font-size: (22px / $font-size-base) + em;
     color: $c-table-icon-x-color;
+    line-height: 0;
   }
   .icon-checkmark {
     font-size: (22px / $font-size-base) + em;
     color: $c-table-icon-checkmark-color;
+    line-height: 0;
   }
   .icon-circle {
     font-size: (22px / $font-size-base) + em;
     color: $c-table-icon-circle-color;
+    line-height: 0;
   }
   .icon-hidden{
     color: $c-table-icon-hidden-color;
+    line-height: 0;
   }
   .icon-warning {
     font-size: (22px / $font-size-base) + em;
     color: $c-table-icon-warning-color;
+    line-height: 0;
   }
 
 }
@@ -123,4 +137,174 @@ table {
             background-color: $c-table-row-highlight-color;
         }
     }
+}
+
+
+
+/**
+ * A square table with options for split cols and highlights
+ */
+.summary-table {
+  // standard headings
+  th {
+    font-weight: bold;
+    padding: 0;
+    border-bottom: 0;
+    a {
+      display: block;
+      padding: 1em 0.5em;
+    }
+  }
+
+  // subheading row
+  .summary-table__subhead th {
+    font-weight: normal;
+    padding: 0.5em 0;
+    background-color: #e6e6e6;
+    a {
+      display: block;
+      padding: 0 0.5em;
+    }
+  }
+
+  // standard cell
+  td {
+    border-left: 1px solid $c-table-border;
+    &:first-child { border-left: 0; }
+  }
+  tr:last-child td { border-bottom: 0; }
+
+  // used for cells in double column
+  .summary-table__cell-no-border { border-left: 0; }
+
+  // colour every other row
+  tbody tr:nth-of-type(even) td { background: #f2f2f2; }
+
+  // hightlight a row
+  tbody tr.summary-table__highlight td {
+    background-color: #ff4554;
+    color: #fff;
+    font-weight: bold;
+    border-color: #c52430;
+    border-top: 2px solid #c52430;
+    border-bottom: 2px solid #c52430;
+  }
+
+  // pull full height any filters
+  .filters__dropdown { margin: -0.5em 0; }
+}
+
+
+
+
+/**
+ * A rounded table with options for expanded rows, flags and highlights
+ */
+.dashboard-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  td, th {
+    text-align: left;
+    padding: 10px;
+    &.align-center { text-align: center; }
+  }
+
+  // headings
+  th { border: 0; }
+  .dashboard-table__head th {
+    font-weight: bold;
+    padding: 0 10px;
+  }
+  .dashboard-table__subhead th {
+    border-bottom: 3px solid #e6e6e6;
+    text-align: center;
+    color: #999999;
+    font-size: (11px / $font-size-base) + em;
+    padding: 5px 10px;
+  }
+
+  // cell borders
+  td {
+    border-bottom: 1px solid #e6e6e6;
+    &:first-child { border-left: 1px solid #e6e6e6; }
+    &:last-child { border-right: 1px solid #e6e6e6; }
+  }
+
+  tr:first-child td {
+    border-top: 1px solid #e6e6e6;
+    &:first-child { @include vendor(border-radius, 5px 0 0 0); }
+    &:last-child { @include vendor(border-radius, 0 5px 0 0); }
+  }
+
+  tr:last-child td {
+    &:last-child { @include vendor(border-radius, 0 0 5px 0); }
+    &:first-child { @include vendor(border-radius, 0 0 0 5px ); }
+  }
+
+  // text styles
+  .dashboard-table__danger-text {
+    color: #c50e12;
+    font-weight: bold;
+  }
+  .dashboard-table__light-text { color: #999999; }
+  .dashboard-table__heavy-text { font-weight: bold; }
+  .dashboard-table__hightlight {
+    background: #c50e12;
+    border-color: #c50e12 !important;
+    color: #fff;
+  }
+  a {
+    color: $c-aquablue;
+    &:hover { color: $c-aquablue-tint; }
+  }
+
+  // flags
+  .dashboard-table__flag {
+    padding: 0 0 0 10px;
+    position: relative;
+    overflow: hidden;
+    width: 25px;
+  }
+    div {
+      position: absolute;
+      width: 100%;
+      right: 0;
+      text-transform: uppercase;
+      color: #fff;
+      text-align: center;
+      padding-top: 5px;
+      height: 28px;
+    }
+    .dashboard-table__flag__breach {
+      background: #ff8b00;
+      top: 0;
+    }
+    .dashboard-table__flag__escalate {
+      background: #000;
+      bottom: 0;
+    }
+}
+
+/**
+ * To be used with .dashboard-table, this has expanded rows
+ */
+.dashboard-table--expanded {
+  border-spacing: 0 20px;
+
+  // hide spacer if its there now we're border-spacing
+  .dashboard-table__spacer { display: none; }
+
+  td { border-top: 1px solid #e6e6e6; }
+  tr, tr:first-child, tr:last-child {
+    td:first-child { @include vendor(border-radius, 5px 0 0 5px); }
+    td:last-child { @include vendor(border-radius, 0 5px 5px 0); }
+  }
+}
+
+
+
+.table-link__row:hover td {
+  background-color: #f9f9f9;
+  cursor: pointer;
+  &.dashboard-table__hightlight {background: #c50e12;}
 }
