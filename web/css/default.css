@@ -995,6 +995,18 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 
 .stats-text { font-size: 1.5em; vertical-align: center; }
 
+/** Side navigation, vertical list. */
+.side-nav { font-size: 15px; list-style: none; width: 300px; margin: 1em 0 0; }
+.side-nav.fixed { position: fixed; top: 0; }
+.side-nav li { background-color: #00adc6; margin: 0 0 2px; padding: 5px 10px; }
+.side-nav li:hover, .side-nav li.active { background-color: #888888; }
+.side-nav li a { color: white; display: block; text-decoration: none; }
+
+/** Markup specific to the about page */
+.step-title { color: #5bbf21; }
+
+.about-section { padding-top: 5px; }
+
 /* ========================================================================== Print styles. Inlined to avoid required HTTP connection: h5bp.com/r ========================================================================== */
 @media print { * { background: transparent !important; color: black !important; /* Black prints faster: h5bp.com/s */ box-shadow: none !important; text-shadow: none !important; }
   a, a:visited { text-decoration: underline; }
