@@ -18,21 +18,21 @@
       margin-bottom: 0;
     }
     .filters__dropdown {
+      position: relative;
       border-right: 2px solid #fff;
-      background: $c-aquablue url(../img/select_arrow.png) 95% center no-repeat;
+      background: $c-aquablue;
       font-weight: bold;
       @include vendor(text-overflow, ellipsis);
-      select {
+      select, span {
         color: #fff;
         &:focus { color: #fff; }
       }
     }
     .filters__dropdown--last { border-right: 0; }
     .filters__dropdown--default {
-      background-color: #e6e6e6;
-      background-image: url(../img/select_arrow-default.png);
+      background: #e6e6e6;
       font-weight: normal;
-      select {
+      select, span {
         color: #333;
         &:focus { color: #333; }
       }
@@ -49,6 +49,11 @@
         margin: 0;
         font-size: (13px / $font-size-base) + em;
         @include vendor(border-radius, 0);
+      }
+      span {
+        position: absolute;
+        right: 0.5em;
+        top: 0.8em;
       }
   }
 
