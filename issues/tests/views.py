@@ -221,6 +221,10 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         resp = self.client.get(published_problem_url)
         self.assertNotContains(resp, self.published_problem.get_publication_status_display())
 
+    def test_doesnt_show_history_on_public_pages(self):
+        resp = self.client.get(self.test_moderated_problem_url)
+        self.assertNotContains(resp, "History")
+
 
 class ProblemProviderPickerTests(TestCase):
 
