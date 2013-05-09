@@ -20,6 +20,8 @@ class ProblemAPIForm(forms.ModelForm):
     # Add an escalated flag with which we'll set the Problem status
     escalated = forms.BooleanField(required=False)
     status = forms.IntegerField(required=False)
+    # Make priority optional
+    priority = forms.IntegerField(required=False)
 
     # Pull out the organisation ods_code and turn it into a real organisation
     def clean_organisation(self):
@@ -45,6 +47,11 @@ class ProblemAPIForm(forms.ModelForm):
         # If you are submitting the form, you have moderated it, so always return MODERATED
         return Problem.MODERATED
 
+    def clean_priority(self):
+        if not self.cleaned_data.get('priority'):
+            self.cleaned_data['priority'] = Problem.PRIORITY_NORMAL
+        return self.cleaned_data['priority']
+
     def clean(self):
         # Run super class clean method
         cleaned_data = super(ProblemAPIForm, self).clean()
@@ -52,38 +59,37 @@ class ProblemAPIForm(forms.ModelForm):
         # Pull out the service_code and turn it into a real service
         # This has to be done here rather than in clean_service becauase
         # in clean_service we wouldn't have the organisation too
-        if 'organisation' in cleaned_data and cleaned_data['organisation']:
-            if 'service_code' in cleaned_data and cleaned_data['service_code']:
-                try:
-                    service = Service.objects.get(service_code=cleaned_data['service_code'],
-                                                  organisation=cleaned_data['organisation'])
-                    cleaned_data['service'] = service
-                except Service.DoesNotExist:
-                    # Add an error for this field
-                    # See: https://docs.djangoproject.com/en/dev/ref/forms/validation/
-                    # for why we have to do this rather than raise ValidationError
-                    self._errors['service_code'] = self.error_class(['Sorry, that service is not recognised.'])
-                    del cleaned_data['service_code']
+        if cleaned_data.get('organisation') and cleaned_data.get('service_code'):
+            try:
+                service = Service.objects.get(service_code=cleaned_data['service_code'],
+                                              organisation=cleaned_data['organisation'])
+                cleaned_data['service'] = service
+            except Service.DoesNotExist:
+                # Add an error for this field
+                # See: https://docs.djangoproject.com/en/dev/ref/forms/validation/
+                # for why we have to do this rather than raise ValidationError
+                self._errors['service_code'] = self.error_class(['Sorry, that service is not recognised.'])
+                del cleaned_data['service_code']
 
         # If we are publishing the problem and the reporter wants it public,
         # it must have a moderated_description so that we have something to show for it
         # on public pages
-        if cleaned_data['public'] is True and cleaned_data['publication_status'] == Problem.PUBLISHED:
+        if cleaned_data.get('public') is True and cleaned_data.get('publication_status') == Problem.PUBLISHED:
             if not 'moderated_description' in cleaned_data or not cleaned_data['moderated_description']:
                 self._errors['moderated_description'] = self.error_class(['You must moderate a version of the problem details when publishing public problems.'])
                 del cleaned_data['moderated_description']
 
         # If a problem is flagged as requiring second tier moderation, it can't be published
-        if cleaned_data['requires_second_tier_moderation'] is True and cleaned_data['publication_status'] == Problem.PUBLISHED:
+        if cleaned_data.get('requires_second_tier_moderation') is True and cleaned_data.get('publication_status') == Problem.PUBLISHED:
             self._errors['publication_status'] = self.error_class(['A problem that requires second tier moderation cannot be published.'])
             del cleaned_data['publication_status']
 
-        if cleaned_data['priority'] == Problem.PRIORITY_HIGH and not cleaned_data['category'] in Problem.CATEGORIES_PERMITTING_SETTING_OF_PRIORITY_AT_SUBMISSION:
+        if cleaned_data.get('priority') == Problem.PRIORITY_HIGH and not cleaned_data.get('category') in Problem.CATEGORIES_PERMITTING_SETTING_OF_PRIORITY_AT_SUBMISSION:
             self._errors['priority'] = self.error_class(['The problem is not in a category which permits setting of a high priority.'])
             del cleaned_data['priority']
 
         # Set 'status' from the escalated flag if it's passed in
-        if cleaned_data['escalated'] is True:
+        if cleaned_data.get('escalated') is True:
             cleaned_data['status'] = Problem.ESCALATED
 
         return cleaned_data
