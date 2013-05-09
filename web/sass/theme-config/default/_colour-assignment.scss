@@ -181,16 +181,20 @@ $c-message-list-success-color: $c-nhs_lightgreen;
 /**
  * _meta-data.scss
  */
-        $c-meta-data-border-color: $c-grey;
-     $c-meta-data-sub-title-color: $c-darkgrey;
-          $c-meta-data-foot-color: $c-darkgrey;
-        $c-meta-data-icon-x-color: $c-nhs_red;
-$c-meta-data-icon-checkmark-color: $c-nhs_lightgreen;
-         $c-meta-data-label-color: $c-darkgrey;
-  $c-meta-data-label-border-color: $c-grey;
-          $c-meta-data-sidebar-bg: $c-lightgrey;
-    $c-meta-data-sidebar-label-bg: $c-lightgrey-tint;
- $c-meta-data-sidebar-label-color: $c-darkgrey-tint;
+            $c-meta-data-border-color: $c-grey;
+         $c-meta-data-sub-title-color: $c-darkgrey;
+              $c-meta-data-foot-color: $c-darkgrey;
+            $c-meta-data-icon-x-color: $c-nhs_red;
+    $c-meta-data-icon-checkmark-color: $c-nhs_lightgreen;
+             $c-meta-data-label-color: $c-darkgrey;
+      $c-meta-data-label-border-color: $c-grey;
+        $c-meta-data-sidebar-label-bg: $c-lightgrey-tint;
+     $c-meta-data-sidebar-label-color: $c-darkgrey-tint;
+      $c-meta-data-sidebar-icon-color: $c-darkgrey;
+ $c-meta-data-sidebar-icon-pink-color: $c-pink;
+$c-meta-data-sidebar-icon-green-color: $c-nhs_lightgreen;
+  $c-meta-data-sidebar-icon-red-color: $c-nhs_red;
+
 
 /**
  * _icon-overlay.scss

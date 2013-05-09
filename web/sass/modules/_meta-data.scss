@@ -60,7 +60,7 @@
 }
 
 /**
- * Things which sit in the sidebar of problem details, statuses etc
+ * Things which sit in the sidebar of problem's detail page, statuses etc
  */
 .meta-data-sidebar {
   .meta-data-wrap {
@@ -74,8 +74,8 @@
     font-size: (17px / $font-size-base) + em;
     font-weight: bold;
     text-transform: uppercase;
-    color: #999;
-    background: $c-lightgrey;
+    color: $c-meta-data-sidebar-label-color;
+    background: $c-meta-data-sidebar-label-bg;
     margin: -($grid-gutter / 2) + em;
     margin-bottom: ($grid-gutter / 2) + em;
     padding: ($grid-gutter / 4) + em  ($grid-gutter / 2) + em;
@@ -106,11 +106,11 @@
         width: 20px; // matched with bordered-circle size
 
         font-size: (16px / 14px) + em;
-        color: #ccc;
+        color: $c-meta-data-sidebar-icon-color;
         margin-right: ($grid-gutter / 4)+ em;;
-        &.moderator-list__icon-pink { color: $c-pink; }
-        &.moderator-list__icon-green { color: $c-nhs_lightgreen; }
-        &.moderator-list__icon-red { color: $c-nhs_red; }
+        &.meta-data-list__icon-pink { color: $c-meta-data-sidebar-icon-pink-color; }
+        &.meta-data-list__icon-green { color: $c-meta-data-sidebar-icon-green-color; }
+        &.meta-data-list__icon-red { color: $c-meta-data-sidebar-icon-red-color; }
       }
     }
       .meta-data-list--heavy {
