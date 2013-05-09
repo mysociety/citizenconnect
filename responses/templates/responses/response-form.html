@@ -7,11 +7,8 @@
 {% block bodyclasses %}response-form{% endblock %}
 
 {% block content %}
-<div class="header">
-    <h1>Respond to a problem</h1>
-</div>
 
-{% include "issues/issue_detail.html" with object=issue private=1 %}
+{% include "issues/issue_detail.html" with object=issue private=1 title="Respond to a problem"%}
 
 <div class="response-form">
     <form method="post">
