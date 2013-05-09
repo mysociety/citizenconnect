@@ -1,4 +1,3 @@
-<!-- New -->
 <div class="header gw">
     <div class="g  hard--left two-thirds  lap-one-half  palm-one-whole">
         <h1>{{ title }}</h1>
@@ -76,7 +75,7 @@
 
         <p class="reference_number  align-right--not-palm">
             {% if private and object.priority == object.PRIORITY_HIGH %}
-                <span class="priority">PRIORITY</span>&nbsp;
+                <span class="priority">Priority</span>&nbsp;
             {% endif %}
             {{ object.reference_number }}
         </p>
@@ -96,6 +95,9 @@
                 <br />
                 <span class="status">{{ object.get_status_display }}</span>
             </p>
+            {% if private %}
+                <p class="publication-status">{{ object.get_publication_status_display }}</p>
+            {% endif %}
             {% if object.happy_service != None %}
                 <p>
                     {% if object.happy_service %}
@@ -117,7 +119,12 @@
                 </p>
             {% endif %}
             {% if private and object.relates_to_previous_problem %}
-                <span class="icon-stack" aria-hidden="true"> Relates to previous problem,&nbsp;
+                <p class="relates-to-previous">
+                    <span class="icon-stack" aria-hidden="true"> Relates to previous problem,&nbsp;
+                </p>
+            {% endif %}
+            {% if private and object.commissioned != None %}
+                <p class="commissioned">{{ object.get_commissioned_display }}</p>
             {% endif %}
         </div>
 
@@ -141,23 +148,3 @@
         </div>
     </div>
 </div>
-
-
-<!-- This bit is not accounted for above yet
-
-    {% if private %}
-        {{ object.public|yesno:"Public,Private" }},&nbsp;
-        {{ object.get_publication_status_display}},&nbsp;
-        {% if object.requires_second_tier_moderation %}
-            Requires second tier moderation,&nbsp;
-        {% endif %}
-        {% if object.relates_to_previous_problem %}
-            Relates to previous problem,&nbsp;
-        {% endif %}
-        {% if object.commissioned != None %}
-            {{ object.get_commissioned_display }},&nbsp;
-        {% endif %}
-    {% endif %}
-    {% if object.status in object.ESCALATION_STATUSES %}<span class="icon-warning"></span>{% endif %}{{ object.get_status_display }}
-
--->
