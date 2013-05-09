@@ -185,15 +185,14 @@ class ProblemAPITests(TestCase):
         errors = json.loads(content_json['errors'])
         self.assertEqual(errors['publication_status'][0], 'A problem that requires second tier moderation cannot be published.')
 
-    def test_preferred_contact_method_is_required(self):
+    def test_preferred_contact_method_is_optional_and_defaults_to_email(self):
         problem_without_preferred_contact_method = self.test_problem
         del problem_without_preferred_contact_method['preferred_contact_method']
         resp = self.client.post(self.problem_api_url, problem_without_preferred_contact_method)
-        self.assertEquals(resp.status_code, 400)
+        self.assertEquals(resp.status_code, 201)
 
-        content_json = json.loads(resp.content)
-        errors = json.loads(content_json['errors'])
-        self.assertEqual(errors['preferred_contact_method'][0],  'This field is required.')
+        problem = Problem.objects.get(reporter_name=self.problem_uuid)
+        self.assertEqual(problem.preferred_contact_method, problem.CONTACT_EMAIL)
 
     def test_commissioned_is_required(self):
         problem_without_commissioned = self.test_problem
@@ -266,3 +265,11 @@ class ProblemAPITests(TestCase):
         content_json = json.loads(resp.content)
         self.assertEqual(content_json['reference_number'], expected_reference_number)
         self.assertEqual(problem.status, Problem.NEW)
+
+    def test_publication_status_is_optional_and_defaults_to_hidden(self):
+        del self.test_problem['publication_status']
+        resp = self.client.post(self.problem_api_url, self.test_problem)
+        self.assertEquals(resp.status_code, 201)
+
+        problem = Problem.objects.get(reporter_name=self.problem_uuid)
+        self.assertEqual(problem.publication_status, problem.HIDDEN)

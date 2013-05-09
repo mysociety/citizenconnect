@@ -20,8 +20,12 @@ class ProblemAPIForm(forms.ModelForm):
     # Add an escalated flag with which we'll set the Problem status
     escalated = forms.BooleanField(required=False)
     status = forms.IntegerField(required=False)
-    # Make priority optional
+    # Make priority optional (we will set a default)
     priority = forms.IntegerField(required=False)
+    # Make publication_status optional (we will set a default)
+    publication_status = forms.IntegerField(required=False)
+    # Make preferred_contact_method optional (we will set a default)
+    preferred_contact_method = forms.CharField(required=False)
 
     # Pull out the organisation ods_code and turn it into a real organisation
     def clean_organisation(self):
@@ -51,6 +55,16 @@ class ProblemAPIForm(forms.ModelForm):
         if not self.cleaned_data.get('priority'):
             self.cleaned_data['priority'] = Problem.PRIORITY_NORMAL
         return self.cleaned_data['priority']
+
+    def clean_publication_status(self):
+        if not self.cleaned_data.get('publication_status'):
+            self.cleaned_data['publication_status'] = Problem.HIDDEN
+        return self.cleaned_data['publication_status']
+
+    def clean_preferred_contact_method(self):
+        if not self.cleaned_data.get('preferred_contact_method'):
+            self.cleaned_data['preferred_contact_method'] = Problem.CONTACT_EMAIL
+        return self.cleaned_data['preferred_contact_method']
 
     def clean(self):
         # Run super class clean method
