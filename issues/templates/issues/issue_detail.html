@@ -84,69 +84,81 @@
         <div class="meta-data-wrap">
             <h3 class="meta-data-label">Status</h3>
             <div class="meta-data">
-                <p class="status">
-                    {% if object.status in object.OPEN_STATUSES %}
-                        <span class="icon-circle open" aria-hidden="true"></span> Open
-                    {% else %}
-                        <span class="icon-circle closed" aria-hidden="true"></span> Closed
+                <ul class="meta-data-list">
+                    <li>
+                        {% if object.status in object.OPEN_STATUSES %}
+                            <span class="bordered-circle  bordered-circle--green" aria-hidden="true"></span> Open
+                        {% else %}
+                            <span class="bordered-circle  bordered-circle--red" aria-hidden="true"></span> Closed - {{ object.get_status_display }}
+                        {% endif %}
+                    </li>
+                    {% if private %}
+                        <li><span class="icon-eye" aria-hidden="true"></span> {{ object.get_publication_status_display }}</li>
                     {% endif %}
-                    <br />
-                    <span class="status">{{ object.get_status_display }}</span>
-                </p>
-                {% if private %}
-                    <p class="publication-status">{{ object.get_publication_status_display }}</p>
-                {% endif %}
-                {% if object.happy_service != None %}
-                    <p>
-                        {% if object.happy_service %}
-                            <span class="icon-checkmark" aria-hidden="true"><span class="hide-text">yes</span></span>
-                        {% else %}
-                            <span class="icon-x" aria-hidden="true"><span class="hide-text">no</span></span>
-                        {% endif %}
-                        &nbsp;Happy with Service
-                    </p>
-                {% endif %}
-                {% if object.happy_outcome != None %}
-                    <p>
-                        {% if object.happy_outcome %}
-                            <span class="icon-checkmark" aria-hidden="true"><span class="hide-text">yes</span></span>
-                        {% else %}
-                            <span class="icon-x" aria-hidden="true"><span class="hide-text">no</span></span>
-                        {% endif %}
-                        &nbsp;Happy with Outcome
-                    </p>
-                {% endif %}
-                {% if private and object.relates_to_previous_problem %}
-                    <p class="relates-to-previous">
-                        <span class="icon-stack" aria-hidden="true"> Relates to previous problem,&nbsp;
-                    </p>
-                {% endif %}
-                {% if private and object.commissioned != None %}
-                    <p class="commissioned">{{ object.get_commissioned_display }}</p>
-                {% endif %}
+                    {% if object.happy_service != None %}
+                        <li>
+                            {% if object.happy_service %}
+                                <span class="icon-checkmark  meta-data-list__icon-green" aria-hidden="true"></span>
+                            {% else %}
+                                <span class="icon-x  meta-data-list__icon-red" aria-hidden="true"></span>
+                            {% endif %}
+                            &nbsp;Happy with Service
+                        </li>
+                    {% endif %}
+                    {% if object.happy_outcome != None %}
+                        <li>
+                            {% if object.happy_outcome %}
+                                <span class="icon-checkmark  meta-data-list__icon-green" aria-hidden="true"></span>
+                            {% else %}
+                                <span class="icon-x  meta-data-list__icon-red" aria-hidden="true"></span>
+                            {% endif %}
+                            &nbsp;Happy with Outcome
+                        </li>
+                    {% endif %}
+                    {% if private and object.relates_to_previous_problem %}
+                        <li class="relates-to-previous">
+                            <span class="icon-stack" aria-hidden="true"> Related to previous problem,&nbsp;
+                        </li>
+                    {% endif %}
+                </ul>
             </div>
         </div>
 
         <div class="meta-data-wrap">
             <h3 class="meta-data-label">Privacy</h3>
             <div class="meta-data">
-                <p class="public">
-                    <span class="icon-circle" aria-hidden="true"></span>&nbsp;
-                    {% if object.public %}
-                        Public {% if not object.public_reporter_name %}with hidden name{% endif %}
-                    {% else %}
-                        Private
-                    {% endif %}
-                </p>
+                <ul class="meta-data-list">
+                    <li class="public">
+                        <span class="bordered-circle  bordered-circle--pink" aria-hidden="true"></span>&nbsp;
+                        {% if object.public %}
+                            Public {% if not object.public_reporter_name %}with hidden name{% endif %}
+                        {% else %}
+                            Private
+                        {% endif %}
+                    </li>
+                </ul>
             </div>
         </div>
 
         <div class="meta-data-wrap">
             <h3 class="meta-data-label">Details</h3>
             <div class="meta-data">
-                <p><span class="icon-tag" aria-hidden="true"><span class="hide-text">Category</span></span> {{ object.get_category_display }}</p>
-                <p><span class="icon-user" aria-hidden="true"><span class="hide-text">Reported by</span></span> {{ object.reporter_name_display }}</p>
-                <p><span class="icon-calendar" aria-hidden="true"><span class="hide-text">Reported on</span></span> {{ object.created|date:"h:ia" }} {{ object.created|date:"d M Y" }}</p>
+                <ul class="meta-data-list">
+                    <li>
+                        <span class="icon-tag" aria-hidden="true"></span> {{ object.get_category_display }}
+                    </li>
+                    <li>
+                        <span class="icon-user" aria-hidden="true"></span> {{ object.reporter_name_display }}
+                    </li>
+                    <li>
+                        <span class="icon-calendar" aria-hidden="true"></span> {{ object.created|date:"h:ia" }} {{ object.created|date:"d M Y" }}
+                    </li>
+                    {% if private and object.commissioned != None %}
+                        <li class="commissioned">
+                            <span class="icon-eye" aria-hidden="true"></span> {{ object.get_commissioned_display }}
+                        </li>
+                    {% endif %}
+                </ul>
             </div>
         </div>
     </div>
