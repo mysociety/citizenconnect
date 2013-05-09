@@ -371,6 +371,10 @@ label.disabled, .label.disabled { -ms-filter: "progid:DXImageTransform.Microsoft
 /** Problem form */
 .problem-form .description-count { color: #5bbf21; }
 .problem-form .description-count.error { color: #d81e05; }
+.problem-form .island-list li { margin-bottom: 30px; }
+.problem-form .steps-list { list-style: none; }
+.problem-form .steps-list li { padding: 15px 0; border-bottom: 1px solid #999999; }
+.problem-form .slim-select select { margin-left: 20px; width: 45%; }
 
 /* A better looking default horizontal rule */
 hr { display: block; height: 1px; border: 0; border-top: 1px solid #dddddd; margin: 1em 0; padding: 0; }
@@ -580,7 +584,7 @@ table .icon-warning { font-size: 1.375em; color: #d81e05; line-height: 0; }
 
 .island--grey, .islet--grey, .moderator-box { background: #f9f9f9; }
 
-.island-label { font-size: 1.5em; margin: 0 0 0.83em; color: #00adc6; }
+.island-label { font-size: 1.5em; font-weight: normal; margin: 0 0 0.83em; color: #00adc6; }
 
 /*------------------------------------*\ $WIDTHS
 \*------------------------------------*/

@@ -57,7 +57,7 @@
                 </div>
 
                 {% if not form.service.is_hidden %}
-                <p class="info">If your problem relates to a particular service {{ form.service }}</p>
+                <p class="info">If your problem relates to a particular service <span class="slim-select">{{ form.service }}</span></p>
                 {% include "message_list.html" with messages=form.service.errors message_type='error' %}
                 {% endif %}
             </li>

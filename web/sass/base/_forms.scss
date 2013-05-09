@@ -253,4 +253,23 @@ textarea {
       color: $c-description-count-error;
     }
   }
+
+  .island-list {
+    li {
+      margin-bottom: 30px;
+    }
+  }
+
+  .steps-list {
+    list-style: none;
+    li {
+      padding: 15px 0;
+      border-bottom: 1px solid #999;
+    }
+  }
+
+  .slim-select select {
+    margin-left: 20px;
+    width: 45%;
+  }
 }
