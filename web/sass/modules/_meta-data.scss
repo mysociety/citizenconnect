@@ -59,21 +59,66 @@
   width: 1em;
 }
 
+/**
+ * Things which sit in the sidebar of problem details, statuses etc
+ */
 .meta-data-sidebar {
   .meta-data-wrap {
-    background-color: $c-meta-data-sidebar-bg;
+    @extend .islet;
+    @extend .islet--grey;
+    @extend .islet--squared;
+    margin-bottom: $grid-gutter + em;
   }
 
   .meta-data-label {
-    background-color: $c-meta-data-sidebar-label-bg;
-    color: $c-meta-data-sidebar-label-color;
-    padding: ($grid-gutter / 2) + em;
+    font-size: (17px / $font-size-base) + em;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #999;
+    background: $c-lightgrey;
+    margin: -($grid-gutter / 2) + em;
+    margin-bottom: ($grid-gutter / 2) + em;
+    padding: ($grid-gutter / 4) + em  ($grid-gutter / 2) + em;
   }
 
   .meta-data {
     padding-left: ($grid-gutter / 2) + em;
     padding-right: ($grid-gutter / 2) + em;
     border: none;
+
+    /**
+     * A list that supports icons with colours
+     */
+    .meta-data-list {
+      list-style: none;
+      padding: 0;
+      li {
+        font-size: (14px / $font-size-base) + em;
+        margin-bottom: ($grid-gutter / 2)+ em;
+      }
+      span {
+        display: inline-block;
+        *display: inline;
+        *zoom: 1;
+        vertical-align: middle;
+        margin-top: -5px;
+
+        width: 20px; // matched with bordered-circle size
+
+        font-size: (16px / 14px) + em;
+        color: #ccc;
+        margin-right: ($grid-gutter / 4)+ em;;
+        &.moderator-list__icon-pink { color: $c-pink; }
+        &.moderator-list__icon-green { color: $c-nhs_lightgreen; }
+        &.moderator-list__icon-red { color: $c-nhs_red; }
+      }
+    }
+      .meta-data-list--heavy {
+        font-weight: bold;
+        span {
+          font-weight: normal;
+        }
+      }
   }
 
 }
