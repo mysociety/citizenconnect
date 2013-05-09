@@ -1,28 +1,63 @@
 /**
- * Mainly used on summary pages, this is just some
- * borders and margin/padding tweaks for a horizontal
- * filter form made using the grid.
+ * Filter bar with styled select elements
  */
 .filters {
-  border-top: $c-filter-border solid ($grid-gutter / 5) + em;
-  border-bottom: $c-filter-border solid ($grid-gutter / 5) + em;
-  padding: ($grid-gutter / 2) + em 0;
-  margin: ($grid-gutter * 2) + em 0;
+  margin-top: ($grid-gutter * 2) + em;
+  margin-bottom: ($grid-gutter * 2) + em;
   p {
     margin: 0;
     font-size: (20px / $font-size-base) + em;
   }
 }
 
-.current-filter {
-    display: inline-block;
-    @include vendor(border-radius, ($grid-gutter / 3) + em);
-    background-color: $c-aquablue;
-    color: $c-white;
-    padding: ($grid-gutter / 5) + em ($grid-gutter / 3) + em ($grid-gutter / 5) + em ($grid-gutter / 2) + em ;
-    font-size: (14px / $font-size-base) + em;
-    a {
-        text-decoration: none;
-        color: $c-white;
+  .filters__dropdown-wrap {
+    label {
+      font-weight: normal;
+      font-size: (12px / $font-size-base) + em;
+      color: #666;
+      margin-bottom: 0;
     }
-}
+    .filters__dropdown {
+      position: relative;
+      border-right: 2px solid #fff;
+      background: $c-aquablue;
+      font-weight: bold;
+      @include vendor(text-overflow, ellipsis);
+      select, span {
+        color: #fff;
+        &:focus { color: #fff; }
+      }
+    }
+    .filters__dropdown--last { border-right: 0; }
+    .filters__dropdown--default {
+      background: #e6e6e6;
+      font-weight: normal;
+      select, span {
+        color: #333;
+        &:focus { color: #333; }
+      }
+    }
+      select {
+        background-color: transparent;
+        -webkit-appearance: none;
+        -moz-appearance: window;
+        appearance: none;
+        border: none;
+
+        width: 100%;
+        padding: 1em 2.5em 1em 0.5em;
+        margin: 0;
+        font-size: (13px / $font-size-base) + em;
+        @include vendor(border-radius, 0);
+      }
+      span {
+        position: absolute;
+        right: 0.5em;
+        top: 0.8em;
+      }
+  }
+
+  .filters__button {
+    padding: 0.7em 1.5em;
+    margin: 1.15em 0 0.5em $grid-gutter-pixel;
+  }

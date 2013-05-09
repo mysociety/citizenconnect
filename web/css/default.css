@@ -24,6 +24,7 @@
 /** _icon-overlay.scss */
 /** _split-box.scss */
 /** _nav.scss */
+/** _alert.scss */
 /** From: http://jakearchibald.github.com/sass-ie/ Mixins to help responsive design in browsers that don't do media queries and produce versions specific to ie browser version */
 /** Sortcut method for making something an inline block */
 /** From inuit.css (https://github.com/csswizardry/inuit.css/)  Create vendor-prefixed CSS in one go, e.g.  `@include vendor(border-radius, 4px);`  */
@@ -47,16 +48,16 @@
 
 /* Contain floats: h5bp.com/q */
 /* mySociety change: rename to cf */
-.cf:before, .gw:before, .radio-list:before, .grid-wrapper:before, .island:before, .islet:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { content: ""; display: table; }
+.cf:before, .gw:before, .radio-list:before, .grid-wrapper:before, .island:before, .islet:before, .meta-data-sidebar .meta-data-wrap:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { content: ""; display: table; }
 
-.cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { clear: both; }
+.cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { clear: both; }
 
-.cf, .gw, .radio-list, .grid-wrapper, .island, .islet, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar { *zoom: 1; }
+.cf, .gw, .radio-list, .grid-wrapper, .island, .islet, .meta-data-sidebar .meta-data-wrap, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar { *zoom: 1; }
 
 /** From inuit.css (https://github.com/csswizardry/inuit.css/)  Micro clearfix, as per: nicolasgallagher.com/micro-clearfix-hack Extend the clearfix class with Sass to avoid the `.cf` class appearing over and over in your markup. */
-.cf, .gw, .radio-list, .grid-wrapper, .island, .islet, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar { zoom: 1; }
-.cf:before, .gw:before, .radio-list:before, .grid-wrapper:before, .island:before, .islet:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { content: " "; display: table; }
-.cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { clear: both; }
+.cf, .gw, .radio-list, .grid-wrapper, .island, .islet, .meta-data-sidebar .meta-data-wrap, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar { zoom: 1; }
+.cf:before, .gw:before, .radio-list:before, .grid-wrapper:before, .island:before, .islet:before, .meta-data-sidebar .meta-data-wrap:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { content: " "; display: table; }
+.cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { clear: both; }
 
 .fr { float: right; }
 
@@ -260,7 +261,7 @@ textarea { overflow: auto; /* 1 */ vertical-align: top; /* 2 */ }
 /** Remove most spacing between table cells. */
 table { border-collapse: collapse; border-spacing: 0; }
 
-html { font-family: "Frutiger", "Frutiger Linotype", "Helvetica Neue", "Myriad Pro", Myriad, Arial, Calibri, Helvetica, sans-serif; }
+html { font-family: Arial, sans-serif; }
 
 html, button, input, select, textarea { color: #333333; }
 
@@ -395,7 +396,7 @@ Instead of a list of all class selectors,
 you can use the generic selector below, but it's slower:
 [class*="icon-"] {
 */
-.i, table th.sortable a:after, .message-list li:before, .icon-search, .icon-x, .icon-checkmark, .icon-circle, .icon-caret-up, .icon-caret-down, .icon-caret-right, .icon-caret-left, .icon-chevron-right, .icon-double-chevron-right, .icon-chevron-left, .icon-double-chevron-left, .icon-warning, .icon-home, .icon-stack, .icon-calendar, .icon-arrow-up-right, .icon-star, .icon-star-2, .icon-tag, .icon-user, .icon-star-3 { font-family: 'icons'; speak: none; font-style: normal; font-weight: normal; font-variant: normal; text-transform: none; line-height: 1; -webkit-font-smoothing: antialiased; }
+.i, table th.sortable a:after, .message-list li:before, .icon-search, .icon-x, .icon-checkmark, .icon-circle, .icon-caret-up, .icon-caret-down, .icon-caret-right, .icon-caret-left, .icon-chevron-right, .icon-double-chevron-right, .icon-chevron-left, .icon-double-chevron-left, .icon-warning, .icon-home, .icon-stack, .icon-calendar, .icon-arrow-up-right, .icon-star, .icon-star-2, .icon-tag, .icon-user, .icon-star-3, .icon-eye, .icon-double-arrow { font-family: 'icons'; speak: none; font-style: normal; font-weight: normal; font-variant: normal; text-transform: none; line-height: 1; -webkit-font-smoothing: antialiased; }
 
 .icon-search:before { content: "\e000"; }
 
@@ -441,12 +442,17 @@ you can use the generic selector below, but it's slower:
 
 .icon-star-3:before { content: "\e014"; }
 
+.icon-eye:before { content: "\e016"; }
+
+.icon-double-arrow:before { content: "\e017"; }
+
 .table-container, .table-wrapper { overflow: auto; }
 
+/** Standard table styles */
 table { width: 100%; margin-bottom: 2.5em; }
 @media only screen and (max-width: 480px) { table { width: 60em; } }
-table tr.table__heading { font-weight: bold; }
-table tr.table__footer td { border-bottom: #dddddd solid 2px; }
+table tr.table__heading, table tr.table__heading * { font-weight: bold; }
+table tr.table__footer td { border-bottom: #dddddd solid 3px; }
 table td.table__first, table th.table__first { padding-left: 0; text-align: left; }
 table td.table__last, table th.table__last { padding-right: 0; }
 table td { font-size: 0.75em; text-align: center; border-bottom: #dddddd solid 1px; padding: 10px 0; }
@@ -455,18 +461,18 @@ table td a:hover { color: #333333; }
 table td.table__label { text-align: left; }
 table td.created, table td.resolved { color: #aaaaaa; }
 table td.happy_service, table td.happy_outcome, table td.time_to_acknowledge, table td.time_to_address, table td.breach { vertical-align: middle; text-align: center; }
-table th { font-size: 0.75em; font-weight: normal; padding: 20px 10px; border-bottom: #dddddd solid 2px; }
+table th { font-size: 0.75em; font-weight: normal; padding: 20px 10px; border-bottom: #dddddd solid 3px; }
 table th.table__title { font-weight: bold; text-align: left; padding-left: 0; font-size: 1.3125em; }
 table th a { color: #333333; text-decoration: none; }
 table th a:hover { color: #2f9aa8; }
 table th.sortable a:after { margin-left: 0.5em; content: "\e005"; }
 table th.asc a, table th.desc a { color: #2f9aa8; }
 table th.asc a:after { content: "\e004"; }
-table .icon-x { font-size: 1.375em; color: #d81e05; }
-table .icon-checkmark { font-size: 1.375em; color: #009e49; }
-table .icon-circle { font-size: 1.375em; color: #aaaaaa; }
-table .icon-hidden { color: white; }
-table .icon-warning { font-size: 1.375em; color: #d81e05; }
+table .icon-x { font-size: 1.375em; color: #d81e05; line-height: 0; }
+table .icon-checkmark { font-size: 1.375em; color: #009e49; line-height: 0; }
+table .icon-circle { font-size: 1.375em; color: #aaaaaa; line-height: 0; }
+table .icon-hidden { color: white; line-height: 0; }
+table .icon-warning { font-size: 1.375em; color: #d81e05; line-height: 0; }
 
 /** Public Problem table */
 .problem-table th, .problem-table td { vertical-align: top; text-align: left; padding-left: 10px; padding-right: 10px; }
@@ -474,6 +480,55 @@ table .icon-warning { font-size: 1.375em; color: #d81e05; }
 .problem-table .breach .icon-circle { color: #d81e05; }
 
 .organisation-problems .problem-table tr.highlight { background-color: #fda397; }
+
+/** A square table with options for split cols and highlights */
+.summary-table th { font-weight: bold; padding: 0; border-bottom: 0; }
+.summary-table th a { display: block; padding: 1em 0.5em; }
+.summary-table .summary-table__subhead th { font-weight: normal; padding: 0.5em 0; background-color: #e6e6e6; }
+.summary-table .summary-table__subhead th a { display: block; padding: 0 0.5em; }
+.summary-table td { border-left: 1px solid #dddddd; }
+.summary-table td:first-child { border-left: 0; }
+.summary-table tr:last-child td { border-bottom: 0; }
+.summary-table .summary-table__cell-no-border { border-left: 0; }
+.summary-table tbody tr:nth-of-type(even) td { background: #f2f2f2; }
+.summary-table tbody tr.summary-table__highlight td { background-color: #d81e05; color: white; font-weight: bold; border-color: #931638; border-top: 2px solid #931638; border-bottom: 2px solid #931638; }
+.summary-table .filters__dropdown { margin: -0.5em 0; }
+
+/** A rounded table with options for expanded rows, flags and highlights */
+.dashboard-table { border-collapse: separate; border-spacing: 0; }
+.dashboard-table td, .dashboard-table th { text-align: left; padding: 10px; }
+.dashboard-table td.align-center, .dashboard-table th.align-center { text-align: center; }
+.dashboard-table th { border: 0; }
+.dashboard-table .dashboard-table__head th { font-weight: bold; padding: 0 10px; }
+.dashboard-table .dashboard-table__subhead th { border-bottom: 3px solid #e6e6e6; text-align: center; color: #999999; font-size: 0.6875em; padding: 5px 10px; }
+.dashboard-table td { border-bottom: 1px solid #e6e6e6; }
+.dashboard-table td:first-child { border-left: 1px solid #e6e6e6; }
+.dashboard-table td:last-child { border-right: 1px solid #e6e6e6; }
+.dashboard-table tr:first-child td { border-top: 1px solid #e6e6e6; }
+.dashboard-table tr:first-child td:first-child { -webkit-border-radius: 5px 0 0 0; -moz-border-radius: 5px 0 0 0; -ms-border-radius: 5px 0 0 0; -o-border-radius: 5px 0 0 0; border-radius: 5px 0 0 0; }
+.dashboard-table tr:first-child td:last-child { -webkit-border-radius: 0 5px 0 0; -moz-border-radius: 0 5px 0 0; -ms-border-radius: 0 5px 0 0; -o-border-radius: 0 5px 0 0; border-radius: 0 5px 0 0; }
+.dashboard-table tr:last-child td:last-child { -webkit-border-radius: 0 0 5px 0; -moz-border-radius: 0 0 5px 0; -ms-border-radius: 0 0 5px 0; -o-border-radius: 0 0 5px 0; border-radius: 0 0 5px 0; }
+.dashboard-table tr:last-child td:first-child { -webkit-border-radius: 0 0 0 5px; -moz-border-radius: 0 0 0 5px; -ms-border-radius: 0 0 0 5px; -o-border-radius: 0 0 0 5px; border-radius: 0 0 0 5px; }
+.dashboard-table .dashboard-table__danger-text { color: #d81e05; font-weight: bold; }
+.dashboard-table .dashboard-table__light-text { color: #999999; }
+.dashboard-table .dashboard-table__heavy-text { font-weight: bold; }
+.dashboard-table .dashboard-table__hightlight { background: #d81e05; border-color: #d81e05 !important; color: white; }
+.dashboard-table a { color: #2f9aa8; }
+.dashboard-table a:hover { color: #27808c; }
+.dashboard-table .dashboard-table__flag { padding: 0 0 0 10px; position: relative; overflow: hidden; width: 25px; }
+.dashboard-table div { position: absolute; width: 100%; right: 0; text-transform: uppercase; color: white; text-align: center; padding-top: 5px; height: 28px; }
+.dashboard-table .dashboard-table__flag__breach { background: #ff8b00; top: 0; }
+.dashboard-table .dashboard-table__flag__escalate { background: #000; bottom: 0; }
+
+/** To be used with .dashboard-table, this has expanded rows */
+.dashboard-table--expanded { border-spacing: 0 20px; }
+.dashboard-table--expanded .dashboard-table__spacer { display: none; }
+.dashboard-table--expanded td { border-top: 1px solid #e6e6e6; }
+.dashboard-table--expanded tr td:first-child, .dashboard-table--expanded tr:first-child td:first-child, .dashboard-table--expanded tr:last-child td:first-child { -webkit-border-radius: 5px 0 0 5px; -moz-border-radius: 5px 0 0 5px; -ms-border-radius: 5px 0 0 5px; -o-border-radius: 5px 0 0 5px; border-radius: 5px 0 0 5px; }
+.dashboard-table--expanded tr td:last-child, .dashboard-table--expanded tr:first-child td:last-child, .dashboard-table--expanded tr:last-child td:last-child { -webkit-border-radius: 0 5px 5px 0; -moz-border-radius: 0 5px 5px 0; -ms-border-radius: 0 5px 5px 0; -o-border-radius: 0 5px 5px 0; border-radius: 0 5px 5px 0; }
+
+.table-link__row:hover td { background-color: #f9f9f9; cursor: pointer; }
+.table-link__row:hover td.dashboard-table__hightlight { background: #c50e12; }
 
 /*------------------------------------*\ $GRIDS
 \*------------------------------------*/
@@ -499,20 +554,24 @@ table .icon-warning { font-size: 1.375em; color: #d81e05; }
 /** Grid  Shorthand and verbose */
 .g, .radio-list li, .grid, .stats-number, .stats-text { float: left; padding-left: 20px; }
 
+/** Gutterless grid - should extend `.gw` */
+.gw--no-gutters, .grid-wrapper--no-gutters { margin-left: 0; }
+.gw--no-gutters .g, .gw--no-gutters .radio-list li, .radio-list .gw--no-gutters li, .gw--no-gutters .grid, .gw--no-gutters .stats-number, .gw--no-gutters .stats-text, .grid-wrapper--no-gutters .g, .grid-wrapper--no-gutters .radio-list li, .radio-list .grid-wrapper--no-gutters li, .grid-wrapper--no-gutters .grid, .grid-wrapper--no-gutters .stats-number, .grid-wrapper--no-gutters .stats-text { padding-left: 0; }
+
 /*------------------------------------*\ Island
 \*------------------------------------*/
 /** From inuit.css (https://github.com/csswizardry/inuit.css/)  A padded box with a grey background and rounded corners */
-.island, .islet { display: block; background: #f2f2f2; -webkit-border-radius: 0.625em; -moz-border-radius: 0.625em; -ms-border-radius: 0.625em; -o-border-radius: 0.625em; border-radius: 0.625em; }
+.island, .islet, .meta-data-sidebar .meta-data-wrap { display: block; background: #f2f2f2; -webkit-border-radius: 0.625em; -moz-border-radius: 0.625em; -ms-border-radius: 0.625em; -o-border-radius: 0.625em; border-radius: 0.625em; }
 
 .island { padding: 1.25em; }
 
-.island > :last-child, .islet > :last-child { margin-bottom: 0; }
+.island > :last-child, .islet > :last-child, .meta-data-sidebar .meta-data-wrap > :last-child { margin-bottom: 0; }
 
 /** Just like `.island`, only smaller. */
-.islet { padding: 0.625em; }
+.islet, .meta-data-sidebar .meta-data-wrap { padding: 0.625em; }
 
 /** Take off border radius */
-.island--squared, .islet--squared { -webkit-border-radius: 0; -moz-border-radius: 0; -ms-border-radius: 0; -o-border-radius: 0; border-radius: 0; }
+.island--squared, .islet--squared, .meta-data-sidebar .meta-data-wrap { -webkit-border-radius: 0; -moz-border-radius: 0; -ms-border-radius: 0; -o-border-radius: 0; border-radius: 0; }
 
 /** Add a border to top and bottom */
 .island--half-bordered, .islet--half-bordered { border-top: 0.25em solid #dddddd; border-bottom: 0.25em solid #dddddd; }
@@ -521,6 +580,8 @@ table .icon-warning { font-size: 1.375em; color: #d81e05; }
 .island--aquablue, .islet--aquablue { background: #2f9aa8; color: white; }
 
 .island--white, .islet--white { background: white; border: 0.25em solid #dddddd; }
+
+.island--grey, .islet--grey, .meta-data-sidebar .meta-data-wrap { background: #f9f9f9; }
 
 /*------------------------------------*\ $WIDTHS
 \*------------------------------------*/
@@ -839,12 +900,22 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .header h1, .header h2, .header h3, .header h4, .header h5, .header h6 { line-height: 1.1; margin: 0 0 0.25em 0; }
 .header .header__pre-heading { font-size: 1.25em; font-weight: normal; color: #aaaaaa; margin-bottom: 0; }
 
-/** Mainly used on summary pages, this is just some borders and margin/padding tweaks for a horizontal filter form made using the grid. */
-.filters { border-top: #dddddd solid 0.25em; border-bottom: #dddddd solid 0.25em; padding: 0.625em 0; margin: 2.5em 0; }
+/** Filter bar with styled select elements */
+.filters { margin-top: 2.5em; margin-bottom: 2.5em; }
 .filters p { margin: 0; font-size: 1.25em; }
 
-.current-filter { display: inline-block; -webkit-border-radius: 0.41667em; -moz-border-radius: 0.41667em; -ms-border-radius: 0.41667em; -o-border-radius: 0.41667em; border-radius: 0.41667em; background-color: #2f9aa8; color: white; padding: 0.25em 0.41667em 0.25em 0.625em; font-size: 0.875em; }
-.current-filter a { text-decoration: none; color: white; }
+.filters__dropdown-wrap label { font-weight: normal; font-size: 0.75em; color: #666; margin-bottom: 0; }
+.filters__dropdown-wrap .filters__dropdown { position: relative; border-right: 2px solid white; background: #2f9aa8; font-weight: bold; -webkit-text-overflow: ellipsis; -moz-text-overflow: ellipsis; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; }
+.filters__dropdown-wrap .filters__dropdown select, .filters__dropdown-wrap .filters__dropdown span { color: #fff; }
+.filters__dropdown-wrap .filters__dropdown select:focus, .filters__dropdown-wrap .filters__dropdown span:focus { color: #fff; }
+.filters__dropdown-wrap .filters__dropdown--last { border-right: 0; }
+.filters__dropdown-wrap .filters__dropdown--default { background: #e6e6e6; font-weight: normal; }
+.filters__dropdown-wrap .filters__dropdown--default select, .filters__dropdown-wrap .filters__dropdown--default span { color: #333; }
+.filters__dropdown-wrap .filters__dropdown--default select:focus, .filters__dropdown-wrap .filters__dropdown--default span:focus { color: #333; }
+.filters__dropdown-wrap select { background-color: transparent; -webkit-appearance: none; -moz-appearance: window; appearance: none; border: none; width: 100%; padding: 1em 2.5em 1em 0.5em; margin: 0; font-size: 0.8125em; -webkit-border-radius: 0; -moz-border-radius: 0; -ms-border-radius: 0; -o-border-radius: 0; border-radius: 0; }
+.filters__dropdown-wrap span { position: absolute; right: 0.5em; top: 0.8em; }
+
+.filters__button { padding: 0.7em 1.5em; margin: 1.15em 0 0.5em 20px; }
 
 .pagination { list-style: none; padding: 0; width: 100%; text-align: center; }
 .pagination li { display: inline-block; *display: inline; *zoom: 1; margin: 0 0.125em; }
@@ -882,13 +953,26 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .meta-data--response p { margin: 1em 0; }
 .meta-data--response .meta-data__foot { margin: 0; }
 
-.meta-data-wrap { margin: 1em 0 2em 0; }
+.meta-data-wrap { margin: 1em 0; }
 
-.meta-data-label { font-size: 0.6875em; font-weight: normal; text-transform: uppercase; color: #aaaaaa; }
+.meta-data-label { font-size: 0.875em; font-weight: normal; text-transform: uppercase; color: #aaaaaa; }
 
 .meta-data-label--bordered { border-bottom: 2px solid #dddddd; }
 
 .meta-data-spacer { display: inline-block; *display: inline; *zoom: 1; width: 1em; }
+
+/** Things which sit in the sidebar of problem's detail page, statuses etc */
+.meta-data-sidebar .meta-data-wrap { margin-bottom: 1.25em; }
+.meta-data-sidebar .meta-data-label { color: #8d8d8d; background: #dbdbdb; margin: -0.625em; margin-bottom: 0.625em; padding: 0.3125em 0.625em; }
+.meta-data-sidebar .meta-data { padding-left: 0.625em; padding-right: 0.625em; border: none; /** A list that supports icons with colours */ }
+.meta-data-sidebar .meta-data .meta-data-list { list-style: none; padding: 0; }
+.meta-data-sidebar .meta-data .meta-data-list li { font-size: 0.875em; margin-bottom: 0.625em; }
+.meta-data-sidebar .meta-data .meta-data-list span { display: inline-block; *display: inline; *zoom: 1; vertical-align: middle; margin-top: -5px; width: 20px; font-size: 1.14286em; color: #aaaaaa; margin-right: 0.3125em; }
+.meta-data-sidebar .meta-data .meta-data-list span.meta-data-list__icon-pink { color: #e70285; }
+.meta-data-sidebar .meta-data .meta-data-list span.meta-data-list__icon-green { color: #5bbf21; }
+.meta-data-sidebar .meta-data .meta-data-list span.meta-data-list__icon-red { color: #d81e05; }
+.meta-data-sidebar .meta-data .meta-data-list--heavy { font-weight: bold; }
+.meta-data-sidebar .meta-data .meta-data-list--heavy span { font-weight: normal; }
 
 /** Used on the homepage, a link containing an image with an icon over the top: 
 <a href="/choices/stats/summary" class="icon-overlay"> <img src="/web/img/homepage-summary-table.png"> <span class="icon-search" aria-hidden="true"></span>
@@ -930,6 +1014,17 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .ie6 .split-box, .ie7 .split-box { display: block; }
 .ie6 .split-box .split-box__inner, .ie7 .split-box .split-box__inner { display: block; }
 .ie6 .split-box .split-box__left, .ie6 .split-box .split-box__right, .ie7 .split-box .split-box__left, .ie7 .split-box .split-box__right { display: block; width: 50%; float: left; }
+
+/** A version to align more with the alert styles for when used with alerts such as on the moderation pages */
+.split-box--alert { margin-bottom: 20px; }
+.split-box--alert .split-box__left, .split-box--alert .split-box__left:hover, .split-box--alert .split-box__right, .split-box--alert .split-box__right:hover { font-size: 0.875em; font-weight: bold; text-align: center; text-transform: uppercase; padding: 0.5em 0.75em; color: #333333; background: #f2f2f2; }
+.split-box--alert .split-box__left { -webkit-border-radius: 5px 0 0 5px; -moz-border-radius: 5px 0 0 5px; -ms-border-radius: 5px 0 0 5px; -o-border-radius: 5px 0 0 5px; border-radius: 5px 0 0 5px; }
+.split-box--alert .split-box__right { border-left: 0; -webkit-border-radius: 0 5px 5px 0; -moz-border-radius: 0 5px 5px 0; -ms-border-radius: 0 5px 5px 0; -o-border-radius: 0 5px 5px 0; border-radius: 0 5px 5px 0; }
+.split-box--alert .split-box--red, .split-box--alert .split-box--red:hover { color: white; background: #d81e05; }
+
+.split-box--alert--sml .split-box__left, .split-box--alert--sml .split-box__left:hover, .split-box--alert--sml .split-box__right, .split-box--alert--sml .split-box__right:hover { font-size: 0.6875em; }
+
+.split-box--alert--lrg .split-box__left, .split-box--alert--lrg .split-box__left:hover, .split-box--alert--lrg .split-box__right, .split-box--alert--lrg .split-box__right:hover { font-size: 1.375em; }
 
 /** Simple gridded list that uses .btn--med inside. Used on faq page. */
 .gridded-list li { margin-bottom: 1.25em; }
@@ -995,6 +1090,47 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 
 .stats-text { font-size: 1.5em; vertical-align: center; }
 
+/** Side navigation, vertical list. */
+.side-nav { font-size: 15px; list-style: none; width: 300px; margin: 1em 0 0; }
+.side-nav.fixed { position: fixed; top: 0; }
+.side-nav li { background-color: #00adc6; margin: 0 0 2px; padding: 5px 10px; }
+.side-nav li:hover, .side-nav li.active { background-color: #888888; }
+.side-nav li a { color: white; display: block; text-decoration: none; }
+
+/** Markup specific to the about page */
+.step-title { color: #5bbf21; }
+
+.about-section { padding-top: 5px; }
+
+/** Literally creates a circle out of an element which gives us the ability to have borders */
+.bordered-circle { display: inline-block; *display: inline; *zoom: 1; vertical-align: top; width: 20px; height: 20px; -webkit-border-radius: 20px; -moz-border-radius: 20px; -ms-border-radius: 20px; -o-border-radius: 20px; border-radius: 20px; background: #333; border: 3px solid white; }
+
+.bordered-circle--pink { background: #e70285; }
+
+.bordered-circle--green { background: #5bbf21; }
+
+.bordered-circle--red { background: #d81e05; }
+
+/** A three star rating object that uses this markup: 
+<div class="rating"> <span class="icon-star" aria-hidden="true"></span> <span class="icon-star" aria-hidden="true"></span> <span class="icon-star" aria-hidden="true"></span> <span class="icon-star-2" aria-hidden="true"></span> <span class="icon-star-3" aria-hidden="true"></span>
+</div>  */
+.rating span { color: #f7e214; font-size: 18px; text-align: center; font-weight: normal; display: inline-block; *display: inline; *zoom: 1; margin: 0 1px; }
+.rating span.rating__grey { color: #aaaaaa; }
+
+/** Alerts - see moderator pages */
+.alert { font-size: 0.875em; font-weight: bold; text-align: center; text-transform: uppercase; margin: 0 0 20px 0; color: white; background: #333333; padding: 0.5em 0.75em; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
+.alert span { font-weight: normal; display: inline-block; *display: inline; *zoom: 1; margin-right: 0.75em; }
+
+.alert--sml { font-size: 0.6875em; }
+
+.alert--lrg { font-size: 1.375em; }
+
+.alert--orange { background: #ff8b00; }
+
+.alert--red { background: #d81e05; }
+
+.alert--grey { background: #f2f2f2; color: #333333; }
+
 /* ========================================================================== Print styles. Inlined to avoid required HTTP connection: h5bp.com/r ========================================================================== */
 @media print { * { background: transparent !important; color: black !important; /* Black prints faster: h5bp.com/s */ box-shadow: none !important; text-shadow: none !important; }
   a, a:visited { text-decoration: underline; }
@@ -1009,8 +1145,3 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
   @page { margin: 0.5cm; }
   p, h2, h3 { orphans: 3; widows: 3; }
   h2, h3 { page-break-after: avoid; } }
-.header { border-bottom: #dddddd solid 0.25em; margin-bottom: 1.25em; }
-.header h1, .header h2 { margin-bottom: 0.25em; }
-
-.filters { border-top: #dddddd solid 0.25em; border-bottom: #dddddd solid 0.25em; padding: 0.625em 0; margin: 2.5em 0; }
-.filters p { margin: 0; font-size: 1.25em; }

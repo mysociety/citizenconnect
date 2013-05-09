@@ -1,0 +1,31 @@
+/**
+ * Alerts - see moderator pages
+ */
+.alert {
+  font-size: (14px / $font-size-base) + em;
+  font-weight: bold;
+  text-align: center;
+  text-transform: uppercase;
+  margin: 0 0 $grid-gutter-pixel 0;
+  color: $c-alert-color;
+  background: $c-alert-bg;
+  padding: 0.5em 0.75em;
+  @include vendor(border-radius, 5px);
+  span {
+    font-weight: normal;
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+    margin-right: 0.75em;
+  }
+}
+
+
+// size modifiers
+.alert--sml { font-size: (11px / $font-size-base) + em; }
+.alert--lrg { font-size: (22px / $font-size-base) + em; }
+
+// colour modifiers
+.alert--orange { background: $c-alert-orange-bg; }
+.alert--red { background: $c-alert-red-bg; }
+.alert--grey { background: $c-alert-grey-bg; color: $c-alert-grey-color; }

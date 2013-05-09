@@ -42,11 +42,11 @@
   }
 
 
-.meta-data-wrap { margin: 1em 0 2em 0; }
+.meta-data-wrap { margin: 1em 0; }
 
 
 .meta-data-label {
-  font-size: (11px / $font-size-base) + em;
+  font-size: (14px / $font-size-base) + em;
   font-weight: normal;
   text-transform: uppercase;
   color: $c-meta-data-label-color;
@@ -57,4 +57,65 @@
 .meta-data-spacer {
   @include inline-block;
   width: 1em;
+}
+
+/**
+ * Things which sit in the sidebar of problem's detail page, statuses etc
+ */
+.meta-data-sidebar {
+  .meta-data-wrap {
+    @extend .islet;
+    @extend .islet--grey;
+    @extend .islet--squared;
+    margin-bottom: $grid-gutter + em;
+  }
+
+  .meta-data-label {
+    color: $c-meta-data-sidebar-label-color;
+    background: $c-meta-data-sidebar-label-bg;
+    margin: -($grid-gutter / 2) + em;
+    margin-bottom: ($grid-gutter / 2) + em;
+    padding: ($grid-gutter / 4) + em  ($grid-gutter / 2) + em;
+  }
+
+  .meta-data {
+    padding-left: ($grid-gutter / 2) + em;
+    padding-right: ($grid-gutter / 2) + em;
+    border: none;
+
+    /**
+     * A list that supports icons with colours
+     */
+    .meta-data-list {
+      list-style: none;
+      padding: 0;
+      li {
+        font-size: (14px / $font-size-base) + em;
+        margin-bottom: ($grid-gutter / 2)+ em;
+      }
+      span {
+        display: inline-block;
+        *display: inline;
+        *zoom: 1;
+        vertical-align: middle;
+        margin-top: -5px;
+
+        width: 20px; // matched with bordered-circle size
+
+        font-size: (16px / 14px) + em;
+        color: $c-meta-data-sidebar-icon-color;
+        margin-right: ($grid-gutter / 4)+ em;;
+        &.meta-data-list__icon-pink { color: $c-meta-data-sidebar-icon-pink-color; }
+        &.meta-data-list__icon-green { color: $c-meta-data-sidebar-icon-green-color; }
+        &.meta-data-list__icon-red { color: $c-meta-data-sidebar-icon-red-color; }
+      }
+    }
+      .meta-data-list--heavy {
+        font-weight: bold;
+        span {
+          font-weight: normal;
+        }
+      }
+  }
+
 }

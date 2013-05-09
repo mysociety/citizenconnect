@@ -5,22 +5,3 @@
 @import 'layout/layout';
 @import 'modules/modules';
 @import 'print/print';
-
-
-.header {
-  border-bottom: $c-grey solid ($grid-gutter / 5) + em;
-  margin-bottom: $grid-gutter + em;
-  h1, h2 { margin-bottom: 0.25em; }
-}
-
-
-.filters {
-  border-top: $c-grey solid ($grid-gutter / 5) + em;
-  border-bottom: $c-grey solid ($grid-gutter / 5) + em;
-  padding: ($grid-gutter / 2) + em 0;
-  margin: ($grid-gutter * 2) + em 0;
-  p {
-    margin: 0;
-    font-size: 1.25em; //20px
-  }
-}

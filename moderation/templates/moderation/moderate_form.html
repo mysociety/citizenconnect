@@ -6,11 +6,8 @@
 {% block bodyclasses %}moderate-form{% endblock %}
 
 {% block content %}
-<div class="header">
-    <h1>Moderate problem</h1>
-</div>
 
-{% include "issues/issue_detail.html" with object=issue private=1 %}
+{% include "issues/issue_detail.html" with object=issue private=1 title="Moderate problem" %}
 
 <div class="moderate-form">
     <form method="post">

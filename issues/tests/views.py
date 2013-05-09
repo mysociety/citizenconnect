@@ -36,7 +36,7 @@ class ProblemPublicViewTests(AuthorizationTestCase):
 
     def test_public_problem_displays_organisation_name(self):
         resp = self.client.get(self.test_moderated_problem_url)
-        self.assertContains(resp, self.test_organisation.name, count=2, status_code=200)
+        self.assertContains(resp, self.test_organisation.name, count=1, status_code=200)
 
     def test_public_problem_displays_responses(self):
         response1 = ProblemResponse.objects.create(response="response 1", issue=self.test_moderated_problem)
@@ -157,8 +157,73 @@ class ProblemPublicViewTests(AuthorizationTestCase):
             problem_url = reverse('problem-view', kwargs={'cobrand': 'choices',
                                                           'pk': problem.id})
             resp = self.client.get(problem_url)
-            expected_text = '<span class="icon-warning"></span>{0}'.format(problem.get_status_display())
+            expected_text = '<span class="icon-arrow-up-right" aria-hidden="true"></span> This problem has been escalated'
             self.assertContains(resp, expected_text)
+
+    def test_shows_open_or_closed_and_specific_status(self):
+        # An open problem
+        resp = self.client.get(self.test_moderated_problem_url)
+        self.assertContains(resp, "Open")
+        self.assertContains(resp, self.test_moderated_problem.get_status_display())
+
+        # A closed problem
+        self.closed_problem = create_test_problem({'organisation': self.test_organisation,
+                                                   'moderated': Problem.MODERATED,
+                                                   'publication_status': Problem.PUBLISHED,
+                                                   'moderated_description': "A moderated description",
+                                                   'status': Problem.RESOLVED})
+        closed_problem_url = reverse('problem-view', kwargs={'cobrand': 'choices',
+                                                             'pk': self.closed_problem.id})
+        resp = self.client.get(closed_problem_url)
+        self.assertContains(resp, "Closed")
+        self.assertContains(resp, self.closed_problem.get_status_display())
+
+    def test_doesnt_show_priority_on_public_pages(self):
+        # A low priority problem - should never show priority
+        resp = self.client.get(self.test_moderated_problem_url)
+        self.assertNotContains(resp, "Priority")
+
+        # A high priority problem
+        self.high_priority_problem = create_test_problem({'organisation': self.test_organisation,
+                                                          'moderated': Problem.MODERATED,
+                                                          'publication_status': Problem.PUBLISHED,
+                                                          'moderated_description': "A moderated description",
+                                                          'status': Problem.NEW,
+                                                          'priority': Problem.PRIORITY_HIGH})
+        high_priority_problem_url = reverse('problem-view', kwargs={'cobrand': 'choices',
+                                                                    'pk': self.high_priority_problem.id})
+        resp = self.client.get(high_priority_problem_url)
+        self.assertNotContains(resp, "Priority")
+
+    def test_doesnt_show_breach_on_public_pages(self):
+        # A breach problem
+        self.breach_problem = create_test_problem({'organisation': self.test_organisation,
+                                                   'moderated': Problem.MODERATED,
+                                                   'publication_status': Problem.PUBLISHED,
+                                                   'moderated_description': "A moderated description",
+                                                   'status': Problem.NEW,
+                                                   'breach': True})
+        breach_problem_url = reverse('problem-view', kwargs={'cobrand': 'choices',
+                                                             'pk': self.breach_problem.id})
+        resp = self.client.get(breach_problem_url)
+        self.assertNotContains(resp, "Breach")
+
+    def test_doesnt_show_publication_status_on_public_pages(self):
+        # A published problem
+        self.published_problem = create_test_problem({'organisation': self.test_organisation,
+                                                      'moderated': Problem.MODERATED,
+                                                      'publication_status': Problem.PUBLISHED,
+                                                      'moderated_description': "A moderated description",
+                                                      'status': Problem.NEW,
+                                                      'publication_status': Problem.PUBLISHED})
+        published_problem_url = reverse('problem-view', kwargs={'cobrand': 'choices',
+                                                                'pk': self.published_problem.id})
+        resp = self.client.get(published_problem_url)
+        self.assertNotContains(resp, self.published_problem.get_publication_status_display())
+
+    def test_doesnt_show_history_on_public_pages(self):
+        resp = self.client.get(self.test_moderated_problem_url)
+        self.assertNotContains(resp, "History")
 
 
 class ProblemProviderPickerTests(TestCase):
