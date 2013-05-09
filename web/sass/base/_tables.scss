@@ -182,12 +182,12 @@ table {
 
   // hightlight a row
   tbody tr.summary-table__highlight td {
-    background-color: #ff4554;
-    color: #fff;
+    background-color: $c-nhs_red;
+    color: $c-white;
     font-weight: bold;
-    border-color: #c52430;
-    border-top: 2px solid #c52430;
-    border-bottom: 2px solid #c52430;
+    border-color: $c-nhs_darkred;
+    border-top: 2px solid $c-nhs_darkred;
+    border-bottom: 2px solid $c-nhs_darkred;
   }
 
   // pull full height any filters
@@ -243,15 +243,15 @@ table {
 
   // text styles
   .dashboard-table__danger-text {
-    color: #c50e12;
+    color: $c-nhs_red;
     font-weight: bold;
   }
   .dashboard-table__light-text { color: #999999; }
   .dashboard-table__heavy-text { font-weight: bold; }
   .dashboard-table__hightlight {
-    background: #c50e12;
-    border-color: #c50e12 !important;
-    color: #fff;
+    background: $c-nhs_red;
+    border-color: $c-nhs_red !important;
+    color: $c-white;
   }
   a {
     color: $c-aquablue;
@@ -270,13 +270,13 @@ table {
       width: 100%;
       right: 0;
       text-transform: uppercase;
-      color: #fff;
+      color: $c-white;
       text-align: center;
       padding-top: 5px;
       height: 28px;
     }
     .dashboard-table__flag__breach {
-      background: #ff8b00;
+      background: $c-orange;
       top: 0;
     }
     .dashboard-table__flag__escalate {

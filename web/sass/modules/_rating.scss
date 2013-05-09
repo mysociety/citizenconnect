@@ -1,0 +1,25 @@
+/**
+ * A three star rating object that uses this markup:
+ *
+<div class="rating">
+  <span class="icon-star" aria-hidden="true"></span>
+  <span class="icon-star" aria-hidden="true"></span>
+  <span class="icon-star" aria-hidden="true"></span>
+  <span class="icon-star-2" aria-hidden="true"></span>
+  <span class="icon-star-3" aria-hidden="true"></span>
+</div>
+ *
+ */
+.rating {
+  span {
+    color: $c-nhs_yellow;
+    font-size: 18px; // using a pixel value as we don't know what it will inherit from its parent
+    text-align: center;
+    font-weight: normal;
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+    margin: 0 1px;
+    &.rating__grey { color: $c-darkgrey; }
+  }
+}
