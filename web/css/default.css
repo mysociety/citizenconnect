@@ -374,7 +374,7 @@ label.disabled, .label.disabled { -ms-filter: "progid:DXImageTransform.Microsoft
 .problem-form .label-checkbox { font-weight: normal; }
 .problem-form .island-list li { margin-bottom: 30px; }
 .problem-form .steps-list { list-style: none; }
-.problem-form .steps-list li { padding: 25px 0 5px; border-bottom: 1px solid #999999; }
+.problem-form .steps-list li { padding: 25px 0 5px; border-bottom: 1px solid #dddddd; }
 .problem-form .slim-select > :first-child { margin-left: 20px; width: 45%; }
 
 /* A better looking default horizontal rule */
