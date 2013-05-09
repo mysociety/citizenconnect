@@ -175,7 +175,7 @@ class ProblemDashboardTable(BaseProblemTable):
 
     class Meta:
         order_by = ('-created',)
-        attrs = {"class": "problem-table"}
+        attrs = {"class": "dashboard-table  dashboard-table--expanded"}
         sequence = ('reference_number',
                     'created',
                     'status',
