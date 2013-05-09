@@ -14,32 +14,6 @@
 
 {% include "organisations/includes/organisation_tabs.html" with active_tab='dashboard' %}
 
-<div class="island  island--aquablue">
-    <div class="gw">
-        {% if organisation.has_time_limits  %}
-
-            <p class="g  one-half  palm-one-whole  feature">
-                {% if problems_total.average_time_to_address != None %}
-                    <span class="feature__num">{{ problems_total.average_time_to_address|formatted_time_interval }}</span><span class="feature__text">{% if problems_total.average_time_to_address|formatted_time_interval == '1' %} day {% else %} days {% endif %} on average to address problems</span>
-                {% else %}
-                    <span class="feature__text">No data on time taken to address problems</span>
-                {% endif %}
-            </p>
-
-        {% endif %}
-    <p class="g  {% if organisation.has_time_limits  %}one-half{% else %}one-whole{% endif %} palm-one-whole  feature">
-            {% if problems_total.happy_service != None %}
-               <span class="feature__num">{{ problems_total.happy_service|percent }}</span><span class="feature__text"> of users happy with service</span>
-            {% else %}
-                <span class="feature__text">No data on users happy with service</span>
-             {% endif %}
-         </p>
-    </div>
-</div>
-
-    <div class="feature">
-        <p><a href="{% url 'private-org-summary' ods_code=organisation.ods_code %}">More stats</a></p>
-    </div>
-
 {% render_table table 'organisations/includes/table.html' %}
+
 {% endblock %}
