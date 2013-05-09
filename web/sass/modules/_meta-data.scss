@@ -71,9 +71,6 @@
   }
 
   .meta-data-label {
-    font-size: (17px / $font-size-base) + em;
-    font-weight: bold;
-    text-transform: uppercase;
     color: $c-meta-data-sidebar-label-color;
     background: $c-meta-data-sidebar-label-bg;
     margin: -($grid-gutter / 2) + em;

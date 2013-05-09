@@ -963,7 +963,7 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 
 /** Things which sit in the sidebar of problem's detail page, statuses etc */
 .meta-data-sidebar .meta-data-wrap { margin-bottom: 1.25em; }
-.meta-data-sidebar .meta-data-label { font-size: 1.0625em; font-weight: bold; text-transform: uppercase; color: #8d8d8d; background: #dbdbdb; margin: -0.625em; margin-bottom: 0.625em; padding: 0.3125em 0.625em; }
+.meta-data-sidebar .meta-data-label { color: #8d8d8d; background: #dbdbdb; margin: -0.625em; margin-bottom: 0.625em; padding: 0.3125em 0.625em; }
 .meta-data-sidebar .meta-data { padding-left: 0.625em; padding-right: 0.625em; border: none; /** A list that supports icons with colours */ }
 .meta-data-sidebar .meta-data .meta-data-list { list-style: none; padding: 0; }
 .meta-data-sidebar .meta-data .meta-data-list li { font-size: 0.875em; margin-bottom: 0.625em; }
