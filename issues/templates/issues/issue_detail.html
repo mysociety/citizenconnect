@@ -3,7 +3,7 @@
         <h1>{{ title|default:"Problem" }}</h1>
     </div>
     <div class="g  one-third  lap-one-half  palm-one-whole">
-        <p class="escalation  align-right--not-palm"><span class="icon-arrow-up-right" aria-hidden="true"></span> This problem has been escalated</p>
+        <p class="alert  align-right--not-palm"><span class="icon-arrow-up-right" aria-hidden="true"></span> This problem has been escalated</p>
         {% if object.status in object.ESCALATION_STATUSES %}
             <p class="escalation"><span class="icon-arrow-up-right" aria-hidden="true"></span> This problem has been escalated</p>
         {% endif %}
@@ -73,15 +73,15 @@
 
     <div class="meta-data-sidebar  g  one-third  palm-one-whole">
 
-        <p class="reference_number  align-right--not-palm">
+        <p class="alert  alert--lrg  alert--grey  align-right--not-palm">
             {% if private and object.priority == object.PRIORITY_HIGH %}
-                <span class="priority">Priority</span>&nbsp;
+                <span class="alert--red">Priority</span>&nbsp;
             {% endif %}
             {{ object.reference_number }}
         </p>
 
         {% if private and object.breach %}
-            <p class="breach">Breach</p>
+            <p class="alert  alert--sml  alert--orange">Breach</p>
         {% endif %}
 
         <div class="meta-data-wrap">
