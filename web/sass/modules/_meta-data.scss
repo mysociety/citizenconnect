@@ -71,7 +71,9 @@
   }
 
   .meta-data {
-    padding: ($grid-gutter / 2) + em;
+    padding-left: ($grid-gutter / 2) + em;
+    padding-right: ($grid-gutter / 2) + em;
+    border: none;
   }
 
 }

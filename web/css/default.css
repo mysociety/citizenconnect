@@ -957,7 +957,7 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 
 .meta-data-sidebar .meta-data-wrap { background-color: #f2f2f2; }
 .meta-data-sidebar .meta-data-label { background-color: #dbdbdb; color: #8d8d8d; padding: 0.625em; }
-.meta-data-sidebar .meta-data { padding: 0.625em; }
+.meta-data-sidebar .meta-data { padding-left: 0.625em; padding-right: 0.625em; border: none; }
 
 /** Used on the homepage, a link containing an image with an icon over the top: 
 <a href="/choices/stats/summary" class="icon-overlay"> <img src="/web/img/homepage-summary-table.png"> <span class="icon-search" aria-hidden="true"></span>
