@@ -49,7 +49,7 @@ class ProblemCreate(OrganisationAwareViewMixin, CreateView):
             form.fields['service'].widget = HiddenInput()
         else:
             form.fields['service'].queryset = services
-            form.fields['service'].empty_label = "None"
+            form.fields['service'].empty_label = "Select service"
         return form
 
     def get_context_data(self, **kwargs):

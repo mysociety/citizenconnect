@@ -55,6 +55,11 @@
                 <div class="description-errors">
                     {% include "message_list.html" with messages=form.description.errors message_type='error' %}
                 </div>
+
+                {% if not form.service.is_hidden %}
+                <p class="info">If your problem relates to a particular service {{ form.service }}</p>
+                {% include "message_list.html" with messages=form.service.errors message_type='error' %}
+                {% endif %}
             </li>
 
             <li class="g  three-eighths">
@@ -68,23 +73,6 @@
             </li>
         </ul>
     </fieldset>
-
-    {% if not form.service.is_hidden %}
-        <fieldset class="island">
-            <label for="id_service" class="island-label">Service</label>
-
-            <p class="info">If your problem relates to a particular service, you can select it here</p>
-
-            <ul class="radio-list">
-                {% for radio in form.service %}
-                    <li>{{ radio }}</li>
-                {% endfor %}
-            </ul>
-
-            {% include "message_list.html" with messages=form.service.errors message_type='error' %}
-
-        </fieldset>
-    {% endif %}
 
     <fieldset class="island">
         <label for="id_category" class="island-label">Category</label>
