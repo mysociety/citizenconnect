@@ -1133,6 +1133,8 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 
 .alert--red { background: #d81e05; }
 
+.alert--grey { background: #f2f2f2; color: #333333; }
+
 /* ========================================================================== Print styles. Inlined to avoid required HTTP connection: h5bp.com/r ========================================================================== */
 @media print { * { background: transparent !important; color: black !important; /* Black prints faster: h5bp.com/s */ box-shadow: none !important; text-shadow: none !important; }
   a, a:visited { text-decoration: underline; }
