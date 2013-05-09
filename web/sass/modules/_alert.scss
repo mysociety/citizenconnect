@@ -7,8 +7,8 @@
   text-align: center;
   text-transform: uppercase;
   margin: 0 0 $grid-gutter-pixel 0;
-  color: $c-white;
-  background: $c-black;
+  color: $c-alert-color;
+  background: $c-alert-bg;
   padding: 0.5em 0.75em;
   @include vendor(border-radius, 5px);
   span {
@@ -26,5 +26,5 @@
 .alert--lrg { font-size: (22px / $font-size-base) + em; }
 
 // colour modifiers
-.alert--orange { background: $c-orange; }
-.alert--red { background: $c-nhs_red; }
+.alert--orange { background: $c-alert-orange-bg; }
+.alert--red { background: $c-alert-red-bg; }
