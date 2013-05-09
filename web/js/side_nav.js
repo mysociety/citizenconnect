@@ -4,11 +4,12 @@
      *
      * @param {Element} el The element to attach to
      */
-    function SideNavView(el) {
-        this.el = el;
+    function SideNavView(options) {
+        this.el = options.el;
         this.fixed = false;
-        el.find('a').on('click', $.proxy(this.clickHandler, this));
+        this.el.find('a').on('click', $.proxy(this.clickHandler, this));
         $(window).on('scroll', $.proxy(this.scrollSpy, this));
+        options.sections.each($.proxy(this.setupSpy, this));
     }
 
     /**
@@ -58,6 +59,19 @@
      */
     SideNavView.prototype.topOffset = function() {
         return this.el.parent().offset().top;
+    };
+
+    SideNavView.prototype.setupSpy = function(_, section) {
+        var self = this;
+        var position = $(section).position();
+        $(section).scrollspy({
+            min: position.top,
+            max: position.top + $(section).height(),
+            onEnter: function(element, position) {
+                self.el.find('li.active').removeClass('active');
+                self.el.find('a[href=#' + element.id + ']').closest('li').addClass('active');
+            }
+        });
     };
 
     window.SideNavView = SideNavView;

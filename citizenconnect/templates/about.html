@@ -325,10 +325,11 @@
 {% block extra_js %}
 {{ block.super }}
 
+<script src="{% static 'js/jquery.scrollspy.js' %}"></script>
 <script src="{% static 'js/side_nav.js' %}"></script>
 <script>
     jQuery(document).ready(function($) {
-        new SideNavView($('.side-nav'));
+        new SideNavView({el: $('.side-nav'), sections: $('.about-section')});
     });
 </script>
 
