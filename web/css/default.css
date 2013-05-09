@@ -395,7 +395,7 @@ Instead of a list of all class selectors,
 you can use the generic selector below, but it's slower:
 [class*="icon-"] {
 */
-.i, table th.sortable a:after, .message-list li:before, .icon-search, .icon-x, .icon-checkmark, .icon-circle, .icon-caret-up, .icon-caret-down, .icon-caret-right, .icon-caret-left, .icon-chevron-right, .icon-double-chevron-right, .icon-chevron-left, .icon-double-chevron-left, .icon-warning, .icon-home, .icon-stack, .icon-calendar, .icon-arrow-up-right, .icon-star, .icon-star-2, .icon-tag, .icon-user, .icon-star-3, .icon-eye { font-family: 'icons'; speak: none; font-style: normal; font-weight: normal; font-variant: normal; text-transform: none; line-height: 1; -webkit-font-smoothing: antialiased; }
+.i, table th.sortable a:after, .message-list li:before, .icon-search, .icon-x, .icon-checkmark, .icon-circle, .icon-caret-up, .icon-caret-down, .icon-caret-right, .icon-caret-left, .icon-chevron-right, .icon-double-chevron-right, .icon-chevron-left, .icon-double-chevron-left, .icon-warning, .icon-home, .icon-stack, .icon-calendar, .icon-arrow-up-right, .icon-star, .icon-star-2, .icon-tag, .icon-user, .icon-star-3, .icon-eye, .icon-double-arrow { font-family: 'icons'; speak: none; font-style: normal; font-weight: normal; font-variant: normal; text-transform: none; line-height: 1; -webkit-font-smoothing: antialiased; }
 
 .icon-search:before { content: "\e000"; }
 
@@ -442,6 +442,8 @@ you can use the generic selector below, but it's slower:
 .icon-star-3:before { content: "\e014"; }
 
 .icon-eye:before { content: "\e016"; }
+
+.icon-double-arrow:before { content: "\e017"; }
 
 .table-container, .table-wrapper { overflow: auto; }
 
