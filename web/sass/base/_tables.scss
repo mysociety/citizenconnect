@@ -183,7 +183,7 @@ table {
   // hightlight a row
   tbody tr.summary-table__highlight td {
     background-color: $c-nhs_red;
-    color: #fff;
+    color: $c-white;
     font-weight: bold;
     border-color: $c-nhs_darkred;
     border-top: 2px solid $c-nhs_darkred;
@@ -251,7 +251,7 @@ table {
   .dashboard-table__hightlight {
     background: $c-nhs_red;
     border-color: $c-nhs_red !important;
-    color: #fff;
+    color: $c-white;
   }
   a {
     color: $c-aquablue;
@@ -270,7 +270,7 @@ table {
       width: 100%;
       right: 0;
       text-transform: uppercase;
-      color: #fff;
+      color: $c-white;
       text-align: center;
       padding-top: 5px;
       height: 28px;

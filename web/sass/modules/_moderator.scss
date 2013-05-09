@@ -20,7 +20,7 @@
     background: $c-lightgrey;
     margin: -($grid-gutter / 2) + em;
     margin-bottom: ($grid-gutter / 2) + em;
-    padding: ($grid-gutter / 2) + em;
+    padding: ($grid-gutter / 4) + em  ($grid-gutter / 2) + em;
   }
 
 
@@ -48,6 +48,7 @@
     margin-right: ($grid-gutter / 4)+ em;;
     &.moderator-list__icon-pink { color: $c-pink; }
     &.moderator-list__icon-green { color: $c-nhs_lightgreen; }
+    &.moderator-list__icon-red { color: $c-nhs_red; }
   }
 }
 .moderator-list--heavy {
