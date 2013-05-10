@@ -23,11 +23,13 @@
             {{ hidden }}
         {% endfor %}
 
+        <div class="meta-data-wrap">
+            <h3 class="meta-data-label">Moderated details</h3>
+        </div>
         <fieldset class="island">
             <ul class="gw">
               {% if form.fields.moderated_description %}
                 <li class="g  one-whole">
-                    <label for="id_moderated_description">Moderated details</label>
                     {{ form.moderated_description }}
                     <p class="info">Required when publishing public problems.</p>
                     {% include "message_list.html" with messages=form.moderated_description.errors message_type='error' %}
