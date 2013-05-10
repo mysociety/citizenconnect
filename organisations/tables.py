@@ -163,7 +163,9 @@ class ProblemDashboardTable(BaseProblemTable):
     and always assuming a private context
     """
 
-    breach = tables.TemplateColumn(template_name="organisations/includes/breach_column.html")
+    reference_number = ReferenceNumberColumn(attrs={'th': {'class': 'table__first'},
+                                                    'td': {'class': 'table__first  dashboard-table__heavy-text  dashboard-table__highlight'}})
+    service = tables.Column(verbose_name="Service")
 
     def __init__(self, *args, **kwargs):
         # Private is always true for dashboards
@@ -175,11 +177,11 @@ class ProblemDashboardTable(BaseProblemTable):
 
     class Meta:
         order_by = ('-created',)
-        attrs = {"class": "dashboard-table  dashboard-table--expanded"}
+        attrs = {"class": "dashboard-table"}
         sequence = ('reference_number',
                     'created',
                     'category',
-                    'breach',
+                    'service',
                     'summary')
 
 
@@ -200,7 +202,6 @@ class EscalationDashboardTable(ProblemDashboardTable):
                     'created',
                     'service',
                     'category',
-                    'breach',
                     'summary')
 
 
