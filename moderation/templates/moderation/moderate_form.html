@@ -1,13 +1,11 @@
-{% extends 'base.html' %}
+{% extends 'issues/issue_detail.html' %}
 {% load url from future %}
 
 {% block title %}Moderate problem{% endblock %}
 
 {% block bodyclasses %}moderate-form{% endblock %}
 
-{% block content %}
-
-{% include "issues/issue_detail.html" with object=issue private=1 title="Moderate problem" %}
+{% block extra_content %}
 
 <div class="moderate-form">
     <form method="post">

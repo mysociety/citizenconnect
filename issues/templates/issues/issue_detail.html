@@ -1,3 +1,6 @@
+{% extends 'base.html' %}
+
+{% block content %}
 <div class="header">
     {% if object.status in object.ESCALATION_STATUSES %}
         <p class="alert  alert--sml  fr"><span class="icon-arrow-up-right" aria-hidden="true"></span> This problem has been escalated</p>
@@ -64,6 +67,8 @@
                 {% endfor %}
             </div>
         {% endif %}
+
+        {% block extra_content %}{% endblock extra_content %}
     </div>
 
     <div class="meta-data-sidebar  g  one-third  palm-one-whole">
@@ -163,3 +168,4 @@
         </div>
     </div>
 </div>
+{% endblock content %}
