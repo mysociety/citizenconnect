@@ -80,8 +80,16 @@ class ReviewNextPageURLTests(TestCase):
     def test_next_page_url_correctly_set_at_init(self):
 
         tests = {
-            '/organisations/hospitals/comments.atom': dict(organisation_type="hospitals"),
-            '/organisations/gppractices/comments.atom': dict(organisation_type="gppractices"),
+            '/foo/bar': dict(
+                organisation_type='hospitals',
+                start_page='http://example.org/foo/bar?baz'),
+            '/organisations/hospitals/comments.atom': dict(
+                organisation_type="hospitals"),
+            '/organisations/gppractices/comments.atom': dict(
+                organisation_type="gppractices"),
+            '/organisations/hospitals/commentssince/2012/10/5.atom': dict(
+                organisation_type='hospitals',
+                since=datetime.date(2012, 10, 5)),
         }
 
         for expected, kwargs in tests.items():

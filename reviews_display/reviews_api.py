@@ -14,7 +14,7 @@ class ReviewsAPI(object):
     of the XML and lets us use an iterator to access the reviews.
     """
 
-    def __init__(self, organisation_type, start_page=None, max_fetch=5):
+    def __init__(self, organisation_type, start_page=None, max_fetch=5, since=None):
         self.api = ChoicesAPI()
 
         self.organisation_type = organisation_type
@@ -23,11 +23,22 @@ class ReviewsAPI(object):
 
         # create the start page if not specified
         if not start_page:
+
             path_elements = [
                 'organisations',
                 self.organisation_type,
-                'comments.atom'  # add '.atom' so we get a consistent format, which includes ratings
             ]
+
+            if since:
+                path_elements.append('commentssince')
+                path_elements.extend(
+                    map(str, [since.year, since.month, since.day])
+                )
+            else:
+                path_elements.append('comments')
+
+            path_elements[-1] += ".atom"  # add '.atom' so we get a consistent format, which includes ratings
+
             start_page = self.api.construct_url(path_elements)
 
         self.next_page_url = start_page
