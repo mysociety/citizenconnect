@@ -42,6 +42,15 @@ def row_classes(table, record):
     except AttributeError:
         return ""
 
+
+@register.filter(is_safe=True)
+def row_href(table, record):
+    try:
+        return table.row_href(record)
+    except AttributeError:
+        return ""
+
+
 def paginator(context, adjacent_pages=2):
     """Base function for an ellipsis-capable paginator"""
     page_obj = context['page_obj']

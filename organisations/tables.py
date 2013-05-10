@@ -86,17 +86,35 @@ class BaseProblemTable(tables.Table):
         super(BaseProblemTable, self).__init__(*args, **kwargs)
 
     def render_summary_as_response_link(self, record):
-        response_link = reverse("response-form", kwargs={'pk': record.id})
+        response_link = self.row_href(record)
         return mark_safe(u'<a href="{0}">{1} <span class="icon-chevron-right" aria-hidden="true"></span></a>'.format(response_link, conditional_escape(record.private_summary)))
 
     def render_summary_as_public_link(self, record):
-        # self.cobrand might not be set
-        try:
-            cobrand = self.cobrand or 'choices'
-        except AttributeError:
-            cobrand = 'choices'
-        detail_link = reverse('problem-view', kwargs={'cobrand': cobrand, 'pk': record.id})
+        detail_link = self.row_href(record)
         return mark_safe('<a href="{0}">{1} <span class="icon-chevron-right" aria-hidden="true"></span></a>'.format(detail_link, conditional_escape(record.summary)))
+
+    def row_classes(self, record):
+        try:
+            super_row_classes = super(BaseProblemTable, self).row_classes(record)
+        except AttributeError:
+            super_row_classes = ""
+        return '{0} table-link__row'.format(super_row_classes)
+
+    def row_href(self, record):
+        """Return an href for the given row
+
+        Where we link to depends on whether this is public or private
+        """
+
+        if self.private:
+            return reverse('response-form', kwargs={'pk': record.id})
+        else:
+            # self.cobrand might not be set
+            try:
+                cobrand = self.cobrand or 'choices'
+            except AttributeError:
+                cobrand = 'choices'
+            return reverse('problem-view', kwargs={'pk': record.id, 'cobrand': cobrand})
 
 
 class ProblemTable(BaseProblemTable):
