@@ -1,13 +1,11 @@
-
-
 import logging
 import re
-import urlparse
 
 from HTMLParser import HTMLParser
 import xml.etree.ElementTree as ET
 
 import urllib
+from furl import furl
 
 from organisations.choices_api import ChoicesAPI
 
@@ -150,10 +148,10 @@ class ReviewsAPI(object):
 
         # parse the url and check that the path ends with '.atom'. Add it if
         # missing.
-        url_dict = urlparse.urlparse(next_page_url)._asdict()
-        if not re.search(r'\.atom$', url_dict['path']):
-            url_dict['path'] += '.atom'
-            next_page_url = urlparse.urlunparse(url_dict.values())
+        url = furl(next_page_url)
+        if not re.search(r'\.atom$', str(url.path)):
+            url.path = str(url.path) + '.atom'
+            next_page_url = str(url)
 
         return next_page_url
 
