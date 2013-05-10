@@ -3,6 +3,7 @@
 {% load django_tables2 %}
 {% load i18n %}
 {% load organisation_extras %}
+{% load url from future %}
 
 {% block table %}
 <div class="table-wrapper">
@@ -26,15 +27,19 @@
         {% block table.tbody %}
             {% for row in table.page.object_list|default:table.rows %} {# support pagination #}
             {% block table.tbody.row %}
-            <tr class="{{ table|row_classes:row.record }}">
-                <td class="dashboard-table__heavy-text {% if row.record.priority %}dashboard-table__hightlight{% endif %}">{{ row.reference_number }}</td>
+            <tr class="table-link__row {{ table|row_classes:row.record }}" data-href="{% url 'response-form' pk=row.record.id %}">
+                <td class="dashboard-table__heavy-text {% if row.record.priority == object.PRIORITY_HIGH %}dashboard-table__highlight{% endif %}">{{ row.reference_number }}</td>
                 <td class="dashboard-table__light-text"><em>{{ row.created }}</em></td>
                 <td>{{ row.category }}</td>
                 <td>{{ row.service }}</td>
-                <td width="250px" class="dashboard-table__light-text">{{ row.summary }}</td>
+                <td class="dashboard-table__light-text">{{ row.summary }}</td>
                 <td class="dashboard-table__flag">
+                    {% if row.record.breach %}
                     <div class="dashboard-table__flag__breach">b</div>
+                    {% endif %}
+                    {% if row.record.status in row.record.ESCALATION_STATUSES %}
                     <div class="dashboard-table__flag__escalate">e</div>
+                    {% endif %}
                 </td>
             </tr>
             {% endblock table.tbody.row %}
