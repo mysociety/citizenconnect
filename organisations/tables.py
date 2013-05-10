@@ -4,7 +4,6 @@ from django.utils.safestring import mark_safe
 from django.utils.html import conditional_escape
 from django.core.urlresolvers import reverse
 
-from issues.models import Problem
 from issues.table_columns import ReferenceNumberColumn
 
 
