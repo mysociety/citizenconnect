@@ -17,17 +17,3 @@
 {% render_table table 'organisations/includes/dashboard-table.html' %}
 
 {% endblock %}
-
-{% block extra_js %}
-    <script type="text/javascript">
-        (function($, window){
-            $(function(){
-                // Make clicking on table rows go to their link
-                $("tr.table-link__row").click(function(e) {
-                    var href = $(e.target).parent("tr").attr('data-href');
-                    window.location = href;
-                });
-            });
-        })(window.jQuery, window);
-    </script>
-{% endblock extra_js %}

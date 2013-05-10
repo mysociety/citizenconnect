@@ -55,10 +55,11 @@
         docEl.className = docEl.className.replace(/\bno-js\b/,'') + ' js';
     </script>
     <script src="{% static 'js/placeholder_polyfill.jquery.min.combo.js' %}"></script>
+    <script src="{% static 'js/tables.js' %}"></script>
 
     {% if cobrand %}
-          {% include cobrand.scripts_template %}
-        {% endif %}
+        {% include cobrand.scripts_template %}
+    {% endif %}
 
     {% block extra_js %}{% endblock %}
 
