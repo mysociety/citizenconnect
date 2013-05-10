@@ -63,8 +63,8 @@ class BaseProblemTable(tables.Table):
     reference_number = ReferenceNumberColumn(attrs={'th': {'class': 'table__first'},
                                                     'td': {'class': 'table__first'}})
     created = tables.DateTimeColumn(verbose_name="Received")
-    category = tables.Column(verbose_name='Category')
-    summary = tables.Column(verbose_name='Snippet', order_by=("description"))
+    category = tables.Column(verbose_name='Category', orderable=False)
+    summary = tables.Column(verbose_name='Snippet', orderable=False)
 
     def row_classes(self, record):
         if record.status in Problem.ESCALATION_STATUSES:
@@ -165,7 +165,7 @@ class ProblemDashboardTable(BaseProblemTable):
 
     reference_number = ReferenceNumberColumn(attrs={'th': {'class': 'table__first'},
                                                     'td': {'class': 'table__first  dashboard-table__heavy-text  dashboard-table__highlight'}})
-    service = tables.Column(verbose_name="Service")
+    service = tables.Column(verbose_name="Service", orderable=False)
 
     def __init__(self, *args, **kwargs):
         # Private is always true for dashboards
