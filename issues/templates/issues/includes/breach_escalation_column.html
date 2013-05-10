@@ -1,5 +1,6 @@
-
+{% if row.breach %}
     <div class="dashboard-table__flag__breach">b</div>
+{% endif %}
 {% if row.record.status in row.record.ESCALATION_STATUSES %}
     <div class="dashboard-table__flag__escalate">e</div>
 {% endif %}
