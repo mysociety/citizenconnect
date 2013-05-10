@@ -331,11 +331,8 @@ label.disabled, .label.disabled { -ms-filter: "progid:DXImageTransform.Microsoft
 .radio-list li label { font-weight: normal; font-size: 0.875em; }
 .radio-list li label input { font-size: 1.14286em; }
 
-.big-radio-group { display: table; }
-.big-radio-group ul { display: table-row; }
-.big-radio-group li { list-style: none; display: table-cell; padding: 1.25em; background: #f2f2f2; border-left: 0.625em solid white; width: 33%; vertical-align: middle; }
-.big-radio-group li.big-radio-group__first { border-left: none; -webkit-border-radius: 0.625em 0 0 0.625em; -moz-border-radius: 0.625em 0 0 0.625em; -ms-border-radius: 0.625em 0 0 0.625em; -o-border-radius: 0.625em 0 0 0.625em; border-radius: 0.625em 0 0 0.625em; }
-.big-radio-group li.big-radio-group__last { -webkit-border-radius: 0 0.625em 0.625em 0; -moz-border-radius: 0 0.625em 0.625em 0; -ms-border-radius: 0 0.625em 0.625em 0; -o-border-radius: 0 0.625em 0.625em 0; border-radius: 0 0.625em 0.625em 0; }
+.big-radio-group { padding-left: 0; }
+.big-radio-group li { list-style: none; padding: 1.25em; background: #f2f2f2; vertical-align: middle; -webkit-border-radius: 0.625em; -moz-border-radius: 0.625em; -ms-border-radius: 0.625em; -o-border-radius: 0.625em; border-radius: 0.625em; }
 .big-radio-group li:hover { background: #dddddd; cursor: pointer; }
 .big-radio-group li:hover label { cursor: pointer; }
 .big-radio-group li .big-radio-group__table { display: table; width: 100%; }
@@ -374,6 +371,11 @@ label.disabled, .label.disabled { -ms-filter: "progid:DXImageTransform.Microsoft
 /** Problem form */
 .problem-form .description-count { color: #5bbf21; }
 .problem-form .description-count.error { color: #d81e05; }
+.problem-form .label-checkbox { font-weight: normal; }
+.problem-form .island-list li { margin-bottom: 30px; }
+.problem-form .steps-list { list-style: none; }
+.problem-form .steps-list li { padding: 25px 0 5px; border-bottom: 1px solid #dddddd; }
+.problem-form .slim-select > :first-child { margin-left: 20px; width: 45%; }
 
 /* A better looking default horizontal rule */
 hr { display: block; height: 1px; border: 0; border-top: 1px solid #dddddd; margin: 1em 0; padding: 0; }
@@ -582,6 +584,8 @@ table .icon-warning { font-size: 1.375em; color: #d81e05; line-height: 0; }
 .island--white, .islet--white { background: white; border: 0.25em solid #dddddd; }
 
 .island--grey, .islet--grey, .meta-data-sidebar .meta-data-wrap { background: #f9f9f9; }
+
+.island-label { font-size: 1.5em; font-weight: normal; margin: 0 0 0.83em; color: #00adc6; }
 
 /*------------------------------------*\ $WIDTHS
 \*------------------------------------*/

@@ -123,23 +123,13 @@ textarea {
 }
 
 .big-radio-group {
-  display: table;
-  ul { display: table-row; }
+  padding-left: 0;
   li {
     list-style: none;
-    display: table-cell;
     padding: ($grid-gutter + em);
     background: $c-big-radio-group-bg;
-    border-left: ($grid-gutter / 2) + em solid $c-big-radio-group-border;
-    width: 33%;
     vertical-align: middle;
-    &.big-radio-group__first {
-      border-left: none;
-      @include vendor(border-radius, ($grid-gutter/2) + em 0 0 ($grid-gutter/2) + em);
-    }
-    &.big-radio-group__last {
-      @include vendor(border-radius, 0 ($grid-gutter/2) + em ($grid-gutter/2) + em 0);
-    }
+    @include vendor(border-radius, ($grid-gutter / 2) + em);
     &:hover {
       background: $c-big-radio-group-bg-hover;
       cursor: pointer;
@@ -262,5 +252,28 @@ textarea {
     &.error {
       color: $c-description-count-error;
     }
+  }
+
+  .label-checkbox {
+    font-weight: normal;
+  }
+
+  .island-list {
+    li {
+      margin-bottom: 30px;
+    }
+  }
+
+  .steps-list {
+    list-style: none;
+    li {
+      padding: 25px 0 5px;
+      border-bottom: 1px solid $c-grey;
+    }
+  }
+
+  .slim-select > :first-child {
+    margin-left: 20px;
+    width: 45%;
   }
 }
