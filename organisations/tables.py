@@ -63,9 +63,8 @@ class BaseProblemTable(tables.Table):
     reference_number = ReferenceNumberColumn(attrs={'th': {'class': 'table__first'},
                                                     'td': {'class': 'table__first'}})
     created = tables.DateTimeColumn(verbose_name="Received")
-    status = tables.Column()
     category = tables.Column(verbose_name='Category')
-    summary = tables.Column(verbose_name='Text snippet', order_by=("description"))
+    summary = tables.Column(verbose_name='Snippet', order_by=("description"))
 
     def row_classes(self, record):
         if record.status in Problem.ESCALATION_STATUSES:
@@ -97,6 +96,7 @@ class ProblemTable(BaseProblemTable):
                                           template_name="organisations/includes/boolean_column.html")
     happy_outcome = tables.TemplateColumn(verbose_name='Happy with outcome',
                                           template_name="organisations/includes/boolean_column.html")
+    status = tables.Column()
 
     def __init__(self, *args, **kwargs):
         self.private = kwargs.pop('private')
@@ -178,7 +178,6 @@ class ProblemDashboardTable(BaseProblemTable):
         attrs = {"class": "dashboard-table  dashboard-table--expanded"}
         sequence = ('reference_number',
                     'created',
-                    'status',
                     'category',
                     'breach',
                     'summary')
@@ -199,7 +198,7 @@ class EscalationDashboardTable(ProblemDashboardTable):
         sequence = ('provider_name',
                     'reference_number',
                     'created',
-                    'status',
+                    'service',
                     'category',
                     'breach',
                     'summary')
