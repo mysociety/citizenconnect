@@ -208,6 +208,9 @@ table {
     padding: 10px;
     &.align-center { text-align: center; }
   }
+  td {
+    height: 56px;
+  }
 
   // headings
   th { border: 0; }
@@ -215,6 +218,11 @@ table {
     font-weight: bold;
     padding: 0 10px;
   }
+    // Heading when there's no subheading, to have a border
+    .dashboard-table__head--bordered th {
+      border-bottom: 3px solid #e6e6e6;
+      padding: 5px 10px;
+    }
   .dashboard-table__subhead th {
     border-bottom: 3px solid #e6e6e6;
     text-align: center;
@@ -248,7 +256,7 @@ table {
   }
   .dashboard-table__light-text { color: #999999; }
   .dashboard-table__heavy-text { font-weight: bold; }
-  .dashboard-table__hightlight {
+  .dashboard-table__highlight {
     background: $c-nhs_red;
     border-color: $c-nhs_red !important;
     color: $c-white;
