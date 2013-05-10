@@ -6,6 +6,7 @@ from issues.models import Problem
 from ..tables import ProblemTable
 from .lib import create_test_organisation, create_test_problem
 
+
 class ProblemTableTest(TestCase):
     def setUp(self):
         self.organisation = create_test_organisation()
@@ -18,13 +19,13 @@ class ProblemTableTest(TestCase):
     def test_escaping_private_summary(self):
         table = ProblemTable([], private=True)
         link = table.render_summary_as_response_link(self.problem)
-        expected = '<a href="/private/response/{0}">&lt;script&gt;alert(&#39;xss&#39;)&lt;/script&gt;'.format(self.problem.id)
+        expected = '<a href="/private/response/{0}">&lt;script&gt;alert(&#39;xss&#39;)&lt;/script&gt; <span class="icon-chevron-right" aria-hidden="true"></span></a>'.format(self.problem.id)
         self.assertEqual(link, expected)
 
     def test_escaping_public_record_summary(self):
         table = ProblemTable([], private=False, cobrand='choices')
         link = table.render_summary_as_public_link(self.problem)
-        expected = '<a href="/choices/problem/{0}">&lt;script&gt;alert(&#39;xss&#39;)&lt;/script&gt;'.format(self.problem.id)
+        expected = '<a href="/choices/problem/{0}">&lt;script&gt;alert(&#39;xss&#39;)&lt;/script&gt; <span class="icon-chevron-right" aria-hidden="true"></span></a>'.format(self.problem.id)
         self.assertEqual(link, expected)
 
     def test_escaping_summary(self):

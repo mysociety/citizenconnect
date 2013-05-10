@@ -131,14 +131,6 @@ table {
   }
 }
 
-.organisation-problems {
-    .problem-table {
-        tr.highlight {
-            background-color: $c-table-row-highlight-color;
-        }
-    }
-}
-
 
 
 /**
@@ -160,7 +152,7 @@ table {
   .summary-table__subhead th {
     font-weight: normal;
     padding: 0.5em 0;
-    background-color: #e6e6e6;
+    background-color: $c-summary-table-subhead-bg;
     a {
       display: block;
       padding: 0 0.5em;
@@ -178,16 +170,16 @@ table {
   .summary-table__cell-no-border { border-left: 0; }
 
   // colour every other row
-  tbody tr:nth-of-type(even) td { background: #f2f2f2; }
+  tbody tr:nth-of-type(even) td { background: $c-table-row-hover-bg; }
 
   // hightlight a row
   tbody tr.summary-table__highlight td {
-    background-color: $c-nhs_red;
-    color: $c-white;
+    background-color: $c-table-highlight-bg;
+    color: $c-table-highlight-color;
     font-weight: bold;
-    border-color: $c-nhs_darkred;
-    border-top: 2px solid $c-nhs_darkred;
-    border-bottom: 2px solid $c-nhs_darkred;
+    border-color: $c-table-highlight-border;
+    border-top: 2px solid $c-table-highlight-border;
+    border-bottom: 2px solid $c-table-highlight-border;
   }
 
   // pull full height any filters
@@ -208,6 +200,9 @@ table {
     padding: 10px;
     &.align-center { text-align: center; }
   }
+  td {
+    height: 56px;
+  }
 
   // headings
   th { border: 0; }
@@ -215,23 +210,28 @@ table {
     font-weight: bold;
     padding: 0 10px;
   }
+    // Heading when there's no subheading, to have a border
+    .dashboard-table__head--bordered th {
+      border-bottom: 3px solid $c-table-border;
+      padding: 5px 10px;
+    }
   .dashboard-table__subhead th {
-    border-bottom: 3px solid #e6e6e6;
+    border-bottom: 3px solid $c-table-border;
     text-align: center;
-    color: #999999;
+    color: $c-summary-table-subhead-color;
     font-size: (11px / $font-size-base) + em;
     padding: 5px 10px;
   }
 
   // cell borders
   td {
-    border-bottom: 1px solid #e6e6e6;
-    &:first-child { border-left: 1px solid #e6e6e6; }
-    &:last-child { border-right: 1px solid #e6e6e6; }
+    border-bottom: 1px solid $c-table-border;
+    &:first-child { border-left: 1px solid $c-table-border; }
+    &:last-child { border-right: 1px solid $c-table-border; }
   }
 
   tr:first-child td {
-    border-top: 1px solid #e6e6e6;
+    border-top: 1px solid $c-table-border;
     &:first-child { @include vendor(border-radius, 5px 0 0 0); }
     &:last-child { @include vendor(border-radius, 0 5px 0 0); }
   }
@@ -243,19 +243,19 @@ table {
 
   // text styles
   .dashboard-table__danger-text {
-    color: $c-nhs_red;
+    color: $c-dashboard-table-danger-color;
     font-weight: bold;
   }
-  .dashboard-table__light-text { color: #999999; }
+  .dashboard-table__light-text { color: $c-dashboard-table-light-color; }
   .dashboard-table__heavy-text { font-weight: bold; }
-  .dashboard-table__hightlight {
-    background: $c-nhs_red;
-    border-color: $c-nhs_red !important;
-    color: $c-white;
+  .dashboard-table__highlight {
+    background: $c-table-highlight-bg;
+    border-color: $c-table-highlight-border !important;
+    color: $c-table-highlight-color;
   }
   a {
-    color: $c-aquablue;
-    &:hover { color: $c-aquablue-tint; }
+    color: $c-table-link-color;
+    &:hover { color: $c-table-link-hover-color; }
   }
 
   // flags
@@ -270,17 +270,17 @@ table {
       width: 100%;
       right: 0;
       text-transform: uppercase;
-      color: $c-white;
+      color: $c-dashboard-table-flag-color;
       text-align: center;
       padding-top: 5px;
       height: 28px;
     }
     .dashboard-table__flag__breach {
-      background: $c-orange;
+      background: $c-dashboard-table-flag-breach-bg;
       top: 0;
     }
     .dashboard-table__flag__escalate {
-      background: #000;
+      background: $c-dashboard-table-flag-escalated-bg;
       bottom: 0;
     }
 }
@@ -294,7 +294,7 @@ table {
   // hide spacer if its there now we're border-spacing
   .dashboard-table__spacer { display: none; }
 
-  td { border-top: 1px solid #e6e6e6; }
+  td { border-top: 1px solid $c-table-border; }
   tr, tr:first-child, tr:last-child {
     td:first-child { @include vendor(border-radius, 5px 0 0 5px); }
     td:last-child { @include vendor(border-radius, 0 5px 5px 0); }
@@ -304,7 +304,7 @@ table {
 
 
 .table-link__row:hover td {
-  background-color: #f9f9f9;
+  background-color: $c-table-row-hover-bg;
   cursor: pointer;
-  &.dashboard-table__hightlight {background: #c50e12;}
+  &.dashboard-table__highlight {background: $c-table-row-hover-highlight-bg;}
 }

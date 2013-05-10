@@ -63,19 +63,23 @@ class BaseProblemTable(tables.Table):
     reference_number = ReferenceNumberColumn(attrs={'th': {'class': 'table__first'},
                                                     'td': {'class': 'table__first'}})
     created = tables.DateTimeColumn(verbose_name="Received")
-    status = tables.Column()
-    category = tables.Column(verbose_name='Category')
-    summary = tables.Column(verbose_name='Text snippet', order_by=("description"))
+    category = tables.Column(verbose_name='Category', orderable=False)
 
-    def row_classes(self, record):
-        if record.status in Problem.ESCALATION_STATUSES:
-            return 'highlight'
+    # The accessor might be changed to private_summary on private pages
+    summary = tables.Column(verbose_name='Snippet', orderable=False, accessor="summary")
+
+    def __init__(self, *args, **kwargs):
+        self.private = kwargs.pop('private')
+        if self.private:
+            self.base_columns['summary'].accessor = 'private_summary'
         else:
-            return ''
+            self.cobrand = kwargs.pop('cobrand')
+
+        super(BaseProblemTable, self).__init__(*args, **kwargs)
 
     def render_summary_as_response_link(self, record):
         response_link = reverse("response-form", kwargs={'pk': record.id})
-        return mark_safe(u'<a href="{0}">{1}'.format(response_link, conditional_escape(record.private_summary)))
+        return mark_safe(u'<a href="{0}">{1} <span class="icon-chevron-right" aria-hidden="true"></span></a>'.format(response_link, conditional_escape(record.private_summary)))
 
     def render_summary_as_public_link(self, record):
         # self.cobrand might not be set
@@ -84,7 +88,7 @@ class BaseProblemTable(tables.Table):
         except AttributeError:
             cobrand = 'choices'
         detail_link = reverse('problem-view', kwargs={'cobrand': cobrand, 'pk': record.id})
-        return mark_safe('<a href="{0}">{1}'.format(detail_link, conditional_escape(record.summary)))
+        return mark_safe('<a href="{0}">{1} <span class="icon-chevron-right" aria-hidden="true"></span></a>'.format(detail_link, conditional_escape(record.summary)))
 
 
 class ProblemTable(BaseProblemTable):
@@ -97,12 +101,7 @@ class ProblemTable(BaseProblemTable):
                                           template_name="organisations/includes/boolean_column.html")
     happy_outcome = tables.TemplateColumn(verbose_name='Happy with outcome',
                                           template_name="organisations/includes/boolean_column.html")
-
-    def __init__(self, *args, **kwargs):
-        self.private = kwargs.pop('private')
-        if not self.private:
-            self.cobrand = kwargs.pop('cobrand')
-        super(ProblemTable, self).__init__(*args, **kwargs)
+    status = tables.Column()
 
     def render_summary(self, record):
         if self.private:
@@ -163,11 +162,13 @@ class ProblemDashboardTable(BaseProblemTable):
     and always assuming a private context
     """
 
-    breach = tables.TemplateColumn(template_name="organisations/includes/breach_column.html")
+    reference_number = ReferenceNumberColumn(attrs={'th': {'class': 'table__first'},
+                                                    'td': {'class': 'table__first  dashboard-table__heavy-text  dashboard-table__highlight'}})
+    service = tables.Column(verbose_name="Service", orderable=False)
 
     def __init__(self, *args, **kwargs):
         # Private is always true for dashboards
-        self.private = True
+        kwargs['private'] = True
         super(ProblemDashboardTable, self).__init__(*args, **kwargs)
 
     def render_summary(self, record):
@@ -175,12 +176,11 @@ class ProblemDashboardTable(BaseProblemTable):
 
     class Meta:
         order_by = ('-created',)
-        attrs = {"class": "problem-table"}
+        attrs = {"class": "dashboard-table"}
         sequence = ('reference_number',
                     'created',
-                    'status',
                     'category',
-                    'breach',
+                    'service',
                     'summary')
 
 
@@ -199,9 +199,8 @@ class EscalationDashboardTable(ProblemDashboardTable):
         sequence = ('provider_name',
                     'reference_number',
                     'created',
-                    'status',
+                    'service',
                     'category',
-                    'breach',
                     'summary')
 
 
