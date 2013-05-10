@@ -1,11 +1,13 @@
-{% extends 'issues/issue_detail.html' %}
+{% extends 'base.html' %}
 {% load url from future %}
 
 {% block title %}Moderate problem{% endblock %}
 
 {% block bodyclasses %}moderate-form{% endblock %}
 
-{% block extra_content %}
+{% block content %}
+
+{% include "issues/issue_detail.html" with object=issue private=1 title="Moderate problem" %}
 
 <div class="moderate-form">
     <form method="post">
@@ -40,36 +42,27 @@
             </ul>
         </fieldset>
 
-        <fieldset class="island">
-             <ul class="gw">
-                    <li class="g one-eighth">
-                        {{ form.breach }}
-                    </li>
-                    <li class="g seven-eighths">
-                        <label for="id_breach">Does this problem describe a breach of the NHS' fundamental standards? </label>
-                    </li>
-                </ul>
-        </fieldset>
+        <div class="meta-data-wrap">
+            <h3 class="meta-data-label">Manage problem</h3>
+        </div>
+        <ul class="gw">
+            <li class="g  one-half  palm-one-whole">
+                <label for="id_status">Status</label>
+                {{ form.status }}
+                {% include "message_list.html" with messages=form.status.errors message_type='error' %}
+            </li>
+            <li class="g one-half  palm-one-whole">
+                <label for="id_breach">{{ form.breach }} Does this problem describe a breach of the NHS' fundamental standards? </label>
+            </li>
+        </ul>
 
-        <fieldset class="island">
-            <ul class="gw">
-                <li class="g  one-third  palm-one-whole">
-                    <label for="id_status">Status</label>
-                    {{ form.status }}
-                    {% include "message_list.html" with messages=form.status.errors message_type='error' %}
-                </li>
-            </ul>
-        </fieldset>
-
-        <fieldset class="island">
-            <ul class="gw">
-                <li class="g  one-whole  palm-one-whole">
-                    <label for="id_status">How is the service described commissioned?</label>
-                    {{ form.commissioned }}
-                    {% include "message_list.html" with messages=form.commissioned.errors message_type='error' %}
-                </li>
-            </ul>
-        </fieldset>
+        <ul class="gw">
+            <li class="g  one-whole  palm-one-whole">
+                <label for="id_status">How is the service described commissioned?</label>
+                {{ form.commissioned }}
+                {% include "message_list.html" with messages=form.commissioned.errors message_type='error' %}
+            </li>
+        </ul>
 
         <fieldset class="island">
             <ul class="gw">
