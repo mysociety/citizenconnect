@@ -67,7 +67,10 @@ class BaseProblemTable(tables.Table):
     category = tables.Column(verbose_name='Category', orderable=False)
 
     # The accessor might be changed to private_summary on private pages
-    summary = tables.Column(verbose_name='Snippet', orderable=False, accessor="summary")
+    summary = tables.Column(verbose_name='Snippet',
+                            orderable=False,
+                            accessor="summary",
+                            attrs={'td': {'class': 'problem-table__light-text'}})
 
     # Will only be made visible on private pages
     breach_and_escalation = BreachAndEscalationColumn(visible=False)
