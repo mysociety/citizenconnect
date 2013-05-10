@@ -530,7 +530,7 @@ table .icon-warning { font-size: 1.375em; color: #d81e05; line-height: 0; }
 .dashboard-table--expanded tr td:last-child, .dashboard-table--expanded tr:first-child td:last-child, .dashboard-table--expanded tr:last-child td:last-child { -webkit-border-radius: 0 5px 5px 0; -moz-border-radius: 0 5px 5px 0; -ms-border-radius: 0 5px 5px 0; -o-border-radius: 0 5px 5px 0; border-radius: 0 5px 5px 0; }
 
 .table-link__row:hover td { background-color: #f9f9f9; cursor: pointer; }
-.table-link__row:hover td.dashboard-table__hightlight { background: #c50e12; }
+.table-link__row:hover td.dashboard-table__highlight { background: #c50e12; }
 
 /*------------------------------------*\ $GRIDS
 \*------------------------------------*/
