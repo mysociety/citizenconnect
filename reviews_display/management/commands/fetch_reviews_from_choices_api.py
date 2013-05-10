@@ -1,3 +1,5 @@
+import datetime
+
 from django.core.management.base import BaseCommand
 from django.conf import settings
 
@@ -11,8 +13,10 @@ class Command(BaseCommand):
     # @transaction.commit_manually
     def handle(self, *args, **options):
 
+        one_week_ago = datetime.date.today() - datetime.timedelta(days=7)
+
         for type in settings.ORGANISATION_TYPES:
-            reviews = ReviewsAPI(organisation_type=type)
+            reviews = ReviewsAPI(organisation_type=type, since=one_week_ago, max_fetch=100)
 
             for review in reviews:
                 try:
