@@ -2,6 +2,7 @@ import copy
 import os
 import json
 import datetime
+import urlparse
 
 from django.test import TestCase
 from django.forms.models import model_to_dict
@@ -72,6 +73,21 @@ def create_test_review(attributes, ratings_attributes):
         create_test_rating(rating_attributes, instance)
 
     return instance
+
+
+class ReviewNextPageURLTests(TestCase):
+
+    def test_next_page_url_correctly_set_at_init(self):
+
+        tests = {
+            '/organisations/hospitals/comments.atom': dict(organisation_type="hospitals"),
+            '/organisations/gppractices/comments.atom': dict(organisation_type="gppractices"),
+        }
+
+        for expected, kwargs in tests.items():
+            api = ReviewsAPI(**kwargs)
+            path = urlparse.urlparse(api.next_page_url).path
+            self.assertEqual(path, expected)
 
 
 class ReviewParseApiXmlTests(TestCase):
