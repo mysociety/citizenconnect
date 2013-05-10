@@ -2,6 +2,8 @@
 
 import logging
 import re
+import urlparse
+
 from HTMLParser import HTMLParser
 import xml.etree.ElementTree as ET
 
@@ -142,12 +144,16 @@ class ReviewsAPI(object):
         root = ET.fromstring(xml)
         next_page_url = root.find('link[@rel="next"]').get('href')
         last_page_url = root.find('link[@rel="last"]').get('href')
+
         if next_page_url == last_page_url:
-            next_page_url = None
-        else:
-            if not re.search(r'\.atom', next_page_url):
-                next_page_url = re.sub(
-                    r'comments', 'comments.atom', next_page_url)
+            return None
+
+        # parse the url and check that the path ends with '.atom'. Add it if
+        # missing.
+        url_dict = urlparse.urlparse(next_page_url)._asdict()
+        if not re.search(r'\.atom$', url_dict['path']):
+            url_dict['path'] += '.atom'
+            next_page_url = urlparse.urlunparse(url_dict.values())
 
         return next_page_url
 
