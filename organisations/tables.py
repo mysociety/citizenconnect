@@ -64,13 +64,18 @@ class BaseProblemTable(tables.Table):
                                                     'td': {'class': 'table__first'}})
     created = tables.DateTimeColumn(verbose_name="Received")
     category = tables.Column(verbose_name='Category', orderable=False)
-    summary = tables.Column(verbose_name='Snippet', orderable=False)
 
-    def row_classes(self, record):
-        if record.status in Problem.ESCALATION_STATUSES:
-            return 'highlight'
+    # The accessor might be changed to private_summary on private pages
+    summary = tables.Column(verbose_name='Snippet', orderable=False, accessor="summary")
+
+    def __init__(self, *args, **kwargs):
+        self.private = kwargs.pop('private')
+        if self.private:
+            self.base_columns['summary'].accessor = 'private_summary'
         else:
-            return ''
+            self.cobrand = kwargs.pop('cobrand')
+
+        super(BaseProblemTable, self).__init__(*args, **kwargs)
 
     def render_summary_as_response_link(self, record):
         response_link = reverse("response-form", kwargs={'pk': record.id})
@@ -97,12 +102,6 @@ class ProblemTable(BaseProblemTable):
     happy_outcome = tables.TemplateColumn(verbose_name='Happy with outcome',
                                           template_name="organisations/includes/boolean_column.html")
     status = tables.Column()
-
-    def __init__(self, *args, **kwargs):
-        self.private = kwargs.pop('private')
-        if not self.private:
-            self.cobrand = kwargs.pop('cobrand')
-        super(ProblemTable, self).__init__(*args, **kwargs)
 
     def render_summary(self, record):
         if self.private:
@@ -169,7 +168,7 @@ class ProblemDashboardTable(BaseProblemTable):
 
     def __init__(self, *args, **kwargs):
         # Private is always true for dashboards
-        self.private = True
+        kwargs['private'] = True
         super(ProblemDashboardTable, self).__init__(*args, **kwargs)
 
     def render_summary(self, record):
