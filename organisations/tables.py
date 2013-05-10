@@ -4,7 +4,7 @@ from django.utils.safestring import mark_safe
 from django.utils.html import conditional_escape
 from django.core.urlresolvers import reverse
 
-from issues.table_columns import ReferenceNumberColumn, BreachAndEscalationColumn
+from issues.table_columns import BreachAndEscalationColumn
 
 
 class NationalSummaryTable(tables.Table):
@@ -59,9 +59,11 @@ class BaseProblemTable(tables.Table):
     Base class for functionality _all_ tables of problems need
     """
 
-    reference_number = ReferenceNumberColumn(attrs={'th': {'class': 'table__first'},
-                                                    'td': {'class': 'table__first'}})
-    created = tables.DateTimeColumn(verbose_name="Received")
+    reference_number = tables.Column(verbose_name="Ref.",
+                                     order_by='id',
+                                     attrs={'td': {'class': 'problem-table__heavy-text'}})
+    created = tables.DateTimeColumn(verbose_name="Received",
+                                    attrs={'td': {'class': 'problem-table__light-text'}})
     category = tables.Column(verbose_name='Category', orderable=False)
 
     # The accessor might be changed to private_summary on private pages
@@ -165,8 +167,6 @@ class ProblemDashboardTable(BaseProblemTable):
     and always assuming a private context
     """
 
-    reference_number = ReferenceNumberColumn(attrs={'th': {'class': 'table__first'},
-                                                    'td': {'class': 'table__first  dashboard-table__heavy-text  dashboard-table__highlight'}})
     service = tables.Column(verbose_name="Service", orderable=False)
 
     def __init__(self, *args, **kwargs):
@@ -192,9 +192,6 @@ class EscalationDashboardTable(ProblemDashboardTable):
                                   accessor='organisation.name',
                                   attrs={'th': {'class': 'table__first'},
                                          'td': {'class': 'table__first'}})
-    # Redefine this to tell it that it's not table__first anymore
-    reference_number = ReferenceNumberColumn(attrs={'th': {'class': ''},
-                                                    'td': {'class': ''}})
 
     class Meta:
         order_by = ('-created',)
@@ -215,9 +212,6 @@ class BreachTable(ProblemTable):
                                   accessor='organisation.name',
                                   attrs={'th': {'class': 'table__first'},
                                          'td': {'class': 'table__first'}})
-    # Redefine this to tell it that it's not table__first anymore
-    reference_number = ReferenceNumberColumn(attrs={'th': {'class': ''},
-                                                    'td': {'class': ''}})
 
     def __init__(self, *args, **kwargs):
         # Private is always true for dashboards
