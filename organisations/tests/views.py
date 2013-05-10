@@ -558,13 +558,10 @@ class OrganisationProblemsTests(AuthorizationTestCase):
                    'created',
                    'status',
                    'resolved',
-                   'category',
-                   'service',
                    'time_to_acknowledge',
                    'time_to_address',
                    'happy_service',
-                   'happy_outcome',
-                   'summary')
+                   'happy_outcome')
         for column in columns:
             sorted_url = "{0}?sort={1}".format(self.public_hospital_problems_url, column)
             resp = self.client.get(sorted_url)
