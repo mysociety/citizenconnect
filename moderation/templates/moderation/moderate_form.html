@@ -7,92 +7,102 @@
 
 {% block content %}
 
-{% include "issues/issue_detail.html" with object=issue private=1 title="Moderate problem" %}
+{% include "issues/issue_header.html" with object=issue private=1 title="Moderate problem" %}
+<div class="gw">
 
-<div class="moderate-form">
-    <form method="post">
-        {% csrf_token %}
+    <div class="g  two-thirds  palm-one-whole">
+        {% include "issues/issue_meta.html" with object=issue private=1 title="Moderate problem" %}
 
-        {% if form.non_field_errors %}
-            <fieldset class="island">
-                {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
-            </fieldset>
-        {% endif %}
+        <div class="moderate-form">
+            <form method="post">
+                {% csrf_token %}
 
-        {% for hidden in form.hidden_fields %}
-            {{ hidden }}
-        {% endfor %}
-
-        <div class="meta-data-wrap">
-            <h3 class="meta-data-label">Moderated details</h3>
-        </div>
-        <fieldset class="island">
-            <ul class="gw">
-              {% if form.fields.moderated_description %}
-                <li class="g  one-whole">
-                    {{ form.moderated_description }}
-                    <p class="info">Required when publishing public problems.</p>
-                    {% include "message_list.html" with messages=form.moderated_description.errors message_type='error' %}
-                </li>
-              {% else %}
-                <li class="g  one-whole">
-                    This problem is not public so there is no need for a moderated description.
-                </li>
-              {% endif %}
-            </ul>
-        </fieldset>
-
-        <div class="meta-data-wrap">
-            <h3 class="meta-data-label">Manage problem</h3>
-        </div>
-        <ul class="gw">
-            <li class="g  one-half  palm-one-whole">
-                <label for="id_status">Status</label>
-                {{ form.status }}
-                {% include "message_list.html" with messages=form.status.errors message_type='error' %}
-            </li>
-            <li class="g one-half  palm-one-whole">
-                <label for="id_breach">{{ form.breach }} Does this problem describe a breach of the NHS' fundamental standards? </label>
-            </li>
-        </ul>
-
-        <ul class="gw">
-            <li class="g  one-whole  palm-one-whole">
-                <label for="id_status">How is the service described commissioned?</label>
-                {{ form.commissioned }}
-                {% include "message_list.html" with messages=form.commissioned.errors message_type='error' %}
-            </li>
-        </ul>
-
-        <fieldset class="island">
-            <ul class="gw">
-                {% if response_forms %}
-                    {{ response_forms.management_form }}
+                {% if form.non_field_errors %}
+                    <fieldset class="island">
+                        {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
+                    </fieldset>
                 {% endif %}
-                {% for response_form in response_forms %}
-                    {{ response_form.id }}
-                    <li class="g  three-quarters">
-                        <label for="id_responses-{{forloop.counter0}}-response">Moderated response</label>
-                        {{ response_form.response }}
-                        {% include "message_list.html" with messages=response_form.response.errors message_type='error' %}
-                    </li>
-                    <li class="g one-quarter  mt">
-                        {{ response_form.DELETE }} Delete
-                    </li>
-                {% empty %}
-                    <li class="g  one-whole">No Responses</li>
+
+                {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
                 {% endfor %}
-            </ul>
-        </fieldset>
 
-        <fieldset >
-            <ul class="gw">
-            <li class="g one-third palm-one-whole align-center mt"><button class="btn one-whole" type="submit" name="keep_private">Not Suitable/Keep Private</button></li>
-            <li class="g one-third palm-one-whole align-center mt"><button class="btn one-whole" type="submit" name="now_requires_second_tier_moderation">Requires Second Tier Moderation</button></li>
-            <li class="g one-third palm-one-whole align-center mt"><button class="btn one-whole" type="submit" name="publish">Publish/Update Online</button></li>
-            </ul>
-        </fieldset>
+                <div class="meta-data-wrap">
+                    <h3 class="meta-data-label">Moderated details</h3>
+                </div>
+                <fieldset class="island">
+                    <ul class="gw">
+                    {% if form.fields.moderated_description %}
+                        <li class="g  one-whole">
+                            {{ form.moderated_description }}
+                            <p class="info">Required when publishing public problems.</p>
+                            {% include "message_list.html" with messages=form.moderated_description.errors message_type='error' %}
+                        </li>
+                    {% else %}
+                        <li class="g  one-whole">
+                            This problem is not public so there is no need for a moderated description.
+                        </li>
+                    {% endif %}
+                    </ul>
+                </fieldset>
 
-    </form>
+                <div class="meta-data-wrap">
+                    <h3 class="meta-data-label">Manage problem</h3>
+                </div>
+                <ul class="gw">
+                    <li class="g  one-half  palm-one-whole">
+                        <label for="id_status">Status</label>
+                        {{ form.status }}
+                        {% include "message_list.html" with messages=form.status.errors message_type='error' %}
+                    </li>
+                    <li class="g one-half  palm-one-whole">
+                        <label for="id_breach">{{ form.breach }} Does this problem describe a breach of the NHS' fundamental standards? </label>
+                    </li>
+                </ul>
+
+                <ul class="gw">
+                    <li class="g  one-whole  palm-one-whole">
+                        <label for="id_status">How is the service described commissioned?</label>
+                        {{ form.commissioned }}
+                        {% include "message_list.html" with messages=form.commissioned.errors message_type='error' %}
+                    </li>
+                </ul>
+
+                <fieldset class="island">
+                    <ul class="gw">
+                        {% if response_forms %}
+                            {{ response_forms.management_form }}
+                        {% endif %}
+                        {% for response_form in response_forms %}
+                            {{ response_form.id }}
+                            <li class="g  three-quarters">
+                                <label for="id_responses-{{forloop.counter0}}-response">Moderated response</label>
+                                {{ response_form.response }}
+                                {% include "message_list.html" with messages=response_form.response.errors message_type='error' %}
+                            </li>
+                            <li class="g one-quarter  mt">
+                                {{ response_form.DELETE }} Delete
+                            </li>
+                        {% empty %}
+                            <li class="g  one-whole">No Responses</li>
+                        {% endfor %}
+                    </ul>
+                </fieldset>
+
+                <fieldset >
+                    <ul class="gw">
+                    <li class="g one-third palm-one-whole align-center mt"><button class="btn one-whole" type="submit" name="keep_private">Not Suitable/Keep Private</button></li>
+                    <li class="g one-third palm-one-whole align-center mt"><button class="btn one-whole" type="submit" name="now_requires_second_tier_moderation">Requires Second Tier Moderation</button></li>
+                    <li class="g one-third palm-one-whole align-center mt"><button class="btn one-whole" type="submit" name="publish">Publish/Update Online</button></li>
+                    </ul>
+                </fieldset>
+
+            </form>
+        </div>
+
+    </div>
+    <div class="meta-data-sidebar  g  one-third  palm-one-whole">
+        {% include "issues/issue_sidebar.html" with object=issue private=1 title="Moderate problem" %}
+    </div>
 </div>
 {% endblock %}
