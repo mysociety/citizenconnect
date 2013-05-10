@@ -32,19 +32,31 @@ $c-hr-border: $c-grey;
 /**
  * _tables.scss
  */
-                   $c-table-border: $c-grey;
-       $c-table-heading-link-color: $c-black;
- $c-table-heading-link-hover-color: $c-aquablue;
-$c-table-heading-link-active-color: $c-aquablue;
-            $c-table-created-color: $c-darkgrey;
-               $c-table-link-color: $c-darkgrey;
-         $c-table-link-hover-color: $c-black;
-             $c-table-icon-x-color: $c-nhs_red;
-     $c-table-icon-checkmark-color: $c-nhs_green;
-        $c-table-icon-circle-color: $c-darkgrey;
-       $c-table-icon-warning-color: $c-nhs_red;
-        $c-table-icon-hidden-color: $c-white;
-      $c-table-row-highlight-color: lighten($c-nhs_red-tint, 40%);
+                            $c-table-border: $c-grey;
+                $c-table-heading-link-color: $c-black;
+          $c-table-heading-link-hover-color: $c-aquablue;
+         $c-table-heading-link-active-color: $c-aquablue;
+                     $c-table-created-color: $c-darkgrey;
+                        $c-table-link-color: $c-aquablue;
+                  $c-table-link-hover-color: $c-aquablue-tint;
+                      $c-table-icon-x-color: $c-nhs_red;
+              $c-table-icon-checkmark-color: $c-nhs_green;
+                 $c-table-icon-circle-color: $c-darkgrey;
+                $c-table-icon-warning-color: $c-nhs_red;
+                 $c-table-icon-hidden-color: $c-white;
+                        $c-table-row-alt-bg: $c-lightgrey;
+                   $c-table-highlight-color: $c-white;
+                      $c-table-highlight-bg: $c-nhs_red;
+                  $c-table-highlight-border: $c-nhs_red;
+                      $c-table-row-hover-bg: $c-lightgrey;
+            $c-table-row-hover-highlight-bg: $c-nhs_red;
+                $c-summary-table-subhead-bg: $c-lightgrey;
+             $c-summary-table-subhead-color: $c-darkergrey;
+             $c-dashboard-table-light-color: $c-darkergrey;
+            $c-dashboard-table-danger-color: $c-nhs_red;
+              $c-dashboard-table-flag-color: $c-white;
+          $c-dashboard-table-flag-breach-bg: $c-orange;
+       $c-dashboard-table-flag-escalated-bg: $c-black;
 
 /**
  * _typography.scss
