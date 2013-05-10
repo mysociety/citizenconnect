@@ -476,10 +476,41 @@ table .icon-circle { font-size: 1.375em; color: #aaaaaa; line-height: 0; }
 table .icon-hidden { color: white; line-height: 0; }
 table .icon-warning { font-size: 1.375em; color: #d81e05; line-height: 0; }
 
-/** Public Problem table */
-.problem-table th, .problem-table td { vertical-align: top; text-align: left; padding-left: 10px; padding-right: 10px; }
-.problem-table .table__first { font-weight: bold; }
+/** Problem table A rounded table with options for expanded rows, flags and highlights */
+.problem-table { border-collapse: separate; border-spacing: 0; }
+.problem-table td, .problem-table th { text-align: left; padding: 10px; }
+.problem-table td.align-center, .problem-table th.align-center { text-align: center; }
+.problem-table td { height: 56px; }
+.problem-table th { border: 0; }
+.problem-table .problem-table__head th { font-weight: bold; padding: 0 10px; }
+.problem-table .problem-table__head--bordered th { border-bottom: 3px solid #dddddd; padding: 5px 10px; }
+.problem-table .problem-table__subhead th { border-bottom: 3px solid #dddddd; text-align: center; color: #888888; font-size: 0.6875em; padding: 5px 10px; }
+.problem-table td { border-bottom: 1px solid #dddddd; }
+.problem-table td:first-child { border-left: 1px solid #dddddd; }
+.problem-table td:last-child { border-right: 1px solid #dddddd; }
+.problem-table tr:first-child td { border-top: 1px solid #dddddd; }
+.problem-table tr:first-child td:first-child { -webkit-border-radius: 5px 0 0 0; -moz-border-radius: 5px 0 0 0; -ms-border-radius: 5px 0 0 0; -o-border-radius: 5px 0 0 0; border-radius: 5px 0 0 0; }
+.problem-table tr:first-child td:last-child { -webkit-border-radius: 0 5px 0 0; -moz-border-radius: 0 5px 0 0; -ms-border-radius: 0 5px 0 0; -o-border-radius: 0 5px 0 0; border-radius: 0 5px 0 0; }
+.problem-table tr:last-child td:last-child { -webkit-border-radius: 0 0 5px 0; -moz-border-radius: 0 0 5px 0; -ms-border-radius: 0 0 5px 0; -o-border-radius: 0 0 5px 0; border-radius: 0 0 5px 0; }
+.problem-table tr:last-child td:first-child { -webkit-border-radius: 0 0 0 5px; -moz-border-radius: 0 0 0 5px; -ms-border-radius: 0 0 0 5px; -o-border-radius: 0 0 0 5px; border-radius: 0 0 0 5px; }
+.problem-table .problem-table__danger-text { color: #d81e05; font-weight: bold; }
+.problem-table .problem-table__light-text { color: #888888; }
+.problem-table .problem-table__heavy-text { font-weight: bold; }
+.problem-table .problem-table__highlight { background: #d81e05; border-color: #d81e05 !important; color: white; }
+.problem-table a { color: #2f9aa8; }
+.problem-table a:hover { color: #27808c; }
+.problem-table .problem-table__flag { padding: 0 0 0 10px; position: relative; overflow: hidden; width: 25px; }
+.problem-table div { position: absolute; width: 100%; right: 0; text-transform: uppercase; color: white; text-align: center; padding-top: 5px; height: 28px; }
+.problem-table .problem-table__flag__breach { background: #ff8b00; top: 0; }
+.problem-table .problem-table__flag__escalate { background: #333333; bottom: 0; }
 .problem-table .breach .icon-circle { color: #d81e05; }
+
+/** To be used with .problem-table, this has expanded rows */
+.problem-table--expanded { border-spacing: 0 20px; }
+.problem-table--expanded .problem-table__spacer { display: none; }
+.problem-table--expanded td { border-top: 1px solid #dddddd; }
+.problem-table--expanded tr td:first-child, .problem-table--expanded tr:first-child td:first-child, .problem-table--expanded tr:last-child td:first-child { -webkit-border-radius: 5px 0 0 5px; -moz-border-radius: 5px 0 0 5px; -ms-border-radius: 5px 0 0 5px; -o-border-radius: 5px 0 0 5px; border-radius: 5px 0 0 5px; }
+.problem-table--expanded tr td:last-child, .problem-table--expanded tr:first-child td:last-child, .problem-table--expanded tr:last-child td:last-child { -webkit-border-radius: 0 5px 5px 0; -moz-border-radius: 0 5px 5px 0; -ms-border-radius: 0 5px 5px 0; -o-border-radius: 0 5px 5px 0; border-radius: 0 5px 5px 0; }
 
 /** A square table with options for split cols and highlights */
 .summary-table th { font-weight: bold; padding: 0; border-bottom: 0; }
@@ -493,41 +524,6 @@ table .icon-warning { font-size: 1.375em; color: #d81e05; line-height: 0; }
 .summary-table tbody tr:nth-of-type(even) td { background: #f2f2f2; }
 .summary-table tbody tr.summary-table__highlight td { background-color: #d81e05; color: white; font-weight: bold; border-color: #d81e05; border-top: 2px solid #d81e05; border-bottom: 2px solid #d81e05; }
 .summary-table .filters__dropdown { margin: -0.5em 0; }
-
-/** A rounded table with options for expanded rows, flags and highlights */
-.dashboard-table { border-collapse: separate; border-spacing: 0; }
-.dashboard-table td, .dashboard-table th { text-align: left; padding: 10px; }
-.dashboard-table td.align-center, .dashboard-table th.align-center { text-align: center; }
-.dashboard-table td { height: 56px; }
-.dashboard-table th { border: 0; }
-.dashboard-table .dashboard-table__head th { font-weight: bold; padding: 0 10px; }
-.dashboard-table .dashboard-table__head--bordered th { border-bottom: 3px solid #dddddd; padding: 5px 10px; }
-.dashboard-table .dashboard-table__subhead th { border-bottom: 3px solid #dddddd; text-align: center; color: #888888; font-size: 0.6875em; padding: 5px 10px; }
-.dashboard-table td { border-bottom: 1px solid #dddddd; }
-.dashboard-table td:first-child { border-left: 1px solid #dddddd; }
-.dashboard-table td:last-child { border-right: 1px solid #dddddd; }
-.dashboard-table tr:first-child td { border-top: 1px solid #dddddd; }
-.dashboard-table tr:first-child td:first-child { -webkit-border-radius: 5px 0 0 0; -moz-border-radius: 5px 0 0 0; -ms-border-radius: 5px 0 0 0; -o-border-radius: 5px 0 0 0; border-radius: 5px 0 0 0; }
-.dashboard-table tr:first-child td:last-child { -webkit-border-radius: 0 5px 0 0; -moz-border-radius: 0 5px 0 0; -ms-border-radius: 0 5px 0 0; -o-border-radius: 0 5px 0 0; border-radius: 0 5px 0 0; }
-.dashboard-table tr:last-child td:last-child { -webkit-border-radius: 0 0 5px 0; -moz-border-radius: 0 0 5px 0; -ms-border-radius: 0 0 5px 0; -o-border-radius: 0 0 5px 0; border-radius: 0 0 5px 0; }
-.dashboard-table tr:last-child td:first-child { -webkit-border-radius: 0 0 0 5px; -moz-border-radius: 0 0 0 5px; -ms-border-radius: 0 0 0 5px; -o-border-radius: 0 0 0 5px; border-radius: 0 0 0 5px; }
-.dashboard-table .dashboard-table__danger-text { color: #d81e05; font-weight: bold; }
-.dashboard-table .dashboard-table__light-text { color: #888888; }
-.dashboard-table .dashboard-table__heavy-text { font-weight: bold; }
-.dashboard-table .dashboard-table__highlight { background: #d81e05; border-color: #d81e05 !important; color: white; }
-.dashboard-table a { color: #2f9aa8; }
-.dashboard-table a:hover { color: #27808c; }
-.dashboard-table .dashboard-table__flag { padding: 0 0 0 10px; position: relative; overflow: hidden; width: 25px; }
-.dashboard-table div { position: absolute; width: 100%; right: 0; text-transform: uppercase; color: white; text-align: center; padding-top: 5px; height: 28px; }
-.dashboard-table .dashboard-table__flag__breach { background: #ff8b00; top: 0; }
-.dashboard-table .dashboard-table__flag__escalate { background: #333333; bottom: 0; }
-
-/** To be used with .dashboard-table, this has expanded rows */
-.dashboard-table--expanded { border-spacing: 0 20px; }
-.dashboard-table--expanded .dashboard-table__spacer { display: none; }
-.dashboard-table--expanded td { border-top: 1px solid #dddddd; }
-.dashboard-table--expanded tr td:first-child, .dashboard-table--expanded tr:first-child td:first-child, .dashboard-table--expanded tr:last-child td:first-child { -webkit-border-radius: 5px 0 0 5px; -moz-border-radius: 5px 0 0 5px; -ms-border-radius: 5px 0 0 5px; -o-border-radius: 5px 0 0 5px; border-radius: 5px 0 0 5px; }
-.dashboard-table--expanded tr td:last-child, .dashboard-table--expanded tr:first-child td:last-child, .dashboard-table--expanded tr:last-child td:last-child { -webkit-border-radius: 0 5px 5px 0; -moz-border-radius: 0 5px 5px 0; -ms-border-radius: 0 5px 5px 0; -o-border-radius: 0 5px 5px 0; border-radius: 0 5px 5px 0; }
 
 .table-link__row:hover td { background-color: #f2f2f2; cursor: pointer; }
 .table-link__row:hover td.dashboard-table__highlight { background: #d81e05; }
