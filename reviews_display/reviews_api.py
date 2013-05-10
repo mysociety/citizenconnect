@@ -1,3 +1,6 @@
+
+
+import logging
 import re
 from HTMLParser import HTMLParser
 import xml.etree.ElementTree as ET
@@ -5,6 +8,8 @@ import xml.etree.ElementTree as ET
 import urllib
 
 from organisations.choices_api import ChoicesAPI
+
+logger = logging.getLogger(__name__)
 
 
 class ReviewsAPI(object):
@@ -64,6 +69,7 @@ class ReviewsAPI(object):
             return None
         self.fetches_remaining -= 1
 
+        logger.debug("Fetching '%s'" % url)
         data = urllib.urlopen(url).read()
 
         data = self.cleanup_xml(data)
