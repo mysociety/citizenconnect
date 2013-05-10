@@ -4,7 +4,7 @@ from django.utils.safestring import mark_safe
 from django.utils.html import conditional_escape
 from django.core.urlresolvers import reverse
 
-from issues.table_columns import ReferenceNumberColumn
+from issues.table_columns import ReferenceNumberColumn, BreachAndEscalationColumn
 
 
 class NationalSummaryTable(tables.Table):
@@ -67,10 +67,14 @@ class BaseProblemTable(tables.Table):
     # The accessor might be changed to private_summary on private pages
     summary = tables.Column(verbose_name='Snippet', orderable=False, accessor="summary")
 
+    # Will only be made visible on private pages
+    breach_and_escalation = BreachAndEscalationColumn(visible=False)
+
     def __init__(self, *args, **kwargs):
         self.private = kwargs.pop('private')
         if self.private:
             self.base_columns['summary'].accessor = 'private_summary'
+            self.base_columns['breach_and_escalation'].visible = True
         else:
             self.cobrand = kwargs.pop('cobrand')
 
