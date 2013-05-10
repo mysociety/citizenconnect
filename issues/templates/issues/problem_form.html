@@ -14,6 +14,8 @@
     <h1>{{ organisation.name }}</h1>
 </div>
 
+<p>All problems posted through this website are highlighted on our live maps. When you submit  your problem here it will be flagged on a marker representing the NHS service you have selected. If you wish you can publish the content of your issue online either anonymously, or with your name.</p>
+
 <form method="post" class="problem-form">
     {% csrf_token %}
 
@@ -41,10 +43,26 @@
     {% endif %}
 
     <fieldset class="island">
+        <label for="id_service" class="island-label">Your problem</label>
+
+        <label for="id_relates_to_previous_problem" class="label-checkbox">{{ form.relates_to_previous_problem }} Does your problem relate to a previous problem?</label>
+        {% include "message_list.html" with messages=form.relates_to_previous_problem.errors message_type='error' %}
+
         <ul class="gw">
-            <li class="g  one-whole">
+            <li class="g  five-eighths">
                 {{ form.description }}
                 <p class="info align-right description-count"></a>
+                <div class="description-errors">
+                    {% include "message_list.html" with messages=form.description.errors message_type='error' %}
+                </div>
+
+                {% if not form.service.is_hidden %}
+                <p class="info">If your problem relates to a particular service <span class="slim-select">{{ form.service }}</span></p>
+                {% include "message_list.html" with messages=form.service.errors message_type='error' %}
+                {% endif %}
+            </li>
+
+            <li class="g  three-eighths">
                 <p class="info">In order to enable us to resolve your problem as quickly and as effectively as possible, please provide as much detail as you can. For example:</p>
                 <ul>
                     <li><span class="info">Date the problem occurred</span></li>
@@ -52,32 +70,12 @@
                     <li><span class="info">Members of staff involved</span></li>
                     <li><span class="info">Name of patient (if not yourself)</span></li>
                 </ul>
-                <div class="description-errors">
-                    {% include "message_list.html" with messages=form.description.errors message_type='error' %}
-                </div>
             </li>
         </ul>
     </fieldset>
 
-    {% if not form.service.is_hidden %}
-        <fieldset class="island">
-            <label for="id_service">Service</label>
-
-            <p class="info">If your problem relates to a particular service, you can select it here</p>
-
-            <ul class="radio-list">
-                {% for radio in form.service %}
-                    <li>{{ radio }}</li>
-                {% endfor %}
-            </ul>
-
-            {% include "message_list.html" with messages=form.service.errors message_type='error' %}
-
-        </fieldset>
-    {% endif %}
-
     <fieldset class="island">
-        <label for="id_category">Category</label>
+        <label for="id_category" class="island-label">Category</label>
 
         <p class="info">Please select the category that best describes your problem</p>
 
@@ -94,15 +92,6 @@
         <ul class="gw">
             <li class="g  one-whole">
                 <label for="id_elevate_priority">{{ form.elevate_priority }} Is this problem happening now?</label>
-            </li>
-        </ul>
-    </fieldset>
-
-    <fieldset class="island">
-        <ul class="gw">
-            <li class="g  one-whole">
-                <label for="id_relates_to_previous_problem">{{ form.relates_to_previous_problem }} Relates to previously reported problem</label>
-                {% include "message_list.html" with messages=form.relates_to_previous_problem.errors message_type='error' %}
             </li>
         </ul>
     </fieldset>
@@ -147,77 +136,77 @@
     </fieldset>
 
     <fieldset class="island">
-        <p>All problems posted through this website are highlighted on our live maps. When you submit your problem here, it will be flagged on a marker representing the NHS service you have selected. If you wish, you can publish the content of your issue online, either anonymously, or with your name.</p>
+        <label for="id_privacy_0" class="island-label">Privacy settings</label>
+        <div class="gw">
+            <div class="g  one-third">
+            <ul class="big-radio-group">
+                <li class="big-radio-group__first  big-radio-group--green">
+                    <div class="big-radio-group__table">
+                        <label for="id_privacy_0" class="big-radio-group__row">
+                            <input checked="checked" type="radio" id="id_privacy_0" value="0" name="privacy" />
+                            <span class="big-radio-group__cell">Keep all details private</span>
+                        </label>
+                    </div>
+                </li>
+                <li>
+                    <div class="big-radio-group__table">
+                        <label for="id_privacy_1" class="big-radio-group__row">
+                            <input type="radio" id="id_privacy_1" value="1" name="privacy" />
+                            <span class="big-radio-group__cell">Publish problem and response but not my name</span>
+                        </label>
+                    </div>
+                </li>
+                <li class="big-radio-group__last">
+                    <div class="big-radio-group__table">
+                        <label for="id_privacy_2" class="big-radio-group__row">
+                            <input type="radio" id="id_privacy_2" value="2" name="privacy" />
+                            <span class="big-radio-group__cell">Publish problem and response with my name</span>
+                        </label>
+                    </div>
+                </li>
+            </ul>
+            {% include "message_list.html" with messages=form.privacy.errors message_type='error' %}
+        </div>
+        <div class="g  two-thirds">
 
-        <p>Publishing your issue details publicly will make it easier for you to find it and follow its status. It will also help other people too, especially if they are experiencing similar problems to you.</p>
-
-        <p>The contact details you have provided will never be published and we only allow the service you have selected above to contact you to resolve the problem.</p>
-
-        <p>All problems marked both private and public are:</p>
-        <ul>
-            <li>Instantly sent to the relevant provider</li>
-            <li>Flagged on the live dashboard next to the relevant organisation - identifiable only by the category given and are automatically marked with the status &lsquo;open&rsquo;</li>
-        </ul>
-        <p>All problems marked public are:</p>
-        <ul>
-            <li>Passed to the case handling team to be moderated (<a href="{% url 'about' cobrand=cobrand.name %}">See the moderation rules</a>)</li>
-            <li>If your problem passes moderation it will published on the website in the section marked xxx on the relevant organisation’s dashboard. ( this can take up to 24 hours)</li>
-            <li>Your name will be published on the website next to the problem only is you tick the box to allow this.</li>
-        </ul>
-        <p>If you are still not sure about which privacy option below to select, please do nothing - the default option is for everything to be private.</p>
-        <p>Problem resolution</p>
-        <ul>
-            <li>The organisation will contact you using your preferred method of communication to find a suitable resolution. The organisation may at this point change the status of the problem to &lsquo;in progress&rsquo;</li>
-            <li>Once a resolution has been achieved the organisation will remove the flag on the live map. The details of the case will be visible in on the organisation's dashboard with the status &lsquo;resolved&rsquo; applied.</li>
-            <li>You will receive a short questionnaire by email a few weeks after posting your problem to find out how satisfied you were with both the outcome and the service.</li>
-        </ul>
-    </fieldset>
-
-    <fieldset class="big-radio-group">
-        <!-- <label for="id_privacy_0">Privacy</label> -->
-        <ul>
-            <li class="big-radio-group__first  big-radio-group--green">
-                <div class="big-radio-group__table">
-                    <label for="id_privacy_0" class="big-radio-group__row">
-                        <input checked="checked" type="radio" id="id_privacy_0" value="0" name="privacy" />
-                        <span class="big-radio-group__cell">Keep all details private</span>
-                    </label>
-                </div>
-            </li>
-            <li>
-                <div class="big-radio-group__table">
-                    <label for="id_privacy_1" class="big-radio-group__row">
-                        <input type="radio" id="id_privacy_1" value="1" name="privacy" />
-                        <span class="big-radio-group__cell">Publish problem and response but not my name</span>
-                    </label>
-                </div>
-            </li>
-            <li class="big-radio-group__last">
-                <div class="big-radio-group__table">
-                    <label for="id_privacy_2" class="big-radio-group__row">
-                        <input type="radio" id="id_privacy_2" value="2" name="privacy" />
-                        <span class="big-radio-group__cell">Publish problem and response with my name</span>
-                    </label>
-                </div>
-            </li>
-        </ul>
-        {% include "message_list.html" with messages=form.privacy.errors message_type='error' %}
-
-        <p class="info">Please be assured that if you choose to publish your issue, either anonymously, or with your name, it will not have any negative impact at all on any NHS service you may experience in the future.</p>
+            <ul class="island-list">
+                <li>Unless you publish the details of your problem on the site it will remain private between you and the service provider.</li>
+                <li>Choosing to publish your problem will make it easier to track.</li>
+                <li>You can choose to publish anonymously if you prefer.</li>
+                <li>All problems will go though moderation to ensure it meets out publishing criteria, your original message will be passed to the service provider unchanged. See our moderation rules for more information.</li>
+            </ul>
+        </div>
 
     </fieldset>
 
     <fieldset class="island">
-        <ul class="gw">
-            <li class="g  one-whole">
-                <label for="id_agree_to_terms">{{ form.agree_to_terms }} I have read and agree to the <a href="{% url 'about' cobrand=cobrand.name %}">Terms and Conditions</a></label>
-                {% include "message_list.html" with messages=form.agree_to_terms.errors message_type='error' %}
-            </li>
-        </ul>
+        <label class="island-label">What happens next?</label>
+        <div class="gw">
+            <div class="g  one-quarter">
+                <img src="{% static 'img/problem-progress.png' %}" alt="Problem progress steps" />
+            </div>
+            <div class="g  three-quarters">
+                <ul class="steps-list">
+                    <li>The NHS Service provider receives details of your problem. The case appears on the live map with its current status.</li>
+                    <li>The NHS Service provider contacts you to discuss how your problem can be resolved. You should get a response in X working days.</li>
+                    <li>The NHS service provider carries out what you have agreed should happen. If uou are not satisfied with the response you receive, or you do not get a response at all you can re-log your problem.</li>
+                    <li>We send you a short questionnaire to say whether you were happy with the solution to your problem.</li>
+                </ul>
+            </div>
+        </div>
     </fieldset>
 
-    <fieldset>
-        <button class="btn  fr" type="submit">Submit</button>
+
+    <fieldset class="island">
+        <ul class="gw">
+            <li class="g  two-halfs">
+                <label for="id_agree_to_terms" class="label-checkbox">{{ form.agree_to_terms }} I have read and agree to the <a href="{% url 'about' cobrand=cobrand.name %}">Terms and Conditions</a></label>
+                {% include "message_list.html" with messages=form.agree_to_terms.errors message_type='error' %}
+            </li>
+            <li class="g  one-half">
+                <button class="btn  fr" type="submit">Submit</button>
+            </li>
+        </ul>
     </fieldset>
 </form>
 {% endblock content %}
@@ -230,5 +219,10 @@
             window.CitizenConnect.priorityCategories.{{cat}} = true;
         {% endfor %}
     </script>
+    <script src="{% static 'js/select2.min.js' %}"></script>
     <script src="{% static 'js/problem-form.js' %}"></script>
 {% endblock extra_js %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/select2/select2.css' %}" />
+{% endblock extra_css %}
