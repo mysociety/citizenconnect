@@ -227,6 +227,16 @@ class ReviewSaveFromAPITests(TestCase):
         self.assertTrue(review)
         self.assertEqual(review.title, new_title)
 
+        # upsert_or_delete with published as too old and check it is deleted
+        outdated_sample = self.sample_review.copy()
+        outdated_sample.update({"api_published": '2010-05-01T12:47:22+01:00'})
+        Review.upsert_or_delete_from_api_data(outdated_sample)
+        self.assertEqual(
+            Review.objects.filter(
+                api_posting_id=self.sample_review['api_posting_id']
+            ).count(),
+            0
+        )
 
     def test_upsert_or_deletes_ratings(self):
         self.maxDiff = None

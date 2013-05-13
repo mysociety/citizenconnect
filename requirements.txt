@@ -9,6 +9,7 @@ psycopg2
 uk-postcode-utils
 requests==1.2.0
 furl
+python-dateutil
 
 ### Django related
 Django==1.4.3

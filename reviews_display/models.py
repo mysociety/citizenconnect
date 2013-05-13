@@ -1,3 +1,7 @@
+import datetime
+from dateutil.parser import parse as dateutil_parse
+
+from django.conf import settings
 from django.db import models
 from django.forms.models import model_to_dict
 
@@ -68,6 +72,9 @@ class Review(AuditedModel):
         all orgs will be part of this project) then it will throw an
         OrganisationFromApiDoesNotExist exception.
 
+        If the  category is deletion, or the published date is more than
+        NHS_CHOICES_API_MAX_REVIEW_AGE_IN_DAYS days old, the entry is deleted
+
         """
 
         # We don't do anything with replies - just return
@@ -79,8 +86,12 @@ class Review(AuditedModel):
             api_postingorganisationid=api_review['api_postingorganisationid']
         )
 
-        # If this is a deletion then delete from the db
-        if api_review['api_category'] == 'deletion':
+        max_age_in_days = settings.NHS_CHOICES_API_MAX_REVIEW_AGE_IN_DAYS
+        oldest_permitted = datetime.datetime.now() - datetime.timedelta(days=max_age_in_days)
+        pub_date = dateutil_parse(api_review['api_published'], ignoretz=True)
+
+        # If this is a deletion or published is too old then delete from the db
+        if api_review['api_category'] == 'deletion' or pub_date <= oldest_permitted:
             try:
                 cls.objects.get(**unique_args).delete()
             except cls.DoesNotExist:
