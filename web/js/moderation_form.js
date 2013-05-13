@@ -12,3 +12,13 @@ $('button[name="publish"]').on('click', function(e) {
         content: $content.html()
     });
 });
+
+$('body').on('click', '.cancel', function(e) {
+    e.preventDefault();
+    $.fancybox.close();
+});
+
+$('body').on('click', '.publish', function(e) {
+    $('button[name="publish"]').off('click').trigger('click');
+    e.preventDefault();
+});
