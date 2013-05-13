@@ -3,6 +3,8 @@ import os
 import json
 import datetime
 import urlparse
+import mock
+import urllib
 
 from django.test import TestCase
 from django.forms.models import model_to_dict
@@ -112,7 +114,8 @@ class ReviewParseApiXmlTests(SampleDirMixin, TestCase):
     def setUp(self):
         super(ReviewParseApiXmlTests, self).setUp()
         self.sample_xml_filename = os.path.join(self.sample_dir, 'sample.xml')
-        self.sample_json_filename = os.path.join(self.sample_dir, 'sample.json')
+        self.sample_json_filename = os.path.join(
+            self.sample_dir, 'sample.json')
 
         self.xml = open(self.sample_xml_filename).read()
         self.json = json.loads(open(self.sample_json_filename).read())
@@ -135,6 +138,37 @@ class ReviewParseApiXmlTests(SampleDirMixin, TestCase):
 
         self.maxDiff = None
         self.assertEqual(actual, expected)
+
+
+class ReviewParseEmptyApiXmlTests(SampleDirMixin, TestCase):
+
+    def test_parse_sample_xml(self):
+
+        # If there are no entries fond the response is a 404 with HTML which
+        # means we need to special case it in the code. If it were a 200 with
+        # atom and no entries the special casing would not be needed an a test
+        # like that in ReviewParseApiXmlTests would suffice (with a different
+        # sample xml file).
+
+        # create the mock response
+        mock_response = mock.Mock()
+        mock_response.getcode = mock.MagicMock(return_value=404)
+        mock_response.read = mock.MagicMock(
+            return_value=open(os.path.join(self.sample_dir, '404.html')).read()
+        )
+
+        # mock urllib's urlopen
+        with mock.patch.object(urllib, 'urlopen', return_value=mock_response):
+            api = ReviewsAPI(organisation_type="hospitals")
+
+            for review in api:
+                self.assertTrue(False, 'should never reach here')
+
+            self.assertTrue(True, "did not go into loop")
+            self.assertEqual(api.next_page_url, None)
+
+        self.assertEqual(api.extract_reviews_from_xml(None), [])
+        self.assertEqual(api.extract_next_page_url(None), None)
 
 
 class ReviewSaveFromAPITests(TestCase):

@@ -70,8 +70,13 @@ class ReviewsAPI(object):
         self.fetches_remaining -= 1
 
         logger.debug("Fetching '%s'" % url)
-        data = urllib.urlopen(url).read()
+        response = urllib.urlopen(url)
 
+        if response.getcode() == 404:
+            # They use 404 for empty responses :(
+            return None
+
+        data = response.read()
         data = self.cleanup_xml(data)
         return data
 
@@ -131,6 +136,11 @@ class ReviewsAPI(object):
         return review
 
     def extract_reviews_from_xml(self, xml):
+
+        # for 404 responses
+        if xml is None:
+            return []
+
         root = ET.fromstring(xml)
         reviews = []
         for entry in root.iter('entry'):
@@ -139,6 +149,11 @@ class ReviewsAPI(object):
         return reviews
 
     def extract_next_page_url(self, xml):
+
+        # for 404 responses
+        if xml is None:
+            return None
+
         root = ET.fromstring(xml)
         next_page_url = root.find('link[@rel="next"]').get('href')
         last_page_url = root.find('link[@rel="last"]').get('href')
@@ -164,6 +179,7 @@ class ReviewsAPI(object):
 
         # error with fetching, or have fetched up to our limit
         if not xml:
+            self.next_page_url = None
             return None
 
         reviews_from_xml = self.extract_reviews_from_xml(xml)
