@@ -49,9 +49,9 @@
                 <div class="meta-data-wrap">
                     <h3 class="meta-data-label">Manage problem</h3>
                 </div>
+                <label for="id_status" class="label-small">Status</label>
                 <ul class="gw">
                     <li class="g  one-half  palm-one-whole">
-                        <label for="id_status" class="label-small">Status</label>
                         {{ form.status }}
                         {% include "message_list.html" with messages=form.status.errors message_type='error' %}
                     </li>
@@ -62,8 +62,10 @@
 
                 <ul class="gw">
                     <li class="g  one-whole  palm-one-whole">
-                        <label for="id_status">How is the service described commissioned?</label>
-                        {{ form.commissioned }}
+                        <label class="label-small">How is the service described commissioned?</label>
+                        <div class="input-radio">
+                            {{ form.commissioned }}
+                        </div>
                         {% include "message_list.html" with messages=form.commissioned.errors message_type='error' %}
                     </li>
                 </ul>

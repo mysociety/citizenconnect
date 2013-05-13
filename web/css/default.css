@@ -308,8 +308,8 @@ label.disabled, .label.disabled { -ms-filter: "progid:DXImageTransform.Microsoft
 
 .label-small { font-size: 14px; }
 
-.label-checkbox { font-weight: normal; padding-left: 20px; }
-.label-checkbox input[type=checkbox] { margin-left: -20px; }
+.label-checkbox, .label-radio { font-weight: normal; padding-left: 20px; }
+.label-checkbox input[type="checkbox"], .label-radio input[type="checkbox"] { margin-left: -20px; }
 
 /** Info text */
 .info { font-size: 0.875em; font-style: italic; font-weight: normal; display: block; }
@@ -381,6 +381,10 @@ label.disabled, .label.disabled { -ms-filter: "progid:DXImageTransform.Microsoft
 .problem-form .steps-list { list-style: none; }
 .problem-form .steps-list li { padding: 25px 0 5px; border-bottom: 1px solid #dddddd; }
 .problem-form .slim-select > :first-child { margin-left: 20px; width: 45%; }
+
+.input-radio ul { padding: 0; }
+.input-radio li { display: inline; margin-right: 15px; }
+.input-radio label { display: inline; font-weight: normal; }
 
 /* A better looking default horizontal rule */
 hr { display: block; height: 1px; border: 0; border-top: 1px solid #dddddd; margin: 1em 0; padding: 0; }
