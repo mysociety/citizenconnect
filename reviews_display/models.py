@@ -58,7 +58,7 @@ class Review(AuditedModel):
         return u"{0}, {1} ({2})".format(self.title, self.author_display_name, self.id)
 
     @classmethod
-    def upsert_from_api_data(cls, api_review):
+    def upsert_or_delete_from_api_data(cls, api_review):
         """
 
         Given a review scraped from the API creates or updates an entry in the

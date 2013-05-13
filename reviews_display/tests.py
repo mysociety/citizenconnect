@@ -203,10 +203,10 @@ class ReviewSaveFromAPITests(TestCase):
             'ratings': self.sample_ratings,
         }
 
-    def test_upserts(self):
+    def test_upsert_or_deletes(self):
 
         # insert entry and check it exists
-        self.assertTrue(Review.upsert_from_api_data(self.sample_review))
+        self.assertTrue(Review.upsert_or_delete_from_api_data(self.sample_review))
         review = Review.objects.get(
             api_posting_id=self.sample_review['api_posting_id']
         )
@@ -214,24 +214,25 @@ class ReviewSaveFromAPITests(TestCase):
         self.assertEqual(review.content, self.sample_review['content'])
 
         # do it again (unchanged) and check it is still there
-        self.assertTrue(Review.upsert_from_api_data(self.sample_review))
+        self.assertTrue(Review.upsert_or_delete_from_api_data(self.sample_review))
 
-        # upsert with a changed comment and check it is updated
+        # upsert_or_delete with a changed comment and check it is updated
         new_title = "This is the changed title"
         new_sample = self.sample_review.copy()
         new_sample.update({"title": new_title})
-        self.assertTrue(Review.upsert_from_api_data(new_sample))
+        self.assertTrue(Review.upsert_or_delete_from_api_data(new_sample))
         review = Review.objects.get(
             api_posting_id=self.sample_review['api_posting_id']
         )
         self.assertTrue(review)
         self.assertEqual(review.title, new_title)
 
-    def test_upserts_ratings(self):
+
+    def test_upsert_or_deletes_ratings(self):
         self.maxDiff = None
 
         # insert entry and check it exists
-        self.assertTrue(Review.upsert_from_api_data(self.sample_review))
+        self.assertTrue(Review.upsert_or_delete_from_api_data(self.sample_review))
         review = Review.objects.get(
             api_posting_id=self.sample_review['api_posting_id']
         )
@@ -244,7 +245,7 @@ class ReviewSaveFromAPITests(TestCase):
         ]
         self.assertEqual(ratings, self.sample_ratings)
 
-        # upsert with changed ratings and check they are updated
+        # upsert_or_delete with changed ratings and check they are updated
         ratings_copy = copy.deepcopy(self.sample_ratings)
         ratings_copy[0]['score'] = 3
         ratings_copy[0]['answer'] = 'so so'
@@ -257,7 +258,7 @@ class ReviewSaveFromAPITests(TestCase):
         new_sample = self.sample_review.copy()
         new_sample['ratings'] = ratings_copy
 
-        self.assertTrue(Review.upsert_from_api_data(new_sample))
+        self.assertTrue(Review.upsert_or_delete_from_api_data(new_sample))
         review = Review.objects.get(
             api_posting_id=self.sample_review['api_posting_id']
         )
@@ -272,12 +273,12 @@ class ReviewSaveFromAPITests(TestCase):
 
     def test_takedowns(self):
         # insert entry
-        Review.upsert_from_api_data(self.sample_review)
+        Review.upsert_or_delete_from_api_data(self.sample_review)
 
-        # upsert a takedown, check review is deleted
+        # upsert_or_delete a takedown, check review is deleted
         sample_review = self.sample_review.copy()
         sample_review['api_category'] = 'deletion'
-        Review.upsert_from_api_data(sample_review)
+        Review.upsert_or_delete_from_api_data(sample_review)
         self.assertEqual(
             Review.objects.filter(
                 api_posting_id=sample_review['api_posting_id']
@@ -286,12 +287,12 @@ class ReviewSaveFromAPITests(TestCase):
         )
 
         # check that calling it without anything is db is ok too
-        Review.upsert_from_api_data(sample_review)
+        Review.upsert_or_delete_from_api_data(sample_review)
 
     def test_replies(self):
         sample_review = self.sample_review.copy()
         sample_review['api_category'] = 'reply'
-        Review.upsert_from_api_data(sample_review)
+        Review.upsert_or_delete_from_api_data(sample_review)
         self.assertEqual(
             Review.objects.filter(
                 api_posting_id=sample_review['api_posting_id']
@@ -304,7 +305,7 @@ class ReviewSaveFromAPITests(TestCase):
         sample_review['organisation_choices_id'] = '12345678'  # won't be in db
         self.assertRaises(
             OrganisationFromApiDoesNotExist,
-            Review.upsert_from_api_data,
+            Review.upsert_or_delete_from_api_data,
             sample_review
         )
 
