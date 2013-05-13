@@ -1,0 +1,18 @@
+<div id="publish-confirm-modal">
+    <div class="island"></div>
+    <div class="content">
+        {% if issue.moderated_description %}
+            {{ issue.moderated_description|linebreaks }}
+        {% else %}
+            {{ issue.description|linebreaks }}
+        {% endif %}
+    </div>
+    <div class="island">
+        <div class="fl">
+            <small>Click Cancel to edit<br>
+            Click Publish to replace the existing comment</small>
+        </div>
+        <button class="publish btn btn--light-green  btn--publish  fr">Publish</button>
+        <button class="cancel btn btn--darkgrey  fr">Cancel</button>
+    </div>
+</div>

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load url from future %}
+{% load staticfiles %}
 {% block title %}Moderate problem{% endblock %}
 
 {% block bodyclasses %}second-tier-moderate-form{% endblock %}
@@ -53,5 +54,31 @@
     <div class="meta-data-sidebar  g  one-third  palm-one-whole">
         {% include "issues/issue_sidebar.html" with object=issue private=1 title="Moderate problem" %}
     </div>
+
 </div>
+
+{% include 'moderation/publish_confirm_modal.html' %}
+
 {% endblock %}
+
+{% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'css/fancybox/jquery.fancybox-1.3.4.css' %}" />
+
+<style>
+/* Fancybox doesn't play nicely with `box-sizing: border-box;`. */
+#fancybox-wrap, #fancybox-wrap * {
+    box-sizing: initial;
+}
+#publish-confirm-modal {
+    display: none;
+}
+</style>
+
+{% endblock extra_css %}
+
+{% block extra_js %}
+<script src="{% static 'js/jquery.browser.js' %}"></script>
+<script src="{% static 'js/jquery.fancybox-1.3.4.js' %}"></script>
+<script src="{% static 'js/moderation_form.js' %}"></script>
+{% endblock extra_js %}
