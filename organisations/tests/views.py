@@ -336,27 +336,27 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         for url in [self.public_hospital_problems_url, self.private_hospital_problems_url]:
             self.login_as(self.test_hospital_user)
             resp = self.client.get(url)
-            self.assertContains(resp, '<a href="?sort=service">Department</a>', count=1, status_code=200)
+            self.assertContains(resp, '<th class="service">Department</th>', count=1, status_code=200)
 
     def test_shows_time_limits_for_hospitals(self):
         for url in [self.public_hospital_problems_url, self.private_hospital_problems_url]:
             self.login_as(self.test_hospital_user)
             resp = self.client.get(url)
-            self.assertContains(resp, 'Time To Acknowledge', count=1, status_code=200)
-            self.assertContains(resp, 'Time To Address', count=1, status_code=200)
+            self.assertContains(resp, '<th class="time_to_acknowledge">Acknowledge</th>', count=1, status_code=200)
+            self.assertContains(resp, '<th class="time_to_address">Address</th>', count=1, status_code=200)
 
     def test_no_services_for_gps(self):
         for url in [self.public_gp_problems_url, self.private_gp_problems_url]:
             self.login_as(self.test_gp_user)
             resp = self.client.get(url)
-            self.assertNotContains(resp, '<a href="?sort=service">Department</a>')
+            self.assertNotContains(resp, '<th class="service">Department</th>')
 
     def test_no_time_limits_for_gps(self):
         for url in [self.public_gp_problems_url, self.private_gp_problems_url]:
             self.login_as(self.test_gp_user)
             resp = self.client.get(url)
-            self.assertNotContains(resp, 'Acknowledged In Time')
-            self.assertNotContains(resp, 'Addressed In Time')
+            self.assertNotContains(resp, '<th class="time_to_acknowledge">Acknowledge</th>')
+            self.assertNotContains(resp, '<th class="time_to_address">Address</th>')
 
     def test_public_page_exists_and_is_accessible_to_anyone(self):
         resp = self.client.get(self.public_hospital_problems_url)
@@ -557,11 +557,7 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         columns = ('reference_number',
                    'created',
                    'status',
-                   'resolved',
-                   'time_to_acknowledge',
-                   'time_to_address',
-                   'happy_service',
-                   'happy_outcome')
+                   'resolved')
         for column in columns:
             sorted_url = "{0}?sort={1}".format(self.public_hospital_problems_url, column)
             resp = self.client.get(sorted_url)
