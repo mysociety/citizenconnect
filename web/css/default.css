@@ -856,6 +856,9 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .btn--dark-red { border-color: #851432; color: white; background: #931638; }
 .btn--dark-red:hover { background: #851432; }
 
+.btn--darkgrey { border-color: #8d8d8d; color: white; background: #aaaaaa; }
+.btn--darkgrey:hover { background: #8d8d8d; }
+
 /** Disabled button */
 .btn--disabled { border-color: #8d8d8d; color: white; background: #dddddd; }
 .btn--disabled:hover { background: #dddddd; }
