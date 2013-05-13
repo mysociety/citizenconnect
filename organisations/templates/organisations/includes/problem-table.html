@@ -20,9 +20,7 @@
                     {% endif %}
                 {% endfor %}
                 </tr>
-                {# We need this when not in an expanded table to space headers from content,
-                   it gets hidden otherwise
-                #}
+                {# We need this when not in an expanded table to space headers from content, it gets hidden otherwise #}
                 <tr class="problem-table__spacer"><th colspan="{{ table.columns|length }}"></td></tr>
             </thead>
         {% endblock table.thead %}
