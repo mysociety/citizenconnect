@@ -163,7 +163,7 @@ $(document).ready(function () {
                 icon: iconClass
             });
 
-            content = _.template(hoverBubbleTemplate, {nhsCentre: nhsCentre, issueType: issueType});
+            content = _.template(hoverBubbleTemplate, {nhsCentre: nhsCentre, issueType: issueType, icon: iconClass});
 
             // Save some custom data in the marker
             marker.nhsCentre = nhsCentre;
