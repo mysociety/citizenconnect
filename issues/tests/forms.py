@@ -1,4 +1,5 @@
 import uuid
+import time
 
 from django.test import TestCase
 from django.core.urlresolvers import reverse
@@ -9,7 +10,9 @@ from ..models import Problem
 from ..forms import ProblemForm
 from ..lib import int_to_base32
 
-class ProblemCreateFormTests(TestCase):
+from citizenconnect.browser_testing import SeleniumTestCase
+
+class ProblemCreateFormBase(object):
 
     def setUp(self):
         self.test_organisation = create_test_organisation({'ods_code': '11111'})
@@ -35,6 +38,8 @@ class ProblemCreateFormTests(TestCase):
             'elevate_priority': False,
             'website': '', # honeypot - should be blank
         }
+
+class ProblemCreateFormTests(ProblemCreateFormBase, TestCase):
 
     def test_problem_form_exists(self):
         resp = self.client.get(self.form_url)
@@ -131,6 +136,15 @@ class ProblemCreateFormTests(TestCase):
         resp = self.client.post(self.form_url, spam_problem)
         self.assertEqual(resp.status_code, 200)
         self.assertTrue('has been rejected' in resp.content)
+
+
+class ProblemCreateFormBrowserTests(ProblemCreateFormBase, SeleniumTestCase):
+# class ProblemCreateFormBrowserTests( SeleniumTestCase):
+
+    def test_currently_in_care_toggling(self):
+        d = self.driver
+        d.get(self.full_url(self.form_url))
+        # time.sleep(10)
 
 
 class ProblemSurveyFormTests(TestCase):
