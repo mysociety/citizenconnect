@@ -1,7 +1,7 @@
 # Notes on the NHS Choices API
 
 The API does not appear to have any formal documentation. These notes are
-based on email responses from the NHS to questions, and on observed behavior.
+based on email responses from the NHS to questions, and on observed behaviour.
 The API is under development, so it is likely that some of this will be wrong.
 
 These notes also focus on reading out reviews, and detecting take-downs.
@@ -32,9 +32,11 @@ For comments changed since a certain date (not including ones that are no longer
 
 ## Ordering
 
-The comments should always be in published order, but observation of the API shows that they are in created order, but the created timestamp is not exposed in the API. Note that the meaning of the `published` and `updated` timestamps is uncertain as they are both reset at certain times - eg when marking a review for takedown.
+The reviews are in created order, but the created timestamp is not exposed in the API. Prior to querying it was believed by the NHS team that they were in `published` order. Note that the meaning of the `published` and `updated` timestamps is uncertain as they are both reset at certain times - eg when marking a review for takedown.
 
 It is not possible to change the ordering.
+
+The ordering of the reviews has been queried as it makes the `commentssince/:yyyy/:mm/:dd` endpoints much less useful as it misses recently changed but not recently created reviews.
 
 
 ## Formats
@@ -63,4 +65,4 @@ For ratings the score and answer wording of the Friends and Family questions app
 
 ## Empty responses
 
-These come back as `404`s - not empty lists (have queried if this is the intended behaviour).
+These come back as `404`s - not empty lists (have confirmed that this is the intended behaviour, have queried whether it is the correct behaviour).
