@@ -32,6 +32,9 @@ NHS_CHOICES_BASE_URL: 'http://v1.syndication.nhschoices.nhs.uk/'
 # Posting Organisation ID for the NHS Choices API
 NHS_CHOICES_POSTING_ORGANISATION_ID: 15
 
+# What is the maximum age of reviews that we should store in our db
+NHS_CHOICES_API_MAX_REVIEW_AGE_IN_DAYS: 730
+
 # Cobrands
 ALLOWED_COBRANDS:
   - choices
