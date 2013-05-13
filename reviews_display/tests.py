@@ -142,7 +142,7 @@ class ReviewParseApiXmlTests(SampleDirMixin, TestCase):
 
 class ReviewParseEmptyApiXmlTests(SampleDirMixin, TestCase):
 
-    def test_parse_sample_xml(self):
+    def test_mocked_up_empty_response(self):
 
         # If there are no entries fond the response is a 404 with HTML which
         # means we need to special case it in the code. If it were a 200 with
@@ -167,6 +167,7 @@ class ReviewParseEmptyApiXmlTests(SampleDirMixin, TestCase):
             self.assertTrue(True, "did not go into loop")
             self.assertEqual(api.next_page_url, None)
 
+        # test that these two methods correctly cope with xml that is None
         self.assertEqual(api.extract_reviews_from_xml(None), [])
         self.assertEqual(api.extract_next_page_url(None), None)
 
