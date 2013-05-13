@@ -16,7 +16,6 @@ from .reviews_api import ReviewsAPI
 
 
 def create_test_rating(attributes, review):
-
     """Create a test rating instance for a review, with optional attributes"""
 
     default_attributes = {
@@ -26,13 +25,13 @@ def create_test_rating(attributes, review):
         'review': review
     }
     default_attributes.update(attributes)
-    instance = review.ratings.create(**dict((k, v) for (k, v) in default_attributes.items() if '__' not in k))
+    instance = review.ratings.create(**dict((k, v) for (
+        k, v) in default_attributes.items() if '__' not in k))
     review.save()
     return instance
 
 
 def create_test_review(attributes, ratings_attributes):
-
     """Create a test review instance, with optional attributes"""
 
     # Create a test org to assign the rating to if one's not supplied
@@ -53,7 +52,8 @@ def create_test_review(attributes, ratings_attributes):
     }
 
     default_attributes.update(attributes)
-    instance = Review(**dict((k, v) for (k, v) in default_attributes.items() if '__' not in k))
+    instance = Review(**dict((k, v) for (
+        k, v) in default_attributes.items() if '__' not in k))
     instance.save()
 
     # Create some dummy ratings if there are none supplied
@@ -124,7 +124,7 @@ class ReviewParseApiXmlTests(SampleDirMixin, TestCase):
         xml = api.cleanup_xml(self.xml)
         actual = api.extract_reviews_from_xml(xml)
 
-        # # Handy for recreating the JSON when testing
+        # Handy for recreating the JSON when testing
         # open(
         #     self.sample_json_filename, 'w'
         # ).write(
@@ -278,14 +278,18 @@ class ReviewOrganisationListTests(TestCase):
 
     def setUp(self):
         self.test_organisation = create_test_organisation({'ods_code': 'ABC'})
-        self.test_other_organisation = create_test_organisation({'ods_code': 'DEF'})
-        self.org_review = create_test_review({'organisation': self.test_organisation}, {})
-        self.other_org_review = create_test_review({'organisation': self.test_other_organisation}, {})
+        self.test_other_organisation = create_test_organisation(
+            {'ods_code': 'DEF'})
+        self.org_review = create_test_review({
+                                             'organisation': self.test_organisation}, {})
+        self.other_org_review = create_test_review({
+                                                   'organisation': self.test_other_organisation}, {})
 
     def test_organisation_reviews_page(self):
         reviews_list_url = reverse('review-organisation-list',
-                                   kwargs={'ods_code': self.test_organisation.ods_code,
-                                           'cobrand': 'choices'})
+                                   kwargs={
+                                       'ods_code': self.test_organisation.ods_code,
+                                   'cobrand': 'choices'})
         resp = self.client.get(reviews_list_url)
         self.assertEqual(resp.context['organisation'], self.test_organisation)
         self.assertEqual(len(resp.context['object_list']), 1)
@@ -296,13 +300,15 @@ class ReviewDetailTests(TestCase):
 
     def setUp(self):
         self.test_organisation = create_test_organisation({'ods_code': 'ABC'})
-        self.org_review = create_test_review({'organisation': self.test_organisation}, {})
+        self.org_review = create_test_review({
+                                             'organisation': self.test_organisation}, {})
 
     def test_organisation_reviews_page(self):
         review_detail_url = reverse('review-detail',
-                                    kwargs={'ods_code': self.test_organisation.ods_code,
-                                            'pk': self.org_review.id,
-                                            'cobrand': 'choices'})
+                                    kwargs={
+                                        'ods_code': self.test_organisation.ods_code,
+                                    'pk': self.org_review.id,
+                                    'cobrand': 'choices'})
         resp = self.client.get(review_detail_url)
         self.assertEqual(resp.context['organisation'], self.test_organisation)
         self.assertEqual(resp.context['object'], self.org_review)
@@ -312,9 +318,12 @@ class ReviewListTests(TestCase):
 
     def setUp(self):
         self.test_organisation = create_test_organisation({'ods_code': 'ABC'})
-        self.test_other_organisation = create_test_organisation({'ods_code': 'DEF'})
-        self.org_review = create_test_review({'organisation': self.test_organisation}, {})
-        self.other_org_review = create_test_review({'organisation': self.test_other_organisation}, {})
+        self.test_other_organisation = create_test_organisation(
+            {'ods_code': 'DEF'})
+        self.org_review = create_test_review({
+                                             'organisation': self.test_organisation}, {})
+        self.other_org_review = create_test_review({
+                                                   'organisation': self.test_other_organisation}, {})
 
     def test_organisation_reviews_page(self):
         review_list_url = reverse('review-list',
