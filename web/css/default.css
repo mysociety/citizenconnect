@@ -905,17 +905,16 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .filters p { margin: 0; font-size: 1.25em; }
 
 .filters__dropdown-wrap label { font-weight: normal; font-size: 0.75em; color: #666; margin-bottom: 0; }
-.filters__dropdown-wrap .filters__dropdown { position: relative; border-right: 2px solid white; background: #2f9aa8; font-weight: bold; -webkit-text-overflow: ellipsis; -moz-text-overflow: ellipsis; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; }
-.filters__dropdown-wrap .filters__dropdown select, .filters__dropdown-wrap .filters__dropdown span { color: #fff; }
-.filters__dropdown-wrap .filters__dropdown select:focus, .filters__dropdown-wrap .filters__dropdown span:focus { color: #fff; }
+.filters__dropdown-wrap .filters__dropdown { position: relative; border-right: 2px solid white; background-color: #2f9aa8; background-image: url(../img/select_arrow.png); background-repeat: no-repeat; background-position: 95% center; font-weight: bold; -webkit-text-overflow: ellipsis; -moz-text-overflow: ellipsis; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; }
+.filters__dropdown-wrap .filters__dropdown select { color: #fff; }
+.filters__dropdown-wrap .filters__dropdown select:focus { color: #fff; }
 .filters__dropdown-wrap .filters__dropdown--last { border-right: 0; }
-.filters__dropdown-wrap .filters__dropdown--default { background: #e6e6e6; font-weight: normal; }
-.filters__dropdown-wrap .filters__dropdown--default select, .filters__dropdown-wrap .filters__dropdown--default span { color: #333; }
-.filters__dropdown-wrap .filters__dropdown--default select:focus, .filters__dropdown-wrap .filters__dropdown--default span:focus { color: #333; }
+.filters__dropdown-wrap .filters__dropdown--default { background-color: #e6e6e6; background-image: url(../img/select_arrow-default.png); font-weight: normal; }
+.filters__dropdown-wrap .filters__dropdown--default select { color: #333; }
+.filters__dropdown-wrap .filters__dropdown--default select:focus { color: #333; }
 .filters__dropdown-wrap select { background-color: transparent; -webkit-appearance: none; -moz-appearance: window; appearance: none; border: none; width: 100%; padding: 1em 2.5em 1em 0.5em; margin: 0; font-size: 0.8125em; -webkit-border-radius: 0; -moz-border-radius: 0; -ms-border-radius: 0; -o-border-radius: 0; border-radius: 0; }
-.filters__dropdown-wrap span { position: absolute; right: 0.5em; top: 0.8em; }
 
-.filters__button { padding: 0.7em 1.5em; margin: 1.15em 0 0.5em 20px; }
+.filters__button { padding: 0.7em 1.5em; margin: 0em 0 0.5em 20px; }
 
 .pagination { list-style: none; padding: 0; width: 100%; text-align: center; }
 .pagination li { display: inline-block; *display: inline; *zoom: 1; margin: 0 0.125em; }
