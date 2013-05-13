@@ -5,9 +5,12 @@ import datetime
 import urlparse
 import mock
 import urllib
+import pytz
 
+from django.conf import settings
 from django.test import TestCase
 from django.forms.models import model_to_dict
+from django.core.management import call_command
 from django.core.urlresolvers import reverse
 from django.utils.timezone import utc
 
@@ -172,7 +175,7 @@ class ReviewParseEmptyApiXmlTests(SampleDirMixin, TestCase):
         self.assertEqual(api.extract_next_page_url(None), None)
 
 
-class ReviewSaveFromAPITests(TestCase):
+class ReviewModelTests(TestCase):
 
     def setUp(self):
         self.organisation = create_test_organisation({"choices_id": 1234})
@@ -206,7 +209,8 @@ class ReviewSaveFromAPITests(TestCase):
     def test_upsert_or_deletes(self):
 
         # insert entry and check it exists
-        self.assertTrue(Review.upsert_or_delete_from_api_data(self.sample_review))
+        self.assertTrue(Review.upsert_or_delete_from_api_data(
+            self.sample_review))
         review = Review.objects.get(
             api_posting_id=self.sample_review['api_posting_id']
         )
@@ -214,7 +218,8 @@ class ReviewSaveFromAPITests(TestCase):
         self.assertEqual(review.content, self.sample_review['content'])
 
         # do it again (unchanged) and check it is still there
-        self.assertTrue(Review.upsert_or_delete_from_api_data(self.sample_review))
+        self.assertTrue(Review.upsert_or_delete_from_api_data(
+            self.sample_review))
 
         # upsert_or_delete with a changed comment and check it is updated
         new_title = "This is the changed title"
@@ -238,11 +243,15 @@ class ReviewSaveFromAPITests(TestCase):
             0
         )
 
+        # check running again on entry that is not there
+        Review.upsert_or_delete_from_api_data(outdated_sample)
+
     def test_upsert_or_deletes_ratings(self):
         self.maxDiff = None
 
         # insert entry and check it exists
-        self.assertTrue(Review.upsert_or_delete_from_api_data(self.sample_review))
+        self.assertTrue(Review.upsert_or_delete_from_api_data(
+            self.sample_review))
         review = Review.objects.get(
             api_posting_id=self.sample_review['api_posting_id']
         )
@@ -318,6 +327,25 @@ class ReviewSaveFromAPITests(TestCase):
             Review.upsert_or_delete_from_api_data,
             sample_review
         )
+
+    def test_delete_old_reviews(self):
+
+        # put a couple of test reviews in the db
+        test_age_in_days = settings.NHS_CHOICES_API_MAX_REVIEW_AGE_IN_DAYS + 10
+        old_review = create_test_review({
+            'organisation': self.organisation,
+            'api_published': datetime.datetime.now(pytz.utc) - datetime.timedelta(days=test_age_in_days)
+        }, {})
+        young_review = create_test_review({
+            'organisation': self.organisation,
+        }, {})
+
+        # run the delete_old_reviews management command
+        call_command('delete_old_reviews')
+
+        # Check that the young one remains, old one is gone
+        self.assertFalse(Review.objects.filter(pk=old_review.id).exists())
+        self.assertTrue(Review.objects.filter(pk=young_review.id).exists())
 
 
 class ReviewOrganisationListTests(TestCase):

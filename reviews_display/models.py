@@ -1,5 +1,6 @@
 import datetime
 from dateutil.parser import parse as dateutil_parse
+import pytz
 
 from django.conf import settings
 from django.db import models
@@ -62,6 +63,21 @@ class Review(AuditedModel):
         return u"{0}, {1} ({2})".format(self.title, self.author_display_name, self.id)
 
     @classmethod
+    def delete_old_reviews(cls):
+        """
+        Delete reviews that are older than
+        NHS_CHOICES_API_MAX_REVIEW_AGE_IN_DAYS. This is based on the published
+        date, it would be better if it was based on the visit date, but we are
+        not supplied this in the API.
+        """
+
+        max_age_in_days = settings.NHS_CHOICES_API_MAX_REVIEW_AGE_IN_DAYS
+        max_age_timedelta = datetime.timedelta(days=max_age_in_days)
+        oldest_permitted = datetime.datetime.now(pytz.utc) - max_age_timedelta
+
+        cls.objects.filter(api_published__lte=oldest_permitted).delete()
+
+    @classmethod
     def upsert_or_delete_from_api_data(cls, api_review):
         """
 
@@ -87,7 +103,8 @@ class Review(AuditedModel):
         )
 
         max_age_in_days = settings.NHS_CHOICES_API_MAX_REVIEW_AGE_IN_DAYS
-        oldest_permitted = datetime.datetime.now() - datetime.timedelta(days=max_age_in_days)
+        oldest_permitted = datetime.datetime.now() - datetime.timedelta(
+            days=max_age_in_days)
         pub_date = dateutil_parse(api_review['api_published'], ignoretz=True)
 
         # If this is a deletion or published is too old then delete from the db
