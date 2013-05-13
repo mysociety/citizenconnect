@@ -1,12 +1,11 @@
-import logging
-
 from django.core.urlresolvers import reverse
 
-from organisations.tests.lib import create_test_problem, create_test_organisation
+from organisations.tests.lib import create_test_problem
 from issues.models import Problem
 from responses.models import ProblemResponse
 
 from .lib import BaseModerationTestCase
+
 
 class BasicViewTests(BaseModerationTestCase):
 
@@ -70,10 +69,10 @@ class HomeViewTests(BaseModerationTestCase):
     def setUp(self):
         super(HomeViewTests, self).setUp()
 
-        self.closed_problem = create_test_problem({'organisation':self.test_organisation,
-                                                             'status': Problem.RESOLVED})
-        self.moderated_problem = create_test_problem({'organisation':self.test_organisation,
-                                                                'moderated': Problem.MODERATED})
+        self.closed_problem = create_test_problem({'organisation': self.test_organisation,
+                                                   'status': Problem.RESOLVED})
+        self.moderated_problem = create_test_problem({'organisation': self.test_organisation,
+                                                      'moderated': Problem.MODERATED})
 
         self.login_as(self.case_handler)
 
@@ -98,7 +97,7 @@ class HomeViewTests(BaseModerationTestCase):
     def test_high_priority_problems_identified(self):
         expected = 'problem-table__highlight'
 
-        # Test without there being a priority enry
+        # Test without there being a priority entry
         resp = self.client.get(self.home_url)
         self.assertNotContains(resp, expected)
 
@@ -120,7 +119,7 @@ class SecondTierModerationHomeViewTests(BaseModerationTestCase):
     def setUp(self):
         super(SecondTierModerationHomeViewTests, self).setUp()
         self.second_tier_moderation = create_test_problem({'organisation': self.test_organisation,
-                                                               'requires_second_tier_moderation': True})
+                                                           'requires_second_tier_moderation': True})
         self.no_second_tier_moderation = create_test_problem({'organisation': self.test_organisation})
         self.login_as(self.second_tier_moderator)
 
@@ -134,7 +133,8 @@ class SecondTierModerationHomeViewTests(BaseModerationTestCase):
 
     def test_issues_link_to_second_tier_moderate_form(self):
         resp = self.client.get(self.second_tier_home_url)
-        self.second_tier_problem_form_url = reverse('second-tier-moderate-form', kwargs={'pk':self.second_tier_moderation.id})
+        self.second_tier_problem_form_url = reverse('second-tier-moderate-form',
+                                                    kwargs={'pk': self.second_tier_moderation.id})
         self.assertContains(resp, self.second_tier_problem_form_url)
 
     def test_inaccessible_to_case_handlers(self):
@@ -143,15 +143,46 @@ class SecondTierModerationHomeViewTests(BaseModerationTestCase):
         resp = self.client.get(self.second_tier_home_url)
         self.assertEqual(resp.status_code, 403)
 
+    def test_breach_problems_identified(self):
+        expected = '<div class="problem-table__flag__breach">b</div>'
+
+        # Test without there being a breach entry
+        resp = self.client.get(self.second_tier_home_url)
+        self.assertNotContains(resp, expected)
+
+        # add breach entry
+        self.second_tier_moderation.breach = True
+        self.second_tier_moderation.save()
+
+        # check it is now listed
+        resp = self.client.get(self.second_tier_home_url)
+        self.assertContains(resp, expected)
+
+    def test_escalated_problems_identified(self):
+        expected = '<div class="problem-table__flag__escalate">e</div>'
+
+        # Test without there being an escalated enry
+        resp = self.client.get(self.second_tier_home_url)
+        self.assertNotContains(resp, expected)
+
+        # add an escalated entry
+        self.second_tier_moderation.status = Problem.ESCALATED_ACKNOWLEDGED
+        self.second_tier_moderation.save()
+
+        # check it is now listed
+        resp = self.client.get(self.second_tier_home_url)
+        self.assertContains(resp, expected)
+
+
 class ModerateFormViewTests(BaseModerationTestCase):
 
     def setUp(self):
         super(ModerateFormViewTests, self).setUp()
 
-        self.closed_problem = create_test_problem({'organisation':self.test_organisation,
-                                                             'status': Problem.RESOLVED})
-        self.moderated_problem = create_test_problem({'organisation':self.test_organisation,
-                                                                'moderated': Problem.MODERATED})
+        self.closed_problem = create_test_problem({'organisation': self.test_organisation,
+                                                   'status': Problem.RESOLVED})
+        self.moderated_problem = create_test_problem({'organisation': self.test_organisation,
+                                                      'moderated': Problem.MODERATED})
 
         self.login_as(self.case_handler)
 
@@ -173,11 +204,11 @@ class ModerateFormViewTests(BaseModerationTestCase):
         self.assertContains(resp, response2.response)
 
     def test_moderated_issues_accepted(self):
-        resp = self.client.get(reverse('moderate-form', kwargs={'pk':self.moderated_problem.id}))
+        resp = self.client.get(reverse('moderate-form', kwargs={'pk': self.moderated_problem.id}))
         self.assertEqual(resp.status_code, 200)
 
     def test_closed_issues_accepted(self):
-        resp = self.client.get(reverse('moderate-form', kwargs={'pk':self.closed_problem.id}))
+        resp = self.client.get(reverse('moderate-form', kwargs={'pk': self.closed_problem.id}))
         self.assertEqual(resp.status_code, 200)
 
 
@@ -192,6 +223,7 @@ class SecondTierModerateFormViewTests(BaseModerationTestCase):
         self.assertEqual(resp.context['issue'], self.test_second_tier_moderation_problem)
 
     def test_issues_not_requiring_second_tier_moderation_rejected(self):
-        second_tier_moderation_form_url =  reverse('second-tier-moderate-form', kwargs={'pk':self.test_problem.id})
+        second_tier_moderation_form_url = reverse('second-tier-moderate-form',
+                                                  kwargs={'pk': self.test_problem.id})
         resp = self.client.get(second_tier_moderation_form_url)
         self.assertEqual(resp.status_code, 404)
