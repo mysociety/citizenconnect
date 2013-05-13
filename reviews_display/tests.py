@@ -98,16 +98,21 @@ class ReviewNextPageURLTests(TestCase):
             self.assertEqual(path, expected)
 
 
-class ReviewParseApiXmlTests(TestCase):
+class SampleDirMixin(object):
 
     def setUp(self):
-        sample_dir = os.path.join(
+        self.sample_dir = os.path.join(
             os.path.dirname(__file__),
             'test_sample_data'
         )
 
-        self.sample_xml_filename = os.path.join(sample_dir, 'sample.xml')
-        self.sample_json_filename = os.path.join(sample_dir, 'sample.json')
+
+class ReviewParseApiXmlTests(SampleDirMixin, TestCase):
+
+    def setUp(self):
+        super(ReviewParseApiXmlTests, self).setUp()
+        self.sample_xml_filename = os.path.join(self.sample_dir, 'sample.xml')
+        self.sample_json_filename = os.path.join(self.sample_dir, 'sample.json')
 
         self.xml = open(self.sample_xml_filename).read()
         self.json = json.loads(open(self.sample_json_filename).read())
