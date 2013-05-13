@@ -66,3 +66,8 @@ For ratings the score and answer wording of the Friends and Family questions app
 ## Empty responses
 
 These come back as `404`s - not empty lists (have confirmed that this is the intended behaviour, have queried whether it is the correct behaviour).
+
+
+## Detecting change reviews
+
+It has been confirmed by email that "Any comment that is changed (be it content or category) will appear in the 'commentssince' results and so this is the only one we need to query to stay up to date" is correct and so we do not need to do intermittent polls of all previous comments.
