@@ -108,19 +108,39 @@
         {% include "issues/issue_sidebar.html" with object=issue private=1 title="Moderate problem" %}
     </div>
 </div>
+
+<div id="publish-confirm-modal">
+    <div class="island"></div>
+    <p>Modal content</p>
+    <div class="island">
+        <div class="fl">
+            <small>Click Cancel to edit</small><br>
+            <small>Click Publish to replace the existing comment</small>
+        </div>
+        <button class="btn--light-green  fr" type="submit" name="publish">Publish</button>
+        <button class="btn--darkgrey  fr">Cancel</button>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_css %}
+
 <link rel="stylesheet" href="{% static 'css/fancybox/jquery.fancybox-1.3.4.css' %}" />
+
 <style>
 /* Fancybox doesn't play nicely with `box-sizing: border-box;`. */
 #fancybox-wrap, #fancybox-wrap * {
     box-sizing: initial;
 }
+#publish-confirm-modal {
+    display: none;
+}
 </style>
+
 {% endblock extra_css %}
 
 {% block extra_js %}
 <script src="{% static 'js/jquery.browser.js' %}"></script>
 <script src="{% static 'js/jquery.fancybox-1.3.4.js' %}"></script>
+<script src="{% static 'js/moderation_form.js' %}"></script>
 {% endblock extra_js %}
