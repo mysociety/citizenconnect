@@ -116,6 +116,9 @@ class BaseProblemTable(tables.Table):
                 cobrand = 'choices'
             return reverse('problem-view', kwargs={'pk': record.id, 'cobrand': cobrand})
 
+    class Meta:
+        attrs = {'class': 'problem-table problem-table--expanded'}
+
 
 class ProblemTable(BaseProblemTable):
     """
@@ -200,7 +203,7 @@ class ProblemDashboardTable(BaseProblemTable):
 
     class Meta:
         order_by = ('-created',)
-        attrs = {"class": "dashboard-table"}
+        attrs = {'class': 'problem-table problem-table--expanded'}
         sequence = ('reference_number',
                     'created',
                     'category',
@@ -216,7 +219,7 @@ class EscalationDashboardTable(ProblemDashboardTable):
 
     class Meta:
         order_by = ('-created',)
-        attrs = {"class": "problem-table"}
+        attrs = {'class': 'problem-table problem-table--expanded'}
         sequence = ('provider_name',
                     'reference_number',
                     'created',
