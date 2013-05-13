@@ -5,40 +5,50 @@
 {% block bodyclasses %}second-tier-moderate-form{% endblock %}
 {% block content %}
 
-{% include "issues/issue_detail.html" with object=issue private=1 title="Moderate problem"%}
+{% include "issues/issue_header.html" with object=issue private=1 title="Moderate problem" %}
+<div class="gw">
 
-<div class="second-tier-moderate-form">
-    <form method="post">
-        {% csrf_token %}
+    <div class="g  two-thirds  palm-one-whole">
+        {% include "issues/issue_meta.html" with object=issue private=1 title="Moderate problem" %}
 
-        {% if form.non_field_errors %}
-            <fieldset class="island">
-                {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
-            </fieldset>
-        {% endif %}
+        <div class="second-tier-moderate-form">
+            <form method="post">
+                {% csrf_token %}
 
-        {% for hidden in form.hidden_fields %}
-            {{ hidden }}
-        {% endfor %}
-        <div class="meta-data-wrap">
-            <h3 class="meta-data-label">Moderated details</h3>
+                {% if form.non_field_errors %}
+                    <fieldset class="island">
+                        {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
+                    </fieldset>
+                {% endif %}
+
+                {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                {% endfor %}
+                <div class="meta-data-wrap">
+                    <h3 class="meta-data-label">Moderated details</h3>
+                </div>
+                <fieldset class="island">
+                    <ul class="gw">
+                        <li class="g  one-whole">
+                            {{ form.moderated_description }}
+                            <p class="info">Required when publishing public problems.</p>
+                            {% include "message_list.html" with messages=form.moderated_description.errors message_type='error' %}
+                        </li>
+                    </ul>
+                </fieldset>
+
+                <fieldset>
+                    <button class="btn fl" type="submit" name="keep_private">Not Suitable/Keep Private</button>
+                    <button class="btn fr" type="submit" name="publish">Publish/Update Online</button>
+                </fieldset>
+
+
+            </form>
         </div>
-        <fieldset class="island">
-            <ul class="gw">
-                <li class="g  one-whole">
-                    {{ form.moderated_description }}
-                    <p class="info">Required when publishing public problems.</p>
-                    {% include "message_list.html" with messages=form.moderated_description.errors message_type='error' %}
-                </li>
-            </ul>
-        </fieldset>
+    </div>
 
-        <fieldset>
-            <button class="btn fl" type="submit" name="keep_private">Not Suitable/Keep Private</button>
-            <button class="btn fr" type="submit" name="publish">Publish/Update Online</button>
-        </fieldset>
-
-
-    </form>
+    <div class="meta-data-sidebar  g  one-third  palm-one-whole">
+        {% include "issues/issue_sidebar.html" with object=issue private=1 title="Moderate problem" %}
+    </div>
 </div>
 {% endblock %}
