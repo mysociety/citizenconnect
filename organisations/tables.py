@@ -164,7 +164,7 @@ class ExtendedProblemTable(ProblemTable):
     Like ProblemTable but for organisations where has_services and
     has_time_limits are true meaning we show extra stats
     """
-    service = tables.Column(verbose_name='Department')
+    service = tables.Column(verbose_name='Department', orderable=False)
     time_to_acknowledge = tables.TemplateColumn(verbose_name='Acknowledge',
                                                 template_name='organisations/includes/time_interval_column.html',
                                                 orderable=False)
