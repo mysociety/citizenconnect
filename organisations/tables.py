@@ -126,11 +126,15 @@ class ProblemTable(BaseProblemTable):
     Explicitly not for dashboards, where action related to those problems
     is implied or the primary focus.
     """
-    happy_service = tables.TemplateColumn(verbose_name='Happy with service',
-                                          template_name="organisations/includes/boolean_column.html")
-    happy_outcome = tables.TemplateColumn(verbose_name='Happy with outcome',
-                                          template_name="organisations/includes/boolean_column.html")
+    happy_service = tables.TemplateColumn(verbose_name='Service',
+                                          template_name="organisations/includes/boolean_column.html",
+                                          orderable=False)
+    happy_outcome = tables.TemplateColumn(verbose_name='Outcome',
+                                          template_name="organisations/includes/boolean_column.html",
+                                          orderable=False)
     status = tables.Column()
+
+    split_columns = True
 
     def render_summary(self, record):
         if self.private:
@@ -161,10 +165,12 @@ class ExtendedProblemTable(ProblemTable):
     has_time_limits are true meaning we show extra stats
     """
     service = tables.Column(verbose_name='Department')
-    time_to_acknowledge = tables.TemplateColumn(verbose_name='Time to acknowledge (days)',
-                                                template_name='organisations/includes/time_interval_column.html')
-    time_to_address = tables.TemplateColumn(verbose_name='Time to address (days)',
-                                            template_name='organisations/includes/time_interval_column.html')
+    time_to_acknowledge = tables.TemplateColumn(verbose_name='Acknowledge',
+                                                template_name='organisations/includes/time_interval_column.html',
+                                                orderable=False)
+    time_to_address = tables.TemplateColumn(verbose_name='Address',
+                                            template_name='organisations/includes/time_interval_column.html',
+                                            orderable=False)
     resolved = tables.DateTimeColumn(verbose_name="Resolved")
 
     class Meta:
@@ -256,3 +262,4 @@ class BreachTable(ProblemTable):
                     'happy_service',
                     'happy_outcome',
                     'summary')
+        split_columns = True

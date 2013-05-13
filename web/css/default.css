@@ -483,7 +483,7 @@ table .icon-warning { font-size: 1.375em; color: #d81e05; line-height: 0; }
 .problem-table td { height: 56px; }
 .problem-table th { border: 0; }
 .problem-table .problem-table__head th { font-weight: bold; padding: 0 10px; }
-.problem-table .problem-table__head--bordered th { border-bottom: 3px solid #dddddd; padding: 5px 10px; }
+.problem-table .problem-table__head--bordered th { border-bottom: 3px solid #dddddd; }
 .problem-table .problem-table__subhead th { border-bottom: 3px solid #dddddd; text-align: center; color: #888888; font-size: 0.6875em; padding: 5px 10px; }
 .problem-table td { border-bottom: 1px solid #dddddd; }
 .problem-table td:first-child { border-left: 1px solid #dddddd; }
