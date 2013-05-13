@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load url from future %}
+{% load staticfiles %}
 
 {% block title %}Moderate problem{% endblock %}
 
@@ -108,3 +109,12 @@
     </div>
 </div>
 {% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/fancybox/jquery.fancybox-1.3.4.css' %}" />
+{% endblock extra_css %}
+
+{% block extra_js %}
+<script src="{% static 'js/jquery.browser.js' %}"></script>
+<script src="{% static 'js/jquery.fancybox-1.3.4.js' %}"></script>
+{% endblock extra_js %}
