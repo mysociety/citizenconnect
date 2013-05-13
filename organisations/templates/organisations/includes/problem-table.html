@@ -51,7 +51,7 @@
                 {% block table.tbody.row %}
                     <tr class="{{ table|row_classes:row.record }}" data-href="{{ table|row_href:row.record }}">
                         {% for column, cell in row.items %}
-                            {% if column.accessor == "reference_number" and row.record.has_elevated_priority %}
+                            {% if private and column.accessor == "reference_number" and row.record.has_elevated_priority %}
                                 <td class="problem-table__highlight" {{ column.attrs.td.as_html }}>{{ cell }}</td>
                             {% else %}
                                 <td {{ column.attrs.td.as_html }}>{{ cell }}</td>
