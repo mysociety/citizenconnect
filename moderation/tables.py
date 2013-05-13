@@ -1,6 +1,8 @@
 import django_tables2 as tables
 from issues.models import ProblemQuerySet
 
+from issues.table_columns import BreachAndEscalationColumn
+
 
 class BaseModerationTable(tables.Table):
 
@@ -9,7 +11,11 @@ class BaseModerationTable(tables.Table):
                                      attrs={'td': {'class': 'problem-table__heavy-text'}})
 
     created = tables.DateTimeColumn(verbose_name="Received")
-    private_summary = tables.Column(verbose_name='Text snippet', order_by=("description"))
+    private_summary = tables.Column(verbose_name='Text snippet', orderable=False)
+    breach_and_escalation = BreachAndEscalationColumn()
+
+    class Meta:
+        attrs = {'class': 'problem-table  problem-table--expanded'}
 
 
 class ModerationTable(BaseModerationTable):
@@ -17,8 +23,28 @@ class ModerationTable(BaseModerationTable):
                                    template_name='moderation/includes/moderation_link.html',
                                    orderable=False)
 
+    class Meta:
+        attrs = {'class': 'problem-table  problem-table--expanded'}
+        sequence = (
+            'reference_number',
+            'created',
+            'private_summary',
+            'action',
+            'breach_and_escalation'
+        )
+
 
 class SecondTierModerationTable(BaseModerationTable):
     action = tables.TemplateColumn(verbose_name='Actions',
                                    template_name='moderation/includes/second_tier_moderation_link.html',
                                    orderable=False)
+
+    class Meta:
+        attrs = {'class': 'problem-table  problem-table--expanded'}
+        sequence = (
+            'reference_number',
+            'created',
+            'private_summary',
+            'action',
+            'breach_and_escalation'
+        )

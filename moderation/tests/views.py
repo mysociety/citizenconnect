@@ -95,9 +95,8 @@ class HomeViewTests(BaseModerationTestCase):
         resp = self.client.get(self.home_url)
         self.assertContains(resp, self.problem_form_url)
 
-
     def test_high_priority_problems_identified(self):
-        expected = '<strong class="icon-double-chevron-right"'
+        expected = 'problem-table__highlight'
 
         # Test without there being a priority enry
         resp = self.client.get(self.home_url)
@@ -106,8 +105,8 @@ class HomeViewTests(BaseModerationTestCase):
         # add high priority entry
         create_test_problem(
             {
-                'organisation' : self.test_organisation,
-                'priority'     : Problem.PRIORITY_HIGH
+                'organisation': self.test_organisation,
+                'priority': Problem.PRIORITY_HIGH
             }
         )
 
