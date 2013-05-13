@@ -51,12 +51,12 @@
                 </div>
                 <ul class="gw">
                     <li class="g  one-half  palm-one-whole">
-                        <label for="id_status">Status</label>
+                        <label for="id_status" class="label-small">Status</label>
                         {{ form.status }}
                         {% include "message_list.html" with messages=form.status.errors message_type='error' %}
                     </li>
                     <li class="g one-half  palm-one-whole">
-                        <label for="id_breach">{{ form.breach }} Does this problem describe a breach of the NHS' fundamental standards? </label>
+                        <label for="id_breach" class="label-checkbox">{{ form.breach }} Does this problem describe a breach of the NHS' fundamental standards? </label>
                     </li>
                 </ul>
 

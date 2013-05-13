@@ -306,6 +306,11 @@ select { margin-top: 0.3125em; margin-bottom: 0.5em; width: 100%; }
 label, .label { display: block; font-weight: bold; margin-bottom: 0.5em; }
 label.disabled, .label.disabled { -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)"; filter: alpha(opacity=50); -moz-opacity: 0.5; -khtml-opacity: 0.5; opacity: 0.5; }
 
+.label-small { font-size: 14px; }
+
+.label-checkbox { font-weight: normal; padding-left: 20px; }
+.label-checkbox input[type=checkbox] { margin-left: -20px; }
+
 /** Info text */
 .info { font-size: 0.875em; font-style: italic; font-weight: normal; display: block; }
 

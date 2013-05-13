@@ -46,6 +46,19 @@ label,
 
 }
 
+.label-small {
+  font-size: 14px;
+}
+
+.label-checkbox {
+  font-weight: normal;
+  padding-left: 20px;
+
+  input[type=checkbox] {
+    margin-left: -20px;
+  }
+}
+
 /**
  * Info text
  */
