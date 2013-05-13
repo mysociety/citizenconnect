@@ -3,3 +3,4 @@ conf/httpd.conf
 *.pyc
 .DS_Store
 .sass-cache
+chromedriver.log
