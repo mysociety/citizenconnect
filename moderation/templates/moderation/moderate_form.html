@@ -111,11 +111,17 @@
 
 <div id="publish-confirm-modal">
     <div class="island"></div>
-    <p>Modal content</p>
+    <div class="content">
+        {% if issue.moderated_description %}
+            {{ issue.moderated_description|linebreaks }}
+        {% else %}
+            {{ issue.description|linebreaks }}
+        {% endif %}
+    </div>
     <div class="island">
         <div class="fl">
-            <small>Click Cancel to edit</small><br>
-            <small>Click Publish to replace the existing comment</small>
+            <small>Click Cancel to edit<br>
+            Click Publish to replace the existing comment</small>
         </div>
         <button class="btn--light-green  fr" type="submit" name="publish">Publish</button>
         <button class="btn--darkgrey  fr">Cancel</button>
