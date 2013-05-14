@@ -63,6 +63,7 @@ class ModerateHome(ModeratorsOnlyMixin,
         context = super(ModerateHome, self).get_context_data(**kwargs)
         context['issues'] = Problem.objects.unmoderated_problems().order_for_moderation_table()
         context['title'] = "Moderation"
+        context['private'] = True
         self.add_table_to_context(context, ModerationTable)
         return context
 
@@ -77,6 +78,7 @@ class SecondTierModerateHome(SecondTierModeratorsOnlyMixin,
         context = super(SecondTierModerateHome, self).get_context_data(**kwargs)
         context['issues'] = Problem.objects.problems_requiring_second_tier_moderation().order_for_moderation_table()
         context['title'] = "Second Tier Moderation"
+        context['private'] = True
         self.add_table_to_context(context, SecondTierModerationTable)
         return context
 
