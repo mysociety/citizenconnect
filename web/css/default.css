@@ -950,6 +950,14 @@ h1, h2 {
   color: #cd7f04;
 }
 
+/**
+ * Grey text for intro's
+ */
+.intro-text {
+  color: #888888;
+  margin: 0 0 1em 0;
+}
+
 /*
  * Remove default fieldset styles.
  */
@@ -2687,8 +2695,9 @@ body.docs .c-nhs_blue-tint_10 {
 .btn--big {
   width: 100%;
   font-size: 1.5em;
+  line-height: 1.4;
   font-weight: bold;
-  padding: 2em 1em;
+  padding: 1em 0.5em;
   -webkit-border-radius: 0.25em;
   -moz-border-radius: 0.25em;
   -ms-border-radius: 0.25em;
@@ -2698,6 +2707,21 @@ body.docs .c-nhs_blue-tint_10 {
 @media only screen and (max-width: 1023px) {
   .btn--big {
     font-size: 1.3125em;
+  }
+}
+
+/**
+ * A fix height for btn--big as often text will
+ * knock round on to at least 2 lines
+ */
+.btn--big--fix {
+  min-height: 114px;
+  padding-top: 1.75em;
+}
+@media only screen and (max-width: 1023px) {
+  .btn--big--fix {
+    min-height: 0;
+    padding-top: 1em;
   }
 }
 
@@ -2769,6 +2793,10 @@ body.docs .c-nhs_blue-tint_10 {
   }
 }
 
+.btn--med--alt {
+  padding: 1em;
+}
+
 /**
  * Remove borders
  */
@@ -2782,6 +2810,31 @@ body.docs .c-nhs_blue-tint_10 {
  */
 .btn--no-label {
   margin-top: 1.6em;
+}
+
+/**
+ * A caption that works well with a button, e.g.:
+<a href="#" class="btn__with-caption">
+    <span class="btn  btn--big  btn--blue  btn--no-border">Share Your Experience</span>
+    <span class="btn__caption">Click here</span>
+</a>
+ *
+ */
+.btn__with-caption {
+  text-decoration: none;
+  display: block;
+}
+
+.btn__caption {
+  margin-top: 0.625em;
+  display: block;
+  width: 100%;
+  font-size: 0.875em;
+  font-weight: bold;
+  text-align: center;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #aaaaaa;
 }
 
 /**
@@ -2857,6 +2910,15 @@ body.docs .c-nhs_blue-tint_10 {
 }
 .btn--dark-red:hover {
   background: #851432;
+}
+
+.btn--dark-orange {
+  border-color: #e75b00;
+  color: white;
+  background: #ff6500;
+}
+.btn--dark-orange:hover {
+  background: #e75b00;
 }
 
 /**
