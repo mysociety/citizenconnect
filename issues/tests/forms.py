@@ -139,12 +139,25 @@ class ProblemCreateFormTests(ProblemCreateFormBase, TestCase):
 
 
 class ProblemCreateFormBrowserTests(ProblemCreateFormBase, SeleniumTestCase):
-# class ProblemCreateFormBrowserTests( SeleniumTestCase):
+
+    def is_elevate_priority_disabled(self):
+        return self.driver.find_element_by_id('id_elevate_priority').get_attribute('disabled')
 
     def test_currently_in_care_toggling(self):
         d = self.driver
         d.get(self.full_url(self.form_url))
-        # time.sleep(10)
+
+
+        # Should be disabled initially
+        self.assertTrue(self.is_elevate_priority_disabled())
+
+        # Select a category that it applies to
+        d.find_element_by_css_selector('input[name="category"][value="dignity"]').click()
+        self.assertFalse(self.is_elevate_priority_disabled())
+
+        # Select a category it does not apply to
+        d.find_element_by_css_selector('input[name="category"][value="parking"]').click()
+        self.assertTrue(self.is_elevate_priority_disabled())
 
 
 class ProblemSurveyFormTests(TestCase):
