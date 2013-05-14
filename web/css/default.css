@@ -1320,7 +1320,7 @@ textarea:focus {
  * Feedback form - used with `.big-radio-group--feedback`
  */
 .feedback-form {
-  width: 520px;
+  max-width: 520px;
   margin: 3.75em auto 0 auto;
 }
 .feedback-form .big-radio-group {

@@ -287,9 +287,8 @@ textarea {
  */
 .feedback-form {
   @extend .cf;
-  width: 520px;
+  max-width: 520px;
   margin: ($grid-gutter * 3) + em auto 0 auto;
-
   .big-radio-group {
     @extend .cf;
     border-bottom: 4px solid #ddd;
