@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js ie6 oldie"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie"> <![endif]-->
+<!--[if IE 9]>    <html class="no-js ie9 oldie"> <![endif]-->
+<!--[if gt IE 9]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>Tables</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width initial-scale=1.0">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+
+        <link rel="stylesheet" href="/web/css/leaflet.css" />
+        <link rel="stylesheet" href="/web/css/leaflet.rrose.css" />
+        <!--[if lte IE 8]>
+            <link rel="stylesheet" href="/web/css/leaflet.ie.css" />
+            <link rel="stylesheet" href="/web/css/leaflet.rrose.ie.css" />
+        <![endif]-->
+        <link rel="stylesheet" href="/web/css/placeholder_polyfill.min.css" />
+        <link rel="stylesheet" href="/web/css/default.css">
+
+
+        <!--[if lte IE 7]>
+            <script type="text/javascript" src="/web/js/fonts-lte-ie7.js"></script>
+        <![endif]-->
+    </head>
+
+    <body>
+        <div id="container" class="container">
+
+            <div class="site-top-bar">
+                <div class="site-top-bar__row">
+                    <div class="site-top-bar__cell">
+                        <p>Currently this site is only live for parts of London and the North East - other areas will be added soon</p>
+                    </div>
+                    <div class="site-top-bar__cell  site-top-bar__cell--nav">
+                        <ul class="nav  fr">
+                            <li><a href="http://www.nhslondon.lampuat64-1.rroom.net/"><span class="icon-home" aria-hidden="true"></span>Home</a></li>
+                            <li><a  href="#">About</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- block content -->
+
+            <h1>Table Styles</h1>
+
+            <div class="header">
+                <h2>Filters</h2>
+            </div>
+
+            <form class="filters  gw  gw--no-gutters">
+
+                <div class="filters__dropdown-wrap  g  two-twelfths  palm-one-half">
+                    <label for="filter-org_type">Organisation Type:</label>
+                    <div class="filters__dropdown  filters__dropdown--default">
+                        <select name="filter-org_type" id="filter-org_type">
+                            <option value="" selected>All</option>
+                            <option value="1">GP</option>
+                            <option value="2">Hospital</option>
+                        </select>
+                        <span class="icon-double-arrow" aria-hidden="true"></span>
+                    </div>
+                </div>
+
+                <div class="filters__dropdown-wrap  g  two-twelfths  palm-one-half">
+                    <label for="filter-department">Department:</label>
+                    <div class="filters__dropdown">
+                        <select name="filter-department" id="filter-department">
+                            <option value="" selected>All</option>
+                            <option value="79">2WW</option>
+                            <option value="224">Accident and emergency services</option>
+                            <option value="41">Allergy</option>
+                            <option value="230">Anaesthesia services</option>
+                            <option value="242">Bariatric surgery</option>
+                            <option value="244">Bladder cancer services</option>
+                            <option value="245">Breast cancer services</option>
+                            <option value="247">Cardiac services (community)</option>
+                            <option value="42">Cardiology</option>
+                            <option value="20">Cardiothoracic surgery</option>
+                            <option value="248">CFS / ME Management services</option>
+                            <option value="249">Child development &amp; disability services</option>
+                            <option value="251">Child health care services</option>
+                            <option value="56">Children's &amp; Adolescent Services</option>
+                            <option value="847">Clozapine clinics</option>
+                            <option value="255">Cognitive behavioural therapy services</option>
+                            <option value="256">Colorectal cancer services</option>
+                            <option value="259">Community mental health services</option>
+                            <option value="90">Complementary Medicine</option>
+                            <option value="261">Continence services</option>
+                            <option value="271">Dental anxiety management</option>
+                            <option value="273">Dental services (community)</option>
+                            <option value="274">Dental services to patients with special needs</option>
+                            <option value="13">Dentistry and Orthodontics</option>
+                            <option value="46">Dermatology</option>
+                            <option value="32">Diabetic Medicine</option>
+                            <option value="83">Diagnostic Endoscopy</option>
+                            <option value="77">Diagnostic Imaging</option>
+                            <option value="88">Diagnostic Pathology</option>
+                            <option value="82">Diagnostic Physiological Measurement</option>
+                            <option value="85">Dietetics</option>
+                            <option value="280">Disability services</option>
+                            <option value="288">Ear nose and throat services (community)</option>
+                            <option value="10">Ear, Nose &amp; Throat</option>
+                            <option value="292">Electro-convulsive therapy services</option>
+                            <option value="293">Emergency duty services</option>
+                            <option value="27">Endocrinology and Metabolic Medicine</option>
+                            <option value="295">Epilepsy services</option>
+                            <option value="299">Family planning services</option>
+                            <option value="300">Fertility services</option>
+                            <option value="26">Gastro intestinal and liver services</option>
+                            <option value="304">Gastrointestinal cancer services</option>
+                            <option value="305">Gender identity services</option>
+                            <option value="306">General dental treatment</option>
+                            <option value="25">General Medicine</option>
+                            <option value="1">General Surgery</option>
+                            <option value="36">Genetics</option>
+                            <option value="60">Geriatric Medicine</option>
+                            <option value="64">Gynaecology</option>
+                            <option value="28">Haematology</option>
+                            <option value="309">Head and neck services</option>
+                            <option value="86">Health Promotion</option>
+                            <option value="312">Health visitor services</option>
+                            <option value="316">Hyperbaric medicine services</option>
+                            <option value="317">Imaging services</option>
+                            <option value="40">Immunology</option>
+                            <option value="49">Infectious Diseases</option>
+                            <option value="323">Intermediate care services</option>
+                            <option value="68">Learning Disabilities</option>
+                            <option value="330">Lung cancer services</option>
+                            <option value="591">Maternity service</option>
+                            <option value="80">Mental Health - Adults of all ages</option>
+                            <option value="335">Minor injuries</option>
+                            <option value="336">Minor injuries unit</option>
+                            <option value="339">Mobility and falls services</option>
+                            <option value="341">Multiple sclerosis services</option>
+                            <option value="342">Musculo-skeletal services</option>
+                            <option value="52">Nephrology</option>
+                            <option value="346">Neurological cancer services</option>
+                            <option value="54">Neurology</option>
+                            <option value="347">Neurophysiology services</option>
+                            <option value="348">Neuro-psychology services</option>
+                            <option value="17">Neurosurgery</option>
+                            <option value="63">Obstetrics</option>
+                            <option value="353">Occupational health services</option>
+                            <option value="66">Occupational Therapy</option>
+                            <option value="354">Occupational therapy services</option>
+                            <option value="355">Older people's services</option>
+                            <option value="11">Ophthalmology</option>
+                            <option value="16">Oral and Maxillofacial Surgery</option>
+                            <option value="9">Orthopaedics</option>
+                            <option value="357">Paediatrics services</option>
+                            <option value="24">Pain Management</option>
+                            <option value="39">Palliative Medicine</option>
+                            <option value="362">Pharmacy available on-site</option>
+                            <option value="387">Pharmacy services</option>
+                            <option value="389">Phlebotomy services</option>
+                            <option value="87">Physiotherapy</option>
+                            <option value="18">Plastic surgery</option>
+                            <option value="84">Podiatry</option>
+                            <option value="396">Prostate cancer services</option>
+                            <option value="397">Psychiatric intensive care unit</option>
+                            <option value="398">Psychiatric liaison services</option>
+                            <option value="38">Rehabilitation</option>
+                            <option value="47">Respiratory Medicine</option>
+                            <option value="404">Restorative dentistry</option>
+                            <option value="55">Rheumatology</option>
+                            <option value="405">School health services</option>
+                            <option value="408">Services of a dental hygienist</option>
+                            <option value="409">Sexual health services</option>
+                            <option value="411">Skin cancer services</option>
+                            <option value="48">Sleep Medicine</option>
+                            <option value="415">Speech and language services</option>
+                            <option value="67">Speech and Language Therapy</option>
+                            <option value="45">Sports and Exercise Medicine</option>
+                            <option value="417">Stop smoking services</option>
+                            <option value="418">Stroke services</option>
+                            <option value="4">Surgery - Breast</option>
+                            <option value="8">Surgery - Vascular</option>
+                            <option value="422">Teenage and young adult cancer services</option>
+                            <option value="425">Therapy services</option>
+                            <option value="429">Trauma services</option>
+                            <option value="432">Urgent care centre</option>
+                            <option value="433">Urgent dental appointments</option>
+                            <option value="2">Urology</option>
+                            <option value="434">Vascular services</option>
+                            <option value="437">Walk-in centre</option>
+                            <option value="440">Wheelchair services</option>
+                            <option value="441">Wound care services</option>
+                        </select>
+                        <span class="icon-double-arrow" aria-hidden="true"></span>
+                    </div>
+                </div>
+
+                <div class="filters__dropdown-wrap  g  two-twelfths  palm-one-half">
+                    <label for="filter-category">Category</label>
+                    <div class="filters__dropdown  filters__dropdown--default">
+                        <select name="filter-category" id="filter-category">
+                            <option value="" selected="selected">All</option>
+                            <option value="staff">Staff Attitude</option>
+                            <option value="access">Access to Service</option>
+                            <option value="delays">Delays</option>
+                            <option value="treatment">Your Treatment</option>
+                            <option value="communication">Communication</option>
+                            <option value="cleanliness">Cleanliness</option>
+                            <option value="equipment">Equipment</option>
+                            <option value="medicines">Medicines</option>
+                            <option value="food">Food</option>
+                            <option value="dignity">Dignity and Privacy</option>
+                            <option value="parking">Parking</option>
+                            <option value="lostproperty">Lost Property</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <span class="icon-double-arrow" aria-hidden="true"></span>
+                    </div>
+                </div>
+
+                <div class="filters__dropdown-wrap  g  two-twelfths  palm-one-half">
+                    <label for="filter-status">Status:</label>
+                    <div class="filters__dropdown  filters__dropdown--default  filters__dropdown--last">
+                        <select name="filter-status" id="filter-status">
+                            <option value="" selected="selected">All</option>
+                            <option value="0">Open</option>
+                            <option value="1">In Progress</option>
+                            <option value="2">Responded to</option>
+                            <option value="3">Escalated</option>
+                            <option value="4">Unable to Resolve</option>
+                            <option value="5">Referred to Another Provider</option>
+                            <option value="6">Unable to Contact</option>
+                            <option value="7">Abusive/Vexatious</option>
+                            <option value="8">Escalated - In Progress</option>
+                            <option value="9">Escalated - Resolved</option>
+                        </select>
+                        <span class="icon-double-arrow" aria-hidden="true"></span>
+                    </div>
+                </div>
+
+                <div class="g  two-twelfths  palm-one-half">
+                    <input type="submit" value="Filter" class="btn  filters__button  palm-one-whole">
+                </div>
+
+            </form>
+
+
+            <div class="header">
+                <h2>Summary Table</h2>
+            </div>
+
+            <ul class="tab-nav">
+                <li><a href="#" class="active">Summary</a></li>
+                <li><a href="#">Problems</a></li>
+                <li><a href="#">Reviews</a></li>
+            </ul>
+
+            <div class="table-wrapper">
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th class="two-twelfths asc orderable sortable"><a href="#">Provider Name:</a></th>
+                            <th class="two-twelfths orderable sortable"><a href="#">Problems Received:</a></th>
+                            <th class="two-twelfths" colspan="2">Average Time to:</th>
+                            <th class="two-twelfths orderable sortable" colspan="2">Satisfaction with:</th>
+                            <th class="two-twelfths orderable sortable"><a href="#">Reviews Received:</a></th>
+                            <th class="two-twelfths orderable sortable"><a href="#">Average Review:</a></th>
+                        </tr>
+
+                        <tr class="summary-table__subhead">
+                            <th></th>
+                            <th class="filters__dropdown-wrap">
+                                <div class="filters__dropdown  filters__dropdown--last">
+                                    <select>
+                                        <option>In the last week</option>
+                                        <option>In the last 30 days</option>
+                                        <option selected>In the last 3 months</option>
+                                        <option>In the last 6 months</option>
+                                    </select>
+                                    <span class="icon-double-arrow" aria-hidden="true"></span>
+                                </div>
+
+                            </th>
+
+
+                            <th class="summary-table__cell-no-border  orderable  sortable"><a href="#">Acknowledge</a></th>
+                            <th class="summary-table__cell-no-border  orderable  sortable"><a href="#">Respond</a></th>
+
+                            <th class="summary-table__cell-no-border  orderable  sortable"><a href="#">Service</a></th>
+                            <th class="summary-table__cell-no-border  orderable  sortable"><a href="#">Outcome</a></th>
+
+                            <th class="filters__dropdown-wrap">
+                                <div class="filters__dropdown  filters__dropdown--last">
+                                    <select>
+                                        <option>In the last week</option>
+                                        <option>In the last 30 days</option>
+                                        <option>In the last 3 months</option>
+                                        <option selected>In the last 6 months</option>
+                                    </select>
+                                    <span class="icon-double-arrow" aria-hidden="true"></span>
+                                </div>
+
+                            </th>
+                            <th>Score</th>
+                        </tr>
+
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Dr Grannell &amp; Partners</td>
+                            <td>13</td>
+                            <td>3 days</td>
+                            <td class="summary-table__cell-no-border">4 days</td>
+                            <td>60%</td>
+                            <td class="summary-table__cell-no-border">40%</td>
+                            <td>9</td>
+                            <td class="rating">
+                                <span class="icon-star" aria-hidden="true"></span>
+                                <span class="icon-star" aria-hidden="true"></span>
+                                <span class="icon-star" aria-hidden="true"></span>
+                                <span class="icon-star" aria-hidden="true"></span>
+                                <span class="icon-star  rating__grey" aria-hidden="true"></span>
+                            </td>
+                        </tr>
+
+
+
+                        <tr class="summary-table__highlight">
+                            <td>Dr Grannell &amp; Partners</td>
+                            <td>13</td>
+                            <td>3 days</td>
+                            <td class="summary-table__cell-no-border">4 days</td>
+                            <td>60%</td>
+                            <td class="summary-table__cell-no-border">40%</td>
+                            <td>9</td>
+                            <td class="rating">
+                                <span class="icon-star" aria-hidden="true"></span>
+                                <span class="icon-star" aria-hidden="true"></span>
+                                <span class="icon-star" aria-hidden="true"></span>
+                                <span class="icon-star" aria-hidden="true"></span>
+                                <span class="icon-star  rating__grey" aria-hidden="true"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Dr Grannell &amp; Partners</td>
+                            <td>13</td>
+                            <td>3 days</td>
+                            <td class="summary-table__cell-no-border">4 days</td>
+                            <td>60%</td>
+                            <td class="summary-table__cell-no-border">40%</td>
+                            <td>9</td>
+                            <td class="rating">
+                                <span class="icon-star" aria-hidden="true"></span>
+                                <span class="icon-star" aria-hidden="true"></span>
+                                <span class="icon-star" aria-hidden="true"></span>
+                                <span class="icon-star" aria-hidden="true"></span>
+                                <span class="icon-star  rating__grey" aria-hidden="true"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Dr Grannell &amp; Partners</td>
+                            <td>13</td>
+                            <td>3 days</td>
+                            <td class="summary-table__cell-no-border">4 days</td>
+                            <td>60%</td>
+                            <td class="summary-table__cell-no-border">40%</td>
+                            <td>9</td>
+                            <td class="rating">
+                                <span class="icon-star" aria-hidden="true"></span>
+                                <span class="icon-star" aria-hidden="true"></span>
+                                <span class="icon-star  rating__grey" aria-hidden="true"></span>
+                                <span class="icon-star  rating__grey" aria-hidden="true"></span>
+                                <span class="icon-star  rating__grey" aria-hidden="true"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Dr Grannell &amp; Partners</td>
+                            <td>13</td>
+                            <td>3 days</td>
+                            <td class="summary-table__cell-no-border">4 days</td>
+                            <td>60%</td>
+                            <td class="summary-table__cell-no-border">40%</td>
+                            <td>9</td>
+                            <td class="rating">
+                                <span class="icon-star" aria-hidden="true"></span>
+                                <span class="icon-star" aria-hidden="true"></span>
+                                <span class="icon-star" aria-hidden="true"></span>
+                                <span class="icon-star  rating__grey" aria-hidden="true"></span>
+                                <span class="icon-star  rating__grey" aria-hidden="true"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Dr Grannell &amp; Partners</td>
+                            <td>13</td>
+                            <td>3 days</td>
+                            <td class="summary-table__cell-no-border">4 days</td>
+                            <td>60%</td>
+                            <td class="summary-table__cell-no-border">40%</td>
+                            <td>9</td>
+                            <td class="rating">
+                                <span class="icon-star" aria-hidden="true"></span>
+                                <span class="icon-star  rating__grey" aria-hidden="true"></span>
+                                <span class="icon-star  rating__grey" aria-hidden="true"></span>
+                                <span class="icon-star  rating__grey" aria-hidden="true"></span>
+                                <span class="icon-star  rating__grey" aria-hidden="true"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Dr Grannell &amp; Partners</td>
+                            <td>13</td>
+                            <td>3 days</td>
+                            <td class="summary-table__cell-no-border">4 days</td>
+                            <td>60%</td>
+                            <td class="summary-table__cell-no-border">40%</td>
+                            <td>9</td>
+                            <td class="rating">
+                                <span class="icon-star" aria-hidden="true"></span>
+                                <span class="icon-star" aria-hidden="true"></span>
+                                <span class="icon-star" aria-hidden="true"></span>
+                                <span class="icon-star  rating__grey" aria-hidden="true"></span>
+                                <span class="icon-star  rating__grey" aria-hidden="true"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Dr Grannell &amp; Partners</td>
+                            <td>13</td>
+                            <td>3 days</td>
+                            <td class="summary-table__cell-no-border">4 days</td>
+                            <td>60%</td>
+                            <td class="summary-table__cell-no-border">40%</td>
+                            <td>9</td>
+                            <td class="rating">
+                                <span class="icon-star" aria-hidden="true"></span>
+                                <span class="icon-star" aria-hidden="true"></span>
+                                <span class="icon-star" aria-hidden="true"></span>
+                                <span class="icon-star" aria-hidden="true"></span>
+                                <span class="icon-star  rating__grey" aria-hidden="true"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Dr Grannell &amp; Partners</td>
+                            <td>13</td>
+                            <td>3 days</td>
+                            <td class="summary-table__cell-no-border">4 days</td>
+                            <td>60%</td>
+                            <td class="summary-table__cell-no-border">40%</td>
+                            <td>9</td>
+                            <td class="rating">
+                                <span class="icon-star" aria-hidden="true"></span>
+                                <span class="icon-star" aria-hidden="true"></span>
+                                <span class="icon-star  rating__grey" aria-hidden="true"></span>
+                                <span class="icon-star  rating__grey" aria-hidden="true"></span>
+                                <span class="icon-star  rating__grey" aria-hidden="true"></span>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+                <div class="header">
+                    <h2>Dashboard table</h2>
+                </div>
+
+                <ul class="tab-nav">
+                    <li><a href="#">Summary</a></li>
+                    <li><a href="#">Problems</a></li>
+                    <li><a href="#" class="active">Reviews</a></li>
+                </ul>
+
+                <div class="table-wrapper">
+                    <table class="dashboard-table">
+                        <thead>
+                            <tr class="dashboard-table__head">
+                                <th class="desc  orderable  sortable"><a href="#">Ref</a></th>
+                                <th width="120px">Provider</th>
+                                <th class="orderable  sortable"><a href="#">Received</a></th>
+                                <th>Category</th>
+                                <th>Department</th>
+                                <th colspan="2" class="align-center">Time (days) to:</th>
+                                <th width="250px" colspan="2" class="align-center">Snippet</th>
+                            </tr>
+                            <tr class="dashboard-table__subhead">
+                                <th colspan="5"></th>
+                                <th>Acknowledge</th>
+                                <th>Respond</th>
+                                <th colspan="2"></th>
+                            </tr>
+                            <tr class="dashboard-table__spacer">
+                                <th colspan="9"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="dashboard-table__heavy-text dashboard-table__hightlight">P64823</td>
+                                <td>Acklam Road Surgery</td>
+                                <td class="dashboard-table__light-text"><em>04.03.2013</em></td>
+                                <td>Staff Attitude</td>
+                                <td>Rheumatology</td>
+                                <td class="align-center">3 days</td>
+                                <td class="align-center">4 days</td>
+                                <td width="250px" class="dashboard-table__light-text">I am unable to get an appointment here - it's always too busy.</td>
+                                <td class="dashboard-table__flag">
+                                    <div class="dashboard-table__flag__breach">b</div>
+                                    <div class="dashboard-table__flag__escalate">e</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="dashboard-table__heavy-text">P64823</td>
+                                <td>Acklam Road Surgery</td>
+                                <td class="dashboard-table__light-text"><em>04.03.2013</em></td>
+                                <td>Staff Attitude</td>
+                                <td>Rheumatology</td>
+                                <td class="align-center">3 days</td>
+                                <td class="align-center">4 days</td>
+                                <td class="dashboard-table__light-text">I am unable to get an appointment here - it's always too busy. What am I supposed to do?</td>
+                                <td class="dashboard-table__flag"></td>
+                            </tr>
+                            <tr>
+                                <td class="dashboard-table__heavy-text">P64823</td>
+                                <td>Acklam Road Surgery Surgery Surgery</td>
+                                <td class="dashboard-table__light-text"><em>04.03.2013</em></td>
+                                <td>Staff Attitude</td>
+                                <td>Rheumatology</td>
+                                <td class="align-center">3 days</td>
+                                <td class="align-center">4 days</td>
+                                <td width="250px" class="dashboard-table__light-text">I am unable to get an appointment here - it's always too busy.</td>
+                                <td class="dashboard-table__flag">
+                                    <div class="dashboard-table__flag__breach">b</div>
+                                    <div class="dashboard-table__flag__escalate">e</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="dashboard-table__heavy-text dashboard-table__hightlight">P64823</td>
+                                <td>Acklam Road Surgery</td>
+                                <td class="dashboard-table__light-text"><em>04.03.2013</em></td>
+                                <td>Staff Attitude</td>
+                                <td>Rheumatology</td>
+                                <td class="align-center">3 days</td>
+                                <td class="align-center">4 days</td>
+                                <td width="250px" class="dashboard-table__light-text">I am unable to get an appointment here - it's always too busy.</td>
+                                <td class="dashboard-table__flag">
+                                    <div class="dashboard-table__flag__escalate">e</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="dashboard-table__heavy-text">P64823</td>
+                                <td>Acklam Road Surgery</td>
+                                <td class="dashboard-table__light-text"><em>04.03.2013</em></td>
+                                <td>Staff Attitude</td>
+                                <td>Rheumatology</td>
+                                <td class="align-center">3 days</td>
+                                <td class="align-center">4 days</td>
+                                <td width="250px" class="dashboard-table__light-text">I am unable to get an appointment here - it's always too busy. What am I supposed to do?</td>
+                                <td class="dashboard-table__flag">
+                                    <div class="dashboard-table__flag__breach">b</div>
+                                    <div class="dashboard-table__flag__escalate">e</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="dashboard-table__heavy-text">P64823</td>
+                                <td>Acklam Road Surgery</td>
+                                <td class="dashboard-table__light-text"><em>04.03.2013</em></td>
+                                <td>Staff Attitude</td>
+                                <td>Rheumatology</td>
+                                <td class="align-center">3 days</td>
+                                <td class="align-center">4 days</td>
+                                <td width="250px" class="dashboard-table__light-text">I am unable to get.</td>
+                                <td class="dashboard-table__flag">
+                                    <div class="dashboard-table__flag__breach">b</div>
+                                    <div class="dashboard-table__flag__escalate">e</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="dashboard-table__heavy-text dashboard-table__hightlight">P64823</td>
+                                <td>Acklam Road Surgery</td>
+                                <td class="dashboard-table__light-text"><em>04.03.2013</em></td>
+                                <td>Staff Attitude</td>
+                                <td>Rheumatology</td>
+                                <td class="align-center">3 days</td>
+                                <td class="align-center">4 days</td>
+                                <td width="250px" class="dashboard-table__light-text">I am unable to get an appointment here - it's always too busy. What am I supposed to do?</td>
+                                <td class="dashboard-table__flag">
+                                    <div class="dashboard-table__flag__escalate">e</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="dashboard-table__heavy-text">P64823</td>
+                                <td>Acklam Road Surgery</td>
+                                <td class="dashboard-table__light-text"><em>04.03.2013</em></td>
+                                <td>Staff Attitude</td>
+                                <td>Rheumatology</td>
+                                <td class="align-center">3 days</td>
+                                <td class="align-center">4 days</td>
+                                <td width="250px" class="dashboard-table__light-text">I am unable to get an appointment here - it's always too busy. What am I supposed to do?</td>
+                                <td class="dashboard-table__flag">
+                                    <div class="dashboard-table__flag__breach">B</div>
+                                    <div class="dashboard-table__flag__escalate">E</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="dashboard-table__heavy-text">P64823</td>
+                                <td>Acklam Road Surgery</td>
+                                <td class="dashboard-table__light-text"><em>04.03.2013</em></td>
+                                <td>Staff Attitude</td>
+                                <td>Rheumatology</td>
+                                <td class="align-center">3 days</td>
+                                <td class="align-center">4 days</td>
+                                <td width="250px" class="dashboard-table__light-text">I am unable to get an appointment here - it's always too busy. What am I supposed to do?</td>
+                                <td class="dashboard-table__flag">
+                                    <div class="dashboard-table__flag__breach">b</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="dashboard-table__heavy-text">P64823</td>
+                                <td>Acklam Road Surgery</td>
+                                <td class="dashboard-table__light-text"><em>04.03.2013</em></td>
+                                <td>Staff Attitude</td>
+                                <td>Rheumatology</td>
+                                <td class="align-center">3 days</td>
+                                <td class="align-center">4 days</td>
+                                <td width="250px" class="dashboard-table__light-text">I am unable to get an appointment here - it's always too busy. What am I supposed to do?</td>
+                                <td class="dashboard-table__flag"></td>
+                            </tr>
+                            <tr>
+                                <td class="dashboard-table__heavy-text">P64823</td>
+                                <td><a href="http://google.co.uk" class="table-link__link">Acklam Road Surgery</a></td>
+                                <td class="dashboard-table__light-text"><em>04.03.2013</em></td>
+                                <td>Staff Attitude</td>
+                                <td>Rheumatology</td>
+                                <td class="align-center">3 days</td>
+                                <td class="align-center">4 days</td>
+                                <td width="250px" class="dashboard-table__light-text">I am unable to get an appointment here - it's always too busy. What am I supposed to do?</td>
+                                <td class="dashboard-table__flag">
+                                    <div class="dashboard-table__flag__breach">b</div>
+                                    <div class="dashboard-table__flag__escalate">e</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+                <div class="header">
+                    <h2>Dashboard table - expanded</h2>
+                </div>
+
+                <ul class="tab-nav">
+                    <li><a href="#">Summary</a></li>
+                    <li><a href="#">Problems</a></li>
+                    <li><a href="#" class="active">Reviews</a></li>
+                </ul>
+
+                <div class="table-wrapper">
+                    <table class="dashboard-table  dashboard-table--expanded">
+                        <thead>
+                            <tr class="dashboard-table__head">
+                                <th class="desc  orderable  sortable"><a href="#">Ref</a></th>
+                                <th width="120px">Provider</th>
+                                <th class="orderable  sortable"><a href="#">Received</a></th>
+                                <th>Category</th>
+                                <th>Department</th>
+                                <th colspan="2" class="align-center">Time (days) to:</th>
+                                <th width="250px" colspan="2" class="align-center">Snippet</th>
+                            </tr>
+                            <tr class="dashboard-table__subhead">
+                                <th colspan="5"></th>
+                                <th>Acknowledge</th>
+                                <th>Respond</th>
+                                <th colspan="2"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="dashboard-table__heavy-text dashboard-table__hightlight">P64823</td>
+                                <td>Acklam Road Surgery</td>
+                                <td class="dashboard-table__light-text"><em>04.03.2013</em></td>
+                                <td>Staff Attitude</td>
+                                <td>Rheumatology</td>
+                                <td class="align-center  dashboard-table__danger-text">1 day</td>
+                                <td class="align-center">4 days</td>
+                                <td width="250px" class="dashboard-table__light-text">I am unable to get an appointment here - it's always too busy.</td>
+                                <td class="dashboard-table__flag">
+                                    <div class="dashboard-table__flag__breach">b</div>
+                                    <div class="dashboard-table__flag__escalate">e</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="dashboard-table__heavy-text">P64823</td>
+                                <td>Acklam Road Surgery</td>
+                                <td class="dashboard-table__light-text"><em>04.03.2013</em></td>
+                                <td>Staff Attitude</td>
+                                <td>Rheumatology</td>
+                                <td class="align-center">3 days</td>
+                                <td class="align-center">4 days</td>
+                                <td class="dashboard-table__light-text">I am unable to get an appointment here - it's always too busy. What am I supposed to do?</td>
+                                <td class="dashboard-table__flag"></td>
+                            </tr>
+                            <tr>
+                                <td class="dashboard-table__heavy-text">P64823</td>
+                                <td>Acklam Road Surgery Surgery Surgery</td>
+                                <td class="dashboard-table__light-text"><em>04.03.2013</em></td>
+                                <td>Staff Attitude</td>
+                                <td>Rheumatology</td>
+                                <td class="align-center">3 days</td>
+                                <td class="align-center  dashboard-table__danger-text">1 day</td>
+                                <td width="250px" class="dashboard-table__light-text">I am unable to get an appointment here - it's always too busy.</td>
+                                <td class="dashboard-table__flag">
+                                    <div class="dashboard-table__flag__breach">b</div>
+                                    <div class="dashboard-table__flag__escalate">e</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="dashboard-table__heavy-text dashboard-table__hightlight">P64823</td>
+                                <td>Acklam Road Surgery</td>
+                                <td class="dashboard-table__light-text"><em>04.03.2013</em></td>
+                                <td>Staff Attitude</td>
+                                <td>Rheumatology</td>
+                                <td class="align-center">3 days</td>
+                                <td class="align-center">4 days</td>
+                                <td width="250px" class="dashboard-table__light-text">I am unable to get an appointment here - it's always too busy.</td>
+                                <td class="dashboard-table__flag">
+                                    <div class="dashboard-table__flag__escalate">e</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="dashboard-table__heavy-text">P64823</td>
+                                <td>Acklam Road Surgery</td>
+                                <td class="dashboard-table__light-text"><em>04.03.2013</em></td>
+                                <td>Staff Attitude</td>
+                                <td>Rheumatology</td>
+                                <td class="align-center">3 days</td>
+                                <td class="align-center">4 days</td>
+                                <td width="250px" class="dashboard-table__light-text">I am unable to get an appointment here - it's always too busy. What am I supposed to do?</td>
+                                <td class="dashboard-table__flag">
+                                    <div class="dashboard-table__flag__breach">b</div>
+                                    <div class="dashboard-table__flag__escalate">e</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="dashboard-table__heavy-text">P64823</td>
+                                <td>Acklam Road Surgery</td>
+                                <td class="dashboard-table__light-text"><em>04.03.2013</em></td>
+                                <td>Staff Attitude</td>
+                                <td>Rheumatology</td>
+                                <td class="align-center">3 days</td>
+                                <td class="align-center">4 days</td>
+                                <td width="250px" class="dashboard-table__light-text">I am unable to get.</td>
+                                <td class="dashboard-table__flag">
+                                    <div class="dashboard-table__flag__breach">b</div>
+                                    <div class="dashboard-table__flag__escalate">e</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="dashboard-table__heavy-text dashboard-table__hightlight">P64823</td>
+                                <td><a href="http://google.com" class="table-link__link">Acklam Road Surgery</a></td>
+                                <td class="dashboard-table__light-text"><em>04.03.2013</em></td>
+                                <td>Staff Attitude</td>
+                                <td>Rheumatology</td>
+                                <td class="align-center">3 days</td>
+                                <td class="align-center">4 days</td>
+                                <td width="250px" class="dashboard-table__light-text">I am unable to get an appointment here - it's always too busy. What am I supposed to do?</td>
+                                <td class="dashboard-table__flag">
+                                    <div class="dashboard-table__flag__escalate">e</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="dashboard-table__heavy-text">P64823</td>
+                                <td>Acklam Road Surgery</td>
+                                <td class="dashboard-table__light-text"><em>04.03.2013</em></td>
+                                <td>Staff Attitude</td>
+                                <td>Rheumatology</td>
+                                <td class="align-center">3 days</td>
+                                <td class="align-center">4 days</td>
+                                <td width="250px" class="dashboard-table__light-text">I am unable to get an appointment here - it's always too busy. What am I supposed to do?</td>
+                                <td class="dashboard-table__flag">
+                                    <div class="dashboard-table__flag__breach">B</div>
+                                    <div class="dashboard-table__flag__escalate">E</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="dashboard-table__heavy-text">P64823</td>
+                                <td>Acklam Road Surgery</td>
+                                <td class="dashboard-table__light-text"><em>04.03.2013</em></td>
+                                <td>Staff Attitude</td>
+                                <td>Rheumatology</td>
+                                <td class="align-center">3 days</td>
+                                <td class="align-center">4 days</td>
+                                <td width="250px" class="dashboard-table__light-text">I am unable to get an appointment here - it's always too busy. What am I supposed to do?</td>
+                                <td class="dashboard-table__flag">
+                                    <div class="dashboard-table__flag__breach">b</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="dashboard-table__heavy-text">P64823</td>
+                                <td><a href="http://example.com" class="table-link__link">Acklam Road Surgery</a></td>
+                                <td class="dashboard-table__light-text"><em>04.03.2013</em></td>
+                                <td>Staff Attitude</td>
+                                <td>Rheumatology</td>
+                                <td class="align-center">3 days</td>
+                                <td class="align-center">4 days</td>
+                                <td width="250px" class="dashboard-table__light-text">I am unable to get an appointment here - it's always too busy. What am I supposed to do?</td>
+                                <td class="dashboard-table__flag"></td>
+                            </tr>
+                            <tr>
+                                <td class="dashboard-table__heavy-text">P64823</td>
+                                <td>Acklam Road Surgery</td>
+                                <td class="dashboard-table__light-text"><em>04.03.2013</em></td>
+                                <td>Staff Attitude</td>
+                                <td>Rheumatology</td>
+                                <td class="align-center">3 days</td>
+                                <td class="align-center">4 days</td>
+                                <td width="250px" class="dashboard-table__light-text">I am unable to get an appointment here - it's always too busy. What am I supposed to do?</td>
+                                <td class="dashboard-table__flag">
+                                    <div class="dashboard-table__flag__breach">b</div>
+                                    <div class="dashboard-table__flag__escalate">e</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+                <div class="header">
+                    <h2>Problem table</h2>
+                </div>
+
+                <ul class="tab-nav">
+                    <li><a href="#">Summary</a></li>
+                    <li><a href="#" class="active">Problems</a></li>
+                    <li><a href="#">Reviews</a></li>
+                </ul>
+
+                <div class="table-wrapper">
+                    <table class="problem-table">
+                        <thead>
+                            <tr class="table__heading">
+                                <th class="table__first reference_numberorderable reference_number sortable">
+                                    <a href="?sort=reference_number">Ref.</a>
+                                </th>
+                                <th class="created orderable sortable">
+                                    <a href="?sort=created">Received</a>
+                                </th>
+                                <th class="orderable sortable status">
+                                    <a href="?sort=status">Status</a>
+                                </th>
+                                <th class="category orderable sortable">
+                                    <a href="?sort=category">Category</a>
+                                </th>
+                                <th class="happy_service orderable sortable">
+                                    <a href="?sort=happy_service">Happy With Service</a>
+                                </th>
+                                <th class="asc happy_outcome orderable sortable">
+                                    <a href="?sort=-happy_outcome">Happy With Outcome</a>
+                                </th>
+                                <th class="orderable sortable summary">
+                                    <a href="?sort=summary">Text Snippet</a>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="table__first reference_numberreference_number">P13</td>
+                                <td class="created">13/10/2012 4:40 p.m.</td>
+                                <td class="status">Received but not acknowledged</td>
+                                <td class="category">Other</td>
+                                <td class="happy_service">
+                                    <span class="icon-circle" aria-hidden="true"></span>
+                                    <span class="hide-text">—</span>
+                                </td>
+                                <td class="happy_outcome">
+                                    <span class="icon-x" aria-hidden="true"></span>
+                                    <span class="hide-text">no</span>
+                                </td>
+                                <td class="summary">
+                                    <a href="/choices/problem/13">I had trouble getting an appoi...</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="table__first reference_numberreference_number">P51</td>
+                                <td class="created">18/02/2013 4:40 p.m.</td>
+                                <td class="status">Acknowledged but not Paddressed</td>
+                                <td class="category">Other</td>
+                                <td class="happy_service">
+                                    <span class="icon-checkmark" aria-hidden="true"></span>
+                                    <span class="hide-text">yes</span>
+                                </td>
+                                <td class="happy_outcome">
+                                    <span class="icon-checkmark" aria-hidden="true"></span>
+                                    <span class="hide-text">yes</span>
+                                </td>
+                                <td class="summary">
+                                    <a href="/choices/problem/51">I am unable to get an appointm...</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="table__first reference_number">P1</td>
+                                <td class="created">22/02/2013 2:47 p.m.</td>
+                                <td class="status">Received but not acknowledged</td>
+                                <td class="category">Appointments</td>
+                                <td class="happy_service">
+                                    <span class="icon-x" aria-hidden="true"></span>
+                                    <span class="hide-text">no</span>
+                                </td>
+                                <td class="happy_outcome">
+                                    <span class="icon-circle" aria-hidden="true"></span>
+                                    <span class="hide-text">—</span>
+                                </span>
+                                </td>
+                                <td class="summary">
+                                    <a href="/choices/problem/1">I had trouble getting an appoi...</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="table__first reference_number">P2</td>
+                                <td class="created">22/02/2013 2:49 p.m.</td>
+                                <td class="status">Acknowledged but not addressed</td>
+                                <td class="category">Cleanliness</td>
+                                <td class="happy_service">
+                                    <span class="icon-x" aria-hidden="true"></span>
+                                    <span class="hide-text">no</span>
+                                </td>
+                                <td class="happy_outcome">
+                                    <span class="icon-circle" aria-hidden="true"></span>
+                                    <span class="hide-text">—</span>
+                                </td>
+                                <td class="summary">
+                                    <a href="/choices/problem/2">I've noticed that the rubbish ...</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="table__first reference_number">P67</td>
+                                <td class="created">26/02/2013 2:28 p.m.</td>
+                                <td class="status">Received but not acknowledged</td>
+                                <td class="category">Cleanliness</td>
+                                <td class="happy_service">
+                                    <span class="icon-circle" aria-hidden="true"></span>
+                                    <span class="hide-text">—</span>
+                                </td>
+                                <td class="happy_outcome">
+                                    <span class="icon-circle" aria-hidden="true"></span>
+                                    <span class="hide-text">—</span>
+                                </td>
+                                <td class="summary">
+                                    <a href="/choices/problem/67">The toilet in the surgery is a...</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="table__first reference_number">P68</td>
+                                <td class="created">01/03/2013 11:24 a.m.</td>
+                                <td class="status">Received but not acknowledged</td>
+                                <td class="category">Other</td>
+                                <td class="happy_service">
+                                    <span class="icon-circle" aria-hidden="true"></span>
+                                    <span class="hide-text">—</span>
+                                </td>
+                                <td class="happy_outcome">
+                                    <span class="icon-circle" aria-hidden="true"></span>
+                                    <span class="hide-text">—</span>
+                                </td>
+                                <td class="summary">
+                                    <a href="/choices/problem/68">dfgcxfgc</a>
+                                </td>
+                            </tr>
+                            <tr class="odd  table__footer">
+                                <td class="table__first reference_number">P69</td>
+                                <td class="created">04/03/2013 12:52 a.m.</td>
+                                <td class="status">Received but not acknowledged</td>
+                                <td class="category">Cleanliness</td>
+                                <td class="happy_service">
+                                    <span class="icon-circle" aria-hidden="true"></span>
+                                    <span class="hide-text">—</span>
+                                </td>
+                                <td class="happy_outcome">
+                                    <span class="icon-circle" aria-hidden="true"></span>
+                                    <span class="hide-text">—</span>
+                                </td>
+                                <td class="summary">
+                                    <a href="/choices/problem/69">This is a test to check the co...</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+
+            <!-- end block content -->
+        </div>
+
+        <script type="text/javascript" src="/web/js/jquery-1.9.0.min.js"></script>
+        <script type="text/javascript">
+        $(function(){
+            $('.table-link__link').each(function(i){
+                var $t = $(this);
+                $t.parents('tr').on('click', function(){
+                    top.window.location = $t.prop('href');
+                }).addClass('table-link__row');
+            });
+        });
+        </script>
+    </body>
+</html>
