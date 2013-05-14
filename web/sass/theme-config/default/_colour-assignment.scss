@@ -21,7 +21,8 @@ $c-body-bg: $c-white;
 $c-big-radio-group-active-green-radio-bg: $c-nhs_green;
               $c-description-count-error: $c-nhs_red;
                  $c-description-count-ok: $c-nhs_lightgreen;
-
+   $c-feedbackform-big-radio-group-radio-border: $c-grey-tint;
+$c-feedbackform-big-radio-group-active-radio-bg: $c-grey-tint;
 
 /**
  * _misc.scss
@@ -128,10 +129,14 @@ $c-back-btn-span-hover-color: $c-grey-tint;
           $c-btn-disabled-bg: $c-grey;
     $c-btn-disabled-hover-bg: $c-grey;
         $c-btn-caption-color: $c-darkgrey;
-        $c-btn-darkorange-border: $c-darkorange-tint;
-        $c-btn-darkorange-color: $c-white;
-           $c-btn-darkorange-bg: $c-darkorange;
-     $c-btn-darkorange-hover-bg: $c-darkorange-tint;
+    $c-btn-darkorange-border: $c-darkorange-tint;
+     $c-btn-darkorange-color: $c-white;
+        $c-btn-darkorange-bg: $c-darkorange;
+  $c-btn-darkorange-hover-bg: $c-darkorange-tint;
+         $c-btn-black-border: #000;
+          $c-btn-black-color: $c-white;
+             $c-btn-black-bg: $c-black;
+       $c-btn-black-hover-bg: #000;
 
 /**
  * _filters.scss

@@ -188,10 +188,10 @@
 
 /* Contain floats: h5bp.com/q */
 /* mySociety change: rename to cf */
-.cf:before, .gw:before, .radio-list:before,
+.cf:before, .feedback-form:before, .feedback-form .big-radio-group:before, .gw:before, .radio-list:before,
 .grid-wrapper:before, .island:before,
 .islet:before,
-.meta-data-sidebar .meta-data-wrap:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .site-nav:before, .feed-list:before, .feed-list li:before, .bordered-box:before, .homepage-map-box form label:before, .cf:after, .gw:after, .radio-list:after,
+.meta-data-sidebar .meta-data-wrap:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .site-nav:before, .feed-list:before, .feed-list li:before, .bordered-box:before, .homepage-map-box form label:before, .cf:after, .feedback-form:after, .feedback-form .big-radio-group:after, .gw:after, .radio-list:after,
 .grid-wrapper:after, .island:after,
 .islet:after,
 .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after, .site-nav:after, .feed-list:after, .feed-list li:after, .bordered-box:after, .homepage-map-box form label:after {
@@ -199,14 +199,14 @@
   display: table;
 }
 
-.cf:after, .gw:after, .radio-list:after,
+.cf:after, .feedback-form:after, .feedback-form .big-radio-group:after, .gw:after, .radio-list:after,
 .grid-wrapper:after, .island:after,
 .islet:after,
 .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after, .site-nav:after, .feed-list:after, .feed-list li:after, .bordered-box:after, .homepage-map-box form label:after {
   clear: both;
 }
 
-.cf, .gw, .radio-list,
+.cf, .feedback-form, .feedback-form .big-radio-group, .gw, .radio-list,
 .grid-wrapper, .island,
 .islet,
 .meta-data-sidebar .meta-data-wrap, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar, .site-nav, .feed-list, .feed-list li, .bordered-box, .homepage-map-box form label {
@@ -220,23 +220,23 @@
  * Extend the clearfix class with Sass to avoid the `.cf` class appearing over
  * and over in your markup.
  */
-.cf, .gw, .radio-list,
+.cf, .feedback-form, .feedback-form .big-radio-group, .gw, .radio-list,
 .grid-wrapper, .island,
 .islet,
 .meta-data-sidebar .meta-data-wrap, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar, .site-nav, .feed-list, .feed-list li, .bordered-box, .homepage-map-box form label {
   zoom: 1;
 }
-.cf:before, .gw:before, .radio-list:before,
+.cf:before, .feedback-form:before, .feedback-form .big-radio-group:before, .gw:before, .radio-list:before,
 .grid-wrapper:before, .island:before,
 .islet:before,
-.meta-data-sidebar .meta-data-wrap:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .site-nav:before, .feed-list:before, .feed-list li:before, .bordered-box:before, .homepage-map-box form label:before, .cf:after, .gw:after, .radio-list:after,
+.meta-data-sidebar .meta-data-wrap:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .site-nav:before, .feed-list:before, .feed-list li:before, .bordered-box:before, .homepage-map-box form label:before, .cf:after, .feedback-form:after, .feedback-form .big-radio-group:after, .gw:after, .radio-list:after,
 .grid-wrapper:after, .island:after,
 .islet:after,
 .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after, .site-nav:after, .feed-list:after, .feed-list li:after, .bordered-box:after, .homepage-map-box form label:after {
   content: " ";
   display: table;
 }
-.cf:after, .gw:after, .radio-list:after,
+.cf:after, .feedback-form:after, .feedback-form .big-radio-group:after, .gw:after, .radio-list:after,
 .grid-wrapper:after, .island:after,
 .islet:after,
 .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after, .site-nav:after, .feed-list:after, .feed-list li:after, .bordered-box:after, .homepage-map-box form label:after {
@@ -1181,6 +1181,9 @@ textarea:focus {
   vertical-align: middle;
   padding-left: 10px;
 }
+.big-radio-group li .big-radio-group__table .big-radio-group__row .big-radio-group__cell--full {
+  width: 100%;
+}
 .big-radio-group li .big-radio-group__radio {
   display: block;
   float: left;
@@ -1311,6 +1314,37 @@ textarea:focus {
 .problem-form .slim-select > :first-child {
   margin-left: 20px;
   width: 45%;
+}
+
+/**
+ * Feedback form - used with `.big-radio-group--feedback`
+ */
+.feedback-form {
+  width: 520px;
+  margin: 3.75em auto 0 auto;
+}
+.feedback-form .big-radio-group {
+  border-bottom: 4px solid #ddd;
+}
+.feedback-form .big-radio-group li {
+  float: left;
+  background: none;
+}
+.feedback-form .big-radio-group li:hover {
+  background: none;
+}
+.feedback-form .big-radio-group li .big-radio-group__radio {
+  border: 0.25em solid #c8c8c8;
+}
+.feedback-form .big-radio-group li.big-radio-group--active .big-radio-group__radio {
+  background: #c8c8c8;
+}
+.feedback-form .big-radio-group label {
+  font-size: 0.875em;
+}
+.feedback-form p {
+  font-size: 1.25em;
+  padding: 0 1.5em;
 }
 
 /*
@@ -2973,6 +3007,15 @@ body.docs .c-nhs_blue-tint_10 {
 }
 .btn--dark-orange:hover {
   background: #e75b00;
+}
+
+.btn--black {
+  border-color: black;
+  color: white;
+  background: #333333;
+}
+.btn--black:hover {
+  background: black;
 }
 
 /**

@@ -186,6 +186,12 @@
         background: $c-btn-darkorange-bg;
         &:hover { background: $c-btn-darkorange-hover-bg; }
     }
+    .btn--black {
+        border-color: $c-btn-black-border;
+        color: $c-btn-black-color;
+        background: $c-btn-black-bg;
+        &:hover { background: $c-btn-black-hover-bg; }
+    }
 
     /**
      * Disabled button
