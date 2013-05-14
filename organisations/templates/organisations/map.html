@@ -44,6 +44,10 @@
     <li><a href="#" id="northeast">The North East</a></li>
 </ul>
 
+<div class="map-container">
+    <div id="map" class="map"></div>
+</div>
+
 <p>
     <small>Less unresolved problems</small>
     <img src="{% static 'img/marker5.png' %}" />
@@ -54,11 +58,6 @@
     <small>More unresolved problems</small>
 </p>
 
-<div class="map-container">
-    <div id="map" class="map"></div>
-</div>
-
-<p><small>Zoom into the map above and click on any NHS service shown to see their profile.</small></p>
 {% endblock content %}
 
 {% block extra_js %}
@@ -97,6 +96,17 @@
             <li><em><%= nhsCentre.happy_outcome %></em> users happy with outcome</li>
         <% } %>
     </ul>
+    <h2 class="map-header">Ratings and Reviews</h2>
+    <p>
+        Average Rating
+        <span class="rating">
+            <span class="<%= starClass(nhsCentre.average_recommendation_rating, 1) %>" aria-hidden="true"></span>
+            <span class="<%= starClass(nhsCentre.average_recommendation_rating, 2) %>" aria-hidden="true"></span>
+            <span class="<%= starClass(nhsCentre.average_recommendation_rating, 3) %>" aria-hidden="true"></span>
+            <span class="<%= starClass(nhsCentre.average_recommendation_rating, 4) %>" aria-hidden="true"></span>
+            <span class="<%= starClass(nhsCentre.average_recommendation_rating, 5) %>" aria-hidden="true"></span>
+        </span>
+    </p>
 </script>
 
 <script type="text/x-underscore-template" name="filter-link">
