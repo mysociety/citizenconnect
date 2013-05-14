@@ -84,7 +84,7 @@
     <% if (issueType !== '') { %>
         <h3>Issue Type - <%= issueType %></h3>
     <% } %>
-    <ul>
+    <ul class="unstyled">
         <li><em><%= nhsCentre.all_time_open %></em> Open/In progress issues</li>
         <li><em><%= nhsCentre.all_time_closed %></em> Closed issues</li>
         <% if (nhsCentre.average_recommendation_rating) { %>

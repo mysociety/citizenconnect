@@ -1062,6 +1062,7 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 
 .leaflet-rrose-content { font-size: 14px; line-height: 1.4; }
 .leaflet-rrose-content .map-header { color: #2f9aa8; font-weight: bold; }
+.leaflet-rrose-content .unstyled { list-style: none; padding: 0; }
 
 /** Site nav - horizontal list */
 .nav { list-style: none; padding: 0; margin: 0; }

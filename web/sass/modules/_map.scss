@@ -59,7 +59,12 @@
     line-height: 1.4;
 
     .map-header {
-      color: $c-aquablue;
-      font-weight: bold;
+        color: $c-aquablue;
+        font-weight: bold;
+    }
+
+    .unstyled {
+        list-style: none;
+        padding: 0;
     }
 }
