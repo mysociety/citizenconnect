@@ -16,6 +16,10 @@
    */
   > li {
     @include inline-block();
+    @include media-query(palm) {
+      display: block;
+      width: 100%;
+    }
   }
 
   a {
@@ -27,5 +31,10 @@
     text-decoration: none;
     &:hover { color: $c-aquablue-tint; }
     &.active { background: #f2f2f2; }
+    @include media-query(lap) {
+      font-size: (13px / $font-size-base) + em;
+      padding: ($grid-gutter / 2) + em;
+      padding-top: ($grid-gutter / 1.6) + em;
+    }
   }
 }

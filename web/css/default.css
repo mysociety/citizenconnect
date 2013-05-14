@@ -4030,6 +4030,12 @@ body.docs .c-nhs_blue-tint_10 {
   *display: inline;
   *zoom: 1;
 }
+@media only screen and (max-width: 480px) {
+  .site-nav > li {
+    display: block;
+    width: 100%;
+  }
+}
 .site-nav a {
   display: block;
   font-weight: bold;
@@ -4043,6 +4049,13 @@ body.docs .c-nhs_blue-tint_10 {
 }
 .site-nav a.active {
   background: #f2f2f2;
+}
+@media only screen and (min-width: 481px) and (max-width: 1023px) {
+  .site-nav a {
+    font-size: 0.8125em;
+    padding: 0.625em;
+    padding-top: 0.78125em;
+  }
 }
 
 /* ==========================================================================
