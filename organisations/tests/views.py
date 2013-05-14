@@ -567,21 +567,21 @@ class OrganisationProblemsTests(AuthorizationTestCase):
     def test_private_page_highlights_priority_problems(self):
         # Add a priority problem
         self.login_as(self.test_hospital_user)
-        priority_problem = create_test_problem({'organisation': self.hospital,
-                                                'moderated': Problem.MODERATED,
-                                                'publication_status': Problem.PUBLISHED,
-                                                'moderated_description': 'Moderated',
-                                                'priority': Problem.PRIORITY_HIGH})
+        create_test_problem({'organisation': self.hospital,
+                             'moderated': Problem.MODERATED,
+                             'publication_status': Problem.PUBLISHED,
+                             'moderated_description': 'Moderated',
+                             'priority': Problem.PRIORITY_HIGH})
         resp = self.client.get(self.private_hospital_problems_url)
         self.assertContains(resp, 'problem-table__highlight')
 
     def test_public_page_doesnt_highlight_priority_problems(self):
         # Add a priority problem
-        priority_problem = create_test_problem({'organisation': self.hospital,
-                                                'moderated': Problem.MODERATED,
-                                                'publication_status': Problem.PUBLISHED,
-                                                'moderated_description': 'Moderated',
-                                                'priority': Problem.PRIORITY_HIGH})
+        create_test_problem({'organisation': self.hospital,
+                             'moderated': Problem.MODERATED,
+                             'publication_status': Problem.PUBLISHED,
+                             'moderated_description': 'Moderated',
+                             'priority': Problem.PRIORITY_HIGH})
         resp = self.client.get(self.public_hospital_problems_url)
         self.assertNotContains(resp, 'problem-table__highlight')
 

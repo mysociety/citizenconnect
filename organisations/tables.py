@@ -82,6 +82,8 @@ class BaseProblemTable(tables.Table):
             self.base_columns['breach_and_escalation'].visible = True
         else:
             self.cobrand = kwargs.pop('cobrand')
+            self.base_columns['summary'].accessor = 'summary'
+            self.base_columns['breach_and_escalation'].visible = False
 
         super(BaseProblemTable, self).__init__(*args, **kwargs)
 
@@ -156,7 +158,8 @@ class ProblemTable(BaseProblemTable):
                     'category',
                     'happy_service',
                     'happy_outcome',
-                    'summary')
+                    'summary',
+                    'breach_and_escalation')
 
 
 class ExtendedProblemTable(ProblemTable):
@@ -186,7 +189,8 @@ class ExtendedProblemTable(ProblemTable):
                     'time_to_address',
                     'happy_service',
                     'happy_outcome',
-                    'summary')
+                    'summary',
+                    'breach_and_escalation')
 
 
 class ProblemDashboardTable(BaseProblemTable):
