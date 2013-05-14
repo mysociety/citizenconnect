@@ -625,6 +625,27 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         resp = self.client.get(self.public_hospital_problems_url)
         self.assertNotContains(resp, '<div class="problem-table__flag__escalate">e</div>')
 
+    def test_private_page_shows_private_summary(self):
+        self.login_as(self.test_hospital_user)
+        create_test_problem({'organisation': self.hospital,
+                             'moderated': Problem.MODERATED,
+                             'publication_status': Problem.PUBLISHED,
+                             'description': 'private description',
+                             'moderated_description': 'public description'})
+        resp = self.client.get(self.private_hospital_problems_url)
+        self.assertContains(resp, 'private description')
+        self.assertNotContains(resp, 'public description')
+
+    def test_public_page_shows_public_summary(self):
+        create_test_problem({'organisation': self.hospital,
+                             'moderated': Problem.MODERATED,
+                             'publication_status': Problem.PUBLISHED,
+                             'description': 'private description',
+                             'moderated_description': 'public description'})
+        resp = self.client.get(self.public_hospital_problems_url)
+        self.assertNotContains(resp, 'private description')
+        self.assertContains(resp, 'public description')
+
 
 class OrganisationDashboardTests(AuthorizationTestCase):
 
@@ -686,6 +707,27 @@ class OrganisationDashboardTests(AuthorizationTestCase):
         self.login_as(self.other_ccg_user)
         resp = self.client.get(self.dashboard_url)
         self.assertEqual(resp.status_code, 403)
+
+    def test_dashboard_page_highlights_priority_problems(self):
+        # Add a priority problem
+        self.login_as(self.provider)
+        create_test_problem({'organisation': self.test_organisation,
+                             'moderated': Problem.MODERATED,
+                             'publication_status': Problem.PUBLISHED,
+                             'moderated_description': 'Moderated',
+                             'priority': Problem.PRIORITY_HIGH})
+        resp = self.client.get(self.dashboard_url)
+        self.assertContains(resp, 'problem-table__highlight')
+
+    def test_dashboard_page_shows_breach_flag(self):
+        self.login_as(self.provider)
+        create_test_problem({'organisation': self.test_organisation,
+                             'moderated': Problem.MODERATED,
+                             'publication_status': Problem.PUBLISHED,
+                             'moderated_description': 'Moderated',
+                             'breach': True})
+        resp = self.client.get(self.dashboard_url)
+        self.assertContains(resp, '<div class="problem-table__flag__breach">b</div>')
 
 
 class OrganisationMapTests(AuthorizationTestCase):
