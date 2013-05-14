@@ -1,0 +1,31 @@
+/**
+ * The site nav - a styled horizontal list
+ */
+.site-nav {
+  @extend .cf;
+  list-style: none;
+  padding: 0;
+  text-align: center;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  @include gradient(#f2f2f2, #ffffff);
+
+  /**
+   * A tiny reset to a horizontal list, we're using
+   * inline and not floats so text-align: center works
+   */
+  > li {
+    @include inline-block();
+  }
+
+  a {
+    display: block;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: ($grid-gutter / 1.5) + em $grid-gutter + em ($grid-gutter / 2) + em $grid-gutter + em;
+    color: $c-aquablue;
+    text-decoration: none;
+    &:hover { color: $c-aquablue-tint; }
+    &.active { background: #f2f2f2; }
+  }
+}

@@ -121,6 +121,9 @@
  *
  * We work out your end points for you:
  */
+/**
+ * Cross browser gradients
+ */
 /* For image replacement */
 .ir {
   display: block;
@@ -176,10 +179,10 @@
 .cf:before, .gw:before, .radio-list:before,
 .grid-wrapper:before, .island:before,
 .islet:before,
-.meta-data-sidebar .meta-data-wrap:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .cf:after, .gw:after, .radio-list:after,
+.meta-data-sidebar .meta-data-wrap:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .site-nav:before, .cf:after, .gw:after, .radio-list:after,
 .grid-wrapper:after, .island:after,
 .islet:after,
-.meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after {
+.meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after, .site-nav:after {
   content: "";
   display: table;
 }
@@ -187,14 +190,14 @@
 .cf:after, .gw:after, .radio-list:after,
 .grid-wrapper:after, .island:after,
 .islet:after,
-.meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after {
+.meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after, .site-nav:after {
   clear: both;
 }
 
 .cf, .gw, .radio-list,
 .grid-wrapper, .island,
 .islet,
-.meta-data-sidebar .meta-data-wrap, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar {
+.meta-data-sidebar .meta-data-wrap, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar, .site-nav {
   *zoom: 1;
 }
 
@@ -208,23 +211,23 @@
 .cf, .gw, .radio-list,
 .grid-wrapper, .island,
 .islet,
-.meta-data-sidebar .meta-data-wrap, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar {
+.meta-data-sidebar .meta-data-wrap, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar, .site-nav {
   zoom: 1;
 }
 .cf:before, .gw:before, .radio-list:before,
 .grid-wrapper:before, .island:before,
 .islet:before,
-.meta-data-sidebar .meta-data-wrap:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .cf:after, .gw:after, .radio-list:after,
+.meta-data-sidebar .meta-data-wrap:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .site-nav:before, .cf:after, .gw:after, .radio-list:after,
 .grid-wrapper:after, .island:after,
 .islet:after,
-.meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after {
+.meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after, .site-nav:after {
   content: " ";
   display: table;
 }
 .cf:after, .gw:after, .radio-list:after,
 .grid-wrapper:after, .island:after,
 .islet:after,
-.meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after {
+.meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after, .site-nav:after {
   clear: both;
 }
 
@@ -4000,6 +4003,46 @@ body.docs .c-nhs_blue-tint_10 {
 .alert--grey {
   background: #f2f2f2;
   color: #333333;
+}
+
+/**
+ * The site nav - a styled horizontal list
+ */
+.site-nav {
+  list-style: none;
+  padding: 0;
+  text-align: center;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  background-color: #f2f2f2;
+  background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(white));
+  background: -webkit-linear-gradient(top, #f2f2f2, white);
+  background: -moz-linear-gradient(top, #f2f2f2, white);
+  background: -ms-linear-gradient(top, #f2f2f2, white);
+  background: -o-linear-gradient(top, #f2f2f2, white);
+  /**
+   * A tiny reset to a horizontal list, we're using
+   * inline and not floats so text-align: center works
+   */
+}
+.site-nav > li {
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+}
+.site-nav a {
+  display: block;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 0.83333em 1.25em 0.625em 1.25em;
+  color: #2f9aa8;
+  text-decoration: none;
+}
+.site-nav a:hover {
+  color: #27808c;
+}
+.site-nav a.active {
+  background: #f2f2f2;
 }
 
 /* ==========================================================================
