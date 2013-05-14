@@ -80,6 +80,9 @@
  *  _alert.scss
  */
 /**
+ * _site-nav.scss
+ */
+/**
  * From: http://jakearchibald.github.com/sass-ie/
  * Mixins to help responsive design in browsers that don't do media queries
  * and produce versions specific to ie browser version
@@ -4012,8 +4015,8 @@ body.docs .c-nhs_blue-tint_10 {
   list-style: none;
   padding: 0;
   text-align: center;
-  border-top: 1px solid #ccc;
-  border-bottom: 1px solid #ccc;
+  border-top: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
   background-color: #f2f2f2;
   background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(white));
   background: -webkit-linear-gradient(top, #f2f2f2, white);

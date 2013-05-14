@@ -6,9 +6,9 @@
   list-style: none;
   padding: 0;
   text-align: center;
-  border-top: 1px solid #ccc;
-  border-bottom: 1px solid #ccc;
-  @include gradient(#f2f2f2, #ffffff);
+  border-top: 1px solid $c-sitenav-border-color;
+  border-bottom: 1px solid $c-sitenav-border-color;
+  @include gradient($c-sitenav-gradient-start, $c-sitenav-gradient-stop);
 
   /**
    * A tiny reset to a horizontal list, we're using
@@ -27,10 +27,10 @@
     font-weight: bold;
     text-transform: uppercase;
     padding: ($grid-gutter / 1.5) + em $grid-gutter + em ($grid-gutter / 2) + em $grid-gutter + em;
-    color: $c-aquablue;
+    color: $c-sitenav-color;
     text-decoration: none;
-    &:hover { color: $c-aquablue-tint; }
-    &.active { background: #f2f2f2; }
+    &:hover { color: $c-sitenav-color-hover; }
+    &.active { background: $c-sitenav-color-active; }
     @include media-query(lap) {
       font-size: (13px / $font-size-base) + em;
       padding: ($grid-gutter / 2) + em;
