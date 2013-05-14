@@ -21,6 +21,9 @@
 <p>{{ review.content }}</p>
 
 
+<hr />
+
+
 <h2>Ratings</h2>
 
 <ul>
@@ -33,6 +36,11 @@
     {% endfor %}
 </ul>
 
+<hr />
+
+<div>Reviewed by {{ review.author_display_name }}</div>
+
+<div>Reviewed on {{ review.api_published|date:"j M Y" }}</div>
 
 
 {% endblock %}
