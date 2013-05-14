@@ -4341,14 +4341,15 @@ body.docs .c-nhs_blue-tint_10 {
   margin: 3.75em auto 0 auto;
   background: #f2f2f2;
   padding: 1.25em 3.75em;
-  text-align: center;
 }
 .feedback-box p {
   font-size: 1.125em;
   margin-top: 0;
+  text-align: center;
 }
 .feedback-box .btn {
   font-size: 1.25em;
+  text-align: center;
 }
 
 /* ==========================================================================
