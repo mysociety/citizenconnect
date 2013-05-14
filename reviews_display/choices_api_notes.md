@@ -36,8 +36,6 @@ The reviews are in created order, but the created timestamp is not exposed in th
 
 It is not possible to change the ordering.
 
-The ordering of the reviews has been queried as it makes the `commentssince/:yyyy/:mm/:dd` endpoints much less useful as it misses recently changed but not recently created reviews.
-
 
 ## Formats
 
