@@ -21,8 +21,8 @@ libproj-dev
 # postgresql-server-dev-9.1
 
 # XML Processing stuff
-# libxml2-dev
-# libxslt1-dev
+libxml2-dev
+libxslt1-dev
 
 # If you want to run this on a headless server, or eg: in vagrant
 # you'll also need a browser and a display setup too
