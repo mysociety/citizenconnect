@@ -1,42 +1,90 @@
 {% extends 'base.html' %}
 {% load url from future %}
+{% load staticfiles %}
 {% block title %}Moderate problem{% endblock %}
 
 {% block bodyclasses %}second-tier-moderate-form{% endblock %}
 {% block content %}
 
-{% include "issues/issue_detail.html" with object=issue private=1 title="Moderate problem"%}
+{% include "issues/issue_header.html" with object=issue private=1 title="Moderate problem" %}
+<div class="gw">
 
-<div class="second-tier-moderate-form">
-    <form method="post">
-        {% csrf_token %}
+    <div class="g  two-thirds  palm-one-whole">
+        {% include "issues/issue_meta.html" with object=issue private=1 title="Moderate problem" %}
 
-        {% if form.non_field_errors %}
-            <fieldset class="island">
-                {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
-            </fieldset>
-        {% endif %}
+        <div class="second-tier-moderate-form">
+            <form method="post">
+                {% csrf_token %}
 
-        {% for hidden in form.hidden_fields %}
-            {{ hidden }}
-        {% endfor %}
-        <fieldset class="island">
-            <ul class="gw">
-                <li class="g  one-whole">
-                    <label for="id_moderated_description">Moderated details</label>
-                    {{ form.moderated_description }}
-                    <p class="info">Required when publishing public problems.</p>
-                    {% include "message_list.html" with messages=form.moderated_description.errors message_type='error' %}
-                </li>
-            </ul>
-        </fieldset>
+                {% if form.non_field_errors %}
+                    <fieldset class="island">
+                        {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
+                    </fieldset>
+                {% endif %}
 
-        <fieldset>
-            <button class="btn fl" type="submit" name="keep_private">Not Suitable/Keep Private</button>
-            <button class="btn fr" type="submit" name="publish">Publish/Update Online</button>
-        </fieldset>
+                {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                {% endfor %}
+                <div class="meta-data-wrap">
+                    <h3 class="meta-data-label">Moderated details</h3>
+                </div>
+                <fieldset class="island">
+                    <ul class="gw">
+                        {% if form.fields.moderated_description %}
+                        <li class="g  one-whole">
+                            {{ form.moderated_description }}
+                            <p class="info">Required when publishing public problems.</p>
+                            {% include "message_list.html" with messages=form.moderated_description.errors message_type='error' %}
+                        </li>
+                        {% else %}
+                            <li class="g  one-whole">
+                                This problem is not public so there is no need for a moderated description.
+                            </li>
+                        {% endif %}
+                    </ul>
+                </fieldset>
+
+                <fieldset>
+
+                    <ul class="gw">
+                        <li class="g one-third palm-one-whole align-center mt"><button class="btn  btn--red one-whole" type="submit" name="keep_private">Keep Private</button> <small>Not Suitable</small></li>
+                        <li class="g one-third palm-one-whole align-center mt"><button class="btn  btn--light-green one-whole" type="submit" name="publish">Publish</button><small>Update Online</small></li>
+                    </ul>
+                </fieldset>
 
 
-    </form>
+            </form>
+        </div>
+    </div>
+
+    <div class="meta-data-sidebar  g  one-third  palm-one-whole">
+        {% include "issues/issue_sidebar.html" with object=issue private=1 title="Moderate problem" %}
+    </div>
+
 </div>
+
+{% include 'moderation/publish_confirm_modal.html' %}
+
 {% endblock %}
+
+{% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'css/fancybox/jquery.fancybox-1.3.4.css' %}" />
+
+<style>
+/* Fancybox doesn't play nicely with `box-sizing: border-box;`. */
+#fancybox-wrap, #fancybox-wrap * {
+    box-sizing: initial;
+}
+#publish-confirm-modal {
+    display: none;
+}
+</style>
+
+{% endblock extra_css %}
+
+{% block extra_js %}
+<script src="{% static 'js/jquery.browser.js' %}"></script>
+<script src="{% static 'js/jquery.fancybox-1.3.4.js' %}"></script>
+<script src="{% static 'js/moderation_form.js' %}"></script>
+{% endblock extra_js %}

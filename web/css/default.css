@@ -306,6 +306,11 @@ select { margin-top: 0.3125em; margin-bottom: 0.5em; width: 100%; }
 label, .label { display: block; font-weight: bold; margin-bottom: 0.5em; }
 label.disabled, .label.disabled { -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)"; filter: alpha(opacity=50); -moz-opacity: 0.5; -khtml-opacity: 0.5; opacity: 0.5; }
 
+.label-small { font-size: 14px; }
+
+.label-checkbox, .label-radio { font-weight: normal; padding-left: 20px; }
+.label-checkbox input[type="checkbox"], .label-radio input[type="checkbox"] { margin-left: -20px; }
+
 /** Info text */
 .info { font-size: 0.875em; font-style: italic; font-weight: normal; display: block; }
 
@@ -376,6 +381,10 @@ label.disabled, .label.disabled { -ms-filter: "progid:DXImageTransform.Microsoft
 .problem-form .steps-list { list-style: none; }
 .problem-form .steps-list li { padding: 25px 0 5px; border-bottom: 1px solid #dddddd; }
 .problem-form .slim-select > :first-child { margin-left: 20px; width: 45%; }
+
+.input-radio ul { padding: 0; }
+.input-radio li { display: inline; margin-right: 15px; }
+.input-radio label { display: inline; font-weight: normal; }
 
 /* A better looking default horizontal rule */
 hr { display: block; height: 1px; border: 0; border-top: 1px solid #dddddd; margin: 1em 0; padding: 0; }
@@ -843,6 +852,9 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .btn--dark-red { border-color: #851432; color: white; background: #931638; }
 .btn--dark-red:hover { background: #851432; }
 
+.btn--darkgrey { border-color: #8d8d8d; color: white; background: #aaaaaa; }
+.btn--darkgrey:hover { background: #8d8d8d; }
+
 /** Disabled button */
 .btn--disabled { border-color: #8d8d8d; color: white; background: #dddddd; }
 .btn--disabled:hover { background: #dddddd; }
@@ -857,6 +869,8 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 
 /** almost identical to the back button, just the other way around */
 .forward-btn span { float: right; margin-left: 0.20833em; margin-right: 0; margin-top: -0.79167em; }
+
+.btn--publish { margin-left: 10px; }
 
 /** Big number with small text */
 .feature { padding: 0 3.75em; font-weight: bold; }

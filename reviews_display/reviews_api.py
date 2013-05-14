@@ -1,10 +1,15 @@
+import logging
 import re
+
 from HTMLParser import HTMLParser
 import lxml.etree as ET
 
 import urllib
+from furl import furl
 
 from organisations.choices_api import ChoicesAPI
+
+logger = logging.getLogger(__name__)
 
 
 class ReviewsAPI(object):
@@ -14,7 +19,7 @@ class ReviewsAPI(object):
     of the XML and lets us use an iterator to access the reviews.
     """
 
-    def __init__(self, organisation_type, start_page=None, max_fetch=5):
+    def __init__(self, organisation_type, start_page=None, max_fetch=5, since=None):
         self.api = ChoicesAPI()
 
         self.organisation_type = organisation_type
@@ -23,11 +28,22 @@ class ReviewsAPI(object):
 
         # create the start page if not specified
         if not start_page:
+
             path_elements = [
                 'organisations',
                 self.organisation_type,
-                'comments.atom'  # add '.atom' so we get a consistent format, which includes ratings
             ]
+
+            if since:
+                path_elements.append('commentssince')
+                path_elements.extend(
+                    map(str, [since.year, since.month, since.day])
+                )
+            else:
+                path_elements.append('comments')
+
+            path_elements[-1] += ".atom"  # add '.atom' so we get a consistent format, which includes ratings
+
             start_page = self.api.construct_url(path_elements)
 
         self.next_page_url = start_page
@@ -53,8 +69,14 @@ class ReviewsAPI(object):
             return None
         self.fetches_remaining -= 1
 
-        data = urllib.urlopen(url).read()
+        logger.debug("Fetching '%s'" % url)
+        response = urllib.urlopen(url)
 
+        if response.getcode() == 404:
+            # They use 404 for empty responses :(
+            return None
+
+        data = response.read()
         data = self.cleanup_xml(data)
         return data
 
@@ -114,6 +136,11 @@ class ReviewsAPI(object):
         return review
 
     def extract_reviews_from_xml(self, xml):
+
+        # for 404 responses
+        if xml is None:
+            return []
+
         root = ET.fromstring(xml)
         reviews = []
         for entry in root.iter('entry'):
@@ -122,15 +149,24 @@ class ReviewsAPI(object):
         return reviews
 
     def extract_next_page_url(self, xml):
+
+        # for 404 responses
+        if xml is None:
+            return None
+
         root = ET.fromstring(xml)
         next_page_url = root.find('link[@rel="next"]').get('href')
         last_page_url = root.find('link[@rel="last"]').get('href')
+
         if next_page_url == last_page_url:
-            next_page_url = None
-        else:
-            if not re.search(r'\.atom', next_page_url):
-                next_page_url = re.sub(
-                    r'comments', 'comments.atom', next_page_url)
+            return None
+
+        # parse the url and check that the path ends with '.atom'. Add it if
+        # missing.
+        url = furl(next_page_url)
+        if not re.search(r'\.atom$', str(url.path)):
+            url.path = str(url.path) + '.atom'
+            next_page_url = str(url)
 
         return next_page_url
 
@@ -143,6 +179,7 @@ class ReviewsAPI(object):
 
         # error with fetching, or have fetched up to our limit
         if not xml:
+            self.next_page_url = None
             return None
 
         reviews_from_xml = self.extract_reviews_from_xml(xml)

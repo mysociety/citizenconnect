@@ -74,3 +74,30 @@ a precreated one in a minute.
 (Because you just flushed South's records of what was migrated, but the structure is still the same)
 Then you can re-run the loaddata commands from above
 
+Testing
+------------
+
+    ./manage.py test
+
+The tests are run with a custom test runner, which uses the setting `IGNORE_APPS_FOR_TESTING` to ignore
+third-party apps and django tests, so that you don't have to list all the internal apps.
+
+There are also some Selenium tests, currently using Firefox, so make sure you have Firefox
+installed.
+
+If you're on a headless server, eg: in a vagrant box, you'll need to install
+the iceweasel and xvfb packages (see the commented out section of
+/conf/packages)
+
+After installing them, start Xvfb with:
+
+    Xvfb :99 -ac &
+
+And export your display variable:
+
+    export DISPLAY=:99
+
+You might want to make that happen at every startup with the appropriates
+lines in `/etc/rc.local` and `~/.bashrc`
+
+Alternatively, if you don't want to run the selenium tests, set SKIP_BROWSER_TESTS to true in your environment.

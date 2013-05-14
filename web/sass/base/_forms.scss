@@ -46,6 +46,19 @@ label,
 
 }
 
+.label-small {
+  font-size: 14px;
+}
+
+.label-checkbox, .label-radio {
+  font-weight: normal;
+  padding-left: 20px;
+
+  input[type="checkbox"] {
+    margin-left: -20px;
+  }
+}
+
 /**
  * Info text
  */
@@ -275,5 +288,21 @@ textarea {
   .slim-select > :first-child {
     margin-left: 20px;
     width: 45%;
+  }
+}
+
+.input-radio {
+  ul {
+    padding: 0;
+  }
+
+  li {
+    display: inline;
+    margin-right: 15px;
+  }
+
+  label {
+    display: inline;
+    font-weight: normal;
   }
 }
