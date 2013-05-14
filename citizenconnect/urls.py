@@ -2,6 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls import patterns, include, url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.views.generic import RedirectView
 
 from .views import Home, CobrandChoice, About
 # Admin section
@@ -36,3 +37,11 @@ urlpatterns = patterns(
 
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+# Redirect to our favicon,ico file, which is empty. This supresses the 'Not
+# Found: /favicon.ico' log output which would otherwise appear during the
+# selenium testing.
+urlpatterns += patterns('',
+    (r'^favicon\.ico$', RedirectView.as_view(url=settings.STATIC_URL+'favicon.ico')),
+)
