@@ -1,7 +1,16 @@
 import sys
-from selenium import webdriver
-from django.test import LiveServerTestCase
+import os
 
+from selenium import webdriver
+
+from django.test import LiveServerTestCase
+from django.utils import unittest
+
+
+@unittest.skipIf(
+    os.environ.get('SKIP_BROWSER_TESTS'),
+    "Skipping selenium tests because env 'SKIP_BROWSER_TESTS' is true"
+)
 class SeleniumTestCase(LiveServerTestCase):
 
     @classmethod
