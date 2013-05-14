@@ -19,3 +19,7 @@ libproj-dev
 # Adjust these to match the postgres version you are using
 # postgresql-9.1-postgis
 # postgresql-server-dev-9.1
+
+# XML Processing stuff
+libxml2-dev
+libxslt1-dev

@@ -2,7 +2,7 @@ import logging
 import re
 
 from HTMLParser import HTMLParser
-import xml.etree.ElementTree as ET
+import lxml.etree as ET
 
 import urllib
 from furl import furl
