@@ -9,8 +9,12 @@
 
 <div class="header">
     <div>{{ organisation.name }}</div>
+    <div class="fr">
+        <a  class="icon-chevron-left"
+            href="{% url 'public-org-summary' ods_code=review.organisation.ods_code cobrand=cobrand.name %}"
+        >Back to Provider</a>
+    </div>
     <h1>Review</h1>
-    <div>Back to Provider</div>
 </div>
 
 
