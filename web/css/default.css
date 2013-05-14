@@ -4331,6 +4331,20 @@ body.docs .c-nhs_blue-tint_10 {
   border-radius: 0;
 }
 
+/**
+ * 999 link at bottom of page
+ */
+.link-999 {
+  color: #777777;
+  font-size: 1.4375em;
+  font-weight: bold;
+  text-decoration: none;
+  padding-top: 0.65217em;
+}
+.link-999:hover {
+  color: #333;
+}
+
 /* ==========================================================================
    Print styles.
    Inlined to avoid required HTTP connection: h5bp.com/r

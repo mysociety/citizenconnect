@@ -34,3 +34,18 @@
     }
   }
 }
+
+
+
+
+/**
+ * 999 link at bottom of page
+ */
+.link-999 {
+  color: #777777;
+  font-size: (23px / $font-size-base) + em;
+  font-weight: bold;
+  text-decoration: none;
+  padding-top: (15px /23px ) + em;
+  &:hover { color: #333; }
+}
