@@ -27,7 +27,7 @@ $(document).ready(function () {
   // Because we disable the fields they won't be sent through,
   // but we set values on them that we want, so we have re-enable them just
   // before the form is submitted
-  $('.filters form').bind('submit', function() {
+  $('.filters').bind('submit', function() {
     $(this).find('select').removeAttr('disabled');
   });
 
