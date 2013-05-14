@@ -81,38 +81,41 @@
 </script>
 
 <script type="text/x-underscore-template" name="hover-bubble">
-    <div class="header">
-        <img src="<%= icon.options.iconRetinaUrl %>" alt="Status icon" class="fr" />
-        <h1 class="map-header"><%= nhsCentre.name %></h1>
+    <div class="hover-bubble  cf">
+        <div class="header">
+            <img src="<%= icon.options.iconRetinaUrl %>" alt="Status icon" class="fr" />
+            <h1 class="map-header"><%= nhsCentre.name %></h1>
+        </div>
+        <h2 class="map-header">Problem reports</h2>
+        <% if (issueType !== '') { %>
+            <h3>Issue Type - <%= issueType %></h3>
+        <% } %>
+        <ul class="unstyled">
+            <li><em><%= nhsCentre.all_time_open %></em> Open/In progress issues</li>
+            <li><em><%= nhsCentre.all_time_closed %></em> Closed issues</li>
+            <% if (nhsCentre.average_time_to_address) { %>
+                <li><em><%= nhsCentre.average_time_to_address %></em> days average time to close</li>
+            <% } %>
+            <% if (nhsCentre.happy_outcome) { %>
+                <li><em><%= nhsCentre.happy_outcome %></em> users happy with outcome</li>
+            <% } %>
+        </ul>
+        <h2 class="map-header">Ratings and Reviews</h2>
+        <% if (nhsCentre.average_recommendation_rating) { %>
+        <p>
+            Average Rating
+            <span class="rating">
+                <span class="<%= starClass(nhsCentre.average_recommendation_rating, 1) %>" aria-hidden="true"></span>
+                <span class="<%= starClass(nhsCentre.average_recommendation_rating, 2) %>" aria-hidden="true"></span>
+                <span class="<%= starClass(nhsCentre.average_recommendation_rating, 3) %>" aria-hidden="true"></span>
+                <span class="<%= starClass(nhsCentre.average_recommendation_rating, 4) %>" aria-hidden="true"></span>
+                <span class="<%= starClass(nhsCentre.average_recommendation_rating, 5) %>" aria-hidden="true"></span>
+            </span>
+        </p>
+        <% } %>
+        <p><%= nhsCentre.all_time_reviews %> Reviews received</p>
+        <span class="fr">View problems <span class="icon-chevron-right" aria-hidden="true"></span></span>
     </div>
-    <h2 class="map-header">Problem reports</h2>
-    <% if (issueType !== '') { %>
-        <h3>Issue Type - <%= issueType %></h3>
-    <% } %>
-    <ul class="unstyled">
-        <li><em><%= nhsCentre.all_time_open %></em> Open/In progress issues</li>
-        <li><em><%= nhsCentre.all_time_closed %></em> Closed issues</li>
-        <% if (nhsCentre.average_time_to_address) { %>
-            <li><em><%= nhsCentre.average_time_to_address %></em> days average time to close</li>
-        <% } %>
-        <% if (nhsCentre.happy_outcome) { %>
-            <li><em><%= nhsCentre.happy_outcome %></em> users happy with outcome</li>
-        <% } %>
-    </ul>
-    <h2 class="map-header">Ratings and Reviews</h2>
-    <% if (nhsCentre.average_recommendation_rating) { %>
-    <p>
-        Average Rating
-        <span class="rating">
-            <span class="<%= starClass(nhsCentre.average_recommendation_rating, 1) %>" aria-hidden="true"></span>
-            <span class="<%= starClass(nhsCentre.average_recommendation_rating, 2) %>" aria-hidden="true"></span>
-            <span class="<%= starClass(nhsCentre.average_recommendation_rating, 3) %>" aria-hidden="true"></span>
-            <span class="<%= starClass(nhsCentre.average_recommendation_rating, 4) %>" aria-hidden="true"></span>
-            <span class="<%= starClass(nhsCentre.average_recommendation_rating, 5) %>" aria-hidden="true"></span>
-        </span>
-    </p>
-    <% } %>
-    <p><%= nhsCentre.all_time_reviews %> Reviews received</p>
 </script>
 
 <script type="text/x-underscore-template" name="filter-link">
