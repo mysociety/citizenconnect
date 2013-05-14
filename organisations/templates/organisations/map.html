@@ -97,6 +97,7 @@
         <% } %>
     </ul>
     <h2 class="map-header">Ratings and Reviews</h2>
+    <% if (nhsCentre.average_recommendation_rating) { %>
     <p>
         Average Rating
         <span class="rating">
@@ -107,6 +108,8 @@
             <span class="<%= starClass(nhsCentre.average_recommendation_rating, 5) %>" aria-hidden="true"></span>
         </span>
     </p>
+    <% } %>
+    <p><%= nhsCentre.all_time_reviews %> Reviews received</p>
 </script>
 
 <script type="text/x-underscore-template" name="filter-link">
