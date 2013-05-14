@@ -57,8 +57,9 @@
 .leaflet-rrose-content{
     font-size: 14px;
     line-height: 1.4;
-}
-.leaflet-rrose-content strong{
-    color:#fff;
-    font-size: 16px;
+
+    .map-header {
+      color: $c-aquablue;
+      font-weight: bold;
+    }
 }

@@ -78,9 +78,9 @@
 <script type="text/x-underscore-template" name="hover-bubble">
     <div class="header">
         <img src="<%= icon.options.iconRetinaUrl %>" alt="Status icon" class="fr" />
-        <h1><%= nhsCentre.name %></h1>
+        <h1 class="map-header"><%= nhsCentre.name %></h1>
     </div>
-    <h2>Problem reports</h2>
+    <h2 class="map-header">Problem reports</h2>
     <% if (issueType !== '') { %>
         <h3>Issue Type - <%= issueType %></h3>
     <% } %>
