@@ -16,6 +16,11 @@ class ModerationForm(ConcurrentFormMixin, forms.ModelForm):
         if self.request.META['REQUEST_METHOD'] == 'GET':
             self.set_version_in_session()
 
+        # We don't require the moderated_description field if the proble is not public.
+        # Remove it from the form.
+        if not self.instance.public:
+            del self.fields['moderated_description']
+
     def clean_publication_status(self):
         # Status is hidden, but if people click the "Publish" button, we should
         # publish it, and vice versa if they click "Keep Private", we default
@@ -50,15 +55,6 @@ class ModerationForm(ConcurrentFormMixin, forms.ModelForm):
 class ProblemModerationForm(ModerationForm):
 
     commissioned = forms.ChoiceField(widget=RadioSelect(), required=True, choices=Problem.COMMISSIONED_CHOICES)
-
-    def __init__(self, request=None, *args, **kwargs):
-        super(ProblemModerationForm, self).__init__(request=request, *args, **kwargs)
-
-        # We don't require the moderated_description field if the proble is not public.
-        # Remove it from the form.
-        if not self.instance.public:
-            del self.fields['moderated_description']
-
 
     def clean_requires_second_tier_moderation(self):
         # requires_second_tier_moderation is hidden, but if people click the "Requires Second Tier Moderation"

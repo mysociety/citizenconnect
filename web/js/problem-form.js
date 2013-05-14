@@ -79,6 +79,8 @@
                 return false;
             }
         });
+
+        $('#id_service').select2();
     });
 
     // bind the onload event so we can trigger the click on

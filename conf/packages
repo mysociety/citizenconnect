@@ -19,3 +19,12 @@ libproj-dev
 # Adjust these to match the postgres version you are using
 # postgresql-9.1-postgis
 # postgresql-server-dev-9.1
+
+# XML Processing stuff
+libxml2-dev
+libxslt1-dev
+
+# If you want to run this on a headless server, or eg: in vagrant
+# you'll also need a browser and a display setup too
+# iceweasel
+# xvfb

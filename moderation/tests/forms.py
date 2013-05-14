@@ -173,14 +173,14 @@ class ModerationFormTests(BaseModerationTestCase):
 
 
     def test_moderation_form_doesnt_requires_moderated_description_for_private_problems(self):
-        # make the problem public
+        # make the problem private
         self.test_problem.public = False
         self.test_problem.save()
 
         # Re-Get the form as the client to set the initial session vars
         resp = self.client.get(self.problem_form_url)
 
-        # test that the no moderated desrciption message is shown
+        # test that the no moderated description message is shown
         self.assertContains(resp, "no need for a moderated description")
 
         # check that posting a moderated_description is ignored
@@ -375,8 +375,20 @@ class SecondTierModerationFormTests(BaseModerationTestCase):
     def test_second_tier_moderation_form_doesnt_require_moderated_description_for_private_problems(self):
         self.test_second_tier_moderation_problem.public = False
         self.test_second_tier_moderation_problem.save()
+
         # Re-get the form as the client to get the latest version into the session
-        self.client.get(self.second_tier_problem_form_url)
+        resp = self.client.get(self.second_tier_problem_form_url)
+
+        # test that the no moderated description message is shown
+        self.assertContains(resp, "no need for a moderated description")
+
+        # check that posting a moderated_description is ignored
+        self.form_values['moderated_description'] = 'this should be ignored'
+        resp = self.client.post(self.second_tier_problem_form_url, self.form_values)
+        problem = Problem.objects.get(pk=self.test_second_tier_moderation_problem.id)
+        self.assertEqual(problem.moderated_description, '')
+        self.assertEqual(problem.publication_status, Problem.PUBLISHED)
+
         expected_status = Problem.PUBLISHED
         del self.form_values['moderated_description']
         resp = self.client.post(self.second_tier_problem_form_url, self.form_values)

@@ -1,7 +1,15 @@
 all: css
 
-css:
-	sass --version
-	sass --style compact web/sass/default.scss web/css/default.css
+SASS = sass
+STYLE = compact
+SOURCE = web/sass/default.scss
+TARGET =  web/css/default.css
 
-PHONY: css
+css:
+	$(SASS) --version
+	$(SASS) --style $(STYLE) $(SOURCE) $(TARGET)
+
+watch:
+	$(SASS) --watch --style $(STYLE) $(SOURCE):$(TARGET)
+
+PHONY: css watch
