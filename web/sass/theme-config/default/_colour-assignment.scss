@@ -263,3 +263,25 @@ $c-sitenav-gradient-start: $c-lightgrey;
          $c-sitenav-color: $c-aquablue;
    $c-sitenav-color-hover: $c-aquablue-tint;
   $c-sitenav-color-active: $c-lightgrey;
+
+
+
+
+/**
+ * _bordered-box.scss
+ */
+          $c-bordered-box-bg: $c-white;
+$c-bordered-box-border-color: $c-grey;
+
+
+/**
+ * _feed-list.scss
+ */
+      $c-feed-list__heading-color: $c-nhs_lightgreen;
+ $c-feed-list__heading-box-shadow: $c-grey;
+$c-feed-list__heading-small-color: $c-darkergrey;
+        $c-feed-list-border-color: $c-grey;
+        $c-feed-list__title-color: $c-darkergrey;
+          $c-feed-list-link-color: $c-nhs_lightgreen;
+    $c-feed-list-link-hover-color: $c-nhs_lightgreen-tint;
+          $c-feed-list-time-color: $c-darkgrey;
