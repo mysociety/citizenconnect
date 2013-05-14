@@ -39,7 +39,7 @@
 
 
 /**
- * 999 link at bottom of page
+ * 999/111 links at bottom of page
  */
 .link-999 {
   color: #777777;
@@ -48,4 +48,11 @@
   text-decoration: none;
   padding-top: (15px /23px ) + em;
   &:hover { color: #333; }
+}
+.link-111 {
+  text-decoration: none;
+  img {
+    max-width: 100%;
+    height: auto;
+  }
 }

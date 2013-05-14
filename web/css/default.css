@@ -4332,7 +4332,7 @@ body.docs .c-nhs_blue-tint_10 {
 }
 
 /**
- * 999 link at bottom of page
+ * 999/111 links at bottom of page
  */
 .link-999 {
   color: #777777;
@@ -4343,6 +4343,14 @@ body.docs .c-nhs_blue-tint_10 {
 }
 .link-999:hover {
   color: #333;
+}
+
+.link-111 {
+  text-decoration: none;
+}
+.link-111 img {
+  max-width: 100%;
+  height: auto;
 }
 
 /* ==========================================================================
