@@ -4333,6 +4333,24 @@ body.docs .c-nhs_blue-tint_10 {
   height: auto;
 }
 
+/**
+ * A grey box with buttons inside
+ */
+.feedback-box {
+  max-width: 720px;
+  margin: 3.75em auto 0 auto;
+  background: #f2f2f2;
+  padding: 1.25em 3.75em;
+  text-align: center;
+}
+.feedback-box p {
+  font-size: 1.125em;
+  margin-top: 0;
+}
+.feedback-box .btn {
+  font-size: 1.25em;
+}
+
 /* ==========================================================================
    Print styles.
    Inlined to avoid required HTTP connection: h5bp.com/r
