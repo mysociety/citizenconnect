@@ -160,6 +160,7 @@ textarea {
           vertical-align: middle;
           padding-left: 10px;
         }
+        .big-radio-group__cell--full { width: 100%; }
       }
     }
     // added with js
@@ -319,8 +320,9 @@ textarea {
  */
 .feedback-form {
   @extend .cf;
-  max-width: 520px;
+  width: 520px;
   margin: ($grid-gutter * 3) + em auto 0 auto;
+
   .big-radio-group {
     @extend .cf;
     border-bottom: 4px solid #ddd;
@@ -343,5 +345,9 @@ textarea {
   label {
     display: inline;
     font-weight: normal;
+  }
+  p {
+    font-size: (20px / $font-size-base) + em;
+    padding: 0 1.5em;
   }
 }

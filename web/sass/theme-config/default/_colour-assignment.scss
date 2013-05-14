@@ -21,7 +21,8 @@ $c-body-bg: $c-white;
 $c-big-radio-group-active-green-radio-bg: $c-nhs_green;
               $c-description-count-error: $c-nhs_red;
                  $c-description-count-ok: $c-nhs_lightgreen;
-
+   $c-feedbackform-big-radio-group-radio-border: $c-grey-tint;
+$c-feedbackform-big-radio-group-active-radio-bg: $c-grey-tint;
 
 /**
  * _misc.scss
@@ -130,11 +131,11 @@ $c-back-btn-span-hover-color: $c-grey-tint;
        $c-btn-darkgrey-color: $c-white;
           $c-btn-darkgrey-bg: $c-darkgrey;
     $c-btn-darkgrey-hover-bg: $c-darkgrey-tint;
+        $c-btn-caption-color: $c-darkgrey;
          $c-btn-black-border: $c-darkgrey-tint;
           $c-btn-black-color: $c-white;
              $c-btn-black-bg: $c-black;
        $c-btn-black-hover-bg: $c-black / 1.1;
-
 
 /**
  * _filters.scss
