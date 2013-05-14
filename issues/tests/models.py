@@ -1,3 +1,4 @@
+import warnings
 from datetime import datetime, timedelta
 from mock import patch
 
@@ -326,6 +327,19 @@ class ProblemModelTimeToTests(ProblemTestCase):
 class ProblemModelConcurrencyTests(TransactionTestCase, ConcurrencyTestMixin):
 
     def setUp(self):
+
+        # The ConcurrencyTestMixin uses the deprecated get_revision_of_object
+        # method triggering DeprecationWarning's. We switch these off here and
+        # then reset the filters in the tearDown.
+        #
+        # Have reported as an issue: https://github.com/saxix/django-concurrency/issues/9
+        #
+        warnings.filterwarnings(
+            "ignore",
+            category=DeprecationWarning,
+            module='concurrency.utils'
+        )
+
         self.test_organisation = create_test_organisation()
         # These are needed for ConcurrencyTestMixin to run its' tests
         self.concurrency_model = Problem
@@ -339,6 +353,10 @@ class ProblemModelConcurrencyTests(TransactionTestCase, ConcurrencyTestMixin):
                                    'public_reporter_name': True,
                                    'preferred_contact_method': Problem.CONTACT_EMAIL,
                                    'status': Problem.NEW}
+
+    def tearDown(self):
+        # get rid of filters added in setUp
+        warnings.resetwarnings()
 
 
 class ProblemModelEscalationTests(ProblemTestCase):
