@@ -1,0 +1,6 @@
+<div class="header">
+    {% if object.status in object.ESCALATION_STATUSES %}
+        <p class="alert  alert--sml  fr"><span class="icon-arrow-up-right" aria-hidden="true"></span> This problem has been escalated</p>
+    {% endif %}
+    <h1>{{ title|default:"Problem" }}</h1>
+</div>

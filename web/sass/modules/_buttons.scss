@@ -141,6 +141,12 @@
         background: $c-btn-darkred-bg;
         &:hover { background: $c-btn-darkred-hover-bg; }
     }
+    .btn--darkgrey {
+        border-color: $c-btn-darkgrey-border;
+        color: $c-btn-darkgrey-color;
+        background: $c-btn-darkgrey-bg;
+        &:hover { background: $c-btn-darkgrey-hover-bg; }
+    }
 
     /**
      * Disabled button
@@ -194,4 +200,8 @@
         margin-right: 0;
         margin-top: -(19px / 24px) + em;
     }
+}
+
+.btn--publish {
+  margin-left: 10px;
 }
