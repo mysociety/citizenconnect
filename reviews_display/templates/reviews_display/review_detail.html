@@ -6,13 +6,35 @@
 {% block bodyclasses %}review_detail{% endblock %}
 
 {% block content %}
+
 <div class="header">
-    <h1>Review of {{ organisation.name }}</h1>
+    <div>{{ organisation.name }}</div>
+    <h1>Review</h1>
+    <div>Back to Provider</div>
 </div>
 
 
+<h2>Review</h2>
+
 <h2>{{ review.title }}</h2>
 
+<div>review overview stars go here (F&F?)</div>
+
 <p>{{ review.content }}</p>
+
+
+<h2>Ratings</h2>
+
+<ul>
+    {% for rating in review.ratings.all %}
+
+        <li>
+            {{ rating.question }}
+            {{ rating.score }} ({{ rating.answer }})
+        </li>
+    {% endfor %}
+</ul>
+
+
 
 {% endblock %}
