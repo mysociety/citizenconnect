@@ -1,0 +1,18 @@
+/**
+ * A grey box with buttons inside
+ */
+.feedback-box {
+  max-width: 720px;
+  margin: ($grid-gutter * 3) + em auto 0 auto;
+  background: $c-lightgrey;
+  padding: $grid-gutter + em ($grid-gutter * 3) + em ;
+  p {
+    font-size: (18px / $font-size-base) + em;
+    margin-top: 0;
+    text-align: center;
+  }
+  .btn {
+    font-size: (20px / $font-size-base) + em;
+    text-align: center;
+  }
+}

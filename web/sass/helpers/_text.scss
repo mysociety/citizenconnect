@@ -32,3 +32,36 @@
       text-align: left;
     }
   }
+
+
+/**
+ * Coloured links
+ */
+.coloured-link {
+  color: $c-coloured-link-color;
+  text-decoration: none;
+  font-weight: bold;
+  &:hover { color: $c-coloured-link-hover-color; }
+  span {
+    @include inline-block();
+    vertical-align: middle;
+    margin-top: -4px;
+    font-size: 1.2em;
+    font-weight: normal;
+  }
+}
+.coloured-link--light-green {
+  @extend .coloured-link;
+  color: $c-coloured-link-light-green-color;
+  &:hover { color: $c-coloured-link-light-green-hover-color; }
+}
+.coloured-link--dark-orange {
+  @extend .coloured-link;
+  color: $c-coloured-link-dark-orange-color;
+  &:hover { color: $c-coloured-link-dark-orange-hover-color; }
+}
+.coloured-link--blue {
+  @extend .coloured-link;
+  color: $c-coloured-link-blue-color;
+  &:hover { color: $c-coloured-link-blue-hover-color; }
+}

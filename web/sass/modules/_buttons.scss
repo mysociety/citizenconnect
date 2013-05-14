@@ -22,12 +22,24 @@
     .btn--big {
         width: 100%;
         font-size: (24px / $font-size-base) + em;
+        line-height: 1.4;
         font-weight: bold;
-        padding: 2em 1em;
+        padding: 1em 0.5em;
         @include vendor(border-radius, (6px / 24px) + em);
         @include media-query(portable){ font-size: (21px / $font-size-base) + em; }
     }
-
+        /**
+         * A fix height for btn--big as often text will
+         * knock round on to at least 2 lines
+         */
+        .btn--big--fix {
+            min-height: 114px;
+            padding-top: 1.75em;
+            @include media-query(portable){
+                min-height: 0;
+                padding-top: 1em;
+            }
+        }
 
     /**
      * Same sizing as btn--big but with a chevron
@@ -71,6 +83,9 @@
             text-align: left;
         }
     }
+    .btn--med--alt {
+        padding: 1em;
+    }
 
 
     /**
@@ -89,6 +104,30 @@
         margin-top: 1.6em;
     }
 
+
+    /**
+     * A caption that works well with a button, e.g.:
+    <a href="#" class="btn__with-caption">
+        <span class="btn  btn--big  btn--blue  btn--no-border">Share Your Experience</span>
+        <span class="btn__caption">Click here</span>
+    </a>
+     *
+     */
+    .btn__with-caption {
+        text-decoration: none;
+        display: block;
+    }
+    .btn__caption {
+        margin-top: ($grid-gutter / 2) + em;
+        display: block;
+        width: 100%;
+        font-size: (14px / $font-size-base) + em;
+        font-weight: bold;
+        text-align: center;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: $c-btn-caption-color;
+    }
 
     /**
      * Colour variants
@@ -146,6 +185,18 @@
         color: $c-btn-darkgrey-color;
         background: $c-btn-darkgrey-bg;
         &:hover { background: $c-btn-darkgrey-hover-bg; }
+    }
+    .btn--dark-orange {
+        border-color: $c-btn-darkorange-border;
+        color: $c-btn-darkorange-color;
+        background: $c-btn-darkorange-bg;
+        &:hover { background: $c-btn-darkorange-hover-bg; }
+    }
+    .btn--black {
+        border-color: $c-btn-black-border;
+        color: $c-btn-black-color;
+        background: $c-btn-black-bg;
+        &:hover { background: $c-btn-black-hover-bg; }
     }
 
     /**
