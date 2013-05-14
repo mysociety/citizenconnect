@@ -2,6 +2,8 @@
  * Filter bar with styled select elements
  */
 .filters {
+  padding-top: 1em;
+  border-top: 0.25em solid $c-hr-border;
   margin-top: ($grid-gutter * 2) + em;
   margin-bottom: ($grid-gutter * 2) + em;
   p {

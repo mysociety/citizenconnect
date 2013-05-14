@@ -901,7 +901,7 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .header .header__pre-heading { font-size: 1.25em; font-weight: normal; color: #aaaaaa; margin-bottom: 0; }
 
 /** Filter bar with styled select elements */
-.filters { margin-top: 2.5em; margin-bottom: 2.5em; }
+.filters { padding-top: 1em; border-top: 0.25em solid #dddddd; margin-top: 2.5em; margin-bottom: 2.5em; }
 .filters p { margin: 0; font-size: 1.25em; }
 
 .filters__dropdown-wrap label { font-weight: normal; font-size: 0.75em; color: #666; margin-bottom: 0; }
