@@ -68,9 +68,6 @@
  * _meta-data.scss
  */
 /**
- * _icon-overlay.scss
- */
-/**
  * _split-box.scss
  */
 /**
@@ -3509,69 +3506,6 @@ body.docs .c-nhs_blue-tint_10 {
 }
 .meta-data-sidebar .meta-data .meta-data-list--heavy span {
   font-weight: normal;
-}
-
-/**
- * Used on the homepage, a link containing an
- * image with an icon over the top:
- *
-<a href="/choices/stats/summary" class="icon-overlay">
-  <img src="/web/img/homepage-summary-table.png">
-  <span class="icon-search" aria-hidden="true"></span>
-</a>
- *
- */
-.icon-overlay {
-  position: relative;
-  text-decoration: none;
-  display: block;
-  overflow: hidden;
-  line-height: 1;
-}
-.icon-overlay img {
-  width: 100%;
-}
-.icon-overlay > span {
-  font-size: 3.125em;
-  position: absolute;
-  top: 35%;
-  left: 45%;
-  color: white;
-}
-@media only screen and (min-width: 571px) and (max-width: 720px) {
-  .icon-overlay > span {
-    top: 30%;
-    left: 40%;
-  }
-}
-@media only screen and (min-width: 481px) and (max-width: 570px) {
-  .icon-overlay > span {
-    top: 18%;
-    left: 38%;
-  }
-}
-@media only screen and (max-width: 480px) {
-  .icon-overlay > span {
-    top: 33%;
-    left: 43%;
-  }
-}
-.icon-overlay:hover {
-  text-decoration: none;
-}
-.icon-overlay:hover span {
-  color: #aaaaaa;
-}
-
-/**
- * This switches the colours around for when
- * the image behind is lighter
- */
-.icon-overlay--light-bg span {
-  color: #dddddd;
-}
-.icon-overlay--light-bg:hover span {
-  color: #aaaaaa;
 }
 
 /**
