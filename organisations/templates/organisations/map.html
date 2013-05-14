@@ -48,15 +48,21 @@
     <div id="map" class="map"></div>
 </div>
 
-<p>
-    <small>Less unresolved problems</small>
-    <img src="{% static 'img/marker5.png' %}" />
-    <img src="{% static 'img/marker4.png' %}" />
-    <img src="{% static 'img/marker3.png' %}" />
-    <img src="{% static 'img/marker2.png' %}" />
-    <img src="{% static 'img/marker1.png' %}" />
-    <small>More unresolved problems</small>
-</p>
+<div class="gw">
+    <div class="g  one-fifth  palm-one-whole  scale">
+        <img class="scale-image" src="{% static 'img/problem_scale.png' %}" />
+        <small class="meta-data-label">Fewer</small>
+        <small class="meta-data-label  fr">More</small>
+    </div>
+    <div class="g  four-fifths  palm-one-whole">
+        <p>
+        Colour of dots show the number of unresolved problems. Note
+        that a high number of problems doesn't mean a service is
+        poorly performing, it could simply show that the organisation
+        is engaging with its patients and resolving their problems.
+        </p>
+    </div>
+</div>
 
 {% endblock content %}
 

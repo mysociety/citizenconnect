@@ -1036,8 +1036,11 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .gridded-list li .btn--med { min-height: 136px; }
 @media only screen and (max-width: 480px) { .gridded-list li .btn--med { min-height: auto; } }
 
-.map-container { width: 100%; overflow: hidden; }
+.map-container { width: 100%; overflow: hidden; margin: 0 0 1.25em; }
 .map-container .map { width: 100%; }
+
+.scale { margin: 1.25em 0; }
+.scale .scale-image { width: 100%; }
 
 #map { height: 500px; }
 
