@@ -8,7 +8,7 @@
     top: 35%;
     left: ($grid-gutter / 2) + em;
     right: ($grid-gutter / 2) + em;
-    background: $c-white;
+    background: $c-homepage-map-box-bg;
     padding: ($grid-gutter / 2) + em;
     @include vendor(border-radius, ($grid-gutter/4) + em);
     label {
@@ -18,12 +18,12 @@
       font-weight: bold;
     }
     .text-input {
-      border: 1px solid #cccccc;
+      border: 1px solid $c-homepage-map-box-text-input-border;
       width: 80%;
       float: left;
       margin-bottom: 0;
       @include vendor(border-radius, 0);
-      @include vendor(box-shadow, 0px 0px 0px 0px $c-white);
+      @include vendor(box-shadow, 0px 0px 0px 0px $c-homepage-map-box-text-input-shadow);
       @include media-query(lap){ width: 70%; }
     }
     button {
@@ -42,12 +42,12 @@
  * 999/111 links at bottom of page
  */
 .link-999 {
-  color: #777777;
+  color: $c-homepage-link-999-color;
   font-size: (23px / $font-size-base) + em;
   font-weight: bold;
   text-decoration: none;
   padding-top: (15px /23px ) + em;
-  &:hover { color: #333; }
+  &:hover { color: $c-homepage-link-999-color-hover; }
 }
 .link-111 {
   text-decoration: none;

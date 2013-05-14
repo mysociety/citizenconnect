@@ -92,6 +92,9 @@
  * _text.scss
  */
 /**
+ * _home-page.scss
+ */
+/**
  * From: http://jakearchibald.github.com/sass-ie/
  * Mixins to help responsive design in browsers that don't do media queries
  * and produce versions specific to ie browser version
@@ -4300,7 +4303,7 @@ body.docs .c-nhs_blue-tint_10 {
   font-weight: bold;
 }
 .homepage-map-box form .text-input {
-  border: 1px solid #cccccc;
+  border: 1px solid #dddddd;
   width: 80%;
   float: left;
   margin-bottom: 0;
@@ -4335,14 +4338,14 @@ body.docs .c-nhs_blue-tint_10 {
  * 999/111 links at bottom of page
  */
 .link-999 {
-  color: #777777;
+  color: #888888;
   font-size: 1.4375em;
   font-weight: bold;
   text-decoration: none;
   padding-top: 0.65217em;
 }
 .link-999:hover {
-  color: #333;
+  color: #333333;
 }
 
 .link-111 {
