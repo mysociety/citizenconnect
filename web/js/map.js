@@ -326,12 +326,12 @@ $(document).ready(function () {
     $(".filters input[type=submit]").hide();
 
     // Add a hidden "format" field to pass via ajax
-    $(".filters form").append('<input type="hidden" name="format" value="json" />');
+    $(".filters").append('<input type="hidden" name="format" value="json" />');
 
     // Submit the form via ajax on any select change and
     // reload the map pins from the results
-    $(".filters form select").change(function(e) {
-        var $form = $(".filters form");
+    $(".filters select").change(function(e) {
+        var $form = $(".filters");
         var formData = [$form.serialize(), $.param({bounds: getBoundingBoxFromMap(map)})].join('&');
 
         // Lock any filter links and make them look locked
