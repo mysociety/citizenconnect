@@ -29,7 +29,7 @@ class ReviewForm(CreateView):
         return super(ReviewForm, self).dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
-        return reverse('review-confirm', kwargs={'cobrand': self.cobrand})
+        return reverse('review-confirm', kwargs={'cobrand': self.cobrand, 'ods_code': self.organisation.ods_code})
 
     def get_object(self):
         return Review(organisation=self.organisation)
@@ -59,3 +59,9 @@ class ReviewForm(CreateView):
 
 class ReviewConfirm(TemplateView):
     template_name = 'reviews/review-confirm.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ReviewConfirm, self).get_context_data(**kwargs)
+        print(context)
+        context['organisation'] = Organisation.objects.get(ods_code=context['params']['ods_code'])
+        return context
