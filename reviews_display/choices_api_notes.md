@@ -43,6 +43,8 @@ If no suffix like `.atom` is added then the response depends on your request's `
 
 I've seen atom, rss, html, xml and json be available. However it depends on the endpoint.
 
+For comments the `content` tag is xhtml with divs for sections called `liked`, `improved`, `anythingElse` and `commentTags`. For replies the `content` tag contains just text.
+
 
 ## Filtering
 
