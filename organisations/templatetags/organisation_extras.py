@@ -6,6 +6,17 @@ from django.utils.encoding import force_unicode
 
 register = template.Library()
 
+@register.filter(is_safe=True)
+def star_class(rating, current):
+    """
+    Should we fill in this star?
+    """
+    if rating >= current:
+        return 'icon-star'
+    elif rating >= (current - 0.5):
+        return 'icon-star-2'
+    else:
+        return 'icon-star-3'
 
 @register.filter(is_safe=True)
 def percent(decimal):
