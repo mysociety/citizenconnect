@@ -243,9 +243,7 @@ class BreachTable(ProblemTable):
     Annoyingly quite like ProblemTable, but with provider_name in as well
     """
     provider_name = tables.Column(verbose_name='Provider name',
-                                  accessor='organisation.name',
-                                  attrs={'th': {'class': 'table__first'},
-                                         'td': {'class': 'table__first'}})
+                                  accessor='organisation.name')
 
     def __init__(self, *args, **kwargs):
         # Private is always true for dashboards
@@ -258,8 +256,8 @@ class BreachTable(ProblemTable):
     class Meta:
         order_by = ('-created',)
         attrs = {"class": "problem-table"}
-        sequence = ('provider_name',
-                    'reference_number',
+        sequence = ('reference_number',
+                    'provider_name',
                     'created',
                     'status',
                     'category',
