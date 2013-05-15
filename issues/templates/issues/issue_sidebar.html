@@ -59,11 +59,12 @@
     <div class="meta-data">
         <ul class="meta-data-list">
             <li class="public">
-                <span class="bordered-circle  bordered-circle--pink" aria-hidden="true"></span>&nbsp;
-                {% if object.public %}
-                    Public {% if not object.public_reporter_name %}with hidden name{% endif %}
+                {% if object.public and object.public_reporter_name %}
+                    <span class="bordered-circle  bordered-circle--green" aria-hidden="true"></span> Public
+                {% elif object.public and not object.public_reporter_name %}
+                    <span class="bordered-circle  bordered-circle--orange" aria-hidden="true"></span> Public with hidden name
                 {% else %}
-                    Private
+                    <span class="bordered-circle  bordered-circle--pink" aria-hidden="true"></span> Private
                 {% endif %}
             </li>
         </ul>

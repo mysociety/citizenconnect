@@ -1127,6 +1127,8 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 
 .bordered-circle--red { background: #d81e05; }
 
+.bordered-circle--orange { background: #ff8b00; }
+
 /** A three star rating object that uses this markup: 
 <div class="rating"> <span class="icon-star" aria-hidden="true"></span> <span class="icon-star" aria-hidden="true"></span> <span class="icon-star" aria-hidden="true"></span> <span class="icon-star-2" aria-hidden="true"></span> <span class="icon-star-3" aria-hidden="true"></span>
 </div>  */
