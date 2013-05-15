@@ -1,0 +1,101 @@
+{% load django_tables2 %}
+{% load organisation_extras %}
+
+{% block table %}
+<div class="table-wrapper">
+    <table class="summary-table">
+        <thead>
+            <tr>
+                {% with table.columns.name as column %}
+                    <th {{ column.attrs.th.as_html }}><a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">Provider Name:</a></th>
+                {% endwith %}
+
+                {% with table.columns.problems_received as column %}
+                    <th {{ column.attrs.th.as_html }}><a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">Problems Received:</a></th>
+                {% endwith %}
+
+                <th class="two-twelfths" colspan="2">Average Time to:</th>
+                <th class="two-twelfths orderable sortable" colspan="2">Satisfaction with:</th>
+
+
+                <th class="two-twelfths orderable sortable"><a href="#">Reviews Received:</a></th>
+
+                {% with table.columns.average_recommendation_rating as column %}
+                <th {{ column.attrs.th.as_html }}><a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">Average Review:</a></th>
+                {% endwith %}
+            </tr>
+
+            <tr class="summary-table__subhead">
+                <th></th>
+                <th class="filters__dropdown-wrap">
+                    <div class="filters__dropdown  filters__dropdown--last">
+                        <select>
+                            <option>In the last week</option>
+                            <option>In the last 30 days</option>
+                            <option>In the last 3 months</option>
+                            <option>In the last 6 months</option>
+                            <option selected>All time</option>
+                        </select>
+                    </div>
+                </th>
+
+
+                {% with table.columns.average_time_to_acknowledge as column %}
+                <th {{ column.attrs.th.as_html }}><a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">Acknowledge</a></th>
+                {% endwith %}
+
+                {% with table.columns.average_time_to_address as column %}
+                <th {{ column.attrs.th.as_html }}><a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">Respond</a></th>
+                {% endwith %}
+
+                {% with table.columns.happy_service as column %}
+                <th {{ column.attrs.th.as_html }}><a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">Service</a></th>
+                {% endwith %}
+
+                {% with table.columns.happy_outcome as column %}
+                <th {{ column.attrs.th.as_html }}><a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">Outcome</a></th>
+                {% endwith %}
+
+                <th class="filters__dropdown-wrap">
+                    <div class="filters__dropdown  filters__dropdown--last">
+                        <select>
+                            <option>In the last week</option>
+                            <option>In the last 30 days</option>
+                            <option>In the last 3 months</option>
+                            <option>In the last 6 months</option>
+                            <option selected>All time</option>
+                        </select>
+                    </div>
+
+                </th>
+                <th>Score</th>
+            </tr>
+
+        </thead>
+        {% block table.tbody %}
+        <tbody>
+            {% for row in table.page.object_list|default:table.rows %} {# support pagination #}
+            {% block table.tbody.row %}
+            <tr class="{{ table|row_classes:row.record }}">
+                {% for column, cell in row.items %}
+                    <td {{ column.attrs.td.as_html }}>{{ cell }}</td>
+                {% endfor %}
+            </tr>
+            {% endblock table.tbody.row %}
+            {% empty %}
+            {% if table.empty_text %}
+            {% block table.tbody.empty_text %}
+            <tr><td colspan="{{ table.columns|length }}">{{ table.empty_text }}</td></tr>
+            {% endblock table.tbody.empty_text %}
+            {% endif %}
+            {% endfor %}
+
+        </tbody>
+        {% endblock table.tbody %}
+
+    </table>
+</div>
+{% table_paginator %}
+
+
+{% endblock table %}
