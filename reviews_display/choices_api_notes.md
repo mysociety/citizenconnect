@@ -1,10 +1,18 @@
 # Notes on the NHS Choices API
 
-The API does not appear to have any formal documentation. These notes are
-based on email responses from the NHS to questions, and on observed behaviour.
-The API is under development, so it is likely that some of this will be wrong.
+
+These notes are based on email responses from the NHS to questions, and on observed behaviour. The API is under development, so it is likely that some of these notes will be wrong.
 
 These notes also focus on reading out reviews, and detecting take-downs.
+
+
+## Documentation
+
+Formal documentation for the API is in a PDF at http://blogs.nhs.uk/choices-blog/files/2013/05/NHS-Choices-API-documentation.pdf
+
+There is also some introductory blurb at http://www.nhs.uk/aboutNHSChoices/professionals/syndication/Pages/Webservices.aspx
+
+In several places the observed behaviour differs from the documentation. The syndication team has been queried about it. In particular for GP ratings for certain questions the wording associated with a score does not match the meaning of the score.
 
 
 ## Auth
