@@ -88,3 +88,15 @@ h1, h2 { font-weight: normal; }
         color: $c-standout-link-hover-color;
     }
 }
+
+/**
+ * Subheading with color variations
+ */
+.subheading {
+    @extend .mb;
+}
+
+.subheading--green {
+    @extend .subheading;
+    color: $c-nhs_lightgreen;
+}

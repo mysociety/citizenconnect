@@ -143,6 +143,21 @@ class SecondTierModerationHomeViewTests(BaseModerationTestCase):
         resp = self.client.get(self.second_tier_home_url)
         self.assertEqual(resp.status_code, 403)
 
+    def test_high_priority_problems_identified(self):
+        expected = 'problem-table__highlight'
+
+        # Test without there being a priority entry
+        resp = self.client.get(self.second_tier_home_url)
+        self.assertNotContains(resp, expected)
+
+        # add high priority entry
+        self.second_tier_moderation.priority = Problem.PRIORITY_HIGH
+        self.second_tier_moderation.save()
+
+        # check it is now highlighted
+        resp = self.client.get(self.second_tier_home_url)
+        self.assertContains(resp, expected)
+
     def test_breach_problems_identified(self):
         expected = '<div class="problem-table__flag__breach">b</div>'
 

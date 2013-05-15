@@ -82,6 +82,8 @@ class BaseProblemTable(tables.Table):
             self.base_columns['breach_and_escalation'].visible = True
         else:
             self.cobrand = kwargs.pop('cobrand')
+            self.base_columns['summary'].accessor = 'summary'
+            self.base_columns['breach_and_escalation'].visible = False
 
         super(BaseProblemTable, self).__init__(*args, **kwargs)
 
@@ -156,7 +158,8 @@ class ProblemTable(BaseProblemTable):
                     'category',
                     'happy_service',
                     'happy_outcome',
-                    'summary')
+                    'summary',
+                    'breach_and_escalation')
 
 
 class ExtendedProblemTable(ProblemTable):
@@ -186,7 +189,8 @@ class ExtendedProblemTable(ProblemTable):
                     'time_to_address',
                     'happy_service',
                     'happy_outcome',
-                    'summary')
+                    'summary',
+                    'breach_and_escalation')
 
 
 class ProblemDashboardTable(BaseProblemTable):
@@ -219,15 +223,13 @@ class ProblemDashboardTable(BaseProblemTable):
 
 class EscalationDashboardTable(ProblemDashboardTable):
     provider_name = tables.Column(verbose_name='Provider name',
-                                  accessor='organisation.name',
-                                  attrs={'th': {'class': 'table__first'},
-                                         'td': {'class': 'table__first'}})
+                                  accessor='organisation.name')
 
     class Meta:
         order_by = ('-created',)
         attrs = {'class': 'problem-table problem-table--expanded'}
-        sequence = ('provider_name',
-                    'reference_number',
+        sequence = ('reference_number',
+                    'provider_name',
                     'created',
                     'service',
                     'category',
@@ -239,9 +241,7 @@ class BreachTable(ProblemTable):
     Annoyingly quite like ProblemTable, but with provider_name in as well
     """
     provider_name = tables.Column(verbose_name='Provider name',
-                                  accessor='organisation.name',
-                                  attrs={'th': {'class': 'table__first'},
-                                         'td': {'class': 'table__first'}})
+                                  accessor='organisation.name')
 
     def __init__(self, *args, **kwargs):
         # Private is always true for dashboards
@@ -254,8 +254,8 @@ class BreachTable(ProblemTable):
     class Meta:
         order_by = ('-created',)
         attrs = {"class": "problem-table"}
-        sequence = ('provider_name',
-                    'reference_number',
+        sequence = ('reference_number',
+                    'provider_name',
                     'created',
                     'status',
                     'category',

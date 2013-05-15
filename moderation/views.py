@@ -1,25 +1,18 @@
-from itertools import chain
-from operator import attrgetter
-
-# Django imports
 from django.views.generic import TemplateView, UpdateView
 from django.views.generic.edit import FormView
-from django.template import RequestContext
 from django.core.urlresolvers import reverse
-from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
 
 from django_tables2 import RequestConfig
 
 # App imports
 from issues.models import Problem
-from organisations.models import Organisation
-import organisations.auth as auth
-from organisations.auth import user_in_group, user_is_superuser, user_in_groups, enforce_moderation_access_check, enforce_second_tier_moderation_access_check
+from organisations.auth import enforce_moderation_access_check, enforce_second_tier_moderation_access_check
 
 from .forms import ProblemModerationForm, ProblemResponseInlineFormSet, ProblemSecondTierModerationForm
 from issues.forms import LookupForm
 from .tables import ModerationTable, SecondTierModerationTable
+
 
 class ModeratorsOnlyMixin(object):
     """
@@ -30,6 +23,7 @@ class ModeratorsOnlyMixin(object):
         enforce_moderation_access_check(request.user)
         return super(ModeratorsOnlyMixin, self).dispatch(request, *args, **kwargs)
 
+
 class SecondTierModeratorsOnlyMixin(object):
     """
     Mixin to protect views to only allow second tier moderators to access them
@@ -38,6 +32,7 @@ class SecondTierModeratorsOnlyMixin(object):
     def dispatch(self, request, *args, **kwargs):
         enforce_second_tier_moderation_access_check(request.user)
         return super(SecondTierModeratorsOnlyMixin, self).dispatch(request, *args, **kwargs)
+
 
 class ModerationTableMixin(object):
 
@@ -49,12 +44,14 @@ class ModerationTableMixin(object):
         context['page_obj'] = context['table'].page
         return context
 
+
 class ModerationConfirmationMixin(object):
 
     def get_context_data(self, **kwargs):
         context = super(ModerationConfirmationMixin, self).get_context_data(**kwargs)
         context['home_link'] = self.home_link
         return context
+
 
 class ModerateHome(ModeratorsOnlyMixin,
                    ModerationTableMixin,
@@ -66,12 +63,14 @@ class ModerateHome(ModeratorsOnlyMixin,
         context = super(ModerateHome, self).get_context_data(**kwargs)
         context['issues'] = Problem.objects.unmoderated_problems().order_for_moderation_table()
         context['title'] = "Moderation"
+        context['private'] = True
         self.add_table_to_context(context, ModerationTable)
         return context
 
+
 class SecondTierModerateHome(SecondTierModeratorsOnlyMixin,
-                        ModerationTableMixin,
-                        TemplateView):
+                             ModerationTableMixin,
+                             TemplateView):
     template_name = 'moderation/second_tier_moderate_home.html'
 
     def get_context_data(self, **kwargs):
@@ -79,8 +78,10 @@ class SecondTierModerateHome(SecondTierModeratorsOnlyMixin,
         context = super(SecondTierModerateHome, self).get_context_data(**kwargs)
         context['issues'] = Problem.objects.problems_requiring_second_tier_moderation().order_for_moderation_table()
         context['title'] = "Second Tier Moderation"
+        context['private'] = True
         self.add_table_to_context(context, SecondTierModerationTable)
         return context
+
 
 class ModerateLookup(ModeratorsOnlyMixin,
                      FormView):
@@ -89,10 +90,10 @@ class ModerateLookup(ModeratorsOnlyMixin,
 
     def form_valid(self, form):
         # Calculate the url
-        context = RequestContext(self.request)
         moderate_url = reverse("moderate-form", kwargs={'pk': form.cleaned_data['model_id']})
         # Redirect to the url we calculated
         return HttpResponseRedirect(moderate_url)
+
 
 class ModerateForm(ModeratorsOnlyMixin,
                    UpdateView):
@@ -108,7 +109,7 @@ class ModerateForm(ModeratorsOnlyMixin,
         # Add the request to the form's kwargs
         kwargs = super(ModerateForm, self).get_form_kwargs()
         kwargs.update({
-            'request' : self.request
+            'request': self.request
         })
         return kwargs
 
@@ -142,8 +143,9 @@ class ModerateForm(ModeratorsOnlyMixin,
 
         return HttpResponseRedirect(self.get_success_url())
 
+
 class SecondTierModerateForm(SecondTierModeratorsOnlyMixin,
-                        UpdateView):
+                             UpdateView):
     queryset = Problem.objects.problems_requiring_second_tier_moderation().all()
     template_name = 'moderation/second_tier_moderate_form.html'
     form_class = ProblemSecondTierModerationForm
@@ -154,7 +156,7 @@ class SecondTierModerateForm(SecondTierModeratorsOnlyMixin,
         # Add the request to the form's kwargs
         kwargs = super(SecondTierModerateForm, self).get_form_kwargs()
         kwargs.update({
-            'request' : self.request
+            'request': self.request
         })
         return kwargs
 
@@ -163,8 +165,9 @@ class SecondTierModerateForm(SecondTierModeratorsOnlyMixin,
 
     def get_context_data(self, **kwargs):
         context = super(SecondTierModerateForm, self).get_context_data(**kwargs)
-        issue = Problem.objects.get(pk=self.kwargs['pk'])
+        context['issue'] = Problem.objects.get(pk=self.kwargs['pk'])
         return context
+
 
 class ModerateConfirm(ModeratorsOnlyMixin,
                       ModerationConfirmationMixin,
@@ -172,8 +175,9 @@ class ModerateConfirm(ModeratorsOnlyMixin,
     template_name = 'moderation/moderate_confirm.html'
     home_link = 'moderate-home'
 
+
 class SecondTierModerateConfirm(SecondTierModeratorsOnlyMixin,
-                           ModerationConfirmationMixin,
-                           TemplateView):
+                                ModerationConfirmationMixin,
+                                TemplateView):
     template_name = 'moderation/moderate_confirm.html'
     home_link = 'second-tier-moderate-home'
