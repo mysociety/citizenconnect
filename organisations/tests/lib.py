@@ -13,9 +13,23 @@ from django.core.urlresolvers import reverse
 
 # App imports
 from issues.models import Problem
+from reviews_display.models import Review
 
 from ..lib import interval_counts
 from ..models import Organisation, Service, CCG
+
+def create_test_review(attributes={}):
+    # Make a review
+    default_attributes = {'api_posting_id': '328409234',
+                          'api_postingorganisationid': '893470895',
+                          'api_category': 'comment',
+                          'author_display_name': 'A Test Author',
+                          'title': 'A test title',
+                          'content': 'Some test content'}
+    default_attributes.update(attributes)
+    instance = Review(**dict((k,v) for (k,v) in default_attributes.items() if '__' not in k))
+    instance.save()
+    return instance
 
 def create_test_ccg(attributes={}):
     # Make a CCG
@@ -106,6 +120,15 @@ class IntervalCountsTest(TestCase):
         default_atts.update(attributes)
         return create_test_problem(default_atts)
 
+    def create_review(self, organisation, age, attributes={}):
+        now = datetime.utcnow().replace(tzinfo=utc)
+        published = now - timedelta(age)
+        default_atts = {'api_published': published,
+                        'api_updated': published,
+                        'organisation': organisation}
+        default_atts.update(attributes)
+        return create_test_review(default_atts)
+
     def setUp(self):
         self.test_ccg = create_test_ccg()
         self.other_test_ccg = create_test_ccg({'name': 'Other test ccg', 'code': 'DEF'})
@@ -137,6 +160,12 @@ class IntervalCountsTest(TestCase):
                               70: {}}
         for age, attributes in other_problem_ages.items():
             self.create_problem(self.other_test_organisation, age, attributes)
+
+        # Create a similar spread of reviews
+        review_ages = [6, 12, 13, 50, 55]
+
+        for age in review_ages:
+            self.create_review(self.test_organisation, age)
 
     def test_organisation_interval_counts(self):
         organisation_filters = {'organisation_id': self.test_organisation.id}
@@ -232,7 +261,26 @@ class IntervalCountsTest(TestCase):
                            'happy_service': 1.0,
                            'average_time_to_acknowledge': Decimal('22.6666666666666667'),
                            'average_time_to_address': Decimal('240.6666666666666667')}]
-        actual = interval_counts(problem_data_intervals=['all_time', 'all_time_open', 'all_time_closed'])
+        actual = interval_counts(data_intervals=['all_time', 'all_time_open', 'all_time_closed'])
+        self.assertEqual(expected_counts, actual)
+
+    def test_review_data_intervals(self):
+        expected_counts = [{'id': self.other_test_organisation.id,
+                            'name': 'Other Test Organisation',
+                            'ods_code': 'ABC222',
+                            'reviews_week': 0,
+                            'reviews_four_weeks': 0,
+                            'reviews_six_months': 0,
+                            'reviews_all_time': 0},
+                           {'id': self.test_organisation.id,
+                           'name': 'Test Organisation',
+                           'ods_code': 'XXX999',
+                           'reviews_week': 1,
+                           'reviews_four_weeks': 3,
+                           'reviews_six_months': 5,
+                           'reviews_all_time': 5}]
+        actual = interval_counts(data_intervals=['week', 'four_weeks', 'six_months', 'all_time'],
+                                 data_type='reviews')
         self.assertEqual(expected_counts, actual)
 
 

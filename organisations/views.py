@@ -184,7 +184,7 @@ class Map(FilterFormMixin,
             organisations_list = interval_counts(problem_filters=problem_filters,
                                                  organisation_filters=organisation_filters,
                                                  extra_organisation_data=['coords', 'type', 'average_recommendation_rating'],
-                                                 problem_data_intervals=['all_time_open', 'all_time_closed'],
+                                                 data_intervals=['all_time_open', 'all_time_closed'],
                                                  average_fields=['time_to_address'],
                                                  boolean_fields=['happy_outcome'])
         else:
