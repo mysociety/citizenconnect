@@ -27,7 +27,7 @@ you can use the generic selector below, but it's slower:
 [class*="icon-"] {
 */
 .i, // we add this here so we can extend it if need be to add a icon with just css
-.icon-search, .icon-x, .icon-checkmark, .icon-circle, .icon-caret-up, .icon-caret-down, .icon-caret-right, .icon-caret-left, .icon-chevron-right, .icon-double-chevron-right, .icon-chevron-left, .icon-double-chevron-left, .icon-warning, .icon-home, .icon-stack, .icon-calendar, .icon-arrow-up-right, .icon-star, .icon-star-2, .icon-tag, .icon-user, .icon-star-3, .icon-eye, .icon-double-arrow {
+.icon-search, .icon-x, .icon-checkmark, .icon-circle, .icon-caret-up, .icon-caret-down, .icon-caret-right, .icon-caret-left, .icon-chevron-right, .icon-double-chevron-right, .icon-chevron-left, .icon-double-chevron-left, .icon-warning, .icon-home, .icon-stack, .icon-calendar, .icon-arrow-up-right, .icon-star, .icon-star-half, .icon-tag, .icon-user, .icon-star-none, .icon-eye, .icon-double-arrow {
   font-family: 'icons';
   speak: none;
   font-style: normal;
@@ -91,7 +91,7 @@ you can use the generic selector below, but it's slower:
 .icon-star:before {
   content: "\e013";
 }
-.icon-star-2:before {
+.icon-star-half:before {
   content: "\e012";
 }
 .icon-tag:before {
@@ -100,7 +100,7 @@ you can use the generic selector below, but it's slower:
 .icon-user:before {
   content: "\e00e";
 }
-.icon-star-3:before {
+.icon-star-none:before {
   content: "\e014";
 }
 .icon-eye:before {

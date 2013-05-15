@@ -407,7 +407,7 @@ Instead of a list of all class selectors,
 you can use the generic selector below, but it's slower:
 [class*="icon-"] {
 */
-.i, table th.sortable a:after, .message-list li:before, .icon-search, .icon-x, .icon-checkmark, .icon-circle, .icon-caret-up, .icon-caret-down, .icon-caret-right, .icon-caret-left, .icon-chevron-right, .icon-double-chevron-right, .icon-chevron-left, .icon-double-chevron-left, .icon-warning, .icon-home, .icon-stack, .icon-calendar, .icon-arrow-up-right, .icon-star, .icon-star-2, .icon-tag, .icon-user, .icon-star-3, .icon-eye, .icon-double-arrow { font-family: 'icons'; speak: none; font-style: normal; font-weight: normal; font-variant: normal; text-transform: none; line-height: 1; -webkit-font-smoothing: antialiased; }
+.i, table th.sortable a:after, .message-list li:before, .icon-search, .icon-x, .icon-checkmark, .icon-circle, .icon-caret-up, .icon-caret-down, .icon-caret-right, .icon-caret-left, .icon-chevron-right, .icon-double-chevron-right, .icon-chevron-left, .icon-double-chevron-left, .icon-warning, .icon-home, .icon-stack, .icon-calendar, .icon-arrow-up-right, .icon-star, .icon-star-half, .icon-tag, .icon-user, .icon-star-none, .icon-eye, .icon-double-arrow { font-family: 'icons'; speak: none; font-style: normal; font-weight: normal; font-variant: normal; text-transform: none; line-height: 1; -webkit-font-smoothing: antialiased; }
 
 .icon-search:before { content: "\e000"; }
 
@@ -445,13 +445,13 @@ you can use the generic selector below, but it's slower:
 
 .icon-star:before { content: "\e013"; }
 
-.icon-star-2:before { content: "\e012"; }
+.icon-star-half:before { content: "\e012"; }
 
 .icon-tag:before { content: "\e015"; }
 
 .icon-user:before { content: "\e00e"; }
 
-.icon-star-3:before { content: "\e014"; }
+.icon-star-none:before { content: "\e014"; }
 
 .icon-eye:before { content: "\e016"; }
 
@@ -859,7 +859,7 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .btn--disabled { border-color: #8d8d8d; color: white; background: #dddddd; }
 .btn--disabled:hover { background: #dddddd; }
 
-/** Typically used within the .header div, markup something like this: 
+/** Typically used within the .header div, markup something like this:
 <a href="/back/a/page/innit" class="back-btn  fr"> <span class="icon-chevron-left" aria-hidden="true"></span> Back to search results
 </a>  */
 .back-btn, .forward-btn { text-decoration: none; color: #aaaaaa; font-size: 0.875em; line-height: 1; margin-top: 1em; }
@@ -892,7 +892,7 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .tab-nav li a.active { background: white; border-top: #dddddd solid 0.25em; border-left: #dddddd solid 0.25em; border-right: #dddddd solid 0.25em; margin-bottom: -0.25em; }
 @media only screen and (max-width: 480px) { .tab-nav li a.active { background: #aaaaaa; color: white; border: none; margin: 0; } }
 
-/** A list of results using the following markup: 
+/** A list of results using the following markup:
 <ul class="results-list"> <li> <div class="results-list__title"> <h2><a href="#">Bampton Surgery</a></h2> <p>Landells Bampton</p> </div> <address>Landells Bampton, Bampton<br>Oxford, OX18 2LJ</address> <a href="#" class="results-list__more-link"> <span class="icon-chevron-right" aria-hidden="true"><span class="hide-text">More info</span></span> </a> </li>
 </ul>  */
 .results-list { list-style: none; padding: 0; margin-bottom: 2.5em; border-bottom: #dddddd solid 0.25em; }
@@ -907,7 +907,7 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .results-list li .results-list__more-link { font-size: 2.75em; width: 10%; float: right; text-align: right; text-decoration: none; color: #dddddd; }
 .results-list li .results-list__more-link:hover { color: #aaaaaa; }
 
-/** Just a div to drop a border under (typically) the page title  Also adjusts margins and has a pre heading, markup thus: 
+/** Just a div to drop a border under (typically) the page title  Also adjusts margins and has a pre heading, markup thus:
 <div class="header"> <h2 class="header__pre-heading">BMI The Hampshire Clinic</h2> <h1>Problem report</h1>
 </div>  */
 .header { border-bottom: #dddddd solid 0.25em; margin: 1.25em 0; }
@@ -987,7 +987,7 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .meta-data-sidebar .meta-data .meta-data-list--heavy { font-weight: bold; }
 .meta-data-sidebar .meta-data .meta-data-list--heavy span { font-weight: normal; }
 
-/** Used on the homepage, a link containing an image with an icon over the top: 
+/** Used on the homepage, a link containing an image with an icon over the top:
 <a href="/choices/stats/summary" class="icon-overlay"> <img src="/web/img/homepage-summary-table.png"> <span class="icon-search" aria-hidden="true"></span>
 </a>  */
 .icon-overlay { position: relative; text-decoration: none; display: block; overflow: hidden; line-height: 1; }
@@ -1006,7 +1006,7 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 /** Simply a wrapping div with a clearfix and margins */
 .break-bar { margin: 1.25em 0 0.625em 0; }
 
-/** A simple split box that goes vertical on mobile 
+/** A simple split box that goes vertical on mobile
 <div class="split-box"> <div class="split-box__inner"> <a href="tel:999" class="split-box__left  split-box--red  one-third  palm-one-whole"> <h2 class="emergency">Emergency?<br><strong>DIAL 999</strong></h2> </a> <a href="tel:111" class="split-box__right  two-thirds  palm-one-whole"> <h2>Need urgent medical care but not life-threatening?<br><strong>DIAL 111</strong></h2> </a> </div>
 </div>  */
 .split-box { display: table; width: 100%; /** Red colour variant */ }
@@ -1124,8 +1124,8 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 
 .bordered-circle--red { background: #d81e05; }
 
-/** A three star rating object that uses this markup: 
-<div class="rating"> <span class="icon-star" aria-hidden="true"></span> <span class="icon-star" aria-hidden="true"></span> <span class="icon-star" aria-hidden="true"></span> <span class="icon-star-2" aria-hidden="true"></span> <span class="icon-star-3" aria-hidden="true"></span>
+/** A three star rating object that uses this markup:
+<div class="rating"> <span class="icon-star" aria-hidden="true"></span> <span class="icon-star" aria-hidden="true"></span> <span class="icon-star" aria-hidden="true"></span> <span class="icon-star-half" aria-hidden="true"></span> <span class="icon-star-none" aria-hidden="true"></span>
 </div>  */
 .rating span { color: #f7e214; font-size: 18px; text-align: center; font-weight: normal; display: inline-block; *display: inline; *zoom: 1; margin: 0 1px; }
 .rating span.rating__grey { color: #aaaaaa; }
