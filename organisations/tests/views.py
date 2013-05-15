@@ -5,6 +5,7 @@ import json
 import urllib
 from decimal import Decimal
 import logging
+from datetime import datetime
 
 # Django imports
 from django.test import TestCase
@@ -12,13 +13,15 @@ from django.test.utils import override_settings
 from django.contrib.gis.geos import Point
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.utils.timezone import utc
+
 
 # App imports
 from issues.models import Problem
 
 import organisations
 from ..models import Organisation
-from . import create_test_problem, create_test_organisation, create_test_service, create_test_ccg, AuthorizationTestCase
+from . import create_test_problem, create_test_organisation, create_test_service, create_test_ccg, create_test_review, AuthorizationTestCase
 from organisations.forms import OrganisationFinderForm
 
 
@@ -867,10 +870,17 @@ class SummaryTests(AuthorizationTestCase):
                              'moderated': Problem.MODERATED,
                              'status': Problem.ABUSIVE,
                              'category': 'cleanliness'})
+        create_test_review({'organisation': self.test_organisation,
+                            'api_published': datetime.utcnow().replace(tzinfo=utc),
+                            'api_updated': datetime.utcnow().replace(tzinfo=utc)})
 
     def test_summary_page_exists(self):
         resp = self.client.get(self.summary_url)
         self.assertEqual(resp.status_code, 200)
+
+    def test_summary_page_shows_reviews(self):
+        resp = self.client.get(self.summary_url)
+        self.assertContains(resp, '<td class="reviews_all_time">1</td>', count=1, status_code=200)
 
     def test_summary_doesnt_include_hidden_status_problems_in_default_view(self):
         resp = self.client.get(self.summary_url)

@@ -414,13 +414,20 @@ class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
         return context
 
     def get_interval_counts(self, problem_filters, organisation_filters, threshold):
-        return interval_counts(
-            problem_filters=problem_filters,
-            organisation_filters=organisation_filters,
-            threshold=threshold,
-            extra_organisation_data=['average_recommendation_rating']
-        )
+        organisation_problem_data = interval_counts(problem_filters=problem_filters,
+                                                    organisation_filters=organisation_filters)
+        organisation_review_data = interval_counts(organisation_filters=organisation_filters,
+                                                   data_type='reviews',
+                                                   extra_organisation_data=['average_recommendation_rating'])
+        organisation_data = []
+        if threshold:
+            interval, cutoff = threshold
+        for problem_data, review_data in zip(organisation_problem_data, organisation_review_data):
+            if (not threshold) or (problem_data[interval] >= cutoff or
+                                review_data['reviews_' + interval] >= cutoff):
+                organisation_data.append(dict(problem_data.items() + review_data.items()))
 
+        return organisation_data
 
 class PrivateNationalSummary(Summary):
     template_name = 'organisations/national_summary.html'
@@ -460,12 +467,9 @@ class PrivateNationalSummary(Summary):
             if not selected_ccg or not int(selected_ccg) in ccg_ids:
                 organisation_filters['ccg'] = tuple(ccg_ids)
 
-        return interval_counts(
-            problem_filters=problem_filters,
-            organisation_filters=organisation_filters,
-            threshold=threshold,
-            extra_organisation_data=['average_recommendation_rating']
-        )
+        return super(PrivateNationalSummary, self).get_interval_counts(problem_filters=problem_filters,
+                                                                     organisation_filters=organisation_filters,
+                                                                     threshold=threshold)
 
 
 class OrganisationDashboard(OrganisationAwareViewMixin,
