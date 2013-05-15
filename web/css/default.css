@@ -70,7 +70,7 @@
 /** Add margins */
 .mt { margin-top: 1.25em !important; }
 
-.mb { margin-bottom: 1.25em !important; }
+.mb, .subheading, .subheading--green { margin-bottom: 1.25em !important; }
 
 .mt--s { margin-top: 0.625em !important; }
 
@@ -292,6 +292,9 @@ h1, h2 { font-weight: normal; }
 /** A link that stands out */
 .standout-link { color: #e28c05; font-weight: bold; text-decoration: none; }
 .standout-link:hover { color: #cd7f04; }
+
+/** Subheading with color variations */
+.subheading--green { color: #5bbf21; }
 
 /* Remove default fieldset styles. */
 fieldset { border: 0; margin: 0 0 2.5em 0; padding: 0; }

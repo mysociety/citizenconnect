@@ -13,10 +13,11 @@
 <div class="hero  align-center">
     <div class="header">
         <img src="{% static 'img/tick.png' %}" alt="Tick icon" />
-        <h3 class="mb">Thank you for submitting your review</h3>
+        <h3 class="subheading--green">Thank you for submitting your review</h3>
     </div>
     <div>
-        <p>Thank you for your sending us your review. If you have chosen for your review (and the response) to be made publicly available online this will be available (subject to NHS privacy and moderation conditions) within 24 hours.</p>
+        <p>Your review is currently awaiting moderation by the NHS Choices team. If your review meets our <a href="http://www.nhs.uk/aboutNHSChoices/aboutnhschoices/termsandconditions/Pages/commentspolicy.aspx">moderation standards</a> it will be published here on CareConnect and on the NHS Choices site.</p>
+        <p><a href="{% url 'public-org-summary' ods_code=organisation.ods_code cobrand=cobrand.name %}">See the summary page</a> for {{ organisation.name }} to see what other people said about their service. Once your review has completed the moderation process you'll be able to see the details listed on this page.</p>
     </div>
 </div>
 {% endblock %}
