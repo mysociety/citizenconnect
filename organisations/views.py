@@ -624,4 +624,8 @@ class EscalationBreaches(TemplateView):
         RequestConfig(self.request, paginate={'per_page': 25}).configure(problem_table)
         context['table'] = problem_table
         context['page_obj'] = problem_table.page
+
+        # These tables are always in the private context
+        context['private'] = True
+
         return context
