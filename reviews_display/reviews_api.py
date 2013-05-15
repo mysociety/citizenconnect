@@ -92,8 +92,14 @@ class ReviewsAPI(object):
 
         return xml
 
+    def _extract_content(self, element):
+        content = ET.tostring(element, method="text", encoding='utf8')
+        content = content.decode('utf8')
+        content = content or ""
+        content = HTMLParser().unescape(content)
+        return content
+
     def convert_entry_to_review(self, entry):
-        h = HTMLParser()
 
         review = {
             "api_posting_id": entry.find('id').text,
@@ -105,7 +111,7 @@ class ReviewsAPI(object):
             "api_category": entry.find("category").get("term"),
 
             "author_display_name": entry.find("author/name").text,
-            "title":   h.unescape(entry.find('title').text or ""),
+            "title":   HTMLParser().unescape(entry.find('title').text or ""),
         }
 
         # Extract the content so that we can manipulate it a bit
@@ -127,12 +133,13 @@ class ReviewsAPI(object):
                     ET.tostringlist(child, method="text", encoding='utf8')
                 )
             content = "\n\n".join(content_list)
+            content = content.decode('utf8')
+            content = content or ""
+            content = HTMLParser().unescape(content)
         else:
-            content = ET.tostring(content_xml, method="text", encoding='utf8')
+            content = self._extract_content(content_xml)
 
-        content = content.decode('utf8')
-        content = content or ""
-        review['content'] = h.unescape(content)
+        review['content'] = content
 
         # for replies we should extract what it is a reply to
         if review['api_category'] == 'reply':
