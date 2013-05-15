@@ -1432,6 +1432,29 @@ class BreachDashboardTests(AuthorizationTestCase):
             self.assertContains(resp, self.org_breach_problem.reference_number)
             self.assertContains(resp, self.other_org_breach_problem.reference_number)
 
+    def test_dashboard_shows_breach_flag(self):
+        self.login_as(self.ccg_user)
+        resp = self.client.get(self.breach_dashboard_url)
+        self.assertContains(resp, '<div class="problem-table__flag__breach">b</div>')
+
+    def test_dashboard_shows_escalation_flag(self):
+        self.login_as(self.ccg_user)
+        # Make the breach problem escalated too
+        self.org_breach_problem.status = Problem.ESCALATED
+        self.org_breach_problem.commissioned = Problem.LOCALLY_COMMISSIONED
+        self.org_breach_problem.save()
+        resp = self.client.get(self.breach_dashboard_url)
+        self.assertContains(resp, '<div class="problem-table__flag__escalate">e</div>')
+
+    def test_dashboard_highlights_priority_problems(self):
+        self.login_as(self.ccg_user)
+        # Up the priority of the breach problem
+        self.org_breach_problem.priority = Problem.PRIORITY_HIGH
+        self.org_breach_problem.save()
+        resp = self.client.get(self.breach_dashboard_url)
+        self.assertContains(resp, 'problem-table__highlight')
+
+
 class NotFoundTest(TestCase):
 
     def setUp(self):
