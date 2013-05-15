@@ -93,6 +93,7 @@ class ReviewsAPI(object):
         return xml
 
     def _extract_content(self, element):
+        if element is None: return ""
         content = ET.tostring(element, method="text", encoding='utf8')
         content = content.decode('utf8')
         content = content or ""
@@ -119,27 +120,17 @@ class ReviewsAPI(object):
 
         if review['api_category'] == 'comment':
 
-            # Delete the tags
-            content_tags = content_xml.find('div[@id="commentTags"]')
-            if content_tags is not None:
-                content_xml.remove(content_tags)
 
             # For comments there are nested divs. Remove them, but make sure
             # to put '\n\n' between their content so that they are not just
             # pushed together.
-            content_list = []
-            for child in content_xml.findall('div'):
-                content_list.extend(
-                    ET.tostringlist(child, method="text", encoding='utf8')
-                )
-            content = "\n\n".join(content_list)
-            content = content.decode('utf8')
-            content = content or ""
-            content = HTMLParser().unescape(content)
+            review['content_liked'] = self._extract_content(content_xml.find('div[@id="liked"]'))
+            review['content_improved'] = self._extract_content(content_xml.find('div[@id="improved"]'))
+            review['content'] = self._extract_content(content_xml.find('div[@id="anythingElse"]'))
         else:
-            content = self._extract_content(content_xml)
-
-        review['content'] = content
+            review['content_liked'] = ''
+            review['content_improved'] = ''
+            review['content'] = self._extract_content(content_xml)
 
         # for replies we should extract what it is a reply to
         if review['api_category'] == 'reply':
