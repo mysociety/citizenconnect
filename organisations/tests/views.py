@@ -230,8 +230,8 @@ class OrganisationSummaryTests(AuthorizationTestCase):
         for url in self.urls:
             self.login_as(self.provider)
             resp = self.client.get(url)
-            self.assertContains(resp, '<td id="status_0_time_to_acknowledge">4</td>')
-            self.assertContains(resp, '<td class="separator" id="status_0_time_to_address">38</td>')
+            self.assertContains(resp, '<td id="status_0_time_to_acknowledge">4 days</td>')
+            self.assertContains(resp, '<td class="separator" id="status_0_time_to_address">38 days</td>')
             self.assertContains(resp, '<td id="status_0_happy_service">67%</td>')
             self.assertContains(resp, '<td id="status_0_happy_outcome">100%</td>')
 

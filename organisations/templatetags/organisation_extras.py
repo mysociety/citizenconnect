@@ -37,6 +37,10 @@ def formatted_time_interval(time_in_minutes):
         return u'—'
     time_in_days = time_in_minutes/60/24
     time_in_days = "{0:.0f}".format(time_in_days)
+    if time_in_days == '1':
+        time_in_days = time_in_days + " day"
+    else:
+        time_in_days = time_in_days + " days"
     return time_in_days
 
 
