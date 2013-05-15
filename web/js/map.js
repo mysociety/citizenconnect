@@ -46,7 +46,6 @@ $(document).ready(function () {
         shadowSize: [24, 24]
     });
     var hoverBubbleTemplate = $("script[name=hover-bubble]").text();
-    var filterLinkTemplate = $("script[name=filter-link]").text();
     var londonCentre = new L.LatLng(51.505, -0.09);
     var northEastCentre = new L.LatLng(54.95, -1.62);
     var londonZoomLevel = 10;
@@ -188,51 +187,10 @@ $(document).ready(function () {
         });
     };
 
-    // Function to bind click handlers for the links which remove filters
-    var bindFilterRemoveLinks = function () {
-        $(".filter-links a").click(function(e) {
-            e.preventDefault();
-            var $link = $(e.target);
-            var $option = $(".filters form select[name=" + $link.attr('data-field-name') + "] option[value='']");
-            // Reset the field in question, then trigger a change and
-            // thus ajax submit the form
-            $option.prop('selected', 'selected').change();
-        });
-    };
 
     // Function to add in some html to show the selected filters
     var showSelectedFilters = function() {
-        var $filterLinkContainer = $(".filters .current-filters .filter-links");
-
-        // Remove anything old
-        hideSelectedFilters();
-
-        // Create links for each of the filters currently selected
-        $(".filters form select").each(function(index, element) {
-            $element = $(element);
-            if($element.val()) {
-                var filter = {
-                    displayValue: $element.children('option:selected').text(),
-                    fieldName: $element.attr('name')
-                };
-                var filterLink = _.template(filterLinkTemplate, {filter: filter});
-                $filterLinkContainer.append(filterLink);
-            }
-        });
-
-        // Put new things in
-        if($filterLinkContainer.find("a").length > 0) {
-            $(".filters .current-filters").show();
-        }
-
-        // Make links work
-        bindFilterRemoveLinks();
-    };
-
-    // Function to hide the selected filters away again
-    var hideSelectedFilters = function() {
-        $(".filters .current-filters .filter-links").empty();
-        $(".filters .current-filters").hide();
+        // TODO - add/remove the __default class from selects
     };
 
     /**
@@ -334,10 +292,6 @@ $(document).ready(function () {
         var $form = $(".filters");
         var formData = [$form.serialize(), $.param({bounds: getBoundingBoxFromMap(map)})].join('&');
 
-        // Lock any filter links and make them look locked
-        $(".filter-links a").off('click').css({'cursor': 'default'});
-        $(".filter-links").css({'opacity': 0.5});
-
         // Lock the form during the ajax request
         $form.find("select").prop("disabled", "disabled");
 
@@ -346,11 +300,6 @@ $(document).ready(function () {
             // Display the links which show selected filters
             showSelectedFilters();
             drawProviders(response);
-        }).error(function (jqXHR, textStatus, errorThrown) {
-            // We only have to rebind links if there's an error because
-            // if it's successful, they'll get removed and new ones added
-            // anyway.
-            bindFilterRemoveLinks();
         }).always(function (jqXHR, textStatus) {
             // Renable all the things we disabled
             $form.find("select").prop("disabled", false);
