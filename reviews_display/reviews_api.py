@@ -42,7 +42,8 @@ class ReviewsAPI(object):
             else:
                 path_elements.append('comments')
 
-            path_elements[-1] += ".atom"  # add '.atom' so we get a consistent format, which includes ratings
+            # add '.atom' so we get a consistent format, which includes ratings
+            path_elements[-1] += ".atom"
 
             start_page = self.api.construct_url(path_elements)
 
@@ -108,14 +109,27 @@ class ReviewsAPI(object):
         }
 
         # Extract the content so that we can manipulate it a bit
-        content_xml =  entry.find('content')
+        content_xml = entry.find('content')
 
-        # Delete the tags
-        content_tags = content_xml.find('div[@id="commentTags"]')
-        if content_tags is not None:
-            content_xml.remove(content_tags)
+        if review['api_category'] == 'comment':
 
-        content = ET.tostring(content_xml, method="text", encoding='utf8')
+            # Delete the tags
+            content_tags = content_xml.find('div[@id="commentTags"]')
+            if content_tags is not None:
+                content_xml.remove(content_tags)
+
+            # For comments there are nested divs. Remove them, but make sure
+            # to put '\n\n' between their content so that they are not just
+            # pushed together.
+            content_list = []
+            for child in content_xml.findall('div'):
+                content_list.extend(
+                    ET.tostringlist(child, method="text", encoding='utf8')
+                )
+            content = "\n\n".join(content_list)
+        else:
+            content = ET.tostring(content_xml, method="text", encoding='utf8')
+
         content = content.decode('utf8')
         content = content or ""
         review['content'] = h.unescape(content)
