@@ -318,8 +318,8 @@ label.disabled, .label.disabled { -ms-filter: "progid:DXImageTransform.Microsoft
 .info { font-size: 0.875em; font-style: italic; font-weight: normal; display: block; }
 
 /** Text inputs */
-.text-input, textarea { width: 100%; display: block; margin: 0 0 1.25em 0; padding: 0.5em; border: 0; color: #333333; outline: none; -webkit-box-shadow: inset 0px 0px 3px 1px #aaaaaa; -moz-box-shadow: inset 0px 0px 3px 1px #aaaaaa; -ms-box-shadow: inset 0px 0px 3px 1px #aaaaaa; -o-box-shadow: inset 0px 0px 3px 1px #aaaaaa; box-shadow: inset 0px 0px 3px 1px #aaaaaa; -webkit-border-radius: 2px; -moz-border-radius: 2px; -ms-border-radius: 2px; -o-border-radius: 2px; border-radius: 2px; }
-.text-input:focus, textarea:focus { -webkit-box-shadow: inset 0px 0px 3px 1px #2f9aa8; -moz-box-shadow: inset 0px 0px 3px 1px #2f9aa8; -ms-box-shadow: inset 0px 0px 3px 1px #2f9aa8; -o-box-shadow: inset 0px 0px 3px 1px #2f9aa8; box-shadow: inset 0px 0px 3px 1px #2f9aa8; }
+input[type=text], .text-input, textarea { width: 100%; display: block; margin: 0 0 1.25em 0; padding: 0.5em; border: 0; color: #333333; outline: none; -webkit-box-shadow: inset 0px 0px 3px 1px #aaaaaa; -moz-box-shadow: inset 0px 0px 3px 1px #aaaaaa; -ms-box-shadow: inset 0px 0px 3px 1px #aaaaaa; -o-box-shadow: inset 0px 0px 3px 1px #aaaaaa; box-shadow: inset 0px 0px 3px 1px #aaaaaa; -webkit-border-radius: 2px; -moz-border-radius: 2px; -ms-border-radius: 2px; -o-border-radius: 2px; border-radius: 2px; }
+input[type=text]:focus, .text-input:focus, textarea:focus { -webkit-box-shadow: inset 0px 0px 3px 1px #2f9aa8; -moz-box-shadow: inset 0px 0px 3px 1px #2f9aa8; -ms-box-shadow: inset 0px 0px 3px 1px #2f9aa8; -o-box-shadow: inset 0px 0px 3px 1px #2f9aa8; box-shadow: inset 0px 0px 3px 1px #2f9aa8; }
 
 .ie6 .text-input, .ie6 textarea, .ie7 .text-input, .ie7 textarea, .ie8 .text-input, .ie8 textarea { border: 1px solid #cccccc; }
 
