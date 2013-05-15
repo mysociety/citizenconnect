@@ -27,6 +27,11 @@ urlpatterns = patterns('',
         name='private-org-problems',
         kwargs={'private': True}),
 
+    url(r'^reviews/(?P<ods_code>\w+)$',
+        login_required(OrganisationReviews.as_view()),
+        name='private-org-reviews',
+        kwargs={'private': True}),
+
     url(r'^choose-dashboard$', login_required(DashboardChoice.as_view()), name='dashboard-choice'),
 
     url(r'^access-logs$', login_required(SuperuserLogs.as_view()), name='superuser-logs'),
