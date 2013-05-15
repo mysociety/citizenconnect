@@ -30,6 +30,14 @@ class NationalSummaryTable(tables.Table):
                                           template_name="organisations/includes/percent_column.html")
     happy_outcome = tables.TemplateColumn(verbose_name='% Happy with outcome',
                                           template_name="organisations/includes/percent_column.html")
+    reviews_all_time = tables.Column(verbose_name='Reviews received')
+    reviews_week = tables.Column(verbose_name='Reviews received in last 7 days',
+                                 attrs={'td': {'class': 'hidden'}})
+    reviews_four_weeks = tables.Column(verbose_name='Reviews received in last 4 weeks',
+                                       attrs={'td': {'class': 'hidden'}})
+    reviews_six_months = tables.Column(verbose_name='Reviews received in last 6 months',
+                                       attrs={'td': {'class': 'hidden'}})
+
     average_recommendation_rating = tables.TemplateColumn(verbose_name='Average recommendation rating (out of 5)',
                                                           template_name='organisations/includes/rounded_column.html')
 
