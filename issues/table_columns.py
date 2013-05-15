@@ -8,7 +8,8 @@ class BreachAndEscalationColumn(tables.TemplateColumn):
         defaults = {
             'template_name': "issues/includes/breach_escalation_column.html",
             'verbose_name': " ",
-            'orderable': False
+            'orderable': False,
+            'attrs': {'td': {'class': 'problem-table__flag'}}
         }
 
         defaults.update(kwargs)
