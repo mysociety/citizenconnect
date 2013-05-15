@@ -13,13 +13,15 @@ class NationalSummaryTable(tables.Table):
         self.cobrand = kwargs.pop('cobrand')
         super(NationalSummaryTable, self).__init__(*args, **kwargs)
 
-    name = tables.Column(verbose_name='Provider name',
-                         attrs={'th': {'class': 'table__first'},
-                                'td': {'class': 'table__first'}})
-    week = tables.Column(verbose_name='Last 7 days')
-    four_weeks = tables.Column(verbose_name='Last 4 weeks')
-    six_months = tables.Column(verbose_name='Last 6 months')
-    all_time = tables.Column(verbose_name='All time')
+    name = tables.Column(verbose_name='Provider name')
+    week = tables.Column(verbose_name='Last 7 days',
+                         attrs={'td': {'class': 'hidden'}})
+    four_weeks = tables.Column(verbose_name='Last 4 weeks',
+                               attrs={'td': {'class': 'hidden'}})
+    six_months = tables.Column(verbose_name='Last 6 months',
+                               attrs={'td': {'class': 'hidden'}})
+    all_time = tables.Column(verbose_name='Problems received')
+
     average_time_to_acknowledge = tables.TemplateColumn(verbose_name='Average time to acknowledge (days)',
                                                         template_name='organisations/includes/time_interval_column.html')
     average_time_to_address = tables.TemplateColumn(verbose_name='Average time to address (days)',

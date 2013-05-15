@@ -876,7 +876,7 @@ class SummaryTests(AuthorizationTestCase):
         resp = self.client.get(self.summary_url)
         self.assertContains(resp, 'Test Organisation')
         self.assertNotContains(resp, 'Other Test Organisation')
-        self.assertContains(resp, '<td class="week">1</td>', count=1, status_code=200)
+        self.assertContains(resp, '<td class="all_time">1</td>', count=1, status_code=200)
 
     def test_status_filter_only_shows_visible_statuses_in_filters(self):
         resp = self.client.get(self.summary_url)
@@ -887,7 +887,7 @@ class SummaryTests(AuthorizationTestCase):
         resp = self.client.get(self.summary_url + '?status={0}'.format(Problem.ABUSIVE))
         self.assertContains(resp, 'Test Organisation')
         self.assertNotContains(resp, 'Other Test Organisation')
-        self.assertContains(resp, '<td class="week">1</td>', count=1, status_code=200)
+        self.assertContains(resp, '<td class="all_time">1</td>', count=1, status_code=200)
 
     def test_summary_page_applies_threshold_from_settings(self):
         with self.settings(SUMMARY_THRESHOLD=('six_months', 1)):
