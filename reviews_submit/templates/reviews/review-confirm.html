@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
 
 {% block title %}Review sent{% endblock %}
 
@@ -6,10 +7,15 @@
 
 {% block content %}
 <div class="header">
-    <h1>Review sent</h1>
+    <h1>Your Review Has Been Submitted</h1>
 </div>
-<div class="hero">
-    <div class="feature">
+
+<div class="hero  align-center">
+    <div class="header">
+        <img src="{% static 'img/tick.png' %}" alt="Tick icon" />
+        <h3 class="mb">Thank you for submitting your review</h3>
+    </div>
+    <div>
         <p>Thank you for your sending us your review. If you have chosen for your review (and the response) to be made publicly available online this will be available (subject to NHS privacy and moderation conditions) within 24 hours.</p>
     </div>
 </div>
