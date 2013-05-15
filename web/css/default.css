@@ -920,6 +920,8 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .filters { padding-top: 1em; border-top: 0.25em solid #dddddd; margin-top: 2.5em; margin-bottom: 2.5em; }
 .filters p { margin: 0; font-size: 1.25em; }
 
+th .filters__dropdown select { font-size: 1em; }
+
 .filters__dropdown-wrap label { font-weight: normal; font-size: 0.75em; color: #666; margin-bottom: 0; }
 .filters__dropdown-wrap .filters__dropdown { position: relative; border-right: 2px solid white; background-color: #2f9aa8; background-image: url(../img/select_arrow.png); background-repeat: no-repeat; background-position: 95% center; font-weight: bold; -webkit-text-overflow: ellipsis; -moz-text-overflow: ellipsis; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; }
 .filters__dropdown-wrap .filters__dropdown select { color: #fff; }
