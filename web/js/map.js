@@ -190,7 +190,16 @@ $(document).ready(function () {
 
     // Function to add in some html to show the selected filters
     var showSelectedFilters = function() {
-        // TODO - add/remove the __default class from selects
+        $(".filters select").each(function(index, element) {
+            var $select = $(element);
+            var $dropdown = $select.parent('.filters__dropdown');
+            if($select.val() !== "") {
+                $dropdown.removeClass('filters__dropdown--default');
+            }
+            else {
+                $dropdown.addClass('filters__dropdown--default');
+            }
+        });
     };
 
     /**
