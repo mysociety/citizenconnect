@@ -107,7 +107,15 @@ class ReviewsAPI(object):
             "title":   h.unescape(entry.find('title').text or ""),
         }
 
-        content = ET.tostring(entry.find('content'), method="text", encoding='utf8')
+        # Extract the content so that we can manipulate it a bit
+        content_xml =  entry.find('content')
+
+        # Delete the tags
+        content_tags = content_xml.find('div[@id="commentTags"]')
+        if content_tags is not None:
+            content_xml.remove(content_tags)
+
+        content = ET.tostring(content_xml, method="text", encoding='utf8')
         content = content.decode('utf8')
         content = content or ""
         review['content'] = h.unescape(content)
