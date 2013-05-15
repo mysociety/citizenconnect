@@ -223,15 +223,13 @@ class ProblemDashboardTable(BaseProblemTable):
 
 class EscalationDashboardTable(ProblemDashboardTable):
     provider_name = tables.Column(verbose_name='Provider name',
-                                  accessor='organisation.name',
-                                  attrs={'th': {'class': 'table__first'},
-                                         'td': {'class': 'table__first'}})
+                                  accessor='organisation.name')
 
     class Meta:
         order_by = ('-created',)
         attrs = {'class': 'problem-table problem-table--expanded'}
-        sequence = ('provider_name',
-                    'reference_number',
+        sequence = ('reference_number',
+                    'provider_name',
                     'created',
                     'service',
                     'category',
