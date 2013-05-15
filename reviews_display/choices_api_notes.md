@@ -60,6 +60,11 @@ For the reviews IDs appear to sequential integers although many are not seen pre
 
 For reviews the `visit_date` (which should be of the form of month and year of visit) is missing.
 
+
+## Erroneous data
+
+Review titles are sometimes double escaped: 'A&E on a Saturday' vs 'A&amp;E and Eye Clinic.'. This is not being corrected atm is our code.
+
 For ratings the score and answer wording of the Friends and Family questions appears have been reversed in some cases (glowing reviews and high ratings will have a very negative F&F rating).
 
 
