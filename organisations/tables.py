@@ -278,6 +278,7 @@ class ReviewTable(tables.Table):
                                   attrs={'td': {'class': 'problem-table__light-text'}})
 
     # TODO: There must be a better way to get the Friends and Family rating.
+    # TODO: Change this to be a TemplateColumn once the ratings are merged.
     rating = tables.Column(verbose_name='Rating', accessor='ratings.all.0.score')
 
     content = tables.Column(verbose_name='Review', orderable=False)
