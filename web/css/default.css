@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /** Colours ---------------- This is the descriptive name of the colour e.g. $c-green Colour Assignment is in _colour-assignment.scss */
  /*
  Where possible assign colours to another variable rather than using them directly. This keeps the colour names descriptive and the assignment logical. For example:
@@ -524,14 +525,16 @@ table .icon-warning { font-size: 1.375em; color: #d81e05; line-height: 0; }
 .problem-table--expanded tr td:last-child, .problem-table--expanded tr:first-child td:last-child, .problem-table--expanded tr:last-child td:last-child { -webkit-border-radius: 0 5px 5px 0; -moz-border-radius: 0 5px 5px 0; -ms-border-radius: 0 5px 5px 0; -o-border-radius: 0 5px 5px 0; border-radius: 0 5px 5px 0; }
 
 /** A square table with options for split cols and highlights */
-.summary-table th { font-weight: bold; padding: 0; border-bottom: 0; }
+.summary-table { border: 2px solid #dddddd; }
+.summary-table th { font-weight: bold; padding: 0; border-bottom: 0; border-left: 2px solid #dddddd; }
 .summary-table th a { display: block; padding: 1em 0.5em; }
-.summary-table .summary-table__subhead th { font-weight: normal; padding: 0.5em 0; background-color: #f2f2f2; }
+.summary-table .summary-table__subhead th { font-weight: normal; padding: 0.5em 0; background-color: #dbdbdb; }
 .summary-table .summary-table__subhead th a { display: block; padding: 0 0.5em; }
-.summary-table td { border-left: 1px solid #dddddd; }
+.summary-table td { border-left: 2px solid #dddddd; }
 .summary-table td:first-child { border-left: 0; }
 .summary-table tr:last-child td { border-bottom: 0; }
 .summary-table .summary-table__cell-no-border { border-left: 0; }
+.summary-table td.average_time_to_address, .summary-table td.happy_outcome { border-left-width: 1px; }
 .summary-table tbody tr:nth-of-type(even) td { background: #f2f2f2; }
 .summary-table tbody tr.summary-table__highlight td { background-color: #d81e05; color: white; font-weight: bold; border-color: #d81e05; border-top: 2px solid #d81e05; border-bottom: 2px solid #d81e05; }
 .summary-table .filters__dropdown { margin: -0.5em 0; }

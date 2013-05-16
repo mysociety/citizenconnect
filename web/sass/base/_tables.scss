@@ -234,11 +234,15 @@ table {
  * A square table with options for split cols and highlights
  */
 .summary-table {
+
+  border:2px solid $c-table-border;
+
   // standard headings
   th {
     font-weight: bold;
     padding: 0;
     border-bottom: 0;
+    border-left:2px solid $c-table-border;
     a {
       display: block;
       padding: 1em 0.5em;
@@ -258,13 +262,19 @@ table {
 
   // standard cell
   td {
-    border-left: 1px solid $c-table-border;
+    border-left: 2px solid $c-table-border;
     &:first-child { border-left: 0; }
   }
   tr:last-child td { border-bottom: 0; }
 
   // used for cells in double column
   .summary-table__cell-no-border { border-left: 0; }
+
+  // cells which sit inside double columns
+  td.average_time_to_address,
+  td.happy_outcome {
+    border-left-width: 1px;
+  }
 
   // colour every other row
   tbody tr:nth-of-type(even) td { background: $c-table-row-hover-bg; }

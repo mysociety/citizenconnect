@@ -25,11 +25,13 @@ class NationalSummaryTable(tables.Table):
     average_time_to_acknowledge = tables.TemplateColumn(verbose_name='Average time to acknowledge (days)',
                                                         template_name='organisations/includes/time_interval_column.html')
     average_time_to_address = tables.TemplateColumn(verbose_name='Average time to address (days)',
-                                                    template_name='organisations/includes/time_interval_column.html')
+                                                    template_name='organisations/includes/time_interval_column.html',
+                                                    attrs={'th': {'class': 'summary-table__cell-no-border'}})
     happy_service = tables.TemplateColumn(verbose_name='% Happy with service',
                                           template_name="organisations/includes/percent_column.html")
     happy_outcome = tables.TemplateColumn(verbose_name='% Happy with outcome',
-                                          template_name="organisations/includes/percent_column.html")
+                                          template_name="organisations/includes/percent_column.html",
+                                          attrs={'th': {'class': 'summary-table__cell-no-border'}})
     reviews_all_time = tables.Column(verbose_name='Reviews received')
     reviews_week = tables.Column(verbose_name='Reviews received in last 7 days',
                                  attrs={'td': {'class': 'hidden'}})
