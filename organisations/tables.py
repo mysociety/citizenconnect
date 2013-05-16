@@ -273,7 +273,8 @@ class ReviewTable(tables.Table):
 
     api_posting_id = tables.Column(verbose_name='Ref',
                                    attrs={'td': {'class': 'problem-table__heavy-text'}})
-    api_published = tables.Column(verbose_name='Received Date')
+    api_published = tables.DateColumn(verbose_name='Received Date',
+                                  attrs={'td': {'class': 'problem-table__light-text'}})
 
     # TODO: There must be a better way to get the Friends and Family rating.
     rating = tables.Column(verbose_name='Rating', accessor='ratings.all.0.score')
