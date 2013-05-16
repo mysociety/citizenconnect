@@ -20,7 +20,8 @@ class NationalSummaryTable(tables.Table):
                                attrs={'td': {'class': 'hidden'}})
     six_months = tables.Column(verbose_name='Last 6 months',
                                attrs={'td': {'class': 'hidden'}})
-    all_time = tables.Column(verbose_name='Problems received')
+    all_time = tables.Column(verbose_name='Problems received',
+                             attrs={'th': {'class': 'two-twelfths problems-received'}})
 
     average_time_to_acknowledge = tables.TemplateColumn(verbose_name='Average time to acknowledge (days)',
                                                         template_name='organisations/includes/time_interval_column.html')
@@ -32,7 +33,8 @@ class NationalSummaryTable(tables.Table):
     happy_outcome = tables.TemplateColumn(verbose_name='% Happy with outcome',
                                           template_name="organisations/includes/percent_column.html",
                                           attrs={'th': {'class': 'summary-table__cell-no-border'}})
-    reviews_all_time = tables.Column(verbose_name='Reviews received')
+    reviews_all_time = tables.Column(verbose_name='Reviews received',
+                                     attrs={'th': {'class': 'two-twelfths reviews-received'}})
     reviews_week = tables.Column(verbose_name='Reviews received in last 7 days',
                                  attrs={'td': {'class': 'hidden'}})
     reviews_four_weeks = tables.Column(verbose_name='Reviews received in last 4 weeks',

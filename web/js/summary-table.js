@@ -6,26 +6,33 @@
         var toggleColumnClass = function(selectedClassName, columnClassName) {
             console.log("Toggling column: " + columnClassName + " selected column is: " + selectedClassName);
             if(columnClassName === selectedClassName) {
-                $("." + columnClassName).removeClass("hidden");
+                $("td." + columnClassName).removeClass("hidden");
             }
             else {
-                $("." + columnClassName).addClass("hidden");
+                $("td." + columnClassName).addClass("hidden");
             }
-        }
+        };
 
         $("#problems-interval-filters").change(function(e){
             console.log("Change on problems filter");
             var selected = $(this).val();
+            var sortLink = "?sort=" + selected;
+            // Toggle the right column
             $.each(problemsColumns, function(index, className){
                 toggleColumnClass(selected, className);
             });
+            // Change the sorting link
+            $("th.problems-received > a").attr('href', sortLink);
         });
 
         $("#reviews-interval-filters").change(function(e){
             var selected = $(this).val();
+            var sortLink = "?sort=" + selected;
             $.each(reviewsColumns, function(index, className){
                 toggleColumnClass(selected, className);
             });
+            // Change the sorting link
+            $("th.reviews-received > a").attr('href', sortLink);
         });
     });
 })(window.jQuery);

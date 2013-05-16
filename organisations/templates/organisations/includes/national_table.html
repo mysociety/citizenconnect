@@ -10,18 +10,19 @@
                     <th {{ column.attrs.th.as_html }}><a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">Provider Name:</a></th>
                 {% endwith %}
 
-                {% with table.columns.problems_received as column %}
+                {% with table.columns.all_time as column %}
                     <th {{ column.attrs.th.as_html }}><a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">Problems Received:</a></th>
                 {% endwith %}
 
                 <th class="two-twelfths" colspan="2">Average Time to:</th>
                 <th class="two-twelfths orderable sortable" colspan="2">Satisfaction with:</th>
 
-
-                <th class="two-twelfths orderable sortable"><a href="#">Reviews Received:</a></th>
+                {% with table.columns.reviews_all_time as column %}
+                    <th {{ column.attrs.th.as_html }}><a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">Reviews Received:</a></th>
+                {% endwith %}
 
                 {% with table.columns.average_recommendation_rating as column %}
-                <th {{ column.attrs.th.as_html }}><a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">Average Review:</a></th>
+                    <th {{ column.attrs.th.as_html }}><a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">Average Review:</a></th>
                 {% endwith %}
             </tr>
 
