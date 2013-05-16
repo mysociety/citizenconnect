@@ -1,7 +1,7 @@
 import datetime
 
 from django import forms
-from django.forms.widgets import RadioSelect, HiddenInput
+from django.forms.widgets import Select, HiddenInput
 
 from .models import Review, Rating
 from .widgets import MonthYearWidget
@@ -40,7 +40,7 @@ class RatingForm(forms.ModelForm):
         super(RatingForm, self).__init__(*args, **kwargs)
         self.fields['question'].label = question.title
         self.fields['answer'].queryset = question.answers.all()
-        self.fields['answer'].empty_label = None
+        self.fields['answer'].empty_label = '-- please select one --'
 
     class Meta:
         model = Rating
@@ -52,7 +52,7 @@ class RatingForm(forms.ModelForm):
 
         widgets = {
             'question': HiddenInput,
-            'answer': RadioSelect
+            'answer': Select
         }
 
 

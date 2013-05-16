@@ -33,14 +33,9 @@
             {% endfor %}
             <p class="info">{{ form.question.label }}</p>
 
-            <ul class="radio-list">
-                {% for choice in form.answer %}
-                <li>
-                    {{ choice }}
-                </li>
-                {% endfor %}
-                {% include "message_list.html" with messages=form.answer.errors message_type='error' %}
-            </ul>
+            {{ form.answer }}
+
+            {% include "message_list.html" with messages=form.answer.errors message_type='error' %}
 
         </fieldset>
         {% endfor %}
