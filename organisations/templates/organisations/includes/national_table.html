@@ -29,12 +29,11 @@
                 <th></th>
                 <th class="filters__dropdown-wrap">
                     <div class="filters__dropdown  filters__dropdown--last">
-                        <select>
-                            <option>In the last week</option>
-                            <option>In the last 30 days</option>
-                            <option>In the last 3 months</option>
-                            <option>In the last 6 months</option>
-                            <option selected>All time</option>
+                        <select id="problems-interval-filters">
+                            <option value='week'>In the last week</option>
+                            <option value='four_weeks'>In the last 30 days</option>
+                            <option value='six_months'>In the last 6 months</option>
+                            <option value='all_time' selected>All time</option>
                         </select>
                     </div>
                 </th>
@@ -58,12 +57,11 @@
 
                 <th class="filters__dropdown-wrap">
                     <div class="filters__dropdown  filters__dropdown--last">
-                        <select>
-                            <option>In the last week</option>
-                            <option>In the last 30 days</option>
-                            <option>In the last 3 months</option>
-                            <option>In the last 6 months</option>
-                            <option selected>All time</option>
+                        <select id="reviews-interval-filters">
+                            <option value='reviews_week'>In the last week</option>
+                            <option value='reviews_four_weeks'>In the last 30 days</option>
+                            <option value='reviews_six_months'>In the last 6 months</option>
+                            <option value='reviews_all_time' selected>All time</option>
                         </select>
                     </div>
 

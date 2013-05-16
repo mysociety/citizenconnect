@@ -43,7 +43,6 @@ class NationalSummaryTable(tables.Table):
     average_recommendation_rating = tables.TemplateColumn(verbose_name='Average recommendation rating (out of 5)',
                                                           template_name='organisations/includes/rating_column.html')
 
-
     def render_name(self, record):
         url = self.reverse_to_org_summary(record['ods_code'])
         return mark_safe('''<a href="%s">%s</a>''' % (url, record['name']))
