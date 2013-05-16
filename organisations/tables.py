@@ -271,6 +271,7 @@ class ReviewTable(tables.Table):
     organisation.
     """
 
-    api_posting_id = tables.Column(verbose_name='Ref')
+    api_posting_id = tables.Column(verbose_name='Ref',
+                                   attrs={'td': {'class': 'problem-table__heavy-text'}})
     api_published = tables.Column(verbose_name='Received Date')
     rating = tables.Column(verbose_name='Rating', accessor='ratings.0.score')
