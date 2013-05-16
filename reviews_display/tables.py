@@ -32,7 +32,7 @@ class ReviewTable(tables.Table):
         """Truncate the review's content to 20 words, returns a string."""
         truncated_content = Truncator(value).words(20)
         review_link = reverse('review-detail', kwargs={'ods_code': record.organisation.ods_code, 'cobrand': 'choices', 'pk': record.pk})
-        return mark_safe(u'<a href="{0}">{1} <span class="icon-chevron-right" aria-hidden="true"></span></a>'.format(review_link, conditional_escape(truncated_content)))
+        return mark_safe(u'<a href="{0}">{1} <span class="icon-chevron-right  fr" aria-hidden="true"></span></a>'.format(review_link, conditional_escape(truncated_content)))
 
     def row_classes(self, record):
         """Format rows as link classes, returns a string."""
