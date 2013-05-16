@@ -19,11 +19,14 @@ class ReviewTable(tables.Table):
     api_published = tables.DateColumn(verbose_name='Received Date',
                                       attrs={'td': {'class': 'problem-table__light-text'}})
 
-    # TODO: There must be a better way to get the Friends and Family rating.
     # TODO: Change this to be a TemplateColumn once the ratings are merged.
-    rating = tables.Column(verbose_name='Rating', accessor='ratings.all.0.score')
+    rating = tables.Column(verbose_name='Rating', accessor='ratings.all.0.score', orderable=False)
 
     content = tables.Column(verbose_name='Review', orderable=False)
+
+    def render_rating(self, record):
+        # TODO: There must be a better way to get the Friends and Family rating.
+        return record.ratings.get(question='Friends and Family').score
 
     def render_content(self, record, value):
         """Truncate the review's content to 20 words, returns a string."""
