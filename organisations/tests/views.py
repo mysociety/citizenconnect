@@ -647,6 +647,18 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         self.assertContains(resp, 'public description')
 
 
+class OrganisationReviewsTests(AuthorizationTestCase):
+
+    def setUp(self):
+        super(OrganisationReviewsTests, self).setUp()
+        self.reviews_url = reverse('public-org-reviews', kwargs={'ods_code': self.test_organisation.ods_code, 'cobrand': 'choices'})
+
+    def test_reviews_page_exists(self):
+        self.login_as(self.provider)
+        resp = self.client.get(self.reviews_url)
+        self.assertEqual(resp.status_code, 200)
+
+
 class OrganisationDashboardTests(AuthorizationTestCase):
 
     def setUp(self):
