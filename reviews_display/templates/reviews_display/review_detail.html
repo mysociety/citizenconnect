@@ -47,15 +47,15 @@
 
 <h2>Ratings</h2>
 
-<ul>
-    {% for rating in review.ratings.all %}
 
-        <li>
-            {{ rating.question }}
-            {{ rating.score }} ({{ rating.answer }})
-        </li>
-    {% endfor %}
-</ul>
+
+
+{% for rating in review.ratings.all %}
+    <div>
+        {% include 'organisations/includes/rating_column.html' with value=rating.score description=rating.answer css_class='rating--review_details' %}
+        {{ rating.question }}
+    </div>
+{% endfor %}
 
 <hr />
 
