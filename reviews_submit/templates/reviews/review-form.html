@@ -26,8 +26,30 @@
             {{ hidden }}
         {% endfor %}
 
-        {% for form in rating_forms %}
         <fieldset class="island">
+            <ul class="gw">
+
+                <li class="g  one-whole">
+                    {{ form.title.label_tag }}
+                    {{ form.title }}
+                    {% include "message_list.html" with messages=form.title.errors message_type='error' %}
+                </li>
+
+                <li class="g  one-whole">
+                    {{ form.comment.label_tag }}
+                    {{ form.comment }}
+                    {% include "message_list.html" with messages=form.comment.errors message_type='error' %}
+                </li>
+
+            </ul>
+        </fieldset>
+
+
+        <fieldset class="island">
+
+            <h2>Ratings (optional)</h2>
+
+        {% for form in rating_forms %}
             {% for hidden in form.hidden_fields %}
                 {{ hidden }}
             {% endfor %}
@@ -37,11 +59,28 @@
 
             {% include "message_list.html" with messages=form.answer.errors message_type='error' %}
 
-        </fieldset>
         {% endfor %}
+        </fieldset>
 
 
         <fieldset class="island">
+
+            <h2>Your Visit</h2>
+
+            <ul class="gw">
+                <li class="g  one-whole">
+                    {{ form.month_year_of_visit.label_tag }}
+                    {{ form.month_year_of_visit }}
+                    {% include "message_list.html" with messages=form.month_year_of_visit.errors message_type='error' %}
+                </li>
+            </ul>
+        </fieldset>
+
+
+        <fieldset class="island">
+
+            <h2>Your Details</h2>
+
             <ul class="gw">
                 <li class="g  one-whole">
                     {{ form.email.label_tag }}
@@ -60,25 +99,10 @@
                     {% include "message_list.html" with messages=form.is_anonymous.errors message_type='error' %}
                 </li>
 
-                <li class="g  one-whole">
-                    {{ form.title.label_tag }}
-                    {{ form.title }}
-                    {% include "message_list.html" with messages=form.title.errors message_type='error' %}
-                </li>
-
-                <li class="g  one-whole">
-                    {{ form.comment.label_tag }}
-                    {{ form.comment }}
-                    {% include "message_list.html" with messages=form.comment.errors message_type='error' %}
-                </li>
-
-                <li class="g  one-whole">
-                    {{ form.month_year_of_visit.label_tag }}
-                    {{ form.month_year_of_visit }}
-                    {% include "message_list.html" with messages=form.month_year_of_visit.errors message_type='error' %}
-                </li>
             </ul>
         </fieldset>
+
+
         <fieldset>
             <button class="btn  fr" type="submit">Submit</button>
         </fieldset>
