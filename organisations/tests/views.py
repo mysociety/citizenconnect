@@ -5,6 +5,7 @@ import json
 import urllib
 from decimal import Decimal
 import logging
+from selenium.webdriver.support.ui import WebDriverWait
 
 # Django imports
 from django.test import TestCase
@@ -14,6 +15,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 
 # App imports
+from citizenconnect.browser_testing import SeleniumTestCase
 from issues.models import Problem
 
 import organisations
@@ -853,6 +855,34 @@ class OrganisationMapTests(AuthorizationTestCase):
         self.assertEqual(resp['Content-Type'], 'application/json')
         response_json = json.loads(resp.content)
         self.assertEqual(len(response_json), 1)
+
+
+class OrganisationMapBrowserTests(SeleniumTestCase):
+
+    def setUp(self):
+        super(OrganisationMapBrowserTests, self).setUp()
+        self.map_url = reverse('org-map', kwargs={'cobrand': 'choices'})
+
+    def test_submit_button_hidden(self):
+        self.driver.get(self.full_url(self.map_url))
+        submit_button = self.driver.find_element_by_css_selector('.filters__button')
+        self.assertFalse(submit_button.is_displayed())
+
+    def test_filter_selection(self):
+        self.driver.get(self.full_url(self.map_url))
+
+        # Find the organisation type selector, and select hospitals
+        org_type_filter = self.driver.find_element_by_id('id_organisation_type')
+        org_type_filter.find_element_by_css_selector('option[value="hospitals"]').click()
+
+        # Wait until it the select is re-enabled - this is a sign of a successful ajax request
+        WebDriverWait(self.driver, 3).until(
+            lambda x: org_type_filter.get_attribute('disabled') is None
+        )
+
+        # Check the select wrapper no longer has a --default class, so it looks selected
+        org_type_filter_container = self.driver.find_element_by_css_selector('.filters .filters__dropdown')
+        self.assertEqual(org_type_filter_container.get_attribute('class'), 'filters__dropdown')
 
 
 @override_settings(SUMMARY_THRESHOLD=['all_time', 1])
