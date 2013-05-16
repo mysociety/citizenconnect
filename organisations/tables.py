@@ -281,6 +281,13 @@ class ReviewTable(tables.Table):
 
     content = tables.Column(verbose_name='Review', orderable=False)
 
+    def row_classes(self, record):
+        try:
+            super_row_classes = super(ReviewTable, self).row_classes(record)
+        except AttributeError:
+            super_row_classes = ""
+        return '{0} table-link__row'.format(super_row_classes)
+
     class Meta:
         order_by = ('-created',)
         attrs = {'class': 'problem-table problem-table--expanded'}
