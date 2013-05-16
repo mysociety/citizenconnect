@@ -1,7 +1,14 @@
 /**
  * A three star rating object that uses this markup:
  *
-ß *
+<div class="rating">
+  <span class="icon-star" aria-hidden="true"></span>
+  <span class="icon-star" aria-hidden="true"></span>
+  <span class="icon-star" aria-hidden="true"></span>
+  <span class="icon-star-2" aria-hidden="true"></span>
+  <span class="icon-star-3" aria-hidden="true"></span>
+</div>
+ *
  */
 .rating {
   span {

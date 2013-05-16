@@ -24,10 +24,10 @@ window.onload = function() {
 			'icon-calendar' : '&#xe010;',
 			'icon-arrow-up-right' : '&#xe011;',
 			'icon-star' : '&#xe013;',
-			'icon-star-half' : '&#xe012;',
+			'icon-star-2' : '&#xe012;',
 			'icon-tag' : '&#xe015;',
 			'icon-user' : '&#xe00e;',
-			'icon-star-none' : '&#xe014;',
+			'icon-star-3' : '&#xe014;',
 			'icon-eye' : '&#xe016;',
 			'icon-double-arrow' : '&#xe017;'
 		},
