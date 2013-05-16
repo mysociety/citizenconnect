@@ -1,18 +1,20 @@
+"""
+Tables for displaying reviews.
+"""
+
 import django_tables2 as tables
 
 from django.utils.text import Truncator
 
 
 class ReviewTable(tables.Table):
-    """
-    Displays reviews that have been pulled back from the API for a given
-    organisation.
-    """
+
+    """Table for organisation reviews pulled from the API."""
 
     api_posting_id = tables.Column(verbose_name='Ref',
                                    attrs={'td': {'class': 'problem-table__heavy-text'}})
     api_published = tables.DateColumn(verbose_name='Received Date',
-                                  attrs={'td': {'class': 'problem-table__light-text'}})
+                                      attrs={'td': {'class': 'problem-table__light-text'}})
 
     # TODO: There must be a better way to get the Friends and Family rating.
     # TODO: Change this to be a TemplateColumn once the ratings are merged.
@@ -21,9 +23,11 @@ class ReviewTable(tables.Table):
     content = tables.Column(verbose_name='Review', orderable=False)
 
     def render_content(self, value):
+        """Truncate the review's content to 20 words, returns a string."""
         return Truncator(value).words(20)
 
     def row_classes(self, record):
+        """Format rows as link classes, returns a string."""
         try:
             super_row_classes = super(ReviewTable, self).row_classes(record)
         except AttributeError:

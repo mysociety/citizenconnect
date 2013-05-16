@@ -18,8 +18,9 @@ class ReviewLoadOrganisationBase(OrganisationAwareViewMixin):
     def get_queryset(self):
         return self.organisation.reviews.all()
 
+
 class ReviewOrganisationList(OrganisationAwareViewMixin,
-                          TemplateView):
+                             TemplateView):
     template_name = 'reviews_display/reviews_organisation_list.html'
 
     def get_context_data(self, **kwargs):
