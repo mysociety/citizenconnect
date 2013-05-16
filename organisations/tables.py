@@ -3,6 +3,7 @@ import django_tables2 as tables
 from django.utils.safestring import mark_safe
 from django.utils.html import conditional_escape
 from django.core.urlresolvers import reverse
+from django.utils.text import Truncator
 
 from issues.table_columns import BreachAndEscalationColumn
 
@@ -280,6 +281,9 @@ class ReviewTable(tables.Table):
     rating = tables.Column(verbose_name='Rating', accessor='ratings.all.0.score')
 
     content = tables.Column(verbose_name='Review', orderable=False)
+
+    def render_content(self, value):
+        return Truncator(value).words(20)
 
     def row_classes(self, record):
         try:
