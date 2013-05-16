@@ -312,7 +312,6 @@ $(document).ready(function () {
         }).always(function (jqXHR, textStatus) {
             // Renable all the things we disabled
             $form.find("select").prop("disabled", false);
-            $(".filter-links").css({'opacity': 1});
         });
     });
 });
