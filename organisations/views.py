@@ -21,7 +21,7 @@ from .auth import user_in_group, user_in_groups, user_is_superuser, enforce_orga
 from .models import Organisation, SuperuserLogEntry
 from .forms import OrganisationFinderForm, FilterForm, OrganisationFilterForm
 from .lib import interval_counts
-from .tables import NationalSummaryTable, PrivateNationalSummaryTable, ProblemTable, ExtendedProblemTable, ProblemDashboardTable, EscalationDashboardTable, BreachTable
+from .tables import NationalSummaryTable, PrivateNationalSummaryTable, ProblemTable, ExtendedProblemTable, ProblemDashboardTable, EscalationDashboardTable, BreachTable, ReviewTable
 from .templatetags.organisation_extras import formatted_time_interval, percent
 
 
@@ -389,6 +389,14 @@ class OrganisationProblems(OrganisationAwareViewMixin,
 class OrganisationReviews(OrganisationAwareViewMixin,
                           TemplateView):
     template_name = 'organisations/organisation_reviews.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(OrganisationReviews, self).get_context_data(**kwargs)
+        table = ReviewTable(self.organisation.reviews.all())
+        RequestConfig(self.request, paginate={'per_page': 8}).configure(table)
+        context['table'] = table
+        context['page_obj'] = table.page
+        return context
 
 
 class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):

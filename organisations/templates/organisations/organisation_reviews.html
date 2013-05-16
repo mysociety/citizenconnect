@@ -9,9 +9,8 @@
 <div class="header">
     <h1>{{ organisation.name }} Reviews</h1>
 </div>
-{% include "organisations/includes/organisation_tabs.html" with active_tab='problems' %}
+{% include "organisations/includes/organisation_tabs.html" with active_tab='reviews' %}
 
-{% include "organisations/includes/filters.html" %}
+{% render_table table %}
 
-{% render_table table 'organisations/includes/review-table.html' %}
 {% endblock %}
