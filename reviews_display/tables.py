@@ -16,7 +16,7 @@ class ReviewTable(tables.Table):
 
     api_posting_id = tables.Column(verbose_name='Ref',
                                    attrs={'td': {'class': 'problem-table__heavy-text'}})
-    api_published = tables.DateColumn(verbose_name='Received Date',
+    api_published = tables.DateColumn(verbose_name='Received Date', format='d.m.Y',
                                       attrs={'td': {'class': 'problem-table__light-text'}})
 
     # TODO: Change this to be a TemplateColumn once the ratings are merged.
