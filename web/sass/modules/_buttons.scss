@@ -147,6 +147,12 @@
         background: $c-btn-darkgrey-bg;
         &:hover { background: $c-btn-darkgrey-hover-bg; }
     }
+    .btn--black {
+        border-color: $c-btn-black-border;
+        color: $c-btn-black-color;
+        background: $c-btn-black-bg;
+        &:hover { background: $c-btn-black-hover-bg; }
+    }
 
     /**
      * Disabled button
