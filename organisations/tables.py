@@ -9,28 +9,51 @@ from issues.table_columns import BreachAndEscalationColumn
 
 class NationalSummaryTable(tables.Table):
 
+    name = tables.Column(verbose_name='Provider name',
+                         attrs={'th': {'class': 'two-twelfths'}})
+
+    # We put all these columns in, and then js hides all but one
+    week = tables.Column(verbose_name='Last 7 days',
+                         attrs={'th': {'class': 'problems-received'}})
+    four_weeks = tables.Column(verbose_name='Last 4 weeks',
+                               attrs={'th': {'class': 'problems-received'}})
+    six_months = tables.Column(verbose_name='Last 6 months',
+                               attrs={'th': {'class': 'problems-received'}})
+    all_time = tables.Column(verbose_name='All time',
+                             attrs={'th': {'class': 'problems-received'}})
+
+    # We split these into sub-columns
+    average_time_to_acknowledge = tables.TemplateColumn(verbose_name='Acknowledge',
+                                                        template_name='organisations/includes/time_interval_column.html')
+    average_time_to_address = tables.TemplateColumn(verbose_name='Address',
+                                                    template_name='organisations/includes/time_interval_column.html',
+                                                    attrs={'th': {'class': 'summary-table__cell-no-border'}})
+
+    # We split these into sub-columns
+    happy_service = tables.TemplateColumn(verbose_name='Service',
+                                          template_name="organisations/includes/percent_column.html")
+
+    happy_outcome = tables.TemplateColumn(verbose_name='Outcome',
+                                          template_name="organisations/includes/percent_column.html",
+                                          attrs={'th': {'class': 'summary-table__cell-no-border'}})
+
+    # We put all these columns in, and then js hides all but one
+    reviews_week = tables.Column(verbose_name='Last 7 days',
+                                 attrs={'th': {'class': 'reviews-received'}})
+    reviews_four_weeks = tables.Column(verbose_name='Last 4 weeks',
+                                       attrs={'th': {'class': 'reviews-received'}})
+    reviews_six_months = tables.Column(verbose_name='Last 6 months',
+                                       attrs={'th': {'class': 'reviews-received'}})
+    reviews_all_time = tables.Column(verbose_name='All time',
+                                     attrs={'th': {'class': 'reviews-received'}})
+
+    average_recommendation_rating = tables.TemplateColumn(verbose_name='Average Review:',
+                                                          template_name='organisations/includes/rating_column.html',
+                                                          attrs={'th': {'class': 'two-twelfths'}})
+
     def __init__(self, *args, **kwargs):
         self.cobrand = kwargs.pop('cobrand')
         super(NationalSummaryTable, self).__init__(*args, **kwargs)
-
-    name = tables.Column(verbose_name='Provider name',
-                         attrs={'th': {'class': 'table__first'},
-                                'td': {'class': 'table__first'}})
-    week = tables.Column(verbose_name='Last 7 days')
-    four_weeks = tables.Column(verbose_name='Last 4 weeks')
-    six_months = tables.Column(verbose_name='Last 6 months')
-    all_time = tables.Column(verbose_name='All time')
-    average_time_to_acknowledge = tables.TemplateColumn(verbose_name='Average time to acknowledge (days)',
-                                                        template_name='organisations/includes/time_interval_column.html')
-    average_time_to_address = tables.TemplateColumn(verbose_name='Average time to address (days)',
-                                                    template_name='organisations/includes/time_interval_column.html')
-    happy_service = tables.TemplateColumn(verbose_name='% Happy with service',
-                                          template_name="organisations/includes/percent_column.html")
-    happy_outcome = tables.TemplateColumn(verbose_name='% Happy with outcome',
-                                          template_name="organisations/includes/percent_column.html")
-    average_recommendation_rating = tables.TemplateColumn(verbose_name='Average recommendation rating (out of 5)',
-                                                          template_name='organisations/includes/rating_column.html')
-
 
     def render_name(self, record):
         url = self.reverse_to_org_summary(record['ods_code'])

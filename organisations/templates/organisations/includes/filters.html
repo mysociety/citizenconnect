@@ -1,15 +1,15 @@
 <form class="filters  gw  gw--no-gutters" action="{{ request.path }}">
 
     {% for field in form.visible_fields %}
-        <div class="filters__dropdown-wrap  g  {% if field.name == "ccg" %}one-twelfth{% else %}two-twelfths{% endif %}  palm-one-half">
+        <div class="filters__dropdown-wrap  g  {% if field.name == "service_code" %}three-twelfths{% else %}two-twelfths{% endif %}  palm-one-half">
+            <label for="filter-org_type">{{ field.label }}:</label>
             <div class="filters__dropdown  {% if not field.value %}filters__dropdown--default{% endif %}">
                 {{ field }}
             </div>
         </div>
     {% endfor %}
 
-    <div class="g  one-twelfth  palm-one-whole">
+    <div class="g  one-twelfth  palm-one-half">
         <input type="submit" value="Filter" class="btn  filters__button  palm-one-whole">
     </div>
 </form>
-

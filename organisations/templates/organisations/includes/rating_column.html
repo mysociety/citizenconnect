@@ -1,10 +1,7 @@
 {% load organisation_extras %}
 
 {% if value != None %}
-<div
-    class="{% firstof css_class 'rating' %}"
-    title="{{ value|floatformat }}/5{% if description %}: {{ description }}{% endif %}"
->
+<div class="rating">
     <span class="{{ value|star_class:1 }}" aria-hidden="true"></span>
     <span class="{{ value|star_class:2 }}" aria-hidden="true"></span>
     <span class="{{ value|star_class:3 }}" aria-hidden="true"></span>
