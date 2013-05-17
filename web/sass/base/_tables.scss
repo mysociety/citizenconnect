@@ -195,6 +195,9 @@ table {
       padding-top: 5px;
       height: 28px;
     }
+    .rating {
+        position: relative;
+    }
     .problem-table__flag__breach {
       background: $c-problem-table-flag-breach-bg;
       top: 0;
