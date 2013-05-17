@@ -49,16 +49,16 @@
 
             <h2>Ratings (optional)</h2>
 
-        {% for form in rating_forms %}
-            {% for hidden in form.hidden_fields %}
+        {% for rating_form in rating_forms %}
+            {% for hidden in rating_form.hidden_fields %}
                 {{ hidden }}
             {% endfor %}
 
-            {{ form.answer }}
+            {{ rating_form.answer }}
 
-            <p class="info">{{ form.question.label }}</p>
+            <p class="info">{{ rating_form.question.label }}</p>
 
-            {% include "message_list.html" with messages=form.answer.errors message_type='error' %}
+            {% include "message_list.html" with messages=rating_form.answer.errors message_type='error' %}
 
         {% endfor %}
         </fieldset>
