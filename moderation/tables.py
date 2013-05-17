@@ -15,6 +15,7 @@ class BaseModerationTable(tables.Table):
 
     class Meta:
         attrs = {'class': 'problem-table  problem-table--expanded'}
+        order_by = 'reference_number'
 
 
 class ModerationTable(BaseModerationTable):
