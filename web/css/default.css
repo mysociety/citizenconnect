@@ -885,8 +885,8 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .btn--publish { margin-left: 10px; }
 
 /** Big number with small text */
-.feature { padding: 0 3.75em; font-weight: bold; }
-.feature .feature__num { display: block; float: left; text-align: right; width: 150px; font-size: 3.125em; margin-right: 0.4em; }
+.feature { padding: 0 1.875em; font-weight: bold; }
+.feature .feature__num { display: block; float: left; text-align: right; font-size: 3.125em; margin-right: 0.4em; }
 @media only screen and (max-width: 1023px) { .feature .feature__num { float: none; width: 100%; text-align: left; } }
 .feature .feature__text { display: block; margin-top: 0.83333em; }
 
