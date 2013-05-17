@@ -1,6 +1,7 @@
 // A jQuery plugin to get queryString parameters
 (function($, window) {
-    $.QueryString = (function(a) {
+    $.QueryString = function(a) {
+        a = a.split('&');
         if (a === "") return {};
         var b = {};
         for (var i = 0; i < a.length; ++i)
@@ -10,7 +11,7 @@
             b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
         }
         return b;
-    })(window.location.search.substr(1).split('&'));
+    };
 })(window.jQuery, window);
 
 // Our code
@@ -21,6 +22,8 @@
     var reviewsColumns = ['reviews_week', 'reviews_four_weeks', 'reviews_six_months', 'reviews_all_time'];
     var reviewsHeaderID = 'reviews-intervals-header';
 
+    // Helper function to toggle which columns are visible in a group
+    // of intervals
     var toggleColumns = function(columns, selected) {
         $.each(columns, function(index, columnName) {
             if(columnName === selected) {
@@ -32,7 +35,9 @@
         });
     };
 
+    // Initialise the columns which get javascripted up
     var initialiseColumns = function(columns, filtersTemplate, selectedColumn, headerID) {
+        // Get the filter html from an underscore template
         var filters = _.template(
             filtersTemplate,
             {
@@ -57,9 +62,36 @@
             .addClass('filters__dropdown-wrap');
     };
 
-    $(function(){
+    // Update all the header links which provide sorts to correctly
+    // include the new parameter, so that when a new interval column
+    // is selected, it stays selected after someone clicks a sort link
+    var updateSortLinks = function(intervalParamName, intervalParamValue, headerID) {
+        // Loop over every sort link
+        $("th.sortable a").each(function(index, element) {
+            console.log("updating link for: " + $(element).attr('href'));
+            // Get the current url
+            var $element = $(element);
+            var href = $element.attr('href');
+            // Turn query string into an object
+            var qs = $.QueryString(href.substr(1));
+            // Update the existing query string to add or amend the
+            // parameter we care about
+            qs[intervalParamName] = intervalParamValue;
+            // If this link is the header for the interval, update the sort param too
+            if($element.parent('th').attr('id') === headerID) {
+                qs['sort'] = intervalParamValue;
+            }
+            // Now turn that into a proper url
+            newHref = "?" + $.param(qs);
+            // And update the link href
+            $element.attr('href', newHref);
+            console.log("updated to: " + newHref);
+        });
+    };
 
-        var qs = $.QueryString;
+    $(function(){
+        // Parse the current setup from the query string
+        var qs = $.QueryString(window.location.search.substr(1));
         var selectedProblemInterval = 'all_time';
         if (_.has(qs, 'problems_interval')) {
             if (_.indexOf(problemsColumns, qs.problems_interval) > -1) {
@@ -72,6 +104,7 @@
                 selectedReviewInterval = qs.reviews_interval;
             }
         }
+        // Get the underscore templates
         var problemFiltersTemplate = $("script[name=problems-filters]").text();
         var reviewFiltersTemplate = $("script[name=reviews-filters]").text();
 
@@ -89,11 +122,12 @@
         $("#problems-interval-filters").change(function(e){
             var selected = $(this).val();
             toggleColumns(problemsColumns, selected, problemsHeaderID);
+            updateSortLinks('problems_interval', selected, problemsHeaderID);
         });
-
         $("#reviews-interval-filters").change(function(e) {
             var selected = $(this).val();
             toggleColumns(reviewsColumns, selected, reviewsHeaderID);
+            updateSortLinks('reviews_interval', selected, reviewsHeaderID);
         });
     });
 })(window.jQuery);
