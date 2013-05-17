@@ -180,6 +180,23 @@ textarea {
   }
 }
 
+.big-radio-group--horizontal {
+    display: table;
+    ul { display: table-row; }
+    li {
+        display: table-cell;
+        width: 33%;
+        &.big-radio-group__first {
+            border-left: none;
+            @include vendor(border-radius, ($grid-gutter/2) + em 0 0 ($grid-gutter/2) + em);
+        }
+        &.big-radio-group__last {
+            @include vendor(border-radius, 0 ($grid-gutter/2) + em ($grid-gutter/2) + em 0);
+        }
+        @include vendor(border-radius, 0);
+    }
+}
+
 // alternative layout for IEs that don't support display:table;
 .ie6, .ie7 {
   .big-radio-group {

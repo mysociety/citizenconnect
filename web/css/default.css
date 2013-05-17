@@ -350,6 +350,12 @@ input[type=text]:focus, .text-input:focus, textarea:focus { -webkit-box-shadow: 
 .big-radio-group li.big-radio-group--active .big-radio-group__radio { background: #e70285; }
 .big-radio-group li.big-radio-group--active.big-radio-group--green .big-radio-group__radio { background: #009e49; }
 
+.big-radio-group--horizontal { display: table; }
+.big-radio-group--horizontal ul { display: table-row; }
+.big-radio-group--horizontal li { display: table-cell; width: 33%; -webkit-border-radius: 0; -moz-border-radius: 0; -ms-border-radius: 0; -o-border-radius: 0; border-radius: 0; }
+.big-radio-group--horizontal li.big-radio-group__first { border-left: none; -webkit-border-radius: 0.625em 0 0 0.625em; -moz-border-radius: 0.625em 0 0 0.625em; -ms-border-radius: 0.625em 0 0 0.625em; -o-border-radius: 0.625em 0 0 0.625em; border-radius: 0.625em 0 0 0.625em; }
+.big-radio-group--horizontal li.big-radio-group__last { -webkit-border-radius: 0 0.625em 0.625em 0; -moz-border-radius: 0 0.625em 0.625em 0; -ms-border-radius: 0 0.625em 0.625em 0; -o-border-radius: 0 0.625em 0.625em 0; border-radius: 0 0.625em 0.625em 0; }
+
 .ie6 .big-radio-group, .ie7 .big-radio-group { display: block; }
 .ie6 .big-radio-group ul, .ie7 .big-radio-group ul { display: block; padding: 0; }
 .ie6 .big-radio-group li, .ie7 .big-radio-group li { display: block; float: left; width: auto; }
