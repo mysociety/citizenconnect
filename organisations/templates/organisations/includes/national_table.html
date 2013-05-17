@@ -1,3 +1,4 @@
+{% load staticfiles %}
 {% load django_tables2 %}
 {% load organisation_extras %}
 
@@ -6,68 +7,46 @@
     <table class="summary-table">
         <thead>
             <tr>
-                {% with table.columns.name as column %}
-                    <th {{ column.attrs.th.as_html }}><a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">Provider Name:</a></th>
-                {% endwith %}
+                {% for column in table.columns %}
+                    {# This is a bit hacky, but we steal the sort link and attributes from the currently selected column for each set of intervals, hiding the others #}
+                    {% if column.accessor == 'all_time' %}
+                        <th {{ problems_sort_column.attrs.th.as_html }} colspan="4" id="problems-intervals-header"><a href="{% querystring table.prefixed_order_by_field=problems_sort_column.order_by_alias.next %}">Problems recieved:</a></th>
+                    {% elif column.accessor == 'reviews_all_time' %}
+                        <th {{ reviews_sort_column.attrs.th.as_html }} colspan="4" id="reviews-intervals-header"><a href="{% querystring table.prefixed_order_by_field=reviews_sort_column.order_by_alias.next %}">Reviews recieved:</a></th>
+                    {% elif column.accessor == 'six_months' or column.accessor == 'four_weeks' or column.accessor == 'week' or column.accessor == 'reviews_six_months' or column.accessor == 'reviews_four_weeks' or column.accessor == 'reviews_week' %}
+                        {# The all_time or reviews_all_time columns cover these for headings #}
+                    {% elif column.accessor == "average_time_to_acknowledge" %}
+                        {# We don't need to mess about with the sort links for these headers, because the sub headings show the proper column headings, so people can use those links #}
+                        <th class="two-twelfths" colspan="2">Average time to:</th>
+                    {% elif column.accessor == 'average_time_to_address' %}
+                        {# average_time_to_acknowledge covers this heading #}
+                    {% elif column.accessor == "happy_service" %}
+                        <th class="two-twelfths" colspan="2">Satisfaction with:</th>
+                    {% elif column.accessor == 'happy_outcome' %}
+                        {# happy_service covers this heading #}
+                    {% else %}
+                        <th {{ column.attrs.th.as_html }}><a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">{{ column.header }}</a></th>
+                    {% endif %}
+                {% endfor %}
 
-                {% with table.columns.all_time as column %}
-                    <th {{ column.attrs.th.as_html }}><a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">Problems Received:</a></th>
-                {% endwith %}
-
-                <th class="two-twelfths" colspan="2">Average Time to:</th>
-                <th class="two-twelfths orderable sortable" colspan="2">Satisfaction with:</th>
-
-                {% with table.columns.reviews_all_time as column %}
-                    <th {{ column.attrs.th.as_html }}><a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">Reviews Received:</a></th>
-                {% endwith %}
-
-                {% with table.columns.average_recommendation_rating as column %}
-                    <th {{ column.attrs.th.as_html }}><a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">Average Review:</a></th>
-                {% endwith %}
             </tr>
 
             <tr class="summary-table__subhead">
-                <th></th>
-                <th class="filters__dropdown-wrap">
-                    <div class="filters__dropdown  filters__dropdown--last">
-                        <select id="problems-interval-filters">
-                            <option value='week'>In the last week</option>
-                            <option value='four_weeks'>In the last 30 days</option>
-                            <option value='six_months'>In the last 6 months</option>
-                            <option value='all_time' selected>All time</option>
-                        </select>
-                    </div>
-                </th>
+                {% for column in table.columns %}
 
+                    {% if column.accessor == 'all_time' or column.accessor == 'reviews_all_time' or column.accessor == 'six_months' or column.accessor == 'four_weeks' or column.accessor == 'week' or column.accessor == 'reviews_six_months' or column.accessor == 'reviews_four_weeks' or column.accessor == 'reviews_week' %}
+                        <th {{ column.attrs.th.as_html }}><a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">{{ column.header }}</a></th>
+                    {% elif column.accessor == "average_time_to_acknowledge" or column.accessor == 'average_time_to_address' %}
+                        <th {{ column.attrs.th.as_html }}><a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">{{ column.header }}</a></th>
+                    {% elif column.accessor == 'happy_outcome' or column.accessor == 'happy_service' %}
+                        <th {{ column.attrs.th.as_html }}><a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">{{ column.header }}</a></th>
+                    {% elif column.accessor == 'average_recommendation_rating' %}
+                        <th>Rating</th>
+                    {% else %}
+                        <th></th>
+                    {% endif %}
 
-                {% with table.columns.average_time_to_acknowledge as column %}
-                <th {{ column.attrs.th.as_html }}><a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">Acknowledge</a></th>
-                {% endwith %}
-
-                {% with table.columns.average_time_to_address as column %}
-                <th {{ column.attrs.th.as_html }}><a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">Respond</a></th>
-                {% endwith %}
-
-                {% with table.columns.happy_service as column %}
-                <th {{ column.attrs.th.as_html }}><a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">Service</a></th>
-                {% endwith %}
-
-                {% with table.columns.happy_outcome as column %}
-                <th {{ column.attrs.th.as_html }}><a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">Outcome</a></th>
-                {% endwith %}
-
-                <th class="filters__dropdown-wrap">
-                    <div class="filters__dropdown  filters__dropdown--last">
-                        <select id="reviews-interval-filters">
-                            <option value='reviews_week'>In the last week</option>
-                            <option value='reviews_four_weeks'>In the last 30 days</option>
-                            <option value='reviews_six_months'>In the last 6 months</option>
-                            <option value='reviews_all_time' selected>All time</option>
-                        </select>
-                    </div>
-
-                </th>
-                <th>Score</th>
+                {% endfor %}
             </tr>
 
         </thead>
@@ -98,3 +77,27 @@
 
 
 {% endblock table %}
+
+{% block extra_js %}
+    <script src="{% static 'js/underscore.min.js' %}"></script>
+    <script type="text/x-underscore-template" name="problems-filters">
+        <div class="filters__dropdown  filters__dropdown--last">
+            <select id="problems-interval-filters">
+                <option value='week' <% if (selectedColumn === "week") { %>selected<%}%>>In the last week</option>
+                <option value='four_weeks' <% if (selectedColumn === "four_weeks") { %>selected<%}%>>In the last 30 days</option>
+                <option value='six_months' <% if (selectedColumn === "six_months") { %>selected<%}%>>In the last 6 months</option>
+                <option value='all_time' <% if (selectedColumn === "all_time") { %>selected<%}%>>All time</option>
+            </select>
+        </div>
+    </script>
+    <script type="text/x-underscore-template" name="reviews-filters">
+        <div class="filters__dropdown  filters__dropdown--last">
+            <select id="reviews-interval-filters">
+                <option value='reviews_week' <% if (selectedColumn === "reviews_week") { %>selected<%}%>>In the last week</option>
+                <option value='reviews_four_weeks' <% if (selectedColumn === "reviews_four_weeks") { %>selected<%}%>>In the last 30 days</option>
+                <option value='reviews_six_months' <% if (selectedColumn === "reviews_six_months") { %>selected<%}%>>In the last 6 months</option>
+                <option value='reviews_all_time' <% if (selectedColumn === "reviews_all_time") { %>selected<%}%>>All time</option>
+            </select>
+        </div>
+    </script>
+{% endblock extra_js %}
