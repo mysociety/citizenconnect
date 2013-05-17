@@ -60,8 +60,8 @@
     $(function(){
 
         var qs = $.QueryString;
-        var selectedProblemInterval = (qs.hasOwnProperty['problems_interval']) ? qs['problems_interval'] : 'all_time';
-        var selectedReviewInterval = (qs.hasOwnProperty['reviews_interval']) ? qs['reviews_interval'] : 'reviews_all_time';
+        var selectedProblemInterval = (qs.hasOwnProperty('problems_interval')) ? qs['problems_interval'] : 'all_time';
+        var selectedReviewInterval = (qs.hasOwnProperty('reviews_interval')) ? qs['reviews_interval'] : 'reviews_all_time';
         var problemFiltersTemplate = $("script[name=problems-filters]").text();
         var reviewFiltersTemplate = $("script[name=reviews-filters]").text();
 
