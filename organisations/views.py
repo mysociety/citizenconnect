@@ -406,11 +406,21 @@ class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
         organisation_rows = self.get_interval_counts(problem_filters=problem_filters,
                                                      organisation_filters=organisation_filters,
                                                      threshold=threshold)
-        organisations_table = self.summary_table_class(organisation_rows, cobrand=kwargs['cobrand'])
+        organisations_table = self.summary_table_class(organisation_rows,
+                                                       cobrand=kwargs['cobrand'])
 
         RequestConfig(self.request, paginate={"per_page": 8}).configure(organisations_table)
         context['table'] = organisations_table
         context['page_obj'] = organisations_table.page
+
+        # If a specific interval is requested, we need to pull out that column
+        # so that the template can know to alter the heading which covers all
+        # of those intervals to show the right sorting link
+        problems_interval = self.request.GET.get('problems_interval', 'all_time')
+        context['problems_sort_column'] = organisations_table.columns[problems_interval]
+        reviews_interval = self.request.GET.get('reviews_interval', 'reviews_all_time')
+        context['reviews_sort_column'] = organisations_table.columns[reviews_interval]
+
         return context
 
     def get_interval_counts(self, problem_filters, organisation_filters, threshold):
@@ -424,10 +434,11 @@ class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
             interval, cutoff = threshold
         for problem_data, review_data in zip(organisation_problem_data, organisation_review_data):
             if (not threshold) or (problem_data[interval] >= cutoff or
-                                review_data['reviews_' + interval] >= cutoff):
+                review_data['reviews_' + interval] >= cutoff):
                 organisation_data.append(dict(problem_data.items() + review_data.items()))
 
         return organisation_data
+
 
 class PrivateNationalSummary(Summary):
     template_name = 'organisations/national_summary.html'
