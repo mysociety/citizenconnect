@@ -4,6 +4,8 @@ from StringIO import StringIO
 import requests
 from mock import MagicMock
 
+from selenium.webdriver.common.action_chains import ActionChains
+
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.core.management import call_command
@@ -112,17 +114,55 @@ class ReviewFormViewTest(ReviewFormViewBase, TestCase):
     def test_form_requires_tandc_agreement(self):
         self.review_post_data['agree_to_terms'] = False
         resp = self.client.post(self.review_form_url, self.review_post_data)
-        self.assertFormError(resp, 'form', 'agree_to_terms', 'You must agree to the terms and conditions to use this service.')
+        self.assertFormError(resp, 'form', 'agree_to_terms',
+                             'You must agree to the terms and conditions to use this service.')
 
 
 class ReviewFormViewBrowserTest(ReviewFormViewBase, SeleniumTestCase):
+
+    def set_rating(self, rating_select_name, score):
+
+        # Find the element
+        rating_select = self.driver.find_element_by_name(rating_select_name)
+
+        # FIXME - this is wrong. Parent is not the dom tree parent :(
+        rating_element = rating_select.parent.find_element_by_class_name(
+            'rateit-range')
+
+        # import IPython
+        # IPython.embed()
+
+        # Do the math to work out where on the rating element to click
+        element_width = rating_element.size['width']
+        element_height = rating_element.size['height']
+        star_count = 5
+        star_width = element_width / float(star_count)
+        horizontal_offset = int(
+            score * star_width - star_width / 2)  # can go negative - works for score of 0 :)
+        vertical_offset = int(element_height / 2)
+
+        # go to element, position mouse and click.
+        ActionChains(self.driver).move_to_element_with_offset(
+            rating_element, horizontal_offset, vertical_offset
+        ).click(None).perform()
+
+    def get_rating(self, rating_select_name):
+        rating_select = self.driver.find_element_by_name(rating_select_name)
+        return int(rating_select.get_attribute('value'))
 
     def test_star_ratings(self):
         d = self.driver
         d.get(self.full_url(self.review_form_url))
 
-        # import pdb
-        # pdb.set_trace()
+        answer_names = []
+        for select in d.find_elements_by_css_selector('.review-form__rating-answer select'):
+            answer_names.append(select.get_attribute('name'))
+
+        for answer_name in answer_names:
+            for score in range(6):
+                self.set_rating(answer_name, score)
+                self.assertEqual(self.get_rating(answer_name), score)
+            break  # FIXME - remove this to test all
 
 
 class PushNewReviewToChoicesCommandTest(TestCase):
