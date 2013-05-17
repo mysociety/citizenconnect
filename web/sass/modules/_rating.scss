@@ -10,6 +10,7 @@
 </div>
  *
  */
+
 .rating {
   span {
     color: $c-nhs_yellow;
@@ -22,4 +23,9 @@
     margin: 0 1px;
     &.rating__grey { color: $c-darkgrey; }
   }
+}
+
+.rating--review_details {
+  @extend .rating;
+  @extend .fr;
 }

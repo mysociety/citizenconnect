@@ -51,7 +51,13 @@ class Review(AuditedModel):
     # The name to display for the author. May be 'Anonymous'
     author_display_name = models.TextField()
     title = models.TextField()
-    content = models.TextField()
+
+    # There are three content fields to mirror the comment structure seen in
+    # the NHS API. For replies (which are just text) the content should go
+    # into the 'content' field.
+    content_liked = models.TextField(default="")
+    content_improved = models.TextField(default="")
+    content = models.TextField(default="")  # catch all
 
     # Fields we might also be able to get, but don't appear to be in API yet:
     # * visit_date

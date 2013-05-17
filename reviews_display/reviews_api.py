@@ -42,7 +42,8 @@ class ReviewsAPI(object):
             else:
                 path_elements.append('comments')
 
-            path_elements[-1] += ".atom"  # add '.atom' so we get a consistent format, which includes ratings
+            # add '.atom' so we get a consistent format, which includes ratings
+            path_elements[-1] += ".atom"
 
             start_page = self.api.construct_url(path_elements)
 
@@ -91,8 +92,15 @@ class ReviewsAPI(object):
 
         return xml
 
+    def _extract_content(self, element):
+        if element is None: return ""
+        content = ET.tostring(element, method="text", encoding='utf8')
+        content = content.decode('utf8')
+        content = content or ""
+        content = HTMLParser().unescape(content)
+        return content
+
     def convert_entry_to_review(self, entry):
-        h = HTMLParser()
 
         review = {
             "api_posting_id": entry.find('id').text,
@@ -104,13 +112,25 @@ class ReviewsAPI(object):
             "api_category": entry.find("category").get("term"),
 
             "author_display_name": entry.find("author/name").text,
-            "title":   h.unescape(entry.find('title').text or ""),
+            "title":   HTMLParser().unescape(entry.find('title').text or ""),
         }
 
-        content = ET.tostring(entry.find('content'), method="text", encoding='utf8')
-        content = content.decode('utf8')
-        content = content or ""
-        review['content'] = h.unescape(content)
+        # Extract the content so that we can manipulate it a bit
+        content_xml = entry.find('content')
+
+        if review['api_category'] == 'comment':
+
+
+            # For comments there are nested divs. Remove them, but make sure
+            # to put '\n\n' between their content so that they are not just
+            # pushed together.
+            review['content_liked'] = self._extract_content(content_xml.find('div[@id="liked"]'))
+            review['content_improved'] = self._extract_content(content_xml.find('div[@id="improved"]'))
+            review['content'] = self._extract_content(content_xml.find('div[@id="anythingElse"]'))
+        else:
+            review['content_liked'] = ''
+            review['content_improved'] = ''
+            review['content'] = self._extract_content(content_xml)
 
         # for replies we should extract what it is a reply to
         if review['api_category'] == 'reply':
