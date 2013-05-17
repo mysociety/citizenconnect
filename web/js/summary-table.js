@@ -60,8 +60,18 @@
     $(function(){
 
         var qs = $.QueryString;
-        var selectedProblemInterval = (qs.hasOwnProperty('problems_interval')) ? qs['problems_interval'] : 'all_time';
-        var selectedReviewInterval = (qs.hasOwnProperty('reviews_interval')) ? qs['reviews_interval'] : 'reviews_all_time';
+        var selectedProblemInterval = 'all_time';
+        if (_.has(qs, 'problems_interval')) {
+            if (_.indexOf(problemsColumns, qs.problems_interval) > -1) {
+                selectedProblemInterval = qs.problems_interval;
+            }
+        }
+        var selectedReviewInterval = 'reviews_all_time';
+        if (_.has(qs, 'reviews_interval')) {
+            if (_.indexOf(reviewsColumns, qs.reviews_interval) > -1) {
+                selectedReviewInterval = qs.reviews_interval;
+            }
+        }
         var problemFiltersTemplate = $("script[name=problems-filters]").text();
         var reviewFiltersTemplate = $("script[name=reviews-filters]").text();
 

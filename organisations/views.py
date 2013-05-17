@@ -417,9 +417,15 @@ class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
         # so that the template can know to alter the heading which covers all
         # of those intervals to show the right sorting link
         problems_interval = self.request.GET.get('problems_interval', 'all_time')
-        context['problems_sort_column'] = organisations_table.columns[problems_interval]
+        if problems_interval in organisations_table.columns:
+            context['problems_sort_column'] = organisations_table.columns[problems_interval]
+        else:
+            context['problems_sort_column'] = organisations_table.columns['all_time']
         reviews_interval = self.request.GET.get('reviews_interval', 'reviews_all_time')
-        context['reviews_sort_column'] = organisations_table.columns[reviews_interval]
+        if reviews_interval in organisations_table.columns:
+            context['reviews_sort_column'] = organisations_table.columns[reviews_interval]
+        else:
+            context['reviews_sort_column'] = organisations_table.columns['reviews_all_time']
 
         return context
 
