@@ -15,8 +15,15 @@
     <div class="g  one-whole">
         <div class="island">
             {% if not object.happy_service %}
-            <p class="align-center">Would you like to report this as another problem?</p>
-            <a href="{% url 'problem-form' cobrand=cobrand.name ods_code=object.organisation.ods_code %}">Report a problem with an NHS Service</a>
+                <p class="align-center">Would you like to report this as another problem?</p>
+                <div class="gw">
+                    <div class="g  two-thirds">
+                        <a class="btn  btn--big  btn--light-green" href="{% url 'problem-form' cobrand=cobrand.name ods_code=object.organisation.ods_code %}">Report a problem with an NHS Service</a>
+                    </div>
+                    <div class="g  one-third">
+                        <a class="btn  btn--big  btn--darkgrey" href="{% url 'home' cobrand=cobrand.name %}">No thanks</a>
+                    </div>
+                </div>
             {% else %}
                 <p class="align-center">Would you like to leave a review of your experience?</p>
                 <div class="gw">
