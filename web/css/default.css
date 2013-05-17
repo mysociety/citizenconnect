@@ -525,14 +525,16 @@ table .icon-warning { font-size: 1.375em; color: #d81e05; line-height: 0; }
 .problem-table--expanded tr td:last-child, .problem-table--expanded tr:first-child td:last-child, .problem-table--expanded tr:last-child td:last-child { -webkit-border-radius: 0 5px 5px 0; -moz-border-radius: 0 5px 5px 0; -ms-border-radius: 0 5px 5px 0; -o-border-radius: 0 5px 5px 0; border-radius: 0 5px 5px 0; }
 
 /** A square table with options for split cols and highlights */
-.summary-table th { font-weight: bold; padding: 0; border-bottom: 0; }
+.summary-table { border: 2px solid #dddddd; }
+.summary-table th { font-weight: bold; padding: 0; border-bottom: 0; border-left: 2px solid #dddddd; }
 .summary-table th a { display: block; padding: 1em 0.5em; }
-.summary-table .summary-table__subhead th { font-weight: normal; padding: 0.5em 0; background-color: #f2f2f2; }
+.summary-table .summary-table__subhead th { font-weight: normal; padding: 0.5em 0; background-color: #dbdbdb; }
 .summary-table .summary-table__subhead th a { display: block; padding: 0 0.5em; }
-.summary-table td { border-left: 1px solid #dddddd; }
+.summary-table td { border-left: 2px solid #dddddd; }
 .summary-table td:first-child { border-left: 0; }
 .summary-table tr:last-child td { border-bottom: 0; }
 .summary-table .summary-table__cell-no-border { border-left: 0; }
+.summary-table td.average_time_to_address, .summary-table td.happy_outcome, .summary-table td.problems-received, .summary-table td.reviews-recieved { border-left-width: 1px; }
 .summary-table tbody tr:nth-of-type(even) td { background: #f2f2f2; }
 .summary-table tbody tr.summary-table__highlight td { background-color: #d81e05; color: white; font-weight: bold; border-color: #d81e05; border-top: 2px solid #d81e05; border-bottom: 2px solid #d81e05; }
 .summary-table .filters__dropdown { margin: -0.5em 0; }
@@ -918,8 +920,10 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .header .header__pre-heading { font-size: 1.25em; font-weight: normal; color: #aaaaaa; margin-bottom: 0; }
 
 /** Filter bar with styled select elements */
-.filters { margin-top: 2.5em; margin-bottom: 2.5em; }
+.filters { padding-top: 1em; border-top: 0.25em solid #dddddd; margin-top: 2.5em; margin-bottom: 2.5em; }
 .filters p { margin: 0; font-size: 1.25em; }
+
+th .filters__dropdown select { font-size: 1em; }
 
 .filters__dropdown-wrap label { font-weight: normal; font-size: 0.75em; color: #666; margin-bottom: 0; }
 .filters__dropdown-wrap .filters__dropdown { position: relative; border-right: 2px solid white; background-color: #2f9aa8; background-image: url(../img/select_arrow.png); background-repeat: no-repeat; background-position: 95% center; font-weight: bold; -webkit-text-overflow: ellipsis; -moz-text-overflow: ellipsis; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; }
@@ -931,7 +935,8 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .filters__dropdown-wrap .filters__dropdown--default select:focus { color: #333; }
 .filters__dropdown-wrap select { background-color: transparent; -webkit-appearance: none; -moz-appearance: window; appearance: none; border: none; width: 100%; padding: 1em 2.5em 1em 0.5em; margin: 0; font-size: 0.8125em; -webkit-border-radius: 0; -moz-border-radius: 0; -ms-border-radius: 0; -o-border-radius: 0; border-radius: 0; }
 
-.filters__button { padding: 0.7em 1.5em; margin: 0em 0 0.5em 20px; }
+.filters__button { padding: 0.7em 0.8em; margin: 1.1em 0 0.5em 1em; }
+@media only screen and (max-width: 480px) { .filters__button { margin-left: 0; } }
 
 .pagination { list-style: none; padding: 0; width: 100%; text-align: center; }
 .pagination li { display: inline-block; *display: inline; *zoom: 1; margin: 0 0.125em; }

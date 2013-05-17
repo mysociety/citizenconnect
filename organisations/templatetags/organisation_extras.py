@@ -6,6 +6,17 @@ from django.utils.encoding import force_unicode
 
 register = template.Library()
 
+@register.filter(is_safe=True)
+def star_class(rating, current):
+    """
+    Should we fill in this star?
+    """
+    if rating >= current:
+        return 'icon-star'
+    elif rating >= (current - 0.5):
+        return 'icon-star-2'
+    else:
+        return 'icon-star-3'
 
 @register.filter(is_safe=True)
 def percent(decimal):
@@ -26,6 +37,10 @@ def formatted_time_interval(time_in_minutes):
         return u'—'
     time_in_days = time_in_minutes/60/24
     time_in_days = "{0:.0f}".format(time_in_days)
+    if time_in_days == '1':
+        time_in_days = time_in_days + " day"
+    else:
+        time_in_days = time_in_days + " days"
     return time_in_days
 
 
