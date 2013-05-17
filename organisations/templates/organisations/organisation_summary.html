@@ -59,57 +59,46 @@
 
 {% include 'organisations/includes/filters.html' %}
 
-<div class="header">
-    <h2>All statistics</h2>
-</div>
-
 <div class="table-wrapper">
-    <table>
+    <table class="summary-table--organisation">
         <thead>
             <tr>
-                <th class="table__title">Issue Type</th>
+                <th class="status">Status</th>
+                <th colspan="4">Problems Received:</th>
+                {% if organisation.has_time_limits %}
+                    <th colspan="2">Average Time to:</th>
+                {% endif %}
+                <th colspan="2">Satisfaction:</th>
+            </tr>
+            <tr class="summary-table__subhead">
+                <th></th>
                 <th>Last 7 days</th>
                 <th>Last 4 weeks</th>
                 <th>Last 6 months</th>
-                <th class="separator">All time</th>
+                <th>All time</th>
                 {% if organisation.has_time_limits %}
-                    <th>Average days to acknowledge</th>
-                    <th class="separator">Average days to address</th>
+                    <th>Acknowledge</th>
+                    <th>Respond</th>
                 {% endif %}
-                <th>% Happy with service</th>
-                <th>% Happy with outcome</th>
+                <th>Service</th>
+                <th>Outcome</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td class="table__heading">Total Problems Reported<br/><em>of which:</em></td>
-                <td>{{ problems_total.week }}</td>
-                <td>{{ problems_total.four_weeks }}</td>
-                <td>{{ problems_total.six_months }}</td>
-                <td class="separator">{{ problems_total.all_time }}</td>
-                {% if organisation.has_time_limits %}
-                    <td>{{ problems_summary_stats.average_time_to_acknowledge|formatted_time_interval }}</td>
-                    <td class="separator">{{ problems_summary_stats.average_time_to_address|formatted_time_interval }}</td>
-                {% endif %}
-                <td>{{ problems_summary_stats.happy_service|percent }}
-                </td>
-                <td>{{ problems_summary_stats.happy_outcome|percent }}
-                </td>
-            </tr>
             {% for status in problems_by_status %}
             <tr {% if forloop.last %}class="table__footer"{% endif %}>
 
-                <td class="table__label">{{ status.description }}</td>
-                <td>{{ status.week }}</td>
-                <td>{{ status.four_weeks }}</td>
-                <td>{{ status.six_months }}</td>
-                <td class="separator">{{ status.all_time }}</td>
+                <td class="status">{{ status.description }}</td>
+                <td class="week">{{ status.week }}</td>
+                <td class="four_weeks">{{ status.four_weeks }}</td>
+                <td class="six_months">{{ status.six_months }}</td>
+                <td class="all_time">{{ status.all_time }}</td>
                 {% if organisation.has_time_limits %}
-                    <td id="status_{{status.status}}_time_to_acknowledge">{% if status.hidden %}—{% else %}{{ status.average_time_to_acknowledge|formatted_time_interval }}{% endif %}</td>
-                    <td class="separator" id="status_{{status.status}}_time_to_address">{% if status.hidden %}—{% else %}{{ status.average_time_to_address|formatted_time_interval }}{% endif %}</td>
+                    <td class="average_time_to_acknowledge" id="status_{{status.status}}_time_to_acknowledge">{% if status.hidden %}—{% else %}{{ status.average_time_to_acknowledge|formatted_time_interval }}{% endif %}</td>
+                    <td class="average_time_to_address" id="status_{{status.status}}_time_to_address">{% if status.hidden %}—{% else %}{{ status.average_time_to_address|formatted_time_interval }}{% endif %}</td>
                 {% endif %}
-                <td id="status_{{status.status}}_happy_service">{% if status.hidden %}—{% else %}{{ status.happy_service|percent }}{% endif %}</td>
-                <td id="status_{{status.status}}_happy_outcome">{% if status.hidden %}—{% else %}{{ status.happy_outcome|percent }}{% endif %}</td>
+                <td class="happy_service" id="status_{{status.status}}_happy_service">{% if status.hidden %}—{% else %}{{ status.happy_service|percent }}{% endif %}</td>
+                <td class="happy_outcome" id="status_{{status.status}}_happy_outcome">{% if status.hidden %}—{% else %}{{ status.happy_outcome|percent }}{% endif %}</td>
             </tr>
             {% endfor %}
         </tbody>

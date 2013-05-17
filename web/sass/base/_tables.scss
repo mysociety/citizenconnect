@@ -295,6 +295,32 @@ table {
   .filters__dropdown { margin: -0.5em 0; }
 }
 
+.summary-table--organisation {
+  @extend .summary-table;
+
+  border:none;
+
+  th {
+    padding: 1em 0.5em;
+  }
+
+  th.status,
+  td.status {
+    text-align: left;
+    font-weight: bold;
+    padding-left: 1em;
+    border-left: none;
+  }
+
+  td.four_weeks,
+  td.six_months,
+  td.all_time,
+  td.happy_outcome,
+  td.average_time_to_address {
+    border-left-width: 1px;
+  }
+}
+
 
 .table-link__row:hover td {
   background-color: $c-table-row-hover-bg;
