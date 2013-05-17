@@ -39,8 +39,10 @@ class RatingForm(forms.ModelForm):
     def __init__(self, question, *args, **kwargs):
         super(RatingForm, self).__init__(*args, **kwargs)
         self.fields['question'].label = question.title
+
         self.fields['answer'].queryset = question.answers.all()
         self.fields['answer'].empty_label = '-- please select one --'
+        self.fields['answer'].widget.attrs.update({'class': 'review-form__rating-answer'})
 
     class Meta:
         model = Rating

@@ -53,9 +53,10 @@
             {% for hidden in form.hidden_fields %}
                 {{ hidden }}
             {% endfor %}
-            <p class="info">{{ form.question.label }}</p>
 
             {{ form.answer }}
+
+            <p class="info">{{ form.question.label }}</p>
 
             {% include "message_list.html" with messages=form.answer.errors message_type='error' %}
 
