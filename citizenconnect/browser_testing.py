@@ -12,6 +12,16 @@ from django.utils import unittest
     "Skipping selenium tests because env 'SKIP_BROWSER_TESTS' is true"
 )
 class SeleniumTestCase(LiveServerTestCase):
+    """
+    from citizenconnect.browser_testing import SeleniumTestCase
+    class FooTests(FooBase, SeleniumTestCase):
+        def setUp(self):
+            super(FooTests, self).setUp()
+
+        def test_foo(self):
+            d = self.driver
+            d.get(self.full_url(self.foo_url))
+    """
 
     @classmethod
     def setUpClass(cls):
