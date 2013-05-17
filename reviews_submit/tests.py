@@ -62,6 +62,7 @@ class ReviewFormViewTest(TestCase):
                                  'month_year_of_visit_month': 1,
                                  'month_year_of_visit_year': 2013,
                                  'organisation': self.organisation.id,
+                                 'agree_to_terms': True,
                                  '1-question': 1,
                                  '1-answer': 1,
                                  '2-question': 2,
@@ -102,6 +103,11 @@ class ReviewFormViewTest(TestCase):
         self.assertEquals(self.organisation.submitted_reviews.count(), 0)
         # For some reason, assertFormError doesn't like this error
         self.assertContains(resp, "The month and year of visit can&#39;t be in the future")
+
+    def test_form_requires_tandc_agreement(self):
+        self.review_post_data['agree_to_terms'] = False
+        resp = self.client.post(self.review_form_url, self.review_post_data)
+        self.assertFormError(resp, 'form', 'agree_to_terms', 'You must agree to the terms and conditions to use this service.')
 
 
 class PushNewReviewToChoicesCommandTest(TestCase):

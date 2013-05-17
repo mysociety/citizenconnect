@@ -9,6 +9,9 @@ from .widgets import MonthYearWidget
 
 class ReviewForm(forms.ModelForm):
 
+    # A check to make sure that people have read the T's & C's
+    agree_to_terms = forms.BooleanField(required=True,
+                                        error_messages={'required': 'You must agree to the terms and conditions to use this service.'})
     def __init__(self, *args, **kwargs):
         super(ReviewForm, self).__init__(*args, **kwargs)
 

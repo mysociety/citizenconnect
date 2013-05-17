@@ -104,9 +104,18 @@
         </fieldset>
 
 
-        <fieldset>
-            <button class="btn  fr" type="submit">Submit</button>
+        <fieldset class="island">
+            <ul class="gw">
+                <li class="g  two-halfs">
+                    <label for="id_agree_to_terms" class="label-checkbox">{{ form.agree_to_terms }} I have read and agree to the <a href="{% url 'about' cobrand=cobrand.name %}">Terms and Conditions</a></label>
+                    {% include "message_list.html" with messages=form.agree_to_terms.errors message_type='error' %}
+                </li>
+                <li class="g  one-half">
+                    <button class="btn  fr" type="submit">Submit</button>
+                </li>
+            </ul>
         </fieldset>
+
     </form>
 </div>
 {% endblock %}
