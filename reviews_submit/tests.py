@@ -10,6 +10,7 @@ from django.core.management import call_command
 from django.utils import timezone
 from django.conf import settings
 
+from citizenconnect.browser_testing import SeleniumTestCase
 from organisations.tests.models import create_test_organisation
 from .models import Review, Question, Rating
 from .management.commands.push_new_reviews_to_choices import Command as PushReviewsCommand
@@ -112,6 +113,16 @@ class ReviewFormViewTest(ReviewFormViewBase, TestCase):
         self.review_post_data['agree_to_terms'] = False
         resp = self.client.post(self.review_form_url, self.review_post_data)
         self.assertFormError(resp, 'form', 'agree_to_terms', 'You must agree to the terms and conditions to use this service.')
+
+
+class ReviewFormViewBrowserTest(ReviewFormViewBase, SeleniumTestCase):
+
+    def test_star_ratings(self):
+        d = self.driver
+        d.get(self.full_url(self.review_form_url))
+
+        # import pdb
+        # pdb.set_trace()
 
 
 class PushNewReviewToChoicesCommandTest(TestCase):
