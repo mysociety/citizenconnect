@@ -53,7 +53,9 @@ def create_test_review(attributes, ratings_attributes):
         'api_updated': now,
         'author_display_name': 'Fred Smith',
         'title': 'Wonderful staff and treatment',
-        'content': 'What a marvelous service the NHS is!',
+        'content_liked': 'Things I liked',
+        'content_improved': 'Things that could be improved',
+        'content': 'What a marvellous service the NHS is!',
     }
 
     default_attributes.update(attributes)
@@ -200,7 +202,9 @@ class ReviewModelTests(TestCase):
             'api_updated': '2013-05-01T12:49:12+01:00',
             'author_display_name': 'Fred Smith',
             'title': 'Wonderful staff and treatment',
-            'content': 'What a marvelous service the NHS is!',
+            'content_liked': 'Things I liked',
+            'content_improved': 'Things that could be improved',
+            'content': 'What a marvellous service the NHS is!',
             'in_reply_to_id': None,
             'organisation_choices_id': str(self.organisation.choices_id),
             'ratings': self.sample_ratings,
@@ -216,6 +220,8 @@ class ReviewModelTests(TestCase):
         )
         self.assertEqual(review.title, self.sample_review['title'])
         self.assertEqual(review.content, self.sample_review['content'])
+        self.assertEqual(review.content_liked, self.sample_review['content_liked'])
+        self.assertEqual(review.content_improved, self.sample_review['content_improved'])
 
         # do it again (unchanged) and check it is still there
         self.assertTrue(Review.upsert_or_delete_from_api_data(
