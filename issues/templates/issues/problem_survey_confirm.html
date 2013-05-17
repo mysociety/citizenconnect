@@ -18,10 +18,10 @@
                 <p class="align-center">Would you like to report this as another problem?</p>
                 <div class="gw">
                     <div class="g  two-thirds">
-                        <a class="btn  btn--big  btn--light-green" href="{% url 'problem-form' cobrand=cobrand.name ods_code=object.organisation.ods_code %}">Report a problem with an NHS Service</a>
+                        <a class="btn  btn--big  btn--blue" href="{% url 'problem-form' cobrand=cobrand.name ods_code=object.organisation.ods_code %}">Report a problem with an NHS Service</a>
                     </div>
                     <div class="g  one-third">
-                        <a class="btn  btn--big  btn--darkgrey" href="{% url 'home' cobrand=cobrand.name %}">No thanks</a>
+                        <a class="btn  btn--big  btn--black" href="{% url 'home' cobrand=cobrand.name %}">No thanks</a>
                     </div>
                 </div>
             {% else %}
@@ -31,7 +31,7 @@
                         <a class="btn  btn--big  btn--light-green" href="{% url 'review-form' cobrand=cobrand.name ods_code=object.organisation.ods_code %}">Review and rate an NHS Service</a>
                     </div>
                     <div class="g  one-third">
-                        <a class="btn  btn--big  btn--darkgrey" href="{% url 'home' cobrand=cobrand.name %}">No thanks</a>
+                        <a class="btn  btn--big  btn--black" href="{% url 'home' cobrand=cobrand.name %}">No thanks</a>
                     </div>
                 </div>
             {% endif %}
