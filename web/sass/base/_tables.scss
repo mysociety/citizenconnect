@@ -270,9 +270,11 @@ table {
   // used for cells in double column
   .summary-table__cell-no-border { border-left: 0; }
 
-  // cells which sit inside double columns
+  // cells which sit inside double or quadruple columns
   td.average_time_to_address,
-  td.happy_outcome {
+  td.happy_outcome,
+  td.problems-received,
+  td.reviews-recieved {
     border-left-width: 1px;
   }
 
