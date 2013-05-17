@@ -48,9 +48,10 @@ class ReviewTest(TestCase):
         self.assertEqual(review.ratings.count(), 1)
 
 
-class ReviewFormViewTest(TestCase):
+class ReviewFormViewBase(object):
 
     def setUp(self):
+        super(ReviewFormViewBase, self).setUp()
         self.organisation = create_test_organisation({'ods_code': 'A111'})
         self.review_form_url = reverse('review-form', kwargs={'cobrand': 'choices',
                                                               'ods_code': self.organisation.ods_code})
@@ -77,6 +78,9 @@ class ReviewFormViewTest(TestCase):
                                  '6-answer': 26,
                                  '7-question': 7,
                                  '7-answer': 30}
+
+
+class ReviewFormViewTest(ReviewFormViewBase, TestCase):
 
     def test_homepage_links_to_reviews(self):
         home_url = reverse('home', kwargs={'cobrand': 'choices'})
