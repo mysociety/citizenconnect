@@ -68,7 +68,6 @@
     var updateSortLinks = function(intervalParamName, intervalParamValue, headerID) {
         // Loop over every sort link
         $("th.sortable a").each(function(index, element) {
-            console.log("updating link for: " + $(element).attr('href'));
             // Get the current url
             var $element = $(element);
             var href = $element.attr('href');
@@ -85,8 +84,27 @@
             newHref = "?" + $.param(qs);
             // And update the link href
             $element.attr('href', newHref);
-            console.log("updated to: " + newHref);
         });
+    };
+
+    // If we were sorting by an interval field before, and select a different
+    // one, we need to reload the page with the sort (including direction)
+    // applied to the newly selected column, because there's no way to re-sort
+    // things in javascript (because it's a paged table), and otherwise the table
+    // will still be sorted by the column we were looking at before
+    var checkCurrentSorting = function(qs, columns, intervalParamName, selectedInterval) {
+        if(_.has(qs, 'sort')) {
+            var sort = (qs['sort'].substr(0,1) === "-") ? qs['sort'].substr(1) : qs['sort'];
+            if(_.indexOf(columns, sort) > -1) {
+                // We were sorting by an interval column before
+                // what direction was the sort?
+                var direction = (qs['sort'].substr(0,1) === "-") ? "-" : "";
+                var newSort = direction + selectedInterval;
+                qs['sort'] = newSort;
+                qs[intervalParamName] = selectedInterval;
+                window.location.href = "?" + $.param(qs);
+            }
+        }
     };
 
     $(function(){
@@ -121,11 +139,14 @@
         // Things to do when the selects change
         $("#problems-interval-filters").change(function(e){
             var selected = $(this).val();
+            checkCurrentSorting(qs, problemsColumns, "problems_interval", selected);
             toggleColumns(problemsColumns, selected, problemsHeaderID);
             updateSortLinks('problems_interval', selected, problemsHeaderID);
+
         });
         $("#reviews-interval-filters").change(function(e) {
             var selected = $(this).val();
+            checkCurrentSorting(qs, reviewsColumns, "reviews_interval", selected);
             toggleColumns(reviewsColumns, selected, reviewsHeaderID);
             updateSortLinks('reviews_interval', selected, reviewsHeaderID);
         });
