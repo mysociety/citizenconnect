@@ -59,7 +59,7 @@
 .cf:before, .gw:before, .radio-list:before, .grid-wrapper:before, .island:before, .islet:before, .meta-data-sidebar .meta-data-wrap:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { content: " "; display: table; }
 .cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { clear: both; }
 
-.fr, select.review-form__rating-answer { float: right; }
+.fr, div.review-form__rating-answer { float: right; }
 
 .fl { float: left; }
 
@@ -1149,7 +1149,7 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 
 .alert--grey { background: #f2f2f2; color: #333333; }
 
-select.review-form__rating-answer { width: auto; }
+div.review-form__rating-answer { width: auto; }
 
 /* ========================================================================== Print styles. Inlined to avoid required HTTP connection: h5bp.com/r ========================================================================== */
 @media print { * { background: transparent !important; color: black !important; /* Black prints faster: h5bp.com/s */ box-shadow: none !important; text-shadow: none !important; }

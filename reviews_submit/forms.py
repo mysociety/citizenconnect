@@ -54,7 +54,6 @@ class RatingForm(forms.ModelForm):
 
         self.fields['answer'].queryset = question.answers.all()
         self.fields['answer'].empty_label = '-- please select one --'
-        self.fields['answer'].widget.attrs.update({'class': 'review-form__rating-answer'})
 
     class Meta:
         model = Rating
