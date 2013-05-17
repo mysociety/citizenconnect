@@ -1,4 +1,4 @@
-// A jQuery plugin to get queryString parameters
+// A jQuery plugin to get queryString parameters from a url
 (function($, window) {
     $.QueryString = function(a) {
         a = a.split('&');
