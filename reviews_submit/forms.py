@@ -9,6 +9,15 @@ from .widgets import MonthYearWidget
 
 class ReviewForm(forms.ModelForm):
 
+    def __init__(self, *args, **kwargs):
+        super(ReviewForm, self).__init__(*args, **kwargs)
+
+        self.fields['title'].widget.attrs.update(
+            {'placeholder': 'Please enter the title of your review'})
+
+        self.fields['comment'].widget.attrs.update(
+            {'placeholder': 'Please enter the main text of your review'})
+
     def clean_month_year_of_visit(self):
         month_year_of_visit = self.cleaned_data['month_year_of_visit']
         if month_year_of_visit > datetime.date.today():
