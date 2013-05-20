@@ -70,4 +70,19 @@ class RatingForm(forms.ModelForm):
 
 
 def ratings_forms_for_review(review, request, questions):
-    return [RatingForm(q, data=request.POST or None, prefix=q.id, instance=Rating(question=q, review=review)) for q in questions]
+
+    rating_forms = []
+    for prefix, q in enumerate(questions):
+        prefix += 1  # want these 1 based
+        instance = Rating(question=q, review=review)
+
+        rating_forms.append(
+            RatingForm(
+                q,
+                data=request.POST or None,
+                prefix=prefix,
+                instance=instance
+            )
+        )
+
+    return rating_forms

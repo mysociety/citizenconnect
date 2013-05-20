@@ -11,6 +11,7 @@ from django.core.urlresolvers import reverse
 from django.core.management import call_command
 from django.utils import timezone
 from django.conf import settings
+from django.forms.models import model_to_dict
 
 from citizenconnect.browser_testing import SeleniumTestCase
 from organisations.tests.models import create_test_organisation
@@ -67,21 +68,24 @@ class ReviewFormViewBase(object):
                                  'month_year_of_visit_year': 2013,
                                  'organisation': self.organisation.id,
                                  'agree_to_terms': True,
-                                 '1-question': 1,
-                                 '1-answer': 1,
-                                 '2-question': 2,
-                                 '2-answer': 4,
-                                 '3-question': 3,
-                                 '3-answer': 10,
-                                 '4-question': 4,
-                                 '4-answer': 16,
-                                 '5-question': 5,
-                                 '5-answer': 22,
-                                 '6-question': 6,
-                                 '6-answer': 26,
-                                 '7-question': 7,
-                                 '7-answer': 30}
+                                 }
 
+        questions = Question.objects.filter(org_type=self.organisation.organisation_type).order_by('id')
+
+        # store the questions we want to ask
+        for prefix, question in enumerate(questions):
+            prefix += 1
+
+            answer_index = (prefix-1) % 6
+            if answer_index == 5:
+                answer_id = None
+            else:
+                answer_id = question.answers.all()[answer_index].id
+
+            entry = {}
+            entry[str(prefix) + '-question'] = question.id
+            entry[str(prefix) + '-answer'] = answer_id
+            self.review_post_data.update(entry)
 
 class ReviewFormViewTest(ReviewFormViewBase, TestCase):
 
@@ -102,6 +106,34 @@ class ReviewFormViewTest(ReviewFormViewBase, TestCase):
         self.assertEquals(self.organisation.submitted_reviews.count(), 0)
         self.client.post(self.review_form_url, self.review_post_data)
         self.assertEquals(self.organisation.submitted_reviews.count(), 1)
+
+        # check details correctly stored
+        review = self.organisation.submitted_reviews.all()[0]
+        self.assertEqual(model_to_dict(review),  {
+            'id': review.id,
+            'last_sent_to_api': None,
+            'organisation': self.organisation.id,
+            'comment': self.review_post_data['comment'],
+            'display_name': self.review_post_data['display_name'],
+            'email': self.review_post_data['email'],
+            'is_anonymous': self.review_post_data['is_anonymous'],
+            'month_year_of_visit': datetime.date(self.review_post_data['month_year_of_visit_year'], self.review_post_data['month_year_of_visit_month'], 1),
+            'title': self.review_post_data['title']
+        })
+
+        # check ratings correctly stored
+        self.assertEqual(
+            review.ratings.count(), 5)  # one question not answered
+
+        for prefix, rating in enumerate(review.ratings.order_by('question__id')):
+            prefix = str(prefix + 1)
+            # print 'Q: ' + rating.question.title
+            # print 'A: ' + rating.answer.text
+
+            self.assertEqual(rating.question.id, self.review_post_data[
+                             prefix + '-question'])
+            self.assertEqual(rating.answer.id, self.review_post_data[
+                             prefix + '-answer'])
 
     def test_submitting_a_review_with_a_future_date(self):
         self.assertEquals(self.organisation.submitted_reviews.count(), 0)
