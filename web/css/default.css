@@ -1223,9 +1223,6 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .homepage-map-box { position: relative; }
 .homepage-map-box .map-links { position: absolute; top: 20%; left: 0.625em; right: 0.625em; background: white; padding: 0.625em; -webkit-border-radius: 0.3125em; -moz-border-radius: 0.3125em; -ms-border-radius: 0.3125em; -o-border-radius: 0.3125em; border-radius: 0.3125em; }
 .homepage-map-box .map-links .map-text { display: block; font-size: 0.75em; font-weight: bold; }
-.homepage-map-box .map-links .text-input { border: 1px solid #dddddd; width: 80%; float: left; margin-bottom: 0; -webkit-border-radius: 0; -moz-border-radius: 0; -ms-border-radius: 0; -o-border-radius: 0; border-radius: 0; -webkit-box-shadow: 0px 0px 0px 0px white; -moz-box-shadow: 0px 0px 0px 0px white; -ms-box-shadow: 0px 0px 0px 0px white; -o-box-shadow: 0px 0px 0px 0px white; box-shadow: 0px 0px 0px 0px white; }
-@media only screen and (min-width: 481px) and (max-width: 1023px) { .homepage-map-box .map-links .text-input { width: 70%; } }
-.homepage-map-box .map-links button { float: right; padding: 0.625em; padding-bottom: 0.5em; -webkit-border-radius: 0; -moz-border-radius: 0; -ms-border-radius: 0; -o-border-radius: 0; border-radius: 0; }
 
 /** 999/111 links at bottom of page */
 .link-999 { color: #888888; font-size: 1.4375em; font-weight: bold; text-decoration: none; padding-top: 0.65217em; }

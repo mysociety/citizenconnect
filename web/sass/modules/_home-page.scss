@@ -38,21 +38,6 @@
       font-size: (12px / $font-size-base) + em;
       font-weight: bold;
     }
-    .text-input {
-      border: 1px solid $c-homepage-map-box-text-input-border;
-      width: 80%;
-      float: left;
-      margin-bottom: 0;
-      @include vendor(border-radius, 0);
-      @include vendor(box-shadow, 0px 0px 0px 0px $c-homepage-map-box-text-input-shadow);
-      @include media-query(lap){ width: 70%; }
-    }
-    button {
-      float: right;
-      padding: ($grid-gutter / 2) + em;
-      padding-bottom: ($grid-gutter / 2.5) + em;
-      @include vendor(border-radius, 0);
-    }
   }
 }
 
