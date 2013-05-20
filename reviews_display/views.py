@@ -25,10 +25,12 @@ class ReviewOrganisationList(OrganisationAwareViewMixin,
 
     def get_context_data(self, **kwargs):
         context = super(ReviewOrganisationList, self).get_context_data(**kwargs)
-        table = ReviewTable(self.organisation.reviews.all())
+        all_reviews = self.organisation.reviews.all()
+        table = ReviewTable(all_reviews)
         RequestConfig(self.request, paginate={'per_page': 8}).configure(table)
         context['table'] = table
         context['page_obj'] = table.page
+        context['total_reviews'] = all_reviews.count()
         return context
 
 

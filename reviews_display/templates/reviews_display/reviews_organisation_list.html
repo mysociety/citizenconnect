@@ -9,7 +9,7 @@
 {% block content %}
 
 <div class="header">
-    <h1>{{ organisation.name }} Reviews ({{ object_list.count }})</h1>
+    <h1>{{ organisation.name }} Reviews ({{ total_reviews }})</h1>
 </div>
 
 {% include "organisations/includes/organisation_tabs.html" with active_tab='reviews' %}
