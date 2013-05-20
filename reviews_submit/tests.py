@@ -87,26 +87,7 @@ class ReviewFormViewBase(object):
             entry[str(prefix) + '-answer'] = answer_id
             self.review_post_data.update(entry)
 
-class ReviewFormViewTest(ReviewFormViewBase, TestCase):
-
-    def test_homepage_links_to_reviews(self):
-        home_url = reverse('home', kwargs={'cobrand': 'choices'})
-        reviews_url = reverse('reviews-pick-provider', kwargs={'cobrand': 'choices'})
-        resp = self.client.get(home_url)
-        self.assertContains(resp, reviews_url)
-
-    def test_review_form_exists(self):
-        resp = self.client.get(self.review_form_url)
-        self.assertContains(resp, 'Reviewing <strong>%s</strong>' % self.organisation.name, count=1, status_code=200)
-        self.assertTrue('organisation' in resp.context)
-        self.assertEquals(resp.context['organisation'].pk, self.organisation.pk)
-        self.assertTrue('rating_forms' in resp.context)
-
-    def test_submitting_a_valid_review(self):
-        self.assertEquals(self.organisation.submitted_reviews.count(), 0)
-        self.client.post(self.review_form_url, self.review_post_data)
-        self.assertEquals(self.organisation.submitted_reviews.count(), 1)
-
+    def assert_review_correctly_stored(self):
         # check details correctly stored
         review = self.organisation.submitted_reviews.all()[0]
         self.assertEqual(model_to_dict(review),  {
@@ -134,6 +115,29 @@ class ReviewFormViewTest(ReviewFormViewBase, TestCase):
                              prefix + '-question'])
             self.assertEqual(rating.answer.id, self.review_post_data[
                              prefix + '-answer'])
+
+
+class ReviewFormViewTest(ReviewFormViewBase, TestCase):
+
+    def test_homepage_links_to_reviews(self):
+        home_url = reverse('home', kwargs={'cobrand': 'choices'})
+        reviews_url = reverse('reviews-pick-provider', kwargs={'cobrand': 'choices'})
+        resp = self.client.get(home_url)
+        self.assertContains(resp, reviews_url)
+
+    def test_review_form_exists(self):
+        resp = self.client.get(self.review_form_url)
+        self.assertContains(resp, 'Reviewing <strong>%s</strong>' % self.organisation.name, count=1, status_code=200)
+        self.assertTrue('organisation' in resp.context)
+        self.assertEquals(resp.context['organisation'].pk, self.organisation.pk)
+        self.assertTrue('rating_forms' in resp.context)
+
+    def test_submitting_a_valid_review(self):
+        self.assertEquals(self.organisation.submitted_reviews.count(), 0)
+        self.client.post(self.review_form_url, self.review_post_data)
+        self.assertEquals(self.organisation.submitted_reviews.count(), 1)
+
+        self.assert_review_correctly_stored()
 
     def test_submitting_a_review_with_a_future_date(self):
         self.assertEquals(self.organisation.submitted_reviews.count(), 0)
