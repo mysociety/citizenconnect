@@ -1216,6 +1216,11 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .bordered-box { overflow: hidden; display: block; background: white; border: 0.25em solid #dddddd; -webkit-border-radius: 0.625em; -moz-border-radius: 0.625em; -ms-border-radius: 0.625em; -o-border-radius: 0.625em; border-radius: 0.625em; }
 
 /** Markup specific to the homepage */
+.homepage-problem-search label { color: #888888; margin: 0.5em 0 1em 0; font-weight: normal; }
+.homepage-problem-search .text-input { border: 1px solid white; width: 85%; float: left; margin-bottom: 0; -webkit-border-radius: 0; -moz-border-radius: 0; -ms-border-radius: 0; -o-border-radius: 0; border-radius: 0; -webkit-box-shadow: 0px 0px 0px 0px white; -moz-box-shadow: 0px 0px 0px 0px white; -ms-box-shadow: 0px 0px 0px 0px white; -o-box-shadow: 0px 0px 0px 0px white; box-shadow: 0px 0px 0px 0px white; }
+@media only screen and (min-width: 481px) and (max-width: 1023px) { .homepage-problem-search .text-input { width: 70%; } }
+.homepage-problem-search button { -webkit-border-radius: 0.3125em; -moz-border-radius: 0.3125em; -ms-border-radius: 0.3125em; -o-border-radius: 0.3125em; border-radius: 0.3125em; padding: 0.5em; }
+
 .homepage-map-box { position: relative; }
 .homepage-map-box form { position: absolute; top: 35%; left: 0.625em; right: 0.625em; background: white; padding: 0.625em; -webkit-border-radius: 0.3125em; -moz-border-radius: 0.3125em; -ms-border-radius: 0.3125em; -o-border-radius: 0.3125em; border-radius: 0.3125em; }
 .homepage-map-box form label { display: block; font-size: 0.75em; font-weight: bold; }
