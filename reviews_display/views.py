@@ -1,16 +1,9 @@
 
-from django.views.generic import ListView, DetailView, TemplateView
+from django.views.generic import DetailView, TemplateView
 from django_tables2 import RequestConfig
 
-from .models import Review
 from .tables import ReviewTable
 from organisations.views import OrganisationAwareViewMixin
-
-
-class ReviewList(ListView):
-    paginate_by = 10
-    model = Review
-    context_object_name = 'reviews'
 
 
 class ReviewLoadOrganisationBase(OrganisationAwareViewMixin):
