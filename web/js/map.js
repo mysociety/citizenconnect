@@ -246,9 +246,11 @@ $(document).ready(function () {
     };
 
     wax.tilejson('https://dnv9my2eseobd.cloudfront.net/v3/jedidiah.map-3lyys17i.jsonp', function(tilejson) {
-        map.addLayer(new wax.leaf.connector(httpstilejson)).setView(londonCentre, 1);
+        var mapCentre = isNorthEast ? northEastCentre : londonCentre;
+        var mapZoomLevel = isNorthEast ? northEastZoomLevel : londonZoomLevel;
 
-        map.setView(londonCentre, londonZoomLevel);
+        map.addLayer(new wax.leaf.connector(httpstilejson)).setView(mapCentre, 1);
+        map.setView(mapCentre, mapZoomLevel);
 
         map.on('dragend zoomend', function(e) {
 
