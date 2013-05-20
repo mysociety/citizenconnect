@@ -78,7 +78,7 @@ class ReviewFormViewBase(object):
 
             answer_index = (prefix-1) % 6
             if answer_index == 5:
-                answer_id = None
+                answer_id = ''
             else:
                 answer_id = question.answers.all()[answer_index].id
 
@@ -103,9 +103,6 @@ class ReviewFormViewBase(object):
         })
 
         # check ratings correctly stored
-        self.assertEqual(
-            review.ratings.count(), 5)  # one question not answered
-
         for prefix, rating in enumerate(review.ratings.order_by('question__id')):
             prefix = str(prefix + 1)
             # print 'Q: ' + rating.question.title
@@ -113,8 +110,14 @@ class ReviewFormViewBase(object):
 
             self.assertEqual(rating.question.id, self.review_post_data[
                              prefix + '-question'])
-            self.assertEqual(rating.answer.id, self.review_post_data[
+
+            answer_id = rating.answer.id if rating.answer else ''
+            self.assertEqual(answer_id, self.review_post_data[
                              prefix + '-answer'])
+
+        # check right number in db
+        self.assertEqual(
+            review.ratings.count(), 6)  # one question not answered
 
 
 class ReviewFormViewTest(ReviewFormViewBase, TestCase):
