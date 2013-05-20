@@ -12,7 +12,7 @@
 </div>
 
 
-<form method="post">
+<form method="post" class="feedback-form">
     {% csrf_token %}
 
     {% if form.non_field_errors %}
@@ -25,46 +25,36 @@
         {{ hidden }}
     {% endfor %}
 
-    <fieldset>
-        <legend>Are you happy with the outcome of this problem?</legend>
-        <div class="gw">
-            <div class="g  one-whole">
-                <ul class="big-radio-group  big-radio-group--horizontal">
-                    <li class="big-radio-group__first  big-radio-group--green">
-                        <div class="big-radio-group__table">
-                            <label for="id_happy_outcome_1" class="big-radio-group__row">
-                                <input type="radio" id="id_happy_outcome_1" value="True" name="happy_outcome" />
-                                <span class="big-radio-group__cell">Yes</span>
-                            </label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="big-radio-group__table">
-                            <label for="id_happy_outcome_2" class="big-radio-group__row">
-                                <input type="radio" id="id_happy_outcome_2" value="False" name="happy_outcome" />
-                                <span class="big-radio-group__cell">No</span>
-                            </label>
-                        </div>
-                    </li>
-                    <li class="big-radio-group__last">
-                        <div class="big-radio-group__table">
-                            <label for="id_happy_outcome_0" class="big-radio-group__row">
-                                <input checked="checked" type="radio" id="id_happy_outcome_0" value="" name="happy_outcome" />
-                                <span class="big-radio-group__cell">Prefer not to answer</span>
-                            </label>
-                        </div>
-                    </li>
-                </ul>
-                {% include "message_list.html" with messages=form.happy_outcome.errors message_type='error' %}
+    <p>Are you happy with the outcome of this problem?</p>
+    <ul class="big-radio-group">
+        <li class="big-radio-group__first  one-quarter">
+            <div class="big-radio-group__table">
+                <label for="id_happy_outcome_1" class="big-radio-group__row">
+                    <input type="radio" id="id_happy_outcome_1" value="True" name="happy_outcome" />
+                    <span class="big-radio-group__cell  big-radio-group__cell">Yes</span>
+                </label>
             </div>
-        </div>
-    </fieldset>
+        </li>
+        <li class="one-quarter">
+            <div class="big-radio-group__table">
+                <label for="id_happy_outcome_2" class="big-radio-group__row">
+                    <input type="radio" id="id_happy_outcome_2" value="False" name="happy_outcome" />
+                    <span class="big-radio-group__cell  big-radio-group__cell">No</span>
+                </label>
+            </div>
+        </li>
+        <li class="big-radio-group__last one-half">
+            <div class="big-radio-group__table">
+                <label for="id_happy_outcome_0" class="big-radio-group__row">
+                    <input checked="checked" type="radio" id="id_happy_outcome_0" value="" name="happy_outcome" />
+                    <span class="big-radio-group__cell  big-radio-group__cell--full">Prefer not to answer</span>
+                </label>
+            </div>
+        </li>
+    </ul>
+    {% include "message_list.html" with messages=form.happy_outcome.errors message_type='error' %}
 
-    <hr>
-
-    <fieldset>
-        <button class="btn  btn--black  fr" type="submit">Submit</button>
-    </fieldset>
+    <button class="btn  btn--black  fr" type="submit">Submit</button>
 </form>
 
 {% endblock content %}
