@@ -1171,7 +1171,7 @@ th .filters__dropdown select { font-size: 1em; }
 .site-nav { list-style: none; padding: 0; text-align: center; border-top: 1px solid #dddddd; border-bottom: 1px solid #dddddd; background-color: #f2f2f2; background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(white)); background: -webkit-linear-gradient(top, #f2f2f2, white); background: -moz-linear-gradient(top, #f2f2f2, white); background: -ms-linear-gradient(top, #f2f2f2, white); background: -o-linear-gradient(top, #f2f2f2, white); /** A tiny reset to a horizontal list, we're using inline and not floats so text-align: center works */ }
 .site-nav > li { display: inline-block; *display: inline; *zoom: 1; }
 @media only screen and (max-width: 480px) { .site-nav > li { display: block; width: 100%; } }
-.site-nav a { display: block; font-weight: bold; text-transform: uppercase; padding: 0.83333em 1.25em 0.625em 1.25em; color: #2f9aa8; text-decoration: none; }
+.site-nav a { display: block; font-weight: bold; text-transform: uppercase; padding: 0.83333em 0.875em 0.625em 0.875em; color: #2f9aa8; text-decoration: none; }
 .site-nav a:hover { color: #27808c; }
 .site-nav a.active { background: #f2f2f2; }
 @media only screen and (min-width: 481px) and (max-width: 1023px) { .site-nav a { font-size: 0.8125em; padding: 0.625em; padding-top: 0.78125em; } }
