@@ -11,9 +11,9 @@
     <ul class="site-nav">
         {% if cobrand.name == 'choices' %}
             {% url 'home' cobrand=cobrand.name as url %}
-                <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}"><span class="icon-home" aria-hidden="true"></span>&nbsp;Home</a></li>
+                <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Home</a></li>
         {% else %}
-            <li><a href="http://www.nhslondon.lampuat64-1.rroom.net/"><span class="icon-home" aria-hidden="true"></span>Home</a></li>
+            <li><a href="http://www.nhslondon.lampuat64-1.rroom.net/">Home</a></li>
         {% endif %}
 
         {% url 'about' cobrand=cobrand.name as url %}
