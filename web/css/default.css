@@ -48,16 +48,16 @@
 
 /* Contain floats: h5bp.com/q */
 /* mySociety change: rename to cf */
-.cf:before, .gw:before, .radio-list:before, .grid-wrapper:before, .island:before, .islet:before, .meta-data-sidebar .meta-data-wrap:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { content: ""; display: table; }
+.cf:before, .feedback-form:before, .feedback-form .big-radio-group:before, .gw:before, .radio-list:before, .grid-wrapper:before, .island:before, .islet:before, .meta-data-sidebar .meta-data-wrap:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .cf:after, .feedback-form:after, .feedback-form .big-radio-group:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { content: ""; display: table; }
 
-.cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { clear: both; }
+.cf:after, .feedback-form:after, .feedback-form .big-radio-group:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { clear: both; }
 
-.cf, .gw, .radio-list, .grid-wrapper, .island, .islet, .meta-data-sidebar .meta-data-wrap, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar { *zoom: 1; }
+.cf, .feedback-form, .feedback-form .big-radio-group, .gw, .radio-list, .grid-wrapper, .island, .islet, .meta-data-sidebar .meta-data-wrap, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar { *zoom: 1; }
 
 /** From inuit.css (https://github.com/csswizardry/inuit.css/)  Micro clearfix, as per: nicolasgallagher.com/micro-clearfix-hack Extend the clearfix class with Sass to avoid the `.cf` class appearing over and over in your markup. */
-.cf, .gw, .radio-list, .grid-wrapper, .island, .islet, .meta-data-sidebar .meta-data-wrap, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar { zoom: 1; }
-.cf:before, .gw:before, .radio-list:before, .grid-wrapper:before, .island:before, .islet:before, .meta-data-sidebar .meta-data-wrap:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { content: " "; display: table; }
-.cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { clear: both; }
+.cf, .feedback-form, .feedback-form .big-radio-group, .gw, .radio-list, .grid-wrapper, .island, .islet, .meta-data-sidebar .meta-data-wrap, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar { zoom: 1; }
+.cf:before, .feedback-form:before, .feedback-form .big-radio-group:before, .gw:before, .radio-list:before, .grid-wrapper:before, .island:before, .islet:before, .meta-data-sidebar .meta-data-wrap:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .cf:after, .feedback-form:after, .feedback-form .big-radio-group:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { content: " "; display: table; }
+.cf:after, .feedback-form:after, .feedback-form .big-radio-group:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { clear: both; }
 
 .fr, .rating--review_details { float: right; }
 
@@ -346,9 +346,14 @@ input[type=text]:focus, .text-input:focus, textarea:focus { -webkit-box-shadow: 
 .big-radio-group li .big-radio-group__table { display: table; width: 100%; }
 .big-radio-group li .big-radio-group__table .big-radio-group__row { display: table-row; }
 .big-radio-group li .big-radio-group__table .big-radio-group__row .big-radio-group__cell { display: table-cell; vertical-align: middle; padding-left: 10px; }
+.big-radio-group li .big-radio-group__table .big-radio-group__row .big-radio-group__cell--full { width: 100%; }
 .big-radio-group li .big-radio-group__radio { display: block; float: left; margin-right: 1em; width: 2em; height: 2em; background: #dddddd; border: 0.25em solid white; -webkit-border-radius: 1em; -moz-border-radius: 1em; -ms-border-radius: 1em; -o-border-radius: 1em; border-radius: 1em; }
 .big-radio-group li.big-radio-group--active .big-radio-group__radio { background: #e70285; }
 .big-radio-group li.big-radio-group--active.big-radio-group--green .big-radio-group__radio { background: #009e49; }
+
+.big-radio-group--horizontal { display: table; }
+.big-radio-group--horizontal ul { display: table-row; }
+.big-radio-group--horizontal li { background: none; display: table-cell; width: 33%; }
 
 .ie6 .big-radio-group, .ie7 .big-radio-group { display: block; }
 .ie6 .big-radio-group ul, .ie7 .big-radio-group ul { display: block; padding: 0; }
@@ -387,7 +392,17 @@ input[type=text]:focus, .text-input:focus, textarea:focus { -webkit-box-shadow: 
 
 .input-radio ul { padding: 0; }
 .input-radio li { display: inline; margin-right: 15px; }
-.input-radio label { display: inline; font-weight: normal; }
+
+/** Feedback form - used with `.big-radio-group--feedback` */
+.feedback-form { width: 520px; margin: 3.75em auto 0 auto; }
+.feedback-form .big-radio-group { border-bottom: 4px solid #dddddd; }
+.feedback-form .big-radio-group li { float: left; background: none; }
+.feedback-form .big-radio-group li:hover { background: none; }
+.feedback-form .big-radio-group li .big-radio-group__radio { border: 0.25em solid #c8c8c8; }
+.feedback-form .big-radio-group li.big-radio-group--active .big-radio-group__radio { background: #c8c8c8; }
+.feedback-form .big-radio-group label { font-size: 0.875em; }
+.feedback-form label { display: inline; font-weight: normal; }
+.feedback-form p { font-size: 1.25em; padding: 0 1.5em; }
 
 /* A better looking default horizontal rule */
 hr { display: block; height: 1px; border: 0; border-top: 1px solid #dddddd; margin: 1em 0; padding: 0; }
@@ -868,6 +883,12 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .btn--darkgrey { border-color: #8d8d8d; color: white; background: #aaaaaa; }
 .btn--darkgrey:hover { background: #8d8d8d; }
 
+.btn--black { border-color: #8d8d8d; color: white; background: #333333; }
+.btn--black:hover { background: #2e2e2e; }
+
+.btn--black { border-color: #8d8d8d; color: white; background: #333333; }
+.btn--black:hover { background: #2e2e2e; }
+
 /** Disabled button */
 .btn--disabled { border-color: #8d8d8d; color: white; background: #dddddd; }
 .btn--disabled:hover { background: #dddddd; }
@@ -1164,6 +1185,11 @@ th .filters__dropdown select { font-size: 1em; }
 .alert--red { background: #d81e05; }
 
 .alert--grey { background: #f2f2f2; color: #333333; }
+
+/** A grey box with buttons inside */
+.feedback-box { max-width: 720px; margin: 3.75em auto 0 auto; background: #f2f2f2; padding: 1.25em 3.75em; }
+.feedback-box p { font-size: 1.125em; margin-top: 0; text-align: center; }
+.feedback-box .btn { font-size: 1.25em; text-align: center; padding: 1em 1em; }
 
 /* ========================================================================== Print styles. Inlined to avoid required HTTP connection: h5bp.com/r ========================================================================== */
 @media print { * { background: transparent !important; color: black !important; /* Black prints faster: h5bp.com/s */ box-shadow: none !important; text-shadow: none !important; }
