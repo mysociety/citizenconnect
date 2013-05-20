@@ -105,6 +105,10 @@ textarea {
   color: $c-placeholder-color;
   font-style: italic;
 }
+::-moz-placeholder {
+  color: $c-placeholder-color;
+  font-style: italic;
+}
 :-ms-placeholder {
   color: $c-placeholder-color;
   font-style: italic;

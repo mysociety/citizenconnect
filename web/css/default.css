@@ -347,6 +347,8 @@ label.disabled, .label.disabled { -ms-filter: "progid:DXImageTransform.Microsoft
 
 :-moz-placeholder { color: #aaaaaa; font-style: italic; }
 
+::-moz-placeholder { color: #aaaaaa; font-style: italic; }
+
 :-ms-placeholder { color: #aaaaaa; font-style: italic; }
 
 .placeholder { color: #aaaaaa; font-style: italic; }
