@@ -270,6 +270,10 @@ $(document).ready(function () {
             window.location=marker.nhsCentre.url;
         });
 
+        if (isNorthEast) {
+            map.fire('dragend');
+        }
+
         // Add the markers
         drawProviders(defaultProviders);
         map.addLayer(markersGroup);
