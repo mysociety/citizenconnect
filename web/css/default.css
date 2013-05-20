@@ -849,6 +849,9 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .btn--med { width: 100%; font-size: 1.125em; line-height: 1.3; padding: 2.5em 1em; -webkit-border-radius: 0.33333em; -moz-border-radius: 0.33333em; -ms-border-radius: 0.33333em; -o-border-radius: 0.33333em; border-radius: 0.33333em; }
 @media only screen and (max-width: 480px) { .btn--med { font-size: 16px; padding: 1em; text-align: left; } }
 
+.btn--med-normal-padding { padding: 0.438em 1em; }
+@media only screen and (max-width: 480px) { .btn--med-normal-padding { padding: 1em; } }
+
 /** Remove borders */
 .btn--no-border { border: none; }
 
@@ -886,8 +889,8 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .btn--black { border-color: #8d8d8d; color: white; background: #333333; }
 .btn--black:hover { background: #2e2e2e; }
 
-.btn--black { border-color: #8d8d8d; color: white; background: #333333; }
-.btn--black:hover { background: #2e2e2e; }
+.btn--orange { border-color: #e75900; color: white; background: #ff6200; }
+.btn--orange:hover { background: #e75900; }
 
 /** Disabled button */
 .btn--disabled { border-color: #8d8d8d; color: white; background: #dddddd; }
