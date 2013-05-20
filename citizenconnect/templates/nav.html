@@ -6,27 +6,25 @@
             <div class="site-top-bar__cell">
                 <p>Currently this site is only live for parts of London and the North East - other areas will be added soon</p>
             </div>
-            <div class="site-top-bar__cell  site-top-bar__cell--nav">
-                <ul class="nav  fr">
-                    {% if cobrand.name == 'choices' %}
-                        {% url 'home' cobrand=cobrand.name as url %}
-                            <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}"><span class="icon-home" aria-hidden="true"></span>&nbsp;Home</a></li>
-                    {% else %}
-                        <li><a href="http://www.nhslondon.lampuat64-1.rroom.net/"><span class="icon-home" aria-hidden="true"></span>Home</a></li>
-                    {% endif %}
-
-                    {% url 'about' cobrand=cobrand.name as url %}
-                        <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">About</a></li>
-
-                    {% if cobrand.name == 'choices' %}
-                        <li><a {% if request.path == url %}class="active"{% endif %} href="{% url 'common-questions' cobrand=cobrand.name %}">Common questions</a></li>
-                    {% else %}
-                        <li><a href="http://www.nhslondon.lampuat64-1.rroom.net/">Common questions</a></li>
-                    {% endif %}
-                </ul>
-            </div>
         </div>
     </div>
+    <ul class="site-nav">
+        {% if cobrand.name == 'choices' %}
+            {% url 'home' cobrand=cobrand.name as url %}
+                <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}"><span class="icon-home" aria-hidden="true"></span>&nbsp;Home</a></li>
+        {% else %}
+            <li><a href="http://www.nhslondon.lampuat64-1.rroom.net/"><span class="icon-home" aria-hidden="true"></span>Home</a></li>
+        {% endif %}
+
+        {% url 'about' cobrand=cobrand.name as url %}
+            <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">About</a></li>
+
+        {% if cobrand.name == 'choices' %}
+            <li><a {% if request.path == url %}class="active"{% endif %} href="{% url 'common-questions' cobrand=cobrand.name %}">Common questions</a></li>
+        {% else %}
+            <li><a href="http://www.nhslondon.lampuat64-1.rroom.net/">Common questions</a></li>
+        {% endif %}
+    </ul>
 {% elif user.is_authenticated %}
     <div class="site-top-bar">
         <div class="site-top-bar__row">
