@@ -290,14 +290,3 @@ class BreachTable(ProblemTable):
                     'happy_outcome',
                     'summary')
         split_columns = True
-
-
-class ReviewTable(tables.Table):
-    """
-    Displays reviews that have been pulled back from the API for a given
-    organisation.
-    """
-
-    api_posting_id = tables.Column(verbose_name='Ref')
-    api_published = tables.Column(verbose_name='Received Date')
-    rating = tables.Column(verbose_name='Rating', accessor='ratings.0.score')

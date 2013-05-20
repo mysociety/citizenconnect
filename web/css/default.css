@@ -513,6 +513,7 @@ table .icon-warning { font-size: 1.375em; color: #d81e05; line-height: 0; }
 .problem-table a:hover { color: #27808c; }
 .problem-table .problem-table__flag { padding: 0 0 0 10px; position: relative; overflow: hidden; width: 25px; }
 .problem-table div { position: absolute; width: 100%; right: 0; text-transform: uppercase; color: white; text-align: center; padding-top: 5px; height: 28px; }
+.problem-table .rating, .problem-table .rating--review_details { position: relative; }
 .problem-table .problem-table__flag__breach { background: #ff8b00; top: 0; }
 .problem-table .problem-table__flag__escalate { background: #333333; bottom: 0; }
 .problem-table .breach .icon-circle { color: #d81e05; }

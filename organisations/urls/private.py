@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 
 from organisations.views import *
+from reviews_display.views import ReviewOrganisationList
 from organisations.auth import StrongSetPasswordForm, StrongPasswordChangeForm
 
 urlpatterns = patterns('',
@@ -28,7 +29,7 @@ urlpatterns = patterns('',
         kwargs={'private': True}),
 
     url(r'^reviews/(?P<ods_code>\w+)$',
-        login_required(OrganisationReviews.as_view()),
+        login_required(ReviewOrganisationList.as_view()),
         name='private-org-reviews',
         kwargs={'private': True}),
 
