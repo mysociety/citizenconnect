@@ -172,18 +172,18 @@ class ProblemSurveyFormTests(TestCase):
 
     def test_form_happy_path(self):
         resp = self.client.post(self.survey_form_url, self.form_values)
-        self.assertContains(resp, 'Thanks for answering our questions.')
+        self.assertContains(resp, 'Thanks for your feedback')
         self.test_problem = Problem.objects.get(pk=self.test_problem.id)
         self.assertEqual(self.test_problem.happy_outcome, True)
 
     def test_form_records_empty_happy_outcome(self):
         resp = self.client.post(self.survey_form_url, {'happy_outcome': ''})
-        self.assertContains(resp, 'Thanks for answering our questions.')
+        self.assertContains(resp, 'Thanks for your feedback')
         self.test_problem = Problem.objects.get(pk=self.test_problem.id)
         self.assertEqual(self.test_problem.happy_outcome, None)
 
     def test_form_records_false_happy_outcome(self):
         resp = self.client.post(self.survey_form_url, {'happy_outcome': 'False'})
-        self.assertContains(resp, 'Thanks for answering our questions.')
+        self.assertContains(resp, 'Thanks for your feedback')
         self.test_problem = Problem.objects.get(pk=self.test_problem.id)
         self.assertEqual(self.test_problem.happy_outcome, False)

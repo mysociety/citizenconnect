@@ -51,16 +51,16 @@
 
 /* Contain floats: h5bp.com/q */
 /* mySociety change: rename to cf */
-.cf:before, .gw:before, .radio-list:before, .grid-wrapper:before, .island:before, .islet:before, .meta-data-sidebar .meta-data-wrap:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .site-nav:before, .cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after, .site-nav:after { content: ""; display: table; }
+.cf:before, .feedback-form:before, .feedback-form .big-radio-group:before, .gw:before, .radio-list:before, .grid-wrapper:before, .island:before, .islet:before, .meta-data-sidebar .meta-data-wrap:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .site-nav:before, .cf:after, .feedback-form:after, .feedback-form .big-radio-group:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after, .site-nav:after { content: ""; display: table; }
 
-.cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after, .site-nav:after { clear: both; }
+.cf:after, .feedback-form:after, .feedback-form .big-radio-group:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after, .site-nav:after { clear: both; }
 
-.cf, .gw, .radio-list, .grid-wrapper, .island, .islet, .meta-data-sidebar .meta-data-wrap, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar, .site-nav { *zoom: 1; }
+.cf, .feedback-form, .feedback-form .big-radio-group, .gw, .radio-list, .grid-wrapper, .island, .islet, .meta-data-sidebar .meta-data-wrap, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar, .site-nav { *zoom: 1; }
 
 /** From inuit.css (https://github.com/csswizardry/inuit.css/)  Micro clearfix, as per: nicolasgallagher.com/micro-clearfix-hack Extend the clearfix class with Sass to avoid the `.cf` class appearing over and over in your markup. */
-.cf, .gw, .radio-list, .grid-wrapper, .island, .islet, .meta-data-sidebar .meta-data-wrap, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar, .site-nav { zoom: 1; }
-.cf:before, .gw:before, .radio-list:before, .grid-wrapper:before, .island:before, .islet:before, .meta-data-sidebar .meta-data-wrap:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .site-nav:before, .cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after, .site-nav:after { content: " "; display: table; }
-.cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after, .site-nav:after { clear: both; }
+.cf, .feedback-form, .feedback-form .big-radio-group, .gw, .radio-list, .grid-wrapper, .island, .islet, .meta-data-sidebar .meta-data-wrap, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar, .site-nav { zoom: 1; }
+.cf:before, .feedback-form:before, .feedback-form .big-radio-group:before, .gw:before, .radio-list:before, .grid-wrapper:before, .island:before, .islet:before, .meta-data-sidebar .meta-data-wrap:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .site-nav:before, .cf:after, .feedback-form:after, .feedback-form .big-radio-group:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after, .site-nav:after { content: " "; display: table; }
+.cf:after, .feedback-form:after, .feedback-form .big-radio-group:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after, .site-nav:after { clear: both; }
 
 .fr, .rating--review_details { float: right; }
 
@@ -97,7 +97,7 @@
 @media only screen and (max-width: 480px) { .mt__palm--n { margin-top: 0 !important; }
   .mb__palm--n { margin-bottom: 0 !important; } }
 /** Hide text accessibly */
-.hide-text, .rating span.hide-text { font: 0/0 a; color: transparent; text-shadow: none; background-color: transparent; border: 0; }
+.hide-text, .rating span.hide-text, .rating--grey span.hide-text, .rating--review_details span.hide-text, .rating--organisation-summary span.hide-text { font: 0/0 a; color: transparent; text-shadow: none; background-color: transparent; border: 0; }
 
 /** Text alignment */
 .align-right { text-align: right; }
@@ -176,7 +176,7 @@ mark { background: #ff0; color: #000; }
 p, pre { margin: 1em 0; }
 
 /** Correct font family set oddly in IE 6, Safari 4/5, and Chrome. */
-code, kbd, pre, samp { font-family: monospace, serif; _font-family: 'courier new', monospace; font-size: 1em; }
+code, kbd, pre, samp { font-family: monospace, serif; _font-family: "courier new", monospace; font-size: 1em; }
 
 /** Improve readability of pre-formatted text in all browsers. */
 pre { white-space: pre; white-space: pre-wrap; word-wrap: break-word; }
@@ -225,7 +225,7 @@ figure { margin: 0; }
 form { margin: 0; }
 
 /** Define consistent border, margin, and padding. */
-fieldset { border: 1px solid #c0c0c0; margin: 0 2px; padding: 0.35em 0.625em 0.75em; }
+fieldset { border: 1px solid silver; margin: 0 2px; padding: 0.35em 0.625em 0.75em; }
 
 /** 1. Correct color not being inherited in IE 6/7/8/9. 2. Correct text not wrapping in Firefox 3. 3. Correct alignment displayed oddly in IE 6/7. */
 legend { border: 0; /* 1 */ padding: 0; white-space: normal; /* 2 */ *margin-left: -7px; /* 3 */ }
@@ -324,7 +324,7 @@ label.disabled, .label.disabled { -ms-filter: "progid:DXImageTransform.Microsoft
 input[type=text], .text-input, textarea { width: 100%; display: block; margin: 0 0 1.25em 0; padding: 0.5em; border: 0; color: #333333; outline: none; -webkit-box-shadow: inset 0px 0px 3px 1px #aaaaaa; -moz-box-shadow: inset 0px 0px 3px 1px #aaaaaa; -ms-box-shadow: inset 0px 0px 3px 1px #aaaaaa; -o-box-shadow: inset 0px 0px 3px 1px #aaaaaa; box-shadow: inset 0px 0px 3px 1px #aaaaaa; -webkit-border-radius: 2px; -moz-border-radius: 2px; -ms-border-radius: 2px; -o-border-radius: 2px; border-radius: 2px; }
 input[type=text]:focus, .text-input:focus, textarea:focus { -webkit-box-shadow: inset 0px 0px 3px 1px #2f9aa8; -moz-box-shadow: inset 0px 0px 3px 1px #2f9aa8; -ms-box-shadow: inset 0px 0px 3px 1px #2f9aa8; -o-box-shadow: inset 0px 0px 3px 1px #2f9aa8; box-shadow: inset 0px 0px 3px 1px #2f9aa8; }
 
-.ie6 .text-input, .ie6 textarea, .ie7 .text-input, .ie7 textarea, .ie8 .text-input, .ie8 textarea { border: 1px solid #ccc; }
+.ie6 .text-input, .ie6 textarea, .ie7 .text-input, .ie7 textarea, .ie8 .text-input, .ie8 textarea { border: 1px solid #cccccc; }
 
 /** Placeholder styling */
 ::-webkit-input-placeholder { color: #aaaaaa; font-style: italic; }
@@ -349,9 +349,14 @@ input[type=text]:focus, .text-input:focus, textarea:focus { -webkit-box-shadow: 
 .big-radio-group li .big-radio-group__table { display: table; width: 100%; }
 .big-radio-group li .big-radio-group__table .big-radio-group__row { display: table-row; }
 .big-radio-group li .big-radio-group__table .big-radio-group__row .big-radio-group__cell { display: table-cell; vertical-align: middle; padding-left: 10px; }
+.big-radio-group li .big-radio-group__table .big-radio-group__row .big-radio-group__cell--full { width: 100%; }
 .big-radio-group li .big-radio-group__radio { display: block; float: left; margin-right: 1em; width: 2em; height: 2em; background: #dddddd; border: 0.25em solid white; -webkit-border-radius: 1em; -moz-border-radius: 1em; -ms-border-radius: 1em; -o-border-radius: 1em; border-radius: 1em; }
 .big-radio-group li.big-radio-group--active .big-radio-group__radio { background: #e70285; }
 .big-radio-group li.big-radio-group--active.big-radio-group--green .big-radio-group__radio { background: #009e49; }
+
+.big-radio-group--horizontal { display: table; }
+.big-radio-group--horizontal ul { display: table-row; }
+.big-radio-group--horizontal li { background: none; display: table-cell; width: 33%; }
 
 .ie6 .big-radio-group, .ie7 .big-radio-group { display: block; }
 .ie6 .big-radio-group ul, .ie7 .big-radio-group ul { display: block; padding: 0; }
@@ -390,7 +395,17 @@ input[type=text]:focus, .text-input:focus, textarea:focus { -webkit-box-shadow: 
 
 .input-radio ul { padding: 0; }
 .input-radio li { display: inline; margin-right: 15px; }
-.input-radio label { display: inline; font-weight: normal; }
+
+/** Feedback form - used with `.big-radio-group--feedback` */
+.feedback-form { width: 520px; margin: 3.75em auto 0 auto; }
+.feedback-form .big-radio-group { border-bottom: 4px solid #dddddd; }
+.feedback-form .big-radio-group li { float: left; background: none; }
+.feedback-form .big-radio-group li:hover { background: none; }
+.feedback-form .big-radio-group li .big-radio-group__radio { border: 0.25em solid #c8c8c8; }
+.feedback-form .big-radio-group li.big-radio-group--active .big-radio-group__radio { background: #c8c8c8; }
+.feedback-form .big-radio-group label { font-size: 0.875em; }
+.feedback-form label { display: inline; font-weight: normal; }
+.feedback-form p { font-size: 1.25em; padding: 0 1.5em; }
 
 /* A better looking default horizontal rule */
 hr { display: block; height: 1px; border: 0; border-top: 1px solid #dddddd; margin: 1em 0; padding: 0; }
@@ -871,6 +886,12 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .btn--darkgrey { border-color: #8d8d8d; color: white; background: #aaaaaa; }
 .btn--darkgrey:hover { background: #8d8d8d; }
 
+.btn--black { border-color: #8d8d8d; color: white; background: #333333; }
+.btn--black:hover { background: #2e2e2e; }
+
+.btn--black { border-color: #8d8d8d; color: white; background: #333333; }
+.btn--black:hover { background: #2e2e2e; }
+
 /** Disabled button */
 .btn--disabled { border-color: #8d8d8d; color: white; background: #dddddd; }
 .btn--disabled:hover { background: #dddddd; }
@@ -937,7 +958,7 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 th .filters__dropdown select { font-size: 1em; }
 
 .filters__dropdown-wrap label { font-weight: normal; font-size: 0.75em; color: #666; margin-bottom: 0; }
-.filters__dropdown-wrap .filters__dropdown { position: relative; border-right: 2px solid #fff; background-color: #2f9aa8; background-image: url(../img/select_arrow.png); background-repeat: no-repeat; background-position: 95% center; font-weight: bold; -webkit-text-overflow: ellipsis; -moz-text-overflow: ellipsis; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; }
+.filters__dropdown-wrap .filters__dropdown { position: relative; border-right: 2px solid white; background-color: #2f9aa8; background-image: url(../img/select_arrow.png); background-repeat: no-repeat; background-position: 95% center; font-weight: bold; -webkit-text-overflow: ellipsis; -moz-text-overflow: ellipsis; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; }
 .filters__dropdown-wrap .filters__dropdown select { color: #fff; }
 .filters__dropdown-wrap .filters__dropdown select:focus { color: #fff; }
 .filters__dropdown-wrap .filters__dropdown--last { border-right: 0; }
@@ -1069,7 +1090,7 @@ th .filters__dropdown select { font-size: 1em; }
 
 #map { height: 500px; }
 
-.marker_m1, .marker_m2, .marker_m3, .marker_m4 { display: block; width: 16px; height: 16px; border-radius: 50%; border: 2px solid #fff; margin: 2em; margin-top: 6em; float: left; cursor: pointer; -webkit-box-shadow: 0px 0px 6px 0px #000; box-shadow: 0px 0px 6px 0px #000; border-color: rgba(0, 0, 0, 0.8); }
+.marker_m1, .marker_m2, .marker_m3, .marker_m4 { display: block; width: 16px; height: 16px; border-radius: 50%; border: 2px solid white; margin: 2em; margin-top: 6em; float: left; cursor: pointer; -webkit-box-shadow: 0px 0px 6px 0px black; box-shadow: 0px 0px 6px 0px black; border-color: rgba(0, 0, 0, 0.8); }
 
 .marker_m1 { background-color: #1e91c9; }
 
@@ -1135,7 +1156,7 @@ th .filters__dropdown select { font-size: 1em; }
 .about-section { padding-top: 5px; }
 
 /** Literally creates a circle out of an element which gives us the ability to have borders */
-.bordered-circle { display: inline-block; *display: inline; *zoom: 1; vertical-align: top; width: 20px; height: 20px; -webkit-border-radius: 20px; -moz-border-radius: 20px; -ms-border-radius: 20px; -o-border-radius: 20px; border-radius: 20px; background: #333; border: 3px solid #fff; }
+.bordered-circle { display: inline-block; *display: inline; *zoom: 1; vertical-align: top; width: 20px; height: 20px; -webkit-border-radius: 20px; -moz-border-radius: 20px; -ms-border-radius: 20px; -o-border-radius: 20px; border-radius: 20px; background: #333; border: 3px solid white; }
 
 .bordered-circle--pink { background: #e70285; }
 
@@ -1168,6 +1189,11 @@ th .filters__dropdown select { font-size: 1em; }
 
 .alert--grey { background: #f2f2f2; color: #333333; }
 
+/** A grey box with buttons inside */
+.feedback-box { max-width: 720px; margin: 3.75em auto 0 auto; background: #f2f2f2; padding: 1.25em 3.75em; }
+.feedback-box p { font-size: 1.125em; margin-top: 0; text-align: center; }
+.feedback-box .btn { font-size: 1.25em; text-align: center; padding: 1em 1em; }
+
 /** The site nav - a styled horizontal list */
 .site-nav { list-style: none; padding: 0; text-align: center; border-top: 1px solid #dddddd; border-bottom: 1px solid #dddddd; background-color: #f2f2f2; background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(white)); background: -webkit-linear-gradient(top, #f2f2f2, white); background: -moz-linear-gradient(top, #f2f2f2, white); background: -ms-linear-gradient(top, #f2f2f2, white); background: -o-linear-gradient(top, #f2f2f2, white); /** A tiny reset to a horizontal list, we're using inline and not floats so text-align: center works */ }
 .site-nav > li { display: inline-block; *display: inline; *zoom: 1; }
@@ -1184,13 +1210,13 @@ th .filters__dropdown select { font-size: 1em; }
 .footer__link:hover { color: #8d8d8d; text-decoration: underline; }
 
 /* ========================================================================== Print styles. Inlined to avoid required HTTP connection: h5bp.com/r ========================================================================== */
-@media print { * { background: transparent !important; color: #000 !important; /* Black prints faster: h5bp.com/s */ box-shadow: none !important; text-shadow: none !important; }
+@media print { * { background: transparent !important; color: black !important; /* Black prints faster: h5bp.com/s */ box-shadow: none !important; text-shadow: none !important; }
   a, a:visited { text-decoration: underline; }
   a[href]:after { content: " (" attr(href) ")"; }
   abbr[title]:after { content: " (" attr(title) ")"; }
   /* Don't show links for images, or javascript/internal links */
   .ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after { content: ""; }
-  pre, blockquote { border: 1px solid #999; page-break-inside: avoid; }
+  pre, blockquote { border: 1px solid #999999; page-break-inside: avoid; }
   thead { display: table-header-group; /* h5bp.com/t */ }
   tr, img { page-break-inside: avoid; }
   img { max-width: 100% !important; }
