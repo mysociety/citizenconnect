@@ -29,7 +29,7 @@ $(function () {
 
     $("div.review-form form").submit(function (submitEvent) {
         var $form = $(this);
-        $form.find('option').each(function () {
+        $('div.review-form__rating-answer option').each(function() {
             var $option = $(this);
             $option.val($option.data('originalValue'));
         });

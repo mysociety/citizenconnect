@@ -15,7 +15,7 @@ from django.forms.models import model_to_dict
 
 from citizenconnect.browser_testing import SeleniumTestCase
 from organisations.tests.models import create_test_organisation
-from .models import Review, Question, Rating
+from .models import Review, Question, Answer, Rating
 from .management.commands.push_new_reviews_to_choices import Command as PushReviewsCommand
 
 
@@ -105,8 +105,8 @@ class ReviewFormViewBase(object):
         # check ratings correctly stored
         for prefix, rating in enumerate(review.ratings.order_by('question__id')):
             prefix = str(prefix + 1)
-            # print 'Q: ' + rating.question.title
-            # print 'A: ' + rating.answer.text
+            # print 'Q: ' + str(rating.question)
+            # print 'A: ' + str(rating.answer)
 
             self.assertEqual(rating.question.id, self.review_post_data[
                              prefix + '-question'])
@@ -193,10 +193,52 @@ class ReviewFormViewBrowserTest(ReviewFormViewBase, SeleniumTestCase):
         for select in d.find_elements_by_css_selector('.review-form__rating-answer select'):
             answer_names.append(select.get_attribute('name'))
 
+        # test setting all possible values and reading that the correct select option is chosen
         for answer_name in answer_names:
-            for score in range(6):
+            for score in range(6): # 0 for none, and then 1 .. 5
                 self.set_rating(answer_name, score)
                 self.assertEqual(self.get_rating(answer_name), score)
+
+        # set the values and save, then test correct review is stored
+        for answer_name in answer_names:
+            desired_answer = self.review_post_data[answer_name]
+
+            if desired_answer:
+                desired_rating = Answer.objects.get(pk=desired_answer).star_rating
+            else:
+                desired_rating = 0
+
+            self.set_rating(answer_name, desired_rating)
+
+
+        # fill in the text fields
+        for name in ['email','display_name','title','comment']:
+            d.find_element_by_name(name).send_keys(self.review_post_data[name])
+
+        # tick the boxes
+        for name in ['is_anonymous', 'agree_to_terms']:
+            checkbox_element = d.find_element_by_name(name)
+            # assume they all start out un-checked
+            if self.review_post_data[name]:
+                checkbox_element.click()
+
+        # select boxes
+        for name in ['month_year_of_visit_month', 'month_year_of_visit_year']:
+            desired_value = self.review_post_data[name]
+            select_element = d.find_element_by_css_selector(
+                'select[name="{0}"] option[value="{1}"]'.format(
+                    name,
+                    desired_value
+                )
+            ).click()
+
+        # import IPython; IPython.embed()
+
+        # submit form
+        d.find_element_by_css_selector('button[type="submit"]').click()
+
+
+        self.assert_review_correctly_stored()
 
 
 class PushNewReviewToChoicesCommandTest(TestCase):
