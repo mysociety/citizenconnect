@@ -1,0 +1,16 @@
+/**
+ * Site-wide footer, contains copyright etc.
+ */
+.footer {
+    margin: 2em 0;
+}
+
+.footer__link {
+    color: $c-footer-link-color;
+    margin-left: $grid-gutter + em;
+    text-decoration: none;
+    &:hover {
+        color: $c-footer-link-color-hover;
+        text-decoration: underline;
+    }
+}

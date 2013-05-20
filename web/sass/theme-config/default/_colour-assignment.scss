@@ -260,3 +260,9 @@ $c-sitenav-gradient-start: $c-lightgrey;
          $c-sitenav-color: $c-aquablue;
    $c-sitenav-color-hover: $c-aquablue-tint;
   $c-sitenav-color-active: $c-lightgrey;
+
+/**
+ * _footer.scss
+ */
+      $c-footer-link-color: $c-darkergrey;
+$c-footer-link-color-hover: $c-darkgrey-tint;
