@@ -235,18 +235,18 @@ class OrganisationSummaryTests(AuthorizationTestCase):
         for url in self.urls:
             self.login_as(self.provider)
             resp = self.client.get(url)
-            self.assertContains(resp, '<td id="status_0_time_to_acknowledge">4 days</td>')
-            self.assertContains(resp, '<td class="separator" id="status_0_time_to_address">38 days</td>')
-            self.assertContains(resp, '<td id="status_0_happy_service">67%</td>')
-            self.assertContains(resp, '<td id="status_0_happy_outcome">100%</td>')
+            self.assertContains(resp, '<td class="average_time_to_acknowledge" id="status_0_time_to_acknowledge">4 days</td>')
+            self.assertContains(resp, '<td class="average_time_to_address" id="status_0_time_to_address">38 days</td>')
+            self.assertContains(resp, '<td class="happy_service" id="status_0_happy_service">67%</td>')
+            self.assertContains(resp, '<td class="happy_outcome" id="status_0_happy_outcome">100%</td>')
 
     def test_private_summary_page_does_not_display_summary_stats_values_in_hidden_status_rows(self):
         self.login_as(self.provider)
         resp = self.client.get(self.private_summary_url)
-        self.assertContains(resp, '<td id="status_7_time_to_acknowledge">—</td>')
-        self.assertContains(resp, '<td class="separator" id="status_7_time_to_address">—</td>')
-        self.assertContains(resp, '<td id="status_7_happy_service">—</td>')
-        self.assertContains(resp, '<td id="status_7_happy_outcome">—</td>')
+        self.assertContains(resp, '<td class="average_time_to_acknowledge" id="status_7_time_to_acknowledge">—</td>')
+        self.assertContains(resp, '<td class="average_time_to_address" id="status_7_time_to_address">—</td>')
+        self.assertContains(resp, '<td class="happy_service" id="status_7_happy_service">—</td>')
+        self.assertContains(resp, '<td class="happy_outcome" id="status_7_happy_outcome">—</td>')
 
     def test_public_summary_page_is_accessible_to_everyone(self):
         resp = self.client.get(self.public_summary_url)
