@@ -8,46 +8,57 @@
 
 {% block content %}
 
-{% include "issues/issue_detail.html" with object=issue private=1 title="Respond to a problem"%}
+{% include "issues/issue_header.html" with object=issue private=1 title="Respond to a problem" %}
+<div class="gw">
 
-<div class="response-form">
-    <form method="post">
-        {% csrf_token %}
+    <div class="g  two-thirds  palm-one-whole">
+        {% include "issues/issue_meta.html" with object=issue private=1 %}
 
-        {% if form.non_field_errors %}
-            <fieldset class="island">
-                {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
-            </fieldset>
-        {% endif %}
+        <div class="response-form">
+            <form method="post">
+                {% csrf_token %}
 
-        {% for hidden in form.hidden_fields %}
-            {{ hidden }}
-        {% endfor %}
+                {% if form.non_field_errors %}
+                    <fieldset class="island">
+                        {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
+                    </fieldset>
+                {% endif %}
 
-        <fieldset class="island">
-            <ul class="gw">
-                <li class="g  one-whole">
-                    <label for="id_response">Add Response</label>
-                    {{ form.response }}
-                    {% include "message_list.html" with messages=form.response.errors message_type='error' %}
-                </li>
-            </ul>
-        </fieldset>
+                {% for hidden in form.hidden_fields %}
+                    {{ hidden }}
+                {% endfor %}
+                <h3 class="meta-data-label">Add Response</h3>
+                <fieldset class="island">
+                    <ul class="gw">
+                        <li class="g  one-whole">
+                            <label class="hide-text" for="id_response">Add Response</label>
+                            {{ form.response }}
+                            {% include "message_list.html" with messages=form.response.errors message_type='error' %}
+                        </li>
+                    </ul>
+                </fieldset>
 
-        <fieldset class="island">
-            <ul class="gw">
-                <li class="g  one-whole">
-                    <label for="issue_status">Status</label>
-                    {{ form.issue_status }}
-                    {% include "message_list.html" with messages=form.issue_status.errors message_type='error' %}
-                </li>
-            </ul>
-        </fieldset>
+                <h3 class="meta-data-label">Status</h3>
+                <fieldset>
+                    <ul class="gw">
+                        <li class="g  one-whole">
+                            <label class="hide-text" for="id_issue_status">Status</label>
+                            {{ form.issue_status }}
+                            {% include "message_list.html" with messages=form.issue_status.errors message_type='error' %}
+                        </li>
+                    </ul>
+                </fieldset>
 
-        <fieldset>
-            <button class="btn fl" type="submit" name="status">Update Status</button>
-            <button class="btn fr" type="submit" name="respond">Respond</button>
-        </fieldset>
-    </form>
+                <fieldset>
+                    <button class="btn fl" type="submit" name="status">Update Status</button>
+                    <button class="btn fr" type="submit" name="respond">Respond</button>
+                </fieldset>
+            </form>
+        </div>
+
+    </div>
+    <div class="meta-data-sidebar  g  one-third  palm-one-whole">
+        {% include "issues/issue_sidebar.html" with object=issue private=1 %}
+    </div>
 </div>
 {% endblock %}

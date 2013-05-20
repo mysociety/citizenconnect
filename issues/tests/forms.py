@@ -1,4 +1,5 @@
 import uuid
+import time
 
 from django.test import TestCase
 from django.core.urlresolvers import reverse
@@ -9,7 +10,9 @@ from ..models import Problem
 from ..forms import ProblemForm
 from ..lib import int_to_base32
 
-class ProblemCreateFormTests(TestCase):
+from citizenconnect.browser_testing import SeleniumTestCase
+
+class ProblemCreateFormBase(object):
 
     def setUp(self):
         self.test_organisation = create_test_organisation({'ods_code': '11111'})
@@ -35,6 +38,8 @@ class ProblemCreateFormTests(TestCase):
             'elevate_priority': False,
             'website': '', # honeypot - should be blank
         }
+
+class ProblemCreateFormTests(ProblemCreateFormBase, TestCase):
 
     def test_problem_form_exists(self):
         resp = self.client.get(self.form_url)
@@ -133,6 +138,28 @@ class ProblemCreateFormTests(TestCase):
         self.assertTrue('has been rejected' in resp.content)
 
 
+class ProblemCreateFormBrowserTests(ProblemCreateFormBase, SeleniumTestCase):
+
+    def is_elevate_priority_disabled(self):
+        return self.driver.find_element_by_id('id_elevate_priority').get_attribute('disabled')
+
+    def test_currently_in_care_toggling(self):
+        d = self.driver
+        d.get(self.full_url(self.form_url))
+
+
+        # Should be disabled initially
+        self.assertTrue(self.is_elevate_priority_disabled())
+
+        # Select a category that it applies to
+        d.find_element_by_css_selector('input[name="category"][value="dignity"]').click()
+        self.assertFalse(self.is_elevate_priority_disabled())
+
+        # Select a category it does not apply to
+        d.find_element_by_css_selector('input[name="category"][value="parking"]').click()
+        self.assertTrue(self.is_elevate_priority_disabled())
+
+
 class ProblemSurveyFormTests(TestCase):
 
     def setUp(self):
@@ -145,18 +172,18 @@ class ProblemSurveyFormTests(TestCase):
 
     def test_form_happy_path(self):
         resp = self.client.post(self.survey_form_url, self.form_values)
-        self.assertContains(resp, 'Thanks for answering our questions.')
+        self.assertContains(resp, 'Thanks for your feedback')
         self.test_problem = Problem.objects.get(pk=self.test_problem.id)
         self.assertEqual(self.test_problem.happy_outcome, True)
 
     def test_form_records_empty_happy_outcome(self):
         resp = self.client.post(self.survey_form_url, {'happy_outcome': ''})
-        self.assertContains(resp, 'Thanks for answering our questions.')
+        self.assertContains(resp, 'Thanks for your feedback')
         self.test_problem = Problem.objects.get(pk=self.test_problem.id)
         self.assertEqual(self.test_problem.happy_outcome, None)
 
     def test_form_records_false_happy_outcome(self):
         resp = self.client.post(self.survey_form_url, {'happy_outcome': 'False'})
-        self.assertContains(resp, 'Thanks for answering our questions.')
+        self.assertContains(resp, 'Thanks for your feedback')
         self.test_problem = Problem.objects.get(pk=self.test_problem.id)
         self.assertEqual(self.test_problem.happy_outcome, False)

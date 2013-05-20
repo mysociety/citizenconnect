@@ -1,3 +1,8 @@
+import datetime
+from dateutil.parser import parse as dateutil_parse
+import pytz
+
+from django.conf import settings
 from django.db import models
 from django.forms.models import model_to_dict
 
@@ -46,7 +51,13 @@ class Review(AuditedModel):
     # The name to display for the author. May be 'Anonymous'
     author_display_name = models.TextField()
     title = models.TextField()
-    content = models.TextField()
+
+    # There are three content fields to mirror the comment structure seen in
+    # the NHS API. For replies (which are just text) the content should go
+    # into the 'content' field.
+    content_liked = models.TextField(default="")
+    content_improved = models.TextField(default="")
+    content = models.TextField(default="")  # catch all
 
     # Fields we might also be able to get, but don't appear to be in API yet:
     # * visit_date
@@ -58,7 +69,22 @@ class Review(AuditedModel):
         return u"{0}, {1} ({2})".format(self.title, self.author_display_name, self.id)
 
     @classmethod
-    def upsert_from_api_data(cls, api_review):
+    def delete_old_reviews(cls):
+        """
+        Delete reviews that are older than
+        NHS_CHOICES_API_MAX_REVIEW_AGE_IN_DAYS. This is based on the published
+        date, it would be better if it was based on the visit date, but we are
+        not supplied this in the API.
+        """
+
+        max_age_in_days = settings.NHS_CHOICES_API_MAX_REVIEW_AGE_IN_DAYS
+        max_age_timedelta = datetime.timedelta(days=max_age_in_days)
+        oldest_permitted = datetime.datetime.now(pytz.utc) - max_age_timedelta
+
+        cls.objects.filter(api_published__lte=oldest_permitted).delete()
+
+    @classmethod
+    def upsert_or_delete_from_api_data(cls, api_review):
         """
 
         Given a review scraped from the API creates or updates an entry in the
@@ -67,6 +93,9 @@ class Review(AuditedModel):
         If the organisation cannot be found (which is likely as initially not
         all orgs will be part of this project) then it will throw an
         OrganisationFromApiDoesNotExist exception.
+
+        If the  category is deletion, or the published date is more than
+        NHS_CHOICES_API_MAX_REVIEW_AGE_IN_DAYS days old, the entry is deleted
 
         """
 
@@ -79,8 +108,13 @@ class Review(AuditedModel):
             api_postingorganisationid=api_review['api_postingorganisationid']
         )
 
-        # If this is a deletion then delete from the db
-        if api_review['api_category'] == 'deletion':
+        max_age_in_days = settings.NHS_CHOICES_API_MAX_REVIEW_AGE_IN_DAYS
+        oldest_permitted = datetime.datetime.now() - datetime.timedelta(
+            days=max_age_in_days)
+        pub_date = dateutil_parse(api_review['api_published'], ignoretz=True)
+
+        # If this is a deletion or published is too old then delete from the db
+        if api_review['api_category'] == 'deletion' or pub_date <= oldest_permitted:
             try:
                 cls.objects.get(**unique_args).delete()
             except cls.DoesNotExist:

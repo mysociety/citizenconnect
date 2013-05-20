@@ -21,7 +21,8 @@ $c-body-bg: $c-white;
 $c-big-radio-group-active-green-radio-bg: $c-nhs_green;
               $c-description-count-error: $c-nhs_red;
                  $c-description-count-ok: $c-nhs_lightgreen;
-
+   $c-feedbackform-big-radio-group-radio-border: $c-grey-tint;
+$c-feedbackform-big-radio-group-active-radio-bg: $c-grey-tint;
 
 /**
  * _misc.scss
@@ -32,31 +33,31 @@ $c-hr-border: $c-grey;
 /**
  * _tables.scss
  */
-                            $c-table-border: $c-grey;
-                $c-table-heading-link-color: $c-black;
-          $c-table-heading-link-hover-color: $c-aquablue;
-         $c-table-heading-link-active-color: $c-aquablue;
-                     $c-table-created-color: $c-darkgrey;
-                        $c-table-link-color: $c-aquablue;
-                  $c-table-link-hover-color: $c-aquablue-tint;
-                      $c-table-icon-x-color: $c-nhs_red;
-              $c-table-icon-checkmark-color: $c-nhs_green;
-                 $c-table-icon-circle-color: $c-darkgrey;
-                $c-table-icon-warning-color: $c-nhs_red;
-                 $c-table-icon-hidden-color: $c-white;
-                        $c-table-row-alt-bg: $c-lightgrey;
-                   $c-table-highlight-color: $c-white;
-                      $c-table-highlight-bg: $c-nhs_red;
-                  $c-table-highlight-border: $c-nhs_red;
-                      $c-table-row-hover-bg: $c-lightgrey;
-            $c-table-row-hover-highlight-bg: $c-nhs_red;
-                $c-summary-table-subhead-bg: $c-lightgrey;
-             $c-summary-table-subhead-color: $c-darkergrey;
-             $c-dashboard-table-light-color: $c-darkergrey;
-            $c-dashboard-table-danger-color: $c-nhs_red;
-              $c-dashboard-table-flag-color: $c-white;
-          $c-dashboard-table-flag-breach-bg: $c-orange;
-       $c-dashboard-table-flag-escalated-bg: $c-black;
+                   $c-table-border: $c-grey;
+       $c-table-heading-link-color: $c-black;
+ $c-table-heading-link-hover-color: $c-aquablue;
+$c-table-heading-link-active-color: $c-aquablue;
+            $c-table-created-color: $c-darkgrey;
+               $c-table-link-color: $c-aquablue;
+         $c-table-link-hover-color: $c-aquablue-tint;
+             $c-table-icon-x-color: $c-nhs_red;
+     $c-table-icon-checkmark-color: $c-nhs_green;
+        $c-table-icon-circle-color: $c-darkgrey;
+       $c-table-icon-warning-color: $c-nhs_red;
+        $c-table-icon-hidden-color: $c-white;
+               $c-table-row-alt-bg: $c-lightgrey;
+          $c-table-highlight-color: $c-white;
+             $c-table-highlight-bg: $c-nhs_red;
+         $c-table-highlight-border: $c-nhs_red;
+             $c-table-row-hover-bg: $c-lightgrey;
+   $c-table-row-hover-highlight-bg: $c-nhs_red;
+       $c-summary-table-subhead-bg: $c-lightgrey-tint;
+    $c-summary-table-subhead-color: $c-darkergrey;
+      $c-problem-table-light-color: $c-darkergrey;
+     $c-problem-table-danger-color: $c-nhs_red;
+       $c-problem-table-flag-color: $c-white;
+   $c-problem-table-flag-breach-bg: $c-orange;
+$c-problem-table-flag-escalated-bg: $c-black;
 
 /**
  * _typography.scss
@@ -130,6 +131,15 @@ $c-back-btn-span-hover-color: $c-grey-tint;
        $c-btn-darkgrey-color: $c-white;
           $c-btn-darkgrey-bg: $c-darkgrey;
     $c-btn-darkgrey-hover-bg: $c-darkgrey-tint;
+        $c-btn-caption-color: $c-darkgrey;
+         $c-btn-black-border: $c-darkgrey-tint;
+          $c-btn-black-color: $c-white;
+             $c-btn-black-bg: $c-black;
+       $c-btn-black-hover-bg: $c-black / 1.1;
+        $c-btn-orange-border: $c-questions_orange-tint;
+         $c-btn-orange-color: $c-white;
+            $c-btn-orange-bg: $c-questions_orange;
+      $c-btn-orange-hover-bg: $c-questions_orange-tint;
 
 /**
  * _filters.scss

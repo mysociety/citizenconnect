@@ -16,10 +16,6 @@
 
 {% include 'organisations/includes/filters.html' %}
 
-{% render_table table 'organisations/includes/table.html' %}
+{% render_table table 'organisations/includes/problem-table.html' %}
 
 {% endblock %}
-{% block extra_js %}
-{{ block.super }}
-<script src="{% static 'js/filters.js' %}"></script>
-{% endblock extra_js %}

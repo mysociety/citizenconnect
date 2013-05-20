@@ -7,33 +7,52 @@ from django.utils.encoding import force_unicode
 register = template.Library()
 
 @register.filter(is_safe=True)
+def star_class(rating, current):
+    """
+    Should we fill in this star?
+    """
+    if rating >= current:
+        return 'icon-star'
+    elif rating >= (current - 0.5):
+        return 'icon-star-2'
+    else:
+        return 'icon-star-3'
+
+@register.filter(is_safe=True)
 def percent(decimal):
     """
     Returns percentage formatted value for decimal
     """
-    if decimal == None:
+    if decimal is None:
         return u'—'
     return "{0:.0f}%".format(decimal * 100)
+
 
 @register.filter(is_safe=True)
 def formatted_time_interval(time_in_minutes):
     """
     Returns a formatted time interval, given a decimal time in minutes
     """
-    if time_in_minutes == None:
+    if time_in_minutes is None:
         return u'—'
     time_in_days = time_in_minutes/60/24
     time_in_days = "{0:.0f}".format(time_in_days)
+    if time_in_days == '1':
+        time_in_days = time_in_days + " day"
+    else:
+        time_in_days = time_in_days + " days"
     return time_in_days
+
 
 @register.filter(is_safe=True)
 def formatted_boolean(boolean):
-    if boolean == True:
+    if boolean is True:
         return "True"
-    elif boolean == False:
+    elif boolean is False:
         return "False"
     else:
         return None
+
 
 @register.filter(is_safe=True)
 def row_classes(table, record):
@@ -42,16 +61,27 @@ def row_classes(table, record):
     except AttributeError:
         return ""
 
+
+@register.filter(is_safe=True)
+def row_href(table, record):
+    try:
+        return table.row_href(record)
+    except AttributeError:
+        return ""
+
+
 def paginator(context, adjacent_pages=2):
     """Base function for an ellipsis-capable paginator"""
     page_obj = context['page_obj']
     paginator = page_obj.paginator
     start_page = max(page_obj.number - adjacent_pages, 1)
-    if start_page <= 3: start_page = 1
+    if start_page <= 3:
+        start_page = 1
     end_page = page_obj.number + adjacent_pages + 1
-    if end_page >= paginator.num_pages - 1: end_page = paginator.num_pages + 1
-    page_numbers = [n for n in range(start_page, end_page) \
-            if n > 0 and n <= paginator.num_pages]
+    if end_page >= paginator.num_pages - 1:
+        end_page = paginator.num_pages + 1
+    page_numbers = [n for n in range(start_page, end_page)
+                    if n > 0 and n <= paginator.num_pages]
 
     return {
         'page_obj': page_obj,
@@ -60,6 +90,7 @@ def paginator(context, adjacent_pages=2):
         'show_first': 1 not in page_numbers,
         'show_last': paginator.num_pages not in page_numbers,
     }
+
 
 def provider_paginator(context, adjacent_pages=2):
     """
@@ -78,7 +109,9 @@ def provider_paginator(context, adjacent_pages=2):
     pagination_context['organisation_type'] = organisation_type
     return pagination_context
 
+
 register.inclusion_tag('provider_paginator.html', takes_context=True)(provider_paginator)
+
 
 def table_paginator(context, adjacent_pages=2):
     """
@@ -94,7 +127,9 @@ def table_paginator(context, adjacent_pages=2):
     pagination_context['request'] = context['request']
     return pagination_context
 
+
 register.inclusion_tag('organisations/includes/table_paginator.html', takes_context=True)(table_paginator)
+
 
 @register.filter(name='display_value')
 def display_value(field):

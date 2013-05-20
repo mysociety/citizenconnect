@@ -2,6 +2,8 @@
  * Filter bar with styled select elements
  */
 .filters {
+  padding-top: 1em;
+  border-top: 0.25em solid $c-hr-border;
   margin-top: ($grid-gutter * 2) + em;
   margin-bottom: ($grid-gutter * 2) + em;
   p {
@@ -10,6 +12,10 @@
   }
 }
 
+  th .filters__dropdown select {
+     font-size: 1em;
+    }
+
   .filters__dropdown-wrap {
     label {
       font-weight: normal;
@@ -17,22 +23,27 @@
       color: #666;
       margin-bottom: 0;
     }
+
     .filters__dropdown {
       position: relative;
       border-right: 2px solid #fff;
-      background: $c-aquablue;
+      background-color: $c-aquablue;
+      background-image: url(../img/select_arrow.png);
+      background-repeat: no-repeat;
+      background-position: 95% center;
       font-weight: bold;
       @include vendor(text-overflow, ellipsis);
-      select, span {
+      select {
         color: #fff;
         &:focus { color: #fff; }
       }
     }
     .filters__dropdown--last { border-right: 0; }
     .filters__dropdown--default {
-      background: #e6e6e6;
+      background-color: #e6e6e6;
+      background-image: url(../img/select_arrow-default.png);
       font-weight: normal;
-      select, span {
+      select {
         color: #333;
         &:focus { color: #333; }
       }
@@ -50,14 +61,11 @@
         font-size: (13px / $font-size-base) + em;
         @include vendor(border-radius, 0);
       }
-      span {
-        position: absolute;
-        right: 0.5em;
-        top: 0.8em;
-      }
   }
 
   .filters__button {
-    padding: 0.7em 1.5em;
-    margin: 1.15em 0 0.5em $grid-gutter-pixel;
+    padding: 0.7em 0.8em;
+    margin: 1.1em 0 0.5em 1em;
+    // Remove the left margin when displayed in a grid with filter elements
+    @include media-query(palm){ margin-left: 0; }
   }

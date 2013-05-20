@@ -109,92 +109,13 @@ table {
 
 
 /**
- * Public Problem table
- */
-.problem-table {
-  th, td {
-    vertical-align: top;
-    text-align: left;
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-  // first cell
-  .table__first {
-    font-weight: bold;
-  }
-
-  .breach {
-    // Colour circles red on the breach table
-    .icon-circle {
-      color:$c-table-icon-x-color;
-    }
-  }
-}
-
-
-
-/**
- * A square table with options for split cols and highlights
- */
-.summary-table {
-  // standard headings
-  th {
-    font-weight: bold;
-    padding: 0;
-    border-bottom: 0;
-    a {
-      display: block;
-      padding: 1em 0.5em;
-    }
-  }
-
-  // subheading row
-  .summary-table__subhead th {
-    font-weight: normal;
-    padding: 0.5em 0;
-    background-color: $c-summary-table-subhead-bg;
-    a {
-      display: block;
-      padding: 0 0.5em;
-    }
-  }
-
-  // standard cell
-  td {
-    border-left: 1px solid $c-table-border;
-    &:first-child { border-left: 0; }
-  }
-  tr:last-child td { border-bottom: 0; }
-
-  // used for cells in double column
-  .summary-table__cell-no-border { border-left: 0; }
-
-  // colour every other row
-  tbody tr:nth-of-type(even) td { background: $c-table-row-hover-bg; }
-
-  // hightlight a row
-  tbody tr.summary-table__highlight td {
-    background-color: $c-table-highlight-bg;
-    color: $c-table-highlight-color;
-    font-weight: bold;
-    border-color: $c-table-highlight-border;
-    border-top: 2px solid $c-table-highlight-border;
-    border-bottom: 2px solid $c-table-highlight-border;
-  }
-
-  // pull full height any filters
-  .filters__dropdown { margin: -0.5em 0; }
-}
-
-
-
-
-/**
+ * Problem table
  * A rounded table with options for expanded rows, flags and highlights
  */
-.dashboard-table {
+.problem-table {
   border-collapse: separate;
   border-spacing: 0;
+
   td, th {
     text-align: left;
     padding: 10px;
@@ -206,16 +127,15 @@ table {
 
   // headings
   th { border: 0; }
-  .dashboard-table__head th {
+  .problem-table__head th {
     font-weight: bold;
     padding: 0 10px;
   }
     // Heading when there's no subheading, to have a border
-    .dashboard-table__head--bordered th {
+    .problem-table__head--bordered th {
       border-bottom: 3px solid $c-table-border;
-      padding: 5px 10px;
     }
-  .dashboard-table__subhead th {
+  .problem-table__subhead th {
     border-bottom: 3px solid $c-table-border;
     text-align: center;
     color: $c-summary-table-subhead-color;
@@ -242,13 +162,13 @@ table {
   }
 
   // text styles
-  .dashboard-table__danger-text {
-    color: $c-dashboard-table-danger-color;
+  .problem-table__danger-text {
+    color: $c-problem-table-danger-color;
     font-weight: bold;
   }
-  .dashboard-table__light-text { color: $c-dashboard-table-light-color; }
-  .dashboard-table__heavy-text { font-weight: bold; }
-  .dashboard-table__highlight {
+  .problem-table__light-text { color: $c-problem-table-light-color; }
+  .problem-table__heavy-text { font-weight: bold; }
+  .problem-table__highlight {
     background: $c-table-highlight-bg;
     border-color: $c-table-highlight-border !important;
     color: $c-table-highlight-color;
@@ -259,7 +179,7 @@ table {
   }
 
   // flags
-  .dashboard-table__flag {
+  .problem-table__flag {
     padding: 0 0 0 10px;
     position: relative;
     overflow: hidden;
@@ -270,29 +190,39 @@ table {
       width: 100%;
       right: 0;
       text-transform: uppercase;
-      color: $c-dashboard-table-flag-color;
+      color: $c-problem-table-flag-color;
       text-align: center;
       padding-top: 5px;
       height: 28px;
     }
-    .dashboard-table__flag__breach {
-      background: $c-dashboard-table-flag-breach-bg;
+    .rating {
+        position: relative;
+    }
+    .problem-table__flag__breach {
+      background: $c-problem-table-flag-breach-bg;
       top: 0;
     }
-    .dashboard-table__flag__escalate {
-      background: $c-dashboard-table-flag-escalated-bg;
+    .problem-table__flag__escalate {
+      background: $c-problem-table-flag-escalated-bg;
       bottom: 0;
     }
+
+  .breach {
+    // Colour circles red on the breach table
+    .icon-circle {
+      color:$c-table-icon-x-color;
+    }
+  }
 }
 
 /**
- * To be used with .dashboard-table, this has expanded rows
+ * To be used with .problem-table, this has expanded rows
  */
-.dashboard-table--expanded {
+.problem-table--expanded {
   border-spacing: 0 20px;
 
   // hide spacer if its there now we're border-spacing
-  .dashboard-table__spacer { display: none; }
+  .problem-table__spacer { display: none; }
 
   td { border-top: 1px solid $c-table-border; }
   tr, tr:first-child, tr:last-child {
@@ -301,6 +231,98 @@ table {
   }
 }
 
+
+
+/**
+ * A square table with options for split cols and highlights
+ */
+.summary-table {
+
+  border:2px solid $c-table-border;
+
+  // standard headings
+  th {
+    font-weight: bold;
+    padding: 0;
+    border-bottom: 0;
+    border-left:2px solid $c-table-border;
+    a {
+      display: block;
+      padding: 1em 0.5em;
+    }
+  }
+
+  // subheading row
+  .summary-table__subhead th {
+    font-weight: normal;
+    padding: 0.5em 0;
+    background-color: $c-summary-table-subhead-bg;
+    a {
+      display: block;
+      padding: 0 0.5em;
+    }
+  }
+
+  // standard cell
+  td {
+    border-left: 2px solid $c-table-border;
+    &:first-child { border-left: 0; }
+  }
+  tr:last-child td { border-bottom: 0; }
+
+  // used for cells in double column
+  .summary-table__cell-no-border { border-left: 0; }
+
+  // cells which sit inside double or quadruple columns
+  td.average_time_to_address,
+  td.happy_outcome,
+  td.problems-received,
+  td.reviews-recieved {
+    border-left-width: 1px;
+  }
+
+  // colour every other row
+  tbody tr:nth-of-type(even) td { background: $c-table-row-hover-bg; }
+
+  // hightlight a row
+  tbody tr.summary-table__highlight td {
+    background-color: $c-table-highlight-bg;
+    color: $c-table-highlight-color;
+    font-weight: bold;
+    border-color: $c-table-highlight-border;
+    border-top: 2px solid $c-table-highlight-border;
+    border-bottom: 2px solid $c-table-highlight-border;
+  }
+
+  // pull full height any filters
+  .filters__dropdown { margin: -0.5em 0; }
+}
+
+.summary-table--organisation {
+  @extend .summary-table;
+
+  border:none;
+
+  th {
+    padding: 1em 0.5em;
+  }
+
+  th.status,
+  td.status {
+    text-align: left;
+    font-weight: bold;
+    padding-left: 1em;
+    border-left: none;
+  }
+
+  td.four_weeks,
+  td.six_months,
+  td.all_time,
+  td.happy_outcome,
+  td.average_time_to_address {
+    border-left-width: 1px;
+  }
+}
 
 
 .table-link__row:hover td {
