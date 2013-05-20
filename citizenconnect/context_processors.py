@@ -9,6 +9,7 @@ def add_settings( request ):
         'settings': {
             'GOOGLE_ANALYTICS_ACCOUNT': settings.GOOGLE_ANALYTICS_ACCOUNT,
             'FEEDBACK_EMAIL_ADDRESS': settings.FEEDBACK_EMAIL_ADDRESS,
+            'ABUSE_EMAIL_ADDRESS': settings.ABUSE_EMAIL_ADDRESS,
         }
     }
 
