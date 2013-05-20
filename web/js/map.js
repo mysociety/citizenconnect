@@ -286,6 +286,7 @@ $(document).ready(function () {
         map.setView(northEastCentre, northEastZoomLevel);
         map.fire('dragend');
         $('ul.tab-nav a').toggleClass('active');
+        window.location.hash = "#northeast"
     });
     $('a#london').on('click', function(e) {
         // recenter the map to london
@@ -293,6 +294,7 @@ $(document).ready(function () {
         map.setView(londonCentre, londonZoomLevel);
         map.fire('dragend');
         $('ul.tab-nav a').toggleClass('active');
+        window.location.hash = "#london"
     });
 
     // Filters
