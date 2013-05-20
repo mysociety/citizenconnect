@@ -1215,6 +1215,8 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .bordered-box { overflow: hidden; display: block; background: white; border: 0.25em solid #dddddd; -webkit-border-radius: 0.625em; -moz-border-radius: 0.625em; -ms-border-radius: 0.625em; -o-border-radius: 0.625em; border-radius: 0.625em; }
 
 /** Markup specific to the homepage */
+.homepage .main-options .btn { text-transform: uppercase; }
+
 .homepage-problem-search label { color: #888888; margin: 0.5em 0 1em 0; font-weight: normal; }
 .homepage-problem-search .text-input { border: 1px solid white; width: 85%; float: left; margin-bottom: 0; -webkit-border-radius: 0; -moz-border-radius: 0; -ms-border-radius: 0; -o-border-radius: 0; border-radius: 0; -webkit-box-shadow: 0px 0px 0px 0px white; -moz-box-shadow: 0px 0px 0px 0px white; -ms-box-shadow: 0px 0px 0px 0px white; -o-box-shadow: 0px 0px 0px 0px white; box-shadow: 0px 0px 0px 0px white; }
 @media only screen and (min-width: 481px) and (max-width: 1023px) { .homepage-problem-search .text-input { width: 70%; } }

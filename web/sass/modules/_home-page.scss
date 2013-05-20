@@ -2,6 +2,9 @@
  * Markup specific to the homepage
  */
 
+.homepage .main-options .btn {
+    text-transform: uppercase;
+}
 .homepage-problem-search {
     label {
         color: $c-introtext-color;
