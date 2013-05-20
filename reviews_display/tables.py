@@ -16,13 +16,20 @@ class ReviewTable(tables.Table):
     """Table for organisation reviews pulled from the API."""
 
     api_posting_id = tables.Column(verbose_name='Ref',
-                                   attrs={'td': {'class': 'problem-table__heavy-text'}})
+                                   attrs={'th': {'class': 'one-twelfth'},
+                                          'td': {'class': 'problem-table__heavy-text'}})
     api_published = tables.DateColumn(verbose_name='Received Date', format='d.m.Y',
-                                      attrs={'td': {'class': 'problem-table__light-text'}})
+                                      attrs={'th': {'class': 'two-twelfths  align-center'},
+                                             'td': {'class': 'problem-table__light-text  align-center'}})
 
-    rating = tables.Column(verbose_name='Rating', accessor='ratings.all.0.score', orderable=False)
+    rating = tables.Column(verbose_name='Rating',
+                           accessor='ratings.all.0.score',
+                           orderable=False,
+                           attrs={'th': {'class': 'two-twelfths  align-center'}})
 
-    content = tables.Column(verbose_name='Review', orderable=False)
+    content = tables.Column(verbose_name='Review',
+                            orderable=False,
+                            attrs={'th': {'class': 'seven-twelfths  align-center'}})
 
     def render_rating(self, record):
         # TODO: There must be a better way to get the Friends and Family rating.
