@@ -26,6 +26,7 @@
 /** _nav.scss */
 /** _alert.scss */
 /** _site-nav.scss */
+/** _footer.scss */
 /** From: http://jakearchibald.github.com/sass-ie/ Mixins to help responsive design in browsers that don't do media queries and produce versions specific to ie browser version */
 /** Sortcut method for making something an inline block */
 /** From inuit.css (https://github.com/csswizardry/inuit.css/)  Create vendor-prefixed CSS in one go, e.g.  `@include vendor(border-radius, 4px);`  */
@@ -1175,6 +1176,12 @@ th .filters__dropdown select { font-size: 1em; }
 .site-nav a:hover { color: #27808c; }
 .site-nav a.active { background: #f2f2f2; }
 @media only screen and (min-width: 481px) and (max-width: 1023px) { .site-nav a { font-size: 0.8125em; padding: 0.625em; padding-top: 0.78125em; } }
+
+/** Site-wide footer, contains copyright etc. */
+.footer { margin: 2em 0; }
+
+.footer__link { color: #888888; margin-left: 1.25em; text-decoration: none; }
+.footer__link:hover { color: #8d8d8d; text-decoration: underline; }
 
 /* ========================================================================== Print styles. Inlined to avoid required HTTP connection: h5bp.com/r ========================================================================== */
 @media print { * { background: transparent !important; color: #000 !important; /* Black prints faster: h5bp.com/s */ box-shadow: none !important; text-shadow: none !important; }
