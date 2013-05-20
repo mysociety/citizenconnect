@@ -25,10 +25,12 @@
 /** _split-box.scss */
 /** _nav.scss */
 /** _alert.scss */
+/** _site-nav.scss */
 /** From: http://jakearchibald.github.com/sass-ie/ Mixins to help responsive design in browsers that don't do media queries and produce versions specific to ie browser version */
 /** Sortcut method for making something an inline block */
 /** From inuit.css (https://github.com/csswizardry/inuit.css/)  Create vendor-prefixed CSS in one go, e.g.  `@include vendor(border-radius, 4px);`  */
 /** From inuit.css (https://github.com/csswizardry/inuit.css/)  Media query mixin.  It’s not great practice to define solid breakpoints up-front, preferring to modify your design when it needs it, rather than assuming you’ll want a change at ‘mobile’. However, as inuit.css is required to take a hands off approach to design decisions, this is the closest we can get to baked-in responsiveness. It’s flexible enough to allow you to set your own breakpoints but solid enough to be frameworkified.  We define some broad breakpoints in our vars file that are picked up here for use in a simple media query mixin. Our options are:  palm lap portable desk  Not using a media query will, naturally, serve styles to all devices.  `@include media-query(palm){ [styles here] }`  We work out your end points for you: */
+/** Cross browser gradients */
 /* For image replacement */
 .ir { display: block; border: 0; text-indent: -999em; overflow: hidden; background-color: transparent; background-repeat: no-repeat; text-align: left; direction: ltr; *line-height: 0; }
 
@@ -48,16 +50,16 @@
 
 /* Contain floats: h5bp.com/q */
 /* mySociety change: rename to cf */
-.cf:before, .gw:before, .radio-list:before, .grid-wrapper:before, .island:before, .islet:before, .meta-data-sidebar .meta-data-wrap:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { content: ""; display: table; }
+.cf:before, .gw:before, .radio-list:before, .grid-wrapper:before, .island:before, .islet:before, .meta-data-sidebar .meta-data-wrap:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .site-nav:before, .cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after, .site-nav:after { content: ""; display: table; }
 
-.cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { clear: both; }
+.cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after, .site-nav:after { clear: both; }
 
-.cf, .gw, .radio-list, .grid-wrapper, .island, .islet, .meta-data-sidebar .meta-data-wrap, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar { *zoom: 1; }
+.cf, .gw, .radio-list, .grid-wrapper, .island, .islet, .meta-data-sidebar .meta-data-wrap, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar, .site-nav { *zoom: 1; }
 
 /** From inuit.css (https://github.com/csswizardry/inuit.css/)  Micro clearfix, as per: nicolasgallagher.com/micro-clearfix-hack Extend the clearfix class with Sass to avoid the `.cf` class appearing over and over in your markup. */
-.cf, .gw, .radio-list, .grid-wrapper, .island, .islet, .meta-data-sidebar .meta-data-wrap, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar { zoom: 1; }
-.cf:before, .gw:before, .radio-list:before, .grid-wrapper:before, .island:before, .islet:before, .meta-data-sidebar .meta-data-wrap:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { content: " "; display: table; }
-.cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after { clear: both; }
+.cf, .gw, .radio-list, .grid-wrapper, .island, .islet, .meta-data-sidebar .meta-data-wrap, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar, .site-nav { zoom: 1; }
+.cf:before, .gw:before, .radio-list:before, .grid-wrapper:before, .island:before, .islet:before, .meta-data-sidebar .meta-data-wrap:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .site-nav:before, .cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after, .site-nav:after { content: " "; display: table; }
+.cf:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after, .site-nav:after { clear: both; }
 
 .fr, .rating--review_details { float: right; }
 
@@ -94,7 +96,7 @@
 @media only screen and (max-width: 480px) { .mt__palm--n { margin-top: 0 !important; }
   .mb__palm--n { margin-bottom: 0 !important; } }
 /** Hide text accessibly */
-.hide-text, .rating span.hide-text, .rating--grey span.hide-text, .rating--review_details span.hide-text, .rating--organisation-summary span.hide-text { font: 0/0 a; color: transparent; text-shadow: none; background-color: transparent; border: 0; }
+.hide-text, .rating span.hide-text { font: 0/0 a; color: transparent; text-shadow: none; background-color: transparent; border: 0; }
 
 /** Text alignment */
 .align-right { text-align: right; }
@@ -173,7 +175,7 @@ mark { background: #ff0; color: #000; }
 p, pre { margin: 1em 0; }
 
 /** Correct font family set oddly in IE 6, Safari 4/5, and Chrome. */
-code, kbd, pre, samp { font-family: monospace, serif; _font-family: "courier new", monospace; font-size: 1em; }
+code, kbd, pre, samp { font-family: monospace, serif; _font-family: 'courier new', monospace; font-size: 1em; }
 
 /** Improve readability of pre-formatted text in all browsers. */
 pre { white-space: pre; white-space: pre-wrap; word-wrap: break-word; }
@@ -222,7 +224,7 @@ figure { margin: 0; }
 form { margin: 0; }
 
 /** Define consistent border, margin, and padding. */
-fieldset { border: 1px solid silver; margin: 0 2px; padding: 0.35em 0.625em 0.75em; }
+fieldset { border: 1px solid #c0c0c0; margin: 0 2px; padding: 0.35em 0.625em 0.75em; }
 
 /** 1. Correct color not being inherited in IE 6/7/8/9. 2. Correct text not wrapping in Firefox 3. 3. Correct alignment displayed oddly in IE 6/7. */
 legend { border: 0; /* 1 */ padding: 0; white-space: normal; /* 2 */ *margin-left: -7px; /* 3 */ }
@@ -321,7 +323,7 @@ label.disabled, .label.disabled { -ms-filter: "progid:DXImageTransform.Microsoft
 input[type=text], .text-input, textarea { width: 100%; display: block; margin: 0 0 1.25em 0; padding: 0.5em; border: 0; color: #333333; outline: none; -webkit-box-shadow: inset 0px 0px 3px 1px #aaaaaa; -moz-box-shadow: inset 0px 0px 3px 1px #aaaaaa; -ms-box-shadow: inset 0px 0px 3px 1px #aaaaaa; -o-box-shadow: inset 0px 0px 3px 1px #aaaaaa; box-shadow: inset 0px 0px 3px 1px #aaaaaa; -webkit-border-radius: 2px; -moz-border-radius: 2px; -ms-border-radius: 2px; -o-border-radius: 2px; border-radius: 2px; }
 input[type=text]:focus, .text-input:focus, textarea:focus { -webkit-box-shadow: inset 0px 0px 3px 1px #2f9aa8; -moz-box-shadow: inset 0px 0px 3px 1px #2f9aa8; -ms-box-shadow: inset 0px 0px 3px 1px #2f9aa8; -o-box-shadow: inset 0px 0px 3px 1px #2f9aa8; box-shadow: inset 0px 0px 3px 1px #2f9aa8; }
 
-.ie6 .text-input, .ie6 textarea, .ie7 .text-input, .ie7 textarea, .ie8 .text-input, .ie8 textarea { border: 1px solid #cccccc; }
+.ie6 .text-input, .ie6 textarea, .ie7 .text-input, .ie7 textarea, .ie8 .text-input, .ie8 textarea { border: 1px solid #ccc; }
 
 /** Placeholder styling */
 ::-webkit-input-placeholder { color: #aaaaaa; font-style: italic; }
@@ -934,7 +936,7 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 th .filters__dropdown select { font-size: 1em; }
 
 .filters__dropdown-wrap label { font-weight: normal; font-size: 0.75em; color: #666; margin-bottom: 0; }
-.filters__dropdown-wrap .filters__dropdown { position: relative; border-right: 2px solid white; background-color: #2f9aa8; background-image: url(../img/select_arrow.png); background-repeat: no-repeat; background-position: 95% center; font-weight: bold; -webkit-text-overflow: ellipsis; -moz-text-overflow: ellipsis; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; }
+.filters__dropdown-wrap .filters__dropdown { position: relative; border-right: 2px solid #fff; background-color: #2f9aa8; background-image: url(../img/select_arrow.png); background-repeat: no-repeat; background-position: 95% center; font-weight: bold; -webkit-text-overflow: ellipsis; -moz-text-overflow: ellipsis; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; }
 .filters__dropdown-wrap .filters__dropdown select { color: #fff; }
 .filters__dropdown-wrap .filters__dropdown select:focus { color: #fff; }
 .filters__dropdown-wrap .filters__dropdown--last { border-right: 0; }
@@ -1066,7 +1068,7 @@ th .filters__dropdown select { font-size: 1em; }
 
 #map { height: 500px; }
 
-.marker_m1, .marker_m2, .marker_m3, .marker_m4 { display: block; width: 16px; height: 16px; border-radius: 50%; border: 2px solid white; margin: 2em; margin-top: 6em; float: left; cursor: pointer; -webkit-box-shadow: 0px 0px 6px 0px black; box-shadow: 0px 0px 6px 0px black; border-color: rgba(0, 0, 0, 0.8); }
+.marker_m1, .marker_m2, .marker_m3, .marker_m4 { display: block; width: 16px; height: 16px; border-radius: 50%; border: 2px solid #fff; margin: 2em; margin-top: 6em; float: left; cursor: pointer; -webkit-box-shadow: 0px 0px 6px 0px #000; box-shadow: 0px 0px 6px 0px #000; border-color: rgba(0, 0, 0, 0.8); }
 
 .marker_m1 { background-color: #1e91c9; }
 
@@ -1132,7 +1134,7 @@ th .filters__dropdown select { font-size: 1em; }
 .about-section { padding-top: 5px; }
 
 /** Literally creates a circle out of an element which gives us the ability to have borders */
-.bordered-circle { display: inline-block; *display: inline; *zoom: 1; vertical-align: top; width: 20px; height: 20px; -webkit-border-radius: 20px; -moz-border-radius: 20px; -ms-border-radius: 20px; -o-border-radius: 20px; border-radius: 20px; background: #333; border: 3px solid white; }
+.bordered-circle { display: inline-block; *display: inline; *zoom: 1; vertical-align: top; width: 20px; height: 20px; -webkit-border-radius: 20px; -moz-border-radius: 20px; -ms-border-radius: 20px; -o-border-radius: 20px; border-radius: 20px; background: #333; border: 3px solid #fff; }
 
 .bordered-circle--pink { background: #e70285; }
 
@@ -1165,14 +1167,23 @@ th .filters__dropdown select { font-size: 1em; }
 
 .alert--grey { background: #f2f2f2; color: #333333; }
 
+/** The site nav - a styled horizontal list */
+.site-nav { list-style: none; padding: 0; text-align: center; border-top: 1px solid #dddddd; border-bottom: 1px solid #dddddd; background-color: #f2f2f2; background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(white)); background: -webkit-linear-gradient(top, #f2f2f2, white); background: -moz-linear-gradient(top, #f2f2f2, white); background: -ms-linear-gradient(top, #f2f2f2, white); background: -o-linear-gradient(top, #f2f2f2, white); /** A tiny reset to a horizontal list, we're using inline and not floats so text-align: center works */ }
+.site-nav > li { display: inline-block; *display: inline; *zoom: 1; }
+@media only screen and (max-width: 480px) { .site-nav > li { display: block; width: 100%; } }
+.site-nav a { display: block; font-weight: bold; text-transform: uppercase; padding: 0.83333em 1.25em 0.625em 1.25em; color: #2f9aa8; text-decoration: none; }
+.site-nav a:hover { color: #27808c; }
+.site-nav a.active { background: #f2f2f2; }
+@media only screen and (min-width: 481px) and (max-width: 1023px) { .site-nav a { font-size: 0.8125em; padding: 0.625em; padding-top: 0.78125em; } }
+
 /* ========================================================================== Print styles. Inlined to avoid required HTTP connection: h5bp.com/r ========================================================================== */
-@media print { * { background: transparent !important; color: black !important; /* Black prints faster: h5bp.com/s */ box-shadow: none !important; text-shadow: none !important; }
+@media print { * { background: transparent !important; color: #000 !important; /* Black prints faster: h5bp.com/s */ box-shadow: none !important; text-shadow: none !important; }
   a, a:visited { text-decoration: underline; }
   a[href]:after { content: " (" attr(href) ")"; }
   abbr[title]:after { content: " (" attr(title) ")"; }
   /* Don't show links for images, or javascript/internal links */
   .ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after { content: ""; }
-  pre, blockquote { border: 1px solid #999999; page-break-inside: avoid; }
+  pre, blockquote { border: 1px solid #999; page-break-inside: avoid; }
   thead { display: table-header-group; /* h5bp.com/t */ }
   tr, img { page-break-inside: avoid; }
   img { max-width: 100% !important; }

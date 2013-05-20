@@ -250,3 +250,13 @@ $c-nav-active-color: $c-white;
     $c-alert-red-bg: $c-nhs_red;
    $c-alert-grey-bg: $c-lightgrey;
 $c-alert-grey-color: $c-black;
+
+/**
+ * _site-nav.scss
+ */
+  $c-sitenav-border-color: $c-grey;
+$c-sitenav-gradient-start: $c-lightgrey;
+ $c-sitenav-gradient-stop: $c-white;
+         $c-sitenav-color: $c-aquablue;
+   $c-sitenav-color-hover: $c-aquablue-tint;
+  $c-sitenav-color-active: $c-lightgrey;
