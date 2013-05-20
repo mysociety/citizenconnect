@@ -87,6 +87,12 @@
         padding: 1em;
     }
 
+    .btn--med--flat {
+        width: 100%;
+        font-size: (24px / $font-size-base) + em;
+        @include vendor(border-radius, (6px / 18px) + em);
+        line-height: 1.3;
+    }
 
     /**
      * Remove borders
@@ -256,3 +262,4 @@
 .btn--publish {
   margin-left: 10px;
 }
+
