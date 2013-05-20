@@ -157,12 +157,8 @@ class ReviewFormViewBrowserTest(ReviewFormViewBase, SeleniumTestCase):
         # Find the element
         rating_select = self.driver.find_element_by_name(rating_select_name)
 
-        # FIXME - this is wrong. Parent is not the dom tree parent :(
-        rating_element = rating_select.parent.find_element_by_class_name(
-            'rateit-range')
-
-        # import IPython
-        # IPython.embed()
+        css_selector = 'div[data-select-name="{0}"] .rateit-range'.format(rating_select_name)
+        rating_element = self.driver.find_element_by_css_selector(css_selector)
 
         # Do the math to work out where on the rating element to click
         element_width = rating_element.size['width']
@@ -194,7 +190,6 @@ class ReviewFormViewBrowserTest(ReviewFormViewBase, SeleniumTestCase):
             for score in range(6):
                 self.set_rating(answer_name, score)
                 self.assertEqual(self.get_rating(answer_name), score)
-            break  # FIXME - remove this to test all
 
 
 class PushNewReviewToChoicesCommandTest(TestCase):

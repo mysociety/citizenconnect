@@ -15,12 +15,16 @@ $(function () {
 
     $('div.review-form__rating-answer select').each(function() {
         var score = 0;
-        $(this).find('option').each(function () {
+        var $select = $(this);
+        $select.find('option').each(function () {
             var $option = $(this);
             $option.data('originalValue', $option.val());
             $option.val(score);
             score += 1;
         });
+
+        // For the selenium testing put the name of the select on the enclosing div
+        $select.parent('div').attr('data-select-name', $select.attr('name'));
     });
 
     $("div.review-form form").submit(function (submitEvent) {
