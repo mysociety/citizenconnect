@@ -1,0 +1,7 @@
+{% load url from future %}
+{% if cobrand %}
+<div class="fr">
+    <a href="{% url 'about' cobrand=cobrand.name %}#terms-and-conditions">Terms &amp; Conditions</a>
+    <a href="#">Privacy &amp; Cookie Policy</a>
+</div>
+{% endif %}
