@@ -372,8 +372,8 @@ class ReviewOrganisationListTests(TestCase):
                                    'cobrand': 'choices'})
         resp = self.client.get(reviews_list_url)
         self.assertEqual(resp.context['organisation'], self.test_organisation)
-        self.assertEqual(len(resp.context['object_list']), 1)
-        self.assertEqual(resp.context['object_list'][0], self.org_review)
+        self.assertEqual(len(resp.context['table'].rows), 1)
+        self.assertEqual(resp.context['table'].rows[0].record, self.org_review)
 
 
 class ReviewDetailTests(TestCase):
