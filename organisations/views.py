@@ -386,11 +386,6 @@ class OrganisationProblems(OrganisationAwareViewMixin,
         return context
 
 
-class OrganisationReviews(OrganisationAwareViewMixin,
-                          TemplateView):
-    template_name = 'organisations/organisation_reviews.html'
-
-
 class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
     template_name = 'organisations/summary.html'
     permitted_statuses = Problem.VISIBLE_STATUSES

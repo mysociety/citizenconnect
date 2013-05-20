@@ -224,6 +224,9 @@ class ProblemDashboardTable(BaseProblemTable):
     but geared towards acting on problems, so not including satisfaction stats etc
     and always assuming a private context
     """
+    reference_number = tables.Column(verbose_name="Ref.",
+                                     order_by=('priority', 'created'),
+                                     attrs={'td': {'class': 'problem-table__heavy-text'}})
 
     service = tables.Column(verbose_name="Service", orderable=False)
 
@@ -236,7 +239,7 @@ class ProblemDashboardTable(BaseProblemTable):
         return self.render_summary_as_response_link(record)
 
     class Meta:
-        order_by = ('-created',)
+        order_by = ('reference_number',)
         attrs = {'class': 'problem-table problem-table--expanded'}
         sequence = ('reference_number',
                     'created',
