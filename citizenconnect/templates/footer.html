@@ -1,7 +1,9 @@
 {% load url from future %}
 {% if cobrand %}
-<div class="footer  fr">
-    <a class="footer__link" href="{% url 'about' cobrand=cobrand.name %}#terms-and-conditions">Terms &amp; Conditions</a>
-    <a class="footer__link" href="#">Privacy &amp; Cookie Policy</a>
+<div class="footer">
+    <div class="footer__links">
+        <a class="footer__link" href="{% url 'about' cobrand=cobrand.name %}#terms-and-conditions">Terms &amp; Conditions</a>
+        <a class="footer__link" href="#">Privacy &amp; Cookie Policy</a>
+    </div>
 </div>
 {% endif %}
