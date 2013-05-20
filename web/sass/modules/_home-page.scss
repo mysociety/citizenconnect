@@ -25,16 +25,15 @@
 }
 .homepage-map-box {
   position: relative;
-  form {
+  .map-links {
     position: absolute;
-    top: 35%;
+    top: 20%;
     left: ($grid-gutter / 2) + em;
     right: ($grid-gutter / 2) + em;
     background: $c-homepage-map-box-bg;
     padding: ($grid-gutter / 2) + em;
     @include vendor(border-radius, ($grid-gutter/4) + em);
-    label {
-      @extend .cf;
+    .map-text {
       display: block;
       font-size: (12px / $font-size-base) + em;
       font-weight: bold;
