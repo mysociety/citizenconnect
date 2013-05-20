@@ -11,24 +11,30 @@
     <ul class="site-nav">
         {% if cobrand.name == 'choices' %}
             {% url 'home' cobrand=cobrand.name as url %}
-                <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Home</a></li>
+            <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Home</a></li>
         {% else %}
             <li><a href="http://www.nhslondon.lampuat64-1.rroom.net/">Home</a></li>
         {% endif %}
 
         {% url 'about' cobrand=cobrand.name as url %}
-            <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">About</a></li>
+        <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">About</a></li>
 
         <li><a href="#">Experiences</a></li>
 
         {% if cobrand.name == 'choices' %}
-            <li><a {% if request.path == url %}class="active"{% endif %} href="{% url 'common-questions' cobrand=cobrand.name %}">Questions</a></li>
+            {% url 'common-questions' cobrand=cobrand.name as url %}
+            <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Questions</a></li>
         {% else %}
             <li><a href="http://www.nhslondon.lampuat64-1.rroom.net/">Questions</a></li>
         {% endif %}
+
         <li><a href="#">Problems</a></li>
-        <li><a href="#">Provider summaries</a></li>
+
+        {% url 'org-all-summary' cobrand=cobrand.name as url %}
+        <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Provider summaries</a></li>
+
         <li><a href="#">Help your NHS</a></li>
+
     </ul>
 {% elif user.is_authenticated %}
     <div class="site-top-bar">
