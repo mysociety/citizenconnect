@@ -1,24 +1,19 @@
 {% extends 'base.html' %}
 {% load url from future %}
+{% load render_table from django_tables2 %}
 
-{% block title %}{{ organisation.name }} Reviews ({{ object_list.count }}){% endblock %}
+{% block title %}{{ organisation.name }} Reviews{% endblock %}
 
-{% block bodyclasses %}review_organisation_list{% endblock %}
+{% block bodyclasses %}organisation-reviews{% endblock %}
 
 {% block content %}
 
-  <div class="header">
-      <h1>{{ organisation.name }} Reviews ({{ object_list.count }})</h1>
-  </div>
+<div class="header">
+    <h1>{{ organisation.name }} Reviews ({{ total_reviews }})</h1>
+</div>
 
-  <ul>
-    {% for review in object_list %}
-      <li>
-          <a href="{% url 'review-detail' cobrand=cobrand.name ods_code=review.organisation.ods_code pk=review.id %}">
-            {{ review.title }}
-          </a>
-      </li>
-    {% endfor %}
-  </ul>
+{% include "organisations/includes/organisation_tabs.html" with active_tab='reviews' %}
+
+{% render_table table 'reviews_display/includes/review-table.html' %}
 
 {% endblock %}
