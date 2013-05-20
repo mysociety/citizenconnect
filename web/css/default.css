@@ -1189,7 +1189,7 @@ th .filters__dropdown select { font-size: 1em; }
 /** A grey box with buttons inside */
 .feedback-box { max-width: 720px; margin: 3.75em auto 0 auto; background: #f2f2f2; padding: 1.25em 3.75em; }
 .feedback-box p { font-size: 1.125em; margin-top: 0; text-align: center; }
-.feedback-box .btn { font-size: 1.25em; text-align: center; }
+.feedback-box .btn { font-size: 1.25em; text-align: center; padding: 1em 1em; }
 
 /* ========================================================================== Print styles. Inlined to avoid required HTTP connection: h5bp.com/r ========================================================================== */
 @media print { * { background: transparent !important; color: black !important; /* Black prints faster: h5bp.com/s */ box-shadow: none !important; text-shadow: none !important; }
