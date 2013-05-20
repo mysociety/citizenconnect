@@ -16,10 +16,12 @@
     <div class="meta-data">
         <ul class="meta-data-list">
             <li>
-                {% if object.status in object.OPEN_STATUSES %}
-                    <span class="bordered-circle  bordered-circle--green" aria-hidden="true"></span> Open
+                {% if object.status == object.NEW %}
+                    <span class="bordered-circle  bordered-circle--pink" aria-hidden="true"></span> Open
+                {% elif object.status in object.OPEN_STATUSES %}
+                    <span class="bordered-circle  bordered-circle--orange" aria-hidden="true"></span> {{ object.get_status_display }}
                 {% else %}
-                    <span class="bordered-circle  bordered-circle--red" aria-hidden="true"></span> Closed - {{ object.get_status_display }}
+                    <span class="bordered-circle  bordered-circle--green" aria-hidden="true"></span> Closed - {{ object.get_status_display }}
                 {% endif %}
             </li>
             {% if private %}

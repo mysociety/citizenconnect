@@ -5,6 +5,8 @@ import json
 import urllib
 from decimal import Decimal
 import logging
+from datetime import datetime
+from selenium.webdriver.support.ui import WebDriverWait
 
 # Django imports
 from django.test import TestCase
@@ -12,13 +14,16 @@ from django.test.utils import override_settings
 from django.contrib.gis.geos import Point
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.utils.timezone import utc
+
 
 # App imports
+from citizenconnect.browser_testing import SeleniumTestCase
 from issues.models import Problem
 
 import organisations
 from ..models import Organisation
-from . import create_test_problem, create_test_organisation, create_test_service, create_test_ccg, AuthorizationTestCase
+from . import create_test_problem, create_test_organisation, create_test_service, create_test_ccg, create_test_review, AuthorizationTestCase
 from organisations.forms import OrganisationFinderForm
 
 
@@ -230,8 +235,8 @@ class OrganisationSummaryTests(AuthorizationTestCase):
         for url in self.urls:
             self.login_as(self.provider)
             resp = self.client.get(url)
-            self.assertContains(resp, '<td id="status_0_time_to_acknowledge">4</td>')
-            self.assertContains(resp, '<td class="separator" id="status_0_time_to_address">38</td>')
+            self.assertContains(resp, '<td id="status_0_time_to_acknowledge">4 days</td>')
+            self.assertContains(resp, '<td class="separator" id="status_0_time_to_address">38 days</td>')
             self.assertContains(resp, '<td id="status_0_happy_service">67%</td>')
             self.assertContains(resp, '<td id="status_0_happy_outcome">100%</td>')
 
@@ -855,6 +860,34 @@ class OrganisationMapTests(AuthorizationTestCase):
         self.assertEqual(len(response_json), 1)
 
 
+class OrganisationMapBrowserTests(SeleniumTestCase):
+
+    def setUp(self):
+        super(OrganisationMapBrowserTests, self).setUp()
+        self.map_url = reverse('org-map', kwargs={'cobrand': 'choices'})
+
+    def test_submit_button_hidden(self):
+        self.driver.get(self.full_url(self.map_url))
+        submit_button = self.driver.find_element_by_css_selector('.filters__button')
+        self.assertFalse(submit_button.is_displayed())
+
+    def test_filter_selection(self):
+        self.driver.get(self.full_url(self.map_url))
+
+        # Find the organisation type selector, and select hospitals
+        org_type_filter = self.driver.find_element_by_id('id_organisation_type')
+        org_type_filter.find_element_by_css_selector('option[value="hospitals"]').click()
+
+        # Wait until it the select is re-enabled - this is a sign of a successful ajax request
+        WebDriverWait(self.driver, 3).until(
+            lambda x: org_type_filter.get_attribute('disabled') is None
+        )
+
+        # Check the select wrapper no longer has a --default class, so it looks selected
+        org_type_filter_container = self.driver.find_element_by_css_selector('.filters .filters__dropdown')
+        self.assertEqual(org_type_filter_container.get_attribute('class'), 'filters__dropdown')
+
+
 @override_settings(SUMMARY_THRESHOLD=['all_time', 1])
 class SummaryTests(AuthorizationTestCase):
 
@@ -867,16 +900,23 @@ class SummaryTests(AuthorizationTestCase):
                              'moderated': Problem.MODERATED,
                              'status': Problem.ABUSIVE,
                              'category': 'cleanliness'})
+        create_test_review({'organisation': self.test_organisation,
+                            'api_published': datetime.utcnow().replace(tzinfo=utc),
+                            'api_updated': datetime.utcnow().replace(tzinfo=utc)})
 
     def test_summary_page_exists(self):
         resp = self.client.get(self.summary_url)
         self.assertEqual(resp.status_code, 200)
 
+    def test_summary_page_shows_reviews(self):
+        resp = self.client.get(self.summary_url)
+        self.assertContains(resp, '<td class="reviews_all_time">1</td>', count=1, status_code=200)
+
     def test_summary_doesnt_include_hidden_status_problems_in_default_view(self):
         resp = self.client.get(self.summary_url)
         self.assertContains(resp, 'Test Organisation')
         self.assertNotContains(resp, 'Other Test Organisation')
-        self.assertContains(resp, '<td class="week">1</td>', count=1, status_code=200)
+        self.assertContains(resp, '<td class="all_time">1</td>', count=1, status_code=200)
 
     def test_status_filter_only_shows_visible_statuses_in_filters(self):
         resp = self.client.get(self.summary_url)
@@ -887,7 +927,7 @@ class SummaryTests(AuthorizationTestCase):
         resp = self.client.get(self.summary_url + '?status={0}'.format(Problem.ABUSIVE))
         self.assertContains(resp, 'Test Organisation')
         self.assertNotContains(resp, 'Other Test Organisation')
-        self.assertContains(resp, '<td class="week">1</td>', count=1, status_code=200)
+        self.assertContains(resp, '<td class="all_time">1</td>', count=1, status_code=200)
 
     def test_summary_page_applies_threshold_from_settings(self):
         with self.settings(SUMMARY_THRESHOLD=('six_months', 1)):
@@ -945,6 +985,84 @@ class SummaryTests(AuthorizationTestCase):
     def test_public_summary_page_does_not_have_breach_filter(self):
         resp = self.client.get(self.summary_url)
         self.assertNotContains(resp, '<select name="breach" id="id_breach">')
+
+    def test_public_summary_accepts_interval_parameters(self):
+        resp = self.client.get("{0}?problems_interval=week&reviews_interval=reviews_week".format(self.summary_url))
+        self.assertEqual(resp.context['problems_sort_column'], resp.context['table'].columns['week'])
+        self.assertEqual(resp.context['reviews_sort_column'], resp.context['table'].columns['reviews_week'])
+
+    def test_public_summary_ignores_duff_interval_parameters(self):
+        resp = self.client.get("{0}?problems_interval=not_there&reviews_interval=neither".format(self.summary_url))
+        self.assertEqual(resp.context['problems_sort_column'], resp.context['table'].columns['all_time'])
+        self.assertEqual(resp.context['reviews_sort_column'], resp.context['table'].columns['reviews_all_time'])
+
+
+class SummaryBrowserTests(SeleniumTestCase, AuthorizationTestCase):
+
+    def setUp(self):
+        super(SummaryBrowserTests, self).setUp()
+        self.summary_url = reverse('org-all-summary', kwargs={'cobrand': 'choices'})
+        create_test_problem({'organisation': self.test_organisation, 'category': 'staff'})
+        create_test_problem({'organisation': self.other_test_organisation,
+                             'publication_status': Problem.PUBLISHED,
+                             'moderated': Problem.MODERATED,
+                             'status': Problem.ABUSIVE,
+                             'category': 'cleanliness'})
+        create_test_review({'organisation': self.test_organisation,
+                            'api_published': datetime.utcnow().replace(tzinfo=utc),
+                            'api_updated': datetime.utcnow().replace(tzinfo=utc)})
+
+    def test_other_interval_columns_hidden(self):
+        self.driver.get(self.full_url(self.summary_url))
+        for column in ['week', 'four_weeks', 'six_months', 'reviews_week', 'reviews_four_weeks', 'reviews_six_months']:
+            cells = self.driver.find_elements_by_css_selector('td.{0}'.format(column))
+            for cell in cells:
+                self.assertFalse(cell.is_displayed())
+
+    def test_querystring_param_determines_visible_column(self):
+        self.driver.get(self.full_url("{0}?problems_interval=week&reviews_interval=reviews_week".format(self.summary_url)))
+        for column in ['all_time', 'four_weeks', 'six_months', 'reviews_all_time', 'reviews_four_weeks', 'reviews_six_months']:
+            cells = self.driver.find_elements_by_css_selector('td.{0}'.format(column))
+            for cell in cells:
+                self.assertFalse(cell.is_displayed())
+
+    def test_selecting_interval_changes_visible_columns(self):
+        self.driver.get(self.full_url(self.summary_url))
+        # Check week is hidden first
+        cells = self.driver.find_elements_by_css_selector('td.week')
+        for cell in cells:
+            self.assertFalse(cell.is_displayed())
+        # Select a new interval
+        problem_interval_select = self.driver.find_element_by_id("problems-interval-filters")
+        problem_interval_select.find_element_by_css_selector("option[value=week]").click()
+        # Check all other columns are hidden
+        for column in ['all_time', 'four_weeks', 'six_months']:
+            cells = self.driver.find_elements_by_css_selector('td.{0}'.format(column))
+            for cell in cells:
+                self.assertFalse(cell.is_displayed())
+        # Check week is displayed
+        cells = self.driver.find_elements_by_css_selector('td.week')
+        for cell in cells:
+            self.assertTrue(cell.is_displayed())
+
+    def test_selecting_interval_changes_sorting_links(self):
+        self.driver.get(self.full_url(self.summary_url))
+        # Check old sorting link
+        header_link = self.driver.find_element_by_css_selector('#problems-intervals-header a')
+        self.assertEqual(header_link.get_attribute('href').split('?')[1], 'sort=all_time')
+        # Select a new interval
+        problem_interval_select = self.driver.find_element_by_id("problems-interval-filters")
+        problem_interval_select.find_element_by_css_selector("option[value=week]").click()
+        self.assertEqual(header_link.get_attribute('href').split('?')[1], 'sort=week&problems_interval=week')
+
+    def test_selecting_currently_sorted_interval_reloads_page(self):
+        # Get a url with a predefined sort
+        self.driver.get(self.full_url('{0}?sort=-all_time'.format(self.summary_url)))
+        # Select a new interval
+        problem_interval_select = self.driver.find_element_by_id("problems-interval-filters")
+        problem_interval_select.find_element_by_css_selector("option[value=week]").click()
+        # Check that the page url (well, the querystring), changes
+        self.assertEqual(self.driver.current_url.split('?')[1], "sort=-week&problems_interval=week")
 
 
 @override_settings(SUMMARY_THRESHOLD=None)

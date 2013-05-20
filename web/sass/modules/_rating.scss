@@ -10,6 +10,7 @@
 </div>
  *
  */
+
 .rating {
   span {
     color: $c-nhs_yellow;
@@ -21,5 +22,17 @@
     *zoom: 1;
     margin: 0 1px;
     &.rating__grey { color: $c-darkgrey; }
+  }
+}
+
+.rating--review_details {
+  @extend .rating;
+  @extend .fr;
+}
+
+.rating--organisation-summary {
+  @extend .rating;
+  span {
+    font-size:inherit; // Here it's in an h2, so we want it to inherit that font size
   }
 }
