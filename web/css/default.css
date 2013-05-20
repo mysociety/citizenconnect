@@ -1198,7 +1198,7 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 <h2 class="feed-list__heading">Live Feed <small>Latest reports, reviews and ratings</small></h2>
 <ul class="feed-list"> <li> <div class="feed-list__left"> <h3>Access to Service</h3> <p>I am unable to get an appointment here &hellip;</p> </div> <div class="feed-list__right"> <time>3mins ago</time> </div> </li>
 </ul>  */
-.feed-list__heading { font-size: 1.375em; font-weight: bold; text-transform: uppercase; color: #5bbf21; margin: 0 0 0.3125em 0; padding: 0.625em; -webkit-box-shadow: 0px 0px 6px 4px #dddddd; -moz-box-shadow: 0px 0px 6px 4px #dddddd; -ms-box-shadow: 0px 0px 6px 4px #dddddd; -o-box-shadow: 0px 0px 6px 4px #dddddd; box-shadow: 0px 0px 6px 4px #dddddd; }
+.feed-list__heading { font-size: 1.375em; font-weight: bold; text-transform: uppercase; text-align: center; color: #5bbf21; margin: 0 0 0.3125em 0; padding: 0.625em; -webkit-box-shadow: 0px 0px 6px 4px #dddddd; -moz-box-shadow: 0px 0px 6px 4px #dddddd; -ms-box-shadow: 0px 0px 6px 4px #dddddd; -o-box-shadow: 0px 0px 6px 4px #dddddd; box-shadow: 0px 0px 6px 4px #dddddd; }
 .feed-list__heading small { color: #888888; font-weight: normal; text-transform: none; }
 
 .feed-list { list-style: none; padding: 0; margin: 0; width: 100%; }
