@@ -2,7 +2,15 @@
   @extend .cf;
   width: 100%;
   overflow: hidden;
+  margin: 0 0 ($grid-gutter) + em;
   .map { width: 100%; }
+}
+
+.scale {
+    margin: ($grid-gutter) + em 0;
+    .scale-image {
+        width: 100%;
+    }
 }
 
 #map{
@@ -46,21 +54,25 @@
 /* Rrose Tweaks */
 .leaflet-rrose{ pointer-events:none; }
 .leaflet-rrose-content-wrapper, .leaflet-rrose-tip {
-    background: rgba(0,0,0,0.8);
+    background: rgba(255,255,255,1);
 }
 .leaflet-rrose-content-wrapper{
     -webkit-border-radius:0;
     -moz-border-radius:0;
     border-radius:0;
-    color: #fff;
     font-size: 16px;
 }
 .leaflet-rrose-content{
     font-size: 14px;
     line-height: 1.4;
-    color: #ddd;
-}
-.leaflet-rrose-content strong{
-    color:#fff;
-    font-size: 16px;
+
+    .map-header {
+        color: $c-aquablue;
+        font-weight: bold;
+    }
+
+    .unstyled {
+        list-style: none;
+        padding: 0;
+    }
 }

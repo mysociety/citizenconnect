@@ -177,19 +177,23 @@ class Map(FilterFormMixin,
         problem_filters['publication_status'] = Problem.PUBLISHED
 
         organisations_within_map_bounds_ids = [col.id for col in self.organisations_within_map_bounds()]
+        organisations_list = []
+
         if len(organisations_within_map_bounds_ids):
             # Query for summary counts for the organisations within the map bounds.
             organisation_filters['organisation_ids'] = tuple(organisations_within_map_bounds_ids)
 
-            organisations_list = interval_counts(problem_filters=problem_filters,
+            organisations_problem_data = interval_counts(problem_filters=problem_filters,
                                                  organisation_filters=organisation_filters,
                                                  extra_organisation_data=['coords', 'type', 'average_recommendation_rating'],
                                                  data_intervals=['all_time_open', 'all_time_closed'],
                                                  average_fields=['time_to_address'],
                                                  boolean_fields=['happy_outcome'])
-        else:
-            # If there are no organisations found within the bounds, return nothing.
-            organisations_list = []
+            organisations_review_data = interval_counts(organisation_filters=organisation_filters,
+                                                        data_type='reviews')
+
+            for problem_data, review_data in zip(organisations_problem_data, organisations_review_data):
+                organisations_list.append(dict(problem_data.items() + review_data.items()))
 
         for org_data in organisations_list:
             org_data['url'] = reverse('public-org-summary',

@@ -1085,8 +1085,11 @@ th .filters__dropdown select { font-size: 1em; }
 .gridded-list li .btn--med { min-height: 136px; }
 @media only screen and (max-width: 480px) { .gridded-list li .btn--med { min-height: auto; } }
 
-.map-container { width: 100%; overflow: hidden; }
+.map-container { width: 100%; overflow: hidden; margin: 0 0 1.25em; }
 .map-container .map { width: 100%; }
+
+.scale { margin: 1.25em 0; }
+.scale .scale-image { width: 100%; }
 
 #map { height: 500px; }
 
@@ -1105,13 +1108,13 @@ th .filters__dropdown select { font-size: 1em; }
 /* Rrose Tweaks */
 .leaflet-rrose { pointer-events: none; }
 
-.leaflet-rrose-content-wrapper, .leaflet-rrose-tip { background: rgba(0, 0, 0, 0.8); }
+.leaflet-rrose-content-wrapper, .leaflet-rrose-tip { background: white; }
 
-.leaflet-rrose-content-wrapper { -webkit-border-radius: 0; -moz-border-radius: 0; border-radius: 0; color: #fff; font-size: 16px; }
+.leaflet-rrose-content-wrapper { -webkit-border-radius: 0; -moz-border-radius: 0; border-radius: 0; font-size: 16px; }
 
-.leaflet-rrose-content { font-size: 14px; line-height: 1.4; color: #ddd; }
-
-.leaflet-rrose-content strong { color: #fff; font-size: 16px; }
+.leaflet-rrose-content { font-size: 14px; line-height: 1.4; }
+.leaflet-rrose-content .map-header { color: #2f9aa8; font-weight: bold; }
+.leaflet-rrose-content .unstyled { list-style: none; padding: 0; }
 
 /** Site nav - horizontal list */
 .nav { list-style: none; padding: 0; margin: 0; }

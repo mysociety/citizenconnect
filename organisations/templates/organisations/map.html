@@ -8,12 +8,32 @@
 {% block bodyclasses %}outcomes-map{% endblock %}
 
 {% block content %}
+
 <div class="gw">
-    <div class="g  one-half  palm-one-whole  mb__palm">
-        <a href="{% url 'org-pick-provider' cobrand=cobrand.name %}"  class="btn  btn--no-border  btn--big">Search to find the<br/>profile of an NHS service.</a>
+    <div class="g  two-thirds  palm-one-whole  mb__palm">
+        <p>
+        People tell us that they often do not want to make a complaint they just want to get their
+        problem/issue or concern resolved. This map shows at a glance, the number of problem reports
+        that have been submitted by members of the public to NHS service providers in the area given.
+        </p>
+        <p>
+        Each NHS service provider is represented by a dot and the darker the shade of the dot, the higher
+        the number of problem reports the service currently has open and in progress. A problem fixed is
+        a positive outcome for you and for the NHS - so please be our ‘eyes and ears’ and point out the
+        things that need to be resolved.
+        </p>
+        <p>
+        If you cannot see the NHS service provider you are looking for, it may be that they are not
+        participating at this pilot stage. We currently cover hospitals and NHS community services London
+        and the North East and will be expanding to cover a wider area soon.
+        </p>
+        <p>
+        Hover over a dot to see a summary of that service provider. Click on a dot to view in more detail
+        what problems have been logged and how well the NHS service provider is responding.
+        </p>
     </div>
-    <div class="g  one-half  palm-one-whole">
-        <a href="{% url 'org-all-summary' cobrand=cobrand.name %}"  class="btn  btn--no-border  btn--big">View Tables of<br/>NHS Service Profiles</a>
+    <div class="g  one-third  palm-one-whole">
+        <a href="{% url 'org-all-summary' cobrand=cobrand.name %}"  class="btn  btn--no-border  btn--big  btn--blue">See All Participating Service Providers <br><small>Click here</small></a>
     </div>
 </div>
 
@@ -24,21 +44,30 @@
     <li><a href="#" id="northeast">The North East</a></li>
 </ul>
 
-<p>
-    <small>Less unresolved problems</small>
-    <img src="{% static 'img/marker5.png' %}" />
-    <img src="{% static 'img/marker4.png' %}" />
-    <img src="{% static 'img/marker3.png' %}" />
-    <img src="{% static 'img/marker2.png' %}" />
-    <img src="{% static 'img/marker1.png' %}" />
-    <small>More unresolved problems</small>
-</p>
-
 <div class="map-container">
     <div id="map" class="map"></div>
 </div>
 
-<p><small>Zoom into the map above and click on any NHS service shown to see their profile.</small></p>
+<div class="gw">
+    <div class="g  one-fifth  palm-one-whole  scale">
+        <img class="scale-image" src="{% static 'img/problem_scale.png' %}" />
+        <small class="meta-data-label">Fewer</small>
+        <small class="meta-data-label  fr">More</small>
+    </div>
+    <div class="g  four-fifths  palm-one-whole">
+        <p>
+            <small>
+            Colour of dots show the number of unresolved problems. Note
+            that a high number of problems doesn't mean a service is
+            poorly performing, it could simply show that the organisation
+            is engaging with its patients and resolving their problems.
+            </small>
+        </p>
+    </div>
+</div>
+
+{% include 'emergency_numbers.html' %}
+
 {% endblock content %}
 
 {% block extra_js %}
@@ -56,24 +85,41 @@
 </script>
 
 <script type="text/x-underscore-template" name="hover-bubble">
-    <h1><%= nhsCentre.name %></h1>
-    <h2>Problem reports</h2>
-    <% if (issueType !== '') { %>
-        <h3>Issue Type - <%= issueType %></h3>
-    <% } %>
-    <ul>
-        <li><em><%= nhsCentre.all_time_open %></em> Open/In progress issues</li>
-        <li><em><%= nhsCentre.all_time_closed %></em> Closed issues</li>
+    <div class="hover-bubble  cf">
+        <div class="header">
+            <img src="<%= icon.options.iconRetinaUrl %>" alt="Status icon" class="fr" />
+            <h1 class="map-header"><%= nhsCentre.name %></h1>
+        </div>
+        <h2 class="map-header">Problem reports</h2>
+        <% if (issueType !== '') { %>
+            <h3>Issue Type - <%= issueType %></h3>
+        <% } %>
+        <ul class="unstyled">
+            <li><em><%= nhsCentre.all_time_open %></em> Open/In progress issues</li>
+            <li><em><%= nhsCentre.all_time_closed %></em> Closed issues</li>
+            <% if (nhsCentre.average_time_to_address) { %>
+                <li><em><%= nhsCentre.average_time_to_address %></em> days average time to close</li>
+            <% } %>
+            <% if (nhsCentre.happy_outcome) { %>
+                <li><em><%= nhsCentre.happy_outcome %></em> users satisfied with outcome</li>
+            <% } %>
+        </ul>
+        <h2 class="map-header">Ratings and Reviews</h2>
         <% if (nhsCentre.average_recommendation_rating) { %>
-            <li><em><%= nhsCentre.average_recommendation_rating.toFixed(1) %></em> out of 5 users would recommend</li>
+        <p>
+            Average Rating
+            <span class="rating">
+                <span class="<%= starClass(nhsCentre.average_recommendation_rating, 1) %>" aria-hidden="true"></span>
+                <span class="<%= starClass(nhsCentre.average_recommendation_rating, 2) %>" aria-hidden="true"></span>
+                <span class="<%= starClass(nhsCentre.average_recommendation_rating, 3) %>" aria-hidden="true"></span>
+                <span class="<%= starClass(nhsCentre.average_recommendation_rating, 4) %>" aria-hidden="true"></span>
+                <span class="<%= starClass(nhsCentre.average_recommendation_rating, 5) %>" aria-hidden="true"></span>
+            </span>
+        </p>
         <% } %>
-        <% if (nhsCentre.average_time_to_address) { %>
-            <li><em><%= nhsCentre.average_time_to_address %></em> days average time to close</li>
-        <% } %>
-        <% if (nhsCentre.happy_outcome) { %>
-            <li><em><%= nhsCentre.happy_outcome %></em> users happy with outcome</li>
-        <% } %>
-    </ul>
+        <p><%= nhsCentre.reviews_all_time %> Review<%= nhsCentre.reviews_all_time !== 1 ? 's' : '' %> received</p>
+        <!-- <span class="fr">View problems <span class="icon-chevron-right" aria-hidden="true"></span></span> -->
+    </div>
 </script>
 
 <script src="{% static 'js/map.js' %}"></script>
