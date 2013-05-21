@@ -12,6 +12,10 @@
 
   {% include 'organisations/includes/filters.html' %}
 
-  {% render_table table 'organisations/includes/table.html' %}
+  {% render_table table 'organisations/includes/national_table.html' %}
 
 {% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/summary-table.js' %}"></script>
+{% endblock extra_js %}
