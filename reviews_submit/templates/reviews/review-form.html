@@ -88,16 +88,18 @@
             <h2>Your Details</h2>
 
             <ul class="gw">
-                <li class="g  one-whole">
-                    {{ form.email.label_tag }}
-                    {{ form.email }}
-                    {% include "message_list.html" with messages=form.email.errors message_type='error' %}
-                </li>
-
-                <li class="g  one-whole">
-                    {{ form.display_name.label_tag }}
+                <li class="g  one-third">
+                    <label for="{{ form.display_name.auto_id }}">Your name <em>(required)</em></label>                    
+                    <p>You must enter a name.</p>
                     {{ form.display_name }}
                     {% include "message_list.html" with messages=form.display_name.errors message_type='error' %}
+                </li>
+
+                <li class="g  two-thirds">
+                    <label for="{{ form.email.auto_id }}">Your email address <em>(required)</em></label>                    
+                    <p>We only use your email address to communicate with you about your feedback.</p>
+                    {{ form.email }}
+                    {% include "message_list.html" with messages=form.email.errors message_type='error' %}
                 </li>
 
                 <li class="g  one-whole">
@@ -111,11 +113,11 @@
 
         <fieldset class="island">
             <ul class="gw">
-                <li class="g  two-halfs">
+                <li class="g  two-thirds">
                     <label for="id_agree_to_terms" class="label-checkbox">{{ form.agree_to_terms }} I have read and agree to the <a href="{% url 'about' cobrand=cobrand.name %}">Terms and Conditions</a></label>
                     {% include "message_list.html" with messages=form.agree_to_terms.errors message_type='error' %}
                 </li>
-                <li class="g  one-half">
+                <li class="g  one-third">
                     <button class="btn  fr" type="submit">Submit</button>
                 </li>
             </ul>
