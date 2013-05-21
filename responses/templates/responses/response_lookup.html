@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load page_auth %}
 
 {% block title %}Lookup issue{% endblock %}
 
@@ -6,6 +7,13 @@
 
 {% block content %}
 <h1>Lookup Issue</h1>
+
+{% if show_escalation_tabs %}
+    {% include "organisations/includes/escalation_tabs.html" with active_tab='lookup' %}
+{% elif show_organisation_tabs %}
+    {% include "organisations/includes/organisation_tabs.html" with active_tab='lookup' %}
+{% endif %}
+
 
 <p>To find a problem that requires a response, please input the reference number in the box below and hit submit.</p>
 

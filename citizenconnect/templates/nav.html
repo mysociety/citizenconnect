@@ -41,9 +41,9 @@
         <div class="site-top-bar__row">
             <div class="site-top-bar__cell  site-top-bar__cell--nav">
                 <ul class="nav  fr">
-                    {% if user|can_access:"escalation-dashboard" %}
+                    {% if user|is_escalation_body %}
                         {% url 'escalation-dashboard' as url %}
-                            <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Escalation dashboard</a></li>
+                            <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Inbox</a></li>
                     {% endif %}
                     {% url 'password_reset' as url %}
                         <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Change password</a></li>

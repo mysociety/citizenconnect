@@ -17,7 +17,13 @@ from citizenconnect.shortcuts import render
 from issues.models import Problem
 
 import auth
-from .auth import user_in_group, user_in_groups, user_is_superuser, enforce_organisation_access_check, user_can_access_escalation_dashboard, user_can_access_private_national_summary
+from .auth import (user_in_group,
+                   user_in_groups,
+                   user_is_superuser,
+                   enforce_organisation_access_check,
+                   user_can_access_escalation_dashboard,
+                   user_can_access_private_national_summary,
+                   user_is_escalation_body)
 from .models import Organisation, SuperuserLogEntry
 from .forms import OrganisationFinderForm, FilterForm, OrganisationFilterForm
 from .lib import interval_counts
@@ -463,7 +469,13 @@ class PrivateNationalSummary(Summary):
         if 'cobrand' not in kwargs:
             kwargs['cobrand'] = None
 
-        return super(PrivateNationalSummary, self).get_context_data(**kwargs)
+        context = super(PrivateNationalSummary, self).get_context_data(**kwargs)
+
+        # Determine if we should show the page as part of some tabbed navigation
+        if user_is_escalation_body(self.request.user):
+            context['show_escalation_tabs'] = True
+
+        return context
 
     def get_interval_counts(self, problem_filters, organisation_filters, threshold):
 
