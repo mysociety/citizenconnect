@@ -463,7 +463,13 @@ class PrivateNationalSummary(Summary):
         if 'cobrand' not in kwargs:
             kwargs['cobrand'] = None
 
-        return super(PrivateNationalSummary, self).get_context_data(**kwargs)
+        context = super(PrivateNationalSummary, self).get_context_data(**kwargs)
+
+        # Determine if we should show the page as part of some tabbed navigation
+        if user_in_groups(self.request.user, [auth.CASE_HANDLERS, auth.CUSTOMER_CONTACT_CENTRE]):
+            context['show_escalation_tabs'] = True
+
+        return context
 
     def get_interval_counts(self, problem_filters, organisation_filters, threshold):
 
