@@ -1151,6 +1151,9 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 
 div.review-form__rating-answer { width: auto; }
 
+.review-form__month_year_of_visit select { width: auto; }
+.review-form__month_year_of_visit label { display: inline; }
+
 /* ========================================================================== Print styles. Inlined to avoid required HTTP connection: h5bp.com/r ========================================================================== */
 @media print { * { background: transparent !important; color: black !important; /* Black prints faster: h5bp.com/s */ box-shadow: none !important; text-shadow: none !important; }
   a, a:visited { text-decoration: underline; }

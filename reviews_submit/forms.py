@@ -21,6 +21,8 @@ class ReviewForm(forms.ModelForm):
         self.fields['comment'].widget.attrs.update(
             {'placeholder': 'Please enter the main text of your review'})
 
+        self.fields['month_year_of_visit'].label = 'When did you visit?'
+
     def clean_month_year_of_visit(self):
         month_year_of_visit = self.cleaned_data['month_year_of_visit']
         if month_year_of_visit > datetime.date.today():

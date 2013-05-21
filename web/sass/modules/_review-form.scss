@@ -4,3 +4,13 @@ div.review-form__rating-answer {
     @extend .fr;
     width: auto;
 }
+
+.review-form__month_year_of_visit {
+  select {
+    width: auto;
+  }
+  
+  label {
+    display: inline;
+  }
+}
