@@ -130,7 +130,7 @@ class ReviewFormViewTest(ReviewFormViewBase, TestCase):
 
     def test_review_form_exists(self):
         resp = self.client.get(self.review_form_url)
-        self.assertContains(resp, 'Reviewing <strong>%s</strong>' % self.organisation.name, count=1, status_code=200)
+        self.assertContains(resp, '<h1>%s</h1>' % self.organisation.name, count=1, status_code=200)
         self.assertTrue('organisation' in resp.context)
         self.assertEquals(resp.context['organisation'].pk, self.organisation.pk)
         self.assertTrue('rating_forms' in resp.context)
