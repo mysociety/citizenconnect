@@ -1,9 +1,8 @@
 import re
 
 from django import forms
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
-from django.contrib.auth.forms import SetPasswordForm, PasswordChangeForm
 from django.contrib.auth.forms import SetPasswordForm, PasswordChangeForm
 from django.utils.translation import ugettext_lazy as _
 
@@ -29,11 +28,20 @@ ALL_GROUPS = [PROVIDERS,
               SECOND_TIER_MODERATORS,
               CUSTOMER_CONTACT_CENTRE]
 
+
 def user_is_superuser(user):
     """
     Like Django's is_superuser, but it knows about NHS Superusers too
     """
     return user.is_superuser or user_in_group(user, NHS_SUPERUSERS)
+
+
+def user_is_escalation_body(user):
+    """
+    A shortcut to check if a user is a CCG or the CCC
+    """
+    return user_in_groups(user, [CCG, CUSTOMER_CONTACT_CENTRE])
+
 
 def user_in_groups(user, groups):
     """
@@ -41,24 +49,30 @@ def user_in_groups(user, groups):
     """
     return user.groups.filter(pk__in=groups).exists()
 
+
 def user_in_group(user, group):
     return user_in_groups(user, [group])
+
 
 def enforce_organisation_access_check(organisation, user):
     if not organisation.can_be_accessed_by(user):
         raise PermissionDenied()
 
+
 def enforce_moderation_access_check(user):
     if not user_is_superuser(user) and not user_in_group(user, CASE_HANDLERS):
         raise PermissionDenied()
+
 
 def enforce_second_tier_moderation_access_check(user):
     if not user_is_superuser(user) and not user_in_group(user, SECOND_TIER_MODERATORS):
         raise PermissionDenied()
 
+
 def enforce_problem_access_check(problem, user):
     if not problem.can_be_accessed_by(user):
         raise PermissionDenied()
+
 
 def enforce_response_access_check(problem, user):
     """
@@ -67,8 +81,10 @@ def enforce_response_access_check(problem, user):
     """
     enforce_organisation_access_check(problem.organisation, user)
 
+
 def user_can_access_escalation_dashboard(user):
     return (user_is_superuser(user) or user_in_groups(user, [CCG, CUSTOMER_CONTACT_CENTRE]))
+
 
 def user_can_access_private_national_summary(user):
     if user_is_superuser(user) or user_in_group(user, CUSTOMER_CONTACT_CENTRE):
@@ -99,15 +115,13 @@ def create_unique_username(organisation):
             increment += 1
         return possible_username
 
+
 def is_valid_username_char(char):
     """
     Is a character allowed in usernames?
     Only letters and underscores are allowed
     """
     return char.isalpha() or char == '_'
-
-
-
 
 
 # note trying to create a form mixin that inherits from 'object' does not work

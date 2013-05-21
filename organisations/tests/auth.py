@@ -1,12 +1,16 @@
 import string
 
-from django.test import TestCase
-
 from django.contrib.auth.models import User
 
 from organisations import auth
-from organisations.auth import user_is_superuser, user_in_group, user_in_groups, is_valid_username_char, create_unique_username
+from organisations.auth import (user_is_superuser,
+                                user_in_group,
+                                user_in_groups,
+                                is_valid_username_char,
+                                create_unique_username,
+                                user_is_escalation_body)
 from organisations.tests.lib import AuthorizationTestCase
+
 
 class AuthTests(AuthorizationTestCase):
 
@@ -16,6 +20,10 @@ class AuthTests(AuthorizationTestCase):
     def test_user_is_superuser(self):
         self.assertTrue(user_is_superuser(self.superuser))
         self.assertTrue(user_is_superuser(self.nhs_superuser))
+
+    def test_user_is_escalation_body(self):
+        self.assertTrue(user_is_escalation_body(self.ccg_user))
+        self.assertTrue(user_is_escalation_body(self.customer_contact_centre_user))
 
     def test_user_in_group(self):
         self.assertTrue(user_in_group(self.case_handler, auth.CASE_HANDLERS))
