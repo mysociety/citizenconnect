@@ -25,6 +25,6 @@
     <li><a {% if active_tab == 'summary' %}class="active"{% endif %} href="{% url 'private-org-summary' ods_code=organisation.ods_code %}">Summary</a></li>
     {% endif %}
 
-    <li><a {% if active_tab == "lookup" %}class="active"{% endif %} href="{% url 'response-lookup' %}">Problem Lookup</a></li>
+    <li><a {% if active_tab == "lookup" %}class="active"{% endif %} href="{% url 'response-lookup' %}">Lookup</a></li>
 
  </ul>
