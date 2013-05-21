@@ -285,6 +285,7 @@ $(document).ready(function () {
 
         if (isNorthEast) {
             map.fire('dragend');
+            $('ul.tab-nav a').toggleClass('active');
         }
 
         // Add the markers
