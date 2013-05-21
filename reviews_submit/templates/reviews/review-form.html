@@ -2,17 +2,16 @@
 {% load url from future %}
 {% load staticfiles %}
 
-{% block title %}Submit your review{% endblock %}
+{% block title %}Submit your review of {{ organisation.name }}{% endblock %}
 
 {% block bodyclasses %}review-form{% endblock %}
 
 {% block content %}
+
 <div class="header">
-    <h1>Submit your review</h1>
+    <h1>{{ organisation.name }}</h1>
 </div>
-<div class="hero">
-    <p>Reviewing <strong>{{ organisation.name }}</strong>
-</div>
+
 <div class="review-form">
     <form action="{% url 'review-form' cobrand=cobrand.name ods_code=organisation.ods_code %}" method="post">
         {% csrf_token %}
