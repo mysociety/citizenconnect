@@ -5,11 +5,9 @@
         <li><a {% if active_tab == 'dashboard' %}class="active"{% endif %} href="{% url 'org-dashboard' ods_code=organisation.ods_code %}">Inbox</a></li>
     {% endif %}
 
-    <li><a {% if active_tab == 'summary' %}class="active"{% endif %} href="{% if private %}
-        {% url 'private-org-summary' ods_code=organisation.ods_code %}
-    {% else %}
-        {% url 'public-org-summary' ods_code=organisation.ods_code cobrand=cobrand.name %}
-    {% endif %}">Summary</a></li>
+    {% if not private %}
+    <li><a {% if active_tab == 'summary' %}class="active"{% endif %} href="{% url 'public-org-summary' ods_code=organisation.ods_code cobrand=cobrand.name %}">Summary</a></li>
+    {% endif %}
 
     <li><a {% if active_tab == 'problems' %}class="active"{% endif %} href="{% if private %}
         {% url 'private-org-problems' ods_code=organisation.ods_code %}
@@ -22,6 +20,10 @@
     {% else %}
         {% url 'review-organisation-list' ods_code=organisation.ods_code cobrand=cobrand.name %}
     {% endif %}">Reviews</a></li>
+
+    {% if private %}
+    <li><a {% if active_tab == 'summary' %}class="active"{% endif %} href="{% url 'private-org-summary' ods_code=organisation.ods_code %}">Summary</a></li>
+    {% endif %}
 
     <li><a {% if active_tab == "lookup" %}class="active"{% endif %} href="{% url 'response-lookup' %}">Problem Lookup</a></li>
 
