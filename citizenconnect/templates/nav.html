@@ -43,7 +43,7 @@
                 <ul class="nav  fr">
                     {% if user|is_escalation_body %}
                         {% url 'escalation-dashboard' as url %}
-                            <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Escalation dashboard</a></li>
+                            <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Inbox</a></li>
                     {% endif %}
                     {% url 'password_reset' as url %}
                         <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Change password</a></li>
