@@ -2,6 +2,7 @@ import datetime
 
 from django import forms
 from django.forms.widgets import Select, HiddenInput
+from django.conf import settings
 
 from .models import Review, Rating
 from .widgets import MonthYearWidget
@@ -27,6 +28,9 @@ class ReviewForm(forms.ModelForm):
         month_year_of_visit = self.cleaned_data['month_year_of_visit']
         if month_year_of_visit > datetime.date.today():
             raise forms.ValidationError("The month and year of visit can't be in the future")
+        oldest_permittable = datetime.date.today() - datetime.timedelta(days=settings.NHS_CHOICES_API_MAX_REVIEW_AGE_IN_DAYS)
+        if month_year_of_visit < oldest_permittable:
+            raise forms.ValidationError("The month and year of visit can't be more than two years ago")
         return month_year_of_visit
 
     class Meta:
