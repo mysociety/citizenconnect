@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 
 from citizenconnect.shortcuts import render
 from organisations import auth
-from organisations.auth import enforce_response_access_check, user_in_groups, user_in_group
+from organisations.auth import enforce_response_access_check, user_is_escalation_body, user_in_group
 from issues.models import Problem
 from issues.lib import changes_for_model
 
@@ -29,7 +29,7 @@ class ResponseLookup(FormView):
         context = super(ResponseLookup, self).get_context_data(**kwargs)
         context['private'] = True
         # Determine if we should show the page as part of some tabbed navigation
-        if user_in_groups(self.request.user, [auth.CASE_HANDLERS, auth.CUSTOMER_CONTACT_CENTRE]):
+        if user_is_escalation_body(self.request.user):
             context['show_escalation_tabs'] = True
         elif user_in_group(self.request.user, auth.PROVIDERS) and self.request.user.organisations.count() == 1:
             print "showing organisation tabs"
