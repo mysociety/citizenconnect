@@ -30,13 +30,13 @@
             <ul class="gw">
 
                 <li class="g  one-whole">
-                    <label for="{{ form.title.auto_id }}">Title <em>(required)</em></label>                    
+                    <label for="{{ form.title.auto_id }}">Title <em>(optional)</em></label>                    
                     {{ form.title }}
                     {% include "message_list.html" with messages=form.title.errors message_type='error' %}
                 </li>
 
                 <li class="g  one-whole">
-                    <label for="{{ form.comment.auto_id }}">Your review <em>(required)</em></label>                    
+                    <label for="{{ form.comment.auto_id }}">Your review <em>(optional)</em></label>                    
                     {{ form.comment }}
                     {% include "message_list.html" with messages=form.comment.errors message_type='error' %}
                 </li>

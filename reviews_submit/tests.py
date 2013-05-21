@@ -156,6 +156,13 @@ class ReviewFormViewTest(ReviewFormViewBase, TestCase):
         self.assertFormError(resp, 'form', 'agree_to_terms',
                              'You must agree to the terms and conditions to use this service.')
 
+    def test_form_title_and_comment_optional(self):
+        self.review_post_data['title'] = ''
+        self.review_post_data['comment'] = ''
+        self.client.post(self.review_form_url, self.review_post_data)
+        self.assertEquals(self.organisation.submitted_reviews.count(), 1)
+        self.assert_review_correctly_stored()
+
 
 class ReviewFormViewBrowserTest(ReviewFormViewBase, SeleniumTestCase):
 
