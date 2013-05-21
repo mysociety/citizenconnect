@@ -36,4 +36,12 @@ $(function () {
         return true;
     });
 
+    // Add a tooltip when hovering over the stars.
+    $(".rateit").bind('over', function (event,value) {
+        var $rating_element = $(this);
+        var $select = $rating_element.siblings('select');
+        var $option = $select.find('option[value="' + value + '"]');
+        $rating_element.attr('title', $option.text());
+    });
+
 });
