@@ -4,6 +4,8 @@
 .footer {
     @extend .cf;
     margin: 2em 0;
+    border-top: 2px solid $c-footer-border;
+    padding-top: $grid-gutter + em;
 }
 
 .footer__links {
