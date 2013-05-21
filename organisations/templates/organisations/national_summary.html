@@ -2,16 +2,25 @@
 {% load url from future %}
 {% load staticfiles %}
 {% load render_table from django_tables2 %}
-{% block title %}National Summary{% endblock %}
+{% load page_auth %}
+{% block title %}Overview of Participating Providers{% endblock %}
 
 {% block bodyclasses %}summary{% endblock %}
 
 {% block content %}
 
-  <h1>National Summary</h1>
+    <h1>Overview of Participating Providers</h1>
 
-  {% include 'organisations/includes/filters.html' %}
+    {% if show_escalation_tabs %}
+        {% include "organisations/includes/escalation_tabs.html" with active_tab='summary' %}
+    {% endif %}
 
-  {% render_table table 'organisations/includes/table.html' %}
+    {% include 'organisations/includes/filters.html' %}
+
+    {% render_table table 'organisations/includes/national_table.html' %}
 
 {% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/summary-table.js' %}"></script>
+{% endblock extra_js %}

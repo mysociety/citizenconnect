@@ -48,6 +48,7 @@ $(document).ready(function () {
     var hoverBubbleTemplate = $("script[name=hover-bubble]").text();
     var londonCentre = new L.LatLng(51.505, -0.09);
     var northEastCentre = new L.LatLng(54.95, -1.62);
+    var isNorthEast = (window.location.hash == "#northeast");
     var londonZoomLevel = 10;
     var northEastZoomLevel = 10;
     var map = new L.Map('map', {
@@ -123,6 +124,19 @@ $(document).ready(function () {
         map.addControl(zoomControl);
     };
 
+    var starClass = function(rating, current) {
+        // Should we fill in this star?
+        if (rating >= current) {
+            return 'icon-star';
+        } else {
+            if (rating >= (current - 0.5)) {
+                return 'icon-star-2';
+            } else {
+                return 'icon-star-3';
+            }
+        }
+    };
+
     // Function to draw an array of providers onto the map
     var drawProviders = function(providers) {
         // current selected issue type, to pass into the popups
@@ -162,7 +176,7 @@ $(document).ready(function () {
                 icon: iconClass
             });
 
-            content = _.template(hoverBubbleTemplate, {nhsCentre: nhsCentre, issueType: issueType});
+            content = _.template(hoverBubbleTemplate, {nhsCentre: nhsCentre, issueType: issueType, icon: iconClass, starClass: starClass});
 
             // Save some custom data in the marker
             marker.nhsCentre = nhsCentre;
@@ -245,9 +259,11 @@ $(document).ready(function () {
     };
 
     wax.tilejson('https://dnv9my2eseobd.cloudfront.net/v3/jedidiah.map-3lyys17i.jsonp', function(tilejson) {
-        map.addLayer(new wax.leaf.connector(httpstilejson)).setView(londonCentre, 1);
+        var mapCentre = isNorthEast ? northEastCentre : londonCentre;
+        var mapZoomLevel = isNorthEast ? northEastZoomLevel : londonZoomLevel;
 
-        map.setView(londonCentre, londonZoomLevel);
+        map.addLayer(new wax.leaf.connector(httpstilejson)).setView(mapCentre, 1);
+        map.setView(mapCentre, mapZoomLevel);
 
         map.on('dragend zoomend', function(e) {
 
@@ -267,6 +283,11 @@ $(document).ready(function () {
             window.location=marker.nhsCentre.url;
         });
 
+        if (isNorthEast) {
+            map.fire('dragend');
+            $('ul.tab-nav a').toggleClass('active');
+        }
+
         // Add the markers
         drawProviders(defaultProviders);
         map.addLayer(markersGroup);
@@ -279,6 +300,7 @@ $(document).ready(function () {
         map.setView(northEastCentre, northEastZoomLevel);
         map.fire('dragend');
         $('ul.tab-nav a').toggleClass('active');
+        window.location.hash = "#northeast";
     });
     $('a#london').on('click', function(e) {
         // recenter the map to london
@@ -286,6 +308,7 @@ $(document).ready(function () {
         map.setView(londonCentre, londonZoomLevel);
         map.fire('dragend');
         $('ul.tab-nav a').toggleClass('active');
+        window.location.hash = "#london";
     });
 
     // Filters

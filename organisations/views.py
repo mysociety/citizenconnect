@@ -17,7 +17,13 @@ from citizenconnect.shortcuts import render
 from issues.models import Problem
 
 import auth
-from .auth import user_in_group, user_in_groups, user_is_superuser, enforce_organisation_access_check, user_can_access_escalation_dashboard, user_can_access_private_national_summary
+from .auth import (user_in_group,
+                   user_in_groups,
+                   user_is_superuser,
+                   enforce_organisation_access_check,
+                   user_can_access_escalation_dashboard,
+                   user_can_access_private_national_summary,
+                   user_is_escalation_body)
 from .models import Organisation, SuperuserLogEntry
 from .forms import OrganisationFinderForm, FilterForm, OrganisationFilterForm
 from .lib import interval_counts
@@ -177,19 +183,23 @@ class Map(FilterFormMixin,
         problem_filters['publication_status'] = Problem.PUBLISHED
 
         organisations_within_map_bounds_ids = [col.id for col in self.organisations_within_map_bounds()]
+        organisations_list = []
+
         if len(organisations_within_map_bounds_ids):
             # Query for summary counts for the organisations within the map bounds.
             organisation_filters['organisation_ids'] = tuple(organisations_within_map_bounds_ids)
 
-            organisations_list = interval_counts(problem_filters=problem_filters,
+            organisations_problem_data = interval_counts(problem_filters=problem_filters,
                                                  organisation_filters=organisation_filters,
                                                  extra_organisation_data=['coords', 'type', 'average_recommendation_rating'],
-                                                 problem_data_intervals=['all_time_open', 'all_time_closed'],
+                                                 data_intervals=['all_time_open', 'all_time_closed'],
                                                  average_fields=['time_to_address'],
                                                  boolean_fields=['happy_outcome'])
-        else:
-            # If there are no organisations found within the bounds, return nothing.
-            organisations_list = []
+            organisations_review_data = interval_counts(organisation_filters=organisation_filters,
+                                                        data_type='reviews')
+
+            for problem_data, review_data in zip(organisations_problem_data, organisations_review_data):
+                organisations_list.append(dict(problem_data.items() + review_data.items()))
 
         for org_data in organisations_list:
             org_data['url'] = reverse('public-org-summary',
@@ -386,11 +396,6 @@ class OrganisationProblems(OrganisationAwareViewMixin,
         return context
 
 
-class OrganisationReviews(OrganisationAwareViewMixin,
-                          TemplateView):
-    template_name = 'organisations/organisation_reviews.html'
-
-
 class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
     template_name = 'organisations/summary.html'
     permitted_statuses = Problem.VISIBLE_STATUSES
@@ -406,20 +411,44 @@ class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
         organisation_rows = self.get_interval_counts(problem_filters=problem_filters,
                                                      organisation_filters=organisation_filters,
                                                      threshold=threshold)
-        organisations_table = self.summary_table_class(organisation_rows, cobrand=kwargs['cobrand'])
+        organisations_table = self.summary_table_class(organisation_rows,
+                                                       cobrand=kwargs['cobrand'])
 
         RequestConfig(self.request, paginate={"per_page": 8}).configure(organisations_table)
         context['table'] = organisations_table
         context['page_obj'] = organisations_table.page
+
+        # If a specific interval is requested, we need to pull out that column
+        # so that the template can know to alter the heading which covers all
+        # of those intervals to show the right sorting link
+        problems_interval = self.request.GET.get('problems_interval', 'all_time')
+        if problems_interval in organisations_table.columns:
+            context['problems_sort_column'] = organisations_table.columns[problems_interval]
+        else:
+            context['problems_sort_column'] = organisations_table.columns['all_time']
+        reviews_interval = self.request.GET.get('reviews_interval', 'reviews_all_time')
+        if reviews_interval in organisations_table.columns:
+            context['reviews_sort_column'] = organisations_table.columns[reviews_interval]
+        else:
+            context['reviews_sort_column'] = organisations_table.columns['reviews_all_time']
+
         return context
 
     def get_interval_counts(self, problem_filters, organisation_filters, threshold):
-        return interval_counts(
-            problem_filters=problem_filters,
-            organisation_filters=organisation_filters,
-            threshold=threshold,
-            extra_organisation_data=['average_recommendation_rating']
-        )
+        organisation_problem_data = interval_counts(problem_filters=problem_filters,
+                                                    organisation_filters=organisation_filters)
+        organisation_review_data = interval_counts(organisation_filters=organisation_filters,
+                                                   data_type='reviews',
+                                                   extra_organisation_data=['average_recommendation_rating'])
+        organisation_data = []
+        if threshold:
+            interval, cutoff = threshold
+        for problem_data, review_data in zip(organisation_problem_data, organisation_review_data):
+            if (not threshold) or (problem_data[interval] >= cutoff or
+                review_data['reviews_' + interval] >= cutoff):
+                organisation_data.append(dict(problem_data.items() + review_data.items()))
+
+        return organisation_data
 
 
 class PrivateNationalSummary(Summary):
@@ -440,7 +469,13 @@ class PrivateNationalSummary(Summary):
         if 'cobrand' not in kwargs:
             kwargs['cobrand'] = None
 
-        return super(PrivateNationalSummary, self).get_context_data(**kwargs)
+        context = super(PrivateNationalSummary, self).get_context_data(**kwargs)
+
+        # Determine if we should show the page as part of some tabbed navigation
+        if user_is_escalation_body(self.request.user):
+            context['show_escalation_tabs'] = True
+
+        return context
 
     def get_interval_counts(self, problem_filters, organisation_filters, threshold):
 
@@ -460,12 +495,9 @@ class PrivateNationalSummary(Summary):
             if not selected_ccg or not int(selected_ccg) in ccg_ids:
                 organisation_filters['ccg'] = tuple(ccg_ids)
 
-        return interval_counts(
-            problem_filters=problem_filters,
-            organisation_filters=organisation_filters,
-            threshold=threshold,
-            extra_organisation_data=['average_recommendation_rating']
-        )
+        return super(PrivateNationalSummary, self).get_interval_counts(problem_filters=problem_filters,
+                                                                     organisation_filters=organisation_filters,
+                                                                     threshold=threshold)
 
 
 class OrganisationDashboard(OrganisationAwareViewMixin,

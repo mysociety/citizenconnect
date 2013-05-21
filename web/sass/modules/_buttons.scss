@@ -72,6 +72,12 @@
         }
     }
 
+    .btn--med-normal-padding {
+        padding: 0.438em 1em; // 7px 16px
+        @include media-query(palm){
+            padding: 1em;
+        }
+    }
 
     /**
      * Remove borders
@@ -147,6 +153,18 @@
         background: $c-btn-darkgrey-bg;
         &:hover { background: $c-btn-darkgrey-hover-bg; }
     }
+    .btn--black {
+        border-color: $c-btn-black-border;
+        color: $c-btn-black-color;
+        background: $c-btn-black-bg;
+        &:hover { background: $c-btn-black-hover-bg; }
+    }
+    .btn--orange {
+        border-color: $c-btn-orange-border;
+        color: $c-btn-orange-color;
+        background: $c-btn-orange-bg;
+        &:hover { background: $c-btn-orange-hover-bg; }
+    }
 
     /**
      * Disabled button
@@ -205,3 +223,4 @@
 .btn--publish {
   margin-left: 10px;
 }
+

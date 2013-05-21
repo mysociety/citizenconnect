@@ -21,7 +21,8 @@ $c-body-bg: $c-white;
 $c-big-radio-group-active-green-radio-bg: $c-nhs_green;
               $c-description-count-error: $c-nhs_red;
                  $c-description-count-ok: $c-nhs_lightgreen;
-
+   $c-feedbackform-big-radio-group-radio-border: $c-grey-tint;
+$c-feedbackform-big-radio-group-active-radio-bg: $c-grey-tint;
 
 /**
  * _misc.scss
@@ -50,7 +51,7 @@ $c-table-heading-link-active-color: $c-aquablue;
          $c-table-highlight-border: $c-nhs_red;
              $c-table-row-hover-bg: $c-lightgrey;
    $c-table-row-hover-highlight-bg: $c-nhs_red;
-       $c-summary-table-subhead-bg: $c-lightgrey;
+       $c-summary-table-subhead-bg: $c-lightgrey-tint;
     $c-summary-table-subhead-color: $c-darkergrey;
       $c-problem-table-light-color: $c-darkergrey;
      $c-problem-table-danger-color: $c-nhs_red;
@@ -130,6 +131,15 @@ $c-back-btn-span-hover-color: $c-grey-tint;
        $c-btn-darkgrey-color: $c-white;
           $c-btn-darkgrey-bg: $c-darkgrey;
     $c-btn-darkgrey-hover-bg: $c-darkgrey-tint;
+        $c-btn-caption-color: $c-darkgrey;
+         $c-btn-black-border: $c-darkgrey-tint;
+          $c-btn-black-color: $c-white;
+             $c-btn-black-bg: $c-black;
+       $c-btn-black-hover-bg: $c-black / 1.1;
+        $c-btn-orange-border: $c-questions_orange-tint;
+         $c-btn-orange-color: $c-white;
+            $c-btn-orange-bg: $c-questions_orange;
+      $c-btn-orange-hover-bg: $c-questions_orange-tint;
 
 /**
  * _filters.scss
@@ -250,3 +260,20 @@ $c-nav-active-color: $c-white;
     $c-alert-red-bg: $c-nhs_red;
    $c-alert-grey-bg: $c-lightgrey;
 $c-alert-grey-color: $c-black;
+
+/**
+ * _site-nav.scss
+ */
+  $c-sitenav-border-color: $c-grey;
+$c-sitenav-gradient-start: $c-lightgrey;
+ $c-sitenav-gradient-stop: $c-white;
+         $c-sitenav-color: $c-aquablue;
+   $c-sitenav-color-hover: $c-aquablue-tint;
+  $c-sitenav-color-active: $c-lightgrey;
+
+/**
+ * _footer.scss
+ */
+      $c-footer-link-color: $c-darkergrey;
+$c-footer-link-color-hover: $c-darkgrey-tint;
+          $c-footer-border: $c-grey;

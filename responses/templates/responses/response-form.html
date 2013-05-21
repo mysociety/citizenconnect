@@ -49,6 +49,12 @@
                     </ul>
                 </fieldset>
 
+                <h3 class="meta-data-label">Formal Complaint</h3>
+                <fieldset>
+                    <label for="id_issue_formal_complaint">{{ form.issue_formal_complaint }} &nbsp;This problem has been raised as a formal complaint.</label>
+                    {% include "message_list.html" with messages=form.issue_formal_complaint.errors message_type='error' %}
+                </fieldset>
+
                 <fieldset>
                     <button class="btn fl" type="submit" name="status">Update Status</button>
                     <button class="btn fr" type="submit" name="respond">Respond</button>

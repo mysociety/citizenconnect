@@ -2,13 +2,12 @@
  * Big number with small text
  */
 .feature {
-  padding: 0 ($grid-gutter * 3) + em;
+  padding: 0 ($grid-gutter * 1.5) + em;
   font-weight: bold;
   .feature__num {
     display: block;
     float: left;
     text-align: right;
-    width: 150px;
     font-size: (50px / $font-size-base) + em;
     margin-right: ($grid-gutter / 3.125) + em;
     @include media-query(portable){

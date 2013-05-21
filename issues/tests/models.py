@@ -243,6 +243,9 @@ class ProblemModelTests(ProblemTestCase):
         self.assertEqual(len(context_manager.exception.messages), 1)
         self.assertEqual(context_manager.exception.messages[0], 'Ensure this value has at most 2000 characters (it has 2001).')
 
+    def test_formal_complaint_defaults_to_false(self):
+        self.assertEqual(self.test_problem.formal_complaint, False)
+
 
 class ProblemModelTimeToTests(ProblemTestCase):
 

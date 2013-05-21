@@ -53,7 +53,9 @@ def create_test_review(attributes, ratings_attributes):
         'api_updated': now,
         'author_display_name': 'Fred Smith',
         'title': 'Wonderful staff and treatment',
-        'content': 'What a marvelous service the NHS is!',
+        'content_liked': 'Things I liked',
+        'content_improved': 'Things that could be improved',
+        'content': 'What a marvellous service the NHS is!',
     }
 
     default_attributes.update(attributes)
@@ -200,7 +202,9 @@ class ReviewModelTests(TestCase):
             'api_updated': '2013-05-01T12:49:12+01:00',
             'author_display_name': 'Fred Smith',
             'title': 'Wonderful staff and treatment',
-            'content': 'What a marvelous service the NHS is!',
+            'content_liked': 'Things I liked',
+            'content_improved': 'Things that could be improved',
+            'content': 'What a marvellous service the NHS is!',
             'in_reply_to_id': None,
             'organisation_choices_id': str(self.organisation.choices_id),
             'ratings': self.sample_ratings,
@@ -216,6 +220,8 @@ class ReviewModelTests(TestCase):
         )
         self.assertEqual(review.title, self.sample_review['title'])
         self.assertEqual(review.content, self.sample_review['content'])
+        self.assertEqual(review.content_liked, self.sample_review['content_liked'])
+        self.assertEqual(review.content_improved, self.sample_review['content_improved'])
 
         # do it again (unchanged) and check it is still there
         self.assertTrue(Review.upsert_or_delete_from_api_data(
@@ -366,8 +372,8 @@ class ReviewOrganisationListTests(TestCase):
                                    'cobrand': 'choices'})
         resp = self.client.get(reviews_list_url)
         self.assertEqual(resp.context['organisation'], self.test_organisation)
-        self.assertEqual(len(resp.context['object_list']), 1)
-        self.assertEqual(resp.context['object_list'][0], self.org_review)
+        self.assertEqual(len(resp.context['table'].rows), 1)
+        self.assertEqual(resp.context['table'].rows[0].record, self.org_review)
 
 
 class ReviewDetailTests(TestCase):
@@ -386,23 +392,3 @@ class ReviewDetailTests(TestCase):
         resp = self.client.get(review_detail_url)
         self.assertEqual(resp.context['organisation'], self.test_organisation)
         self.assertEqual(resp.context['object'], self.org_review)
-
-
-class ReviewListTests(TestCase):
-
-    def setUp(self):
-        self.test_organisation = create_test_organisation({'ods_code': 'ABC'})
-        self.test_other_organisation = create_test_organisation(
-            {'ods_code': 'DEF'})
-        self.org_review = create_test_review({
-                                             'organisation': self.test_organisation}, {})
-        self.other_org_review = create_test_review({
-                                                   'organisation': self.test_other_organisation}, {})
-
-    def test_organisation_reviews_page(self):
-        review_list_url = reverse('review-list',
-                                  kwargs={'cobrand': 'choices'})
-        resp = self.client.get(review_list_url)
-        self.assertEqual(len(resp.context['object_list']), 2)
-        self.assertEqual(resp.context['object_list'][0], self.org_review)
-        self.assertEqual(resp.context['object_list'][1], self.other_org_review)

@@ -225,6 +225,12 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         resp = self.client.get(self.test_moderated_problem_url)
         self.assertNotContains(resp, "History")
 
+    def test_shows_formal_complaint(self):
+        self.test_moderated_problem.formal_complaint = True
+        self.test_moderated_problem.save()
+        resp = self.client.get(self.test_moderated_problem_url)
+        self.assertContains(resp, '<span class="icon-warning  meta-data-list__icon-red" aria-hidden="true"></span> Formal complaint')
+
 
 class ProblemProviderPickerTests(TestCase):
 
@@ -250,7 +256,7 @@ class ProblemSurveyTests(AuthorizationTestCase):
     def test_form_page_exists(self):
         resp = self.client.get(self.form_page)
         self.assertEqual(resp.status_code, 200)
-        self.assertContains(resp, 'Thanks for your feedback...and another question.', count=1, status_code=200)
+        self.assertContains(resp, 'Thanks for your feedback', count=1, status_code=200)
 
     def test_form_page_returns_a_404_for_a_non_existent_problem(self):
         form_page = reverse('survey-form', kwargs={'cobrand': 'choices',
@@ -318,7 +324,7 @@ class ProblemSurveyTests(AuthorizationTestCase):
         expected_review_url = reverse('review-form',
                                       kwargs={'cobrand': 'choices',
                                               'ods_code': self.test_organisation.ods_code})
-        self.assertContains(resp, 'review this provider')
+        self.assertContains(resp, 'Review and rate an NHS Service')
         self.assertContains(resp, expected_review_url)
 
     def test_confirm_page_doesnt_link_to_reviews_if_unhappy(self):
@@ -333,5 +339,5 @@ class ProblemSurveyTests(AuthorizationTestCase):
         expected_review_url = reverse('review-form',
                                       kwargs={'cobrand': 'choices',
                                               'ods_code': self.test_organisation.ods_code})
-        self.assertNotContains(resp, 'review this provider')
+        self.assertNotContains(resp, 'Review and rate an NHS Service')
         self.assertNotContains(resp, expected_review_url)
