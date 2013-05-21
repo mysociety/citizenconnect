@@ -109,7 +109,6 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     ABUSIVE = 7
     ESCALATED_ACKNOWLEDGED = 8
     ESCALATED_RESOLVED = 9
-    FORMAL_COMPLAINT = 10
 
     STATUS_CHOICES = (
         (NEW, 'Open'),
@@ -122,7 +121,6 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         (ABUSIVE, 'Abusive/Vexatious'),
         (ESCALATED_ACKNOWLEDGED, 'Escalated - In Progress'),
         (ESCALATED_RESOLVED, 'Escalated - Resolved'),
-        (FORMAL_COMPLAINT, 'Formal Complaint')
     )
 
     # The numerical value of the priorities should be chosen so that when sorted
@@ -144,7 +142,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     # Calculated status sets
     ALL_STATUSES = [status for status, description in STATUS_CHOICES]
     OPEN_STATUSES = BASE_OPEN_STATUSES + OPEN_ESCALATION_STATUSES
-    CLOSED_STATUSES = [RESOLVED, UNABLE_TO_RESOLVE, UNABLE_TO_CONTACT, ABUSIVE, ESCALATED_RESOLVED, FORMAL_COMPLAINT]
+    CLOSED_STATUSES = [RESOLVED, UNABLE_TO_RESOLVE, UNABLE_TO_CONTACT, ABUSIVE, ESCALATED_RESOLVED]
     ESCALATION_STATUSES = OPEN_ESCALATION_STATUSES + [ESCALATED_RESOLVED]
     NON_ESCALATION_STATUSES = [status for status in ALL_STATUSES if status not in ESCALATION_STATUSES]
     VISIBLE_STATUSES = [status for status in ALL_STATUSES if status not in HIDDEN_STATUSES]
@@ -295,6 +293,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     cobrand = models.CharField(max_length=30, blank=False, choices=COBRAND_CHOICES)
     mailed = models.BooleanField(default=False, blank=False)
     relates_to_previous_problem = models.BooleanField(default=False, blank=False)
+    formal_complaint = models.BooleanField(default=False, blank=False)
 
     version = IntegerVersionField()
 
