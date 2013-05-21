@@ -225,6 +225,12 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         resp = self.client.get(self.test_moderated_problem_url)
         self.assertNotContains(resp, "History")
 
+    def test_shows_formal_complaint(self):
+        self.test_moderated_problem.formal_complaint = True
+        self.test_moderated_problem.save()
+        resp = self.client.get(self.test_moderated_problem_url)
+        self.assertContains(resp, '<span class="icon-warning" aria-hidden="true"> Formal complaint')
+
 
 class ProblemProviderPickerTests(TestCase):
 

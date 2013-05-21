@@ -49,7 +49,12 @@
             {% endif %}
             {% if private and object.relates_to_previous_problem %}
                 <li class="relates-to-previous">
-                    <span class="icon-stack" aria-hidden="true"> Related to previous problem,&nbsp;
+                    <span class="icon-stack" aria-hidden="true"> Related to previous problem
+                </li>
+            {% endif %}
+            {% if object.formal_complaint %}
+                <li class="formal-complaint">
+                    <span class="icon-warning" aria-hidden="true"> Formal complaint
                 </li>
             {% endif %}
         </ul>
