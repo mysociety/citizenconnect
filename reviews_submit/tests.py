@@ -156,6 +156,12 @@ class ReviewFormViewTest(ReviewFormViewBase, TestCase):
         self.assertFormError(resp, 'form', 'agree_to_terms',
                              'You must agree to the terms and conditions to use this service.')
 
+    def test_form_requires_visit_date(self):
+        self.review_post_data['month_year_of_visit_year'] = None
+        self.review_post_data['month_year_of_visit_month'] = None
+        resp = self.client.post(self.review_form_url, self.review_post_data)
+        self.assertFormError(resp, 'form', 'month_year_of_visit', 'Enter a valid date.')
+
     def test_form_title_and_comment_optional(self):
         self.review_post_data['title'] = ''
         self.review_post_data['comment'] = ''
