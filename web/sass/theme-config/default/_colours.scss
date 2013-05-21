@@ -49,7 +49,6 @@ $c-lightaquablue: #badde2;
 $c-pink: #e70285;
 $c-orange: #ff8b00;
 
-
 // Secondary Colours
 $c-nhs_darkgreen: rgb(0,107,84);
 $c-nhs_darkgreen-tint: rgb(0,107,84) / 1.1;
@@ -76,6 +75,11 @@ $c-nhs_red-tint: rgb(216,30,5) / 1.1;
 $c-nhs_orange: rgb(226,140,5);
 $c-nhs_orange-tint: rgb(226,140,5) / 1.1;
 $c-nhs_yellow: rgb(247,226,20);
+
+
+// Colours for reviews, questions, problems
+$c-questions_orange: rgb(255,98, 0);
+$c-questions_orange-tint: rgb(255,98, 0) / 1.1;
 
 // Tints should be in 10% steps
 // eg:
