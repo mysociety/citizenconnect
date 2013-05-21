@@ -16,7 +16,7 @@ class Review(AuditedModel):
     email = models.CharField(max_length=100)
     display_name = models.CharField(max_length=100)
     is_anonymous = models.BooleanField(default=False)
-    title = models.CharField(max_length=255, blank=True)
+    title = models.CharField(max_length=255)
     comment = models.TextField()
     month_year_of_visit = models.DateField()
     organisation = models.ForeignKey('organisations.Organisation', related_name='submitted_reviews')
