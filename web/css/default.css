@@ -1150,6 +1150,9 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .alert--grey { background: #f2f2f2; color: #333333; }
 
 div.review-form__rating-answer { width: auto; }
+div.review-form__rating-answer div.rateit-range { background: url("/static/css/rateit/review-star-grey.png"); height: 16px; }
+div.review-form__rating-answer div.rateit-hover { background: url("/static/css/rateit/review-star-gold.png"); }
+div.review-form__rating-answer div.rateit-selected { background: url("/static/css/rateit/review-star-gold.png"); }
 
 .review-form__month_year_of_visit select { width: auto; }
 .review-form__month_year_of_visit label { display: inline; }
