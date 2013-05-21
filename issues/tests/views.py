@@ -229,7 +229,7 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         self.test_moderated_problem.formal_complaint = True
         self.test_moderated_problem.save()
         resp = self.client.get(self.test_moderated_problem_url)
-        self.assertContains(resp, '<span class="icon-warning" aria-hidden="true"> Formal complaint')
+        self.assertContains(resp, '<span class="icon-warning  meta-data-list__icon-red" aria-hidden="true"></span> Formal complaint')
 
 
 class ProblemProviderPickerTests(TestCase):
