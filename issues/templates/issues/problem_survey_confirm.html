@@ -8,23 +8,30 @@
 {% block content %}
 
 <div class="header">
-  <h1>Thanks</h1>
+    <h1>Thanks for your feedback</h1>
 </div>
 
-<div class="gw">
-    <div class="g  one-whole">
-        <ul class="message-list">
-            <li class="message-list__success">Thanks for answering our questions.</a></li>
-        </ul>
-        {% if not object.happy_service %}
-            <p>Would you like to <a href="{% url 'problem-form' cobrand=cobrand.name ods_code=object.organisation.ods_code %}">report this as another problem</a>?</p>
-        {% else %}
-            <p>Would you like to <a href="{% url 'review-form' cobrand=cobrand.name ods_code=object.organisation.ods_code %}">review this provider</a>?</p>
-        {% endif %}
-    </div>
+<div class="feedback-box">
+    {% if not object.happy_service %}
+        <p>Would you like to report this as another problem?</p>
+        <div class="gw">
+            <div class="g  two-thirds  palm-one-whole  mb__palm">
+                <a class="btn  btn-sml  btn--blue" href="{% url 'problem-form' cobrand=cobrand.name ods_code=object.organisation.ods_code %}">Report a problem with an NHS Service</a>
+            </div>
+            <div class="g  one-third  palm-one-whole">
+                <a class="btn  btn-sml  btn--black" href="{% url 'home' cobrand=cobrand.name %}">No thanks</a>
+            </div>
+        </div>
+    {% else %}
+        <p>Would you like to leave a review of your experience?</p>
+        <div class="gw">
+            <div class="g  two-thirds  palm-one-whole  mb__palm">
+                <a class="btn  btn-sml  btn--light-green" href="{% url 'review-form' cobrand=cobrand.name ods_code=object.organisation.ods_code %}">Review and rate an NHS Service</a>
+            </div>
+            <div class="g  one-third  palm-one-whole">
+                <a class="btn  btn-sml  btn--black" href="{% url 'home' cobrand=cobrand.name %}">No thanks</a>
+            </div>
+        </div>
+    {% endif %}
 </div>
-
 {% endblock %}
-
-
-

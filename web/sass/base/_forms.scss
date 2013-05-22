@@ -185,6 +185,16 @@ textarea {
   }
 }
 
+.big-radio-group--horizontal {
+    display: table;
+    ul { display: table-row; }
+    li {
+        background: none;
+        display: table-cell;
+        width: 33%;
+    }
+}
+
 // alternative layout for IEs that don't support display:table;
 .ie6, .ie7 {
   .big-radio-group {
@@ -307,10 +317,43 @@ textarea {
     display: inline;
     margin-right: 15px;
   }
+}
+
+
+/**
+ * Feedback form - used with `.big-radio-group--feedback`
+ */
+.feedback-form {
+  @extend .cf;
+  width: 520px;
+  margin: ($grid-gutter * 3) + em auto 0 auto;
+
+  .big-radio-group {
+    @extend .cf;
+    border-bottom: 4px solid #ddd;
+    li {
+      float: left;
+      background: none;
+      &:hover {
+        background: none;
+      }
+      .big-radio-group__radio {
+        border: 0.25em solid $c-feedbackform-big-radio-group-radio-border;
+      }
+      &.big-radio-group--active {
+        .big-radio-group__radio { background: $c-feedbackform-big-radio-group-active-radio-bg; }
+      }
+    }
+    label { font-size: (14px / $font-size-base) + em; }
+  }
 
   label {
     display: inline;
     font-weight: normal;
+  }
+  p {
+    font-size: (20px / $font-size-base) + em;
+    padding: 0 1.5em;
   }
 }
 

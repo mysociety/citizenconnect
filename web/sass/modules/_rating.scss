@@ -21,7 +21,17 @@
     *display: inline;
     *zoom: 1;
     margin: 0 1px;
-    &.rating__grey { color: $c-darkgrey; }
+    &.hide-text {
+      // Re-enforce hidden accessibility text
+      @extend .hide-text
+    }
+  }
+}
+
+.rating--grey {
+  @extend .rating;
+  span {
+    color: $c-darkgrey;
   }
 }
 

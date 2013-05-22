@@ -6,35 +6,44 @@
             <div class="site-top-bar__cell">
                 <p>Currently this site is only live for parts of London and the North East - other areas will be added soon</p>
             </div>
-            <div class="site-top-bar__cell  site-top-bar__cell--nav">
-                <ul class="nav  fr">
-                    {% if cobrand.name == 'choices' %}
-                        {% url 'home' cobrand=cobrand.name as url %}
-                            <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}"><span class="icon-home" aria-hidden="true"></span>&nbsp;Home</a></li>
-                    {% else %}
-                        <li><a href="http://www.nhslondon.lampuat64-1.rroom.net/"><span class="icon-home" aria-hidden="true"></span>Home</a></li>
-                    {% endif %}
-
-                    {% url 'about' cobrand=cobrand.name as url %}
-                        <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">About</a></li>
-
-                    {% if cobrand.name == 'choices' %}
-                        <li><a {% if request.path == url %}class="active"{% endif %} href="{% url 'common-questions' cobrand=cobrand.name %}">Common questions</a></li>
-                    {% else %}
-                        <li><a href="http://www.nhslondon.lampuat64-1.rroom.net/">Common questions</a></li>
-                    {% endif %}
-                </ul>
-            </div>
         </div>
     </div>
+    <ul class="site-nav">
+        {% if cobrand.name == 'choices' %}
+            {% url 'home' cobrand=cobrand.name as url %}
+            <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Home</a></li>
+        {% else %}
+            <li><a href="http://www.nhslondon.lampuat64-1.rroom.net/">Home</a></li>
+        {% endif %}
+
+        {% url 'about' cobrand=cobrand.name as url %}
+        <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">About</a></li>
+
+        <li><a href="#">Experiences</a></li>
+
+        {% if cobrand.name == 'choices' %}
+            {% url 'common-questions' cobrand=cobrand.name as url %}
+            <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Questions</a></li>
+        {% else %}
+            <li><a href="http://www.nhslondon.lampuat64-1.rroom.net/">Questions</a></li>
+        {% endif %}
+
+        <li><a href="#">Problems</a></li>
+
+        {% url 'org-all-summary' cobrand=cobrand.name as url %}
+        <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Provider summaries</a></li>
+
+        <li><a href="#">Help your NHS</a></li>
+
+    </ul>
 {% elif user.is_authenticated %}
     <div class="site-top-bar">
         <div class="site-top-bar__row">
             <div class="site-top-bar__cell  site-top-bar__cell--nav">
                 <ul class="nav  fr">
-                    {% if user|can_access:"escalation-dashboard" %}
+                    {% if user|is_escalation_body %}
                         {% url 'escalation-dashboard' as url %}
-                            <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Escalation dashboard</a></li>
+                            <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Inbox</a></li>
                     {% endif %}
                     {% url 'password_reset' as url %}
                         <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Change password</a></li>

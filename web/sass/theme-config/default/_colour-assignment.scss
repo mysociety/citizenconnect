@@ -137,10 +137,10 @@ $c-back-btn-span-hover-color: $c-grey-tint;
      $c-btn-darkorange-color: $c-white;
         $c-btn-darkorange-bg: $c-darkorange;
   $c-btn-darkorange-hover-bg: $c-darkorange-tint;
-         $c-btn-black-border: #000;
+         $c-btn-black-border: $c-darkgrey-tint;
           $c-btn-black-color: $c-white;
              $c-btn-black-bg: $c-black;
-       $c-btn-black-hover-bg: #000;
+       $c-btn-black-hover-bg: $c-black / 1.1;
 
 /**
  * _filters.scss
@@ -267,7 +267,6 @@ $c-sitenav-gradient-start: $c-lightgrey;
 
 
 
-
 /**
  * _bordered-box.scss
  */
@@ -310,3 +309,11 @@ $c-homepage-map-box-text-input-border: $c-grey;
 $c-homepage-map-box-text-input-shadow: $c-white;
 $c-homepage-link-999-color: $c-darkergrey;
 $c-homepage-link-999-color-hover: $c-black;
+
+/**
+ * _footer.scss
+ */
+      $c-footer-link-color: $c-darkergrey;
+$c-footer-link-color-hover: $c-darkgrey-tint;
+          $c-footer-border: $c-grey;
+

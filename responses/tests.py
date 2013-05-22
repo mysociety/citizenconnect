@@ -1,5 +1,5 @@
 # Django imports
-from django.test import TestCase, TransactionTestCase
+from django.test import TransactionTestCase
 from django.core.urlresolvers import reverse
 
 from concurrency.utils import ConcurrencyTestMixin
@@ -8,7 +8,7 @@ from concurrency.utils import ConcurrencyTestMixin
 from issues.models import Problem
 from .models import ProblemResponse
 
-from organisations.tests.lib import create_test_problem, create_test_organisation, AuthorizationTestCase
+from organisations.tests.lib import create_test_problem, AuthorizationTestCase
 from moderation.tests.lib import BaseModerationTestCase
 
 
@@ -19,14 +19,14 @@ class LookupFormTests(BaseModerationTestCase):
 
     def setUp(self):
         super(LookupFormTests, self).setUp()
-        self.closed_problem = create_test_problem({'organisation':self.test_organisation,
-                                                             'status': Problem.RESOLVED})
-        self.moderated_problem = create_test_problem({'organisation':self.test_organisation,
-                                                                'moderated': Problem.MODERATED})
+        self.closed_problem = create_test_problem({'organisation': self.test_organisation,
+                                                   'status': Problem.RESOLVED})
+        self.moderated_problem = create_test_problem({'organisation': self.test_organisation,
+                                                      'moderated': Problem.MODERATED})
         self.login_as(self.case_handler)
 
-        self.lookup_url           = reverse('response-lookup')
-        self.problem_response_url = reverse('response-form', kwargs={'pk':self.test_problem.id})
+        self.lookup_url = reverse('response-lookup')
+        self.problem_response_url = reverse('response-form', kwargs={'pk': self.test_problem.id})
 
     def test_happy_path(self):
         resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.test_problem.id)})
@@ -61,8 +61,8 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
 
     def setUp(self):
         super(ResponseFormTests, self).setUp()
-        self.problem = create_test_problem({'organisation':self.test_organisation})
-        self.response_form_url = reverse('response-form', kwargs={'pk':self.problem.id})
+        self.problem = create_test_problem({'organisation': self.test_organisation})
+        self.response_form_url = reverse('response-form', kwargs={'pk': self.problem.id})
         self.login_as(self.provider)
         # The form assumes a session variable is set, because it is when you load the form
         # in a browser, so we call the page to set it here.
@@ -75,7 +75,7 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
             'issue': self.problem.id,
             'respond': ''
         }
-        resp = self.client.post(self.response_form_url, test_form_values)
+        self.client.post(self.response_form_url, test_form_values)
         self.problem = Problem.objects.get(pk=self.problem.id)
         response = self.problem.responses.all()[0]
         self.assertEqual(self.problem.responses.count(), 1)
@@ -89,7 +89,7 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
             'issue_status': Problem.RESOLVED,
             'respond': ''
         }
-        resp = self.client.post(self.response_form_url, test_form_values)
+        self.client.post(self.response_form_url, test_form_values)
         self.problem = Problem.objects.get(pk=self.problem.id)
         response = self.problem.responses.all()[0]
         self.assertEqual(self.problem.responses.count(), 1)
@@ -104,7 +104,7 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
             'issue_status': Problem.RESOLVED,
             'status': ''
         }
-        resp = self.client.post(self.response_form_url, test_form_values)
+        self.client.post(self.response_form_url, test_form_values)
         self.problem = Problem.objects.get(pk=self.problem.id)
         self.assertEqual(self.problem.responses.count(), 0)
         self.assertEqual(self.problem.status, Problem.RESOLVED)
@@ -130,6 +130,51 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         resp = self.client.post(self.response_form_url, test_form_values)
         self.assertFormError(resp, 'form', 'response', 'This field is required.')
 
+    def test_form_sets_formal_complaint_with_update_status(self):
+        response_text = ''
+        test_form_values = {
+            'response': response_text,
+            'issue': self.problem.id,
+            'issue_formal_complaint': True,
+            'status': ''
+        }
+        self.client.post(self.response_form_url, test_form_values)
+        self.problem = Problem.objects.get(pk=self.problem.id)
+        self.assertEqual(self.problem.responses.count(), 0)
+        self.assertEqual(self.problem.formal_complaint, True)
+
+    def test_form_sets_formal_complaint_and_status_with_update_status(self):
+        response_text = ''
+        test_form_values = {
+            'response': response_text,
+            'issue': self.problem.id,
+            'issue_status': Problem.RESOLVED,
+            'issue_formal_complaint': True,
+            'status': ''
+        }
+        self.client.post(self.response_form_url, test_form_values)
+        self.problem = Problem.objects.get(pk=self.problem.id)
+        self.assertEqual(self.problem.responses.count(), 0)
+        self.assertEqual(self.problem.status, Problem.RESOLVED)
+        self.assertEqual(self.problem.formal_complaint, True)
+
+    def test_form_sets_formal_complaint_status_and_response_with_respond(self):
+        response_text = 'This problem is solved'
+        test_form_values = {
+            'response': response_text,
+            'issue': self.problem.id,
+            'issue_status': Problem.RESOLVED,
+            'issue_formal_complaint': True,
+            'respond': ''
+        }
+        self.client.post(self.response_form_url, test_form_values)
+        self.problem = Problem.objects.get(pk=self.problem.id)
+        response = self.problem.responses.all()[0]
+        self.assertEqual(self.problem.responses.count(), 1)
+        self.assertEqual(response.response, response_text)
+        self.assertEqual(self.problem.status, Problem.RESOLVED)
+        self.assertEqual(self.problem.formal_complaint, True)
+
     def test_form_shows_response_confirmation_with_link(self):
         response_text = 'This problem is solved'
         test_form_values = {
@@ -140,7 +185,7 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         resp = self.client.post(self.response_form_url, test_form_values)
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, "response has been published online")
-        self.assertContains(resp, reverse('org-dashboard', kwargs={'ods_code':self.test_organisation.ods_code}))
+        self.assertContains(resp, reverse('org-dashboard', kwargs={'ods_code': self.test_organisation.ods_code}))
 
     def test_form_shows_issue_confirmation_with_link(self):
         response_text = ''
@@ -153,7 +198,7 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         resp = self.client.post(self.response_form_url, test_form_values)
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, "the problem status has been updated")
-        self.assertContains(resp, reverse('org-dashboard', kwargs={'ods_code':self.test_organisation.ods_code}))
+        self.assertContains(resp, reverse('org-dashboard', kwargs={'ods_code': self.test_organisation.ods_code}))
 
     def test_initial_version_set_when_form_loads(self):
         self.client.get(self.response_form_url)
@@ -189,7 +234,7 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
             'issue_status': Problem.RESOLVED,
             'respond': ''
         }
-        resp = self.client.post(self.response_form_url, test_form_values)
+        self.client.post(self.response_form_url, test_form_values)
         session_version = self.client.session['object_versions'][self.problem.id]
         self.assertEqual(session_version, self.problem.version)
 
@@ -208,12 +253,13 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertFalse(self.problem.id in self.client.session['object_versions'])
 
+
 class ResponseFormViewTests(AuthorizationTestCase):
 
     def setUp(self):
         super(ResponseFormViewTests, self).setUp()
         self.problem = create_test_problem({'organisation': self.test_organisation})
-        self.response_form_url = reverse('response-form', kwargs={'pk':self.problem.id})
+        self.response_form_url = reverse('response-form', kwargs={'pk': self.problem.id})
         self.login_as(self.provider)
 
     def test_response_page_exists(self):
@@ -270,9 +316,8 @@ class ResponseFormViewTests(AuthorizationTestCase):
         self.client.get(self.response_form_url)
         self.assertTrue(self.problem.id in self.client.session['object_versions'])
         # Post to the form with some new data
-        response_text = 'This problem is solved'
         test_form_values = {
-            'response':'',
+            'response': '',
             'issue': self.problem.id,
             'issue_status': Problem.RESOLVED,
             'status': ''
@@ -290,17 +335,17 @@ class ResponseFormViewTests(AuthorizationTestCase):
 
         # Add a public published problem
         public_published_problem = create_test_problem({
-                                                           'organisation': self.test_organisation,
-                                                           'public': True,
-                                                           'status': Problem.ACKNOWLEDGED,
-                                                           'publication_status': Problem.PUBLISHED,
-                                                           'moderated': Problem.MODERATED
-                                                       })
-        form_which_should_403_for_other_providers = reverse('response-form', kwargs={'pk':public_published_problem.id})
+            'organisation': self.test_organisation,
+            'public': True,
+            'status': Problem.ACKNOWLEDGED,
+            'publication_status': Problem.PUBLISHED,
+            'moderated': Problem.MODERATED
+        })
+        form_which_should_403_for_other_providers = reverse('response-form', kwargs={'pk': public_published_problem.id})
         self.client.logout()
         self.login_as(self.other_provider)
         resp = self.client.get(form_which_should_403_for_other_providers)
-        self.assertEqual(resp.status_code, 403) # This was a 200 with the bug
+        self.assertEqual(resp.status_code, 403)  # This was a 200 with the bug
 
     def test_response_form_contains_moderated_description_and_description(self):
         # When a superuser is viewing the page, if there is a moderated
@@ -317,7 +362,7 @@ class ResponseFormViewTests(AuthorizationTestCase):
                 'moderated_description': "A moderated description",
             })
 
-        response_form_url = reverse('response-form', kwargs={'pk':moderated_problem.id})
+        response_form_url = reverse('response-form', kwargs={'pk': moderated_problem.id})
         resp = self.client.get(response_form_url)
         self.assertContains(resp, moderated_problem.description)
         self.assertContains(resp, moderated_problem.moderated_description)

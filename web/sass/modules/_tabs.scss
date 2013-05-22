@@ -22,7 +22,7 @@
             font-weight: bold;
             text-decoration: none;
             text-transform: uppercase;
-            padding: 1em 3em;
+            padding: 1em 2em;
             @include media-query(lap){ padding: 1em 1.5em; }
             @include media-query(palm){
                 padding: 1em;

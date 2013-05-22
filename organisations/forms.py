@@ -98,7 +98,7 @@ class FilterForm(forms.Form):
     """
     Form for processing filters on pages which filter issues
     """
-    ccg = forms.ModelChoiceField(queryset=CCG.objects.all(), required=False, empty_label='All CCGs',
+    ccg = forms.ModelChoiceField(queryset=CCG.objects.all(), required=False, empty_label='All',
                                  label="CCG")
 
     organisation_type = forms.ChoiceField(choices=[('', 'All types')] + settings.ORGANISATION_CHOICES,
@@ -107,7 +107,7 @@ class FilterForm(forms.Form):
     # A service_code, eg: SRV123 which are consistent across the NHS
     # rather than the id of a specific service in our database, which refers
     # to an instance of service being provided at a specific organisation.
-    service_code = forms.ChoiceField(choices=[], required=False, label="Service")
+    service_code = forms.ChoiceField(choices=[], required=False, label="Service/Department")
 
     category = forms.ChoiceField(choices=[('', 'All categories')] + list(Problem.CATEGORY_CHOICES),
                                  required=False,
@@ -143,7 +143,7 @@ class FilterForm(forms.Form):
             del self.fields['service_code']
         else:
             # We have to do this at runtime because otherwise we can't test this form
-            self.fields['service_code'].choices = [('', 'All services')] + list(Service.service_codes())
+            self.fields['service_code'].choices = [('', 'All services/depts')] + list(Service.service_codes())
 
         if not with_category:
             del self.fields['category']
@@ -184,4 +184,5 @@ class OrganisationFilterForm(FilterForm):
             services = organisation.services.all().order_by('name')
             self.fields.insert(0, 'service_id', forms.ModelChoiceField(queryset=services,
                                                                        required=False,
-                                                                       empty_label="Department"))
+                                                                       empty_label="All services",
+                                                                       label="Service"))

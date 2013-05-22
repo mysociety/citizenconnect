@@ -17,7 +17,13 @@ from citizenconnect.shortcuts import render
 from issues.models import Problem
 
 import auth
-from .auth import user_in_group, user_in_groups, user_is_superuser, enforce_organisation_access_check, user_can_access_escalation_dashboard, user_can_access_private_national_summary
+from .auth import (user_in_group,
+                   user_in_groups,
+                   user_is_superuser,
+                   enforce_organisation_access_check,
+                   user_can_access_escalation_dashboard,
+                   user_can_access_private_national_summary,
+                   user_is_escalation_body)
 from .models import Organisation, SuperuserLogEntry
 from .forms import OrganisationFinderForm, FilterForm, OrganisationFilterForm
 from .lib import interval_counts
@@ -177,19 +183,23 @@ class Map(FilterFormMixin,
         problem_filters['publication_status'] = Problem.PUBLISHED
 
         organisations_within_map_bounds_ids = [col.id for col in self.organisations_within_map_bounds()]
+        organisations_list = []
+
         if len(organisations_within_map_bounds_ids):
             # Query for summary counts for the organisations within the map bounds.
             organisation_filters['organisation_ids'] = tuple(organisations_within_map_bounds_ids)
 
-            organisations_list = interval_counts(problem_filters=problem_filters,
+            organisations_problem_data = interval_counts(problem_filters=problem_filters,
                                                  organisation_filters=organisation_filters,
                                                  extra_organisation_data=['coords', 'type', 'average_recommendation_rating'],
                                                  data_intervals=['all_time_open', 'all_time_closed'],
                                                  average_fields=['time_to_address'],
                                                  boolean_fields=['happy_outcome'])
-        else:
-            # If there are no organisations found within the bounds, return nothing.
-            organisations_list = []
+            organisations_review_data = interval_counts(organisation_filters=organisation_filters,
+                                                        data_type='reviews')
+
+            for problem_data, review_data in zip(organisations_problem_data, organisations_review_data):
+                organisations_list.append(dict(problem_data.items() + review_data.items()))
 
         for org_data in organisations_list:
             org_data['url'] = reverse('public-org-summary',
@@ -386,11 +396,6 @@ class OrganisationProblems(OrganisationAwareViewMixin,
         return context
 
 
-class OrganisationReviews(OrganisationAwareViewMixin,
-                          TemplateView):
-    template_name = 'organisations/organisation_reviews.html'
-
-
 class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
     template_name = 'organisations/summary.html'
     permitted_statuses = Problem.VISIBLE_STATUSES
@@ -464,7 +469,13 @@ class PrivateNationalSummary(Summary):
         if 'cobrand' not in kwargs:
             kwargs['cobrand'] = None
 
-        return super(PrivateNationalSummary, self).get_context_data(**kwargs)
+        context = super(PrivateNationalSummary, self).get_context_data(**kwargs)
+
+        # Determine if we should show the page as part of some tabbed navigation
+        if user_is_escalation_body(self.request.user):
+            context['show_escalation_tabs'] = True
+
+        return context
 
     def get_interval_counts(self, problem_filters, organisation_filters, threshold):
 
@@ -643,6 +654,31 @@ class EscalationBreaches(TemplateView):
         if not user_is_superuser(user) and not user_in_group(user, auth.CUSTOMER_CONTACT_CENTRE):
             problems = problems.filter(organisation__escalation_ccg__in=(user.ccgs.all()))
         # Everyone else see's all breaches
+
+        # Setup a table for the problems
+        problem_table = BreachTable(problems, private=True)
+        RequestConfig(self.request, paginate={'per_page': 25}).configure(problem_table)
+        context['table'] = problem_table
+        context['page_obj'] = problem_table.page
+
+        # These tables are always in the private context
+        context['private'] = True
+
+        return context
+
+
+class OrganisationBreaches(OrganisationAwareViewMixin,
+                           TemplateView):
+
+    template_name = 'organisations/organisation_breaches.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        return super(OrganisationBreaches, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(OrganisationBreaches, self).get_context_data(**kwargs)
+        enforce_organisation_access_check(context['organisation'], self.request.user)
+        problems = Problem.objects.open_problems().filter(breach=True, organisation=context['organisation'])
 
         # Setup a table for the problems
         problem_table = BreachTable(problems, private=True)

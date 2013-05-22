@@ -18,21 +18,35 @@
         <ul class="message-list">
             <li class="message-list__success">Thank you for reporting your problem.</li>
         </ul>
-        <p>It has been forwarded immediately to <a href="{% url 'public-org-summary' cobrand=cobrand.name ods_code=object.organisation.ods_code %}">{{ object.organisation.name }}</a> and you should receive a response from them directly using the contact details you included. <a href="{% url 'public-org-summary' cobrand=cobrand.name ods_code=object.organisation.ods_code %}">{{ object.organisation.name }}</a> should acknowledge your report within 24 hours.</p>
-        <p>If you have opted to make your issue public, then once it has been moderated you can track your problem on <a href="{% url 'public-org-problems' cobrand=cobrand.name ods_code=object.organisation.ods_code %}">the public problem page for {{ object.organisation.name }}</a>.</p>
-        <p>Your reference number for this is {{ object.reference_number }}. If you need to contact us or {{ object.organisation.name }} about this issue in the future, please quote this reference number.</p>
-        <p>Moderation is a standard process for websites that allow members of the public to submit comments. <a href="{% url 'about' cobrand=cobrand.name %}">See more information on our moderation process</a>.</p>
+
+        <p>It has been forwarded to <a href="{% url 'public-org-summary' cobrand=cobrand.name ods_code=object.organisation.ods_code %}">{{ object.organisation.name }}</a> and you should receive a response from them directly using the contact details you provided.
+
+        <p>Your Unique Reference Number (URN) is {{ object.reference_number }}. If you need to contact us or {{ object.organisation.name }} about this issue in the future, please quote this reference number.</p>
+
+        <p>You can track the progress of your problem by entering your URN into the homepage which will take you directly to the provider summary for {{ object.organisation.name }} This already displays your problem as new and 'open' along with the category and any department/ service that you ticked.</p>
+
+        {% if object.public %}
+            <p>As you opted to also make the details of your problem visible to the public, this will appear shortly, once the content has gone through our moderation process.</p>
+        {% endif %}
+
+        <p>{{ object.organisation.name }} will contact you to find out how they can help you and to agree with you how long they expect your problem will take to resolve. Once this is underway the status of your problem on the site will change to 'in progress'.</p>
+
+
+        <p>When the problem is resolved the NHS provider will mark it as 'closed' which means it will no longer appear on the live map but will still be visible on the provider summary.</p>
+
+        <p>2 weeks after posting your problem you will receive an email asking you to complete a short survey asking if you feel the problem was resolved satisfactorily.</p>
     </div>
     <div class="g  one-half  palm-one-whole">
         <div class="islet  islet--squared  mt">
-            <h3>Your unique reference number is  {{ object.reference_number }}</h3>
+            <h3>Your unique reference number is: {{ object.reference_number }}</h3>
             <p>
               You entered the following details<br>
               {% if object.reporter_phone %}
-              tel <strong>{{ object.reporter_phone }}</strong><br>
+              Tel: <strong>{{ object.reporter_phone }}</strong><br>
               {% endif %}
-              email <strong>{{ object.reporter_email }}</strong>
+              Email: <strong>{{ object.reporter_email }}</strong>
             </p>
+            <p>We have also sent a confirmation to you by email.</p>
         </div>
     </div>
 

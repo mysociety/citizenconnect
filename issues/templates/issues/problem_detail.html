@@ -8,4 +8,6 @@
 
 {% include "issues/issue_detail.html" with object=object title="Problem" %}
 
+<a href="mailto:{{ settings.ABUSE_EMAIL_ADDRESS }}?subject={{ object.reference_number }}">Report as unsuitable</a>
+
 {% endblock %}

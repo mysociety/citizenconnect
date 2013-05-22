@@ -71,9 +71,9 @@ class MonthYearWidget(Widget):
 
         return mark_safe(u'\n'.join(output))
 
-    def id_for_label(self, id_):
-        return '%s_month' % id_
-    id_for_label = classmethod(id_for_label)
+    @classmethod
+    def id_for_label(cls, id_):
+        return cls.month_field % id_
 
     def value_from_datadict(self, data, files, name):
         y = data.get(self.year_field % name)

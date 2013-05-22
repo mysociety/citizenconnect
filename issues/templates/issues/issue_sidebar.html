@@ -34,7 +34,7 @@
                     {% else %}
                         <span class="icon-x  meta-data-list__icon-red" aria-hidden="true"></span>
                     {% endif %}
-                    &nbsp;Happy with Service
+                    &nbsp;Happy with Manner
                 </li>
             {% endif %}
             {% if object.happy_outcome != None %}
@@ -44,12 +44,17 @@
                     {% else %}
                         <span class="icon-x  meta-data-list__icon-red" aria-hidden="true"></span>
                     {% endif %}
-                    &nbsp;Happy with Outcome
+                    &nbsp;Happy with Resolution
                 </li>
             {% endif %}
             {% if private and object.relates_to_previous_problem %}
                 <li class="relates-to-previous">
-                    <span class="icon-stack" aria-hidden="true"> Related to previous problem,&nbsp;
+                    <span class="icon-stack" aria-hidden="true"> Related to previous problem
+                </li>
+            {% endif %}
+            {% if object.formal_complaint %}
+                <li class="formal-complaint">
+                    <span class="icon-warning  meta-data-list__icon-red" aria-hidden="true"></span> Formal complaint
                 </li>
             {% endif %}
         </ul>
