@@ -1,17 +1,17 @@
 {% extends 'base.html' %}
 {% load url from future %}
+{% load staticfiles %}
 
-{% block title %}Submit your review{% endblock %}
+{% block title %}Submit your review of {{ organisation.name }}{% endblock %}
 
 {% block bodyclasses %}review-form{% endblock %}
 
 {% block content %}
+
 <div class="header">
-    <h1>Submit your review</h1>
+    <h1>{{ organisation.name }}</h1>
 </div>
-<div class="hero">
-    <p>Reviewing <strong>{{ organisation.name }}</strong>
-</div>
+
 <div class="review-form">
     <form action="{% url 'review-form' cobrand=cobrand.name ods_code=organisation.ods_code %}" method="post">
         {% csrf_token %}
@@ -26,67 +26,113 @@
             {{ hidden }}
         {% endfor %}
 
-        {% for form in rating_forms %}
-        <fieldset class="island">
-            {% for hidden in form.hidden_fields %}
-                {{ hidden }}
-            {% endfor %}
-            <p class="info">{{ form.question.label }}</p>
-
-            <ul class="radio-list">
-                {% for choice in form.answer %}
-                <li>
-                    {{ choice }}
-                </li>
-                {% endfor %}
-                {% include "message_list.html" with messages=form.answer.errors message_type='error' %}
-            </ul>
-
-        </fieldset>
-        {% endfor %}
-
-
         <fieldset class="island">
             <ul class="gw">
-                <li class="g  one-whole">
-                    {{ form.email.label_tag }}
-                    {{ form.email }}
-                    {% include "message_list.html" with messages=form.email.errors message_type='error' %}
-                </li>
 
                 <li class="g  one-whole">
-                    {{ form.display_name.label_tag }}
-                    {{ form.display_name }}
-                    {% include "message_list.html" with messages=form.display_name.errors message_type='error' %}
-                </li>
-
-                <li class="g  one-whole">
-                    <label for="id_is_anonymous">{{ form.is_anonymous }} Send anonymously</label>
-                    {% include "message_list.html" with messages=form.is_anonymous.errors message_type='error' %}
-                </li>
-
-                <li class="g  one-whole">
-                    {{ form.title.label_tag }}
+                    <label for="{{ form.title.auto_id }}">Title <em>(optional)</em></label>                    
                     {{ form.title }}
                     {% include "message_list.html" with messages=form.title.errors message_type='error' %}
                 </li>
 
                 <li class="g  one-whole">
-                    {{ form.comment.label_tag }}
+                    <label for="{{ form.comment.auto_id }}">Your review <em>(optional)</em></label>                    
                     {{ form.comment }}
                     {% include "message_list.html" with messages=form.comment.errors message_type='error' %}
                 </li>
 
-                <li class="g  one-whole">
+            </ul>
+        </fieldset>
+
+
+        <fieldset class="island">
+
+            <h2>Ratings (optional)</h2>
+
+        {% for rating_form in rating_forms %}
+            {% for hidden in rating_form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+
+            <div class="review-form__rating-answer">
+                {{ rating_form.answer }}
+                <div class="rateit" data-rateit-backingfld="#{{ rating_form.answer.auto_id }}"></div>
+            </div>
+
+
+            <p class="info">{{ rating_form.question.label }}</p>
+
+            {% include "message_list.html" with messages=rating_form.answer.errors message_type='error' %}
+
+        {% endfor %}
+        </fieldset>
+
+
+        <fieldset class="island">
+
+            <h2>Your Visit <em>(required)</em></h2>
+
+            <ul class="gw">
+                <li class="g  one-whole  review-form__month_year_of_visit">
                     {{ form.month_year_of_visit.label_tag }}
                     {{ form.month_year_of_visit }}
                     {% include "message_list.html" with messages=form.month_year_of_visit.errors message_type='error' %}
                 </li>
             </ul>
         </fieldset>
-        <fieldset>
-            <button class="btn  fr" type="submit">Submit</button>
+
+
+        <fieldset class="island">
+
+            <h2>Your Details <em>(required)</em></h2>
+
+            <ul class="gw">
+                <li class="g  one-third">
+                    <label for="{{ form.display_name.auto_id }}">Your name</label>                    
+                    <p class="info">You must enter a name.</p>
+                    {{ form.display_name }}
+                    {% include "message_list.html" with messages=form.display_name.errors message_type='error' %}
+                </li>
+
+                <li class="g  two-thirds">
+                    <label for="{{ form.email.auto_id }}">Your email address</label>                    
+                    <p class="info">We only use your email address to communicate with you about your feedback.</p>
+                    {{ form.email }}
+                    {% include "message_list.html" with messages=form.email.errors message_type='error' %}
+                </li>
+
+                <li class="g  one-whole">
+                    <label for="id_is_anonymous">{{ form.is_anonymous }} Tick to remain anonymous</label>
+                    {% include "message_list.html" with messages=form.is_anonymous.errors message_type='error' %}
+                </li>
+
+            </ul>
         </fieldset>
+
+
+        <fieldset class="island">
+            <ul class="gw">
+                <li class="g  two-thirds">
+                    <label for="id_agree_to_terms" class="label-checkbox">{{ form.agree_to_terms }} By submitting I accept the <a href="http://www.nhs.uk/aboutNHSChoices/aboutnhschoices/termsandconditions/Pages/commentspolicy.aspx">moderation rules</a> and <a href="{% url 'about' cobrand=cobrand.name %}">terms and conditions</a>.</label>
+                    {% include "message_list.html" with messages=form.agree_to_terms.errors message_type='error' %}
+                </li>
+                <li class="g  one-third">
+                    <button class="btn  fr" type="submit">Submit</button>
+                </li>
+            </ul>
+        </fieldset>
+
     </form>
 </div>
 {% endblock %}
+
+{% block extra_js %}
+    {# Note that the ordering here is important: review-form needs to be before rateit #}
+    <script src="{% static 'js/review-form.js' %}"></script>
+    <script src="{% static 'js/jquery.rateit.min.js' %}"></script>
+{% endblock extra_js %}
+
+{% block extra_initial_css %}
+    <link rel="stylesheet" href="{% static 'css/rateit/rateit.css' %}" />
+{% endblock extra_initial_css %}
+

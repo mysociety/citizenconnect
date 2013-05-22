@@ -1,0 +1,33 @@
+
+
+div.review-form__rating-answer {
+    @extend .fr;
+    width: auto;
+
+    div.rateit-range
+    {
+        background: url('/static/css/rateit/review-star-grey.png');
+        height: 16px;
+    }
+
+    div.rateit-hover
+    {
+        background: url('/static/css/rateit/review-star-gold.png');
+    }
+
+    div.rateit-selected
+    {
+        background: url('/static/css/rateit/review-star-gold.png');
+    }
+}
+
+.review-form__month_year_of_visit {
+  select {
+    width: auto;
+  }
+
+  label {
+    display: inline;
+  }
+}
+

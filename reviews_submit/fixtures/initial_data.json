@@ -124,6 +124,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Very dissatisfied",
+            "star_rating": 1,
             "api_answer_id": 1,
             "question": 2
         }
@@ -133,6 +134,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Fairly dissatisfied",
+            "star_rating": 2,
             "api_answer_id": 2,
             "question": 2
         }
@@ -142,6 +144,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Neither satisfied nor dissatisfied",
+            "star_rating": 3,
             "api_answer_id": 3,
             "question": 2
         }
@@ -151,6 +154,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Fairly satisfied",
+            "star_rating": 4,
             "api_answer_id": 4,
             "question": 2
         }
@@ -160,6 +164,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Very satisfied",
+            "star_rating": 5,
             "api_answer_id": 5,
             "question": 2
         }
@@ -169,6 +174,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Very dissatisfied",
+            "star_rating": 1,
             "api_answer_id": 1,
             "question": 3
         }
@@ -178,6 +184,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Fairly dissatisfied",
+            "star_rating": 2,
             "api_answer_id": 2,
             "question": 3
         }
@@ -187,6 +194,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Neither satisfied nor dissatisfied",
+            "star_rating": 3,
             "api_answer_id": 3,
             "question": 3
         }
@@ -196,6 +204,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Fairly satisfied",
+            "star_rating": 4,
             "api_answer_id": 4,
             "question": 3
         }
@@ -205,6 +214,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Very satisfied",
+            "star_rating": 5,
             "api_answer_id": 5,
             "question": 3
         }
@@ -214,6 +224,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Very dissatisfied",
+            "star_rating": 1,
             "api_answer_id": 1,
             "question": 4
         }
@@ -223,6 +234,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Fairly dissatisfied",
+            "star_rating": 2,
             "api_answer_id": 2,
             "question": 4
         }
@@ -232,6 +244,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Neither satisfied nor dissatisfied",
+            "star_rating": 3,
             "api_answer_id": 3,
             "question": 4
         }
@@ -241,6 +254,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Fairly satisfied",
+            "star_rating": 4,
             "api_answer_id": 4,
             "question": 4
         }
@@ -250,6 +264,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Very satisfied",
+            "star_rating": 5,
             "api_answer_id": 5,
             "question": 4
         }
@@ -259,6 +274,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Very dissatisfied",
+            "star_rating": 1,
             "api_answer_id": 1,
             "question": 5
         }
@@ -268,6 +284,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Fairly dissatisfied",
+            "star_rating": 2,
             "api_answer_id": 2,
             "question": 5
         }
@@ -277,6 +294,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Neither satisfied nor dissatisfied",
+            "star_rating": 3,
             "api_answer_id": 3,
             "question": 5
         }
@@ -286,6 +304,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Fairly satisfied",
+            "star_rating": 4,
             "api_answer_id": 4,
             "question": 5
         }
@@ -295,6 +314,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Very satisfied",
+            "star_rating": 5,
             "api_answer_id": 5,
             "question": 5
         }
@@ -304,6 +324,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Very dissatisfied",
+            "star_rating": 1,
             "api_answer_id": 1,
             "question": 6
         }
@@ -313,6 +334,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Fairly dissatisfied",
+            "star_rating": 2,
             "api_answer_id": 2,
             "question": 6
         }
@@ -322,6 +344,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Neither satisfied nor dissatisfied",
+            "star_rating": 3,
             "api_answer_id": 3,
             "question": 6
         }
@@ -331,6 +354,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Fairly satisfied",
+            "star_rating": 4,
             "api_answer_id": 4,
             "question": 6
         }
@@ -340,6 +364,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Very satisfied",
+            "star_rating": 5,
             "api_answer_id": 5,
             "question": 6
         }
@@ -349,6 +374,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Extremely unlikely",
+            "star_rating": 1,
             "api_answer_id": 1,
             "question": 7
         }
@@ -358,6 +384,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Unlikely",
+            "star_rating": 2,
             "api_answer_id": 2,
             "question": 7
         }
@@ -367,6 +394,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Neither likely or unlikely",
+            "star_rating": 3,
             "api_answer_id": 3,
             "question": 7
         }
@@ -376,6 +404,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Likely",
+            "star_rating": 4,
             "api_answer_id": 4,
             "question": 7
         }
@@ -385,6 +414,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Extremely likely",
+            "star_rating": 5,
             "api_answer_id": 5,
             "question": 7
         }
@@ -394,6 +424,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Never",
+            "star_rating": 1,
             "api_answer_id": 1,
             "question": 9
         }
@@ -403,6 +434,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Rarely",
+            "star_rating": 2,
             "api_answer_id": 2,
             "question": 9
         }
@@ -412,6 +444,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Sometimes",
+            "star_rating": 3,
             "api_answer_id": 3,
             "question": 9
         }
@@ -421,6 +454,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Usually",
+            "star_rating": 4,
             "api_answer_id": 4,
             "question": 9
         }
@@ -430,6 +464,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Always",
+            "star_rating": 5,
             "api_answer_id": 5,
             "question": 9
         }
@@ -439,6 +474,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Never",
+            "star_rating": 1,
             "api_answer_id": 1,
             "question": 10
         }
@@ -448,6 +484,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Rarely",
+            "star_rating": 2,
             "api_answer_id": 2,
             "question": 10
         }
@@ -457,6 +494,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Sometimes",
+            "star_rating": 3,
             "api_answer_id": 3,
             "question": 10
         }
@@ -466,6 +504,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Usually",
+            "star_rating": 4,
             "api_answer_id": 4,
             "question": 10
         }
@@ -475,6 +514,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Always",
+            "star_rating": 5,
             "api_answer_id": 5,
             "question": 10
         }
@@ -484,6 +524,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Never",
+            "star_rating": 1,
             "api_answer_id": 1,
             "question": 11
         }
@@ -493,6 +534,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Rarely",
+            "star_rating": 2,
             "api_answer_id": 2,
             "question": 11
         }
@@ -502,6 +544,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Sometimes",
+            "star_rating": 3,
             "api_answer_id": 3,
             "question": 11
         }
@@ -511,6 +554,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Usually",
+            "star_rating": 4,
             "api_answer_id": 4,
             "question": 11
         }
@@ -520,6 +564,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Always",
+            "star_rating": 5,
             "api_answer_id": 5,
             "question": 11
         }
@@ -529,6 +574,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Never",
+            "star_rating": 1,
             "api_answer_id": 1,
             "question": 12
         }
@@ -538,6 +584,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Rarely",
+            "star_rating": 2,
             "api_answer_id": 2,
             "question": 12
         }
@@ -547,6 +594,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Sometimes",
+            "star_rating": 3,
             "api_answer_id": 3,
             "question": 12
         }
@@ -556,6 +604,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Usually",
+            "star_rating": 4,
             "api_answer_id": 4,
             "question": 12
         }
@@ -565,6 +614,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Always",
+            "star_rating": 5,
             "api_answer_id": 5,
             "question": 12
         }
@@ -574,6 +624,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Extremely unlikely",
+            "star_rating": 1,
             "api_answer_id": 1,
             "question": 13
         }
@@ -583,6 +634,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Unlikely",
+            "star_rating": 2,
             "api_answer_id": 2,
             "question": 13
         }
@@ -592,6 +644,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Neither likely or unlikely",
+            "star_rating": 3,
             "api_answer_id": 3,
             "question": 13
         }
@@ -601,6 +654,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Likely",
+            "star_rating": 4,
             "api_answer_id": 4,
             "question": 13
         }
@@ -610,6 +664,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Extremely likely",
+            "star_rating": 5,
             "api_answer_id": 5,
             "question": 13
         }
@@ -619,6 +674,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Never",
+            "star_rating": 1,
             "api_answer_id": 1,
             "question": 14
         }
@@ -628,6 +684,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Rarely",
+            "star_rating": 2,
             "api_answer_id": 2,
             "question": 14
         }
@@ -637,6 +694,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Sometimes",
+            "star_rating": 3,
             "api_answer_id": 3,
             "question": 14
         }
@@ -646,6 +704,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Usually",
+            "star_rating": 4,
             "api_answer_id": 4,
             "question": 14
         }
@@ -655,6 +714,7 @@
         "model": "reviews_submit.answer",
         "fields": {
             "text": "Always",
+            "star_rating": 5,
             "api_answer_id": 5,
             "question": 14
         }

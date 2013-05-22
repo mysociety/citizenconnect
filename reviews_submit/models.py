@@ -17,7 +17,7 @@ class Review(AuditedModel):
     display_name = models.CharField(max_length=100)
     is_anonymous = models.BooleanField(default=False)
     title = models.CharField(max_length=255, blank=True)
-    comment = models.TextField()
+    comment = models.TextField(blank=True)
     month_year_of_visit = models.DateField()
     organisation = models.ForeignKey('organisations.Organisation', related_name='submitted_reviews')
     last_sent_to_api = models.DateTimeField(null=True)
@@ -61,5 +61,16 @@ class Answer(models.Model):
     api_answer_id = models.IntegerField()
     question = models.ForeignKey('Question', related_name='answers')
 
+    # This is not provided by the NHS, but we need it internally to ensure
+    # that the various answers are presented to the user in a sensible order.
+    # Higher is better/more favourable. This is also the star rating to use in
+    # the submission form. Note the unique_together constraint and the default
+    # ordering in the Meta.
+    star_rating = models.IntegerField(null=True)
+
     def __unicode__(self):
         return self.text
+
+    class Meta:
+        unique_together = ('question', 'star_rating')
+        ordering = ['star_rating']
