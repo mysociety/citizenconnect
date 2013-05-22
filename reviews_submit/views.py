@@ -14,6 +14,7 @@ from . import forms
 
 class PickProvider(PickProviderBase):
     result_link_url_name = 'review-form'
+    intro_text = "To find the part of the NHS that you would like your review sent to please put either the name of the provider (e.g. Hospital name, GP practice name) the postcode of the provider or your postcode."
 
 
 class ReviewForm(CreateView):
