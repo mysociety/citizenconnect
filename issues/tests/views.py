@@ -382,9 +382,8 @@ class HomePageTests(TestCase):
         self.test_organisation = create_test_organisation({'ods_code': '11111'})
         public_atts = {'moderated': Problem.MODERATED,
                        'publication_status': Problem.PUBLISHED}
-        self.test_problem = create_problem_with_age(self.test_organisation, age=1, attributes=public_atts)
-
-        # Some more problems and reviews
+        # Some problems and reviews
+        create_problem_with_age(self.test_organisation, age=1, attributes=public_atts)
         create_review_with_age(self.test_organisation, age=2)
         create_problem_with_age(self.test_organisation, age=4, attributes=public_atts)
         create_review_with_age(self.test_organisation, age=3)
@@ -392,18 +391,60 @@ class HomePageTests(TestCase):
         public_atts.update({'moderated_description': 'Sixth item'})
         create_problem_with_age(self.test_organisation, age=6, attributes=public_atts)
 
-        self.problem_url = reverse('problem-view', kwargs={'pk':self.test_problem.id,
-                                                           'cobrand': 'choices'})
-
     def test_homepage_exists(self):
         resp = self.client.get(self.homepage_url)
         self.assertEqual(resp.status_code, 200)
-
-    def test_happy_path(self):
-        resp = self.client.post(self.homepage_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.test_problem.id)})
-        self.assertRedirects(resp, self.problem_url)
 
     def test_displays_last_five_problems_or_reviews(self):
         resp = self.client.get(self.homepage_url)
         self.assertContains(resp, '<h3 class="feed-list__title">', count=5, status_code=200)
         self.assertNotContains(resp, 'Sixth item')
+
+class PublicLookupFormTests(TestCase):
+
+    def setUp(self):
+        self.homepage_url = reverse('home', kwargs={'cobrand': 'choices'})
+        self.test_organisation = create_test_organisation({'ods_code': '11111'})
+        self.test_problem = create_test_problem({'organisation': self.test_organisation,
+                                                 'moderated': Problem.MODERATED,
+                                                 'publication_status': Problem.PUBLISHED})
+        self.closed_problem = create_test_problem({'organisation': self.test_organisation,
+                                                   'moderated': Problem.MODERATED,
+                                                   'publication_status': Problem.PUBLISHED,
+                                                   'status': Problem.RESOLVED})
+        self.problem_url = reverse('problem-view', kwargs={'pk':self.test_problem.id,
+                                                           'cobrand': 'choices'})
+        self.closed_problem_url = reverse('problem-view', kwargs={'pk':self.closed_problem.id,
+                                                                  'cobrand': 'choices'})
+
+        self.problem_reference = '{0}{1}'.format(Problem.PREFIX, self.test_problem.id)
+
+    def test_happy_path(self):
+        resp = self.client.post(self.homepage_url, {'reference_number': self.problem_reference})
+        self.assertRedirects(resp, self.problem_url)
+
+    def test_obvious_correction(self):
+        resp = self.client.post(self.homepage_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX.lower(), self.test_problem.id)})
+        self.assertRedirects(resp, self.problem_url)
+
+    def test_rejects_hidden_problems(self):
+        self.test_problem.publication_status = Problem.HIDDEN
+        self.test_problem.save()
+        resp = self.client.post(self.homepage_url, {'reference_number': self.problem_reference})
+        self.assertFormError(resp, 'form', None, 'Sorry, that reference number is not available')
+
+    def test_form_rejects_empty_submissions(self):
+        resp = self.client.post(self.homepage_url, {})
+        self.assertFormError(resp, 'form', 'reference_number', 'This field is required.')
+
+    def test_form_rejects_unknown_prefixes(self):
+        resp = self.client.post(self.homepage_url, {'reference_number': 'a123'})
+        self.assertFormError(resp, 'form', None, 'Sorry, that reference number is not recognised')
+
+    def test_form_rejects_unknown_problems(self):
+        resp = self.client.post(self.homepage_url, {'reference_number': '{0}12300'.format(Problem.PREFIX)})
+        self.assertFormError(resp, 'form', None, 'Sorry, there are no problems with that reference number')
+
+    def test_form_allows_closed_problems(self):
+        resp = self.client.post(self.homepage_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.closed_problem.id)})
+        self.assertRedirects(resp, self.closed_problem_url)
