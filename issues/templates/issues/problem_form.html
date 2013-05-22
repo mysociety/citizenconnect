@@ -11,7 +11,7 @@
     {% if request.GET.organisation_type and request.GET.location %}
         <a href="{% url 'problems-pick-provider' cobrand=cobrand.name %}?organisation_type={{ request.GET.organisation_type|urlencode }}&location={{ request.GET.location|urlencode }}" class="back-btn  fr"><span class="icon-chevron-left" aria-hidden="true"></span> Back to search results</a>
     {% endif %}
-    <h1>{{ organisation.name }}</h1>
+    <h1>Report a Problem: {{ organisation.name }}</h1>
 </div>
 
 <p>All problems posted through this website are highlighted on our live maps. When you submit  your problem here it will be flagged on a marker representing the NHS service you have selected. If you wish you can publish the content of your issue online either anonymously, or with your name.</p>
