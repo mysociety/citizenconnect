@@ -30,10 +30,10 @@ class NationalSummaryTable(tables.Table):
                                                     attrs={'th': {'class': 'summary-table__cell-no-border'}})
 
     # We split these into sub-columns
-    happy_service = tables.TemplateColumn(verbose_name='Service',
+    happy_service = tables.TemplateColumn(verbose_name='Manner',
                                           template_name="organisations/includes/percent_column.html")
 
-    happy_outcome = tables.TemplateColumn(verbose_name='Outcome',
+    happy_outcome = tables.TemplateColumn(verbose_name='Resolution',
                                           template_name="organisations/includes/percent_column.html",
                                           attrs={'th': {'class': 'summary-table__cell-no-border'}})
 
@@ -152,10 +152,10 @@ class ProblemTable(BaseProblemTable):
     Explicitly not for dashboards, where action related to those problems
     is implied or the primary focus.
     """
-    happy_service = tables.TemplateColumn(verbose_name='Service',
+    happy_service = tables.TemplateColumn(verbose_name='Manner',
                                           template_name="organisations/includes/boolean_column.html",
                                           orderable=False)
-    happy_outcome = tables.TemplateColumn(verbose_name='Outcome',
+    happy_outcome = tables.TemplateColumn(verbose_name='Resolution',
                                           template_name="organisations/includes/boolean_column.html",
                                           orderable=False)
     status = tables.Column()
