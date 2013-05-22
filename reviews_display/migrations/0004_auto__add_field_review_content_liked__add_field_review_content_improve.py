@@ -119,7 +119,7 @@ class Migration(SchemaMigration):
             'api_updated': ('django.db.models.fields.DateTimeField', [], {}),
             'author_display_name': ('django.db.models.fields.TextField', [], {}),
             'content': ('django.db.models.fields.TextField', [], {'default': "''"}),
-            'content_improve': ('django.db.models.fields.TextField', [], {'default': "''"}),
+            'content_improved': ('django.db.models.fields.TextField', [], {'default': "''"}),
             'content_liked': ('django.db.models.fields.TextField', [], {'default': "''"}),
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
