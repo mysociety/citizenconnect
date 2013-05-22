@@ -82,19 +82,46 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         resp = self.client.get(self.test_private_problem_url)
         self.assertEqual(resp.status_code, 200)
 
-    def test_private_problem_inaccessible_to_anon_user(self):
-        resp = self.client.get(self.test_private_problem_url)
-        self.assertEqual(resp.status_code, 403)
+    def test_private_problem_accessible_to_other_users_but_no_details_shown(self):
+        # Set the private problem details to something explicit
+        self.test_private_problem.description = "Private Problem description"
+        # This wouldn't happen in real life, but it's best to check!
+        self.test_private_problem.moderated_description = "Moderated Private Problem description"
+        self.test_private_problem.reporter_name = "Jane Doe"
+        self.test_private_problem.save()
 
-    def test_private_problem_inaccessible_to_other_provider_user(self):
-        self.login_as(self.other_provider)
+        # Try as anon user
         resp = self.client.get(self.test_private_problem_url)
-        self.assertEqual(resp.status_code, 403)
+        self.assertEqual(resp.status_code, 200)
+        self.assertNotContains(resp, self.test_private_problem.description)
+        self.assertNotContains(resp, self.test_private_problem.moderated_description)
+        self.assertNotContains(resp, self.test_private_problem.reporter_name)
 
-    def test_private_problem_inaccessible_to_other_ccg_user(self):
-        self.login_as(self.other_ccg_user)
+        for user in [self.other_provider, self.other_ccg_user]:
+            self.login_as(user)
+            resp = self.client.get(self.test_private_problem_url)
+            self.assertEqual(resp.status_code, 200)
+            self.assertNotContains(resp, self.test_private_problem.description)
+            self.assertNotContains(resp, self.test_private_problem.moderated_description)
+            self.assertNotContains(resp, self.test_private_problem.reporter_name)
+
+    def test_private_problem_doesnt_show_responses(self):
+        # Add some responses
+        response1 = ProblemResponse.objects.create(response="response 1", issue=self.test_private_problem)
+        response2 = ProblemResponse.objects.create(response="response 2", issue=self.test_private_problem)
+
+        # Try as anon user
         resp = self.client.get(self.test_private_problem_url)
-        self.assertEqual(resp.status_code, 403)
+        self.assertEqual(resp.status_code, 200)
+        self.assertNotContains(resp, response1.response)
+        self.assertNotContains(resp, response2.response)
+
+        for user in [self.other_provider, self.other_ccg_user]:
+            self.login_as(user)
+            resp = self.client.get(self.test_private_problem_url)
+            self.assertEqual(resp.status_code, 200)
+            self.assertNotContains(resp, response1.response)
+            self.assertNotContains(resp, response2.response)
 
     def test_private_problem_accessible_to_superusers(self):
         for user in self.users_who_can_access_everything:
