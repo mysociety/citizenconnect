@@ -6,13 +6,13 @@ from django.http import HttpResponseRedirect
 
 
 # App imports
-from issues.forms import LookupForm
+from issues.forms import PublicLookupForm
 from issues.models import Problem
 from reviews_display.models import Review
 
 class Home(FormView):
     template_name = 'index.html'
-    form_class = LookupForm
+    form_class = PublicLookupForm
 
     def form_valid(self, form):
         # Calculate the url
