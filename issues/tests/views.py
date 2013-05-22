@@ -2,12 +2,11 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
-from organisations.tests import create_test_problem, create_test_organisation, AuthorizationTestCase
+from organisations.tests import create_test_problem, create_test_organisation, create_review_with_age, create_problem_with_age, AuthorizationTestCase
 from responses.models import ProblemResponse
 
 from ..models import Problem
 from ..lib import int_to_base32
-
 
 class ProblemPublicViewTests(AuthorizationTestCase):
 
@@ -381,10 +380,18 @@ class HomePageTests(TestCase):
     def setUp(self):
         self.homepage_url = reverse('home', kwargs={'cobrand': 'choices'})
         self.test_organisation = create_test_organisation({'ods_code': '11111'})
-        self.test_problem = create_test_problem({'organisation':self.test_organisation,
-                                                 'moderated': Problem.MODERATED,
-                                                 'publication_status': Problem.PUBLISHED,
-                                                 'moderated_description': "A moderated description"})
+        public_atts = {'moderated': Problem.MODERATED,
+                       'publication_status': Problem.PUBLISHED}
+        self.test_problem = create_problem_with_age(self.test_organisation, age=1, attributes=public_atts)
+
+        # Some more problems and reviews
+        create_review_with_age(self.test_organisation, age=2)
+        create_problem_with_age(self.test_organisation, age=4, attributes=public_atts)
+        create_review_with_age(self.test_organisation, age=3)
+        create_review_with_age(self.test_organisation, age=5)
+        public_atts.update({'moderated_description': 'Sixth item'})
+        create_problem_with_age(self.test_organisation, age=6, attributes=public_atts)
+
         self.problem_url = reverse('problem-view', kwargs={'pk':self.test_problem.id,
                                                            'cobrand': 'choices'})
 
@@ -396,3 +403,7 @@ class HomePageTests(TestCase):
         resp = self.client.post(self.homepage_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.test_problem.id)})
         self.assertRedirects(resp, self.problem_url)
 
+    def test_displays_last_five_problems_or_reviews(self):
+        resp = self.client.get(self.homepage_url)
+        self.assertContains(resp, '<h3 class="feed-list__title">', count=5, status_code=200)
+        self.assertNotContains(resp, 'Sixth item')
