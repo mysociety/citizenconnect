@@ -1272,7 +1272,7 @@ th .filters__dropdown select { font-size: 1em; }
 .link-999 { color: #888888; font-size: 1.4375em; font-weight: bold; text-decoration: none; padding-top: 0.65217em; }
 .link-999:hover { color: #333333; }
 
-.link-111 { text-decoration: none; }
+.link-111 { text-decoration: none; padding-left: 0; }
 .link-111 img { max-width: 100%; height: auto; }
 
 div.review-form__rating-answer { width: auto; }
