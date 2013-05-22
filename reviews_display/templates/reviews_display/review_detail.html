@@ -41,6 +41,8 @@
     <div>{{ review.content|linebreaks }}</div>
 {% endif %}
 
+<div>Reviewed by {{ review.author_display_name }} on {{ review.api_published|date:"j M Y" }}.</div>
+
 
 <hr />
 
@@ -56,12 +58,6 @@
         {{ rating.question }}
     </div>
 {% endfor %}
-
-<hr />
-
-<div class="fl">Reviewed by {{ review.author_display_name }}</div>
-
-<div class="fr">Reviewed on {{ review.api_published|date:"j M Y" }}</div>
 
 
 {% endblock %}
