@@ -38,4 +38,4 @@ class Command(NoArgsCommand):
                 except OrganisationFromApiDoesNotExist:
                     pass
                 except RepliedToReviewDoesNotExist, e:
-                    sys.stderr.write('RepliedToReviewDoesNotExist: ' + str(e) + "\n")
+                    sys.stderr.write('RepliedToReviewDoesNotExist: ' + str(e) + " - skipping\n")
