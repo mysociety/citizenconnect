@@ -6,6 +6,7 @@ import urlparse
 import mock
 import urllib
 import pytz
+import logging
 
 from django.conf import settings
 from django.test import TestCase
@@ -16,7 +17,7 @@ from django.utils.timezone import utc
 
 from organisations.tests.lib import create_test_organisation
 
-from .models import Review, OrganisationFromApiDoesNotExist
+from .models import Review, OrganisationFromApiDoesNotExist, RepliedToReviewDoesNotExist
 from .reviews_api import ReviewsAPI
 
 
@@ -328,16 +329,32 @@ class ReviewModelTests(TestCase):
         # check that calling it without anything is db is ok too
         Review.upsert_or_delete_from_api_data(sample_review)
 
-    def test_replies(self):
+    def test_reply(self):
+        review = create_test_review({'organisation': self.organisation}, {})
+
         sample_review = self.sample_review.copy()
         sample_review['api_category'] = 'reply'
+        sample_review['in_reply_to_id'] = review.api_posting_id
+
         Review.upsert_or_delete_from_api_data(sample_review)
-        self.assertEqual(
-            Review.objects.filter(
-                api_posting_id=sample_review['api_posting_id']
-            ).count(),
-            0
+
+        reply = Review.objects.get(api_posting_id=sample_review['api_posting_id'])
+
+        self.assertEqual(reply.in_reply_to, review)
+        self.assertEqual(list(review.replies.all()), [reply])
+
+
+    def test_reply_where_original_does_not_exist(self):
+        sample_review = self.sample_review.copy()
+        sample_review['api_category'] = 'reply'
+        sample_review['in_reply_to_id'] = '1234567' # does not exist
+
+        self.assertRaises(
+            RepliedToReviewDoesNotExist,
+            Review.upsert_or_delete_from_api_data,
+            sample_review
         )
+
 
     def test_not_found_organisation(self):
         sample_review = self.sample_review.copy()
@@ -396,6 +413,11 @@ class ReviewDetailTests(TestCase):
         self.test_organisation = create_test_organisation({'ods_code': 'ABC'})
         self.org_review = create_test_review({
                                              'organisation': self.test_organisation}, {})
+        self.org_reply = create_test_review({
+                                             'organisation': self.test_organisation,
+                                             'in_reply_to_id': self.org_review.id,
+                                             'api_category': 'reply',
+                                             }, {})
 
     def test_organisation_reviews_page(self):
         review_detail_url = reverse('review-detail',
@@ -406,3 +428,23 @@ class ReviewDetailTests(TestCase):
         resp = self.client.get(review_detail_url)
         self.assertEqual(resp.context['organisation'], self.test_organisation)
         self.assertEqual(resp.context['object'], self.org_review)
+
+    def test_organisation_reviews_page_404s_for_reply(self):
+        review_detail_url = reverse('review-detail',
+                                    kwargs={
+                                        'ods_code': self.test_organisation.ods_code,
+                                    'pk': self.org_reply.id,
+                                    'cobrand': 'choices'})
+
+        # disable logging of "Not Found"
+        logger = logging.getLogger('django.request')
+        previous_level = logger.getEffectiveLevel()
+        logger.setLevel(logging.ERROR)
+
+        resp = self.client.get(review_detail_url)
+
+        # restore logger
+        logger.setLevel(previous_level)
+
+        self.assertEqual(resp.status_code, 404)
+        

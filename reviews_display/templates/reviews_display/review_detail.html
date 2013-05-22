@@ -18,50 +18,10 @@
 </div>
 
 
-<h2>Review</h2>
+{% include 'reviews_display/includes/review-display-block.html' with review=review %}
 
-<h3>{{ review.title }}</h3>
-
-{% if review.content_liked %}
-    <h4>Reviewer liked:</h4>
-    <div>{{ review.content_liked|linebreaks }}</div>
-{% endif %}
-
-{% if review.content_improved %}
-    <h4>Suggested improvements:</h4>
-    <div>{{ review.content_improved|linebreaks }}</div>
-{% endif %}
-
-{% if review.content %}
-
-    {% if review.content_liked or review.content_improved %}
-    <h4>Other commments:</h4>
-    {% endif %}
-
-    <div>{{ review.content|linebreaks }}</div>
-{% endif %}
-
-
-<hr />
-
-
-<h2>Ratings</h2>
-
-
-
-
-{% for rating in review.ratings.all %}
-    <div>
-        {% include 'organisations/includes/rating_column.html' with value=rating.score description=rating.answer css_class='rating--review_details' %}
-        {{ rating.question }}
-    </div>
+{% for reply in review.replies.all %}
+  {% include 'reviews_display/includes/review-display-block.html' with review=reply %}
 {% endfor %}
-
-<hr />
-
-<div class="fl">Reviewed by {{ review.author_display_name }}</div>
-
-<div class="fr">Reviewed on {{ review.api_published|date:"j M Y" }}</div>
-
 
 {% endblock %}
