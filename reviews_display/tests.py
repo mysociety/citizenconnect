@@ -6,6 +6,7 @@ import urlparse
 import mock
 import urllib
 import pytz
+import logging
 
 from django.conf import settings
 from django.test import TestCase
@@ -398,6 +399,11 @@ class ReviewDetailTests(TestCase):
         self.test_organisation = create_test_organisation({'ods_code': 'ABC'})
         self.org_review = create_test_review({
                                              'organisation': self.test_organisation}, {})
+        self.org_reply = create_test_review({
+                                             'organisation': self.test_organisation,
+                                             'in_reply_to_id': self.org_review.id,
+                                             'api_category': 'reply',
+                                             }, {})
 
     def test_organisation_reviews_page(self):
         review_detail_url = reverse('review-detail',
@@ -408,3 +414,23 @@ class ReviewDetailTests(TestCase):
         resp = self.client.get(review_detail_url)
         self.assertEqual(resp.context['organisation'], self.test_organisation)
         self.assertEqual(resp.context['object'], self.org_review)
+
+    def test_organisation_reviews_page_404s_for_reply(self):
+        review_detail_url = reverse('review-detail',
+                                    kwargs={
+                                        'ods_code': self.test_organisation.ods_code,
+                                    'pk': self.org_reply.id,
+                                    'cobrand': 'choices'})
+
+        # disable logging of "Not Found"
+        logger = logging.getLogger('django.request')
+        previous_level = logger.getEffectiveLevel()
+        logger.setLevel(logging.ERROR)
+
+        resp = self.client.get(review_detail_url)
+
+        # restore logger
+        logger.setLevel(previous_level)
+
+        self.assertEqual(resp.status_code, 404)
+        
