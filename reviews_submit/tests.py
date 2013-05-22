@@ -174,11 +174,19 @@ class ReviewFormViewTest(ReviewFormViewBase, TestCase):
         # For some reason, assertFormError doesn't like this error
         self.assertContains(resp, "The month and year of visit can&#39;t be in the future")
 
+    def test_submitting_a_review_with_a_just_long_enough_ago_date(self):
+        self.assertEquals(self.organisation.submitted_reviews.count(), 0)
+        past_date = datetime.datetime.now() - datetime.timedelta(days=settings.NHS_CHOICES_API_MAX_REVIEW_AGE_IN_DAYS)
+        self.review_post_data['month_year_of_visit_year'] = past_date.year
+        self.review_post_data['month_year_of_visit_month'] = past_date.month
+        resp = self.client.post(self.review_form_url, self.review_post_data)
+        self.assert_review_correctly_stored()
+
     def test_submitting_a_review_with_a_too_long_ago_date(self):
         self.assertEquals(self.organisation.submitted_reviews.count(), 0)
-        past_date = datetime.datetime.now() - datetime.timedelta(days=settings.NHS_CHOICES_API_MAX_REVIEW_AGE_IN_DAYS + 20)
-        self.review_post_data['month_year_of_visit_year'] = str(past_date.year)
-        self.review_post_data['month_year_of_visit_month'] = str(past_date.month)
+        past_date = datetime.datetime.now() - datetime.timedelta(days=settings.NHS_CHOICES_API_MAX_REVIEW_AGE_IN_DAYS) - datetime.timedelta(days=31)
+        self.review_post_data['month_year_of_visit_year'] = past_date.year
+        self.review_post_data['month_year_of_visit_month'] = past_date.month
         resp = self.client.post(self.review_form_url, self.review_post_data)
         self.assertEquals(self.organisation.submitted_reviews.count(), 0)
         # For some reason, assertFormError doesn't like this error

@@ -28,11 +28,15 @@ class ReviewForm(forms.ModelForm):
         month_year_of_visit = self.cleaned_data['month_year_of_visit']
         if month_year_of_visit > datetime.date.today():
             raise forms.ValidationError("The month and year of visit can't be in the future")
-        oldest_permittable = datetime.date.today() - datetime.timedelta(days=settings.NHS_CHOICES_API_MAX_REVIEW_AGE_IN_DAYS)
-        if month_year_of_visit < oldest_permittable:
-            raise forms.ValidationError("The month and year of visit can't be more than two years ago")
-        return month_year_of_visit
 
+        # Check that the review date is not too long ago. Compare the year and
+        # month seperately as we can't be sure about the day as we don't capture
+        # it.
+        oldest_permittable = datetime.date.today() - datetime.timedelta(days=settings.NHS_CHOICES_API_MAX_REVIEW_AGE_IN_DAYS)
+        if self._mm_yyyy_lt_compare_dates(month_year_of_visit, oldest_permittable):
+            raise forms.ValidationError("The month and year of visit can't be more than two years ago")
+
+        return month_year_of_visit
 
     @classmethod
     def _mm_yyyy_lt_compare_dates(cls, dt_a, dt_b ):
