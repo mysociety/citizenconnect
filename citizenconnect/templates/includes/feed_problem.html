@@ -2,7 +2,7 @@
 <li>
     <h3 class="feed-list__title">{{ problem.get_category_display }}</h3>
     <div class="feed-list__left">
-        <p><a href="{% url 'problem-view' pk=problem.id cobrand=cobrand.name %}">{{ problem.summary }}</a></p>
+        <p><a href="{% url 'problem-view' pk=problem.id cobrand=cobrand.name %}">{{ problem.summary|default:"More details" }}</a></p>
     </div>
     <div class="feed-list__right">
         <time>{{ problem.created|timesince }} ago</time>
