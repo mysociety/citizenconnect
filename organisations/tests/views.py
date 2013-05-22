@@ -1062,7 +1062,9 @@ class SummaryBrowserTests(SeleniumTestCase, AuthorizationTestCase):
         problem_interval_select = self.driver.find_element_by_id("problems-interval-filters")
         problem_interval_select.find_element_by_css_selector("option[value=week]").click()
         # Check that the page url (well, the querystring), changes
-        self.assertEqual(self.driver.current_url.split('?')[1], "sort=-week&problems_interval=week")
+        WebDriverWait(self.driver, 3).until(
+            lambda x: self.driver.current_url.split('?')[1] == "sort=-week&problems_interval=week"
+        )
 
 
 @override_settings(SUMMARY_THRESHOLD=None)
