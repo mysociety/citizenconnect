@@ -16,6 +16,7 @@ from django.forms.models import model_to_dict
 from citizenconnect.browser_testing import SeleniumTestCase
 from organisations.tests.models import create_test_organisation
 from .models import Review, Question, Answer, Rating
+from .forms import ReviewForm
 from .management.commands.push_new_reviews_to_choices import Command as PushReviewsCommand
 
 
@@ -50,6 +51,29 @@ class ReviewTest(TestCase):
         review.ratings.add(rating)
 
         self.assertEqual(review.ratings.count(), 1)
+
+
+class ReviewFormDateCompareTest(TestCase):
+
+    def test_mm_yyyy_date_compare(self):
+        tests = [
+            # date,      oldest,    result
+            ( 3, 2010,   4, 2011,   True ),
+            ( 4, 2010,   4, 2011,   True ),
+            ( 5, 2010,   4, 2011,   True ),
+            ( 3, 2011,   4, 2011,   True ),
+            ( 4, 2011,   4, 2011,   False ),
+            ( 5, 2011,   4, 2011,   False ),
+            ( 3, 2012,   4, 2011,   False ),
+            ( 4, 2012,   4, 2011,   False ),
+            ( 5, 2012,   4, 2011,   False )
+        ]
+        
+        for mm_a, yyyy_a, mm_b, yyyy_b, expected in tests:
+            # print mm_a, yyyy_a, mm_b, yyyy_b, expected
+            dt_a = datetime.date(year=yyyy_a, month=mm_a, day=1)
+            dt_b = datetime.date(year=yyyy_b, month=mm_b, day=1)
+            self.assertEqual(ReviewForm._mm_yyyy_lt_compare_dates(dt_a, dt_b), expected)
 
 
 class ReviewFormViewBase(object):
@@ -150,11 +174,19 @@ class ReviewFormViewTest(ReviewFormViewBase, TestCase):
         # For some reason, assertFormError doesn't like this error
         self.assertContains(resp, "The month and year of visit can&#39;t be in the future")
 
+    def test_submitting_a_review_with_a_just_long_enough_ago_date(self):
+        self.assertEquals(self.organisation.submitted_reviews.count(), 0)
+        past_date = datetime.datetime.now() - datetime.timedelta(days=settings.NHS_CHOICES_API_MAX_REVIEW_AGE_IN_DAYS)
+        self.review_post_data['month_year_of_visit_year'] = past_date.year
+        self.review_post_data['month_year_of_visit_month'] = past_date.month
+        resp = self.client.post(self.review_form_url, self.review_post_data)
+        self.assert_review_correctly_stored()
+
     def test_submitting_a_review_with_a_too_long_ago_date(self):
         self.assertEquals(self.organisation.submitted_reviews.count(), 0)
-        past_date = datetime.datetime.now() - datetime.timedelta(days=settings.NHS_CHOICES_API_MAX_REVIEW_AGE_IN_DAYS + 20)
-        self.review_post_data['month_year_of_visit_year'] = str(past_date.year)
-        self.review_post_data['month_year_of_visit_month'] = str(past_date.month)
+        past_date = datetime.datetime.now() - datetime.timedelta(days=settings.NHS_CHOICES_API_MAX_REVIEW_AGE_IN_DAYS) - datetime.timedelta(days=31)
+        self.review_post_data['month_year_of_visit_year'] = past_date.year
+        self.review_post_data['month_year_of_visit_month'] = past_date.month
         resp = self.client.post(self.review_form_url, self.review_post_data)
         self.assertEquals(self.organisation.submitted_reviews.count(), 0)
         # For some reason, assertFormError doesn't like this error
