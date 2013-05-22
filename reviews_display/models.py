@@ -62,9 +62,9 @@ class Review(AuditedModel):
     # There are three content fields to mirror the comment structure seen in
     # the NHS API. For replies (which are just text) the content should go
     # into the 'content' field.
-    content_liked = models.TextField(default="")
-    content_improved = models.TextField(default="")
-    content = models.TextField(default="")  # catch all
+    content_liked = models.TextField(default="", blank=True)
+    content_improved = models.TextField(default="", blank=True)
+    content = models.TextField(default="", blank=True)  # catch all
 
     # Fields we might also be able to get, but don't appear to be in API yet:
     # * visit_date
