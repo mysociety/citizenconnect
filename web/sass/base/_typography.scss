@@ -89,6 +89,15 @@ h1, h2 { font-weight: normal; }
     }
 }
 
+
+/**
+ * Grey text for intro's
+ */
+.intro-text {
+    color: $c-introtext-color;
+    margin: 0 0 1em 0;
+}
+
 /**
  * Subheading with color variations
  */

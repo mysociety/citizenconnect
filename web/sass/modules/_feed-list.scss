@@ -1,0 +1,76 @@
+/**
+ * A vertical list - used on RHS homepage
+ *
+<h2 class="feed-list__heading">Live Feed <small>Latest reports, reviews and ratings</small></h2>
+<ul class="feed-list">
+  <li>
+    <div class="feed-list__left">
+      <h3>Access to Service</h3>
+      <p>I am unable to get an appointment here &hellip;</p>
+    </div>
+    <div class="feed-list__right">
+      <time>3mins ago</time>
+    </div>
+  </li>
+</ul>
+ *
+ */
+.feed-list__heading {
+  font-size: (22px / $font-size-base) + em;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+  color: $c-feed-list__heading-color;
+  margin: 0 0 ($grid-gutter / 4) + em 0;
+  padding: ($grid-gutter / 2) + em;
+  @include vendor(box-shadow, 0px 0px 6px 4px $c-feed-list__heading-box-shadow);
+  small {
+    color: $c-feed-list__heading-small-color;
+    font-weight: normal;
+    text-transform: none;
+  }
+}
+.feed-list {
+  @extend .cf;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  li {
+    @extend .cf;
+    display: block;
+    padding: ($grid-gutter / 2) + em;
+    border-bottom: 1px solid $c-feed-list-border-color;
+    &:last-child {
+      border-bottom: 0;
+    }
+  }
+  .feed-list__left {
+    float: left;
+    width: 80%;
+  }
+  .feed-list__right {
+    float: left;
+    width: 20%;
+    text-align: right;
+  }
+
+  .feed-list__title {
+    font-size: (14px / $font-size-base) + em;
+    font-weight: bold;
+    color: $c-feed-list__title-color;
+    margin: 0 0 ($grid-gutter / 2) + em 0;
+  }
+  p { margin: 0; }
+  a {
+    color: $c-feed-list-link-color;
+    text-decoration: none;
+    &:hover { color: $c-feed-list-link-hover-color; }
+  }
+  time {
+    font-size: (12px / $font-size-base) + em;
+    font-weight: bold;
+    color: $c-feed-list-time-color;
+    text-transform: uppercase;
+  }
+}

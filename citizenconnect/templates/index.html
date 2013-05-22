@@ -1,52 +1,126 @@
 {% extends 'base.html' %}
 {% load url from future %}
 {% load staticfiles %}
+{% load utils %}
 
 {% block title %}Home{% endblock %}
 
 {% block bodyclasses %}homepage{% endblock %}
 
 {% block content %}
+<div class="gw  mb  mt--b">
+    <div class="g  two-thirds  palm-one-whole">
+        <p class="intro-text mt">We want you as a user of NHS services to act as our ‘eyes and ears’, to tell us when things are going well and when things are not going well - so that we can do something about it. We want to ensure your voice is heard, listened to and acted upon.</p>
+    </div>
+    <div class="g  one-third  palm-one-whole">
+        <div class="islet  islet--white">
 
-<div class="gw">
-    <div class="g  one-half  palm-one-whole">
-        <div class="islet  islet--white  mt  mb  mb__palm--n">
-            <a href="{% url 'problems-pick-provider' cobrand=cobrand.name %}" class="btn  btn--big  btn--blue  btn--no-border">Problem that needs fixing?</a>
-            <p class="small-title  align-center">Please report only non-emergency problems.</p>
+             <div class="islet homepage-problem-search">
+
+                {% if form.non_field_errors %}
+                    {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
+                {% endif %}
+
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    {% for hidden in form.hidden_fields %}
+                        {{ hidden }}
+                    {% endfor %}
+
+                    <label for="id_reference_number">Check status of Problem</label>
+
+                    <input type="text" name="reference_number" id="id_reference_number"  class="text-input  one-whole" placeholder="Enter your problem URN"/>
+
+
+                   <button type="submit" class="btn btn--blue  btn--no-border"><span class="icon-chevron-right" aria-hidden="true"></span><span class="hide-text">Find</span></button>
+                </form>
+            </div>
+
+
         </div>
     </div>
-    <div class="g  one-half  palm-one-whole">
+</div>
+
+
+<div class="gw main-options">
+    <div class="g  one-third  palm-one-whole">
         <div class="islet  islet--white  mt  mb">
-            <a href="{% url 'reviews-pick-provider' cobrand=cobrand.name %}" class="btn  btn--big  btn--blue  btn--no-border">Leave a review?</a>
-            <p class="small-title  align-center">I&rsquo;d like to leave a review of an NHS Service</p>
+            <a href="{% url 'reviews-pick-provider' cobrand=cobrand.name %}" class="btn__with-caption">
+                <span class="btn  btn--big  btn--light-green  btn--no-border">Share Your Experience</span>
+                <span class="btn__caption">Click here</span>
+            </a>
         </div>
+    </div>
+    <div class="g  one-third  palm-one-whole  align-center">
+        <div class="islet  islet--white  mt  mb">
+            <a href="https://www.nhsdirect.nhs.uk/CheckSymptoms/HealthEnquiry.aspx" class="btn__with-caption">
+                <span class="btn  btn--big  btn--big--fix  btn--dark-orange  btn--no-border">Ask a question</span>
+                <span class="btn__caption">Click here</span>
+            </a>
+        </div>
+        <a href="{% url 'common-questions' cobrand=cobrand.name %}" class="coloured-link--dark-orange">See common questions <span class="icon-chevron-right" aria-hidden="true"></span> </a>
+    </div>
+    <div class="g  one-third  palm-one-whole  align-center">
+        <div class="islet  islet--white  mt  mb">
+            <a href="{% url 'problems-pick-provider' cobrand=cobrand.name %}" class="btn__with-caption">
+                <span class="btn  btn--big  btn--blue btn--big--fix  btn--no-border">Report a problem</span>
+                <span class="btn__caption">Click here</span>
+            </a>
+        </div>
+
     </div>
 </div>
 
-
-<h3 class="title  title--suck-up">Data</h3>
-<h2 class="title-bold">See how health services are responding to people&rsquo;s issues</h2>
+<hr class="hr--big  mt--b  mb--b">
 
 <div class="gw">
-    <div class="g  one-half  palm-one-whole">
-        <div class="islet  islet--white  mb__palm">
-            <a href="{% url 'org-map' cobrand=cobrand.name %}" class="icon-overlay">
-                <img src="{% static 'img/homepage-map.png' %}">
-                <span class="icon-search" aria-hidden="true"></span>
-            </a>
-            <h4 class="big-title  align-center  mt--s">Live Map</h4>
+    <div class="g  two-thirds  palm-one-whole">
+        <div class="bordered-box">
+            <h2 class="feed-list__heading">Live Feed</h2>
+            <ul class="feed-list">
+
+                {% for issue in issues %}
+                    {% if issue|classname == 'Problem' %}
+                        {% include 'includes/feed_problem.html' with problem=issue %}
+                    {% elif issue|classname == 'Review' %}
+                        {% include 'includes/feed_review.html' with review=issue score=issue.main_rating_score %}
+                    {% endif %}
+                {% endfor %}
+            </ul>
         </div>
     </div>
-    <div class="g  one-half  palm-one-whole">
-        <div class="islet  islet--white  mb__palm">
-            <a href="{% url 'org-all-summary' cobrand=cobrand.name %}" class="icon-overlay  icon-overlay--light-bg">
-                <img src="{% static 'img/homepage-summary-table.png' %}">
-                <span class="icon-search" aria-hidden="true"></span>
-            </a>
-            <h4 class="big-title  align-center  mt--s">Summary Table</h4>
+    <div class="g  one-third  palm-one-whole">
+        <div class="bordered-box  homepage-map-box">
+            <img src="{% static 'img/homepage-map.png' %}">
+
+            <div class="map-links">
+                <span class="map-text mb mt--s">See problems and reviews in our pilot areas</span>
+
+                <div class="gw">
+
+                    <div class="g one-whole mb--s">
+                        <a href="{% url 'org-map' cobrand=cobrand.name %}#london">
+                            <span class="btn btn--med--flat btn--blue btn--no-border">London</span>
+                        </a>
+                    </div>
+                    <div class="g one-whole mb">
+                        <a href="{% url 'org-map' cobrand=cobrand.name %}#northeast">
+                            <span class="btn btn--med--flat btn--blue btn--no-border">North East England</span>
+                        </a>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+        <div class="mt">
         </div>
     </div>
 </div>
+
 
 {% include 'emergency_numbers.html' %}
 
