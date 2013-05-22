@@ -82,12 +82,28 @@ Testing
 The tests are run with a custom test runner, which uses the setting `IGNORE_APPS_FOR_TESTING` to ignore
 third-party apps and django tests, so that you don't have to list all the internal apps.
 
-There are also some Selenium tests, currently using Firefox, so make sure you have Firefox
-installed.
+There are also some Selenium tests, currently using Chrome and ChromeDriver, so make sure you have a recent (> v26)
+version installed.
 
 If you're on a headless server, eg: in a vagrant box, you'll need to install
-the iceweasel and xvfb packages (see the commented out section of
-/conf/packages)
+the google-chrome-stable and xvfb packages (see the commented out section of
+/conf/packages), as well as downloading the pre-built ChromeDriver binary.
+
+To get google-chrome-stable, you need to add Google's repository to your apt-get (the version of chromium in 12.04 at least is too old):
+
+    # Add Google's key for apt
+    wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+
+    # Add their repo to your sources list
+    sudo sh -c 'echo deb http://dl.google.com/linux/chrome/deb/ stable main > /etc/apt/sources.list.d/google.list'
+
+    # Update your package list
+    sudo apt-get update
+
+    # Install google chrome
+    sudo apt-get install google-chrome-stable
+
+To get ChromeDriver, download the appropriate zip directly from: https://code.google.com/p/chromedriver/downloads/list and put the binary somewhere on your $PATH.
 
 After installing them, start Xvfb with:
 
