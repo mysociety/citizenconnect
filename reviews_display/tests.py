@@ -210,6 +210,20 @@ class ReviewModelTests(TestCase):
             'ratings': self.sample_ratings,
         }
 
+    def test_main_rating_score_returns_friends_and_family_rating_score_if_present(self):
+        rating_attributes = {'answer': 'Extremely likely',
+                             'question': 'Friends and Family',
+                             'score': 5}
+        review = create_test_review({'organisation': self.organisation}, [rating_attributes])
+        self.assertEqual(review.main_rating_score, 5)
+
+    def test_main_rating_score_returns_none_if_friends_and_family_rating_not_present(self):
+        rating_attributes = {'answer': 'Yes',
+                             'question': 'Clean',
+                             'score': 5}
+        review = create_test_review({'organisation': self.organisation}, [rating_attributes])
+        self.assertEqual(review.main_rating_score, None)
+
     def test_upsert_or_deletes(self):
 
         # insert entry and check it exists
