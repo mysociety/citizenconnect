@@ -35,7 +35,7 @@ urlpatterns = patterns('',
 
     url(r'^breaches/(?P<ods_code>\w+)$',
         login_required(OrganisationBreaches.as_view()),
-        name='private-org-breaches',
+        name='org-breaches',
         kwargs={'private': True}),
 
     url(r'^choose-dashboard$', login_required(DashboardChoice.as_view()), name='dashboard-choice'),

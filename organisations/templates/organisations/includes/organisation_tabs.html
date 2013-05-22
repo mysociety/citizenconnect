@@ -3,7 +3,7 @@
     {% if private %}
         {# NB: If we're viewing this in private mode, the user has access to the provider and their dashboard #}
         <li><a {% if active_tab == 'dashboard' %}class="active"{% endif %} href="{% url 'org-dashboard' ods_code=organisation.ods_code %}">Inbox</a></li>
-        <li><a {% if active_tab == 'breaches' %}class="active"{% endif %} href="{% url 'private-org-breaches' ods_code=organisation.ods_code %}">Breaches</a></li>
+        <li><a {% if active_tab == 'breaches' %}class="active"{% endif %} href="{% url 'org-breaches' ods_code=organisation.ods_code %}">Breaches</a></li>
     {% endif %}
 
     {% if not private %}

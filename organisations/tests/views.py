@@ -1603,7 +1603,7 @@ class OrganisationBreachesTest(AuthorizationTestCase):
 
     def setUp(self):
         super(OrganisationBreachesTest, self).setUp()
-        self.breach_dashboard_url = reverse('private-org-breaches', kwargs={'ods_code': self.test_organisation.ods_code})
+        self.breach_dashboard_url = reverse('org-breaches', kwargs={'ods_code': self.test_organisation.ods_code})
         self.org_breach_problem = create_test_problem({'organisation': self.test_organisation,
                                                        'breach': True})
         self.other_org_breach_problem = create_test_problem({'organisation': self.other_test_organisation,
