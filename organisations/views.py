@@ -665,3 +665,29 @@ class EscalationBreaches(TemplateView):
         context['private'] = True
 
         return context
+
+
+class OrganisationBreaches(OrganisationAwareViewMixin,
+                           TemplateView):
+
+    template_name = 'organisations/organisation_breaches.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not user_can_access_escalation_dashboard(request.user):
+            raise PermissionDenied()
+        return super(OrganisationBreaches, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(OrganisationBreaches, self).get_context_data(**kwargs)
+        problems = Problem.objects.open_problems().filter(breach=True, organisation=context['organisation'])
+
+        # Setup a table for the problems
+        problem_table = BreachTable(problems, private=True)
+        RequestConfig(self.request, paginate={'per_page': 25}).configure(problem_table)
+        context['table'] = problem_table
+        context['page_obj'] = problem_table.page
+
+        # These tables are always in the private context
+        context['private'] = True
+
+        return context
