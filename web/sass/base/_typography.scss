@@ -97,3 +97,15 @@ h1, h2 { font-weight: normal; }
     color: $c-introtext-color;
     margin: 0 0 1em 0;
 }
+
+/**
+ * Subheading with color variations
+ */
+.subheading {
+    @extend .mb;
+}
+
+.subheading--green {
+    @extend .subheading;
+    color: $c-nhs_lightgreen;
+}

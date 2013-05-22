@@ -9,27 +9,51 @@ from issues.table_columns import BreachAndEscalationColumn
 
 class NationalSummaryTable(tables.Table):
 
+    name = tables.Column(verbose_name='Provider name',
+                         attrs={'th': {'class': 'two-twelfths'}})
+
+    # We put all these columns in, and then js hides all but one
+    week = tables.Column(verbose_name='Last 7 days',
+                         attrs={'th': {'class': 'problems-received'}})
+    four_weeks = tables.Column(verbose_name='Last 4 weeks',
+                               attrs={'th': {'class': 'problems-received'}})
+    six_months = tables.Column(verbose_name='Last 6 months',
+                               attrs={'th': {'class': 'problems-received'}})
+    all_time = tables.Column(verbose_name='All time',
+                             attrs={'th': {'class': 'problems-received'}})
+
+    # We split these into sub-columns
+    average_time_to_acknowledge = tables.TemplateColumn(verbose_name='Acknowledge',
+                                                        template_name='organisations/includes/time_interval_column.html')
+    average_time_to_address = tables.TemplateColumn(verbose_name='Address',
+                                                    template_name='organisations/includes/time_interval_column.html',
+                                                    attrs={'th': {'class': 'summary-table__cell-no-border'}})
+
+    # We split these into sub-columns
+    happy_service = tables.TemplateColumn(verbose_name='Service',
+                                          template_name="organisations/includes/percent_column.html")
+
+    happy_outcome = tables.TemplateColumn(verbose_name='Outcome',
+                                          template_name="organisations/includes/percent_column.html",
+                                          attrs={'th': {'class': 'summary-table__cell-no-border'}})
+
+    # We put all these columns in, and then js hides all but one
+    reviews_week = tables.Column(verbose_name='Last 7 days',
+                                 attrs={'th': {'class': 'reviews-received'}})
+    reviews_four_weeks = tables.Column(verbose_name='Last 4 weeks',
+                                       attrs={'th': {'class': 'reviews-received'}})
+    reviews_six_months = tables.Column(verbose_name='Last 6 months',
+                                       attrs={'th': {'class': 'reviews-received'}})
+    reviews_all_time = tables.Column(verbose_name='All time',
+                                     attrs={'th': {'class': 'reviews-received'}})
+
+    average_recommendation_rating = tables.TemplateColumn(verbose_name='Average Review:',
+                                                          template_name='organisations/includes/rating_column.html',
+                                                          attrs={'th': {'class': 'two-twelfths'}})
+
     def __init__(self, *args, **kwargs):
         self.cobrand = kwargs.pop('cobrand')
         super(NationalSummaryTable, self).__init__(*args, **kwargs)
-
-    name = tables.Column(verbose_name='Provider name',
-                         attrs={'th': {'class': 'table__first'},
-                                'td': {'class': 'table__first'}})
-    week = tables.Column(verbose_name='Last 7 days')
-    four_weeks = tables.Column(verbose_name='Last 4 weeks')
-    six_months = tables.Column(verbose_name='Last 6 months')
-    all_time = tables.Column(verbose_name='All time')
-    average_time_to_acknowledge = tables.TemplateColumn(verbose_name='Average time to acknowledge (days)',
-                                                        template_name='organisations/includes/time_interval_column.html')
-    average_time_to_address = tables.TemplateColumn(verbose_name='Average time to address (days)',
-                                                    template_name='organisations/includes/time_interval_column.html')
-    happy_service = tables.TemplateColumn(verbose_name='% Happy with service',
-                                          template_name="organisations/includes/percent_column.html")
-    happy_outcome = tables.TemplateColumn(verbose_name='% Happy with outcome',
-                                          template_name="organisations/includes/percent_column.html")
-    average_recommendation_rating = tables.TemplateColumn(verbose_name='Average recommendation rating (out of 5)',
-                                                          template_name='organisations/includes/rounded_column.html')
 
     def render_name(self, record):
         url = self.reverse_to_org_summary(record['ods_code'])
@@ -200,6 +224,9 @@ class ProblemDashboardTable(BaseProblemTable):
     but geared towards acting on problems, so not including satisfaction stats etc
     and always assuming a private context
     """
+    reference_number = tables.Column(verbose_name="Ref.",
+                                     order_by=('priority', 'created'),
+                                     attrs={'td': {'class': 'problem-table__heavy-text'}})
 
     service = tables.Column(verbose_name="Service", orderable=False)
 
@@ -212,7 +239,7 @@ class ProblemDashboardTable(BaseProblemTable):
         return self.render_summary_as_response_link(record)
 
     class Meta:
-        order_by = ('-created',)
+        order_by = ('reference_number',)
         attrs = {'class': 'problem-table problem-table--expanded'}
         sequence = ('reference_number',
                     'created',
@@ -223,15 +250,13 @@ class ProblemDashboardTable(BaseProblemTable):
 
 class EscalationDashboardTable(ProblemDashboardTable):
     provider_name = tables.Column(verbose_name='Provider name',
-                                  accessor='organisation.name',
-                                  attrs={'th': {'class': 'table__first'},
-                                         'td': {'class': 'table__first'}})
+                                  accessor='organisation.name')
 
     class Meta:
         order_by = ('-created',)
         attrs = {'class': 'problem-table problem-table--expanded'}
-        sequence = ('provider_name',
-                    'reference_number',
+        sequence = ('reference_number',
+                    'provider_name',
                     'created',
                     'service',
                     'category',
@@ -243,9 +268,7 @@ class BreachTable(ProblemTable):
     Annoyingly quite like ProblemTable, but with provider_name in as well
     """
     provider_name = tables.Column(verbose_name='Provider name',
-                                  accessor='organisation.name',
-                                  attrs={'th': {'class': 'table__first'},
-                                         'td': {'class': 'table__first'}})
+                                  accessor='organisation.name')
 
     def __init__(self, *args, **kwargs):
         # Private is always true for dashboards
@@ -258,8 +281,8 @@ class BreachTable(ProblemTable):
     class Meta:
         order_by = ('-created',)
         attrs = {"class": "problem-table"}
-        sequence = ('provider_name',
-                    'reference_number',
+        sequence = ('reference_number',
+                    'provider_name',
                     'created',
                     'status',
                     'category',
