@@ -8,23 +8,15 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding field 'Review.content_liked'
-        db.add_column('reviews_display_review', 'content_liked',
-                      self.gf('django.db.models.fields.TextField')(default=''),
-                      keep_default=False)
-
-        # Adding field 'Review.content_improved'
-        db.add_column('reviews_display_review', 'content_improved',
-                      self.gf('django.db.models.fields.TextField')(default=''),
+        # Adding field 'Review.in_reply_to'
+        db.add_column('reviews_display_review', 'in_reply_to',
+                      self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='replies', null=True, to=orm['reviews_display.Review']),
                       keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting field 'Review.content_liked'
-        db.delete_column('reviews_display_review', 'content_liked')
-
-        # Deleting field 'Review.content_improved'
-        db.delete_column('reviews_display_review', 'content_improved')
+        # Deleting field 'Review.in_reply_to'
+        db.delete_column('reviews_display_review', 'in_reply_to_id')
 
 
     models = {
@@ -123,6 +115,7 @@ class Migration(SchemaMigration):
             'content_liked': ('django.db.models.fields.TextField', [], {'default': "''"}),
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'in_reply_to': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'replies'", 'null': 'True', 'to': "orm['reviews_display.Review']"}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
             'organisation': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'reviews'", 'to': "orm['organisations.Organisation']"}),
             'title': ('django.db.models.fields.TextField', [], {})

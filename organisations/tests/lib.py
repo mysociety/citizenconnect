@@ -31,6 +31,15 @@ def create_test_review(attributes={}):
     instance.save()
     return instance
 
+def create_review_with_age(organisation, age, attributes={}):
+    now = datetime.utcnow().replace(tzinfo=utc)
+    published = now - timedelta(age)
+    default_atts = {'api_published': published,
+                    'api_updated': published,
+                    'organisation': organisation}
+    default_atts.update(attributes)
+    return create_test_review(default_atts)
+
 def create_test_ccg(attributes={}):
     # Make a CCG
     default_attributes = {
@@ -99,6 +108,14 @@ def create_test_problem(attributes={}):
         problem.save()
     return problem
 
+def create_problem_with_age(organisation, age, attributes={}):
+    now = datetime.utcnow().replace(tzinfo=utc)
+    created = now - timedelta(age)
+    default_atts = {'created': created,
+                    'organisation': organisation}
+    default_atts.update(attributes)
+    return create_test_problem(default_atts)
+
 # Auth helper methods
 
 def get_reset_url_from_email(email):
@@ -111,23 +128,6 @@ def get_reset_url_from_email(email):
     return urlmatch.groups()[0], urlmatch.groups()[1]
 
 class IntervalCountsTest(TestCase):
-
-    def create_problem(self, organisation, age, attributes={}):
-        now = datetime.utcnow().replace(tzinfo=utc)
-        created = now - timedelta(age)
-        default_atts = {'created': created,
-                        'organisation': organisation}
-        default_atts.update(attributes)
-        return create_test_problem(default_atts)
-
-    def create_review(self, organisation, age, attributes={}):
-        now = datetime.utcnow().replace(tzinfo=utc)
-        published = now - timedelta(age)
-        default_atts = {'api_published': published,
-                        'api_updated': published,
-                        'organisation': organisation}
-        default_atts.update(attributes)
-        return create_test_review(default_atts)
 
     def setUp(self):
         self.test_ccg = create_test_ccg()
@@ -152,20 +152,20 @@ class IntervalCountsTest(TestCase):
                         45: {'time_to_acknowledge' : 12, 'time_to_address': 400}}
 
         for age, attributes in problem_ages.items():
-            self.create_problem(self.test_organisation, age, attributes)
+            create_problem_with_age(self.test_organisation, age, attributes)
         other_problem_ages = {1: {},
                               2: {},
                               20: {},
                               65: {},
                               70: {}}
         for age, attributes in other_problem_ages.items():
-            self.create_problem(self.other_test_organisation, age, attributes)
+            create_problem_with_age(self.other_test_organisation, age, attributes)
 
         # Create a similar spread of reviews
         review_ages = [6, 12, 13, 50, 55]
 
         for age in review_ages:
-            self.create_review(self.test_organisation, age)
+            create_review_with_age(self.test_organisation, age)
 
     def test_organisation_interval_counts(self):
         organisation_filters = {'organisation_id': self.test_organisation.id}
@@ -352,10 +352,10 @@ class IntervalCountsTest(TestCase):
 
     def test_filter_by_breach(self):
         # Add some specific breach problems in for self.test_organisation
-        self.create_problem(self.test_organisation, 1, {'breach': True})
-        self.create_problem(self.test_organisation, 10, {'breach': True})
-        self.create_problem(self.test_organisation, 100, {'breach': True})
-        self.create_problem(self.test_organisation, 365, {'breach': True})
+        create_problem_with_age(self.test_organisation, 1, {'breach': True})
+        create_problem_with_age(self.test_organisation, 10, {'breach': True})
+        create_problem_with_age(self.test_organisation, 100, {'breach': True})
+        create_problem_with_age(self.test_organisation, 365, {'breach': True})
         problem_filters = {'breach': True}
         threshold=['six_months', 1]
         expected_counts = [{'week': 1,

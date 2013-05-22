@@ -9,7 +9,7 @@ from organisations.views import OrganisationAwareViewMixin
 class ReviewLoadOrganisationBase(OrganisationAwareViewMixin):
 
     def get_queryset(self):
-        return self.organisation.reviews.all()
+        return self.organisation.reviews.filter(api_category="comment")
 
 
 class ReviewOrganisationList(OrganisationAwareViewMixin,

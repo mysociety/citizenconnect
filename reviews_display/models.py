@@ -13,6 +13,11 @@ from citizenconnect.models import AuditedModel
 class OrganisationFromApiDoesNotExist(Exception):
     pass
 
+class RepliedToReviewDoesNotExist(Exception):
+    def __init__(self, message):
+        self.message = message
+    def __str__(self):
+        return self.message
 
 class Review(AuditedModel):
 
@@ -37,13 +42,15 @@ class Review(AuditedModel):
     # This is provided in the api and is meant to identify what the review is.
     API_CATEGORY_CHOICES = (
         ('comment',  'comment'),
-        # ('reply',    'reply'),     # not implemented yet
+        ('reply',    'reply'),
         # ('deletion', 'deletion'),  # entry is just deleted from db atm
     )
     api_category = models.CharField(
         max_length=10,
         choices=API_CATEGORY_CHOICES
     )
+
+    in_reply_to = models.ForeignKey('Review', related_name='replies', blank=True, null=True)
 
     # The organisation that this review concerns
     organisation = models.ForeignKey(Organisation, related_name='reviews')
@@ -55,9 +62,9 @@ class Review(AuditedModel):
     # There are three content fields to mirror the comment structure seen in
     # the NHS API. For replies (which are just text) the content should go
     # into the 'content' field.
-    content_liked = models.TextField(default="")
-    content_improved = models.TextField(default="")
-    content = models.TextField(default="")  # catch all
+    content_liked = models.TextField(default="", blank=True)
+    content_improved = models.TextField(default="", blank=True)
+    content = models.TextField(default="", blank=True)  # catch all
 
     # Fields we might also be able to get, but don't appear to be in API yet:
     # * visit_date
@@ -67,6 +74,15 @@ class Review(AuditedModel):
 
     def __unicode__(self):
         return u"{0}, {1} ({2})".format(self.title, self.author_display_name, self.id)
+
+    @property
+    def main_rating_score(self):
+        # TODO: There must be a better way to get the Friends and Family rating.
+        try:
+             score = self.ratings.get(question='Friends and Family').score
+        except Rating.DoesNotExist:
+             score = None
+        return score
 
     @classmethod
     def delete_old_reviews(cls):
@@ -99,9 +115,19 @@ class Review(AuditedModel):
 
         """
 
-        # We don't do anything with replies - just return
+        # For replies try to load the review they relate to. If not found raise
+        # an exception. Because of the order that the API gives us results in
+        # this might be quite common.
         if api_review['api_category'] == 'reply':
-            return
+            try:
+                api_review['in_reply_to'] = cls.objects.get(api_posting_id=api_review['in_reply_to_id'])
+            except cls.DoesNotExist:
+                raise RepliedToReviewDoesNotExist(
+                    "Could not find review with api_posting_id of {0} for reply {1}".format(
+                        api_review['in_reply_to_id'],
+                        api_review['api_posting_id']
+                    )
+                )
 
         unique_args = dict(
             api_posting_id=api_review['api_posting_id'],

@@ -34,12 +34,7 @@ class ReviewTable(tables.Table):
                             attrs={'th': {'class': 'seven-twelfths  align-center'}})
 
     def render_rating(self, record):
-        # TODO: There must be a better way to get the Friends and Family rating.
-        try:
-            score = record.ratings.get(question='Friends and Family').score
-        except Rating.DoesNotExist:
-            score = None
-        return render_to_string('organisations/includes/rating_column.html', {'value': score})
+        return render_to_string('organisations/includes/rating_column.html', {'value': record.main_rating_score})
 
     def render_content(self, record, value):
         """Truncate the review's content to 20 words, returns a string."""

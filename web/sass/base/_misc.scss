@@ -9,6 +9,9 @@ hr {
     border-top: 1px solid $c-hr-border;
     margin: 1em 0;
     padding: 0;
+    &.hr--big {
+        border-top: 4px solid $c-hr-border;
+    }
 }
 
 /*
