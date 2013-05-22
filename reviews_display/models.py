@@ -13,6 +13,9 @@ from citizenconnect.models import AuditedModel
 class OrganisationFromApiDoesNotExist(Exception):
     pass
 
+class RepliedToReviewDoesNotExist(Exception):
+    pass
+
 
 class Review(AuditedModel):
 
@@ -101,9 +104,19 @@ class Review(AuditedModel):
 
         """
 
-        # We don't do anything with replies - just return
+        # For replies try to load the review they relate to. If not found raise
+        # an exception. Because of the order that the API gives us results in
+        # this might be quite common.
         if api_review['api_category'] == 'reply':
-            return
+            try:
+                api_review['in_reply_to'] = cls.objects.get(api_posting_id=api_review['in_reply_to_id'])
+            except cls.DoesNotExist:
+                raise RepliedToReviewDoesNotExist(
+                    "Could not find review with api_posting_id of {0} for reply {1}".format(
+                        api_review['in_reply_to_id'],
+                        api_review['api_posting_id']
+                    )
+                )
 
         unique_args = dict(
             api_posting_id=api_review['api_posting_id'],

@@ -16,7 +16,7 @@ from django.utils.timezone import utc
 
 from organisations.tests.lib import create_test_organisation
 
-from .models import Review, OrganisationFromApiDoesNotExist
+from .models import Review, OrganisationFromApiDoesNotExist, RepliedToReviewDoesNotExist
 from .reviews_api import ReviewsAPI
 
 
@@ -314,16 +314,32 @@ class ReviewModelTests(TestCase):
         # check that calling it without anything is db is ok too
         Review.upsert_or_delete_from_api_data(sample_review)
 
-    def test_replies(self):
+    def test_reply(self):
+        review = create_test_review({'organisation': self.organisation}, {})
+
         sample_review = self.sample_review.copy()
         sample_review['api_category'] = 'reply'
+        sample_review['in_reply_to_id'] = review.api_posting_id
+
         Review.upsert_or_delete_from_api_data(sample_review)
-        self.assertEqual(
-            Review.objects.filter(
-                api_posting_id=sample_review['api_posting_id']
-            ).count(),
-            0
+
+        reply = Review.objects.get(api_posting_id=sample_review['api_posting_id'])
+
+        self.assertEqual(reply.in_reply_to, review)
+        self.assertEqual(list(review.replies.all()), [reply])
+
+
+    def test_reply_where_original_does_not_exist(self):
+        sample_review = self.sample_review.copy()
+        sample_review['api_category'] = 'reply'
+        sample_review['in_reply_to_id'] = '1234567' # does not exist
+
+        self.assertRaises(
+            RepliedToReviewDoesNotExist,
+            Review.upsert_or_delete_from_api_data,
+            sample_review
         )
+
 
     def test_not_found_organisation(self):
         sample_review = self.sample_review.copy()
