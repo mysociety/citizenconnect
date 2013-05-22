@@ -270,9 +270,9 @@ class PickProviderBase(ListView):
                     context['current_url'] = resolve(self.request.path_info).url_name
                 return render(self.request, self.template_name, context)
             else:
-                return render(self.request, self.form_template_name, {'form': form})
+                return render(self.request, self.form_template_name, {'form': form, 'intro_text': self.intro_text})
         else:
-            return render(self.request, self.form_template_name, {'form': OrganisationFinderForm()})
+            return render(self.request, self.form_template_name, {'form': OrganisationFinderForm(), 'intro_text': self.intro_text})
 
 
 class OrganisationSummary(OrganisationAwareViewMixin,
