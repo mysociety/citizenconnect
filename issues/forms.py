@@ -183,3 +183,17 @@ class LookupForm(forms.Form):
                 raise forms.ValidationError('Sorry, there are no problems with that reference number')
         return self.cleaned_data
 
+class PublicLookupForm(LookupForm):
+
+      def clean(self):
+            """
+            Overridden clean to allow a check on the problem's public visibility
+            """
+            cleaned_data = super(PublicLookupForm, self).clean()
+            if 'reference_number' in self.cleaned_data:
+                problem = Problem.objects.all().get(id=self.cleaned_data['model_id'])
+                if problem.is_publicly_visible():
+                    return cleaned_data
+                else:
+                    raise forms.ValidationError('Sorry, that reference number is not available')
+

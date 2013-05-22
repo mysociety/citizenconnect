@@ -346,16 +346,19 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         else:
             return field
 
+    def is_publicly_visible(self):
+        return (self.publication_status == Problem.PUBLISHED \
+                and int(self.status) in Problem.VISIBLE_STATUSES \
+                and self.moderated == Problem.MODERATED)
+
     def can_be_accessed_by(self, user):
         """
         Whether or not an issue is accessible to a given user.
-        In practice the issue is publically accessible to everyone it it's
+        In practice the issue is publically accessible to everyone if it's
         in a visible status and has been moderated to be publically available,
         otherwise only people with access to the organisation it is assigned to can access it.
         """
-        return (self.publication_status == Problem.PUBLISHED and
-                int(self.status) in Problem.VISIBLE_STATUSES) \
-                or self.organisation.can_be_accessed_by(user)
+        return (self.is_publicly_visible() or self.organisation.can_be_accessed_by(user))
 
     def set_time_to_values(self):
         """
