@@ -251,6 +251,11 @@ class PickProviderBase(ListView):
         context = super(PickProviderBase, self).get_context_data(**kwargs)
 
         try:
+            context['title_text'] = self.title_text
+        except AttributeError:
+            pass
+
+        try:
             context['intro_text'] = self.intro_text
         except AttributeError:
             pass
