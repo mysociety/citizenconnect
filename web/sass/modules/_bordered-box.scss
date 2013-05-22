@@ -1,0 +1,13 @@
+/**
+ * Bordered box - white box with border,
+ * like `.island--white` but no padding or modifiers
+ */
+
+.bordered-box {
+  @extend .cf;
+  overflow: hidden;
+  display: block;
+  background: $c-bordered-box-bg;
+  border: ($grid-gutter/5) + em solid $c-bordered-box-border-color;
+  @include vendor(border-radius, ($grid-gutter/2) + em);
+}

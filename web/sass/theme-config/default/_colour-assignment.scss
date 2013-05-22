@@ -68,6 +68,7 @@ $c-problem-table-flag-escalated-bg: $c-black;
       $c-standout-link-color: $c-nhs_orange;
 $c-standout-link-hover-color: $c-nhs_orange-tint;
               $c-title-color: $c-darkgrey;
+          $c-introtext-color: $c-darkergrey;
 
 /**
  * _island.scss
@@ -132,14 +133,14 @@ $c-back-btn-span-hover-color: $c-grey-tint;
           $c-btn-darkgrey-bg: $c-darkgrey;
     $c-btn-darkgrey-hover-bg: $c-darkgrey-tint;
         $c-btn-caption-color: $c-darkgrey;
+    $c-btn-darkorange-border: $c-darkorange-tint;
+     $c-btn-darkorange-color: $c-white;
+        $c-btn-darkorange-bg: $c-darkorange;
+  $c-btn-darkorange-hover-bg: $c-darkorange-tint;
          $c-btn-black-border: $c-darkgrey-tint;
           $c-btn-black-color: $c-white;
              $c-btn-black-bg: $c-black;
        $c-btn-black-hover-bg: $c-black / 1.1;
-        $c-btn-orange-border: $c-questions_orange-tint;
-         $c-btn-orange-color: $c-white;
-            $c-btn-orange-bg: $c-questions_orange;
-      $c-btn-orange-hover-bg: $c-questions_orange-tint;
 
 /**
  * _filters.scss
@@ -222,14 +223,6 @@ $c-meta-data-sidebar-icon-green-color: $c-nhs_lightgreen;
   $c-meta-data-sidebar-icon-red-color: $c-nhs_red;
 
 
-/**
- * _icon-overlay.scss
- */
-            $c-icon-overlay-icon-color: $c-white;
-      $c-icon-overlay-hover-icon-color: $c-darkgrey;
-      $c-icon-overlay-light-icon-color: $c-grey;
-$c-icon-overlay-light-hover-icon-color: $c-darkgrey;
-
 
 /**
  * _split-box.scss
@@ -261,6 +254,7 @@ $c-nav-active-color: $c-white;
    $c-alert-grey-bg: $c-lightgrey;
 $c-alert-grey-color: $c-black;
 
+
 /**
  * _site-nav.scss
  */
@@ -271,9 +265,55 @@ $c-sitenav-gradient-start: $c-lightgrey;
    $c-sitenav-color-hover: $c-aquablue-tint;
   $c-sitenav-color-active: $c-lightgrey;
 
+
+
+/**
+ * _bordered-box.scss
+ */
+          $c-bordered-box-bg: $c-white;
+$c-bordered-box-border-color: $c-grey;
+
+
+/**
+ * _feed-list.scss
+ */
+      $c-feed-list__heading-color: $c-nhs_lightgreen;
+ $c-feed-list__heading-box-shadow: $c-grey;
+$c-feed-list__heading-small-color: $c-darkergrey;
+        $c-feed-list-border-color: $c-grey;
+        $c-feed-list__title-color: $c-darkergrey;
+          $c-feed-list-link-color: $c-nhs_lightgreen;
+    $c-feed-list-link-hover-color: $c-nhs_lightgreen-tint;
+          $c-feed-list-time-color: $c-darkgrey;
+
+
+/**
+ * _text.scss
+ */
+                  $c-coloured-link-color: $c-aquablue;
+            $c-coloured-link-hover-color: $c-aquablue-tint;
+      $c-coloured-link-dark-orange-color: $c-darkorange;
+$c-coloured-link-dark-orange-hover-color: $c-darkorange-tint;
+      $c-coloured-link-light-green-color: $c-nhs_lightgreen;
+$c-coloured-link-light-green-hover-color: $c-nhs_lightgreen-tint;
+             $c-coloured-link-blue-color: $c-nhs_blue;
+       $c-coloured-link-blue-hover-color: $c-nhs_blue-tint;
+
+
+/**
+ * _home-page.scss
+ */
+$c-homepage-map-box-bg: $c-white;
+$c-homepage-problem-search-text-input-border: $c-white;
+$c-homepage-map-box-text-input-border: $c-grey;
+$c-homepage-map-box-text-input-shadow: $c-white;
+$c-homepage-link-999-color: $c-darkergrey;
+$c-homepage-link-999-color-hover: $c-black;
+
 /**
  * _footer.scss
  */
       $c-footer-link-color: $c-darkergrey;
 $c-footer-link-color-hover: $c-darkgrey-tint;
           $c-footer-border: $c-grey;
+

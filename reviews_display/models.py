@@ -75,6 +75,15 @@ class Review(AuditedModel):
     def __unicode__(self):
         return u"{0}, {1} ({2})".format(self.title, self.author_display_name, self.id)
 
+    @property
+    def main_rating_score(self):
+        # TODO: There must be a better way to get the Friends and Family rating.
+        try:
+             score = self.ratings.get(question='Friends and Family').score
+        except Rating.DoesNotExist:
+             score = None
+        return score
+
     @classmethod
     def delete_old_reviews(cls):
         """
