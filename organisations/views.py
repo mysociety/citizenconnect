@@ -247,6 +247,21 @@ class PickProviderBase(ListView):
     model = Organisation
     context_object_name = 'organisations'
 
+    def get_context_data(self, **kwargs):
+        context = super(PickProviderBase, self).get_context_data(**kwargs)
+
+        try:
+            context['intro_text'] = self.intro_text
+        except AttributeError:
+            pass
+
+        try:
+            context['form'] = self.form
+        except AttributeError:
+            pass
+
+        return context
+
     def get(self, *args, **kwargs):
         super(PickProviderBase, self).get(*args, **kwargs)
         if self.request.GET:
@@ -270,9 +285,11 @@ class PickProviderBase(ListView):
                     context['current_url'] = resolve(self.request.path_info).url_name
                 return render(self.request, self.template_name, context)
             else:
-                return render(self.request, self.form_template_name, {'form': form, 'intro_text': self.intro_text})
+                self.form = form
+                return render(self.request, self.form_template_name, self.get_context_data(object_list=self.object_list))
         else:
-            return render(self.request, self.form_template_name, {'form': OrganisationFinderForm(), 'intro_text': self.intro_text})
+            self.form = OrganisationFinderForm()
+            return render(self.request, self.form_template_name, self.get_context_data(object_list=self.object_list))
 
 
 class OrganisationSummary(OrganisationAwareViewMixin,
