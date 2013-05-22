@@ -18,6 +18,10 @@
 </div>
 
 
-{% include 'reviews_display/includes/review-display-block.html' %}
+{% include 'reviews_display/includes/review-display-block.html' with review=review %}
+
+{% for reply in review.replies.all %}
+  {% include 'reviews_display/includes/review-display-block.html' with review=reply %}
+{% endfor %}
 
 {% endblock %}

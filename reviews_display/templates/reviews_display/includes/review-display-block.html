@@ -1,6 +1,12 @@
-<h2>{% if review.api_category == 'comment' %}Review{% endif %}</h2>
+<h2>{% if review.api_category == 'comment' %}Review{% else %}Reply{% endif %}</h2>
 
 <h3>{{ review.title }}</h3>
+
+<div>
+  {% if review.api_category == 'comment' %}Review{% else %}Reply{% endif %}
+  by <strong>{{ review.author_display_name }}</strong>
+  on <strong>{{ review.api_published|date:"j M Y" }}</strong>.
+</div>
 
 {% if review.content_liked %}
     <h4>Reviewer liked:</h4>
@@ -21,19 +27,20 @@
     <div>{{ review.content|linebreaks }}</div>
 {% endif %}
 
-<div>{% if review.api_category == 'comment' %}Review{% endif %} by {{ review.author_display_name }} on {{ review.api_published|date:"j M Y" }}.</div>
 
+{% if review.ratings.count %}
 
-<hr />
+  <hr />
 
+  <h2>Ratings</h2>
+  
+  {% for rating in review.ratings.all %}
+      <div>
+          {% include 'organisations/includes/rating_column.html' with value=rating.score description=rating.answer css_class='rating--review_details' %}
+          {{ rating.question }}
+      </div>
+  {% endfor %}
 
-<h2>Ratings</h2>
-
-{% for rating in review.ratings.all %}
-    <div>
-        {% include 'organisations/includes/rating_column.html' with value=rating.score description=rating.answer css_class='rating--review_details' %}
-        {{ rating.question }}
-    </div>
-{% endfor %}
+{% endif %}
 
 <hr />
