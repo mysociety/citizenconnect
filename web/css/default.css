@@ -923,7 +923,7 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 @media only screen and (max-width: 480px) { .tab-nav { border-bottom: none; } }
 .tab-nav li { display: block; float: left; margin-right: 1em; }
 @media only screen and (max-width: 480px) { .tab-nav li { float: none; margin: 0; width: 100%; } }
-.tab-nav li a { display: block; background: #c8c8c8; color: #333333; font-weight: bold; text-decoration: none; text-transform: uppercase; padding: 1em 2.5em; }
+.tab-nav li a { display: block; background: #c8c8c8; color: #333333; font-weight: bold; text-decoration: none; text-transform: uppercase; padding: 1em 2em; }
 @media only screen and (min-width: 481px) and (max-width: 1023px) { .tab-nav li a { padding: 1em 1.5em; } }
 @media only screen and (max-width: 480px) { .tab-nav li a { padding: 1em; text-align: center; } }
 .tab-nav li a:hover { background: #aaaaaa; color: white; }

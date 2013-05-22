@@ -1599,6 +1599,63 @@ class BreachDashboardTests(AuthorizationTestCase):
         self.assertContains(resp, 'problem-table__highlight')
 
 
+class OrganisationBreachesTest(AuthorizationTestCase):
+
+    def setUp(self):
+        super(OrganisationBreachesTest, self).setUp()
+        self.breach_dashboard_url = reverse('org-breaches', kwargs={'ods_code': self.test_organisation.ods_code})
+        self.org_breach_problem = create_test_problem({'organisation': self.test_organisation,
+                                                       'breach': True})
+        self.other_org_breach_problem = create_test_problem({'organisation': self.other_test_organisation,
+                                                             'breach': True})
+        self.org_problem = create_test_problem({'organisation': self.test_organisation})
+
+    def test_dashboard_accessible_to_provider(self):
+        self.login_as(self.provider)
+        resp = self.client.get(self.breach_dashboard_url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_dashboard_is_inacessible_to_other_people(self):
+        people_who_shouldnt_have_access = [
+            self.no_provider,
+            self.other_provider,
+            self.second_tier_moderator
+        ]
+
+        for user in people_who_shouldnt_have_access:
+            self.login_as(user)
+            resp = self.client.get(self.breach_dashboard_url)
+            self.assertEqual(resp.status_code, 403, '{0} can access {1} when they shouldn\'t be able to'.format(user.username, self.breach_dashboard_url))
+
+    def test_dashboard_only_shows_breach_problems(self):
+        self.login_as(self.ccg_user)
+        resp = self.client.get(self.breach_dashboard_url)
+        self.assertContains(resp, self.org_breach_problem.reference_number)
+        self.assertNotContains(resp, self.org_problem.reference_number)
+
+    def test_dashboard_shows_breach_flag(self):
+        self.login_as(self.ccg_user)
+        resp = self.client.get(self.breach_dashboard_url)
+        self.assertContains(resp, '<div class="problem-table__flag__breach">b</div>')
+
+    def test_dashboard_shows_escalation_flag(self):
+        self.login_as(self.ccg_user)
+        # Make the breach problem escalated too
+        self.org_breach_problem.status = Problem.ESCALATED
+        self.org_breach_problem.commissioned = Problem.LOCALLY_COMMISSIONED
+        self.org_breach_problem.save()
+        resp = self.client.get(self.breach_dashboard_url)
+        self.assertContains(resp, '<div class="problem-table__flag__escalate">e</div>')
+
+    def test_dashboard_highlights_priority_problems(self):
+        self.login_as(self.ccg_user)
+        # Up the priority of the breach problem
+        self.org_breach_problem.priority = Problem.PRIORITY_HIGH
+        self.org_breach_problem.save()
+        resp = self.client.get(self.breach_dashboard_url)
+        self.assertContains(resp, 'problem-table__highlight')
+
+
 class NotFoundTest(TestCase):
 
     def setUp(self):
