@@ -37,13 +37,15 @@ class Review(AuditedModel):
     # This is provided in the api and is meant to identify what the review is.
     API_CATEGORY_CHOICES = (
         ('comment',  'comment'),
-        # ('reply',    'reply'),     # not implemented yet
+        ('reply',    'reply'),
         # ('deletion', 'deletion'),  # entry is just deleted from db atm
     )
     api_category = models.CharField(
         max_length=10,
         choices=API_CATEGORY_CHOICES
     )
+
+    in_reply_to = models.ForeignKey('Review', related_name='replies', blank=True, null=True)
 
     # The organisation that this review concerns
     organisation = models.ForeignKey(Organisation, related_name='reviews')
