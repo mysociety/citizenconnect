@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load url from future %}
 {% load staticfiles %}
+{% load utils %}
 
 {% block title %}Home{% endblock %}
 
@@ -79,50 +80,14 @@
         <div class="bordered-box">
             <h2 class="feed-list__heading">Live Feed</h2>
             <ul class="feed-list">
-                <li>
-                    <h3 class="feed-list__title">Access to Service</h3>
-                    <div class="feed-list__left">
-                        <p><a href="#">I am unable to get an appointment here &hellip;</a></p>
-                    </div>
-                    <div class="feed-list__right">
-                        <time>3 mins ago</time>
-                    </div>
-                </li>
-                <li>
-                    <h3 class="feed-list__title">Cleanliness</h3>
-                    <div class="feed-list__left">
-                        <p><a href="#">I've noticed that the rubbish bins in the waiting room &hellip;</a></p>
-                    </div>
-                    <div class="feed-list__right">
-                        <time>13mins ago</time>
-                    </div>
-                </li>
-                <li>
-                    <h3 class="feed-list__title">Review</h3>
-                    <div class="feed-list__left">
-                        <p class="rating">
-                            <a href="#">
-                                <span class="icon-star" aria-hidden="true"></span>
-                                <span class="icon-star  rating__grey" aria-hidden="true"></span>
-                                <span class="icon-star  rating__grey" aria-hidden="true"></span>
-                                <span class="icon-star  rating__grey" aria-hidden="true"></span>
-                                <span class="icon-star  rating__grey" aria-hidden="true"></span>
-                            </a>
-                        </p>
-                    </div>
-                    <div class="feed-list__right">
-                        <time>23mins ago</time>
-                    </div>
-                </li>
-                <li>
-                    <h3 class="feed-list__title">Access to Service</h3>
-                    <div class="feed-list__left">
-                        <p><a href="#">What do I have to do to get an appointment here?</a></p>
-                    </div>
-                    <div class="feed-list__right">
-                        <time>33mins ago</time>
-                    </div>
-                </li>
+
+                {% for issue in issues %}
+                    {% if issue|classname == 'Problem' %}
+                        {% include 'includes/feed_problem.html' with problem=issue %}
+                    {% elif issue|classname == 'Review' %}
+                        {% include 'includes/feed_review.html' with review=issue score=issue.main_rating_score %}
+                    {% endif %}
+                {% endfor %}
             </ul>
         </div>
     </div>
