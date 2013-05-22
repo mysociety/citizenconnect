@@ -1,11 +1,12 @@
 import datetime
+import sys
 from optparse import make_option
 
 from django.core.management.base import NoArgsCommand
 from django.conf import settings
 
 from ...reviews_api import ReviewsAPI
-from ...models import Review, OrganisationFromApiDoesNotExist
+from ...models import Review, OrganisationFromApiDoesNotExist, RepliedToReviewDoesNotExist
 
 
 class Command(NoArgsCommand):
@@ -36,3 +37,5 @@ class Command(NoArgsCommand):
                     Review.upsert_or_delete_from_api_data(review)
                 except OrganisationFromApiDoesNotExist:
                     pass
+                except RepliedToReviewDoesNotExist, e:
+                    sys.stderr.write('RepliedToReviewDoesNotExist: ' + str(e) + "\n")
