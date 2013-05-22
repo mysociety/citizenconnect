@@ -33,6 +33,23 @@ class ReviewForm(forms.ModelForm):
             raise forms.ValidationError("The month and year of visit can't be more than two years ago")
         return month_year_of_visit
 
+
+    @classmethod
+    def _mm_yyyy_lt_compare_dates(cls, dt_a, dt_b ):
+        """Return True if dt_a is earlier than dt_b ignoring the days"""
+
+        # If year is lower then always less
+        if dt_a.year < dt_b.year:
+            return True
+
+        # If year is same then compare the months
+        if dt_a.year == dt_b.year and dt_a.month < dt_b.month:
+            return True
+
+        # Otherwise not less
+        return False
+
+
     class Meta:
         model = Review
 

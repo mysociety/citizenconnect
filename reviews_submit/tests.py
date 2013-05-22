@@ -16,6 +16,7 @@ from django.forms.models import model_to_dict
 from citizenconnect.browser_testing import SeleniumTestCase
 from organisations.tests.models import create_test_organisation
 from .models import Review, Question, Answer, Rating
+from .forms import ReviewForm
 from .management.commands.push_new_reviews_to_choices import Command as PushReviewsCommand
 
 
@@ -50,6 +51,29 @@ class ReviewTest(TestCase):
         review.ratings.add(rating)
 
         self.assertEqual(review.ratings.count(), 1)
+
+
+class ReviewFormDateCompareTest(TestCase):
+
+    def test_mm_yyyy_date_compare(self):
+        tests = [
+            # date,      oldest,    result
+            ( 3, 2010,   4, 2011,   True ),
+            ( 4, 2010,   4, 2011,   True ),
+            ( 5, 2010,   4, 2011,   True ),
+            ( 3, 2011,   4, 2011,   True ),
+            ( 4, 2011,   4, 2011,   False ),
+            ( 5, 2011,   4, 2011,   False ),
+            ( 3, 2012,   4, 2011,   False ),
+            ( 4, 2012,   4, 2011,   False ),
+            ( 5, 2012,   4, 2011,   False )
+        ]
+        
+        for mm_a, yyyy_a, mm_b, yyyy_b, expected in tests:
+            # print mm_a, yyyy_a, mm_b, yyyy_b, expected
+            dt_a = datetime.date(year=yyyy_a, month=mm_a, day=1)
+            dt_b = datetime.date(year=yyyy_b, month=mm_b, day=1)
+            self.assertEqual(ReviewForm._mm_yyyy_lt_compare_dates(dt_a, dt_b), expected)
 
 
 class ReviewFormViewBase(object):
