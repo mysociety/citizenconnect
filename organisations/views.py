@@ -272,13 +272,14 @@ class PickProviderBase(ListView):
         if self.request.GET:
             form = OrganisationFinderForm(self.request.GET)
             if form.is_valid():  # All validation rules pass
-                context = {'location': form.cleaned_data['location'],
-                           'organisation_type': form.cleaned_data['organisation_type'],
-                           'organisations': form.cleaned_data['organisations'],
-                           'result_link_url_name': self.result_link_url_name,
-                           'paginator': None,
-                           'page_obj': None,
-                           'is_paginated': False}
+                context = self.get_context_data(object_list=self.object_list)
+                context.update({'location': form.cleaned_data['location'],
+                                'organisation_type': form.cleaned_data['organisation_type'],
+                                'organisations': form.cleaned_data['organisations'],
+                                'result_link_url_name': self.result_link_url_name,
+                                'paginator': None,
+                                'page_obj': None,
+                                'is_paginated': False})
                 self.queryset = form.cleaned_data['organisations']
                 page_size = self.get_paginate_by(self.queryset)
                 if page_size:
