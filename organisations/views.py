@@ -673,12 +673,11 @@ class OrganisationBreaches(OrganisationAwareViewMixin,
     template_name = 'organisations/organisation_breaches.html'
 
     def dispatch(self, request, *args, **kwargs):
-        if not user_can_access_escalation_dashboard(request.user):
-            raise PermissionDenied()
         return super(OrganisationBreaches, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(OrganisationBreaches, self).get_context_data(**kwargs)
+        enforce_organisation_access_check(context['organisation'], self.request.user)
         problems = Problem.objects.open_problems().filter(breach=True, organisation=context['organisation'])
 
         # Setup a table for the problems
