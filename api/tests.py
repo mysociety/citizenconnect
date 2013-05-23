@@ -1,8 +1,10 @@
 import uuid
+import base64
 
 from django.test import TestCase
 from django.utils import simplejson as json
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 from organisations.tests.lib import create_test_organisation, create_test_service
 from issues.models import Problem
@@ -11,6 +13,8 @@ from issues.models import Problem
 class ProblemAPITests(TestCase):
 
     def setUp(self):
+        credentials = base64.b64encode('{0}:{1}'.format(settings.API_BASICAUTH_USERNAME, settings.API_BASICAUTH_PASSWORD))
+        self.client.defaults['HTTP_AUTHORIZATION'] = 'Basic ' + credentials
         self.test_organisation = create_test_organisation({'ods_code': '11111'})
         self.test_service = create_test_service({'organisation': self.test_organisation})
         # Create a unique name, to use in queries rather than relying
@@ -273,3 +277,8 @@ class ProblemAPITests(TestCase):
 
         problem = Problem.objects.get(reporter_name=self.problem_uuid)
         self.assertEqual(problem.publication_status, problem.HIDDEN)
+
+    def test_returns_unauthorized_without_basic_auth(self):
+        del self.client.defaults['HTTP_AUTHORIZATION']
+        resp = self.client.post(self.problem_api_url, self.test_problem)
+        self.assertEquals(resp.status_code, 401)
