@@ -59,9 +59,6 @@ class Command(BaseCommand):
         type_mappings = {'HOS': 'hospitals',
                          'GPB': 'gppractices'}
 
-        # ISSUE-343 - remove this when we have real ccg data in the spreadsheet
-        demo_ccg = CCG.objects.get(pk=1)
-
         for row in reader:
             rownum += 1
 
@@ -93,9 +90,26 @@ class Command(BaseCommand):
                 service_code = row['ServiceCode']
                 service_name = row['ServiceName']
 
-                # CCG Code
+                escalation_ccg_code = row['CCGCode']
+
             except KeyError as message:
                 raise Exception("Missing column with the heading '{0}'".format(message))
+            finally:
+                transaction.rollback()
+
+            # Skip blank lines
+            if not choices_id:
+                continue
+
+            # load the CCG
+            try:
+                escalation_ccg = CCG.objects.get(code=escalation_ccg_code)
+            except CCG.DoesNotExist:
+                raise Exception(
+                    "Could not find CCG with code '{0}' on line {1}".format(
+                        escalation_ccg_code, rownum
+                    )
+                )
             finally:
                 transaction.rollback()
 
@@ -114,8 +128,7 @@ class Command(BaseCommand):
                                      'city': city,
                                      'county': county,
                                      'postcode': postcode,
-                                     # ISSUE-343 - remove this when we have real ccg associations
-                                     'escalation_ccg': demo_ccg}
+                                     'escalation_ccg': escalation_ccg}
             try:
                 organisation, organisation_created = Organisation.objects.get_or_create(ods_code=ods_code,
                                                                                         defaults=organisation_defaults)
