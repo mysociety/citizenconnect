@@ -46,17 +46,5 @@
             "name": "Customer Contact Centre",
             "permissions": []
         }
-    },
-    {
-        "pk": 1,
-        "model": "organisations.ccg",
-        "fields": {
-            "name": "Demo CCG",
-            "code": "XXXXXXX",
-            "email": "democcg@example.com",
-            "created": "2013-04-10T13:16:35.528Z",
-            "modified": "2013-04-10T13:16:35.528Z"
-        }
     }
-
 ]
