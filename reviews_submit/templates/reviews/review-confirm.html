@@ -2,7 +2,7 @@
 {% load staticfiles %}
 {% load url from future %}
 
-{% block title %}Review sent{% endblock %}
+{% block title %}Share Your Experience: Your Review Has Been Submitted{% endblock %}
 
 {% block bodyclasses %}review-confirm{% endblock %}
 
@@ -14,11 +14,13 @@
 <div class="hero  align-center">
     <div class="header">
         <img class="mb" src="{% static 'img/tick.png' %}" alt="Tick icon" />
-        <h3 class="subheading--green">Thank you for submitting your review</h3>
+        <h3 class="subheading--green">Thank you for sharing your NHS experience</h3>
     </div>
     <div>
-        <p>Your review is currently awaiting moderation by the NHS Choices team. If your review meets our <a href="http://www.nhs.uk/aboutNHSChoices/aboutnhschoices/termsandconditions/Pages/commentspolicy.aspx">moderation standards</a> it will be published here on CareConnect and on the NHS Choices site.</p>
-        <p><a href="{% url 'public-org-summary' ods_code=organisation.ods_code cobrand=cobrand.name %}">See the summary page</a> for {{ organisation.name }} to see what other people said about their service. Once your review has completed the moderation process you'll be able to see the details listed on this page.</p>
+        <h4>What Happens Next?</h4>
+        <p>This will now be reviewed by our team using the <a href="http://www.nhs.uk/aboutNHSChoices/aboutnhschoices/termsandconditions/Pages/commentspolicy.aspx">commenting guidelines</a>. This is a standard feature of most online commenting forums.</p>
+        <p>If everything is alright (based on our commenting guidelines) you will see your comments displayed on the provider summary page. If for any reason your comments do not pass this process your comments will not be published.</p>
+        <p>Your feedback is incredibly useful to the NHS and other patients. We hope you will review other services in future.</p>
     </div>
 </div>
 {% endblock %}
