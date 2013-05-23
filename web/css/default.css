@@ -1285,8 +1285,9 @@ div.review-form__rating-answer div.rateit-selected { background: url("/static/cs
 
 /** A grey box with buttons inside */
 .feedback-box { max-width: 720px; margin: 3.75em auto 0 auto; background: #f2f2f2; padding: 1.25em 3.75em; }
-.feedback-box p { font-size: 1.125em; margin-top: 0; text-align: center; }
-.feedback-box .btn { font-size: 1.25em; text-align: center; padding: 1em 1em; }
+@media only screen and (max-width: 480px) { .feedback-box { padding: 1.25em 1.25em; } }
+.feedback-box p, .feedback-box li { font-size: 1.125em; margin-top: 0; }
+.feedback-box li { margin-bottom: 0.625em; }
 
 /** The site nav - a styled horizontal list */
 .site-nav { list-style: none; padding: 0; text-align: center; border-top: 1px solid #dddddd; border-bottom: 1px solid #dddddd; background-color: #f2f2f2; background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(white)); background: -webkit-linear-gradient(top, #f2f2f2, white); background: -moz-linear-gradient(top, #f2f2f2, white); background: -ms-linear-gradient(top, #f2f2f2, white); background: -o-linear-gradient(top, #f2f2f2, white); /** A tiny reset to a horizontal list, we're using inline and not floats so text-align: center works */ }
