@@ -40,7 +40,7 @@ class Command(BaseCommand):
     @transaction.commit_manually
     def handle(self, *args, **options):
         filename = args[0]
-        reader = csv.reader(open(filename), delimiter=',', quotechar='"')
+        reader = csv.DictReader(open(filename), delimiter=',', quotechar='"')
         rownum = 0
         verbose = options['verbose']
         clean = options['clean']
@@ -59,29 +59,59 @@ class Command(BaseCommand):
         type_mappings = {'HOS': 'hospitals',
                          'GPB': 'gppractices'}
 
-        # ISSUE-343 - remove this when we have real ccg data in the spreadsheet
-        demo_ccg = CCG.objects.get(pk=1)
-
         for row in reader:
             rownum += 1
-            choices_id = row[0]
-            name = row[1]
-            trust = row[2]
-            organisation_type_text = row[3]
-            url = row[4]
-            address_line1 = self.clean_value(row[5])
-            address_line2 = self.clean_value(row[6])
-            address_line3 = self.clean_value(row[7])
-            city = self.clean_value(row[8])
-            county = self.clean_value(row[9])
-            lat = row[10]
-            lon = row[11]
-            last_updated = row[12]
-            postcode = self.clean_value(row[13])
-            ods_code = row[14]
-            service_code = row[15]
-            service_name = row[16]
-            organisation_contact = row[17]
+
+            for key, val in row.items():
+                row[key] = self.clean_value(val)
+
+            try:
+                choices_id = row['ChoicesID']
+                ods_code = row['OrganisationCode']
+                name = row['OrganisationName']
+                organisation_type_text = row['OrganisationTypeID']
+                last_updated = row['LastUpdatedDate']
+
+                trust = row['TrustName']
+                organisation_contact = row['OrganisationContact']
+
+                url = row['URL']
+
+                address_line1 = row['Address1']
+                address_line2 = row['Address2']
+                address_line3 = row['Address3']
+                city = row['City']
+                county = row['County']
+                postcode = row['Postcode']
+
+                lat = row['Latitude']
+                lon = row['Longitude']
+
+                service_code = row['ServiceCode']
+                service_name = row['ServiceName']
+
+                escalation_ccg_code = row['CCGCode']
+
+            except KeyError as message:
+                raise Exception("Missing column with the heading '{0}'".format(message))
+            finally:
+                transaction.rollback()
+
+            # Skip blank lines
+            if not choices_id:
+                continue
+
+            # load the CCG
+            try:
+                escalation_ccg = CCG.objects.get(code=escalation_ccg_code)
+            except CCG.DoesNotExist:
+                raise Exception(
+                    "Could not find CCG with code '{0}' on line {1}".format(
+                        escalation_ccg_code, rownum
+                    )
+                )
+            finally:
+                transaction.rollback()
 
             if organisation_type_text not in type_mappings:
                 if verbose:
@@ -98,8 +128,7 @@ class Command(BaseCommand):
                                      'city': city,
                                      'county': county,
                                      'postcode': postcode,
-                                     # ISSUE-343 - remove this when we have real ccg associations
-                                     'escalation_ccg': demo_ccg}
+                                     'escalation_ccg': escalation_ccg}
             try:
                 organisation, organisation_created = Organisation.objects.get_or_create(ods_code=ods_code,
                                                                                         defaults=organisation_defaults)
