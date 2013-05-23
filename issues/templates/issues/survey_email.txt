@@ -3,18 +3,26 @@
 
 Dear {{ problem.reporter_name }},
 
-{{ interval_in_days }} days ago, you reported a problem on Care Connect.
+Recently you reported a problem to us which we directed to {{ problem.organisation.name }} on your behalf.
 
-Please click one of the following links to let us know whether you're satisfied with the way it was handled.
+If your problem has been closed we would welcome some feedback from you about how it was handled and whether it was resolved to your satisfaction.
 
-Are you happy with the overall service that you received at {{ problem.organisation.name }}?
+All things considered were you satisfied that your problem was resolved?
 
-If you ARE happy, please click on the link below:
+If the answer is 'Yes', please click on the link below:
 
 {{ site_base_url }}{{ yes_url }}
 
-If you ARE NOT happy, please click on the link below:
+If the answer is 'No', please click on the link below:
 
 {{ site_base_url }}{{ no_url }}
+
+If you prefer not to answer, please click on the link below:
+
+{{ site_base_url }}{{ no_answer_url }}
+
+The results of this short survey will appear online and contribute to the overall satisfaction score of {{ problem.organisation.name }}.
+
+Thank you
 
 {% endautoescape %}
