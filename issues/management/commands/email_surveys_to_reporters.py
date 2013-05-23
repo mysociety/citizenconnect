@@ -56,10 +56,14 @@ class Command(BaseCommand):
         yes_url = reverse('survey-form', kwargs=survey_params)
         survey_params['response'] = 'n'
         no_url = reverse('survey-form', kwargs=survey_params)
+        survey_params['response'] = 'd'
+        no_answer_url = reverse('survey-form', kwargs=survey_params)
+
         context = Context({'problem': problem,
                            'interval_in_days': interval,
                            'yes_url': yes_url,
                            'no_url': no_url,
+                           'no_answer_url': no_answer_url,
                            'site_base_url': settings.SITE_BASE_URL })
 
         logger.info('Emailing survey for problem reference number: {0}'.format(problem.reference_number))

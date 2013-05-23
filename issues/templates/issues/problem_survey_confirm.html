@@ -8,30 +8,39 @@
 {% block content %}
 
 <div class="header">
-    <h1>Thanks for your feedback</h1>
+    <h1>THANK YOU</h1>
 </div>
 
 <div class="feedback-box">
-    {% if not object.happy_service %}
-        <p>Would you like to report this as another problem?</p>
-        <div class="gw">
-            <div class="g  two-thirds  palm-one-whole  mb__palm">
-                <a class="btn  btn-sml  btn--blue" href="{% url 'problem-form' cobrand=cobrand.name ods_code=object.organisation.ods_code %}">Report a problem with an NHS Service</a>
+    <p>Thank you for taking the time to send us your feedback.</p>
+
+    <p>We would encourage you to share your experience by posting your comments on our online reviews – <a href="{% url 'review-form' cobrand=cobrand.name ods_code=object.organisation.ods_code %}">share your experience</a>.</p>
+
+    <p>If you are still not satisfied and feel that all efforts for a local resolution have been exhausted, you may wish to take it further with Parliamentary and Health Service Ombudsman.</p>
+
+    <p>You can contact them to find out how they can help by:</p>
+
+    <ul>
+
+        <li>Visiting their website: <a href="http://www.ombudsman.org.uk/make-a-complaint/how-to-complain">http://www.ombudsman.org.uk/make-a-complaint/how-to-complain</a></li>
+
+        <li>Calling <span class="tel">0345 015 4033</span> (staff are available Monday to Friday from 8.30am to 5.30pm) (if you are deaf or have problems using a standard telephone please call <span class="tel">0300 061 4298</span> using a textphone)</li>
+
+        <li>Email: <a class="email" href="mailto:phso.enquiries@ombudsman.org.uk">phso.enquiries@ombudsman.org.uk</a></li>
+
+        <li>Text ‘call back’ with your name and mobile number to 07624 813 005 and they will call you back</li>
+
+        <li>Or you can write to the Health Service Ombudsman at:
+
+            <div class="adr">
+                <span class="fn">NHS Commissioning Board</span><br>
+                <span class="street-address">Millbank Tower</span><br>
+                <span class="locality">Millbank</span><br>
+                <span class="region">London</span><br>
+                <span class="postal-code">SW1P 4QP</span>
             </div>
-            <div class="g  one-third  palm-one-whole">
-                <a class="btn  btn-sml  btn--black" href="{% url 'home' cobrand=cobrand.name %}">No thanks</a>
-            </div>
-        </div>
-    {% else %}
-        <p>Would you like to leave a review of your experience?</p>
-        <div class="gw">
-            <div class="g  two-thirds  palm-one-whole  mb__palm">
-                <a class="btn  btn-sml  btn--light-green" href="{% url 'review-form' cobrand=cobrand.name ods_code=object.organisation.ods_code %}">Review and rate an NHS Service</a>
-            </div>
-            <div class="g  one-third  palm-one-whole">
-                <a class="btn  btn-sml  btn--black" href="{% url 'home' cobrand=cobrand.name %}">No thanks</a>
-            </div>
-        </div>
-    {% endif %}
+
+        </li>
+    </ul>
 </div>
 {% endblock %}

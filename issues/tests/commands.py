@@ -12,7 +12,7 @@ from ..models import Problem
 class EmailSurveysToReportersTests(TestCase):
 
     def setUp(self):
-        self.test_organisation = create_test_organisation()
+        self.test_organisation = create_test_organisation({'name': 'Fab Organisation'})
         self.test_service = create_test_service({'organisation': self.test_organisation})
         self.test_problem = create_test_problem({'organisation': self.test_organisation,
                                                            'service': self.test_service,
@@ -42,7 +42,8 @@ class EmailSurveysToReportersTests(TestCase):
         self.assertEqual(first_mail.from_email, settings.DEFAULT_FROM_EMAIL)
         self.assertEqual(first_mail.to, ['problem@example.com'])
         self.assertTrue("Dear %s," % self.test_problem.reporter_name in first_mail.body)
-        self.assertTrue("%d days ago," % self.test_problem_age in first_mail.body)
+        self.assertTrue("Recently you reported a problem" in first_mail.body)
+        self.assertTrue('Fab Organisation' in first_mail.body)
         self.assertTrue('/choices/' in first_mail.body)
 
     def test_sends_no_emails_when_none_to_send(self):
@@ -66,4 +67,3 @@ class EmailSurveysToReportersTests(TestCase):
         self.set_problem_age()
         self._call_command()
         self.assertEqual(len(mail.outbox), 0)
-

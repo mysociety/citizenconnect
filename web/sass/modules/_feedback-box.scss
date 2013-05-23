@@ -6,14 +6,12 @@
   margin: ($grid-gutter * 3) + em auto 0 auto;
   background: $c-lightgrey;
   padding: $grid-gutter + em ($grid-gutter * 3) + em ;
-  p {
+  @include media-query(palm){  padding: $grid-gutter + em ($grid-gutter) + em ; }
+  p, li {
     font-size: (18px / $font-size-base) + em;
     margin-top: 0;
-    text-align: center;
   }
-  .btn {
-    font-size: (20px / $font-size-base) + em;
-    text-align: center;
-    padding:1em 1em;
+  li {
+    margin-bottom: ($grid-gutter / 2)+ em;
   }
 }
