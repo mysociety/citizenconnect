@@ -37,7 +37,7 @@ NHS_CHOICES_API_MAX_REVIEW_AGE_IN_DAYS: 730
 
 # Basic authentication credentials for the API.
 API_BASICAUTH_USERNAME: changeme
-API_BASICAUTH_USERNAME: secret
+API_BASICAUTH_PASSWORD: secret
 
 # Cobrands
 ALLOWED_COBRANDS:
