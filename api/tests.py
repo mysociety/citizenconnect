@@ -39,7 +39,7 @@ class ProblemAPITests(TestCase):
             'commissioned': Problem.NATIONALLY_COMMISSIONED,
             'relates_to_previous_problem': True,
             'priority': Problem.PRIORITY_HIGH,
-            'escalated': 1
+            'escalated': 0
         }
 
         self.problem_api_url = reverse('api-problem-create')
@@ -71,7 +71,7 @@ class ProblemAPITests(TestCase):
         self.assertEqual(problem.commissioned, Problem.NATIONALLY_COMMISSIONED)
         self.assertEqual(problem.relates_to_previous_problem, True)
         self.assertEqual(problem.priority, Problem.PRIORITY_HIGH)
-        self.assertEqual(problem.status, Problem.ESCALATED)
+        self.assertEqual(problem.status, Problem.NEW)
 
     def test_source_is_required(self):
         problem_without_source = self.test_problem
@@ -256,6 +256,16 @@ class ProblemAPITests(TestCase):
         content_json = json.loads(resp.content)
         self.assertEqual(content_json['reference_number'], expected_reference_number)
         self.assertEqual(problem.status, Problem.NEW)
+
+    def test_does_not_accept_escalated_problems(self):
+        problem_with_escalation_flag = self.test_problem
+        problem_with_escalation_flag['escalated'] = 1
+        resp = self.client.post(self.problem_api_url, problem_with_escalation_flag)
+        self.assertEquals(resp.status_code, 400)
+        content_json = json.loads(resp.content)
+
+        errors = json.loads(content_json['errors'])
+        self.assertEqual(errors['escalated'][0],  u"Escalation is not currently enabled.")
 
     def test_status_is_ignored(self):
         self.test_problem['status'] = Problem.ACKNOWLEDGED
