@@ -290,6 +290,7 @@ class ProblemSurveyTests(AuthorizationTestCase):
         resp = self.client.get(self.form_page)
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, 'Thanks for your feedback', count=1, status_code=200)
+        self.assertContains(resp, self.test_organisation.name, count=1)
 
     def test_form_page_returns_a_404_for_a_non_existent_problem(self):
         form_page = reverse('survey-form', kwargs={'cobrand': 'choices',
