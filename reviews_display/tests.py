@@ -429,7 +429,7 @@ class ReviewDetailTests(TestCase):
         review_detail_url = reverse('review-detail',
                                     kwargs={
                                         'ods_code': self.test_organisation.ods_code,
-                                    'pk': self.org_review.id,
+                                    'api_posting_id': self.org_review.api_posting_id,
                                     'cobrand': 'choices'})
         resp = self.client.get(review_detail_url)
         self.assertEqual(resp.context['organisation'], self.test_organisation)
@@ -439,7 +439,7 @@ class ReviewDetailTests(TestCase):
         review_detail_url = reverse('review-detail',
                                     kwargs={
                                         'ods_code': self.test_organisation.ods_code,
-                                    'pk': self.org_reply.id,
+                                    'api_posting_id': self.org_reply.api_posting_id,
                                     'cobrand': 'choices'})
 
         # disable logging of "Not Found"
