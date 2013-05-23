@@ -48,3 +48,6 @@ class DevHomepageSelector(TemplateView):
 
 class About(TemplateView):
     template_name = 'about.html'
+
+class Feedback(TemplateView):
+    template_name = 'feedback_form.html'
