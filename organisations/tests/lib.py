@@ -18,9 +18,15 @@ from reviews_display.models import Review
 from ..lib import interval_counts
 from ..models import Organisation, Service, CCG
 
+api_posting_id_counter = 328409234
+
 def create_test_review(attributes={}):
     # Make a review
-    default_attributes = {'api_posting_id': '328409234',
+
+    global api_posting_id_counter
+    api_posting_id_counter += 1
+
+    default_attributes = {'api_posting_id': str(api_posting_id_counter),
                           'api_postingorganisationid': '893470895',
                           'api_category': 'comment',
                           'author_display_name': 'A Test Author',

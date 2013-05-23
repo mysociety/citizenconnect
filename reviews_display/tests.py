@@ -37,6 +37,8 @@ def create_test_rating(attributes, review):
     return instance
 
 
+api_posting_id_counter = 185684
+
 def create_test_review(attributes, ratings_attributes):
     """Create a test review instance, with optional attributes"""
 
@@ -46,9 +48,13 @@ def create_test_review(attributes, ratings_attributes):
         attributes['organisation'] = organisation
 
     now = datetime.datetime.utcnow().replace(tzinfo=utc)
+
+    global api_posting_id_counter
+    api_posting_id_counter += 1
+
     default_attributes = {
         'api_category': 'comment',
-        'api_posting_id': '185684',
+        'api_posting_id': str(api_posting_id_counter),
         'api_postingorganisationid': '0',
         'api_published': now,
         'api_updated': now,

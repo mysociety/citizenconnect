@@ -32,7 +32,7 @@ class Review(AuditedModel):
     # IDs for this review, and for the system where the review was created. Use Char
     # rather than number as it would appear that letters are used in some ids. The
     # max length should be fine as according to the API spec max is 10...
-    api_posting_id = models.CharField(max_length=20)
+    api_posting_id = models.CharField(max_length=20, unique=True)
     api_postingorganisationid = models.CharField(max_length=20)
 
     # published and updated timestamps.
