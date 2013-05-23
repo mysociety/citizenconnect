@@ -282,3 +282,9 @@ class ProblemAPITests(TestCase):
         del self.client.defaults['HTTP_AUTHORIZATION']
         resp = self.client.post(self.problem_api_url, self.test_problem)
         self.assertEquals(resp.status_code, 401)
+
+    def test_returns_unauthorized_with_wrong_basic_auth(self):
+        credentials = base64.b64encode('incorrect:authentication')
+        self.client.defaults['HTTP_AUTHORIZATION'] = 'Basic ' + credentials
+        resp = self.client.post(self.problem_api_url, self.test_problem)
+        self.assertEquals(resp.status_code, 401)
