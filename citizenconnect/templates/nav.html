@@ -19,7 +19,8 @@
         {% url 'about' cobrand=cobrand.name as url %}
         <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">About</a></li>
 
-        <li><a href="#">Experiences</a></li>
+        {% url 'reviews-pick-provider' cobrand=cobrand.name as url %}
+        <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Experiences</a></li>
 
         {% if cobrand.name == 'choices' %}
             {% url 'common-questions' cobrand=cobrand.name as url %}
@@ -28,7 +29,8 @@
             <li><a href="http://www.nhslondon.lampuat64-1.rroom.net/">Questions</a></li>
         {% endif %}
 
-        <li><a href="#">Problems</a></li>
+        {% url 'problems-pick-provider' cobrand=cobrand.name as url %}
+        <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Problems</a></li>
 
         {% url 'org-all-summary' cobrand=cobrand.name as url %}
         <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Provider summaries</a></li>
