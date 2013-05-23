@@ -315,6 +315,17 @@ class ProblemSurveyTests(AuthorizationTestCase):
         test_problem = Problem.objects.get(id=self.test_problem.id)
         self.assertEqual(test_problem.happy_service, True)
 
+    def test_form_page_records_nothing_for_a_no_answer_response(self):
+        form_page = reverse('survey-form', kwargs={'cobrand': 'choices',
+                                                   'response': 'd',
+                                                   'id': int_to_base32(self.test_problem.id),
+                                                   'token': self.test_problem.make_token(5555)})
+        self.assertEqual(self.test_problem.happy_service, None)
+        resp = self.client.get(form_page)
+        self.assertEqual(resp.status_code, 200)
+        test_problem = Problem.objects.get(id=self.test_problem.id)
+        self.assertEqual(test_problem.happy_service, None)
+
     def test_confirm_page_offers_new_problem_if_unhappy(self):
         # Load the page to say we're unhappy
         form_page = reverse('survey-form', kwargs={'cobrand': 'choices',
