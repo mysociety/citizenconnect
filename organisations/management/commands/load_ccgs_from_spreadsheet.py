@@ -21,7 +21,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         filename = args[0]
         allowed_regions = ['London']
-        reader = csv.reader(open(filename), delimiter=',', quotechar='"')
+        reader = csv.DictReader(open(filename), delimiter=',', quotechar='"')
         rownum = 0
         verbose = options['verbose']
 
@@ -31,11 +31,14 @@ class Command(BaseCommand):
 
         for row in reader:
             rownum += 1
-            if rownum == 1:
-                continue
-            code = row[0]
-            name = row[1]
-            region = row[4]
+
+            try:
+                code = row['Code']
+                name = row['Name']
+                region = row['Region']
+            except KeyError as message:
+                raise Exception("Missing column with the heading '{0}'".format(message))
+
             if region not in allowed_regions:
                 if verbose:
                     self.stdout.write("Skipping %s - not in allowed regions\n" % name)
