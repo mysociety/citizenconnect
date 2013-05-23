@@ -21,6 +21,10 @@ class ModerationForm(ConcurrentFormMixin, forms.ModelForm):
         if not self.instance.public:
             del self.fields['moderated_description']
 
+        if 'status' in self.fields:
+            # For now, restrict the statuses allowable to non-escalation statuses
+            self.fields["status"].choices = Problem.NON_ESCALATION_STATUS_CHOICES
+
     def clean_publication_status(self):
         # Status is hidden, but if people click the "Publish" button, we should
         # publish it, and vice versa if they click "Keep Private", we default

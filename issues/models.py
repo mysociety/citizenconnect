@@ -145,6 +145,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     CLOSED_STATUSES = [RESOLVED, UNABLE_TO_RESOLVE, UNABLE_TO_CONTACT, ABUSIVE, ESCALATED_RESOLVED]
     ESCALATION_STATUSES = OPEN_ESCALATION_STATUSES + [ESCALATED_RESOLVED]
     NON_ESCALATION_STATUSES = [status for status in ALL_STATUSES if status not in ESCALATION_STATUSES]
+    NON_ESCALATION_STATUS_CHOICES = [(status, description) for status, description in STATUS_CHOICES if status in NON_ESCALATION_STATUSES]
     VISIBLE_STATUSES = [status for status in ALL_STATUSES if status not in HIDDEN_STATUSES]
     VISIBLE_STATUS_CHOICES = [(status, description) for status, description in STATUS_CHOICES if status in VISIBLE_STATUSES]
 

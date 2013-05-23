@@ -86,14 +86,23 @@ class ModerationFormTests(BaseModerationTestCase):
         problem = Problem.objects.get(pk=self.test_problem.id)
         self.assertEqual(problem.breach, True)
 
-    def test_moderation_form_sets_status(self):
+    def test_moderation_form_will_not_set_escalated_status(self):
         test_form_values = {
             'status': Problem.ESCALATED
         }
         self.form_values.update(test_form_values)
         resp = self.client.post(self.problem_form_url, self.form_values)
         problem = Problem.objects.get(pk=self.test_problem.id)
-        self.assertEqual(problem.status, Problem.ESCALATED)
+        self.assertEqual(problem.status, Problem.NEW)
+
+    def test_moderation_form_sets_status(self):
+        test_form_values = {
+            'status': Problem.REFERRED_TO_OTHER_PROVIDER
+        }
+        self.form_values.update(test_form_values)
+        resp = self.client.post(self.problem_form_url, self.form_values)
+        problem = Problem.objects.get(pk=self.test_problem.id)
+        self.assertEqual(problem.status, Problem.REFERRED_TO_OTHER_PROVIDER)
 
     def test_moderation_form_sets_publication_status_to_published_when_publish_clicked(self):
         self.assert_expected_publication_status(Problem.PUBLISHED,
