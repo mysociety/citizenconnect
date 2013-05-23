@@ -247,18 +247,39 @@ class PickProviderBase(ListView):
     model = Organisation
     context_object_name = 'organisations'
 
+    def get_context_data(self, **kwargs):
+        context = super(PickProviderBase, self).get_context_data(**kwargs)
+
+        try:
+            context['title_text'] = self.title_text
+        except AttributeError:
+            pass
+
+        try:
+            context['intro_text'] = self.intro_text
+        except AttributeError:
+            pass
+
+        try:
+            context['form'] = self.form
+        except AttributeError:
+            pass
+
+        return context
+
     def get(self, *args, **kwargs):
         super(PickProviderBase, self).get(*args, **kwargs)
         if self.request.GET:
             form = OrganisationFinderForm(self.request.GET)
             if form.is_valid():  # All validation rules pass
-                context = {'location': form.cleaned_data['location'],
-                           'organisation_type': form.cleaned_data['organisation_type'],
-                           'organisations': form.cleaned_data['organisations'],
-                           'result_link_url_name': self.result_link_url_name,
-                           'paginator': None,
-                           'page_obj': None,
-                           'is_paginated': False}
+                context = self.get_context_data(object_list=self.object_list)
+                context.update({'location': form.cleaned_data['location'],
+                                'organisation_type': form.cleaned_data['organisation_type'],
+                                'organisations': form.cleaned_data['organisations'],
+                                'result_link_url_name': self.result_link_url_name,
+                                'paginator': None,
+                                'page_obj': None,
+                                'is_paginated': False})
                 self.queryset = form.cleaned_data['organisations']
                 page_size = self.get_paginate_by(self.queryset)
                 if page_size:
@@ -270,9 +291,11 @@ class PickProviderBase(ListView):
                     context['current_url'] = resolve(self.request.path_info).url_name
                 return render(self.request, self.template_name, context)
             else:
-                return render(self.request, self.form_template_name, {'form': form})
+                self.form = form
+                return render(self.request, self.form_template_name, self.get_context_data(object_list=self.object_list))
         else:
-            return render(self.request, self.form_template_name, {'form': OrganisationFinderForm()})
+            self.form = OrganisationFinderForm()
+            return render(self.request, self.form_template_name, self.get_context_data(object_list=self.object_list))
 
 
 class OrganisationSummary(OrganisationAwareViewMixin,
