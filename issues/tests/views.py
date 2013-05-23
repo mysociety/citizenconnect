@@ -327,65 +327,15 @@ class ProblemSurveyTests(AuthorizationTestCase):
         test_problem = Problem.objects.get(id=self.test_problem.id)
         self.assertEqual(test_problem.happy_service, None)
 
-    def test_confirm_page_offers_new_problem_if_unhappy(self):
-        # Load the page to say we're unhappy
-        form_page = reverse('survey-form', kwargs={'cobrand': 'choices',
-                                                   'response': 'n',
-                                                   'id': int_to_base32(self.test_problem.id),
-                                                   'token': self.test_problem.make_token(5555)})
-        self.client.get(form_page)
+    def test_confirm_page_links_to_reviews(self):
         # Now post to it to get the confirmation page
-        resp = self.client.post(form_page, {})
-        expected_form_url = reverse('problem-form',
-                                    kwargs={'cobrand': 'choices',
-                                            'ods_code': self.test_organisation.ods_code})
-        self.assertContains(resp, 'report this as another problem')
-        self.assertContains(resp, expected_form_url)
-
-    def test_confirm_page_doesnt_offer_new_problem_if_happy(self):
-        # Load the page to say we're happy
-        form_page = reverse('survey-form', kwargs={'cobrand': 'choices',
-                                                   'response': 'y',
-                                                   'id': int_to_base32(self.test_problem.id),
-                                                   'token': self.test_problem.make_token(5555)})
-        self.client.get(form_page)
-        # Now post to it to get the confirmation page
-        resp = self.client.post(form_page, {})
-        expected_form_url = reverse('problem-form',
-                                    kwargs={'cobrand': 'choices',
-                                            'ods_code': self.test_organisation.ods_code})
-        self.assertNotContains(resp, 'report this as another problem')
-        self.assertNotContains(resp, expected_form_url)
-
-    def test_confirm_page_links_to_reviews_if_happy(self):
-        # Load the page to say we're happy
-        form_page = reverse('survey-form', kwargs={'cobrand': 'choices',
-                                                   'response': 'y',
-                                                   'id': int_to_base32(self.test_problem.id),
-                                                   'token': self.test_problem.make_token(5555)})
-        self.client.get(form_page)
-        # Now post to it to get the confirmation page
-        resp = self.client.post(form_page, {})
+        resp = self.client.post(self.form_page, {})
         expected_review_url = reverse('review-form',
                                       kwargs={'cobrand': 'choices',
                                               'ods_code': self.test_organisation.ods_code})
-        self.assertContains(resp, 'Review and rate an NHS Service')
+        self.assertContains(resp, 'share your experience')
         self.assertContains(resp, expected_review_url)
 
-    def test_confirm_page_doesnt_link_to_reviews_if_unhappy(self):
-        # Load the page to say we're unhappy
-        form_page = reverse('survey-form', kwargs={'cobrand': 'choices',
-                                                   'response': 'n',
-                                                   'id': int_to_base32(self.test_problem.id),
-                                                   'token': self.test_problem.make_token(5555)})
-        self.client.get(form_page)
-        # Now post to it to get the confirmation page
-        resp = self.client.post(form_page, {})
-        expected_review_url = reverse('review-form',
-                                      kwargs={'cobrand': 'choices',
-                                              'ods_code': self.test_organisation.ods_code})
-        self.assertNotContains(resp, 'Review and rate an NHS Service')
-        self.assertNotContains(resp, expected_review_url)
 
 class HomePageTests(TestCase):
 
