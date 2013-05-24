@@ -36,13 +36,13 @@ class Home(FormView):
 
         return context
 
-class HomepageSelector(TemplateView):
-    template_name = 'cobrand_choice.html'
+class DevHomepageSelector(TemplateView):
+    template_name = 'dev-homepage.html'
     redirect_url = reverse_lazy('home', kwargs={'cobrand': settings.ALLOWED_COBRANDS[0]})
 
     def get(self, request, *args, **kwargs):
         if settings.STAGING:
-            return super(HomepageSelector, self).get(request, *args, **kwargs)
+            return super(DevHomepageSelector, self).get(request, *args, **kwargs)
         else:
             return HttpResponsePermanentRedirect(self.redirect_url)
 

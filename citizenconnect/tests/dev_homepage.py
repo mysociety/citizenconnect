@@ -12,7 +12,7 @@ class DevHomepageTests(TestCase):
     """
 
     def setUp(self):
-        self.homepage_url = reverse('homepage-selector')
+        self.homepage_url = reverse('dev-homepage')
 
     # Note - we use STAGING rather than DEBUG because DEBUG is always False when
     # runing Django tests.
@@ -21,7 +21,7 @@ class DevHomepageTests(TestCase):
     def test_with_staging_true(self):
         resp = self.client.get(self.homepage_url)
         self.assertEqual(resp.status_code, 200)
-        self.assertTemplateUsed(resp, 'cobrand_choice.html')
+        self.assertTemplateUsed(resp, 'dev-homepage.html')
 
     @override_settings(STAGING=False)
     def test_with_staging_false(self):
