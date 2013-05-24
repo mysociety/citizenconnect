@@ -101,18 +101,26 @@ def create_unique_username(organisation):
     """
     Try to create a unique username for an organisation.
     """
+    max_length = 30 # Django constraint on user name lengths
+    
     username = organisation.name[:250]
     username = username.replace(' ', '_')
+    username = username.strip('_')
     username = ''.join([char for char in username if is_valid_username_char(char)])
     username = username.lower()
+    username = username[:max_length]
     if not User.objects.all().filter(username=username).exists():
         return username
     else:
         increment = 1
-        possible_username = "{0}_{1}".format(username, increment)
+        suffix = '_' + str(increment)
+        possible_username = "".join([username[:max_length-len(suffix)].strip('_'), suffix])
+
         while User.objects.all().filter(username=possible_username).exists():
-            possible_username = "{0}_{1}".format(username, increment)
             increment += 1
+            suffix = '_' + str(increment)
+            possible_username = "".join([username[:max_length-len(suffix)].strip('_'), suffix])
+
         return possible_username
 
 
