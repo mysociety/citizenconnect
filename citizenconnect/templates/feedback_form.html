@@ -1,6 +1,14 @@
 {% extends 'base.html' %}
+{% load url from future %}
 
 {% block content %}
-<h1>Feedback</h1>
+<h1>Feedback on CareConnect Service</h1>
+
+<form action="{% url 'feedback' cobrand=cobrand.name %}" method="post" class="cf">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <input type="submit" class="btn fr" />
+</form>
 
 {% endblock content %}
