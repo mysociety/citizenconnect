@@ -17,15 +17,6 @@ class PickProvider(PickProviderBase):
     title_text = 'Share Your Experience'
     site_section = 'review'
     
-    intro_text = """
-    If you have an experience of an NHS service in the last 2 years, either as a
-    patient yourself or as a carer, relative or friend please share your
-    experience so that others can benefit. Tell us what went well and what could
-    have been better and if you have any suggestions for improvements we want to
-    hear them. Its easy to do in just 5 simple steps and will only take about 5
-    minutes.
-    """
-
 
 class ReviewForm(CreateView):
     template_name = 'reviews/review-form.html'

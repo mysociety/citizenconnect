@@ -265,10 +265,7 @@ class PickProviderBase(ListView):
         except AttributeError:
             pass
 
-        try:
-            context['intro_text'] = self.intro_text
-        except AttributeError:
-            pass
+        context['site_section'] = self.site_section
 
         try:
             context['form'] = self.form
