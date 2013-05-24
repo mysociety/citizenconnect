@@ -246,6 +246,16 @@ class PickProviderBase(ListView):
     paginate_by = 10
     model = Organisation
     context_object_name = 'organisations'
+    
+    # Should be provided by the subclasses
+    site_section = None
+
+    def __init__(self, *args, **kwargs):
+        super(PickProviderBase, self).__init__(*args, **kwargs)
+
+        if not self.site_section:
+            raise NotImplementedError("Please set 'site_section' in your sub class")
+
 
     def get_context_data(self, **kwargs):
         context = super(PickProviderBase, self).get_context_data(**kwargs)
@@ -296,6 +306,11 @@ class PickProviderBase(ListView):
         else:
             self.form = OrganisationFinderForm()
             return render(self.request, self.form_template_name, self.get_context_data(object_list=self.object_list))
+
+
+class OrganisationPickProvider(PickProviderBase):
+    site_section = 'organisation'
+
 
 
 class OrganisationSummary(OrganisationAwareViewMixin,
