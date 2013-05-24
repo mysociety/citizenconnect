@@ -401,7 +401,7 @@
 
             <h2>3. Intellectual property rights</h2>
             <h3>3.1</h3>
-            <p>The materials, information, data and other content included on Care Connect is subject to [Crown] copyright. You may copy, download, adapt or print off copies of such materials, information, data and other content for non-commercial use, including personal use, or for use by a registered charity, a not-for-profit organisation or a public sector body. You will need to obtain permission in writing from Us before You make any other use of Care Connect content. Requests for such information should be made in writing to ccfeedback@nhs.net</p>
+            <p>The materials, information, data and other content included on Care Connect is subject to [Crown] copyright. You may copy, download, adapt or print off copies of such materials, information, data and other content for non-commercial use, including personal use, or for use by a registered charity, a not-for-profit organisation or a public sector body. You will need to obtain permission in writing from Us before You make any other use of Care Connect content. Requests for such information should be made in writing to {{ settings.FEEDBACK_EMAIL_ADDRESS }}</p>
             <h3>3.2</h3>
             <p>The rights in images, trade marks, trade names, logos included on Care Connect are owned by Us and/or third parties. You will need to obtain permission in writing from Us or the owner before You may use these images, trade marks, trade names, logos in any way.</p>
             <h2>4. Disclaimer medical information</h2>
@@ -499,7 +499,7 @@
                 <h1>Contact us</h1>
             </div>
 
-            <p>You can contact us on <a href="mailto:ccfeedback@nhs.net">ccfeedback@nhs.net</a>, please use this email:</p>
+            <p>You can contact us on <a href="mailto:{{ settings.FEEDBACK_EMAIL_ADDRESS }}">{{ settings.FEEDBACK_EMAIL_ADDRESS }}</a>, please use this email:</p>
 
             <ul>
                 <li>To give us feedback about this service</li>
@@ -521,11 +521,11 @@
 
             <p>What do I do if I change my mind about having the details of my problem made public?</p>
 
-            <p>Please email <a href="mailto:ccfeedback@nhs.net">ccfeedback@nhs.net</a> with your reference number. You may be asked a security question by our case handlers. They will then be able to assist with your request.</p>
+            <p>Please email <a href="mailto:{{ settings.FEEDBACK_EMAIL_ADDRESS }}">{{ settings.FEEDBACK_EMAIL_ADDRESS }}</a> with your reference number. You may be asked a security question by our case handlers. They will then be able to assist with your request.</p>
 
             <p>How can I leave feedback about this pilot service?</p>
 
-            <p>All feedback is welcome; please email <a href="mailto:ccfeedback@nhs.net">ccfeedback@nhs.net</a>.</p>
+            <p>All feedback is welcome; please email <a href="mailto:{{ settings.FEEDBACK_EMAIL_ADDRESS }}">{{ settings.FEEDBACK_EMAIL_ADDRESS }}</a>.</p>
         </div>
 
         <!--
@@ -545,7 +545,7 @@
 
             <p>We want to respond quickly to your concerns, compliments, suggestions and problems so that together we can build a better NHS. This is a new service is initially being piloted in London and parts of North East England before it is rolled out nationally and expands to include a broader range of NHS and Local Authority services.</p>
 
-            <p>Please give us your suggestions on how it can be improved please email us at <a href="mailto:ccfeedback@nhs.net">ccfeedback@nhs.net</a></p>
+            <p>Please give us your suggestions on how it can be improved please email us at <a href="mailto:{{ settings.FEEDBACK_EMAIL_ADDRESS }}">{{ settings.FEEDBACK_EMAIL_ADDRESS }}</a></p>
         </div>
 
         <!--
