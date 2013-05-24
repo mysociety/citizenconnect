@@ -1,10 +1,19 @@
 /**
  * Markup specific to the about page
  */
-.step-title {
-  color: $c-nhs_lightgreen;
-}
 
 .about-section {
   padding-top: 5px;
+}
+
+.step-title--green {
+  color: $c-step-title-green;
+}
+
+.step-title--orange {
+  color: $c-step-title-orange;
+}
+
+.step-title--blue {
+  color: $c-step-title-blue;
 }
