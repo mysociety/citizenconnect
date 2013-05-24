@@ -21,9 +21,9 @@
 
         <p>It has been forwarded to <a href="{% url 'public-org-summary' cobrand=cobrand.name ods_code=object.organisation.ods_code %}">{{ object.organisation.name }}</a> and you should receive a response from them directly using the contact details you provided.
 
-        <p>Your Unique Reference Number (URN) is {{ object.reference_number }}. If you need to contact us or {{ object.organisation.name }} about this issue in the future, please quote this reference number.</p>
+        <p>Your Reference Number is {{ object.reference_number }}. If you need to contact us or {{ object.organisation.name }} about this issue in the future, please quote this reference number.</p>
 
-        <p>You can track the progress of your problem by entering your URN into the homepage which will take you directly to the provider summary for {{ object.organisation.name }} This already displays your problem as new and 'open' along with the category and any department/ service that you ticked.</p>
+        <p>You can track the progress of your problem by entering your reference number into the homepage which will take you directly to the provider summary for {{ object.organisation.name }} This already displays your problem as new and 'open' along with the category and any department/ service that you ticked.</p>
 
         {% if object.public %}
             <p>As you opted to also make the details of your problem visible to the public, this will appear shortly, once the content has gone through our moderation process.</p>
