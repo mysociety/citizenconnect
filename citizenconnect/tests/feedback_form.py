@@ -26,6 +26,5 @@ class FeedbackFormTest(TestCase):
     def test_missing_data(self):
         resp = self.client.post(self.feedback_form_url, {'name': 'Bob', 'email': '', 'feedback_comments': 'Test'})
         self.assertEquals(200, resp.status_code)
-        print resp
         self.assertContains(resp, "This field is required")
         self.assertEqual(len(mail.outbox), 0)
