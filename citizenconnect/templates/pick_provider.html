@@ -2,7 +2,10 @@
 {% load url from future %}
 
 
-{% block title %}Pick Provider - {{ title_text }}{% endblock %}
+{% block title %}
+  Pick Provider
+  {% if title_text %} - {{ title_text }}{% endif %}
+{% endblock %}
 
 {% block bodyclasses %}pick-provider{% endblock %}
 {% block containerclasses %}container{% endblock %}
