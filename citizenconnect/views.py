@@ -70,4 +70,8 @@ class Feedback(FormView):
         recipients = [settings.FEEDBACK_EMAIL_ADDRESS]
 
         mail.send_mail(subject, message, from_email, recipients)
-        return HttpResponseRedirect('/thanks/')
+        return HttpResponseRedirect(reverse('feedback-confirm', kwargs={'cobrand': self.kwargs['cobrand']}))
+
+
+class FeedbackConfirm(TemplateView):
+    template_name = 'feedback_confirm.html'
