@@ -37,6 +37,8 @@ def create_test_rating(attributes, review):
     return instance
 
 
+api_posting_id_counter = 185684
+
 def create_test_review(attributes, ratings_attributes):
     """Create a test review instance, with optional attributes"""
 
@@ -46,9 +48,13 @@ def create_test_review(attributes, ratings_attributes):
         attributes['organisation'] = organisation
 
     now = datetime.datetime.utcnow().replace(tzinfo=utc)
+
+    global api_posting_id_counter
+    api_posting_id_counter += 1
+
     default_attributes = {
         'api_category': 'comment',
-        'api_posting_id': '185684',
+        'api_posting_id': str(api_posting_id_counter),
         'api_postingorganisationid': '0',
         'api_published': now,
         'api_updated': now,
@@ -423,7 +429,7 @@ class ReviewDetailTests(TestCase):
         review_detail_url = reverse('review-detail',
                                     kwargs={
                                         'ods_code': self.test_organisation.ods_code,
-                                    'pk': self.org_review.id,
+                                    'api_posting_id': self.org_review.api_posting_id,
                                     'cobrand': 'choices'})
         resp = self.client.get(review_detail_url)
         self.assertEqual(resp.context['organisation'], self.test_organisation)
@@ -433,7 +439,7 @@ class ReviewDetailTests(TestCase):
         review_detail_url = reverse('review-detail',
                                     kwargs={
                                         'ods_code': self.test_organisation.ods_code,
-                                    'pk': self.org_reply.id,
+                                    'api_posting_id': self.org_reply.api_posting_id,
                                     'cobrand': 'choices'})
 
         # disable logging of "Not Found"
