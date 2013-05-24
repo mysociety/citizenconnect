@@ -36,6 +36,7 @@ class Command(BaseCommand):
                 code = row['Code']
                 name = row['Name']
                 region = row['Region']
+                email = row['Email']
             except KeyError as message:
                 raise Exception("Missing column with the heading '{0}'".format(message))
 
@@ -45,7 +46,7 @@ class Command(BaseCommand):
                     skipped += 1
                 continue
 
-            ccg_defaults = {'name': name}
+            ccg_defaults = {'name': name, 'email': email}
 
             try:
                 ccg, ccg_created = CCG.objects.get_or_create(code=code,

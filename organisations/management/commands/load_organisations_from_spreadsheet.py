@@ -128,6 +128,7 @@ class Command(BaseCommand):
                                      'city': city,
                                      'county': county,
                                      'postcode': postcode,
+                                     'email': organisation_contact,
                                      'escalation_ccg': escalation_ccg}
             try:
                 organisation, organisation_created = Organisation.objects.get_or_create(ods_code=ods_code,
