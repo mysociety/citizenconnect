@@ -1,6 +1,11 @@
 
 from django.views.generic import DetailView, TemplateView
+from django.http import Http404
+from django.core.exceptions import ObjectDoesNotExist
+
+
 from django_tables2 import RequestConfig
+
 
 from .tables import ReviewTable
 from organisations.views import OrganisationAwareViewMixin
@@ -28,4 +33,23 @@ class ReviewOrganisationList(OrganisationAwareViewMixin,
 
 
 class ReviewDetail(ReviewLoadOrganisationBase, DetailView):
-    pass
+
+    def get_object(self):
+
+        """
+        Override the default to find a review using api_posting_id
+        """
+
+        api_posting_id = self.kwargs.get('api_posting_id')
+
+        queryset = self.get_queryset()
+        queryset = queryset.filter(api_posting_id=api_posting_id)
+
+        try:
+            # Get the single item from the filtered queryset
+            obj = queryset.get()
+        except ObjectDoesNotExist:
+            raise Http404("No %(verbose_name)s found matching the query" %
+                          {'verbose_name': queryset.model._meta.verbose_name})
+
+        return obj
