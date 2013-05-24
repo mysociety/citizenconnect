@@ -22,10 +22,10 @@ class FeedbackFormTest(TestCase):
         self.assertTrue('Test XYZ Comment' in email.body)
         self.assertEqual(email.to, [settings.FEEDBACK_EMAIL_ADDRESS])
         self.assertEqual(email.subject, 'Feedback on CareConnect Service from Bob')
-        
-        
+
     def test_missing_data(self):
         resp = self.client.post(self.feedback_form_url, {'name': 'Bob', 'email': '', 'feedback_comments': 'Test'})
         self.assertEquals(200, resp.status_code)
+        print resp
         self.assertContains(resp, "This field is required")
         self.assertEqual(len(mail.outbox), 0)

@@ -28,11 +28,11 @@
 
         {{ form.name.label_tag }}
         {{ form.name }}
-        {% include "message_list.html" with messages=form.feedback_comments.errors message_type='error' %}
+        {% include "message_list.html" with messages=form.name.errors message_type='error' %}
 
         {{ form.email.label_tag }}
         {{ form.email }}
-        {% include "message_list.html" with messages=form.feedback_comments.errors message_type='error' %}
+        {% include "message_list.html" with messages=form.email.errors message_type='error' %}
     </fieldset>
 
     <input type="submit" class="btn fr" />
