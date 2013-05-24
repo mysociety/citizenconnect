@@ -2,7 +2,7 @@
 {% load url from future %}
 {% load organisation_extras %}
 
-{% block title %}Provider Results{% endblock %}
+{% block title %}Provider Results - {{ title_text }}{% endblock %}
 
 {% block bodyclasses %}pick-provider-results{% endblock %}
 
@@ -16,6 +16,8 @@
     </form>
     <h1>{{ title_text }}: Results for &lsquo;{{ location }}&rsquo;</h1>
 </div>
+
+<p>Please select the NHS provider from the list</p>
 
 <ul class="results-list">
     {% for organisation in organisations %}
