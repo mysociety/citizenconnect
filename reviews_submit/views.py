@@ -15,10 +15,14 @@ from . import forms
 class PickProvider(PickProviderBase):
     result_link_url_name = 'review-form'
     title_text = 'Share Your Experience'
-    intro_text = ("To find the part of the NHS that you would like your "
-                  "review sent to please put either the name of the provider "
-                  "(e.g. Hospital name, GP practice name) the postcode of the "
-                  "provider or your postcode.")
+    intro_text = """
+    If you have an experience of an NHS service in the last 2 years, either as a
+    patient yourself or as a carer, relative or friend please share your
+    experience so that others can benefit. Tell us what went well and what could
+    have been better and if you have any suggestions for improvements we want to
+    hear them. Its easy to do in just 5 simple steps and will only take about 5
+    minutes.
+    """
 
 
 class ReviewForm(CreateView):
