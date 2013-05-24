@@ -5,7 +5,8 @@ from .paths import *
 
 config = yaml.load(open(os.path.join(PROJECT_ROOT, 'conf', 'general.yml')))
 
-DEBUG = bool(int(config.get('STAGING')))
+STAGING = bool(int(config.get('STAGING')))
+DEBUG = STAGING
 TEMPLATE_DEBUG = DEBUG
 
 DATABASES = {

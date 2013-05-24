@@ -1,8 +1,9 @@
 # Django imports
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, View, RedirectView
 from django.views.generic.edit import FormView
-from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse, reverse_lazy
+from django.conf import settings
+from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
 
 
 # App imports
@@ -35,8 +36,15 @@ class Home(FormView):
 
         return context
 
-class CobrandChoice(TemplateView):
+class HomepageSelector(TemplateView):
     template_name = 'cobrand_choice.html'
+    redirect_url = reverse_lazy('home', kwargs={'cobrand': settings.ALLOWED_COBRANDS[0]})
+
+    def get(self, request, *args, **kwargs):
+        if settings.STAGING:
+            return super(HomepageSelector, self).get(request, *args, **kwargs)
+        else:
+            return HttpResponsePermanentRedirect(self.redirect_url)
 
 class About(TemplateView):
     template_name = 'about.html'
