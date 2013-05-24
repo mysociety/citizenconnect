@@ -4,10 +4,13 @@ from django.views.generic.edit import FormView
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.conf import settings
 from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
+from django.template.loader import get_template
+from django.core import mail
+from django.template import Context
 
 
 # App imports
-from issues.forms import PublicLookupForm
+from issues.forms import PublicLookupForm, FeedbackForm
 from issues.models import Problem
 from reviews_display.models import Review
 
@@ -49,5 +52,22 @@ class DevHomepageSelector(TemplateView):
 class About(TemplateView):
     template_name = 'about.html'
 
-class Feedback(TemplateView):
+class Feedback(FormView):
     template_name = 'feedback_form.html'
+    form_class = FeedbackForm
+
+    def form_valid(self, form):
+        feedback_template = get_template('feedback_email.txt')
+
+        context = Context({
+            'feedback_comments': form.cleaned_data['feedback_comments'],
+            'name': form.cleaned_data['name'],
+            'email': form.cleaned_data['email']})
+
+        subject = "Feedback on CareConnect Service from {0}".format(form.cleaned_data['name'])
+        message = feedback_template.render(context)
+        from_email = settings.DEFAULT_FROM_EMAIL
+        recipients = [settings.FEEDBACK_EMAIL_ADDRESS]
+
+        mail.send_mail(subject, message, from_email, recipients)
+        return HttpResponseRedirect('/thanks/')
