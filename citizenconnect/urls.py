@@ -4,7 +4,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.generic import RedirectView
 
-from .views import Home, CobrandChoice, About
+from .views import Home, DevHomepageSelector, About
 # Admin section
 from django.contrib import admin
 admin.autodiscover()
@@ -14,7 +14,7 @@ allowed_cobrands = settings.ALLOWED_COBRANDS
 cobrand_pattern = '(?P<cobrand>%s)' % '|'.join(allowed_cobrands)
 urlpatterns = patterns(
     '',
-    url(r'^$', CobrandChoice.as_view(), name='cobrand-choice'),
+    url(r'^$', DevHomepageSelector.as_view(), name='dev-homepage'),
     url(r'^' + cobrand_pattern + r'/?$', Home.as_view(), name='home'),
     url(r'^' + cobrand_pattern + r'/about$', About.as_view(), name='about'),
 
