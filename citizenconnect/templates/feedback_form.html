@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load url from future %}
+
+{% block title %}Feedback on CareConnect{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1>Feedback on CareConnect Service</h1>
+</div>
+
+<form action="{% url 'feedback' cobrand=cobrand.name %}" method="post" class="cf">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+        <fieldset class="island">
+            {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
+        </fieldset>
+    {% endif %}
+
+    {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+    {% endfor %}
+
+    <fieldset class="island">
+        {{ form.feedback_comments.label_tag }}
+        {{ form.feedback_comments }}
+        {% include "message_list.html" with messages=form.feedback_comments.errors message_type='error' %}
+
+        {{ form.name.label_tag }}
+        {{ form.name }}
+        {% include "message_list.html" with messages=form.name.errors message_type='error' %}
+
+        {{ form.email.label_tag }}
+        {{ form.email }}
+        {% include "message_list.html" with messages=form.email.errors message_type='error' %}
+    </fieldset>
+
+    <input type="submit" class="btn fr" />
+</form>
+
+{% endblock content %}
