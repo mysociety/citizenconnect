@@ -165,7 +165,6 @@ class Command(BaseCommand):
                 transaction.rollback()
 
         if verbose:
-            # First row is a header, so ignore it in the count
-            self.stdout.write("Total records in file: {0}\n".format(rownum-1))
+            self.stdout.write("Total records in file: {0}\n".format(rownum))
             self.stdout.write("Processed {0} records\n".format(processed))
             self.stdout.write("Skipped {0} records\n".format(skipped))
