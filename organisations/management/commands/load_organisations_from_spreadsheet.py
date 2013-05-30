@@ -90,7 +90,7 @@ class Command(BaseCommand):
                 service_code = row['ServiceCode']
                 service_name = row['ServiceName']
 
-                escalation_ccg_code = row['CCGCode']
+                ccg_code = row['CCGCode']
 
             except KeyError as message:
                 raise Exception("Missing column with the heading '{0}'".format(message))
@@ -103,11 +103,11 @@ class Command(BaseCommand):
 
             # load the CCG
             try:
-                escalation_ccg = CCG.objects.get(code=escalation_ccg_code)
+                ccg = CCG.objects.get(code=ccg_code)
             except CCG.DoesNotExist:
                 raise Exception(
                     "Could not find CCG with code '{0}' on line {1}".format(
-                        escalation_ccg_code, rownum
+                        ccg_code, rownum
                     )
                 )
             finally:
@@ -129,7 +129,8 @@ class Command(BaseCommand):
                                      'county': county,
                                      'postcode': postcode,
                                      'email': organisation_contact,
-                                     'escalation_ccg': escalation_ccg}
+                                     'escalation_ccg': ccg,
+                                    }
             try:
                 organisation, organisation_created = Organisation.objects.get_or_create(ods_code=ods_code,
                                                                                         defaults=organisation_defaults)
@@ -146,6 +147,12 @@ class Command(BaseCommand):
 
                         if update:
                             Service.objects.filter(id=service.id).update(**service_defaults)
+
+                if organisation_created or update:
+                    # Delete all current CCG links and set the one we expect
+                    organisation.ccgs.clear()
+                    organisation.ccgs.add(ccg)
+
                 if organisation_created:
                     self.stdout.write('Created organisation %s\n' % organisation.name)
                 elif verbose:
