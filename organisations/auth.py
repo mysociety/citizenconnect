@@ -1,4 +1,7 @@
 import re
+import os
+import string
+import random
 
 from django import forms
 from django.contrib.auth.models import User
@@ -97,12 +100,30 @@ def user_can_access_private_national_summary(user):
     return False
 
 
+def create_initial_password():
+    """
+    Returns a random string that can be used as a password. We need this because
+    if we create a user with no password then Django will use
+    'set_unusable_password' which in turn prevents the user from being able to
+    reset their password. Instead use this function to generate a password for
+    the new user. See #689 for more.
+    """
+
+    length = 60
+    chars = string.ascii_letters + string.digits + '!@#$%^&*()'
+    random.seed = (os.urandom(1024))
+
+    password = ''.join(random.choice(chars) for i in range(length))
+
+    return password
+
+
 def create_unique_username(organisation):
     """
     Try to create a unique username for an organisation.
     """
     max_length = 30 # Django constraint on user name lengths
-    
+
     username = organisation.name[:250]
     username = username.replace(' ', '_')
     username = username.strip('_')
