@@ -125,9 +125,10 @@ class UserCreationTestsMixin(object):
         test_object.ensure_related_user_exists()
         self.assertEqual(test_object.users.count(), 1)
 
-        # test that password is not usable
+        # test that password _is_ usable - if it is not usable then the password
+        # cannot be reset. See #689
         user = test_object.users.all()[0]
-        self.assertFalse( user.has_usable_password() )
+        self.assertTrue( user.has_usable_password() )
         self.assertEqual( user.email, test_object.email )
 
     def test_user_creation_where_user_exists_but_not_related(self):
