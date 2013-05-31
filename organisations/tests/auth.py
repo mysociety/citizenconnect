@@ -87,6 +87,6 @@ class AuthTests(AuthorizationTestCase):
             # check it is long
             self.assertEqual(len(password), 60)
 
-            # check it has not the same as previous one
+            # check it is unique (ie has not been seen before)
             self.assertFalse(password in seen_passwords)
             seen_passwords.add(password)
