@@ -134,7 +134,7 @@ class UserCreationMixin(models.Model):
         try:
             user = User.objects.get(email=self.email)
         except User.DoesNotExist:
-            user = User.objects.create_user(auth.create_unique_username(self), self.email)
+            user = User.objects.create_user(auth.create_unique_username(self), self.email, auth.create_initial_password())
 
         # make sure user is in the right group. No-op if already a member.
         user.groups.add(self.default_user_group())
