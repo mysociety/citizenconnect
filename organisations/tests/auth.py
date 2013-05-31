@@ -8,6 +8,7 @@ from organisations.auth import (user_is_superuser,
                                 user_in_groups,
                                 is_valid_username_char,
                                 create_unique_username,
+                                create_initial_password,
                                 user_is_escalation_body)
 from organisations.tests.lib import AuthorizationTestCase
 
@@ -76,3 +77,16 @@ class AuthTests(AuthorizationTestCase):
             user = User.objects.create_user(username, 'test@example.com', 'password')
             self.assertEqual(username, 'this_is_a_name_that_is_far_{0}'.format(i))
             self.assertTrue(len(username) <= 30)
+
+    def test_create_initial_password(self):
+        seen_passwords = set()
+        
+        for i in range(100):
+            password = create_initial_password()
+
+            # check it is long
+            self.assertEqual(len(password), 60)
+
+            # check it is unique (ie has not been seen before)
+            self.assertFalse(password in seen_passwords)
+            seen_passwords.add(password)
