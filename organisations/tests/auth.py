@@ -79,7 +79,7 @@ class AuthTests(AuthorizationTestCase):
             self.assertTrue(len(username) <= 30)
 
     def test_create_initial_password(self):
-        seen_passwords = {}
+        seen_passwords = set()
         
         for i in range(100):
             password = create_initial_password()
@@ -88,5 +88,5 @@ class AuthTests(AuthorizationTestCase):
             self.assertEqual(len(password), 60)
 
             # check it has not the same as previous one
-            self.assertFalse(seen_passwords.get(password))
-            seen_passwords[password] = 1
+            self.assertFalse(password in seen_passwords)
+            seen_passwords.add(password)
