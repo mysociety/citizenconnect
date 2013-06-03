@@ -66,6 +66,7 @@ class ProblemCreateFormTests(ProblemCreateFormBase, TestCase):
         self.assertEqual(problem.relates_to_previous_problem, False)
         self.assertEqual(problem.mailed, False)
         self.assertEqual(problem.confirmation_sent, None)
+        self.assertEqual(problem.confirmation_required, True)
         self.assertEqual(problem.survey_sent, None)
 
     def test_problem_form_respects_name_privacy(self):
