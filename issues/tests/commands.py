@@ -12,7 +12,8 @@ from django.conf import settings
 from organisations.tests.lib import create_test_organisation, create_test_service, create_test_problem
 from ..models import Problem
 
-class EmailSurveysToReportersTests(TestCase):
+
+class EmailToReportersBase(object):
 
     def setUp(self):
         self.test_organisation = create_test_organisation({'name': 'Fab Organisation'})
@@ -24,6 +25,11 @@ class EmailSurveysToReportersTests(TestCase):
                                                            'reporter_email': 'problem@example.com',
                                                            'reporter_phone': '123456789'})
 
+
+class EmailSurveysToReportersTests(EmailToReportersBase, TestCase):
+
+    def setUp(self):
+        super(EmailSurveysToReportersTests, self).setUp()
         self.set_problem_age()
 
     def set_problem_age(self):
