@@ -15,6 +15,9 @@
 
 <div class="gw">
     <div class="g  one-half  palm-one-whole">
+
+        {# Note that this text should match that in 'problem_confirm_email_message.txt' #}
+        
         <ul class="message-list">
             <li class="message-list__success">Thank you for reporting your problem.</li>
         </ul>
@@ -23,7 +26,7 @@
 
         <p>Your Reference Number is {{ object.reference_number }}. If you need to contact us or {{ object.organisation.name }} about this issue in the future, please quote this reference number.</p>
 
-        <p>You can track the progress of your problem by entering your reference number into the homepage which will take you directly to the provider summary for {{ object.organisation.name }} This already displays your problem as new and 'open' along with the category and any department/ service that you ticked.</p>
+        <p>You can track the progress of your problem by entering your reference number into the homepage which will take you directly to the provider summary for {{ object.organisation.name }}. This already displays your problem as new and 'open' along with the category and any department/ service that you ticked.</p>
 
         {% if object.public %}
             <p>As you opted to also make the details of your problem visible to the public, this will appear shortly, once the content has gone through our moderation process.</p>

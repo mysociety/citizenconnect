@@ -94,6 +94,12 @@ class ProblemManager(models.Manager):
         return self.all().filter(Q(status__in=Problem.OPEN_STATUSES) &
                                  Q(status__in=Problem.NON_ESCALATION_STATUSES))
 
+    def requiring_confirmation(self):
+        return self.filter(
+            confirmation_sent__isnull=True,
+            confirmation_required=True
+        )
+
 
 class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     # Custom manager
@@ -290,11 +296,15 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     breach = models.BooleanField(default=False, blank=False)
     requires_second_tier_moderation = models.BooleanField(default=False, blank=False)
     commissioned = models.IntegerField(blank=True, null=True, choices=COMMISSIONED_CHOICES)
-    survey_sent = models.DateTimeField(null=True, blank=True)
     cobrand = models.CharField(max_length=30, blank=False, choices=COBRAND_CHOICES)
-    mailed = models.BooleanField(default=False, blank=False)
     relates_to_previous_problem = models.BooleanField(default=False, blank=False)
     formal_complaint = models.BooleanField(default=False, blank=False)
+
+    # Fields relating to emails that get sent
+    mailed = models.BooleanField(default=False, blank=False)
+    survey_sent = models.DateTimeField(null=True, blank=True)
+    confirmation_required = models.BooleanField(default=False)
+    confirmation_sent = models.DateTimeField(null=True, blank=True)
 
     version = IntegerVersionField()
 
