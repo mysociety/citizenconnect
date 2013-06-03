@@ -59,6 +59,9 @@ class ProblemForm(forms.ModelForm):
 
         if self.cleaned_data['priority']:
             problem.priority = self.cleaned_data['priority']
+            
+        # Problems created using this should have a confirmation email sent
+        problem.confirmation_required = True
 
         if commit:
             problem.save()
@@ -101,6 +104,24 @@ class ProblemForm(forms.ModelForm):
         if self.cleaned_data.get('website'):
             raise forms.ValidationError("submission is probably spam")
         return ''
+    
+    
+    def clean_reporter_phone(self):
+        reporter_phone = self.cleaned_data.get('reporter_phone')
+        if reporter_phone and re.search(r'[^\d\ \+]', reporter_phone):
+            raise forms.ValidationError("Enter a valid phone number.")
+        return reporter_phone        
+
+
+    def clean_preferred_contact_method(self):
+        # Check that if they prefer to be contacted by phone, they actually provided a number
+        reporter_phone = self.cleaned_data.get('reporter_phone')
+        preferred_contact_method = self.cleaned_data.get('preferred_contact_method')
+
+        # call this method, which will raise ValidationError if it fails
+        Problem.validate_preferred_contact_method_and_reporter_phone(preferred_contact_method, reporter_phone)
+
+        return preferred_contact_method
 
 
     class Meta:
