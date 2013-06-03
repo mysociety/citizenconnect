@@ -97,7 +97,7 @@ class ProblemCreateFormTests(ProblemCreateFormBase, TestCase):
         resp = self.client.post(self.form_url, self.test_problem)
         self.assertFormError(resp, 'form', 'reporter_phone', 'Enter a valid phone number.')
 
-    def test_problem_form_checks_phone_when_phone_prefferred(self):
+    def test_problem_form_checks_phone_when_phone_preferred(self):
         del self.test_problem['reporter_phone']
         self.test_problem['preferred_contact_method'] = Problem.CONTACT_PHONE
         resp = self.client.post(self.form_url, self.test_problem)
