@@ -83,6 +83,11 @@ class ProblemCreateFormTests(ProblemCreateFormBase, TestCase):
         self.assertEqual(problem.public_reporter_name, True)
 
     def test_problem_form_requires_email(self):
+        # test correctly formatted
+        self.test_problem['reporter_email'] = 'not an email.com'
+        resp = self.client.post(self.form_url, self.test_problem)
+        self.assertFormError(resp, 'form', 'reporter_email', 'Enter a valid e-mail address.')
+        # test required
         del self.test_problem['reporter_email']
         resp = self.client.post(self.form_url, self.test_problem)
         self.assertFormError(resp, 'form', 'reporter_email', 'This field is required.')
