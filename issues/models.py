@@ -255,7 +255,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True)
     reporter_name = models.CharField(max_length=200, blank=False, verbose_name='')
     reporter_phone = models.CharField(max_length=50, blank=True, verbose_name='')
-    reporter_email = models.CharField(max_length=254, blank=False, verbose_name='')
+    reporter_email = models.EmailField(max_length=254, blank=False, verbose_name='')
     preferred_contact_method = models.CharField(max_length=100, choices=CONTACT_CHOICES, default=CONTACT_EMAIL)
     category = models.CharField(max_length=100,
                                 choices=CATEGORY_CHOICES,
@@ -336,8 +336,13 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         Custom model validation
         """
         super(Problem, self).clean()
+        self.validate_preferred_contact_method_and_reporter_phone(self.preferred_contact_method, self.reporter_phone)
+
+    @classmethod
+    def validate_preferred_contact_method_and_reporter_phone(cls, preferred_contact_method, reporter_phone):
         # Check that if they prefer to be contacted by phone, they actually provided a number
-        if self.preferred_contact_method == self.CONTACT_PHONE and not self.reporter_phone:
+        # this is a separate method so we can call if from form easily to share error message
+        if preferred_contact_method == cls.CONTACT_PHONE and not reporter_phone:
             raise ValidationError('You must provide a phone number if you prefer to be contacted by phone')
 
     def summarise(self, field):
