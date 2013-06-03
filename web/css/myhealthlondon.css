@@ -21,7 +21,7 @@ body{
   margin: 16px 0 0 29px; }
 #myhealthlondon-header #nhs-logo p {
   margin: 25px 0 37px 37px; }
-#myhealthlondon-header #nhs-logo p a {
+#myhealthlondon-header #nhs-logo p span {
   background: url(/static/img/myhealthlondon/nhslogo.png) no-repeat top left;
   display: block;
   height: 35px;
