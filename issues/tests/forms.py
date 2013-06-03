@@ -101,7 +101,7 @@ class ProblemCreateFormTests(ProblemCreateFormBase, TestCase):
         del self.test_problem['reporter_phone']
         self.test_problem['preferred_contact_method'] = Problem.CONTACT_PHONE
         resp = self.client.post(self.form_url, self.test_problem)
-        self.assertFormError(resp, 'form', None, 'You must provide a phone number if you prefer to be contacted by phone')
+        self.assertFormError(resp, 'form', 'preferred_contact_method', 'You must provide a phone number if you prefer to be contacted by phone')
 
     def test_problem_form_accepts_email_only(self):
         del self.test_problem['reporter_phone']

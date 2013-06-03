@@ -110,6 +110,17 @@ class ProblemForm(forms.ModelForm):
         return reporter_phone        
 
 
+    def clean_preferred_contact_method(self):
+        # Check that if they prefer to be contacted by phone, they actually provided a number
+        reporter_phone = self.cleaned_data.get('reporter_phone')
+        preferred_contact_method = self.cleaned_data.get('preferred_contact_method')
+
+        # call this method, which will raise ValidationError if it fails
+        Problem.validate_preferred_contact_method_and_reporter_phone(preferred_contact_method, reporter_phone)
+
+        return preferred_contact_method
+
+
     class Meta:
         model = Problem
 
