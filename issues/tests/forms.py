@@ -33,7 +33,7 @@ class ProblemCreateFormBase(object):
             'reporter_email': 'steve@mysociety.org',
             'reporter_phone': '01111 111 111',
             'privacy': ProblemForm.PRIVACY_PRIVATE,
-            'preferred_contact_method': 'phone',
+            'preferred_contact_method': Problem.CONTACT_PHONE,
             'agree_to_terms': True,
             'elevate_priority': False,
             'website': '', # honeypot - should be blank
@@ -91,6 +91,11 @@ class ProblemCreateFormTests(ProblemCreateFormBase, TestCase):
         del self.test_problem['reporter_email']
         resp = self.client.post(self.form_url, self.test_problem)
         self.assertFormError(resp, 'form', 'reporter_email', 'This field is required.')
+
+    def test_problem_form_checks_phone_is_valid(self):
+        self.test_problem['reporter_phone'] = 'not a number'
+        resp = self.client.post(self.form_url, self.test_problem)
+        self.assertFormError(resp, 'form', 'reporter_phone', 'Enter a valid phone number.')
 
     def test_problem_form_checks_phone_when_phone_prefferred(self):
         del self.test_problem['reporter_phone']

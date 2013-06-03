@@ -101,6 +101,13 @@ class ProblemForm(forms.ModelForm):
         if self.cleaned_data.get('website'):
             raise forms.ValidationError("submission is probably spam")
         return ''
+    
+    
+    def clean_reporter_phone(self):
+        number = self.cleaned_data['reporter_phone']
+        if number and re.search(r'[^\d\ \+]', number):
+            raise forms.ValidationError("Enter a valid phone number.")
+        return number        
 
 
     class Meta:
