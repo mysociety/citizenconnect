@@ -104,10 +104,10 @@ class ProblemForm(forms.ModelForm):
     
     
     def clean_reporter_phone(self):
-        number = self.cleaned_data['reporter_phone']
-        if number and re.search(r'[^\d\ \+]', number):
+        reporter_phone = self.cleaned_data.get('reporter_phone')
+        if reporter_phone and re.search(r'[^\d\ \+]', reporter_phone):
             raise forms.ValidationError("Enter a valid phone number.")
-        return number        
+        return reporter_phone        
 
 
     class Meta:
