@@ -1,5 +1,7 @@
 {# Note that this text should match that in 'problem_confirm.html' #}
 
+Dear {{ object.reporter_name }},
+
 Thank you for reporting your problem.
 
 It has been forwarded to {{ object.organisation.name }} and you should receive a response from them directly using the contact details you provided.

@@ -26,6 +26,33 @@ class EmailToReportersBase(object):
                                                            'reporter_phone': '123456789'})
 
 
+class EmailConfirmationsToReportersTests(EmailToReportersBase, TestCase):
+
+    def _call_command(self):
+        args = []
+        opts = {}
+        call_command('email_confirmations_to_reporters', *args, **opts)
+
+    def test_happy_path(self):
+        self._call_command()
+        self.assertEqual(len(mail.outbox), 1)
+        first_mail = mail.outbox[0]
+        self.assertEqual(first_mail.subject, 'Thank you for reporting your problem.')
+        self.assertEqual(first_mail.from_email, settings.DEFAULT_FROM_EMAIL)
+        self.assertEqual(first_mail.to, ['problem@example.com'])
+        self.assertTrue("Dear %s," % self.test_problem.reporter_name in first_mail.body)
+        self.assertTrue("Thank you for reporting your problem." in first_mail.body)
+        self.assertTrue('Fab Organisation' in first_mail.body)
+
+        self.assertTrue(Problem.objects.get(pk=self.test_problem.id).confirmation_sent)
+
+    def test_sends_no_emails_when_none_to_send(self):
+        self.test_problem.confirmation_sent = datetime.utcnow().replace(tzinfo=utc)
+        self.test_problem.save()
+        self._call_command()
+        self.assertEqual(len(mail.outbox), 0)
+
+
 class EmailSurveysToReportersTests(EmailToReportersBase, TestCase):
 
     def setUp(self):
@@ -54,6 +81,8 @@ class EmailSurveysToReportersTests(EmailToReportersBase, TestCase):
         self.assertTrue("Recently you reported a problem" in first_mail.body)
         self.assertTrue('Fab Organisation' in first_mail.body)
         self.assertTrue('/choices/' in first_mail.body)
+
+        self.assertTrue(Problem.objects.get(pk=self.test_problem.id).survey_sent)
 
     def test_sends_no_emails_when_none_to_send(self):
         self.test_problem.survey_sent = datetime.utcnow().replace(tzinfo=utc)
