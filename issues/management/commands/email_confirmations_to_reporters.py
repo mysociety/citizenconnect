@@ -20,7 +20,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        problems = Problem.objects.filter(confirmation_sent__isnull=True)
+        problems = Problem.objects.requiring_confirmation()
 
         logger.info('{0} confirmations to email'.format(len(problems)))
 

@@ -23,7 +23,9 @@ class EmailToReportersBase(object):
                                                            'cobrand': 'choices',
                                                            'reporter_name': 'Problem reporter',
                                                            'reporter_email': 'problem@example.com',
-                                                           'reporter_phone': '123456789'})
+                                                           'reporter_phone': '123456789',
+                                                           'confirmation_required': True,
+                                                           })
 
 
 class EmailConfirmationsToReportersTests(EmailToReportersBase, TestCase):
@@ -48,6 +50,12 @@ class EmailConfirmationsToReportersTests(EmailToReportersBase, TestCase):
 
     def test_sends_no_emails_when_none_to_send(self):
         self.test_problem.confirmation_sent = datetime.utcnow().replace(tzinfo=utc)
+        self.test_problem.save()
+        self._call_command()
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_sends_no_emails_when_none_required(self):
+        self.test_problem.confirmation_required = False
         self.test_problem.save()
         self._call_command()
         self.assertEqual(len(mail.outbox), 0)

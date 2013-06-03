@@ -94,6 +94,12 @@ class ProblemManager(models.Manager):
         return self.all().filter(Q(status__in=Problem.OPEN_STATUSES) &
                                  Q(status__in=Problem.NON_ESCALATION_STATUSES))
 
+    def requiring_confirmation(self):
+        return self.filter(
+            confirmation_sent__isnull=True,
+            confirmation_required=True
+        )
+
 
 class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     # Custom manager
