@@ -290,11 +290,14 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     breach = models.BooleanField(default=False, blank=False)
     requires_second_tier_moderation = models.BooleanField(default=False, blank=False)
     commissioned = models.IntegerField(blank=True, null=True, choices=COMMISSIONED_CHOICES)
-    survey_sent = models.DateTimeField(null=True, blank=True)
     cobrand = models.CharField(max_length=30, blank=False, choices=COBRAND_CHOICES)
-    mailed = models.BooleanField(default=False, blank=False)
     relates_to_previous_problem = models.BooleanField(default=False, blank=False)
     formal_complaint = models.BooleanField(default=False, blank=False)
+
+    # Fields relating to emails that get sent
+    mailed = models.BooleanField(default=False, blank=False)
+    confirmation_sent = models.DateTimeField(null=True, blank=True)
+    survey_sent = models.DateTimeField(null=True, blank=True)
 
     version = IntegerVersionField()
 
