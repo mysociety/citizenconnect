@@ -296,8 +296,9 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
 
     # Fields relating to emails that get sent
     mailed = models.BooleanField(default=False, blank=False)
-    confirmation_sent = models.DateTimeField(null=True, blank=True)
     survey_sent = models.DateTimeField(null=True, blank=True)
+    confirmation_required = models.BooleanField(default=False)
+    confirmation_sent = models.DateTimeField(null=True, blank=True)
 
     version = IntegerVersionField()
 
