@@ -72,6 +72,8 @@ class ProblemAPITests(TestCase):
         self.assertEqual(problem.relates_to_previous_problem, True)
         self.assertEqual(problem.priority, Problem.PRIORITY_HIGH)
         self.assertEqual(problem.status, Problem.NEW)
+        self.assertEqual(problem.confirmation_sent, None)
+        self.assertEqual(problem.confirmation_required, False)
 
     def test_source_is_required(self):
         problem_without_source = self.test_problem

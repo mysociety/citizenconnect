@@ -1,0 +1,20 @@
+{# Note that this text should match that in 'problem_confirm.html' #}
+
+Dear {{ object.reporter_name }},
+
+Thank you for reporting your problem.
+
+It has been forwarded to {{ object.organisation.name }} and you should receive a response from them directly using the contact details you provided.
+
+Your Reference Number is {{ object.reference_number }}. If you need to contact us or {{ object.organisation.name }} about this issue in the future, please quote this reference number.
+
+You can track the progress of your problem by entering your reference into the homepage which will take you directly to the provider summary for {{ object.organisation.name }}. This already displays your problem as new and 'open' along with the category and any department/ service that you ticked.
+
+{% if object.public %}As you opted to also make the details of your problem visible to the public, this will appear shortly, once the content has gone through our moderation process.{% endif %}
+
+{{ object.organisation.name }} will contact you to find out how they can help you and to agree with you how long they expect your problem will take to resolve. Once this is underway the status of your problem on the site will change to 'in progress'.
+
+
+When the problem is resolved the NHS provider will mark it as 'closed' which means it will no longer appear on the live map but will still be visible on the provider summary.
+
+2 weeks after posting your problem you will receive an email asking you to complete a short survey asking if you feel the problem was resolved satisfactorily.
