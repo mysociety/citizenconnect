@@ -40,6 +40,10 @@
                 padding-top: 1em;
             }
         }
+        // IE8 gets a bit funny about min-height on a border-box element
+        .ie8 .btn--big--fix {
+            min-height: 49px;
+        }
 
     /**
      * Same sizing as btn--big but with a chevron
@@ -89,7 +93,7 @@
 
     .btn--med--flat {
         width: 100%;
-        font-size: (24px / $font-size-base) + em;
+        font-size: (21px / $font-size-base) + em;
         @include vendor(border-radius, (6px / 18px) + em);
         line-height: 1.3;
     }

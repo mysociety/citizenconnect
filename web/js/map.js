@@ -122,6 +122,13 @@ $(document).ready(function () {
         // Add a new zoomControl, see the note above about why this is needed
         zoomControl = new L.Control.Zoom();
         map.addControl(zoomControl);
+
+        // We have to unbind this and call it manually, otherwise the zoom
+        // control is removed from the map when new pins are requested,
+        // then it throws an error when it tries to run this method when
+        // there is no map associated with the controls.
+        map.off('zoomend', zoomControl._updateDisabled, zoomControl);
+        zoomControl._updateDisabled();
     };
 
     var starClass = function(rating, current) {
@@ -150,7 +157,7 @@ $(document).ready(function () {
         oms.clearMarkers();
         markersGroup.clearLayers();
 
-        providers.forEach(function(nhsCentre){
+        _.each(providers, function(nhsCentre) {
             var marker, iconClass, content;
 
             // Determine the icon colour based on issue count (crudely)

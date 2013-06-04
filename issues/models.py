@@ -94,6 +94,12 @@ class ProblemManager(models.Manager):
         return self.all().filter(Q(status__in=Problem.OPEN_STATUSES) &
                                  Q(status__in=Problem.NON_ESCALATION_STATUSES))
 
+    def requiring_confirmation(self):
+        return self.filter(
+            confirmation_sent__isnull=True,
+            confirmation_required=True
+        )
+
 
 class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     # Custom manager
@@ -255,7 +261,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True)
     reporter_name = models.CharField(max_length=200, blank=False, verbose_name='')
     reporter_phone = models.CharField(max_length=50, blank=True, verbose_name='')
-    reporter_email = models.CharField(max_length=254, blank=False, verbose_name='')
+    reporter_email = models.EmailField(max_length=254, blank=False, verbose_name='')
     preferred_contact_method = models.CharField(max_length=100, choices=CONTACT_CHOICES, default=CONTACT_EMAIL)
     category = models.CharField(max_length=100,
                                 choices=CATEGORY_CHOICES,
@@ -290,11 +296,15 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     breach = models.BooleanField(default=False, blank=False)
     requires_second_tier_moderation = models.BooleanField(default=False, blank=False)
     commissioned = models.IntegerField(blank=True, null=True, choices=COMMISSIONED_CHOICES)
-    survey_sent = models.DateTimeField(null=True, blank=True)
     cobrand = models.CharField(max_length=30, blank=False, choices=COBRAND_CHOICES)
-    mailed = models.BooleanField(default=False, blank=False)
     relates_to_previous_problem = models.BooleanField(default=False, blank=False)
     formal_complaint = models.BooleanField(default=False, blank=False)
+
+    # Fields relating to emails that get sent
+    mailed = models.BooleanField(default=False, blank=False)
+    survey_sent = models.DateTimeField(null=True, blank=True)
+    confirmation_required = models.BooleanField(default=False)
+    confirmation_sent = models.DateTimeField(null=True, blank=True)
 
     version = IntegerVersionField()
 
@@ -336,8 +346,13 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         Custom model validation
         """
         super(Problem, self).clean()
+        self.validate_preferred_contact_method_and_reporter_phone(self.preferred_contact_method, self.reporter_phone)
+
+    @classmethod
+    def validate_preferred_contact_method_and_reporter_phone(cls, preferred_contact_method, reporter_phone):
         # Check that if they prefer to be contacted by phone, they actually provided a number
-        if self.preferred_contact_method == self.CONTACT_PHONE and not self.reporter_phone:
+        # this is a separate method so we can call if from form easily to share error message
+        if preferred_contact_method == cls.CONTACT_PHONE and not reporter_phone:
             raise ValidationError('You must provide a phone number if you prefer to be contacted by phone')
 
     def summarise(self, field):
