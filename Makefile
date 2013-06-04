@@ -12,4 +12,10 @@ css:
 watch:
 	$(SASS) --watch --style $(STYLE) $(SOURCE):$(TARGET)
 
-PHONY: css watch
+update:
+	find . -name '*.pyc' -delete
+	pip install -r requirements.txt
+	./manage.py syncdb
+	./manage.py migrate
+
+PHONY: css watch update
