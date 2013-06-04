@@ -13,7 +13,6 @@
 
 <div class="header">
     <form action="{% url current_url cobrand=cobrand.name %}" class="search-form  fr">
-        <input type="hidden" name="organisation_type" id="id_organisation_type" value="{{organisation_type}}">
         <input type="text" name="location" id="id_location"  class="text-input" placeholder="Search for a provider again" />
         <button type="submit" class="btn"><span class="icon-search" aria-hidden="true"></span><span class="hide-text">Find</span></button>
     </form>
@@ -31,7 +30,7 @@
     {% for organisation in organisations %}
     <li>
         <div class="results-list__title">
-            <h2><a href="{% url result_link_url_name cobrand=cobrand.name  ods_code=organisation.ods_code  %}?organisation_type={{ request.GET.organisation_type|urlencode }}&location={{ request.GET.location|urlencode }}">{{ organisation.name }}</a></h2>
+            <h2><a href="{% url result_link_url_name cobrand=cobrand.name  ods_code=organisation.ods_code  %}?location={{ request.GET.location|urlencode }}">{{ organisation.name }}</a></h2>
             <p>{{ organisation.city|default:"" }}</p>
         </div>
         <address>{% if organisation.address_line1 %}
@@ -44,7 +43,7 @@
                      {{ organisation.address_line3|default:"" }}<br>
                 {% endif %}
                 {{ organisation.postcode|default:"" }}</address>
-        <a href="{% url result_link_url_name cobrand=cobrand.name  ods_code=organisation.ods_code  %}?organisation_type={{ request.GET.organisation_type|urlencode }}&location={{ request.GET.location|urlencode }}" class="results-list__more-link"><span class="icon-chevron-right" aria-hidden="true"></span></a>
+        <a href="{% url result_link_url_name cobrand=cobrand.name  ods_code=organisation.ods_code  %}?location={{ request.GET.location|urlencode }}" class="results-list__more-link"><span class="icon-chevron-right" aria-hidden="true"></span></a>
     </li>
     {% endfor %}
 

@@ -1223,7 +1223,7 @@ class ProviderPickerTests(TestCase):
             'point': Point(-0.13, 51.5)
         })
         self.base_url = reverse('org-pick-provider', kwargs={'cobrand': 'choices'})
-        self.results_url = "%s?organisation_type=gppractices&location=SW1A+1AA" % self.base_url
+        self.results_url = "%s?location=SW1A+1AA" % self.base_url
 
     def test_results_page_exists(self):
         resp = self.client.get(self.results_url)
@@ -1238,11 +1238,11 @@ class ProviderPickerTests(TestCase):
         self.assertNotContains(resp, self.faraway_gp.name, status_code=200)
 
     def test_results_page_shows_organisation_by_name(self):
-        resp = self.client.get("%s?organisation_type=gppractices&location=nearby" % self.base_url)
+        resp = self.client.get("%s?location=nearby" % self.base_url)
         self.assertContains(resp, self.nearby_gp.name, count=1, status_code=200)
 
     def test_results_page_does_not_show_organisation_with_other_name(self):
-        resp = self.client.get("%s?organisation_type=gppractices&location=nearby" % self.base_url)
+        resp = self.client.get("%s?location=nearby" % self.base_url)
         self.assertNotContains(resp, self.faraway_gp.name, status_code=200)
 
     def test_results_page_shows_paginator_for_over_ten_results(self):
@@ -1252,7 +1252,7 @@ class ProviderPickerTests(TestCase):
                 'organisation_type': 'gppractices',
                 'ods_code': 'ABC{0}'.format(i)
             })
-        resp = self.client.get("%s?organisation_type=gppractices&location=multi" % self.base_url)
+        resp = self.client.get("%s?location=multi" % self.base_url)
         self.assertContains(resp, 'Multi GP', count=10, status_code=200)
         self.assertContains(resp, 'next', count=1)
 
@@ -1263,16 +1263,16 @@ class ProviderPickerTests(TestCase):
                 'organisation_type': 'gppractices',
                 'ods_code': 'DEF{0}'.format(i)
             })
-        resp = self.client.get("%s?organisation_type=gppractices&location=multi" % self.base_url)
+        resp = self.client.get("%s?location=multi" % self.base_url)
         self.assertContains(resp, 'Multi GP', count=3, status_code=200)
         self.assertNotContains(resp, 'next')
 
     def test_validates_location_present(self):
-        resp = self.client.get("%s?organisation_type=gppractices&location=" % self.base_url)
+        resp = self.client.get("%s?location=" % self.base_url)
         self.assertContains(resp, 'Please enter a location', count=1, status_code=200)
 
     def test_shows_message_on_no_results(self):
-        resp = self.client.get("%s?organisation_type=gppractices&location=non-existent" % self.base_url)
+        resp = self.client.get("%s?location=non-existent" % self.base_url)
         self.assertContains(resp, "We couldn&#39;t find any matches", count=1, status_code=200)
         self.assertContains(resp, OrganisationFinderForm.PILOT_SEARCH_CAVEAT)
 
