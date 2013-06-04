@@ -19,8 +19,14 @@
             </p>
 
             <p>
-            Note, this is a pilot stage of the on-line service and is being tested in London and parts of the North East of England. We would welcome any comments or suggestions for improvements before we share it with NHS users across the country. Send us your thoughts using the <a href="{% url 'feedback' cobrand=cobrand.name %}">Feedback form</a>.
+            The service is simple, there are no gimmicks. We connect you quickly to people in the NHS who want to hear what you have to say. You can do this online or text us on 61114.
             </p>
+
+            <p>
+            Note, this is a pilot stage of the on-line service and is being tested in London and parts of the North East of England. We would welcome any comments or suggestions for improvements before we share it with NHS users across the country. Email us your thoughts at <a href="mailto:{{ settings.FEEDBACK_EMAIL_ADDRESS }}">{{ settings.FEEDBACK_EMAIL_ADDRESS }}</a>.
+            </p>
+
+            <p>Here’s how it works:-</p>
 
             <div class="gw">
                 <div class="g  one-third">
@@ -65,6 +71,11 @@
                     </p>
                 </div>
             </div>
+
+            <p>
+            Together we can build a better NHS
+            </p>
+
         </div>
 
         <div id="why-have-we-developed-this-service" class="about-section">
@@ -201,9 +212,9 @@
                 </div>
             </div>
 
-            <p>We've also created a section on commonly asked questions (add link to common questions) which may help you find the information you want more quickly - simply click on Commonly Asked Questions in the top navigation bar.</p>
+            <p>We've also created a section on <a href="{% if cobrand.name == 'choices' %}{% url 'common-questions' cobrand=cobrand.name %}{% else %}http://www.nhslondon.lampuat64-1.rroom.net/{% endif %}">commonly asked questions</a> which may help you find the information you want more quickly - simply click on Commonly Asked Questions in the top navigation bar.</p>
 
-            <p>Please note this is not a medical service so if you have a question or are concerned about a medical problem, why not use our <a href="http://www.nhs.uk/NHSdirect/pages/symptoms.aspx">Symptom Checker?</a></p>
+            <p>Please note this is not a medical service so if you have a question or are concerned about a medical problem, why not use our <a href="http://www.nhs.uk/NHSdirect/pages/symptoms.aspx">Symptom Checker</a>?</p>
         </div>
 
         <div id="submit-a-problem" class="about-section">
@@ -322,9 +333,9 @@
 
             <p>The map shows the number of problems that have been submitted. A blue dot on the map marks the location of the NHS provider. The darker the shade of blue indicates the higher the number of problems that are currently 'open' or 'in progress'.</p>
 
-            <p>Type in the postcode or the name of the NHS provider to zoom in on a specific area of the map. You can also filter by provider, category and status.</p>
+            <p>Type in the postcode or the name of the NHS provider to zoom in on a specific area of the map.</p>
 
-            <p>Hover over a dot to see an 'at a glance' summary</p>
+            <p>Hover over a dot to see an 'at a glance' summary.</p>
 
             <p>Click on the dot to go to the NHS provider summary where your can track your problem using your booking reference number and also see what others have reported and how the NHS is responding.</p>
 
@@ -366,7 +377,7 @@
                     (if you are deaf or have problems using a standard telephone please call 0300 061 4298 using a textphone)</span>
                 </li>
 
-                <li>Email: <a class="email" href="mailto:nhscommissioningboard@hscic.gov.uk">nhscommissioningboard@hscic.gov.uk</a></li>
+                <li>Email: <a class="email" href="mailto:phso.enquiries@ombudsman.org.uk">phso.enquiries@ombudsman.org.uk</a></li>
 
                 <li class="telephone">Text 'call back' with your name and mobile number to <span class="tel">07624 813 005</span> and they will call you back</li>
             </ul>
@@ -616,8 +627,9 @@
 
             <p>I can't find an NHS service provider?</p>
 
-            <p>The provider you are searching for may be not be in pilot at this time
-            I reported a problem a few days ago and I agreed for my problem to be publicly displayed but I cannot see the details, why?</p>
+            <p>The provider you are searching for may be not be in pilot at this time.</p>
+
+            <p>I reported a problem a few days ago and I agreed for my problem to be publicly displayed but I cannot see the details, why?</p>
 
             <p>All published comments have to follow our <a href="#comments-policy">comments policy</a>. If you comments have not yet appeared on the site, it's likely they are still undergoing moderation (usually within 24 hours)</p>
 
