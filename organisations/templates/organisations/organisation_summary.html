@@ -15,13 +15,6 @@
 <div class="island  island--lightblue mb">
     <h2>Problem Resolution</h2>
     <div class="gw">
-        <p class="g  one-half  palm-one-whole  feature  cl">
-        {% if issues_total.happy_service != None %}
-           <span class="feature__num">{{ issues_total.happy_service|percent }}</span><span class="feature__text"> of users who responded are happy with the manner in which it was handled</span>
-        {% else %}
-            <span class="feature__text">No data on users happy with the manner in which it was handled</span>
-         {% endif %}
-         </p>
         <p class="g  one-half  palm-one-whole  feature">
         {% if issues_total.happy_outcome != None %}
             <span class="feature__num">{{ issues_total.happy_outcome|percent }}</span><span class="feature__text"> of users who responded are happy with the resolution</span>
@@ -29,6 +22,13 @@
             <span class="feature__text">No data on users happy with the resolution</span>
         {% endif %}
         </p>
+        <p class="g  one-half  palm-one-whole  feature">
+        {% if issues_total.happy_service != None %}
+           <span class="feature__num">{{ issues_total.happy_service|percent }}</span><span class="feature__text"> of users who responded are happy with the manner in which it was handled</span>
+        {% else %}
+            <span class="feature__text">No data on users happy with the manner in which it was handled</span>
+         {% endif %}
+         </p>
     </div>
 </div>
 
