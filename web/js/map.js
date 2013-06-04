@@ -150,7 +150,7 @@ $(document).ready(function () {
         oms.clearMarkers();
         markersGroup.clearLayers();
 
-        providers.forEach(function(nhsCentre){
+        _.each(providers, function(nhsCentre) {
             var marker, iconClass, content;
 
             // Determine the icon colour based on issue count (crudely)
