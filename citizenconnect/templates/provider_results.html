@@ -31,7 +31,11 @@
     <li>
         <div class="results-list__title">
             <h2><a href="{% url result_link_url_name cobrand=cobrand.name  ods_code=organisation.ods_code  %}?location={{ request.GET.location|urlencode }}">{{ organisation.name }}</a></h2>
-            <p>{{ organisation.city|default:"" }}</p>
+            <p>
+              {{ organisation.city|default:"" }}
+              {% if organisation.city %} &mdash; {% endif %}
+              {{ organisation.organisation_type_name }}
+            </p>
         </div>
         <address>{% if organisation.address_line1 %}
                     {{ organisation.address_line1|default:"" }} <br>
