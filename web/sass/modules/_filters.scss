@@ -33,10 +33,6 @@
       background-position: 95% center;
       font-weight: bold;
       @include vendor(text-overflow, ellipsis);
-      select {
-        color: #fff;
-        &:focus { color: #fff; }
-      }
     }
     .filters__dropdown--last { border-right: 0; }
     .filters__dropdown--default {
