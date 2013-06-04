@@ -158,7 +158,7 @@ $(document).ready(function () {
         markersGroup.clearLayers();
 
         _.each(providers, function(nhsCentre) {
-            var marker, iconClass, content;
+            var marker, iconClass;
 
             // Determine the icon colour based on issue count (crudely)
             if(nhsCentre.all_time_open <= 0) {
@@ -183,7 +183,7 @@ $(document).ready(function () {
                 icon: iconClass
             });
 
-            content = _.template(hoverBubbleTemplate, {nhsCentre: nhsCentre, issueType: issueType, icon: iconClass, starClass: starClass});
+            marker.popupContent = _.template(hoverBubbleTemplate, {nhsCentre: nhsCentre, issueType: issueType, icon: iconClass, starClass: starClass});
 
             // Save some custom data in the marker
             marker.nhsCentre = nhsCentre;
