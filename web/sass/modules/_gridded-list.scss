@@ -14,5 +14,9 @@
         min-height: auto;
       }
     }
+    .ie8 .btn--med {
+      // IE8 oversizes things when min-height is specified on a border-box element
+      min-height: 46px;
+    }
   }
 }
