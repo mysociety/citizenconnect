@@ -188,19 +188,6 @@ $(document).ready(function () {
             // Save some custom data in the marker
             marker.nhsCentre = nhsCentre;
 
-            // Set up the events the marker reacts to
-            marker.on('mouseover', function(e){
-                var hover_bubble = new L.Rrose({
-                    offset: new L.Point(2,-4),
-                    closeButton: false,
-                    autoPan: false
-                }).setContent(content)
-                .setLatLng(e.target._latlng)
-                .openOn(map);
-            }).on('mouseout', function(e){
-                _.debounce(map.closePopup(), 300);
-            });
-
             // Add the marker to the map
             markersGroup.addLayer(marker);
             // Tell oms about the marker too
