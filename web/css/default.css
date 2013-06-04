@@ -1012,8 +1012,6 @@ th .filters__dropdown select { font-size: 1em; }
 
 .filters__dropdown-wrap label { font-weight: normal; font-size: 0.75em; color: #666; margin-bottom: 0; }
 .filters__dropdown-wrap .filters__dropdown { position: relative; border-right: 2px solid #fff; background-color: #2f9aa8; background-image: url(../img/select_arrow.png); background-repeat: no-repeat; background-position: 95% center; font-weight: bold; -webkit-text-overflow: ellipsis; -moz-text-overflow: ellipsis; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; }
-.filters__dropdown-wrap .filters__dropdown select { color: #fff; }
-.filters__dropdown-wrap .filters__dropdown select:focus { color: #fff; }
 .filters__dropdown-wrap .filters__dropdown--last { border-right: 0; }
 .filters__dropdown-wrap .filters__dropdown--default { background-color: #e6e6e6; background-image: url(../img/select_arrow-default.png); font-weight: normal; }
 .filters__dropdown-wrap .filters__dropdown--default select { color: #333; }
