@@ -6,14 +6,14 @@
   padding-top: 5px;
 }
 
-.step_title--green {
+.step_title--green, .step_wording--green, .about_section_heading--green {
   color: $c-step-title-green;
 }
 
-.step_title--orange {
+.step_title--orange, .step_wording--orange, .about_section_heading--orange {
   color: $c-step-title-orange;
 }
 
-.step_title--blue {
+.step_title--blue, .step_wording--blue, .about_section_heading--blue  {
   color: $c-step-title-blue;
 }
