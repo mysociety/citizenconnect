@@ -274,7 +274,7 @@ $(document).ready(function () {
         // we need to tell it what we want to do when someone clicks an already
         // spiderified link.
         oms.addListener('click', function(marker) {
-            window.location=marker.nhsCentre.url;
+            marker.bindPopup(marker.popupContent).openPopup();
         });
 
         if (isNorthEast) {
