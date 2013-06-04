@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /** Colours ---------------- This is the descriptive name of the colour e.g. $c-green Colour Assignment is in _colour-assignment.scss */
  /*
  Where possible assign colours to another variable rather than using them directly. This keeps the colour names descriptive and the assignment logical. For example:
@@ -1142,16 +1143,16 @@ th .filters__dropdown select { font-size: 1em; }
 
 .marker_m1:hover .popup, .marker_m2:hover .popup, .marker_m3:hover .popup, .marker_m4:hover .popup { display: block; top: -5.8em; opacity: 1; }
 
-/* Rrose Tweaks */
-.leaflet-rrose { pointer-events: none; }
+/* Popup Tweaks */
+.leaflet-popup { pointer-events: none; }
 
-.leaflet-rrose-content-wrapper, .leaflet-rrose-tip { background: white; }
+.leaflet-popup-content-wrapper, .leaflet-popup-tip { background: white; }
 
-.leaflet-rrose-content-wrapper { -webkit-border-radius: 0; -moz-border-radius: 0; border-radius: 0; font-size: 16px; }
+.leaflet-popup-content-wrapper { -webkit-border-radius: 0; -moz-border-radius: 0; border-radius: 0; font-size: 16px; }
 
-.leaflet-rrose-content { font-size: 14px; line-height: 1.4; }
-.leaflet-rrose-content .map-header { color: #2f9aa8; font-weight: bold; }
-.leaflet-rrose-content .unstyled { list-style: none; padding: 0; }
+.leaflet-popup-content { font-size: 14px; line-height: 1.4; }
+.leaflet-popup-content .map-header { color: #2f9aa8; font-weight: bold; }
+.leaflet-popup-content .unstyled { list-style: none; padding: 0; }
 
 /** A horizontal nav, used inside `.site-top-bar` */
 .nav { list-style: none; padding: 0; margin: 0; }
