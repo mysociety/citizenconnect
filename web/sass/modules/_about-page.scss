@@ -6,6 +6,14 @@
   padding-top: 5px;
 }
 
+.step_wording {
+  // This is a rather ugly attempt to make the step_title and step_wording
+  // baseline align so that it looks more natural on the screen.
+  padding-top: 0.7em;
+}
+
+
+
 .step_title--green, .step_wording--green, .about_section_heading--green {
   color: $c-step-title-green;
 }
