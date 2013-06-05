@@ -32,7 +32,7 @@
         <![endif]-->
     </head>
 
-    <body class="{% block bodyclasses %}{% endblock %}">
+    <body class="{% block bodyclasses %}{% endblock %}{% if site_section %}  site-section-{{ site_section }}{% endif %}">
 
         {% if cobrand %}
             {% include cobrand.header_template %}

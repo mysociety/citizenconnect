@@ -12,10 +12,12 @@
 
 {% block content %}
 
-<h1>
-  {% if title_text %}{{ title_text }}: {% endif %}
-  Choose a Provider
-</h1>
+<div class="header">
+  <h1>
+    {% if title_text %}{{ title_text }}: {% endif %}
+    Choose a Provider
+  </h1>
+</div>
 
 {% if site_section == 'review' %}
   <p>

@@ -35,3 +35,36 @@ def add_cobrand(request):
         }
     else:
         return {}
+
+
+def add_site_section(request):
+    """Add a site_section if one is indicated by the url"""
+
+    path_parts = request.path.split('/') # --> ['', cobrand, section, ... ]
+    try:
+        section_url = path_parts[2]
+    except IndexError:
+        return {}
+
+    known_sections = {
+        # 'url_path_part': 'site_section'
+        'problem':    'problem',
+        'problems':   'problem',
+        'breaches':   'problem',
+        'dashboard':  'problem',
+        'moderate':   'problem',
+        'respond':    'problem',
+        'escalation': 'problem',
+        'survey':     'problem',
+        
+        'reviews': 'review',
+        'common-questions': 'question',
+    }
+
+    # If the second part is a known site_section
+    site_section = known_sections.get(section_url)
+    if site_section:
+        return { 'site_section': site_section }
+
+    # Fall through to not adding anything to the context
+    return {}

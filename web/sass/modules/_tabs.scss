@@ -53,3 +53,21 @@
         }
     }
 }
+
+body.site-section-review {
+  .tab-nav, a.active {
+    border-color: $c-site-section-review-color;
+  }
+}
+
+body.site-section-question {
+  .tab-nav, a.active {
+    border-color: $c-site-section-question-color;
+  }
+}
+
+body.site-section-problem {
+  .tab-nav, a.active {
+    border-color: $c-site-section-problem-color;
+  }
+}

@@ -117,6 +117,7 @@ TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
     "django.core.context_processors.request",
     "citizenconnect.context_processors.add_settings",
     "citizenconnect.context_processors.add_cobrand",
+    "citizenconnect.context_processors.add_site_section",
 )
 
 INSTALLED_APPS = (
