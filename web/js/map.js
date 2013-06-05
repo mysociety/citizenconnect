@@ -274,7 +274,8 @@ $(document).ready(function () {
         // we need to tell it what we want to do when someone clicks an already
         // spiderified link.
         oms.addListener('click', function(marker) {
-            marker.bindPopup(marker.popupContent, {offset: new L.Point(2,-4)}).openPopup();
+            var popupOptions = {offset: new L.Point(2,-4)};
+            marker.bindPopup(marker.popupContent, popupOptions).openPopup();
         });
 
         if (isNorthEast) {
