@@ -204,12 +204,11 @@ class ReviewFormViewTest(ReviewFormViewBase, TestCase):
         resp = self.client.post(self.review_form_url, self.review_post_data)
         self.assertFormError(resp, 'form', 'month_year_of_visit', 'Enter a valid date.')
 
-    def test_form_title_and_comment_optional(self):
+    def test_form_title_and_comment_required(self):
         self.review_post_data['title'] = ''
         self.review_post_data['comment'] = ''
         self.client.post(self.review_form_url, self.review_post_data)
-        self.assertEquals(self.organisation.submitted_reviews.count(), 1)
-        self.assert_review_correctly_stored()
+        self.assertEquals(self.organisation.submitted_reviews.count(), 0)
 
 
 class ReviewFormViewBrowserTest(ReviewFormViewBase, SeleniumTestCase):
