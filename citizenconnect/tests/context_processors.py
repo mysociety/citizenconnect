@@ -12,8 +12,13 @@ class ContextProcessorTests(TestCase):
 
         tests = {
             # path: expected site_section
-            '/':                       None,
-            '/foo/bar':                None,
+            '/':                     None,
+            '/foo/bar':              None,
+
+            # These should probably not be styled
+            '/foo/summary':          None,
+            '/foo/map':              None,
+            '/foo/choose-dashboard': None,
 
             '/foo/reviews':                    'review',
             '/foo/reviews/blahblah':           'review',

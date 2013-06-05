@@ -49,11 +49,14 @@ def add_site_section(request):
 
     known_sections = {
         # 'url_path_part': 'site_section'
-        'problem':   'problem',
-        'problems':  'problem',
-        'dashboard': 'problem',
-        'breaches':  'problem',
-        'summary':   'problem',
+        'problem':    'problem',
+        'problems':   'problem',
+        'breaches':   'problem',
+        'dashboard':  'problem',
+        'moderate':   'problem',
+        'respond':    'problem',
+        'escalation': 'problem',
+        'survey':     'problem',
         
         'reviews': 'review',
         'common-questions': 'question',
