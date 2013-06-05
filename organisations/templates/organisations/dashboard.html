@@ -8,9 +8,8 @@
 {% block bodyclasses %}organisation-dashboard{% endblock %}
 
 {% block content %}
-<div class="header">
-    <h1>{{ organisation.name }} Dashboard</h1>
-</div>
+
+{% include "organisations/includes/organisation_header.html" with title="Dashboard" %}
 
 {% include "organisations/includes/organisation_tabs.html" with active_tab='dashboard' %}
 

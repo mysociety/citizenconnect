@@ -8,9 +8,8 @@
 {% block bodyclasses %}organisation-breaches{% endblock %}
 
 {% block content %}
-<div class="header">
-    <h1>{{ organisation.name }} Breach Problems</h1>
-</div>
+
+{% include "organisations/includes/organisation_header.html" with title="Breach Problems" %}
 
 {% include 'organisations/includes/organisation_tabs.html' with active_tab='breaches' %}
 
