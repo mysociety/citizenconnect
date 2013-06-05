@@ -8,7 +8,10 @@
 
 {% block content %}
 
+<p><span class="icon-chevron-left" aria-hidden="true"></span> <a href="{% url 'org-dashboard' ods_code=issue.organisation.ods_code %}">Return to your dashboard</a></p>
+
 {% include "issues/issue_header.html" with object=issue private=1 title="Respond to a problem" %}
+
 <div class="gw">
 
     <div class="g  two-thirds  palm-one-whole">
@@ -56,8 +59,7 @@
                 </fieldset>
 
                 <fieldset>
-                    <button class="btn fl" type="submit" name="status">Update Status</button>
-                    <button class="btn fr" type="submit" name="respond">Respond</button>
+                    <button class="btn fr" type="submit">Update</button>
                 </fieldset>
             </form>
         </div>

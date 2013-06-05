@@ -46,15 +46,13 @@
         $('input[name="category"]').change(function () {
             var val = $(this).val();
 
-            var $label = $('label[for="id_elevate_priority"]');
             var $input = $('#id_elevate_priority');
+            var $containting_element = $input.parents('ul');
 
             if ( priorityCategories[val] ) {
-                $label.removeClass("disabled");
-                $input.prop("disabled", false);
+                $containting_element.show();
             } else {
-                $label.addClass("disabled");
-                $input.prop("disabled", "disabled");
+                $containting_element.hide();
             }
         });
 

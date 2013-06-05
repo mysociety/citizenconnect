@@ -22,3 +22,22 @@
     margin-bottom: 0;
   }
 }
+
+
+body.site-section-review {
+  .header {
+    border-color: $c-site-section-review-color;
+  }
+}
+
+body.site-section-question {
+  .header {
+    border-color: $c-site-section-question-color;
+  }
+}
+
+body.site-section-problem {
+  .header {
+    border-color: $c-site-section-problem-color;
+  }
+}

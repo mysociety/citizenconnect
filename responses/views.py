@@ -28,6 +28,10 @@ class ResponseLookup(FormView):
     def get_context_data(self, **kwargs):
         context = super(ResponseLookup, self).get_context_data(**kwargs)
         context['private'] = True
+
+        # Persist this so that we can display it in the form if there is something wrong.
+        context['reference_number'] = self.request.POST.get('reference_number', '')
+
         # Determine if we should show the page as part of some tabbed navigation
         if user_is_escalation_body(self.request.user):
             context['show_escalation_tabs'] = True
@@ -76,7 +80,7 @@ class ResponseForm(CreateView):
         context = RequestContext(self.request)
 
         # Only save the response at all if it's not empty
-        if 'response' in form.cleaned_data and form.cleaned_data['response']:
+        if form.cleaned_data.get('response'):
             self.object = form.save()
             context['response'] = self.object
 

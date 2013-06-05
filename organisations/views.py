@@ -246,16 +246,9 @@ class PickProviderBase(ListView):
     paginate_by = 10
     model = Organisation
     context_object_name = 'organisations'
-    
-    # Should be provided by the subclasses
-    site_section = None
 
     def __init__(self, *args, **kwargs):
         super(PickProviderBase, self).__init__(*args, **kwargs)
-
-        if not self.site_section:
-            raise NotImplementedError("Please set 'site_section' in your sub class")
-
 
     def get_context_data(self, **kwargs):
         context = super(PickProviderBase, self).get_context_data(**kwargs)
@@ -264,8 +257,6 @@ class PickProviderBase(ListView):
             context['title_text'] = self.title_text
         except AttributeError:
             pass
-
-        context['site_section'] = self.site_section
 
         try:
             context['form'] = self.form
@@ -281,7 +272,6 @@ class PickProviderBase(ListView):
             if form.is_valid():  # All validation rules pass
                 context = self.get_context_data(object_list=self.object_list)
                 context.update({'location': form.cleaned_data['location'],
-                                'organisation_type': form.cleaned_data['organisation_type'],
                                 'organisations': form.cleaned_data['organisations'],
                                 'result_link_url_name': self.result_link_url_name,
                                 'paginator': None,
@@ -306,8 +296,7 @@ class PickProviderBase(ListView):
 
 
 class OrganisationPickProvider(PickProviderBase):
-    site_section = 'organisation'
-
+    pass
 
 
 class OrganisationSummary(OrganisationAwareViewMixin,

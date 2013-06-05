@@ -15,7 +15,6 @@ from . import forms
 class ReviewPickProvider(PickProviderBase):
     result_link_url_name = 'review-form'
     title_text = 'Share Your Experience'
-    site_section = 'review'
     
 
 class ReviewForm(CreateView):

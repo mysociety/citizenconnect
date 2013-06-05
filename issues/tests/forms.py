@@ -1,8 +1,9 @@
 import uuid
-import time
 
 from django.test import TestCase
+from django.test.utils import override_settings
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 from organisations.tests.lib import create_test_organisation, create_test_service, create_test_problem
 
@@ -11,6 +12,7 @@ from ..forms import ProblemForm
 from ..lib import int_to_base32
 
 from citizenconnect.browser_testing import SeleniumTestCase
+
 
 class ProblemCreateFormBase(object):
 
@@ -36,8 +38,9 @@ class ProblemCreateFormBase(object):
             'preferred_contact_method': Problem.CONTACT_PHONE,
             'agree_to_terms': True,
             'elevate_priority': False,
-            'website': '', # honeypot - should be blank
+            'website': '',  # honeypot - should be blank
         }
+
 
 class ProblemCreateFormTests(ProblemCreateFormBase, TestCase):
 
@@ -50,11 +53,13 @@ class ProblemCreateFormTests(ProblemCreateFormBase, TestCase):
         resp = self.client.get(self.form_url)
         self.assertTrue(self.test_organisation.name in resp.content)
 
+    @override_settings(SURVEY_INTERVAL_IN_DAYS=99)
     def test_problem_form_happy_path(self):
         resp = self.client.post(self.form_url, self.test_problem)
         # Check in db
         problem = Problem.objects.get(reporter_name=self.uuid)
         self.assertContains(resp, problem.reference_number, count=2, status_code=200)
+        self.assertContains(resp, '{0} days after posting'.format(settings.SURVEY_INTERVAL_IN_DAYS))
         self.assertEqual(problem.organisation, self.test_organisation)
         self.assertEqual(problem.service, self.test_service)
         self.assertEqual(problem.public, False)
@@ -71,7 +76,7 @@ class ProblemCreateFormTests(ProblemCreateFormBase, TestCase):
 
     def test_problem_form_respects_name_privacy(self):
         self.test_problem['privacy'] = ProblemForm.PRIVACY_PRIVATE_NAME
-        resp = self.client.post(self.form_url, self.test_problem)
+        self.client.post(self.form_url, self.test_problem)
         # Check in db
         problem = Problem.objects.get(reporter_name=self.uuid)
         self.assertEqual(problem.public, True)
@@ -79,7 +84,7 @@ class ProblemCreateFormTests(ProblemCreateFormBase, TestCase):
 
     def test_problem_form_respects_public_privacy(self):
         self.test_problem['privacy'] = ProblemForm.PRIVACY_PUBLIC
-        resp = self.client.post(self.form_url, self.test_problem)
+        self.client.post(self.form_url, self.test_problem)
         # Check in db
         problem = Problem.objects.get(reporter_name=self.uuid)
         self.assertEqual(problem.public, True)
@@ -110,7 +115,7 @@ class ProblemCreateFormTests(ProblemCreateFormBase, TestCase):
         del self.test_problem['reporter_phone']
         # Set the preferred contact method to email, else the validation will fail
         self.test_problem['preferred_contact_method'] = Problem.CONTACT_EMAIL
-        resp = self.client.post(self.form_url, self.test_problem)
+        self.client.post(self.form_url, self.test_problem)
         problem = Problem.objects.get(reporter_name=self.uuid)
         self.assertIsNotNone(problem)
 
@@ -127,19 +132,19 @@ class ProblemCreateFormTests(ProblemCreateFormBase, TestCase):
     def test_problem_can_be_elevated(self):
         self.test_problem['elevate_priority'] = True
         self.test_problem['category'] = 'treatment'
-        resp = self.client.post(self.form_url, self.test_problem)
+        self.client.post(self.form_url, self.test_problem)
         problem = Problem.objects.get(reporter_name=self.uuid)
         self.assertEqual(problem.priority, Problem.PRIORITY_HIGH, 'Problem has wrong priority (should be HIGH)')
 
     def test_elevated_ignored_if_category_does_not_permit(self):
         self.test_problem['elevate_priority'] = True
         self.test_problem['category'] = 'parking'
-        resp = self.client.post(self.form_url, self.test_problem)
+        self.client.post(self.form_url, self.test_problem)
         problem = Problem.objects.get(reporter_name=self.uuid)
         self.assertEqual(problem.priority, Problem.PRIORITY_NORMAL, 'Problem has wrong priority (should be NORMAL)')
 
     def test_problem_form_saves_cobrand(self):
-        resp = self.client.post(self.form_url, self.test_problem)
+        self.client.post(self.form_url, self.test_problem)
         problem = Problem.objects.get(reporter_name=self.uuid)
         self.assertEqual(problem.cobrand, 'choices')
 
@@ -153,24 +158,24 @@ class ProblemCreateFormTests(ProblemCreateFormBase, TestCase):
 
 class ProblemCreateFormBrowserTests(ProblemCreateFormBase, SeleniumTestCase):
 
-    def is_elevate_priority_disabled(self):
-        return self.driver.find_element_by_id('id_elevate_priority').get_attribute('disabled')
+    def is_elevate_priority_hidden(self):
+        checkbox = self.driver.find_element_by_id('id_elevate_priority')
+        return not checkbox.is_displayed()
 
     def test_currently_in_care_toggling(self):
         d = self.driver
         d.get(self.full_url(self.form_url))
 
-
         # Should be disabled initially
-        self.assertTrue(self.is_elevate_priority_disabled())
+        self.assertTrue(self.is_elevate_priority_hidden())
 
         # Select a category that it applies to
         d.find_element_by_css_selector('input[name="category"][value="dignity"]').click()
-        self.assertFalse(self.is_elevate_priority_disabled())
+        self.assertFalse(self.is_elevate_priority_hidden())
 
         # Select a category it does not apply to
         d.find_element_by_css_selector('input[name="category"][value="parking"]').click()
-        self.assertTrue(self.is_elevate_priority_disabled())
+        self.assertTrue(self.is_elevate_priority_hidden())
 
 
 class ProblemSurveyFormTests(TestCase):

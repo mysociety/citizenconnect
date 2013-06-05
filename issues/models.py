@@ -143,7 +143,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     # Assigning individual statuses to status sets
     BASE_OPEN_STATUSES = [NEW, ACKNOWLEDGED]
     OPEN_ESCALATION_STATUSES = [ESCALATED, ESCALATED_ACKNOWLEDGED]
-    HIDDEN_STATUSES = [ABUSIVE]
+    HIDDEN_STATUSES = [ABUSIVE, ESCALATED, ESCALATED_ACKNOWLEDGED, ESCALATED_RESOLVED]
 
     # Calculated status sets
     ALL_STATUSES = [status for status, description in STATUS_CHOICES]
@@ -189,7 +189,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         (u'other', u'Other'),
     )
 
-    CATEGORY_DESCRIPTIONS = {'staff': 'Bedside manner and attitude of staff',
+    CATEGORY_DESCRIPTIONS = {'staff': 'Bedside manner / staff attitude / care and compassion',
                              'access': 'Difficulty getting appointments, long waiting times',
                              'delays': 'Delays in care, e.g. referrals and test results',
                              'treatment': 'Wrong advice / unsafe care / refusal of treatment / consent',
