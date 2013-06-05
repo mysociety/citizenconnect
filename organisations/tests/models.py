@@ -12,6 +12,12 @@ from .lib import create_test_organisation, create_test_ccg, get_reset_url_from_e
 
 from ..models import Organisation, CCG
 
+
+class OrganisationModelTests(TestCase):
+    def test_organisation_type_name(self):
+        test_org = create_test_organisation({ 'organisation_type': 'hospitals' })
+        self.assertEqual(test_org.organisation_type_name, 'Hospital')
+
 class OrganisationModelAuthTests(AuthorizationTestCase):
 
     def setUp(self):

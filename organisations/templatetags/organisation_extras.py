@@ -99,14 +99,11 @@ def provider_paginator(context, adjacent_pages=2):
 
     Required context variables: page_obj: The Paginator.page() instance.
                                 location: the provider location search
-                                organisation_type: the provider type
     """
     location = context['location']
-    organisation_type = context['organisation_type']
     pagination_context = paginator(context, adjacent_pages)
 
     pagination_context['location'] = location
-    pagination_context['organisation_type'] = organisation_type
     return pagination_context
 
 

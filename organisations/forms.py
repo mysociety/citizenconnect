@@ -20,12 +20,11 @@ from .metaphone import dm
 
 
 class OrganisationFinderForm(forms.Form):
-    organisation_type = forms.ChoiceField(choices=settings.ORGANISATION_CHOICES, initial='hospitals')
     location = forms.CharField(required=True, error_messages={'required': 'Please enter a location'})
 
     PILOT_SEARCH_CAVEAT = 'The provider or postcode may not be covered by Care Connect.'
 
-    def organisations_from_postcode(self, postcode, organisation_type, partial=False):
+    def organisations_from_postcode(self, postcode, partial=False):
         path_elements = ['postcode']
         if partial:
             path_elements.append('partial')
@@ -42,8 +41,7 @@ class OrganisationFinderForm(forms.Form):
         if response_code == 200:
             point_data = json.load(point_response)
             point = Point(point_data["wgs84_lon"], point_data["wgs84_lat"])
-            return Organisation.objects.filter(point__distance_lt=(point, Distance(mi=5)),
-                                               organisation_type=organisation_type).distance(point).order_by('distance')
+            return Organisation.objects.filter(point__distance_lt=(point, Distance(mi=5))).distance(point).order_by('distance')
         elif response_code == 404:
             validation_message = 'Sorry, no postcode matches that query. Please try again, or try searching by provider name'
             raise forms.ValidationError(validation_message)
@@ -57,31 +55,27 @@ class OrganisationFinderForm(forms.Form):
     def clean(self):
         cleaned_data = super(OrganisationFinderForm, self).clean()
         location = cleaned_data.get('location', None)
-        organisation_type = cleaned_data.get('organisation_type', None)
-        if location and organisation_type:
+        if location:
             postcode = re.sub('\s+', '', location.upper())
             if validation.is_valid_postcode(postcode):
-                organisations = self.organisations_from_postcode(postcode, organisation_type)
+                organisations = self.organisations_from_postcode(postcode)
                 validation_message = "Sorry, there are no matches within 5 miles of %s. Please try again. %s" % (location, self.PILOT_SEARCH_CAVEAT)
             elif validation.is_valid_partial_postcode(postcode):
-                organisations = self.organisations_from_postcode(postcode, organisation_type, partial=True)
+                organisations = self.organisations_from_postcode(postcode, partial=True)
                 validation_message = "Sorry, there are no matches within 5 miles of %s. Please try again. %s" % (location, self.PILOT_SEARCH_CAVEAT)
             else:
-                organisations = Organisation.objects.filter(name__icontains=location,
-                                                            organisation_type=organisation_type)
+                organisations = Organisation.objects.filter(name__icontains=location)
                 if len(organisations) < 5:
                     # Try a metaphone search to give more results
                     location_metaphone = dm(location)
                     # First do a __startswith or __endswith
                     alt_orgs = Organisation.objects.filter(Q(name_metaphone__startswith=location_metaphone[0])
                                                            | Q(name_metaphone__endswith=location_metaphone[0]),
-                                                           Q(organisation_type=organisation_type),
                                                            ~Q(pk__in=list([a.id for a in organisations])))
                     organisations = list(chain(organisations, alt_orgs))
                     if len(organisations) < 10:
                         # Try a metaphone __contains to give even more results
                         more_orgs = Organisation.objects.filter(Q(name_metaphone__contains=location_metaphone[0]),
-                                                                Q(organisation_type=organisation_type),
                                                                 ~Q(pk__in=list([a.id for a in organisations])))
                         organisations = list(chain(organisations, more_orgs))
 
