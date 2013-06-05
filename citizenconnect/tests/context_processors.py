@@ -24,6 +24,9 @@ class ContextProcessorTests(TestCase):
             url_prefix + 'common-questions/blahblah':  'question',
             url_prefix + 'problem':                    'problem',
             url_prefix + 'problem/blahblah':           'problem',
+
+            # regressions for issues found with real urls
+            url_prefix + 'problems/H85031': 'problem',
         }
 
         for path, site_section in tests.items():

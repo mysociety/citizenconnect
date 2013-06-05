@@ -51,6 +51,7 @@ def add_site_section(request):
     known_sections = {
         # 'url_path_part': 'site_section'
         'problem': 'problem',
+        'problems': 'problem',
         'reviews': 'review',
         'common-questions': 'question',
     }
