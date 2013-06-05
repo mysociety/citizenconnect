@@ -14,11 +14,17 @@
     <div class="g  one-whole">
       <ul class="message-list">
         {% if response %}
-            <li class="message-list__success">Thank you, the response has been published online. <a href="{% url 'org-dashboard' ods_code=response.issue.organisation.ods_code %}">Return to your provider dashboard</a></li>
-        {% elif issue %}
-            <li class="message-list__success">Thank you, the problem status has been updated. <a href="{% url 'org-dashboard' ods_code=issue.organisation.ods_code %}">Return to your provider dashboard</a></li>
+            <li class="message-list__success">Thank you, the response has been published online.</li>
+        {% endif %}
+        {% if issue %}
+            <li class="message-list__success">Thank you, the problem status has been updated.</li>
         {% endif %}
       </ul>
+      {% if response %}
+        <p><a href="{% url 'org-dashboard' ods_code=response.issue.organisation.ods_code %}">Return to your provider dashboard</a></p>
+      {% elif issue %}
+        <p><a href="{% url 'org-dashboard' ods_code=issue.organisation.ods_code %}">Return to your provider dashboard</a></p>
+      {% endif %}
     </div>
 </div>
 {% endblock %}

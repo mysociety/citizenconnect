@@ -22,20 +22,6 @@ class ProblemResponseForm(ConcurrentFormMixin, forms.ModelForm):
         if self.request.META['REQUEST_METHOD'] == 'GET':
             self.set_version_in_session()
 
-    def clean_response(self):
-        response = self.cleaned_data['response']
-
-        # If people clicked the "Respond" button, they must include a response
-        if 'respond' in self.data and not response:
-            raise forms.ValidationError('This field is required.')
-
-        # If people clicked the "update status" button, and the added a response
-        # we warn them that it won't get used
-        if 'status' in self.data and response:
-            raise forms.ValidationError('You cannot submit a response if you\'re just updating the status. Please delete the text in the response field or use the "Respond" button.')
-
-        return response
-
     def clean(self):
         cleaned_data = super(ProblemResponseForm, self).clean()
         # Do a concurrency check
