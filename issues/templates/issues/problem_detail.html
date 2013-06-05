@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load url from future %}
 
 {% block title %}Problem report{% endblock %}
 
@@ -8,6 +9,6 @@
 
 {% include "issues/issue_detail.html" with object=object title="Problem" %}
 
-<a href="mailto:{{ settings.ABUSE_EMAIL_ADDRESS }}?subject={{ object.reference_number }}">Report as unsuitable</a>
+<a href="{% url 'feedback' cobrand=cobrand.name %}">Report as unsuitable</a>
 
 {% endblock %}

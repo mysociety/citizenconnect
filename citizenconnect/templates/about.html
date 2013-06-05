@@ -23,7 +23,7 @@
             </p>
 
             <p>
-            Note, this is a pilot stage of the on-line service and is being tested in London and parts of the North East of England. We would welcome any comments or suggestions for improvements before we share it with NHS users across the country. Email us your thoughts at <a href="mailto:{{ settings.FEEDBACK_EMAIL_ADDRESS }}">{{ settings.FEEDBACK_EMAIL_ADDRESS }}</a>.
+            Note, this is a pilot stage of the on-line service and is being tested in London and parts of the North East of England. <a href="{% url 'feedback' cobrand=cobrand.name %}">We would welcome any comments or suggestions</a> for improvements before we share it with NHS users across the country.
             </p>
 
             <p>Here’s how it works:-</p>
@@ -434,7 +434,7 @@
                 <h1>Contact us</h1>
             </div>
 
-            <p>You can contact us on <a href="mailto:{{ settings.FEEDBACK_EMAIL_ADDRESS }}">{{ settings.FEEDBACK_EMAIL_ADDRESS }}</a>, please use this email:</p>
+            <p>You can contact us <a href="{% url 'feedback' cobrand=cobrand.name %}"> using this form</a></p>
 
             <ul>
                 <li>To give us feedback about this service</li>
@@ -457,11 +457,11 @@
 
             <p>What do I do if I change my mind about having the details of my problem made public?</p>
 
-            <p>Please email <a href="mailto:{{ settings.FEEDBACK_EMAIL_ADDRESS }}">{{ settings.FEEDBACK_EMAIL_ADDRESS }}</a> with your reference number. You may be asked a security question by our case handlers. They will then be able to assist with your request.</p>
+            <p>Please <a href="{% url 'feedback' cobrand=cobrand.name %}">email with your reference number</a>. You may be asked a security question by our case handlers. They will then be able to assist with your request.</p>
 
             <p>How can I leave feedback about this pilot service?</p>
 
-            <p>All feedback is welcome; please email <a href="mailto:{{ settings.FEEDBACK_EMAIL_ADDRESS }}">{{ settings.FEEDBACK_EMAIL_ADDRESS }}</a>.</p>
+            <p>All feedback is welcome; <a href="{% url 'feedback' cobrand=cobrand.name %}">please use this form</a>.</p>
         </div>
 
         <!--
@@ -481,7 +481,7 @@
 
             <p>We want to respond quickly to your concerns, compliments, suggestions and problems so that together we can build a better NHS. This is a new service is initially being piloted in London and parts of North East England before it is rolled out nationally and expands to include a broader range of NHS and Local Authority services.</p>
 
-            <p>Please give us your suggestions on how it can be improved please email us at <a href="mailto:{{ settings.FEEDBACK_EMAIL_ADDRESS }}">{{ settings.FEEDBACK_EMAIL_ADDRESS }}</a></p>
+            <p>Please <a href="{% url 'feedback' cobrand=cobrand.name %}">give us your suggestions on how it can be improved</a></p>
         </div>
 
         <!--
