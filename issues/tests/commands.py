@@ -8,6 +8,7 @@ from django.core import mail
 from django.core.urlresolvers import reverse
 from django.utils.timezone import utc
 from django.conf import settings
+from django.test.utils import override_settings
 
 from organisations.tests.lib import create_test_organisation, create_test_service, create_test_problem
 from ..models import Problem
@@ -35,6 +36,7 @@ class EmailConfirmationsToReportersTests(EmailToReportersBase, TestCase):
         opts = {}
         call_command('email_confirmations_to_reporters', *args, **opts)
 
+    @override_settings(SURVEY_INTERVAL_IN_DAYS=99)
     def test_happy_path(self):
         self._call_command()
         self.assertEqual(len(mail.outbox), 1)
@@ -45,6 +47,7 @@ class EmailConfirmationsToReportersTests(EmailToReportersBase, TestCase):
         self.assertTrue("Dear %s," % self.test_problem.reporter_name in first_mail.body)
         self.assertTrue("Thank you for reporting your problem." in first_mail.body)
         self.assertTrue('Fab Organisation' in first_mail.body)
+        self.assertTrue('{0} days after posting'.format(settings.SURVEY_INTERVAL_IN_DAYS) in first_mail.body)
 
         self.assertTrue(Problem.objects.get(pk=self.test_problem.id).confirmation_sent)
 

@@ -17,7 +17,7 @@
     <div class="g  one-half  palm-one-whole">
 
         {# Note that this text should match that in 'problem_confirm_email_message.txt' #}
-        
+
         <ul class="message-list">
             <li class="message-list__success">Thank you for reporting your problem.</li>
         </ul>
@@ -37,7 +37,7 @@
 
         <p>When the problem is resolved the NHS provider will mark it as 'closed' which means it will no longer appear on the live map but will still be visible on the provider summary.</p>
 
-        <p>2 weeks after posting your problem you will receive an email asking you to complete a short survey asking if you feel the problem was resolved satisfactorily.</p>
+        <p>{{ settings.SURVEY_INTERVAL_IN_DAYS }} days after posting your problem you will receive an email asking you to complete a short survey asking if you feel the problem was resolved satisfactorily.</p>
     </div>
     <div class="g  one-half  palm-one-whole">
         <div class="islet  islet--squared  mt">
