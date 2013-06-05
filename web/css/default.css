@@ -1275,10 +1275,11 @@ th .filters__dropdown select { font-size: 1em; }
 .homepage-map-box .map-links .map-text { display: block; font-size: 0.75em; font-weight: bold; }
 
 /** 999/111 links at bottom of page */
-.link-999 { color: #888888; font-size: 1.4375em; font-weight: bold; text-decoration: none; padding-top: 0.65217em; }
+.link-999, .link-111 { color: #888888; font-size: 1.4375em; font-weight: bold; text-decoration: none; }
 
-.link-111 { text-decoration: none; padding-left: 0; }
-.link-111 img { max-width: 100%; height: auto; }
+.link-999 { padding-top: 0.56522em; }
+
+.link-111 img { max-width: 100%; height: auto; margin-right: 20px; }
 
 div.review-form__rating-answer { width: auto; }
 div.review-form__rating-answer div.rateit-range { background: url("/static/css/rateit/review-star-grey.png"); height: 16px; }

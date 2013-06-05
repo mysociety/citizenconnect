@@ -50,18 +50,15 @@
 /**
  * 999/111 links at bottom of page
  */
-.link-999 {
+.link-999, .link-111 {
   color: $c-homepage-link-999-color;
   font-size: (23px / $font-size-base) + em;
   font-weight: bold;
   text-decoration: none;
-  padding-top: (15px /23px ) + em;
 }
-.link-111 {
-  text-decoration: none;
-  padding-left: 0;
-  img {
-    max-width: 100%;
-    height: auto;
-  }
+.link-999 { padding-top: (13px /23px ) + em; }
+.link-111 img {
+  max-width: 100%;
+  height: auto;
+  margin-right: 20px;
 }
