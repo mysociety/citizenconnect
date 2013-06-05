@@ -1,9 +1,9 @@
 {% load url from future %}
 
-<div class="header">
+<div class="cf">
 
   {% if private %}
-   <div class="islet problem-search fr">
+   <div class="islet problem-search fr mt">
       <form method="post" action="{% url 'response-lookup' %}">
           {% csrf_token %}
           <input type="text" name="reference_number" id="id_reference_number"  class="text-input  one-whole" placeholder="Problem Lookup"/>
