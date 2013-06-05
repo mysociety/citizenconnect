@@ -59,7 +59,7 @@ class ProblemForm(forms.ModelForm):
 
         if self.cleaned_data['priority']:
             problem.priority = self.cleaned_data['priority']
-            
+
         # Problems created using this should have a confirmation email sent
         problem.confirmation_required = True
 
@@ -87,7 +87,7 @@ class ProblemForm(forms.ModelForm):
     def clean_elevate_priority(self):
         # If true, and the category premits it, set priority to true, otherwise
         # use default.
-        may_elevate = self.cleaned_data['category'] in Problem.CATEGORIES_PERMITTING_SETTING_OF_PRIORITY_AT_SUBMISSION
+        may_elevate = self.cleaned_data.get('category') in Problem.CATEGORIES_PERMITTING_SETTING_OF_PRIORITY_AT_SUBMISSION
 
         if may_elevate and self.cleaned_data.get('elevate_priority'):
             self.cleaned_data['priority'] = Problem.PRIORITY_HIGH
@@ -104,13 +104,13 @@ class ProblemForm(forms.ModelForm):
         if self.cleaned_data.get('website'):
             raise forms.ValidationError("submission is probably spam")
         return ''
-    
-    
+
+
     def clean_reporter_phone(self):
         reporter_phone = self.cleaned_data.get('reporter_phone')
         if reporter_phone and re.search(r'[^\d\ \+]', reporter_phone):
             raise forms.ValidationError("Enter a valid phone number.")
-        return reporter_phone        
+        return reporter_phone
 
 
     def clean_preferred_contact_method(self):
