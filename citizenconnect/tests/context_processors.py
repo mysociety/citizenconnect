@@ -10,23 +10,20 @@ class ContextProcessorTests(TestCase):
 
     def test_add_site_section(self):
 
-        url_prefix = '/' + settings.ALLOWED_COBRANDS[0] + '/'
-
         tests = {
             # path: expected site_section
             '/':                       None,
             '/foo/bar':                None,
-            '/not-a-cobrand/problems': None,
 
-            url_prefix + 'reviews':                    'review',
-            url_prefix + 'reviews/blahblah':           'review',
-            url_prefix + 'common-questions':           'question',
-            url_prefix + 'common-questions/blahblah':  'question',
-            url_prefix + 'problem':                    'problem',
-            url_prefix + 'problem/blahblah':           'problem',
+            '/foo/reviews':                    'review',
+            '/foo/reviews/blahblah':           'review',
+            '/foo/common-questions':           'question',
+            '/foo/common-questions/blahblah':  'question',
+            '/foo/problem':                    'problem',
+            '/foo/problem/blahblah':           'problem',
 
             # regressions for issues found with real urls
-            url_prefix + 'problems/H85031': 'problem',
+            '/foo/problems/H85031': 'problem',
         }
 
         for path, site_section in tests.items():

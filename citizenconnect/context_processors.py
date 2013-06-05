@@ -43,24 +43,26 @@ def add_site_section(request):
 
     path_parts = request.path.split('/') # --> ['', cobrand, section, ... ]
     try:
-        cobrand = path_parts[1]
         section_url = path_parts[2]
     except IndexError:
         return {}
 
     known_sections = {
         # 'url_path_part': 'site_section'
-        'problem': 'problem',
-        'problems': 'problem',
+        'problem':   'problem',
+        'problems':  'problem',
+        'dashboard': 'problem',
+        'breaches':  'problem',
+        'summary':   'problem',
+        
         'reviews': 'review',
         'common-questions': 'question',
     }
 
-    # If the first part is a cobrand and the second a known site_section
-    if cobrand in settings.ALLOWED_COBRANDS:
-        site_section = known_sections.get(section_url)
-        if site_section:
-            return { 'site_section': site_section }
+    # If the second part is a known site_section
+    site_section = known_sections.get(section_url)
+    if site_section:
+        return { 'site_section': site_section }
 
     # Fall through to not adding anything to the context
     return {}
