@@ -1,4 +1,3 @@
-@charset "UTF-8";
 /** Colours ---------------- This is the descriptive name of the colour e.g. $c-green Colour Assignment is in _colour-assignment.scss */
  /*
  Where possible assign colours to another variable rather than using them directly. This keeps the colour names descriptive and the assignment logical. For example:
