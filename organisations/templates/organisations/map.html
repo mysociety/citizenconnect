@@ -11,26 +11,14 @@
 
 <div class="gw">
     <div class="g  two-thirds  palm-one-whole  mb__palm">
-        <p>
-        People tell us that they often do not want to make a complaint they just want to get their
-        problem/issue or concern resolved. This map shows at a glance, the number of problem reports
-        that have been submitted by members of the public to NHS service providers in the area given.
-        </p>
-        <p>
-        Each NHS service provider is represented by a dot and the darker the shade of the dot, the higher
-        the number of problem reports the service currently has open and in progress. A problem fixed is
-        a positive outcome for you and for the NHS - so please be our ‘eyes and ears’ and point out the
-        things that need to be resolved.
-        </p>
-        <p>
-        If you cannot see the NHS service provider you are looking for, it may be that they are not
-        participating at this pilot stage. We currently cover hospitals and NHS community services London
-        and the North East and will be expanding to cover a wider area soon.
-        </p>
-        <p>
-        Hover over a dot to see a summary of that service provider. Click on a dot to view in more detail
-        what problems have been logged and how well the NHS service provider is responding.
-        </p>
+        <p>The map shows the number of problems that have been submitted. A blue dot marks the location of the participating NHS providers. The darker the shade of blue, the higher the number of 'open' and 'in progress' problems there are.</p>
+
+        <ul>
+            <li>Hover over the dot to see a summary for that NHS provider</li>
+            <li>Click on the dot to see the details and how the NHS is responding</li>
+        </ul>
+
+        <p>A problem fixed is a positive outcome for you and for the NHS!</p>
     </div>
     <div class="g  one-third  palm-one-whole">
         <a href="{% url 'org-all-summary' cobrand=cobrand.name %}"  class="btn  btn--no-border  btn--big  btn--blue">See All Participating Service Providers <br><small>Click here</small></a>
@@ -56,12 +44,7 @@
     </div>
     <div class="g  four-fifths  palm-one-whole">
         <p>
-            <small>
-            Colour of dots show the number of unresolved problems. Note
-            that a high number of problems doesn't mean a service is
-            poorly performing, it could simply show that the organisation
-            is engaging with its patients and resolving their problems.
-            </small>
+            <small>A higher number of problems (the darker the dot) does not necessarily indicate a poorly performing NHS provider - it could be that they are actively progressing problems and encouraging people to report them. Check out their summary to see how they are doing.</small>
         </p>
     </div>
 </div>
