@@ -44,7 +44,8 @@ class Command(BaseCommand):
         message_template = get_template('issues/problem_confirmation_email_message.txt')
 
         context = Context({'object': problem,
-                           'site_base_url': settings.SITE_BASE_URL })
+                           'site_base_url': settings.SITE_BASE_URL,
+                           'survey_interval_in_days': settings.SURVEY_INTERVAL_IN_DAYS })
 
         logger.info('Emailing confirmation for problem reference number: {0}'.format(problem.reference_number))
 
