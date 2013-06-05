@@ -78,3 +78,6 @@ FEEDBACK_EMAIL_ADDRESS: feedback@example.com
 
 # What email address people should report abusive problems to
 ABUSE_EMAIL_ADDRESS: abuse@example.com
+
+CHOICES_GOOGLE_ANALYTICS_ACCOUNT: 'UA-12345-XXX'
+MHL_GOOGLE_ANALYTICS_ACCOUNT: 'UA-12345-XXX'
