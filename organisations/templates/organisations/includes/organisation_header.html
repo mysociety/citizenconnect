@@ -1,0 +1,16 @@
+{% load url from future %}
+
+<div class="header">
+
+  {% if private %}
+   <div class="islet problem-search fr">
+      <form method="post" action="{% url 'response-lookup' %}">
+          {% csrf_token %}
+          <input type="text" name="reference_number" id="id_reference_number"  class="text-input  one-whole" placeholder="Problem Lookup"/>
+         <button type="submit" class="btn btn--blue  btn--no-border"><span class="icon-chevron-right" aria-hidden="true"></span><span class="hide-text">Find</span></button>
+      </form>
+  </div>
+  {% endif %}
+
+    <h1>{{ organisation.name }} {{ title }}</h1>
+</div>
