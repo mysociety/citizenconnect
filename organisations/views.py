@@ -281,7 +281,6 @@ class PickProviderBase(ListView):
             if form.is_valid():  # All validation rules pass
                 context = self.get_context_data(object_list=self.object_list)
                 context.update({'location': form.cleaned_data['location'],
-                                'organisation_type': form.cleaned_data['organisation_type'],
                                 'organisations': form.cleaned_data['organisations'],
                                 'result_link_url_name': self.result_link_url_name,
                                 'paginator': None,

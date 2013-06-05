@@ -68,6 +68,15 @@ class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Mod
     average_recommendation_rating = models.FloatField(blank=True, null=True)
 
     @property
+    def organisation_type_name(self):
+        for code, label in settings.ORGANISATION_CHOICES:
+            if code == self.organisation_type:
+                return label
+
+        # should never get here, but best to have a fallback
+        return 'Not Known'
+
+    @property
     def open_issues(self):
         return list(self.problem_set.open_problems())
 
