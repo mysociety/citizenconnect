@@ -60,7 +60,7 @@ SITE_BASE_URL: 'http://localhost:8000'
 DEFAULT_FROM_EMAIL: 'no-reply@example.com'
 
 # How many days to wait after a problem is reported before sending a survey
-SURVEY_INTERVAL_IN_DAYS: 14
+SURVEY_INTERVAL_IN_DAYS: 21
 
 # The host to use for sending email.
 EMAIL_HOST: localhost
