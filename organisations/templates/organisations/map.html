@@ -74,7 +74,6 @@
 {{ block.super }}
 <script src="{% static 'js/underscore.min.js' %}"></script>
 <script src="{% static 'js/leaflet.js' %}"></script>
-<script src="{% static 'js/rrose-src.js' %}"></script>
 <script src="{% static 'js/wax.leaf.min.js' %}"></script>
 <script src="{% static 'js/oms.min.js' %}"></script>
 <script src="{% static 'js/spin.min.js' %}"></script>
@@ -118,7 +117,7 @@
         </p>
         <% } %>
         <p><%= nhsCentre.reviews_all_time %> Review<%= nhsCentre.reviews_all_time !== 1 ? 's' : '' %> received</p>
-        <!-- <span class="fr">View problems <span class="icon-chevron-right" aria-hidden="true"></span></span> -->
+        <span class="fr"><a href="<%= nhsCentre.url %>">View problems <span class="icon-chevron-right" aria-hidden="true"></span></a></span>
     </div>
 </script>
 

@@ -158,7 +158,7 @@ $(document).ready(function () {
         markersGroup.clearLayers();
 
         _.each(providers, function(nhsCentre) {
-            var marker, iconClass, content;
+            var marker, iconClass;
 
             // Determine the icon colour based on issue count (crudely)
             if(nhsCentre.all_time_open <= 0) {
@@ -183,23 +183,10 @@ $(document).ready(function () {
                 icon: iconClass
             });
 
-            content = _.template(hoverBubbleTemplate, {nhsCentre: nhsCentre, issueType: issueType, icon: iconClass, starClass: starClass});
+            marker.popupContent = _.template(hoverBubbleTemplate, {nhsCentre: nhsCentre, issueType: issueType, icon: iconClass, starClass: starClass});
 
             // Save some custom data in the marker
             marker.nhsCentre = nhsCentre;
-
-            // Set up the events the marker reacts to
-            marker.on('mouseover', function(e){
-                var hover_bubble = new L.Rrose({
-                    offset: new L.Point(2,-4),
-                    closeButton: false,
-                    autoPan: false
-                }).setContent(content)
-                .setLatLng(e.target._latlng)
-                .openOn(map);
-            }).on('mouseout', function(e){
-                _.debounce(map.closePopup(), 300);
-            });
 
             // Add the marker to the map
             markersGroup.addLayer(marker);
@@ -287,7 +274,8 @@ $(document).ready(function () {
         // we need to tell it what we want to do when someone clicks an already
         // spiderified link.
         oms.addListener('click', function(marker) {
-            window.location=marker.nhsCentre.url;
+            var popupOptions = {offset: new L.Point(2,-4)};
+            marker.bindPopup(marker.popupContent, popupOptions).openPopup();
         });
 
         if (isNorthEast) {
