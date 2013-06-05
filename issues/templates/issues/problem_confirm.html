@@ -41,9 +41,9 @@
     </div>
     <div class="g  one-half  palm-one-whole">
         <div class="islet  islet--squared  mt">
-            <h3>Your unique reference number is: {{ object.reference_number }}</h3>
+            <h3>Your reference number is: {{ object.reference_number }}</h3>
             <p>
-              You entered the following details<br>
+              You entered the following details:<br>
               {% if object.reporter_phone %}
               Tel: <strong>{{ object.reporter_phone }}</strong><br>
               {% endif %}
@@ -58,25 +58,6 @@
 <div class="header">
   <h2>{{ object.organisation.name }}</h2>
 </div>
-
-<div class="gw">
-    <div class="g one-eighth">&nbsp;</div>
-    <div class="g  three-eighths  palm-one-whole">
-        <div class="stats-box">
-            <span class="stats-number">{{ summary.happy_outcome|percent }}</span>
-            <span class="stats-text">of users happy with outcome</span>
-        </div>
-    </div>
-    <div class="g  three-eighths  palm-one-whole">
-        <div class="stats-box">
-            <span class="stats-number">{{ summary.happy_service|percent }}</span>
-            <span class="stats-text">of users happy with service</span>
-        </div>
-    </div>
-    <div class="g one-eighth">&nbsp;</div>
-</div>
-
-<div class="header"></div>
 
 <div class="break-bar">
     <p>
