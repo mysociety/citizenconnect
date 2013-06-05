@@ -967,7 +967,7 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 @media only screen and (max-width: 1023px) { .feature .feature__num { float: none; width: 100%; text-align: left; } }
 .feature .feature__text { display: block; margin-top: 0.83333em; }
 
-.tab-nav { list-style: none; padding: 0; margin: 5em 0 2.5em 0; border-bottom: #dddddd solid 0.25em; }
+.tab-nav { list-style: none; padding: 0; margin: 3.125em 0 2.5em 0; border-bottom: #dddddd solid 0.25em; }
 @media only screen and (max-width: 1023px) { .tab-nav { font-size: 0.875em; } }
 @media only screen and (max-width: 480px) { .tab-nav { border-bottom: none; } }
 .tab-nav li { display: block; float: left; margin-right: 1em; }

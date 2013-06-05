@@ -1,7 +1,7 @@
 .tab-nav {
     list-style: none;
     padding: 0;
-    margin: ($grid-gutter * 4) + em 0 ($grid-gutter * 2) + em 0;
+    margin: ($grid-gutter * 2.5) + em 0 ($grid-gutter * 2) + em 0;
     border-bottom: $c-grey solid ($grid-gutter / 5) + em;
     @extend .cf;
     @include media-query(portable){ font-size: (14px / $font-size-base) + em; }
