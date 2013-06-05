@@ -1144,8 +1144,6 @@ th .filters__dropdown select { font-size: 1em; }
 .marker_m1:hover .popup, .marker_m2:hover .popup, .marker_m3:hover .popup, .marker_m4:hover .popup { display: block; top: -5.8em; opacity: 1; }
 
 /* Popup Tweaks */
-.leaflet-popup { pointer-events: none; }
-
 .leaflet-popup-content-wrapper, .leaflet-popup-tip { background: white; }
 
 .leaflet-popup-content-wrapper { -webkit-border-radius: 0; -moz-border-radius: 0; border-radius: 0; font-size: 16px; }
