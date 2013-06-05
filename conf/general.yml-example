@@ -19,10 +19,6 @@ STAGING: '1'
 TIME_ZONE: 'Europe/London'
 DJANGO_SECRET_KEY: ''
 
-# create an account and then put the 'UA-123456-1' bit here. If present it will
-# be used in the templates.
-GOOGLE_ANALYTICS_ACCOUNT: ''
-
 # API key for NHS Choices syndication API
 NHS_CHOICES_API_KEY: 'XXXXXX'
 
@@ -82,3 +78,6 @@ FEEDBACK_EMAIL_ADDRESS: feedback@example.com
 
 # What email address people should report abusive problems to
 ABUSE_EMAIL_ADDRESS: abuse@example.com
+
+CHOICES_GOOGLE_ANALYTICS_ACCOUNT: 'UA-12345-XXX'
+MHL_GOOGLE_ANALYTICS_ACCOUNT: 'UA-12345-XXX'
