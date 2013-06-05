@@ -1193,11 +1193,13 @@ th .filters__dropdown select { font-size: 1em; }
 /** Markup specific to the about page */
 .about-section { padding-top: 5px; }
 
-.step-title--green { color: #5bbf21; }
+.step_wording { padding-top: 0.7em; }
 
-.step-title--orange { color: #e28c05; }
+.step_title--green, .step_wording--green, .about_section_heading--green { color: #5bbf21; }
 
-.step-title--blue { color: #0072c6; }
+.step_title--orange, .step_wording--orange, .about_section_heading--orange { color: #e28c05; }
+
+.step_title--blue, .step_wording--blue, .about_section_heading--blue { color: #0072c6; }
 
 /** Literally creates a circle out of an element which gives us the ability to have borders */
 .bordered-circle { display: inline-block; *display: inline; *zoom: 1; vertical-align: top; width: 20px; height: 20px; -webkit-border-radius: 20px; -moz-border-radius: 20px; -ms-border-radius: 20px; -o-border-radius: 20px; border-radius: 20px; background: #333; border: 3px solid #fff; }
