@@ -51,18 +51,17 @@
     top: -5.8em;
     opacity:1;
 }
-/* Rrose Tweaks */
-.leaflet-rrose{ pointer-events:none; }
-.leaflet-rrose-content-wrapper, .leaflet-rrose-tip {
+/* Popup Tweaks */
+.leaflet-popup-content-wrapper, .leaflet-popup-tip {
     background: rgba(255,255,255,1);
 }
-.leaflet-rrose-content-wrapper{
+.leaflet-popup-content-wrapper{
     -webkit-border-radius:0;
     -moz-border-radius:0;
     border-radius:0;
     font-size: 16px;
 }
-.leaflet-rrose-content{
+.leaflet-popup-content{
     font-size: 14px;
     line-height: 1.4;
 
