@@ -80,7 +80,7 @@ class ResponseForm(CreateView):
         context = RequestContext(self.request)
 
         # Only save the response at all if it's not empty
-        if 'response' in form.cleaned_data and form.cleaned_data['response']:
+        if form.cleaned_data.get('response'):
             self.object = form.save()
             context['response'] = self.object
 
