@@ -19,7 +19,6 @@ from .lib import base32_to_int
 class ProblemPickProvider(PickProviderBase):
     result_link_url_name = 'problem-form'
     title_text = 'Report a Problem'
-    site_section = 'problem'
 
 
 class ProblemCreate(OrganisationAwareViewMixin, CreateView):

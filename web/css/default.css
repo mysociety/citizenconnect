@@ -981,6 +981,12 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .tab-nav li a.active { background: white; border-top: #dddddd solid 0.25em; border-left: #dddddd solid 0.25em; border-right: #dddddd solid 0.25em; margin-bottom: -0.25em; }
 @media only screen and (max-width: 480px) { .tab-nav li a.active { background: #aaaaaa; color: white; border: none; margin: 0; } }
 
+body.site-section-review .tab-nav, body.site-section-review a.active { border-color: #5bbf21; }
+
+body.site-section-question .tab-nav, body.site-section-question a.active { border-color: #e28c05; }
+
+body.site-section-problem .tab-nav, body.site-section-problem a.active { border-color: #0072c6; }
+
 /** A list of results using the following markup: 
 <ul class="results-list"> <li> <div class="results-list__title"> <h2><a href="#">Bampton Surgery</a></h2> <p>Landells Bampton</p> </div> <address>Landells Bampton, Bampton<br>Oxford, OX18 2LJ</address> <a href="#" class="results-list__more-link"> <span class="icon-chevron-right" aria-hidden="true"><span class="hide-text">More info</span></span> </a> </li>
 </ul>  */
@@ -1002,6 +1008,12 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .header { border-bottom: #dddddd solid 0.25em; margin: 1.25em 0; }
 .header h1, .header h2, .header h3, .header h4, .header h5, .header h6 { line-height: 1.1; margin: 0 0 0.25em 0; }
 .header .header__pre-heading { font-size: 1.25em; font-weight: normal; color: #aaaaaa; margin-bottom: 0; }
+
+body.site-section-review .header { border-color: #5bbf21; }
+
+body.site-section-question .header { border-color: #e28c05; }
+
+body.site-section-problem .header { border-color: #0072c6; }
 
 /** Filter bar with styled select elements */
 .filters { padding-top: 1em; border-top: 0.25em solid #dddddd; margin-top: 2.5em; margin-bottom: 2.5em; }
