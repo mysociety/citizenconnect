@@ -6,9 +6,8 @@
 {% block bodyclasses %}organisation-summary{% endblock %}
 
 {% block content %}
-<div class="header">
-    <h1>{{ organisation.name }} Outcomes</h1>
-</div>
+
+{% include "organisations/includes/organisation_header.html" with title="Outcomes" %}
 
 {% include "organisations/includes/organisation_tabs.html" with active_tab='summary' %}
 
