@@ -73,7 +73,6 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         test_form_values = {
             'response': response_text,
             'issue': self.problem.id,
-            'respond': ''
         }
         self.client.post(self.response_form_url, test_form_values)
         self.problem = Problem.objects.get(pk=self.problem.id)
@@ -87,7 +86,6 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
             'response': response_text,
             'issue': self.problem.id,
             'issue_status': Problem.RESOLVED,
-            'respond': ''
         }
         self.client.post(self.response_form_url, test_form_values)
         self.problem = Problem.objects.get(pk=self.problem.id)
@@ -102,55 +100,31 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
             'response': response_text,
             'issue': self.problem.id,
             'issue_status': Problem.RESOLVED,
-            'status': ''
         }
         self.client.post(self.response_form_url, test_form_values)
         self.problem = Problem.objects.get(pk=self.problem.id)
         self.assertEqual(self.problem.responses.count(), 0)
         self.assertEqual(self.problem.status, Problem.RESOLVED)
 
-    def test_form_warns_about_response_during_status_change(self):
-        response_text = 'I didn\'t mean to respond'
-        test_form_values = {
-            'response': response_text,
-            'issue': self.problem.id,
-            'issue_status': Problem.RESOLVED,
-            'status': ''
-        }
-        resp = self.client.post(self.response_form_url, test_form_values)
-        self.assertFormError(resp, 'form', 'response', 'You cannot submit a response if you\'re just updating the status. Please delete the text in the response field or use the "Respond" button.')
-
-    def test_form_requires_text_for_responses(self):
-        response_text = ''
-        test_form_values = {
-            'response': response_text,
-            'issue': self.problem.id,
-            'respond': ''
-        }
-        resp = self.client.post(self.response_form_url, test_form_values)
-        self.assertFormError(resp, 'form', 'response', 'This field is required.')
-
-    def test_form_sets_formal_complaint_with_update_status(self):
+    def test_form_sets_formal_complaint(self):
         response_text = ''
         test_form_values = {
             'response': response_text,
             'issue': self.problem.id,
             'issue_formal_complaint': True,
-            'status': ''
         }
         self.client.post(self.response_form_url, test_form_values)
         self.problem = Problem.objects.get(pk=self.problem.id)
         self.assertEqual(self.problem.responses.count(), 0)
         self.assertEqual(self.problem.formal_complaint, True)
 
-    def test_form_sets_formal_complaint_and_status_with_update_status(self):
+    def test_form_sets_formal_complaint_and_status(self):
         response_text = ''
         test_form_values = {
             'response': response_text,
             'issue': self.problem.id,
             'issue_status': Problem.RESOLVED,
             'issue_formal_complaint': True,
-            'status': ''
         }
         self.client.post(self.response_form_url, test_form_values)
         self.problem = Problem.objects.get(pk=self.problem.id)
@@ -158,14 +132,13 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         self.assertEqual(self.problem.status, Problem.RESOLVED)
         self.assertEqual(self.problem.formal_complaint, True)
 
-    def test_form_sets_formal_complaint_status_and_response_with_respond(self):
+    def test_form_sets_formal_complaint_status_and_response(self):
         response_text = 'This problem is solved'
         test_form_values = {
             'response': response_text,
             'issue': self.problem.id,
             'issue_status': Problem.RESOLVED,
             'issue_formal_complaint': True,
-            'respond': ''
         }
         self.client.post(self.response_form_url, test_form_values)
         self.problem = Problem.objects.get(pk=self.problem.id)
@@ -180,7 +153,6 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         test_form_values = {
             'response': response_text,
             'issue': self.problem.id,
-            'respond': ''
         }
         resp = self.client.post(self.response_form_url, test_form_values)
         self.assertEqual(resp.status_code, 200)
@@ -193,10 +165,22 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
             'response': response_text,
             'issue': self.problem.id,
             'issue_status': Problem.RESOLVED,
-            'status': ''
         }
         resp = self.client.post(self.response_form_url, test_form_values)
         self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "the problem status has been updated")
+        self.assertContains(resp, reverse('org-dashboard', kwargs={'ods_code': self.test_organisation.ods_code}))
+
+    def test_form_shows_both_confirmations_with_link(self):
+        response_text = 'new response'
+        test_form_values = {
+            'response': response_text,
+            'issue': self.problem.id,
+            'issue_status': Problem.RESOLVED,
+        }
+        resp = self.client.post(self.response_form_url, test_form_values)
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "response has been published online")
         self.assertContains(resp, "the problem status has been updated")
         self.assertContains(resp, reverse('org-dashboard', kwargs={'ods_code': self.test_organisation.ods_code}))
 
@@ -215,7 +199,6 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         test_form_values = {
             'response': response_text,
             'issue': self.problem.id,
-            'respond': ''
         }
         resp = self.client.post(self.response_form_url, test_form_values)
         self.assertFormError(resp, 'form', None, 'Sorry, someone else has modified the Problem during the time you were working on it. Please double-check your changes to make sure they\'re still necessary.')
@@ -232,7 +215,6 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
             'response': response_text,
             'issue': self.problem.id,
             'issue_status': Problem.RESOLVED,
-            'respond': ''
         }
         self.client.post(self.response_form_url, test_form_values)
         session_version = self.client.session['object_versions'][self.problem.id]
@@ -247,7 +229,6 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         test_form_values = {
             'response': response_text,
             'issue': self.problem.id,
-            'respond': ''
         }
         resp = self.client.post(self.response_form_url, test_form_values)
         self.assertEqual(resp.status_code, 200)
@@ -320,7 +301,6 @@ class ResponseFormViewTests(AuthorizationTestCase):
             'response': '',
             'issue': self.problem.id,
             'issue_status': Problem.RESOLVED,
-            'status': ''
         }
         resp = self.client.post(self.response_form_url, test_form_values)
         self.assertEqual(resp.status_code, 200)
