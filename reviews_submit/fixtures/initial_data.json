@@ -56,7 +56,7 @@
             "org_type": "hospitals",
             "updated": "2013-04-29T11:58:37.262Z",
             "api_question_id": 7,
-            "title": "Friends and Family"
+            "title": "How likely are you to recommend this hospital to friends and family if they needed similar care or treatment?"
         }
     },
     {
@@ -106,7 +106,7 @@
             "org_type": "gppractices",
             "updated": "2013-04-29T11:58:50.183Z",
             "api_question_id": 7,
-            "title": "Friends and Family"
+            "title": "How likely are you to recommend this GP practice to friends and family if they needed similar care or treatment?"
         }
     },
     {
