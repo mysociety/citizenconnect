@@ -341,6 +341,10 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     def has_elevated_priority(self):
         return self.priority < Problem.PRIORITY_NORMAL
 
+    @property
+    def is_high_priority(self):
+        return self.priority == Problem.PRIORITY_HIGH and not self.status in Problem.CLOSED_STATUSES
+
     def clean(self):
         """
         Custom model validation
