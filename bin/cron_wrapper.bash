@@ -17,7 +17,7 @@ output="`./manage.py $1`"
 if [ "$?" -ne 0 ]
 then
   echo ""
-  echo "### output captured before the program exited ###"
+  echo "### output captured before '$1' exited ###"
   echo ""
   echo "$output"
 fi
