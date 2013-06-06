@@ -19,6 +19,19 @@
 <form method="post" class="problem-form">
     {% csrf_token %}
 
+    {% if form.errors %}
+      <fieldset class="island">
+        <label class="island-label">There were some errors...</label>
+
+        <ul class="message-list">
+            <li class="message-list__error">
+              There were some errors with some of the fields. Please scroll
+              down, correct them and then submit the form again.
+            </li>
+        </ul>
+      </fieldset>
+    {% endif %}
+
     {% if form.non_field_errors %}
         <fieldset class="island">
             {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
