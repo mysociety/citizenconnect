@@ -343,6 +343,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
 
     @property
     def is_high_priority(self):
+        """A problem is only a high priority if it's not closed"""
         return self.priority == Problem.PRIORITY_HIGH and not self.status in Problem.CLOSED_STATUSES
 
     def clean(self):
