@@ -1181,7 +1181,9 @@ th .filters__dropdown select { font-size: 1em; }
 .site-top-bar .site-top-bar__row .site-top-bar__cell--nav { width: 170px; }
 .site-top-bar .site-top-bar__row .site-top-bar__cell--nav .nav { float: right; }
 
-.site-top-bar--slim { width: auto; float: left; margin: 2em; }
+.site-top-bar--choices { width: auto; float: left; margin: 2em; }
+
+.site-top-bar--mhl { float: right; width: 50%; margin: 1em; }
 
 .ie6 .site-top-bar, .ie7 .site-top-bar { display: block; }
 .ie6 .site-top-bar .site-top-bar__row, .ie7 .site-top-bar .site-top-bar__row { display: block; }
