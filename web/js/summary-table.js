@@ -123,8 +123,8 @@
             }
         }
         // Get the underscore templates
-        var problemFiltersTemplate = $("script[name='problems-filters']").text();
-        var reviewFiltersTemplate = $("script[name='reviews-filters']").text();
+        var problemFiltersTemplate = $("script[name='problems-filters']").html();
+        var reviewFiltersTemplate = $("script[name='reviews-filters']").html();
 
         // Do the inital hiding and turning into a select for the interval columns
         initialiseColumns(problemsColumns,

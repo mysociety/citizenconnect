@@ -45,7 +45,7 @@ $(document).ready(function () {
         shadowRetinaUrl: "/static/img/shadow@2x.png",
         shadowSize: [24, 24]
     });
-    var hoverBubbleTemplate = $("script[name=hover-bubble]").text();
+    var hoverBubbleTemplate = $("script[name=hover-bubble]").html();
     var londonCentre = new L.LatLng(51.505, -0.09);
     var northEastCentre = new L.LatLng(54.95, -1.62);
     var isNorthEast = (window.location.hash == "#northeast");
