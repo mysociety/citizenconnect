@@ -34,6 +34,12 @@
   margin: 2em;
 }
 
+.site-top-bar--mhl {
+  float: right;
+  width: 50%;
+  margin: 1em;
+}
+
 // alternative layout for IEs that don't support display:table;
 .ie6, .ie7 {
   .site-top-bar {
