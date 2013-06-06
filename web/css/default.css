@@ -1181,6 +1181,8 @@ th .filters__dropdown select { font-size: 1em; }
 .site-top-bar .site-top-bar__row .site-top-bar__cell--nav { width: 170px; }
 .site-top-bar .site-top-bar__row .site-top-bar__cell--nav .nav { float: right; }
 
+.site-top-bar--slim { width: auto; float: left; margin: 2em; }
+
 .ie6 .site-top-bar, .ie7 .site-top-bar { display: block; }
 .ie6 .site-top-bar .site-top-bar__row, .ie7 .site-top-bar .site-top-bar__row { display: block; }
 .ie6 .site-top-bar .site-top-bar__row .site-top-bar__cell, .ie7 .site-top-bar .site-top-bar__row .site-top-bar__cell { display: block; float: left; }
@@ -1245,7 +1247,7 @@ th .filters__dropdown select { font-size: 1em; }
 .alert--grey { background: #f2f2f2; color: #333333; }
 
 /** The site nav - a styled horizontal list */
-.site-nav { list-style: none; padding: 0; text-align: center; border-top: 1px solid #dddddd; border-bottom: 1px solid #dddddd; background-color: #f2f2f2; background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(white)); background: -webkit-linear-gradient(top, #f2f2f2, white); background: -moz-linear-gradient(top, #f2f2f2, white); background: -ms-linear-gradient(top, #f2f2f2, white); background: -o-linear-gradient(top, #f2f2f2, white); /** A tiny reset to a horizontal list, we're using inline and not floats so text-align: center works */ }
+.site-nav { clear: both; list-style: none; padding: 0; text-align: center; border-top: 1px solid #dddddd; border-bottom: 1px solid #dddddd; background-color: #f2f2f2; background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(white)); background: -webkit-linear-gradient(top, #f2f2f2, white); background: -moz-linear-gradient(top, #f2f2f2, white); background: -ms-linear-gradient(top, #f2f2f2, white); background: -o-linear-gradient(top, #f2f2f2, white); /** A tiny reset to a horizontal list, we're using inline and not floats so text-align: center works */ }
 .site-nav > li { display: inline-block; *display: inline; *zoom: 1; }
 @media only screen and (max-width: 480px) { .site-nav > li { display: block; width: 100%; } }
 .site-nav a { display: block; font-weight: bold; text-transform: uppercase; padding: 0.83333em 0.875em 0.625em 0.875em; color: #2f9aa8; text-decoration: none; }
@@ -1308,7 +1310,7 @@ div.review-form__rating-answer div.rateit-selected { background: url("/static/cs
 .feedback-box li { margin-bottom: 0.625em; }
 
 /** The site nav - a styled horizontal list */
-.site-nav { list-style: none; padding: 0; text-align: center; border-top: 1px solid #dddddd; border-bottom: 1px solid #dddddd; background-color: #f2f2f2; background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(white)); background: -webkit-linear-gradient(top, #f2f2f2, white); background: -moz-linear-gradient(top, #f2f2f2, white); background: -ms-linear-gradient(top, #f2f2f2, white); background: -o-linear-gradient(top, #f2f2f2, white); /** A tiny reset to a horizontal list, we're using inline and not floats so text-align: center works */ }
+.site-nav { clear: both; list-style: none; padding: 0; text-align: center; border-top: 1px solid #dddddd; border-bottom: 1px solid #dddddd; background-color: #f2f2f2; background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(white)); background: -webkit-linear-gradient(top, #f2f2f2, white); background: -moz-linear-gradient(top, #f2f2f2, white); background: -ms-linear-gradient(top, #f2f2f2, white); background: -o-linear-gradient(top, #f2f2f2, white); /** A tiny reset to a horizontal list, we're using inline and not floats so text-align: center works */ }
 .site-nav > li { display: inline-block; *display: inline; *zoom: 1; }
 @media only screen and (max-width: 480px) { .site-nav > li { display: block; width: 100%; } }
 .site-nav a { display: block; font-weight: bold; text-transform: uppercase; padding: 0.83333em 0.875em 0.625em 0.875em; color: #2f9aa8; text-decoration: none; }
@@ -1321,6 +1323,9 @@ div.review-form__rating-answer div.rateit-selected { background: url("/static/cs
 
 .footer__link { color: #888888; margin-left: 1.25em; text-decoration: none; }
 .footer__link:hover { color: #8d8d8d; text-decoration: underline; }
+
+/** Cobrand heading */
+.heading { float: left; }
 
 /* ========================================================================== Print styles. Inlined to avoid required HTTP connection: h5bp.com/r ========================================================================== */
 @media print { * { background: transparent !important; color: #000 !important; /* Black prints faster: h5bp.com/s */ box-shadow: none !important; text-shadow: none !important; }
