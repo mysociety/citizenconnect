@@ -28,6 +28,12 @@
   }
 }
 
+.site-top-bar--slim {
+  width: auto;
+  float: left;
+  margin: 2em;
+}
+
 // alternative layout for IEs that don't support display:table;
 .ie6, .ie7 {
   .site-top-bar {
