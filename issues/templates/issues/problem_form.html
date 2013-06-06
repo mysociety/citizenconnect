@@ -19,7 +19,20 @@
 <form method="post" class="problem-form">
     {% csrf_token %}
 
-    {% if form.errors %}
+
+    {% if form.non_field_errors %}
+        <fieldset class="island">
+            {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
+        </fieldset>
+    {% endif %}
+
+    {% comment %}
+      If there are errors with the fields we want to make sure that there is a
+      message at the top of the page that directs users down to the errors. This
+      is what the following block does, but only if there weren't some errors
+      reported above (as that would be ugly).
+    {% endcomment %}
+    {% if form.errors and not form.non_field_errors %}
       <fieldset class="island">
         <label class="island-label">There were some errors...</label>
 
@@ -31,12 +44,6 @@
             </li>
         </ul>
       </fieldset>
-    {% endif %}
-
-    {% if form.non_field_errors %}
-        <fieldset class="island">
-            {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
-        </fieldset>
     {% endif %}
 
     {% for hidden in form.hidden_fields %}
