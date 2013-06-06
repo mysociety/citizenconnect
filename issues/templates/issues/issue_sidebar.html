@@ -1,6 +1,6 @@
 <div class="split-box  split-box--alert  split-box--alert--lrg">
     <div class="split-box__inner">
-        {% if private and object.priority == object.PRIORITY_HIGH %}
+        {% if private and object.priority == object.PRIORITY_HIGH and not object.status in object.CLOSED_STATUSES %}
             <p class="split-box__left  split-box--red">Priority</p>
         {% endif %}
         <p class="split-box__right">{{ object.reference_number }}</p>
