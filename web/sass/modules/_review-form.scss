@@ -1,8 +1,17 @@
 
 
 div.review-form__rating-answer {
-    @extend .fr;
-    width: auto;
+
+    div.rateit {
+        margin: 1em 0;
+        @extend .fr;
+        // Hidden until the JS shows it
+        display: none;
+    }
+
+    select {
+        margin: 1em 0;
+    }
 
     div.rateit-range
     {
@@ -19,6 +28,7 @@ div.review-form__rating-answer {
     {
         background: url('/static/css/rateit/review-star-gold.png');
     }
+
 }
 
 .review-form__month_year_of_visit {
