@@ -37,7 +37,6 @@ class ProblemAPITests(TestCase):
             'requires_second_tier_moderation': 0,
             'breach': 1,
             'commissioned': Problem.NATIONALLY_COMMISSIONED,
-            'relates_to_previous_problem': True,
             'priority': Problem.PRIORITY_HIGH,
             'escalated': 0
         }
@@ -69,7 +68,6 @@ class ProblemAPITests(TestCase):
         self.assertEqual(problem.requires_second_tier_moderation, False)
         self.assertEqual(problem.breach, True)
         self.assertEqual(problem.commissioned, Problem.NATIONALLY_COMMISSIONED)
-        self.assertEqual(problem.relates_to_previous_problem, True)
         self.assertEqual(problem.priority, Problem.PRIORITY_HIGH)
         self.assertEqual(problem.status, Problem.NEW)
         self.assertEqual(problem.confirmation_sent, None)

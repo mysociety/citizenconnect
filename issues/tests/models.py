@@ -126,9 +126,6 @@ class ProblemModelTests(ProblemTestCase):
     def test_defaults_to_confirmation_not_required(self):
         self.assertFalse(self.test_problem.confirmation_required)
 
-    def test_defaults_to_not_related_to_previous_problem(self):
-        self.assertFalse(self.test_problem.relates_to_previous_problem)
-
     def test_defaults_to_hidden(self):
         self.assertEqual(self.test_problem.publication_status, Problem.HIDDEN)
 

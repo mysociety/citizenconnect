@@ -138,7 +138,6 @@ class ProblemForm(forms.ModelForm):
             'preferred_contact_method',
             'public',
             'public_reporter_name',
-            'relates_to_previous_problem',
         ]
 
         widgets = {
