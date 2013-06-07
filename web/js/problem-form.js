@@ -81,7 +81,8 @@
         var $servicePlaceholder = $('#id_service option:first').remove();
         $('#id_service').prepend('<option></option>');
         $('#id_service').select2({
-            placeholder: $servicePlaceholder.text()
+            placeholder: $servicePlaceholder.text(),
+            allowClear: true
         });
     });
 
