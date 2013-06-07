@@ -590,6 +590,8 @@ table .icon-warning { font-size: 1.375em; color: #d81e05; line-height: 0; }
 .summary-table tbody tr.summary-table__highlight td, .summary-table--organisation tbody tr.summary-table__highlight td { background-color: #d81e05; color: white; font-weight: bold; border-color: #d81e05; border-top: 2px solid #d81e05; border-bottom: 2px solid #d81e05; }
 .summary-table .filters__dropdown, .summary-table--organisation .filters__dropdown { margin: -0.5em 0; }
 
+.ie8 .summary-table th.average_recommendation_rating, .ie8 .summary-table--organisation th.average_recommendation_rating, .ie8 .summary-table td.average_recommendation_rating, .ie8 .summary-table--organisation td.average_recommendation_rating { border-right: 2px solid #DDD; }
+
 .summary-table--organisation { border: none; }
 .summary-table--organisation th { padding: 1em 0.5em; }
 .summary-table--organisation th.status, .summary-table--organisation td.status { text-align: left; font-weight: bold; padding-left: 1em; border-left: none; }
