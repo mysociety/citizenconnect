@@ -240,6 +240,14 @@ class ProblemModelTests(ProblemTestCase):
         self.assertEqual(problem.priority, Problem.PRIORITY_HIGH)
         self.assertEqual(problem.has_elevated_priority, True)
 
+    def test_is_high_priority(self):
+        problem = self.test_problem
+        self.assertFalse(problem.is_high_priority)
+        problem.priority = Problem.PRIORITY_HIGH
+        self.assertTrue(problem.is_high_priority)
+        problem.status = Problem.RESOLVED
+        self.assertFalse(problem.is_high_priority)
+
     def test_limits_description_to_2000_chars(self):
         long_problem = self.test_problem
         long_problem.description = "a" * 2001
