@@ -68,7 +68,6 @@ class ProblemCreateFormTests(ProblemCreateFormBase, TestCase):
         self.assertEqual(problem.reporter_name, self.uuid)
         self.assertEqual(problem.reporter_email, 'steve@mysociety.org')
         self.assertEqual(problem.preferred_contact_method, 'phone')
-        self.assertEqual(problem.relates_to_previous_problem, False)
         self.assertEqual(problem.mailed, False)
         self.assertEqual(problem.confirmation_sent, None)
         self.assertEqual(problem.confirmation_required, True)

@@ -65,7 +65,7 @@
 .cf:before, .feedback-form:before, .feedback-form .big-radio-group:before, .gw:before, .radio-list:before, .grid-wrapper:before, .island:before, .islet:before, .meta-data-sidebar .meta-data-wrap:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .site-nav:before, .feed-list:before, .feed-list li:before, .bordered-box:before, .footer:before, .cf:after, .feedback-form:after, .feedback-form .big-radio-group:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after, .site-nav:after, .feed-list:after, .feed-list li:after, .bordered-box:after, .footer:after { content: " "; display: table; }
 .cf:after, .feedback-form:after, .feedback-form .big-radio-group:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after, .site-nav:after, .feed-list:after, .feed-list li:after, .bordered-box:after, .footer:after { clear: both; }
 
-.fr, .rating--review_details, div.review-form__rating-answer, .footer__links { float: right; }
+.fr, .rating--review_details, div.review-form__rating-answer div.rateit, .footer__links { float: right; }
 
 .fl { float: left; }
 
@@ -1299,7 +1299,8 @@ th .filters__dropdown select { font-size: 1em; }
 
 .link-111 img { max-width: 100%; height: auto; margin-right: 20px; }
 
-div.review-form__rating-answer { width: auto; }
+div.review-form__rating-answer div.rateit { margin: 1em 0; display: none; }
+div.review-form__rating-answer select { margin: 1em 0; }
 div.review-form__rating-answer div.rateit-range { background: url("/static/css/rateit/review-star-grey.png"); height: 16px; }
 div.review-form__rating-answer div.rateit-hover { background: url("/static/css/rateit/review-star-gold.png"); }
 div.review-form__rating-answer div.rateit-selected { background: url("/static/css/rateit/review-star-gold.png"); }

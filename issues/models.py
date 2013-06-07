@@ -297,7 +297,6 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     requires_second_tier_moderation = models.BooleanField(default=False, blank=False)
     commissioned = models.IntegerField(blank=True, null=True, choices=COMMISSIONED_CHOICES)
     cobrand = models.CharField(max_length=30, blank=False, choices=COBRAND_CHOICES)
-    relates_to_previous_problem = models.BooleanField(default=False, blank=False)
     formal_complaint = models.BooleanField(default=False, blank=False)
 
     # Fields relating to emails that get sent
@@ -340,6 +339,11 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     @property
     def has_elevated_priority(self):
         return self.priority < Problem.PRIORITY_NORMAL
+
+    @property
+    def is_high_priority(self):
+        """A problem is only a high priority if it's not closed"""
+        return self.priority == Problem.PRIORITY_HIGH and not self.status in Problem.CLOSED_STATUSES
 
     def clean(self):
         """

@@ -19,10 +19,31 @@
 <form method="post" class="problem-form">
     {% csrf_token %}
 
+
     {% if form.non_field_errors %}
         <fieldset class="island">
             {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
         </fieldset>
+    {% endif %}
+
+    {% comment %}
+      If there are errors with the fields we want to make sure that there is a
+      message at the top of the page that directs users down to the errors. This
+      is what the following block does, but only if there weren't some errors
+      reported above (as that would be ugly).
+    {% endcomment %}
+    {% if form.errors and not form.non_field_errors %}
+      <fieldset class="island">
+        <label class="island-label">There were some errors...</label>
+
+        <ul class="message-list">
+            <li class="message-list__error">
+              Your problem has not been saved because there were errors with
+              some of the details. Please scroll down, correct the highlighted
+              issues and submit again.
+            </li>
+        </ul>
+      </fieldset>
     {% endif %}
 
     {% for hidden in form.hidden_fields %}
@@ -44,9 +65,6 @@
 
     <fieldset class="island">
         <label for="id_service" class="island-label">Your problem</label>
-
-        <label for="id_relates_to_previous_problem" class="label-checkbox">{{ form.relates_to_previous_problem }} Does your problem relate to a previous problem?</label>
-        {% include "message_list.html" with messages=form.relates_to_previous_problem.errors message_type='error' %}
 
         <ul class="gw">
             <li class="g  five-eighths">

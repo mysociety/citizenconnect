@@ -54,13 +54,16 @@
                 {{ hidden }}
             {% endfor %}
 
-            <div class="review-form__rating-answer">
-                {{ rating_form.answer }}
-                <div class="rateit" data-rateit-backingfld="#{{ rating_form.answer.auto_id }}"></div>
+            <div class="gw">
+                <div class="g  two-thirds">
+                    <p class="info">{{ rating_form.question.label }}</p>
+                </div>
+
+                <div class="review-form__rating-answer  g  one-third">
+                    {{ rating_form.answer }}
+                    <div class="rateit" data-rateit-backingfld="#{{ rating_form.answer.auto_id }}"></div>
+                </div>
             </div>
-
-
-            <p class="info">{{ rating_form.question.label }}</p>
 
             {% include "message_list.html" with messages=rating_form.answer.errors message_type='error' %}
 
@@ -88,14 +91,14 @@
 
             <ul class="gw">
                 <li class="g  one-third">
-                    <label for="{{ form.display_name.auto_id }}">Your name</label>                    
+                    <label for="{{ form.display_name.auto_id }}">Your name</label>
                     <p class="info">You must enter a name.</p>
                     {{ form.display_name }}
                     {% include "message_list.html" with messages=form.display_name.errors message_type='error' %}
                 </li>
 
                 <li class="g  two-thirds">
-                    <label for="{{ form.email.auto_id }}">Your email address</label>                    
+                    <label for="{{ form.email.auto_id }}">Your email address</label>
                     <p class="info">We only use your email address to communicate with you about your feedback.</p>
                     {{ form.email }}
                     {% include "message_list.html" with messages=form.email.errors message_type='error' %}
@@ -113,7 +116,7 @@
         <fieldset class="island">
             <ul class="gw">
                 <li class="g  two-thirds">
-                    <label for="id_agree_to_terms" class="label-checkbox">{{ form.agree_to_terms }} By submitting I accept the <a href="http://www.nhs.uk/aboutNHSChoices/aboutnhschoices/termsandconditions/Pages/commentspolicy.aspx">moderation rules</a> and <a href="{% url 'about' cobrand=cobrand.name %}">terms and conditions</a>.</label>
+                    <label for="id_agree_to_terms" class="label-checkbox">{{ form.agree_to_terms }} By submitting I accept the <a href="http://www.nhs.uk/aboutNHSChoices/aboutnhschoices/termsandconditions/Pages/commentspolicy.aspx">comments policy</a> and <a href="{% url 'about' cobrand=cobrand.name %}">terms and conditions</a>.</label>
                     {% include "message_list.html" with messages=form.agree_to_terms.errors message_type='error' %}
                 </li>
                 <li class="g  one-third">
@@ -128,8 +131,10 @@
 
 {% block extra_js %}
     {# Note that the ordering here is important: review-form needs to be before rateit #}
-    <script src="{% static 'js/review-form.js' %}"></script>
-    <script src="{% static 'js/jquery.rateit.min.js' %}"></script>
+    <!--[if gt IE 7]>!-->
+        <script src="{% static 'js/review-form.js' %}"></script>
+        <script src="{% static 'js/jquery.rateit.min.js' %}"></script>
+     <!--<![endif]-->
 {% endblock extra_js %}
 
 {% block extra_initial_css %}

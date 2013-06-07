@@ -132,7 +132,6 @@ class ProblemAPIForm(forms.ModelForm):
             'source',
             'breach',
             'commissioned',
-            'relates_to_previous_problem',
             'priority',
             'status'
         ]

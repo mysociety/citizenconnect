@@ -126,9 +126,6 @@ class ProblemModelTests(ProblemTestCase):
     def test_defaults_to_confirmation_not_required(self):
         self.assertFalse(self.test_problem.confirmation_required)
 
-    def test_defaults_to_not_related_to_previous_problem(self):
-        self.assertFalse(self.test_problem.relates_to_previous_problem)
-
     def test_defaults_to_hidden(self):
         self.assertEqual(self.test_problem.publication_status, Problem.HIDDEN)
 
@@ -239,6 +236,14 @@ class ProblemModelTests(ProblemTestCase):
         problem.priority = Problem.PRIORITY_HIGH
         self.assertEqual(problem.priority, Problem.PRIORITY_HIGH)
         self.assertEqual(problem.has_elevated_priority, True)
+
+    def test_is_high_priority(self):
+        problem = self.test_problem
+        self.assertFalse(problem.is_high_priority)
+        problem.priority = Problem.PRIORITY_HIGH
+        self.assertTrue(problem.is_high_priority)
+        problem.status = Problem.RESOLVED
+        self.assertFalse(problem.is_high_priority)
 
     def test_limits_description_to_2000_chars(self):
         long_problem = self.test_problem

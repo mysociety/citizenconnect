@@ -27,6 +27,9 @@ $(function () {
         $select.parent('div').attr('data-select-name', $select.attr('name'));
     });
 
+    // Un-hide all the star ratings elements
+    $('.rateit').show();
+
     $("div.review-form form").submit(function (submitEvent) {
         var $form = $(this);
         $('div.review-form__rating-answer option').each(function() {

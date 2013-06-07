@@ -1,6 +1,6 @@
 <div class="split-box  split-box--alert  split-box--alert--lrg">
     <div class="split-box__inner">
-        {% if private and object.priority == object.PRIORITY_HIGH %}
+        {% if private and object.is_high_priority %}
             <p class="split-box__left  split-box--red">Priority</p>
         {% endif %}
         <p class="split-box__right">{{ object.reference_number }}</p>
@@ -45,11 +45,6 @@
                         <span class="icon-x  meta-data-list__icon-red" aria-hidden="true"></span>
                     {% endif %}
                     &nbsp;Happy with Resolution
-                </li>
-            {% endif %}
-            {% if private and object.relates_to_previous_problem %}
-                <li class="relates-to-previous">
-                    <span class="icon-stack" aria-hidden="true"> Related to previous problem
                 </li>
             {% endif %}
             {% if object.formal_complaint %}
