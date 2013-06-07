@@ -298,6 +298,18 @@ table {
   .filters__dropdown { margin: -0.5em 0; }
 }
 
+// IE8 has some problem with the right border on the table as a whole
+// when we hide some columns, so manually specify it on the last th and td
+.ie8 {
+  .summary-table {
+    th.average_recommendation_rating,
+    td.average_recommendation_rating {
+      border-right:2px solid #DDD;
+    }
+  }
+}
+
+
 .summary-table--organisation {
   @extend .summary-table;
 

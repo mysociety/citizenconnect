@@ -41,7 +41,7 @@
                     {% elif column.accessor == 'happy_outcome' or column.accessor == 'happy_service' %}
                         <th {{ column.attrs.th.as_html }}><a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">{{ column.header }}</a></th>
                     {% elif column.accessor == 'average_recommendation_rating' %}
-                        <th>Rating</th>
+                        <th class="average_recommendation_rating">Rating</th>
                     {% else %}
                         <th></th>
                     {% endif %}
