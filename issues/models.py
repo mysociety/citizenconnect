@@ -119,7 +119,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     STATUS_CHOICES = (
         (NEW, 'Open'),
         (ACKNOWLEDGED, 'In Progress'),
-        (RESOLVED, 'Responded to'),
+        (RESOLVED, 'Closed'),
         (ESCALATED, 'Escalated'),
         (UNABLE_TO_RESOLVE, 'Unable to Resolve'),
         (REFERRED_TO_OTHER_PROVIDER, 'Referred to Another Provider'),
