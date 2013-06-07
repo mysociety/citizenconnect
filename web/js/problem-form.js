@@ -78,7 +78,13 @@
             }
         });
 
-        $('#id_service').select2();
+        var $serviceSelect = $('#id_service');
+        var $servicePlaceholder = $serviceSelect.find('option:first').remove();
+        $serviceSelect.prepend('<option></option>');
+        $serviceSelect.select2({
+            placeholder: $servicePlaceholder.text(),
+            allowClear: true
+        });
     });
 
     // bind the onload event so we can trigger the click on
