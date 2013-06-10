@@ -1528,7 +1528,6 @@ class BreachDashboardTests(AuthorizationTestCase):
             self.provider,
             self.no_provider,
             self.other_provider,
-            self.pals,
             self.second_tier_moderator
         ]
 

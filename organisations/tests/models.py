@@ -78,13 +78,13 @@ class OrganisationMetaphoneTests(TestCase):
         self.assertEqual(self.organisation.name_metaphone, 'TSTRKNSXN')
 
 
-class CreateTestOrganisationMixin(object):
+class CreateTestTrustMixin(object):
     ods_counter = 0
 
     def create_test_object(self, attributes={}):
-        attributes['ods_code'] = 'F{0}'.format(self.ods_counter)
+        attributes['code'] = 'F{0}'.format(self.ods_counter)
         self.ods_counter += 1
-        return create_test_organisation(attributes)
+        return create_test_trust(attributes)
 
 
 class CreateTestCCGMixin(object):
@@ -211,7 +211,7 @@ class SendMailTestsMixin(object):
 # This is a bit convoluted. We want to test the user creation and email sending
 # for the Organisations and the CCGs. Use this matrix of mixins to do all the
 # tests without any code repetition.
-class OrganisationModelUserCreationTests(CreateTestOrganisationMixin, UserCreationTestsMixin, TestCase):
+class TrustModelUserCreationTests(CreateTestTrustMixin, UserCreationTestsMixin, TestCase):
     pass
 
 
@@ -219,7 +219,7 @@ class CCGModelUserCreationTests(CreateTestCCGMixin, UserCreationTestsMixin, Test
     pass
 
 
-class OrganisationModelSendMailTests(CreateTestOrganisationMixin, SendMailTestsMixin, TestCase):
+class TrustModelSendMailTests(CreateTestTrustMixin, SendMailTestsMixin, TestCase):
     pass
 
 

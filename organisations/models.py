@@ -34,7 +34,7 @@ class CCG(MailSendMixin, UserCreationMixin, AuditedModel):
         return self.name
 
 
-class Trust(AuditedModel):
+class Trust(MailSendMixin, UserCreationMixin, AuditedModel):
     name = models.TextField()
     code = models.CharField(max_length=8, db_index=True, unique=True)
     users = models.ManyToManyField(User, related_name='trusts')
@@ -81,11 +81,15 @@ class Trust(AuditedModel):
         # Everyone else - NO
         return False
 
+    def default_user_group(self):
+        """Group to ensure that users are members of"""
+        return Group.objects.get(pk=auth.TRUSTS)
+
     def __unicode__(self):
         return self.name
 
 
-class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Model):
+class Organisation(AuditedModel, geomodels.Model):
 
     name = models.TextField()
     organisation_type = models.CharField(max_length=100, choices=settings.ORGANISATION_CHOICES)
@@ -159,10 +163,6 @@ class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Mod
         name_metaphones = dm(unicode_name)
         self.name_metaphone = name_metaphones[0]  # Ignoring the alternative for now
         super(Organisation, self).save(*args, **kwargs)
-
-    def default_user_group(self):
-        """Group to ensure that users are members of"""
-        return Group.objects.get(pk=auth.TRUSTS)
 
     def __unicode__(self):
         return self.name
