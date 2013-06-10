@@ -5,10 +5,9 @@ from decimal import Decimal
 
 # Django imports
 from django.test import TestCase
-from django.conf import settings
 from django.utils.timezone import utc
 from django.contrib.gis.geos import Point
-from django.contrib.auth.models import User, AnonymousUser, Group
+from django.contrib.auth.models import User, AnonymousUser
 from django.core.urlresolvers import reverse
 
 # App imports
@@ -16,9 +15,10 @@ from issues.models import Problem
 from reviews_display.models import Review
 
 from ..lib import interval_counts
-from ..models import Organisation, Service, CCG
+from ..models import Organisation, Service, CCG, Trust
 
 api_posting_id_counter = 328409234
+
 
 def create_test_review(attributes={}):
     # Make a review
@@ -33,9 +33,10 @@ def create_test_review(attributes={}):
                           'title': 'A test title',
                           'content': 'Some test content'}
     default_attributes.update(attributes)
-    instance = Review(**dict((k,v) for (k,v) in default_attributes.items() if '__' not in k))
+    instance = Review(**dict((k, v) for (k, v) in default_attributes.items() if '__' not in k))
     instance.save()
     return instance
+
 
 def create_review_with_age(organisation, age, attributes={}):
     now = datetime.utcnow().replace(tzinfo=utc)
@@ -46,35 +47,53 @@ def create_review_with_age(organisation, age, attributes={}):
     default_atts.update(attributes)
     return create_test_review(default_atts)
 
+
 def create_test_ccg(attributes={}):
     # Make a CCG
     default_attributes = {
-        'name':'Test CCG',
-        'code':'ABC',
+        'name': 'Test CCG',
+        'code': 'CCG1',
         'email': 'test-ccg@example.org',
     }
     default_attributes.update(attributes)
-    instance = CCG(**dict((k,v) for (k,v) in default_attributes.items() if '__' not in k))
+    instance = CCG(**dict((k, v) for (k, v) in default_attributes.items() if '__' not in k))
     instance.save()
     return instance
+
+
+def create_test_trust(attributes={}):
+    # Make a Trust
+    default_attributes = {
+        'name': 'Test Trust',
+        'code': 'TRUST1',
+        'email': 'test-trust@example.org',
+    }
+    default_attributes.update(attributes)
+    if 'escalation_ccg' not in attributes:
+        default_attributes['escalation_ccg'] = create_test_ccg({"code": default_attributes['code']})
+    instance = Trust(**dict((k, v) for (k, v) in default_attributes.items() if '__' not in k))
+    instance.save()
+    return instance
+
 
 def create_test_organisation(attributes={}):
     # Make an organisation
     coords = {'lat': -0.06213,
               'lon': 51.536}
     default_attributes = {
-        'name':'Test Organisation',
-        'organisation_type':'gppractices',
-        'choices_id':'12702',
-        'ods_code':'F84021',
+        'name': 'Test Organisation',
+        'organisation_type': 'gppractices',
+        'choices_id': '12702',
+        'ods_code': 'F84021',
         'point': Point(coords['lon'], coords['lat'])
     }
     default_attributes.update(attributes)
-    if 'escalation_ccg' not in attributes:
-        default_attributes['escalation_ccg'] = create_test_ccg({"code": default_attributes['ods_code']})
-    instance = Organisation(**dict((k,v) for (k,v) in default_attributes.items() if '__' not in k))
+    if 'trust' not in attributes:
+        default_attributes['trust'] = create_test_trust()
+    instance = Organisation(**dict((k, v) for (k, v) in default_attributes.items() if '__' not in k))
     instance.save()
     return instance
+
 
 def create_test_service(attributes={}):
     # Make a service
@@ -83,7 +102,7 @@ def create_test_service(attributes={}):
         'service_code': 'SRV111',
     }
     default_attributes.update(attributes)
-    instance = Service(**dict((k,v) for (k,v) in default_attributes.items() if '__' not in k))
+    instance = Service(**dict((k, v) for (k, v) in default_attributes.items() if '__' not in k))
     instance.save()
     return instance
 
@@ -106,13 +125,14 @@ def create_test_problem(attributes={}):
     if 'organisation' not in default_attributes:
         default_attributes['organisation'] = create_test_organisation()
 
-    problem = Problem(**dict((k,v) for (k,v) in default_attributes.items() if '__' not in k))
+    problem = Problem(**dict((k, v) for (k, v) in default_attributes.items() if '__' not in k))
     problem.save()
     # Override the created value to backdate the issue
     if 'created' in attributes:
         problem.created = attributes['created']
         problem.save()
     return problem
+
 
 def create_problem_with_age(organisation, age, attributes={}):
     now = datetime.utcnow().replace(tzinfo=utc)
@@ -122,8 +142,8 @@ def create_problem_with_age(organisation, age, attributes={}):
     default_atts.update(attributes)
     return create_test_problem(default_atts)
 
-# Auth helper methods
 
+# Auth helper methods
 def get_reset_url_from_email(email):
     """
     Read the reset your password email and get the url from it, because we need
@@ -133,29 +153,40 @@ def get_reset_url_from_email(email):
     urlmatch = re.search(r".*/password-reset-confirm/([0-9A-Za-z]+)-(.+)", email.body)
     return urlmatch.groups()[0], urlmatch.groups()[1]
 
+
 class IntervalCountsTest(TestCase):
 
     def setUp(self):
         self.test_ccg = create_test_ccg()
-        self.other_test_ccg = create_test_ccg({'name': 'Other test ccg', 'code': 'DEF'})
+        self.other_test_ccg = create_test_ccg({'name': 'Other test ccg', 'code': 'CCG2'})
+
+        self.test_trust = create_test_trust({'escalation_ccg': self.test_ccg})
+        self.test_trust.ccgs.add(self.test_ccg)
+        self.test_trust.save()
+
+        self.other_test_trust = create_test_trust({'escalation_ccg': self.other_test_ccg,
+                                                   'code': 'TRUST2'})
+        self.other_test_trust.ccgs.add(self.other_test_ccg)
+        self.other_test_trust.save()
+
         self.test_organisation = create_test_organisation({'ods_code': 'XXX999',
-                                                           'organisation_type': 'hospitals'})
-        self.test_organisation.ccgs.add(self.test_ccg)
-        self.test_organisation.save()
+                                                           'organisation_type': 'hospitals',
+                                                           'trust': self.test_trust})
         self.other_test_organisation = create_test_organisation({'ods_code': 'ABC222',
                                                                  'name': 'Other Test Organisation',
-                                                                 'organisation_type': 'gppractices'})
-        self.other_test_organisation.ccgs.add(self.other_test_ccg)
-        self.other_test_organisation.save()
+                                                                 'organisation_type': 'gppractices',
+                                                                 'trust': self.other_test_trust})
+
         self.test_org_injuries = create_test_service({"service_code": 'ABC123',
                                                       "organisation_id": self.test_organisation.id})
+
         # Create a spread of problems over time for two organisations
-        problem_ages = {3: {'time_to_acknowledge' : 24, 'time_to_address': 220},
-                        4: {'time_to_acknowledge' : 32, 'time_to_address': 102},
+        problem_ages = {3: {'time_to_acknowledge': 24, 'time_to_address': 220},
+                        4: {'time_to_acknowledge': 32, 'time_to_address': 102},
                         5: {'happy_outcome': True, 'happy_service': True, 'status': Problem.ABUSIVE},
                         21: {'happy_outcome': False, 'status': Problem.UNABLE_TO_RESOLVE},
                         22: {'service_id': self.test_org_injuries.id},
-                        45: {'time_to_acknowledge' : 12, 'time_to_address': 400}}
+                        45: {'time_to_acknowledge': 12, 'time_to_address': 400}}
 
         for age, attributes in problem_ages.items():
             create_problem_with_age(self.test_organisation, age, attributes)
@@ -289,10 +320,9 @@ class IntervalCountsTest(TestCase):
                                  data_type='reviews')
         self.assertEqual(expected_counts, actual)
 
-
     def test_filter_by_service_code(self):
         problem_filters = {'service_code': 'ABC123'}
-        threshold=['six_months', 1]
+        threshold = ['six_months', 1]
         expected_counts = [{'week': 0,
                            'four_weeks': 1,
                            'id': self.test_organisation.id,
@@ -318,7 +348,7 @@ class IntervalCountsTest(TestCase):
                             'happy_outcome': None,
                             'happy_service': None,
                             'average_time_to_acknowledge': None,
-                            'average_time_to_address': None }]
+                            'average_time_to_address': None}]
         self.assertEqual(expected_counts, interval_counts(organisation_filters=organisation_filters))
 
     def test_filter_by_statuses(self):
@@ -352,7 +382,7 @@ class IntervalCountsTest(TestCase):
                             'happy_outcome': None,
                             'happy_service': None,
                             'average_time_to_acknowledge': None,
-                            'average_time_to_address': None }]
+                            'average_time_to_address': None}]
         actual = interval_counts(organisation_filters=organisation_filters)
         self.assertEqual(expected_counts, actual)
 
@@ -363,7 +393,7 @@ class IntervalCountsTest(TestCase):
         create_problem_with_age(self.test_organisation, 100, {'breach': True})
         create_problem_with_age(self.test_organisation, 365, {'breach': True})
         problem_filters = {'breach': True}
-        threshold=['six_months', 1]
+        threshold = ['six_months', 1]
         expected_counts = [{'week': 1,
                             'four_weeks': 2,
                             'id': self.test_organisation.id,
@@ -374,7 +404,7 @@ class IntervalCountsTest(TestCase):
                             'happy_outcome': None,
                             'happy_service': None,
                             'average_time_to_acknowledge': None,
-                            'average_time_to_address': None }]
+                            'average_time_to_address': None}]
         actual = interval_counts(problem_filters=problem_filters, threshold=threshold)
         self.assertEqual(expected_counts, actual)
 
@@ -435,7 +465,7 @@ class IntervalCountsTest(TestCase):
         self.assertEqual(expected_counts, actual)
 
     def test_filtering_with_organisation_ids(self):
-        organisation_filters = {'organisation_ids': (self.other_test_organisation.id,self.test_organisation.id)}
+        organisation_filters = {'organisation_ids': (self.other_test_organisation.id, self.test_organisation.id)}
         expected_counts = [{'week': 2,
                             'four_weeks': 3,
                             'id': self.other_test_organisation.id,
@@ -461,6 +491,7 @@ class IntervalCountsTest(TestCase):
         actual = interval_counts(organisation_filters=organisation_filters)
         self.assertEqual(expected_counts, actual)
 
+
 class AuthorizationTestCase(TestCase):
     """
     A test case which sets up some dummy data useful for testing authorization
@@ -475,24 +506,34 @@ class AuthorizationTestCase(TestCase):
         self.test_ccg = create_test_ccg()
         self.other_test_ccg = create_test_ccg({'name': 'other test ccg', 'code': 'XYZ'})
 
+        # Trusts
+        self.test_trust = create_test_trust({'escalation_ccg': self.test_ccg})
+        self.other_test_trust = create_test_ccg({'name': 'other test trust',
+                                                 'code': 'XYZ',
+                                                 'escalation_ccg': self.other_test_ccg})
+
+        self.test_trust.ccgs.add(self.test_ccg)
+        self.test_trust.save()
+        self.other_test_trust.ccgs.add(self.other_test_ccg)
+        self.other_test_trust.save()
+
         # Organisations
         self.test_organisation = create_test_organisation({'organisation_type': 'hospitals',
-                                                           'escalation_ccg': self.test_ccg,
+                                                           'trust': self.test_trust,
                                                            'point': Point(-0.2, 51.5)})
-        self.test_organisation.ccgs.add(self.test_ccg)
         self.other_test_organisation = create_test_organisation({'ods_code': '12345',
                                                                  'name': 'Other Test Organisation',
-                                                                 'escalation_ccg': self.other_test_ccg,
+                                                                 'trust': self.other_test_trust,
                                                                  'point': Point(-0.1, 51.5)})
-        self.other_test_organisation.ccgs.add(self.other_test_ccg)
 
+        # Users
         self.test_password = 'password'
 
-        # A user that is allowed to access the organisation
+        # A user that is allowed to access the test trust
         self.provider = User.objects.get(pk=6)
-        # add the relation to the organisation
-        self.test_organisation.users.add(self.provider)
-        self.test_organisation.save()
+        # add the relation to the trust
+        self.test_trust.users.add(self.provider)
+        self.test_trust.save()
 
         # A Django superuser
         self.superuser = User.objects.get(pk=1)
@@ -503,18 +544,11 @@ class AuthorizationTestCase(TestCase):
         # A provider user linked to no providers
         self.no_provider = User.objects.get(pk=8)
 
-        # A User linked to a different provider
+        # A User linked to a different trust
         self.other_provider = User.objects.get(pk=7)
-        # add the relation to the other organisation
-        self.other_test_organisation.users.add(self.other_provider)
-        self.other_test_organisation.save()
-
-        # A user linked to multiple providers
-        self.pals = User.objects.get(pk=2)
-        self.test_organisation.users.add(self.pals)
-        self.test_organisation.save()
-        self.other_test_organisation.users.add(self.pals)
-        self.other_test_organisation.save()
+        # add the relation to the other trust
+        self.other_test_trust.users.add(self.other_provider)
+        self.other_test_trust.save()
 
         # An NHS Superuser
         self.nhs_superuser = User.objects.get(pk=4)
@@ -528,12 +562,12 @@ class AuthorizationTestCase(TestCase):
         # A CCG user linked to no CCGs
         self.no_ccg_user = User.objects.get(pk=14)
 
-        # A CCG user for the CCG that test organisation belongs to
+        # A CCG user for the CCG that test trust belongs to
         self.ccg_user = User.objects.get(pk=9)
         self.test_ccg.users.add(self.ccg_user)
         self.test_ccg.save()
 
-        # A CCG user for the CCG that other test organisation belongs to
+        # A CCG user for the CCG that other test trust belongs to
         self.other_ccg_user = User.objects.get(pk=13)
         self.other_test_ccg.users.add(self.other_ccg_user)
         self.other_test_ccg.save()
