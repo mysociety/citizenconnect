@@ -105,8 +105,6 @@ class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Mod
     email = models.EmailField(max_length=254, blank=True)
     secondary_email = models.EmailField(max_length=254, blank=True)
 
-    users = models.ManyToManyField(User, related_name='organisations')
-
     point = geomodels.PointField()
     objects = geomodels.GeoManager()
 
