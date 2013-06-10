@@ -53,6 +53,34 @@ class Trust(AuditedModel):
     # this trust's organisations.
     ccgs = models.ManyToManyField(CCG, related_name='trusts')
 
+    def can_be_accessed_by(self, user):
+        """ Can a user access this trust? """
+
+        # Deactivated users - NO
+        if not user.is_active:
+            return False
+
+        # Django superusers - YES
+        if user.is_superuser:
+            return True
+
+        # NHS Superusers, Moderators or customer contact centre users - YES
+        if user_in_groups(user, [auth.NHS_SUPERUSERS,
+                                 auth.CASE_HANDLERS,
+                                 auth.CUSTOMER_CONTACT_CENTRE]):
+            return True
+
+        # Users in this trust - YES
+        if user in self.users.all():
+            return True
+
+        # CCG users for a CCG associated with this Trust - YES
+        if user in User.objects.filter(ccgs__trusts=self).all():
+            return True
+
+        # Everyone else - NO
+        return False
+
     def __unicode__(self):
         return self.name
 
@@ -117,32 +145,9 @@ class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Mod
             return False
 
     def can_be_accessed_by(self, user):
-        # Can a given user access this Organisation?
-
-        # Deactivated users - NO
-        if not user.is_active:
-            return False
-
-        # Django superusers - YES
-        if user.is_superuser:
-            return True
-
-        # NHS Superusers, Moderators or customer contact centre users - YES
-        if user_in_groups(user, [auth.NHS_SUPERUSERS,
-                                 auth.CASE_HANDLERS,
-                                 auth.CUSTOMER_CONTACT_CENTRE]):
-            return True
-
-        # Providers in this organisation - YES
-        if user in self.users.all():
-            return True
-
-        # CCG users for a CCG associated with this organisation - YES
-        if user in User.objects.filter(ccgs__organisations=self).all():
-            return True
-
-        # Everyone else - NO
-        return False
+        """ Can a given user access this Organisation? """
+        # Access is controlled by the Trust
+        return self.trust.can_be_accessed_by(user)
 
     def save(self, *args, **kwargs):
         """
