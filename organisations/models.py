@@ -85,9 +85,6 @@ class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Mod
     # Which Trust this is in
     trust = models.ForeignKey(Trust, blank=False, null=False, related_name='organisations')
 
-    escalation_ccg = models.ForeignKey(CCG, blank=False, null=False, related_name='escalation_organisations')
-    ccgs = models.ManyToManyField(CCG, related_name='organisations')
-
     # Calculated double_metaphone field, for search by provider name
     name_metaphone = models.TextField(editable=False)
 
