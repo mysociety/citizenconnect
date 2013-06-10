@@ -34,6 +34,29 @@ class CCG(MailSendMixin, UserCreationMixin, AuditedModel):
         return self.name
 
 
+class Trust(AuditedModel):
+    name = models.TextField()
+    code = models.CharField(max_length=8, db_index=True, unique=True)
+    users = models.ManyToManyField(User, related_name='trusts')
+
+    # ISSUE-329: The `blank=True` should be removed when we are supplied with
+    # email addresses for all the trusts
+    # max_length set manually to make it RFC compliant (default of 75 is too short)
+    # email may not be unique
+    email = models.EmailField(max_length=254, blank=True)
+
+    # Which CCG this Trust should escalate problems too
+    escalation_ccg = models.ForeignKey(CCG, blank=False, null=False, related_name='escalation_trusts')
+
+    # Which CCGs commission services from this Trust.
+    # This means that those CCGs will be able to see all the problems at
+    # this trust's organisations.
+    ccgs = models.ManyToManyField(CCG, related_name='trusts')
+
+    def __unicode__(self):
+        return self.name
+
+
 class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Model):
 
     name = models.TextField()
