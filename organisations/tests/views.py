@@ -920,7 +920,7 @@ class SummaryTests(AuthorizationTestCase):
 
     def test_summary_page_filters_by_ccg(self):
         # Add an issue for other_test_organisation that won't be filtered because
-        # of it's Hidden status bit will be by the other orgs ccg
+        # of it's Hidden status, but will be by the other orgs ccg
         create_test_problem({'organisation': self.other_test_organisation})
 
         ccg_filtered_url = '{0}?ccg={1}'.format(self.summary_url, self.test_ccg.id)
@@ -1064,18 +1064,18 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
 
         tests = (
             # (user, permitted? )
-            ( None,                               False ),
-            ( self.provider,                      False ),
-            ( self.case_handler,                  False ),
-            ( self.second_tier_moderator,         False ),
+            (None,                               False),
+            (self.provider,                      False),
+            (self.case_handler,                  False),
+            (self.second_tier_moderator,         False),
 
-            ( self.superuser,                     True  ),
-            ( self.nhs_superuser,                 True  ),
-            ( self.customer_contact_centre_user,  True  ),
+            (self.superuser,                     True),
+            (self.nhs_superuser,                 True),
+            (self.customer_contact_centre_user,  True),
 
             # CCG users allowed, but only if they have CCGs attached to them.
-            ( self.ccg_user,                      True  ),
-            ( self.no_ccg_user,                   False ),
+            (self.ccg_user,                      True),
+            (self.no_ccg_user,                   False),
         )
 
         for user, permitted in tests:
@@ -1105,10 +1105,12 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
 
         # check that superuser sees both CCGs' organisations
         resp = self.client.get(self.summary_url)
-        for org in self.test_ccg.organisations.all():
-            self.assertContains(resp, org.name)
-        for org in self.other_test_ccg.organisations.all():
-            self.assertContains(resp, org.name)
+        for trust in self.test_ccg.trusts.all():
+            for org in trust.organisations.all():
+                self.assertContains(resp, org.name)
+        for trust in self.other_test_ccg.trusts.all():
+            for org in trust.organisations.all():
+                self.assertContains(resp, org.name)
 
         # change user
         self.client.logout()
@@ -1116,10 +1118,12 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
 
         # check they see orgs for test_ccg and not for other_ccg
         resp = self.client.get(self.summary_url)
-        for org in self.test_ccg.organisations.all():
-            self.assertContains(resp, org.name)
-        for org in self.other_test_ccg.organisations.all():
-            self.assertNotContains(resp, org.name)
+        for trust in self.test_ccg.trusts.all():
+            for org in trust.organisations.all():
+                self.assertContains(resp, org.name)
+        for trust in self.other_test_ccg.trusts.all():
+            for org in trust.organisations.all():
+                self.assertNotContains(resp, org.name)
 
     def test_ccg_user_with_multiple_ccgs_can_still_use_ccg_filter_to_only_view_orgs_for_one(self):
         # Add ccg user to other_test_ccg as well
@@ -1528,7 +1532,6 @@ class BreachDashboardTests(AuthorizationTestCase):
             self.provider,
             self.no_provider,
             self.other_provider,
-            self.pals,
             self.second_tier_moderator
         ]
 
