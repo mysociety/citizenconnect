@@ -543,17 +543,6 @@ class OrganisationDashboard(OrganisationAwareViewMixin,
         return context
 
 
-class DashboardChoice(TemplateView):
-
-    template_name = 'organisations/dashboard_choice.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(DashboardChoice, self).get_context_data(**kwargs)
-        # Get all the organisations the user can see
-        context['organisations'] = self.request.user.organisations.all()
-        return context
-
-
 @login_required
 def login_redirect(request):
     """
@@ -585,10 +574,6 @@ def login_redirect(request):
         if user.organisations.count() == 1:
             organisation = user.organisations.all()[0]
             return HttpResponseRedirect(reverse('org-dashboard', kwargs={'ods_code': organisation.ods_code}))
-        # Providers with more than one provider attached
-        # go to a page to choose which one to see
-        elif user.organisations.count() > 1:
-            return HttpResponseRedirect(reverse('dashboard-choice'))
 
     # Anyone else goes to the normal homepage
     return HttpResponseRedirect(reverse('home', kwargs={'cobrand': 'choices'}))
