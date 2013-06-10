@@ -14,11 +14,23 @@ from ..models import Organisation, Trust, CCG
 from organisations import auth
 from issues.models import Problem
 
+
+class DevNull(object):
+    def write(self, data):
+        pass
+
+
 class CsvImportTests(TestCase):
 
+    # Commands are chatty. Consume STDOUT
+    def setUp(self):
+        self.old_stdout = sys.stderr
+        sys.stdout = DevNull()
+
+    def tearDown(self):
+        sys.stdout = self.old_stdout
+
     def test_happy_path(self):
-        # Quiet logging for this test - there a CCGs loaded that don't have email
-        logging.disable(logging.CRITICAL)
 
         call_command('load_ccgs_from_spreadsheet', 'organisations/tests/samples/ccgs.csv')
         self.assertEqual(CCG.objects.count(), 3)
