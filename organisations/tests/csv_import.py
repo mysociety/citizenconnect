@@ -29,3 +29,9 @@ class CsvImportTests(TestCase):
         self.assertEqual(CCG.objects.get(name="Banbridge CCG").trusts.count(), 1)
         self.assertEqual(CCG.objects.get(name="Chucklemere CCG").trusts.count(), 0)
 
+        call_command('load_organisations_from_spreadsheet', 'organisations/tests/samples/organisations.csv')
+        self.assertEqual(Organisation.objects.count(), 3)
+        self.assertEqual(Trust.objects.get(name="Ascot North Trust").organisations.count(), 2)
+        self.assertEqual(Trust.objects.get(name="Ascot South Trust").organisations.count(), 1)
+        self.assertEqual(Trust.objects.get(name="Banbridge North Trust").organisations.count(), 0)
+

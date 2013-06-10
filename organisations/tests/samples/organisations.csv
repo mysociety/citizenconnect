@@ -1,0 +1,4 @@
+ChoicesID,OrganisationName,TrustCode,OrganisationTypeID,URL,Address1,Address2,Address3,City,County,Latitude,Longitude,LastUpdatedDate,Postcode,OrganisationCode,ServiceCode,ServiceName,OrganisationContact
+11111,Ascot North Hospital 1,AN1,HOS,http://www.example.com/1,Foo Street,NULL,NULL,London ,Greater London,51.534324,-0.167692,1/1/04,NW8 7BT ,ANH1,84,Podiatry,ascot-hospital-1@example.com
+11112,Ascot North Hospital 2,AN1,HOS,http://www.example.com/2,Foo Street,NULL,NULL,London ,Greater London,51.534324,-0.167692,1/1/04,NW8 7BT ,ANH2,224,Accident and emergency services,ascot-hospital-2@example.com
+11113,Ascot South Hospital 1,AS1,HOS,http://www.example.com/3,Foo Street,NULL,NULL,London ,Greater London,51.534324,-0.167692,1/1/04,NW8 7BT ,ASH1,84,Podiatry,ascot-hospital-1@example.com
