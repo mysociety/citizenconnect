@@ -41,3 +41,9 @@ sensitive):
 - `ServiceCode`
 - `ServiceName`
 - `Email`:
+
+# Representing Null values
+
+Ideally leave the field blank, or for some fields the value `NULL` can be used.
+This appears to be needed in some cases where the spreadsheet software does not
+handle empty fields well when producing CSV files.
