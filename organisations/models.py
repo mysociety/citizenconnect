@@ -164,7 +164,7 @@ class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Mod
 
     def default_user_group(self):
         """Group to ensure that users are members of"""
-        return Group.objects.get(pk=auth.PROVIDERS)
+        return Group.objects.get(pk=auth.TRUSTS)
 
     def __unicode__(self):
         return self.name
