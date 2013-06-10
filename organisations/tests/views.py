@@ -107,7 +107,7 @@ class OrganisationSummaryTests(AuthorizationTestCase):
         self.assertEqual(problems_by_status[2]['week'], 0)
         self.assertEqual(problems_by_status[2]['four_weeks'], 0)
         self.assertEqual(problems_by_status[2]['six_months'], 0)
-        self.assertEqual(problems_by_status[2]['description'], 'Responded to')
+        self.assertEqual(problems_by_status[2]['description'], 'Closed')
 
         self.assertEqual(problems_by_status[7]['all_time'], 1)
         self.assertEqual(problems_by_status[7]['week'], 1)
@@ -141,7 +141,7 @@ class OrganisationSummaryTests(AuthorizationTestCase):
         self.assertEqual(problems_by_status[2]['week'], 0)
         self.assertEqual(problems_by_status[2]['four_weeks'], 0)
         self.assertEqual(problems_by_status[2]['six_months'], 0)
-        self.assertEqual(problems_by_status[2]['description'], 'Responded to')
+        self.assertEqual(problems_by_status[2]['description'], 'Closed')
 
     def test_summary_page_applies_problem_category_filter(self):
         for url in self.urls:
@@ -217,7 +217,7 @@ class OrganisationSummaryTests(AuthorizationTestCase):
     def test_private_summary_page_shows_visible_and_hidden_status_rows(self):
         self.login_as(self.provider)
         resp = self.client.get(self.private_summary_url)
-        self.assertContains(resp, 'Responded to', count=1, status_code=200)
+        self.assertContains(resp, 'Closed', count=1, status_code=200)
         self.assertContains(resp, 'Unable to Resolve', count=1)
         self.assertContains(resp, 'Abusive/Vexatious', count=1)
 
@@ -277,11 +277,6 @@ class OrganisationSummaryTests(AuthorizationTestCase):
         self.login_as(self.other_ccg_user)
         resp = self.client.get(self.private_summary_url)
         self.assertEqual(resp.status_code, 403)
-
-    def test_private_summary_page_is_accessible_to_pals_users(self):
-        self.login_as(self.pals)
-        resp = self.client.get(self.private_summary_url)
-        self.assertEqual(resp.status_code, 200)
 
 
 class OrganisationProblemsTests(AuthorizationTestCase):
