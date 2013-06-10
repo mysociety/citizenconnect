@@ -20,6 +20,26 @@
         }
     },
     {
+        "pk": 8,
+        "model": "auth.user",
+        "fields": {
+            "username": "no_provider",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2013-03-19T11:23:21Z",
+            "groups": [
+                1
+            ],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$DTyoe1oF18io$r1/sQoLH8E0N+RICvFuEC94LDJteAV7/303+ufsDzOs=",
+            "email": "no_provider@example.com",
+            "date_joined": "2013-03-19T11:23:21Z"
+        }
+    },
+    {
         "pk": 7,
         "model": "auth.user",
         "fields": {
@@ -75,26 +95,6 @@
             "password": "pbkdf2_sha256$10000$Vfx3q75teAc6$j7mEF3GzP3vAleJ925e9Lrj5aavSSYcCS0k7uru+dBY=",
             "email": "superuser@example.com",
             "date_joined": "2013-03-11T14:53:02Z"
-        }
-    },
-    {
-        "pk": 2,
-        "model": "auth.user",
-        "fields": {
-            "username": "pals",
-            "first_name": "",
-            "last_name": "",
-            "is_active": true,
-            "is_superuser": false,
-            "is_staff": false,
-            "last_login": "2013-03-12T15:44:56Z",
-            "groups": [
-                1
-            ],
-            "user_permissions": [],
-            "password": "pbkdf2_sha256$10000$3iROvd5vJwzd$3ZrmxEQySAuNT3svDYignHXE2a7Y1wpas3oBYEPqVtQ=",
-            "email": "pals@example.com",
-            "date_joined": "2013-03-12T15:39:41Z"
         }
     },
     {
