@@ -571,7 +571,7 @@ def login_redirect(request):
     # Trusts
     elif user_in_group(user, auth.TRUSTS):
         # Trusts with only one organisation just go to that organisation's dashboard
-        if user.organisations.count() == 1:
+        if user.trusts.count() == 1:
             organisation = user.organisations.all()[0]
             return HttpResponseRedirect(reverse('org-dashboard', kwargs={'ods_code': organisation.ods_code}))
 
