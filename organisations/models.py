@@ -81,6 +81,10 @@ class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Mod
 
     point = geomodels.PointField()
     objects = geomodels.GeoManager()
+
+    # Which Trust this is in
+    trust = models.ForeignKey(Trust, blank=False, null=False, related_name='organisations')
+
     escalation_ccg = models.ForeignKey(CCG, blank=False, null=False, related_name='escalation_organisations')
     ccgs = models.ManyToManyField(CCG, related_name='organisations')
 
