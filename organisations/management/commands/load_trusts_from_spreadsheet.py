@@ -68,7 +68,7 @@ class Command(BaseCommand):
                 ods_code = self.clean_value(row['ODS Code'])
                 name     = self.clean_value(row['Name']    )
                 email    = self.clean_value(row['Email']   )
-                ccg_code = self.clean_value(row['CCGCode'] )
+                ccg_code = self.clean_value(row['CCG Code'] )
 
             except KeyError as message:
                 raise Exception("Missing column with the heading '{0}'".format(message))

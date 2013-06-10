@@ -33,7 +33,7 @@ class Command(BaseCommand):
             rownum += 1
 
             try:
-                code = row['Code']
+                code = row['ODS Code']
                 name = row['Name']
                 region = row['Region']
                 email = row['Email']

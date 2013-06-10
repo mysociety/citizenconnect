@@ -67,13 +67,13 @@ class Command(BaseCommand):
 
             try:
                 choices_id = row['ChoicesID']
-                ods_code = row['OrganisationCode']
-                name = row['OrganisationName']
+                ods_code = row['ODS Code']
+                name = row['Name']
                 organisation_type_text = row['OrganisationTypeID']
                 last_updated = row['LastUpdatedDate']
 
-                trust_code = row['TrustCode']
-                organisation_contact = row['OrganisationContact']
+                trust_code = row['Trust Code']
+                organisation_contact = row['Email']
 
                 url = row['URL']
 
