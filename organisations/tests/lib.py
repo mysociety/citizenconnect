@@ -89,7 +89,7 @@ def create_test_organisation(attributes={}):
     }
     default_attributes.update(attributes)
     if 'trust' not in attributes:
-        default_attributes['trust'] = create_test_trust()
+        default_attributes['trust'] = create_test_trust({'code': default_attributes['ods_code']})
     instance = Organisation(**dict((k, v) for (k, v) in default_attributes.items() if '__' not in k))
     instance.save()
     return instance
