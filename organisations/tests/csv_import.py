@@ -9,7 +9,7 @@ from django.core.management import call_command
 from django.conf import settings
 from django.contrib.auth.models import User
 
-from ..models import Organisation, CCG
+from ..models import Organisation, Trust, CCG
 
 from organisations import auth
 from issues.models import Problem
@@ -22,3 +22,10 @@ class CsvImportTests(TestCase):
 
         call_command('load_ccgs_from_spreadsheet', 'organisations/tests/samples/ccgs.csv')
         self.assertEqual(CCG.objects.count(), 3)
+
+        call_command('load_trusts_from_spreadsheet', 'organisations/tests/samples/trusts.csv')
+        self.assertEqual(Trust.objects.count(), 3)
+        self.assertEqual(CCG.objects.get(name="Ascot CCG").trusts.count(), 2)
+        self.assertEqual(CCG.objects.get(name="Banbridge CCG").trusts.count(), 1)
+        self.assertEqual(CCG.objects.get(name="Chucklemere CCG").trusts.count(), 0)
+
