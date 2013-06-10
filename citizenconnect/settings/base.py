@@ -122,6 +122,7 @@ INSTALLED_APPS = (
     'django.contrib.gis',
     'django_tables2',
     'south',
+    'django_nose',
     'citizenconnect',
     'pagination',
     'organisations',
@@ -135,11 +136,7 @@ INSTALLED_APPS = (
 )
 
 
-# Only test some of the apps by default. Anything in INSTALLED_APPS starting
-# 'django' is ignored and you can add additional apps to ignore to
-# IGNORE_APPS_FOR_TESTING
-IGNORE_APPS_FOR_TESTING = ('south', 'pagination', 'reversion')
-TEST_RUNNER = 'citizenconnect.tests.runner.AppsTestSuiteRunner'
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 
 # Log WARN and above to stderr; ERROR and above by email when DEBUG is False.
