@@ -481,7 +481,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
 
         if self.commissioned == self.LOCALLY_COMMISSIONED:
             # Send email to the CCG
-            self.organisation.escalation_ccg.send_mail(**kwargs)
+            self.organisation.trust.escalation_ccg.send_mail(**kwargs)
         elif self.commissioned == self.NATIONALLY_COMMISSIONED:
             # send email to CCC
             mail.send_mail(
