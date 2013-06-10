@@ -380,8 +380,10 @@ class ProblemModelEscalationTests(ProblemTestCase):
         self.test_organisation.email = 'test@example.org'
         self.test_organisation.save()
 
-        self.test_organisation.escalation_ccg.email = 'ccg@example.org'
-        self.test_organisation.save()
+        self.test_trust = self.test_organisation.trust
+        self.test_escalation_ccg = self.test_trust.escalation_ccg
+        self.test_escalation_ccg.email = 'ccg@example.org'
+        self.test_escalation_ccg.save()
 
     def test_send_escalation_email_method_raises_when_not_escalated(self):
         problem = self.test_problem
