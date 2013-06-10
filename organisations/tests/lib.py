@@ -508,9 +508,9 @@ class AuthorizationTestCase(TestCase):
 
         # Trusts
         self.test_trust = create_test_trust({'escalation_ccg': self.test_ccg})
-        self.other_test_trust = create_test_ccg({'name': 'other test trust',
-                                                 'code': 'XYZ',
-                                                 'escalation_ccg': self.other_test_ccg})
+        self.other_test_trust = create_test_trust({'name': 'other test trust',
+                                                   'code': 'XYZ',
+                                                   'escalation_ccg': self.other_test_ccg})
 
         self.test_trust.ccgs.add(self.test_ccg)
         self.test_trust.save()
