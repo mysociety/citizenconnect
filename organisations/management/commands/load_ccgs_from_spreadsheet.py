@@ -33,6 +33,7 @@ class Command(BaseCommand):
             rownum += 1
 
             try:
+                # Remember to update the docs in organisations/csv_formats.md if you make changes here
                 code = row['ODS Code']
                 name = row['Name']
                 region = row['Region']
