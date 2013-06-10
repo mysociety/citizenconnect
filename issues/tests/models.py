@@ -156,9 +156,6 @@ class ProblemModelTests(ProblemTestCase):
         for user in self.users_who_can_access_everything:
             self.assertTrue(self.test_private_problem.can_be_accessed_by(user))
 
-    def test_private_problem_accessible_to_pals_user(self):
-        self.assertTrue(self.test_private_problem.can_be_accessed_by(self.pals))
-
     def test_private_problem_accessible_to_ccg_user(self):
         self.assertTrue(self.test_private_problem.can_be_accessed_by(self.ccg_user))
 
@@ -179,9 +176,6 @@ class ProblemModelTests(ProblemTestCase):
         for user in self.users_who_can_access_everything:
             self.assertTrue(self.test_problem.can_be_accessed_by(user))
 
-    def test_unmoderated_problem_accessible_to_pals_user(self):
-        self.assertTrue(self.test_problem.can_be_accessed_by(self.pals))
-
     def test_hidden_status_problem_accessible_to_allowed_user(self):
         self.assertTrue(self.test_hidden_status_problem.can_be_accessed_by(self.provider))
 
@@ -197,9 +191,6 @@ class ProblemModelTests(ProblemTestCase):
     def test_hidden_status_problem_accessible_to_superusers(self):
         for user in self.users_who_can_access_everything:
             self.assertTrue(self.test_hidden_status_problem.can_be_accessed_by(user))
-
-    def test_hidden_status_problem_accessible_to_pals_user(self):
-        self.assertTrue(self.test_hidden_status_problem.can_be_accessed_by(self.pals))
 
     def test_hidden_status_problem_accessible_to_ccg_user(self):
         self.assertTrue(self.test_hidden_status_problem.can_be_accessed_by(self.ccg_user))
