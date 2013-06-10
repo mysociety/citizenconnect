@@ -129,11 +129,6 @@ class ProblemPublicViewTests(AuthorizationTestCase):
             resp = self.client.get(self.test_private_problem_url)
             self.assertEqual(resp.status_code, 200)
 
-    def test_private_problem_accessible_to_pals_user(self):
-        self.login_as(self.pals)
-        resp = self.client.get(self.test_private_problem_url)
-        self.assertEqual(resp.status_code, 200)
-
     def test_unmoderated_problem_accessible_to_allowed_uses(self):
         self.login_as(self.provider)
         resp = self.client.get(self.test_unmoderated_problem_url)
@@ -162,11 +157,6 @@ class ProblemPublicViewTests(AuthorizationTestCase):
             self.login_as(user)
             resp = self.client.get(self.test_unmoderated_problem_url)
             self.assertEqual(resp.status_code, 200)
-
-    def test_unmoderated_problem_accessible_to_pals_user(self):
-        self.login_as(self.pals)
-        resp = self.client.get(self.test_unmoderated_problem_url)
-        self.assertEqual(resp.status_code, 200)
 
     def test_anon_user_sees_moderated_description_only(self):
         resp = self.client.get(self.test_moderated_problem_url)
