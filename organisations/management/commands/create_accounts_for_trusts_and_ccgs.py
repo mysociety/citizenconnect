@@ -3,14 +3,14 @@ logger = logging.getLogger(__name__)
 
 from django.core.management.base import BaseCommand, CommandError
 
-from ...models import Organisation, CCG
+from ...models import Trust, CCG
 
 class Command(BaseCommand):
     help = 'Create accounts for organisations that don\'t have one yet'
 
     def handle(self, *args, **options):
 
-        for model in [Organisation, CCG]:
+        for model in [Trust, CCG]:
             objs_without_accounts = model.objects.all().filter(users=None)
             
             logger.info('{0} {1} to create accounts for'.format(objs_without_accounts.count(), model.__name__))
