@@ -62,6 +62,11 @@ def enforce_organisation_access_check(organisation, user):
         raise PermissionDenied()
 
 
+def enforce_trust_access_check(trust, user):
+    if not trust.can_be_accessed_by(user):
+        raise PermissionDenied()
+
+
 def enforce_moderation_access_check(user):
     if not user_is_superuser(user) and not user_in_group(user, CASE_HANDLERS):
         raise PermissionDenied()
