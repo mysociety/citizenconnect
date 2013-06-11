@@ -4,7 +4,7 @@ from organisations import models
 import reversion
 
 class OrganisationAdmin(reversion.VersionAdmin):
-    list_display = ('id', 'name', 'organisation_type', 'county', 'postcode', 'email')
+    list_display = ('id', 'name', 'organisation_type', 'county', 'postcode')
 
 class CCGAdmin(reversion.VersionAdmin):
     list_display = ('id', 'name', 'code', 'email')
