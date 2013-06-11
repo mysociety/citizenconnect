@@ -74,7 +74,6 @@ class Command(BaseCommand):
                 last_updated = row['LastUpdatedDate']
 
                 trust_code = row['Trust Code']
-                organisation_contact = row['Email']
 
                 url = row['URL']
 
@@ -127,7 +126,6 @@ class Command(BaseCommand):
                                      'city': city,
                                      'county': county,
                                      'postcode': postcode,
-                                     'email': organisation_contact,
                                      'trust': trust,
                                     }
             try:

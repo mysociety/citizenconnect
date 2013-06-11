@@ -67,6 +67,7 @@ def create_test_trust(attributes={}):
         'name': 'Test Trust',
         'code': 'TRUST1',
         'email': 'test-trust@example.org',
+        'secondary_email': 'test-trust-secondary@example.org',
     }
     default_attributes.update(attributes)
     if 'escalation_ccg' not in attributes:
