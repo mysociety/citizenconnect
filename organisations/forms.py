@@ -137,6 +137,8 @@ class FilterForm(forms.Form):
         # Turn off fields selectively
         if not organisations is None:
             self.fields['organisation'].queryset = organisations
+        else:
+            del self.fields['organisation']
 
         if not with_ccg:
             del self.fields['ccg']
