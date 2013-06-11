@@ -570,10 +570,12 @@ def login_redirect(request):
 
     # Trusts
     elif user_in_group(user, auth.TRUSTS):
-        # Trusts with only one organisation just go to that organisation's dashboard
+        # For now, trust users go to their first org's dashboard - eventually they
+        # will get their own special dashboard with all the orgs on it
         if user.trusts.count() == 1:
             trust = user.trusts.all()[0]
-            return HttpResponseRedirect(reverse('org-dashboard', kwargs={'ods_code': trust.ods_code}))
+            organisation = trust.organisations.all()[0]
+            return HttpResponseRedirect(reverse('org-dashboard', kwargs={'ods_code': organisation.ods_code}))
 
     # Anyone else goes to the normal homepage
     return HttpResponseRedirect(reverse('home', kwargs={'cobrand': 'choices'}))
