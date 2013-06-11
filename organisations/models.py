@@ -102,13 +102,6 @@ class Organisation(AuditedModel, geomodels.Model):
     county = models.CharField(max_length=50, blank=True)
     postcode = models.CharField(max_length=10, blank=True)
 
-    # ISSUE-329: The `blank=True` on both of these should be removed
-    # when we are supplied with email addresses for all the orgs
-    # max_length set manually to make it RFC compliant (default of 75 is too short)
-    # email may not be unique
-    email = models.EmailField(max_length=254, blank=True)
-    secondary_email = models.EmailField(max_length=254, blank=True)
-
     point = geomodels.PointField()
     objects = geomodels.GeoManager()
 
