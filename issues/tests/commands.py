@@ -23,13 +23,12 @@ class EmailToReportersBase(object):
         self.test_organisation = create_test_organisation({'name': 'Fab Organisation'})
         self.test_service = create_test_service({'organisation': self.test_organisation})
         self.test_problem = create_test_problem({'organisation': self.test_organisation,
-                                                           'service': self.test_service,
-                                                           'cobrand': 'choices',
-                                                           'reporter_name': 'Problem reporter',
-                                                           'reporter_email': 'problem@example.com',
-                                                           'reporter_phone': '123456789',
-                                                           'confirmation_required': True,
-                                                           })
+                                                 'service': self.test_service,
+                                                 'cobrand': 'choices',
+                                                 'reporter_name': 'Problem reporter',
+                                                 'reporter_email': 'problem@example.com',
+                                                 'reporter_phone': '123456789',
+                                                 'confirmation_required': True})
 
 
 class EmailConfirmationsToReportersTests(EmailToReportersBase, TestCase):
@@ -127,7 +126,7 @@ class EmailProblemsToTrustTests(TestCase):
         # Add some test data
         self.test_trust = create_test_trust({
             "email": "recipient@example.com",
-            # "secondary_email": "recipient2@example.com",
+            "secondary_email": "recipient2@example.com",
         })
         self.test_organisation = create_test_organisation({"trust": self.test_trust})
 
@@ -160,7 +159,7 @@ class EmailProblemsToTrustTests(TestCase):
         self.assertEqual(first_mail.from_email, settings.DEFAULT_FROM_EMAIL)
         expected_recipients = [
             self.test_trust.email,
-            # self.test_trust.secondary_email
+            self.test_trust.secondary_email
         ]
         self.assertEqual(first_mail.to, expected_recipients)
         self.assertTrue(self.test_problem.reporter_name in first_mail.body)
