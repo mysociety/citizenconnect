@@ -10,7 +10,10 @@ from django.utils.timezone import utc
 from django.conf import settings
 from django.test.utils import override_settings
 
-from organisations.tests.lib import create_test_organisation, create_test_service, create_test_problem
+from organisations.tests.lib import (create_test_trust,
+                                     create_test_organisation,
+                                     create_test_service,
+                                     create_test_problem)
 from ..models import Problem
 
 
@@ -118,12 +121,16 @@ class EmailSurveysToReportersTests(EmailToReportersBase, TestCase):
         self.assertEqual(len(mail.outbox), 0)
 
 
-class EmailProblemsToProviderTests(TestCase):
+class EmailProblemsToTrustTests(TestCase):
 
     def setUp(self):
         # Add some test data
-        self.test_organisation = create_test_organisation({"email": "recipient@example.com",
-                                                           "secondary_email": "recipient2@example.com"})
+        self.test_trust = create_test_trust({
+            "email": "recipient@example.com",
+            # "secondary_email": "recipient2@example.com",
+        })
+        self.test_organisation = create_test_organisation({"trust": self.test_trust})
+
         self.test_service = create_test_service({'organisation': self.test_organisation})
         self.test_problem = create_test_problem({'organisation': self.test_organisation,
                                                  'service': self.test_service,
@@ -151,8 +158,10 @@ class EmailProblemsToProviderTests(TestCase):
         first_mail = mail.outbox[1]
         self.assertEqual(first_mail.subject, 'Care Connect: New Problem')
         self.assertEqual(first_mail.from_email, settings.DEFAULT_FROM_EMAIL)
-        expected_recipients = [self.test_organisation.email,
-                               self.test_organisation.secondary_email]
+        expected_recipients = [
+            self.test_trust.email,
+            # self.test_trust.secondary_email
+        ]
         self.assertEqual(first_mail.to, expected_recipients)
         self.assertTrue(self.test_problem.reporter_name in first_mail.body)
         self.assertTrue(self.test_problem.reporter_email in first_mail.body)
@@ -168,8 +177,6 @@ class EmailProblemsToProviderTests(TestCase):
         self.other_test_problem = Problem.objects.get(pk=self.other_test_problem.id)
         self.assertTrue(self.other_test_problem.mailed)
 
-        # Check that the problems are sent to both provider's email addresses
-        self.assertEqual
 
     def test_sends_no_emails_when_none_to_send(self):
         self.test_problem.mailed = True
