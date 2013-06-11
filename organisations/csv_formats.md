@@ -20,6 +20,7 @@ sensitive):
 - `Name`
 - `CCG Code`: The ODS code of the CCG (will be used for `escalation_ccg`, and for CCG memberships_)
 - `Email`
+- `Secondary Email`
 
 ## Organisations
 

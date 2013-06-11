@@ -49,8 +49,8 @@ class CsvImportTests(TestCase):
         self.assertEqual(Trust.objects.get(name="Ascot South Trust").organisations.count(), 1)
         self.assertEqual(Trust.objects.get(name="Banbridge North Trust").organisations.count(), 0)
 
-        self.maxDiff = None
-
+        # Now check that the correct data has been loaded
+        
         ccg = CCG.objects.get(name="Ascot CCG")
         self.assertEqual(
             model_to_dict(ccg),
@@ -72,7 +72,7 @@ class CsvImportTests(TestCase):
                 'escalation_ccg': ccg.id,
                 'id': trust.id,
                 'name': 'Ascot North Trust',
-                'secondary_email': '',
+                'secondary_email': 'an-trust-backup@example.com',
                 'users': [],
             }
         )
@@ -98,4 +98,3 @@ class CsvImportTests(TestCase):
                 'trust': trust.id
             }
         )
-        

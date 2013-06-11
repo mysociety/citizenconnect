@@ -69,6 +69,7 @@ class Command(BaseCommand):
                 ods_code = self.clean_value(row['ODS Code'])
                 name     = self.clean_value(row['Name']    )
                 email    = self.clean_value(row['Email']   )
+                secondary_email = self.clean_value(row['Secondary Email'])
                 ccg_code = self.clean_value(row['CCG Code'] )
 
             except KeyError as message:
@@ -95,6 +96,7 @@ class Command(BaseCommand):
             trust_defaults = {
                 'name': name,
                 'email': email,
+                'secondary_email': secondary_email,
                 'escalation_ccg': ccg,
             }
 
