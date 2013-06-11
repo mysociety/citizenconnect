@@ -15,7 +15,7 @@ lxml==3.2.1
 
 ### Django related
 Django==1.4.5
-South
+South>=0.8.1
 django-pagination
 django-tables2
 django-reversion==1.6.6  # compatible with Django 1.4.5
