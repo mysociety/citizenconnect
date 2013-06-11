@@ -5,6 +5,7 @@ from django.core import mail
 
 from .lib import create_test_organisation, create_test_trust, get_reset_url_from_email, AuthorizationTestCase
 
+
 class BasicAccountTests(TestCase):
     """
     Tests for the accounts stuff in organisations
@@ -38,7 +39,7 @@ class BasicAccountTests(TestCase):
         self.assertContains(resp, "Login")
 
     def test_user_can_login_and_gets_redirected_if_next_specified(self):
-        dashboard_url = reverse('org-dashboard', kwargs={'ods_code':self.test_organisation.ods_code})
+        dashboard_url = reverse('org-dashboard', kwargs={'ods_code': self.test_organisation.ods_code})
         test_values = {
             'username': self.test_user.username,
             'password': 'password',
@@ -91,7 +92,7 @@ class BasicAccountTests(TestCase):
         uidb36, token = get_reset_url_from_email(mail.outbox[0])
 
         # Post a new password to the reset form
-        confirm_url = reverse('password_reset_confirm', kwargs={'uidb36':uidb36, 'token':token})
+        confirm_url = reverse('password_reset_confirm', kwargs={'uidb36': uidb36, 'token': token})
 
         test_weak_passwords = {
             'new_password1': self.weak_password,
@@ -148,6 +149,7 @@ class BasicAccountTests(TestCase):
         self.test_user = User.objects.get(pk=self.test_user.id)
         self.assertTrue(self.test_user.check_password(self.strong_password))
 
+
 class LoginRedirectTests(AuthorizationTestCase):
 
     def setUp(self):
@@ -179,7 +181,7 @@ class LoginRedirectTests(AuthorizationTestCase):
         self.assertRedirects(resp, second_tier_moderation_url)
 
     def test_provider_goes_to_provider_dashboard(self):
-        dashboard_url = reverse('org-dashboard', kwargs={'ods_code':self.test_organisation.ods_code})
+        dashboard_url = reverse('org-dashboard', kwargs={'ods_code': self.test_organisation.ods_code})
         self.login_as(self.provider)
         resp = self.client.get(self.login_redirect_url)
         self.assertRedirects(resp, dashboard_url)
@@ -191,7 +193,7 @@ class LoginRedirectTests(AuthorizationTestCase):
         self.assertRedirects(resp, map_url)
 
     def test_everyone_else_goes_to_home_page(self):
-        home_url = reverse('home', kwargs={'cobrand':'choices'})
+        home_url = reverse('home', kwargs={'cobrand': 'choices'})
         # Django superuser
         self.login_as(self.superuser)
         resp = self.client.get(self.login_redirect_url)
