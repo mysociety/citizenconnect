@@ -1586,11 +1586,11 @@ class BreachDashboardTests(AuthorizationTestCase):
         self.assertContains(resp, 'problem-table__highlight')
 
 
-class OrganisationBreachesTest(AuthorizationTestCase):
+class TrustBreachesTests(AuthorizationTestCase):
 
     def setUp(self):
-        super(OrganisationBreachesTest, self).setUp()
-        self.breach_dashboard_url = reverse('org-breaches', kwargs={'ods_code': self.test_organisation.ods_code})
+        super(TrustBreachesTests, self).setUp()
+        self.breach_dashboard_url = reverse('trust-breaches', kwargs={'code': self.test_trust.code})
         self.org_breach_problem = create_test_problem({'organisation': self.test_organisation,
                                                        'breach': True})
         self.other_org_breach_problem = create_test_problem({'organisation': self.other_test_organisation,
@@ -1606,7 +1606,8 @@ class OrganisationBreachesTest(AuthorizationTestCase):
         people_who_shouldnt_have_access = [
             self.no_provider,
             self.other_provider,
-            self.second_tier_moderator
+            self.second_tier_moderator,
+            self.other_ccg_user
         ]
 
         for user in people_who_shouldnt_have_access:
