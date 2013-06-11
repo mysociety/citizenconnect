@@ -92,6 +92,14 @@ class FilterForm(forms.Form):
     """
     Form for processing filters on pages which filter issues
     """
+
+    organisation = forms.ModelChoiceField(
+        queryset=Organisation.objects.all(),
+        required=False,
+        empty_label='All',
+        label="Organisation"
+    )
+
     ccg = forms.ModelChoiceField(queryset=CCG.objects.all(), required=False, empty_label='All',
                                  label="CCG")
 
