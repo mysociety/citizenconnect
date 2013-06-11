@@ -44,6 +44,7 @@ class Trust(MailSendMixin, UserCreationMixin, AuditedModel):
     # max_length set manually to make it RFC compliant (default of 75 is too short)
     # email may not be unique
     email = models.EmailField(max_length=254, blank=True)
+    secondary_email = models.EmailField(max_length=254, blank=True)
 
     # Which CCG this Trust should escalate problems too
     escalation_ccg = models.ForeignKey(CCG, blank=False, null=False, related_name='escalation_trusts')
