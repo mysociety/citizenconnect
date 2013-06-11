@@ -6,7 +6,8 @@ from organisations.views import *
 from reviews_display.views import ReviewOrganisationList
 from organisations.auth import StrongSetPasswordForm, StrongPasswordChangeForm
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
 
     url(r'^dashboard/(?P<ods_code>\w+)$',
         login_required(OrganisationDashboard.as_view()),
@@ -33,20 +34,22 @@ urlpatterns = patterns('',
         name='private-org-reviews',
         kwargs={'private': True}),
 
-    url(r'^breaches/(?P<ods_code>\w+)$',
-        login_required(OrganisationBreaches.as_view()),
-        name='org-breaches',
+    url(r'^breaches/(?P<code>\w+)$',
+        login_required(TrustBreaches.as_view()),
+        name='trust-breaches',
         kwargs={'private': True}),
 
     url(r'^access-logs$', login_required(SuperuserLogs.as_view()), name='superuser-logs'),
 
-    url(r'^escalation$', login_required(EscalationDashboard.as_view()),
-                         name='escalation-dashboard',
-                         kwargs={'private': True}),
+    url(r'^escalation$',
+        login_required(EscalationDashboard.as_view()),
+        name='escalation-dashboard',
+        kwargs={'private': True}),
 
-    url(r'^escalation/breaches$', login_required(EscalationBreaches.as_view()),
-                         name='escalation-breaches',
-                         kwargs={'private': True}),
+    url(r'^escalation/breaches$',
+        login_required(EscalationBreaches.as_view()),
+        name='escalation-breaches',
+        kwargs={'private': True}),
 
     # Authentication related urls
     url(r'^login$',
