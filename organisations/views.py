@@ -706,18 +706,17 @@ class EscalationBreaches(TemplateView):
         return context
 
 
-class OrganisationBreaches(OrganisationAwareViewMixin,
-                           TemplateView):
+class TrustBreaches(TrustAwareViewMixin,
+                    TemplateView):
 
     template_name = 'organisations/organisation_breaches.html'
 
     def dispatch(self, request, *args, **kwargs):
-        return super(OrganisationBreaches, self).dispatch(request, *args, **kwargs)
+        return super(TrustBreaches, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        context = super(OrganisationBreaches, self).get_context_data(**kwargs)
-        enforce_organisation_access_check(context['organisation'], self.request.user)
-        problems = Problem.objects.open_problems().filter(breach=True, organisation=context['organisation'])
+        context = super(TrustBreaches, self).get_context_data(**kwargs)
+        problems = Problem.objects.open_problems().filter(breach=True, organisation__trust=context['trust'])
 
         # Setup a table for the problems
         problem_table = BreachTable(problems, private=True)
