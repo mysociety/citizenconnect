@@ -1360,7 +1360,7 @@ class EscalationDashboardTests(AuthorizationTestCase):
         self.login_as(self.ccg_user)
         # Remove the test ccg from the ccgs for this org so that we know access is coming
         # via the escalation_ccg field, not the ccgs association
-        self.test_organisation.ccgs.remove(self.test_ccg)
+        self.test_organisation.trust.ccgs.remove(self.test_ccg)
         resp = self.client.get(self.escalation_dashboard_url)
         self.assertContains(resp, self.org_local_escalated_problem.reference_number)
         # Does not show other org's problem or nationally commmissioned problem for this org
