@@ -611,6 +611,7 @@ class EscalationDashboard(FilterFormMixin, TemplateView):
         user = self.request.user
         if not user_is_superuser(user) and not user_in_group(user, auth.CUSTOMER_CONTACT_CENTRE):
             kwargs['with_ccg'] = False
+            kwargs['organisations'] = Organisation.objects.filter(trust__in=user.trusts.all())
 
         # Turn off status too, because all problems on this dashboard have
         # a status of Escalated
