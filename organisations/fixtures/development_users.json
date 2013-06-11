@@ -98,26 +98,6 @@
         }
     },
     {
-        "pk": 2,
-        "model": "auth.user",
-        "fields": {
-            "username": "pals",
-            "first_name": "",
-            "last_name": "",
-            "is_active": true,
-            "is_superuser": false,
-            "is_staff": false,
-            "last_login": "2013-03-12T15:44:56Z",
-            "groups": [
-                1
-            ],
-            "user_permissions": [],
-            "password": "pbkdf2_sha256$10000$3iROvd5vJwzd$3ZrmxEQySAuNT3svDYignHXE2a7Y1wpas3oBYEPqVtQ=",
-            "email": "pals@example.com",
-            "date_joined": "2013-03-12T15:39:41Z"
-        }
-    },
-    {
         "pk": 3,
         "model": "auth.user",
         "fields": {

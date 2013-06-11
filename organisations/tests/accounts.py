@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.core import mail
 
-from .lib import create_test_organisation, get_reset_url_from_email, AuthorizationTestCase
+from .lib import create_test_organisation, create_test_trust, get_reset_url_from_email, AuthorizationTestCase
 
 class BasicAccountTests(TestCase):
     """
@@ -12,12 +12,13 @@ class BasicAccountTests(TestCase):
 
     def setUp(self):
         # Create a dummy user and organisation
-        self.test_organisation = create_test_organisation()
+        self.test_trust = create_test_trust()
+        self.test_organisation = create_test_organisation({'trust': self.test_trust})
         self.test_user = User.objects.create_user('Test User', 'user@example.com', 'password')
         self.test_user.save()
 
-        self.test_organisation.users.add(self.test_user)
-        self.test_organisation.save()
+        self.test_trust.users.add(self.test_user)
+        self.test_trust.save()
 
         # Useful urls
         self.login_url = reverse('login')
@@ -204,12 +205,6 @@ class LoginRedirectTests(AuthorizationTestCase):
         expected_login_url = '{0}?next={1}'.format(self.login_url, self.login_redirect_url)
         resp = self.client.get(self.login_redirect_url)
         self.assertRedirects(resp, expected_login_url)
-
-    def test_multi_provider_user_goes_to_dashboard_choice_page(self):
-        pals_url = reverse('dashboard-choice')
-        self.login_as(self.pals)
-        resp = self.client.get(self.login_redirect_url)
-        self.assertRedirects(resp, pals_url)
 
     def test_ccg_user_goes_to_escalation_dashboard(self):
         escalation_dashboard_url = reverse('escalation-dashboard')
