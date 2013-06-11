@@ -21,13 +21,20 @@ from .auth import (user_in_group,
                    user_in_groups,
                    user_is_superuser,
                    enforce_organisation_access_check,
+                   enforce_trust_access_check,
                    user_can_access_escalation_dashboard,
                    user_can_access_private_national_summary,
                    user_is_escalation_body)
-from .models import Organisation, SuperuserLogEntry
+from .models import Organisation, SuperuserLogEntry, Trust
 from .forms import OrganisationFinderForm, FilterForm, OrganisationFilterForm
 from .lib import interval_counts
-from .tables import NationalSummaryTable, PrivateNationalSummaryTable, ProblemTable, ExtendedProblemTable, ProblemDashboardTable, EscalationDashboardTable, BreachTable
+from .tables import (NationalSummaryTable,
+                     PrivateNationalSummaryTable,
+                     ProblemTable,
+                     ExtendedProblemTable,
+                     ProblemDashboardTable,
+                     EscalationDashboardTable,
+                     BreachTable)
 from .templatetags.organisation_extras import formatted_time_interval, percent
 
 
@@ -64,6 +71,27 @@ class OrganisationAwareViewMixin(PrivateViewMixin):
         # Check that the user can access the organisation if this is private
         if context['private']:
             enforce_organisation_access_check(context['organisation'], self.request.user)
+        return context
+
+
+class TrustAwareViewMixin(PrivateViewMixin):
+    """Mixin class for views which need to have a reference to a particular
+    trust, such as trust dashboards."""
+
+    def dispatch(self, request, *args, **kwargs):
+        # Set trust here so that we can use it anywhere in the class
+        # without worrying about whether it has been set yet
+        self.trust = Trust.objects.get(code=kwargs['code'])
+        return super(TrustAwareViewMixin, self).dispatch(request, *args, **kwargs)
+
+    # Get the organisation name
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(TrustAwareViewMixin, self).get_context_data(**kwargs)
+        context['trust'] = self.trust
+        # Check that the user can access the trust if this is private
+        if context['private']:
+            enforce_trust_access_check(context['trust'], self.request.user)
         return context
 
 
