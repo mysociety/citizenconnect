@@ -126,7 +126,7 @@ class FilterFormMixin(FormMixin):
             if name == 'service_id':
                 filtered_queryset = filtered_queryset.filter(service__id=value)
             if name == 'ccg':
-                filtered_queryset = filtered_queryset.filter(organisation__ccgs__id__exact=value)
+                filtered_queryset = filtered_queryset.filter(organisation__trust__ccgs__id__exact=value)
             if name == 'breach':
                 filtered_queryset = filtered_queryset.filter(breach=value)
         return filtered_queryset
@@ -626,7 +626,7 @@ class EscalationDashboard(FilterFormMixin, TemplateView):
 
         # Restrict problem queryset for non-superuser users (i.e. CCG users)
         if not user_is_superuser(user) and not user_in_group(user, auth.CUSTOMER_CONTACT_CENTRE):
-            problems = problems.filter(organisation__escalation_ccg__in=(user.ccgs.all()),
+            problems = problems.filter(organisation__trust__escalation_ccg__in=(user.ccgs.all()),
                                        commissioned=Problem.LOCALLY_COMMISSIONED)
         # Restrict problem queryset for non-CCG users (i.e. Customer Contact Centre)
         elif not user_is_superuser(user) and not user_in_group(user, auth.CCG):
@@ -663,7 +663,7 @@ class EscalationBreaches(TemplateView):
         # Restrict problem queryset for non-superuser users (i.e. CCG users)
         user = self.request.user
         if not user_is_superuser(user) and not user_in_group(user, auth.CUSTOMER_CONTACT_CENTRE):
-            problems = problems.filter(organisation__escalation_ccg__in=(user.ccgs.all()))
+            problems = problems.filter(organisation__trust__escalation_ccg__in=(user.ccgs.all()))
         # Everyone else see's all breaches
 
         # Setup a table for the problems
