@@ -368,8 +368,6 @@ class ProblemModelEscalationTests(ProblemTestCase):
 
     def setUp(self):
         super(ProblemModelEscalationTests, self).setUp()
-        self.test_organisation.email = 'test@example.org'
-        self.test_organisation.save()
 
         self.test_trust = self.test_organisation.trust
         self.test_escalation_ccg = self.test_trust.escalation_ccg

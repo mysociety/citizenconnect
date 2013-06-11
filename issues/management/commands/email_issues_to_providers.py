@@ -39,7 +39,7 @@ class Command(BaseCommand):
         context = Context({'problem': problem, 'site_base_url': settings.SITE_BASE_URL})
         logger.info('Emailing problem reference number: {0}'.format(problem.reference_number))
 
-        problem.organisation.send_mail(
+        problem.organisation.trust.send_mail(
             subject='Care Connect: New Problem',
             message=template.render(context)
         )

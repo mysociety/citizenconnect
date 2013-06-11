@@ -73,8 +73,8 @@ class MailSendMixin(models.Model):
         Send the intro email and put the current time into intro_email_sent field.
         """
 
-        subject_template = get_template('organisations/provider_intro_email_subject.txt')
-        message_template = get_template('organisations/provider_intro_email_message.txt')
+        subject_template = get_template('organisations/generic_intro_email_subject.txt')
+        message_template = get_template('organisations/generic_intro_email_message.txt')
 
         context = Context({
             'user': self.users.all()[0],
