@@ -40,7 +40,6 @@ sensitive):
 - `Postcode`
 - `ServiceCode`
 - `ServiceName`
-- `Email`:
 
 # Representing Null values
 
