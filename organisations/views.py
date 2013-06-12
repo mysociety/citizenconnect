@@ -554,22 +554,22 @@ class PrivateNationalSummary(Summary):
                                                                      threshold=threshold)
 
 
-class OrganisationDashboard(OrganisationAwareViewMixin,
-                            TemplateView):
-    template_name = 'organisations/dashboard.html'
+class TrustDashboard(TrustAwareViewMixin,
+                     TemplateView):
+    template_name = 'organisations/trust_dashboard.html'
 
     def get_context_data(self, **kwargs):
         # Get all the problems
-        context = super(OrganisationDashboard, self).get_context_data(**kwargs)
+        context = super(TrustDashboard, self).get_context_data(**kwargs)
 
         # Get the models related to this organisation, and let the db sort them
-        problems = context['organisation'].problem_set.open_unescalated_problems()
+        problems = context['trust'].problem_set.open_unescalated_problems()
         problems_table = ProblemDashboardTable(problems)
         RequestConfig(self.request, paginate={'per_page': 25}).configure(problems_table)
         context['table'] = problems_table
         context['page_obj'] = problems_table.page
-        organisation_filters = {'organisation_id': context['organisation'].id}
-        context['problems_total'] = interval_counts(organisation_filters=organisation_filters)
+        # organisation_filters = {'organisation_id': context['organisation'].id}
+        # context['problems_total'] = interval_counts(organisation_filters=organisation_filters)
         return context
 
 
