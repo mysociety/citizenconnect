@@ -136,7 +136,7 @@ class ProblemModelTests(ProblemTestCase):
         self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.trust_user))
         self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.superuser))
         self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.anonymous_user))
-        self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.other_provider))
+        self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.other_trust_user))
         self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.ccg_user))
         self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.other_ccg_user))
 
@@ -146,8 +146,8 @@ class ProblemModelTests(ProblemTestCase):
     def test_private_problem_inaccessible_to_anon_user(self):
         self.assertFalse(self.test_private_problem.can_be_accessed_by(self.anonymous_user))
 
-    def test_private_problem_inaccessible_to_other_provider_user(self):
-        self.assertFalse(self.test_private_problem.can_be_accessed_by(self.other_provider))
+    def test_private_problem_inaccessible_to_other_trust_user(self):
+        self.assertFalse(self.test_private_problem.can_be_accessed_by(self.other_trust_user))
 
     def test_private_problem_inaccessible_to_other_ccg_user(self):
         self.assertFalse(self.test_private_problem.can_be_accessed_by(self.other_ccg_user))
@@ -162,8 +162,8 @@ class ProblemModelTests(ProblemTestCase):
     def test_unmoderated_problem_inaccessible_to_anon_user(self):
         self.assertFalse(self.test_problem.can_be_accessed_by(self.anonymous_user))
 
-    def test_unmoderated_problem_inaccessible_to_other_provider_user(self):
-        self.assertFalse(self.test_problem.can_be_accessed_by(self.other_provider))
+    def test_unmoderated_problem_inaccessible_to_other_trust_user(self):
+        self.assertFalse(self.test_problem.can_be_accessed_by(self.other_trust_user))
 
     def test_unmoderated_problem_inaccessible_to_other_ccg_user(self):
         self.assertFalse(self.test_problem.can_be_accessed_by(self.other_ccg_user))
@@ -182,8 +182,8 @@ class ProblemModelTests(ProblemTestCase):
     def test_hidden_status_problem_inaccessible_to_anon_user(self):
         self.assertFalse(self.test_hidden_status_problem.can_be_accessed_by(self.anonymous_user))
 
-    def test_hidden_status_problem_inaccessible_to_other_provider_user(self):
-        self.assertFalse(self.test_hidden_status_problem.can_be_accessed_by(self.other_provider))
+    def test_hidden_status_problem_inaccessible_to_other_trust_user(self):
+        self.assertFalse(self.test_hidden_status_problem.can_be_accessed_by(self.other_trust_user))
 
     def test_hidden_status_problem_inaccessible_to_other_ccg_user(self):
         self.assertFalse(self.test_hidden_status_problem.can_be_accessed_by(self.other_ccg_user))

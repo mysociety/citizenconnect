@@ -43,7 +43,7 @@
         "pk": 7,
         "model": "auth.user",
         "fields": {
-            "username": "other_provider",
+            "username": "other_trust",
             "first_name": "",
             "last_name": "",
             "is_active": true,
@@ -55,7 +55,7 @@
             ],
             "user_permissions": [],
             "password": "pbkdf2_sha256$10000$PIUMBDfPUdqM$qBLiSe2R8lsWHkVCjv/UiUmhNxq5L5uJrfiJ9rX+ieY=",
-            "email": "other_provider@example.com",
+            "email": "other_trust@example.com",
             "date_joined": "2013-03-19T11:23:04Z"
         }
     },

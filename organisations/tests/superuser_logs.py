@@ -31,7 +31,7 @@ class SuperuserLogTests(AuthorizationTestCase):
         ]
         self.users_who_should_not_be_logged = [
             self.trust_user,
-            self.other_provider,
+            self.other_trust_user,
             self.ccg_user,
             self.other_ccg_user,
             self.case_handler,
@@ -86,7 +86,7 @@ class SuperuserLogViewTests(AuthorizationTestCase):
     def test_log_page_only_accessible_to_superusers(self):
         non_superusers = [
             self.trust_user,
-            self.other_provider,
+            self.other_trust_user,
             self.case_handler,
             self.no_trust_user
         ]

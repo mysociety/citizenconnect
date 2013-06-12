@@ -61,7 +61,7 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         resp = self.client.get(self.test_moderated_problem_url)
         self.assertEqual(resp.status_code, 200)
 
-        self.login_as(self.other_provider)
+        self.login_as(self.other_trust_user)
         resp = self.client.get(self.test_moderated_problem_url)
         self.assertEqual(resp.status_code, 200)
 
@@ -97,7 +97,7 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         self.assertNotContains(resp, self.test_private_problem.moderated_description)
         self.assertNotContains(resp, self.test_private_problem.reporter_name)
 
-        for user in [self.other_provider, self.other_ccg_user]:
+        for user in [self.other_trust_user, self.other_ccg_user]:
             self.login_as(user)
             resp = self.client.get(self.test_private_problem_url)
             self.assertEqual(resp.status_code, 200)
@@ -116,7 +116,7 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         self.assertNotContains(resp, response1.response)
         self.assertNotContains(resp, response2.response)
 
-        for user in [self.other_provider, self.other_ccg_user]:
+        for user in [self.other_trust_user, self.other_ccg_user]:
             self.login_as(user)
             resp = self.client.get(self.test_private_problem_url)
             self.assertEqual(resp.status_code, 200)
@@ -142,8 +142,8 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         resp = self.client.get(self.test_unmoderated_problem_url)
         self.assertEqual(resp.status_code, 403)
 
-    def test_unmoderated_problem_inaccessible_to_other_provider_user(self):
-        self.login_as(self.other_provider)
+    def test_unmoderated_problem_inaccessible_to_other_trust_user(self):
+        self.login_as(self.other_trust_user)
         resp = self.client.get(self.test_unmoderated_problem_url)
         self.assertEqual(resp.status_code, 403)
 

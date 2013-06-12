@@ -546,9 +546,9 @@ class AuthorizationTestCase(TestCase):
         self.no_trust_user = User.objects.get(pk=8)
 
         # A User linked to a different trust
-        self.other_provider = User.objects.get(pk=7)
+        self.other_trust_user = User.objects.get(pk=7)
         # add the relation to the other trust
-        self.other_test_trust.users.add(self.other_provider)
+        self.other_test_trust.users.add(self.other_trust_user)
         self.other_test_trust.save()
 
         # An NHS Superuser

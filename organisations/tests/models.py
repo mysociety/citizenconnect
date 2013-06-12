@@ -54,7 +54,7 @@ class OrganisationModelAuthTests(AuthorizationTestCase):
 
     def test_user_can_access_provider_happy_path(self):
         self.assertTrue(self.test_organisation.can_be_accessed_by(self.trust_user))
-        self.assertTrue(self.other_test_organisation.can_be_accessed_by(self.other_provider))
+        self.assertTrue(self.other_test_organisation.can_be_accessed_by(self.other_trust_user))
 
     def test_superusers_can_access_any_provider(self):
         for user in self.users_who_can_access_everything:
@@ -70,7 +70,7 @@ class OrganisationModelAuthTests(AuthorizationTestCase):
         self.assertFalse(self.other_test_organisation.can_be_accessed_by(self.no_trust_user))
 
     def test_user_with_other_org_cannot_access_different_org(self):
-        self.assertFalse(self.test_organisation.can_be_accessed_by(self.other_provider))
+        self.assertFalse(self.test_organisation.can_be_accessed_by(self.other_trust_user))
         self.assertFalse(self.other_test_organisation.can_be_accessed_by(self.trust_user))
 
     def test_user_with_no_ccgs_cannot_access_orgs(self):

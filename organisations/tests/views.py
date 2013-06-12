@@ -274,8 +274,8 @@ class OrganisationSummaryTests(AuthorizationTestCase):
         resp = self.client.get(self.private_summary_url)
         self.assertEqual(resp.status_code, 200)
 
-    def test_private_summary_page_is_inaccessible_to_other_providers(self):
-        self.login_as(self.other_provider)
+    def test_private_summary_page_is_inaccessible_to_other_trusts(self):
+        self.login_as(self.other_trust_user)
         resp = self.client.get(self.private_summary_url)
         self.assertEqual(resp.status_code, 403)
 
@@ -336,13 +336,13 @@ class OrganisationProblemsTests(AuthorizationTestCase):
 
     def test_no_services_for_gps(self):
         for url in [self.public_gp_problems_url, self.private_gp_problems_url]:
-            self.login_as(self.other_provider)
+            self.login_as(self.other_trust_user)
             resp = self.client.get(url)
             self.assertNotContains(resp, '<th class="service">Department</th>')
 
     def test_no_time_limits_for_gps(self):
         for url in [self.public_gp_problems_url, self.private_gp_problems_url]:
-            self.login_as(self.other_provider)
+            self.login_as(self.other_trust_user)
             resp = self.client.get(url)
             self.assertNotContains(resp, '<th class="time_to_acknowledge">Acknowledge</th>')
             self.assertNotContains(resp, '<th class="time_to_address">Address</th>')
@@ -428,8 +428,8 @@ class OrganisationProblemsTests(AuthorizationTestCase):
             resp = self.client.get(self.private_gp_problems_url)
             self.assertEqual(resp.status_code, 200)
 
-    def test_private_page_is_inaccessible_to_other_providers(self):
-        self.login_as(self.other_provider)
+    def test_private_page_is_inaccessible_to_other_trusts(self):
+        self.login_as(self.other_trust_user)
         resp = self.client.get(self.private_hospital_problems_url)
         self.assertEqual(resp.status_code, 403)
         self.login_as(self.trust_user)
@@ -683,8 +683,8 @@ class TrustDashboardTests(AuthorizationTestCase):
             resp = self.client.get(self.dashboard_url)
             self.assertEqual(resp.status_code, 200)
 
-    def test_dashboard_page_is_inaccessible_to_other_providers(self):
-        self.login_as(self.other_provider)
+    def test_dashboard_page_is_inaccessible_to_other_trusts(self):
+        self.login_as(self.other_trust_user)
         resp = self.client.get(self.dashboard_url)
         self.assertEqual(resp.status_code, 403)
 
@@ -1535,7 +1535,7 @@ class BreachDashboardTests(AuthorizationTestCase):
         people_who_shouldnt_have_access = [
             self.trust_user,
             self.no_trust_user,
-            self.other_provider,
+            self.other_trust_user,
             self.second_tier_moderator
         ]
 
@@ -1605,7 +1605,7 @@ class TrustBreachesTests(AuthorizationTestCase):
     def test_dashboard_is_inacessible_to_other_people(self):
         people_who_shouldnt_have_access = [
             self.no_trust_user,
-            self.other_provider,
+            self.other_trust_user,
             self.second_tier_moderator,
             self.other_ccg_user
         ]
