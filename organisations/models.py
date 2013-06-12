@@ -10,6 +10,8 @@ from django.contrib.auth.models import User, Group
 from citizenconnect.models import AuditedModel
 from .mixins import MailSendMixin, UserCreationMixin
 
+from issues.models import Problem
+
 import auth
 from .auth import user_in_groups
 from .metaphone import dm
@@ -85,6 +87,10 @@ class Trust(MailSendMixin, UserCreationMixin, AuditedModel):
     def default_user_group(self):
         """Group to ensure that users are members of"""
         return Group.objects.get(pk=auth.TRUSTS)
+
+    @property
+    def problem_set(self):
+        return Problem.objects.filter(organisation__in=self.organisations.all())
 
     def __unicode__(self):
         return self.name
