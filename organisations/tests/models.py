@@ -9,9 +9,36 @@ from django.utils.timezone import utc
 from .lib import (create_test_organisation,
                   create_test_ccg,
                   create_test_trust,
+                  create_test_problem,
                   AuthorizationTestCase)
 
 from ..models import Organisation, Trust
+
+
+class TrustModelTests(TestCase):
+
+    def setUp(self):
+        # create a trust
+        self.test_trust = create_test_trust({'code': 'MYTRUST'})
+
+        # create three orgs, two of which belong to the trust, and one that does not
+        self.test_trust_org_1 = create_test_organisation({"trust": self.test_trust, "ods_code": "test1"})
+        self.test_trust_org_2 = create_test_organisation({"trust": self.test_trust, "ods_code": "test2"})
+        self.test_other_org = create_test_organisation({"ods_code": "other"})
+
+        # create a problem in each org
+        for org in Organisation.objects.all():
+            create_test_problem({
+                'organisation': org,
+                'description': "Problem with '{0}'".format(org.trust.code),
+            })
+
+    def test_trust_problem_set(self):
+        # check that the right problems are found using the problem_set
+        problems = self.test_trust.problem_set.order_by('description')
+        self.assertEqual(problems.count(), 2)
+        for p in problems:
+            self.assertEqual( p.organisation.trust, self.test_trust)
 
 
 class OrganisationModelTests(TestCase):

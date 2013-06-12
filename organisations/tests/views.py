@@ -87,11 +87,6 @@ class OrganisationSummaryTests(AuthorizationTestCase):
     def test_private_summary_page_shows_all_problems(self):
         self.login_as(self.provider)
         resp = self.client.get(self.private_summary_url)
-        total = resp.context['problems_total']
-        self.assertEqual(total['all_time'], 4)
-        self.assertEqual(total['week'], 4)
-        self.assertEqual(total['four_weeks'], 4)
-        self.assertEqual(total['six_months'], 4)
 
         problems_by_status = resp.context['problems_by_status']
         self.assertEqual(problems_by_status[0]['all_time'], 3)
@@ -121,11 +116,6 @@ class OrganisationSummaryTests(AuthorizationTestCase):
     def test_public_summary_page_only_shows_visible_problems(self):
         self.login_as(self.provider)
         resp = self.client.get(self.public_summary_url)
-        total = resp.context['problems_total']
-        self.assertEqual(total['all_time'], 3)
-        self.assertEqual(total['week'], 3)
-        self.assertEqual(total['four_weeks'], 3)
-        self.assertEqual(total['six_months'], 3)
 
         problems_by_status = resp.context['problems_by_status']
         self.assertEqual(problems_by_status[0]['all_time'], 3)
@@ -150,12 +140,6 @@ class OrganisationSummaryTests(AuthorizationTestCase):
         for url in self.urls:
             self.login_as(self.provider)
             resp = self.client.get(url + '?category=cleanliness')
-
-            total = resp.context['problems_total']
-            self.assertEqual(total['all_time'], 1)
-            self.assertEqual(total['week'], 1)
-            self.assertEqual(total['four_weeks'], 1)
-            self.assertEqual(total['six_months'], 1)
 
             problems_by_status = resp.context['problems_by_status']
             self.assertEqual(problems_by_status[0]['all_time'], 1)
@@ -651,22 +635,22 @@ class TrustProblemsTests(AuthorizationTestCase):
         self.assertContains(resp, self.test_organisation.name)
 
 
-class OrganisationDashboardTests(AuthorizationTestCase):
+class TrustDashboardTests(AuthorizationTestCase):
 
     def setUp(self):
-        super(OrganisationDashboardTests, self).setUp()
+        super(TrustDashboardTests, self).setUp()
         self.problem = create_test_problem({'organisation': self.test_organisation})
-        self.dashboard_url = reverse('org-dashboard', kwargs={'ods_code': self.test_organisation.ods_code})
+        self.dashboard_url = reverse('trust-dashboard', kwargs={'code': self.test_organisation.trust.code})
 
     def test_dashboard_page_exists(self):
         self.login_as(self.provider)
         resp = self.client.get(self.dashboard_url)
         self.assertEqual(resp.status_code, 200)
 
-    def test_dashboard_page_shows_organisation_name(self):
+    def test_dashboard_page_shows_trust_name(self):
         self.login_as(self.provider)
         resp = self.client.get(self.dashboard_url)
-        self.assertTrue(self.test_organisation.name in resp.content)
+        self.assertTrue(self.test_organisation.trust.name in resp.content)
 
     def test_dashboard_shows_problems(self):
         self.login_as(self.provider)
