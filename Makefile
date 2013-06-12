@@ -25,4 +25,4 @@ dev-data:
 	./manage.py loaddata phase_2_organisations.json
 	./manage.py loaddata example_problems.json
 
-PHONY: css watch update dev-data
+.PHONY: css watch update dev-data
