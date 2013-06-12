@@ -421,23 +421,18 @@ class OrganisationProblems(OrganisationAwareViewMixin,
 
         return kwargs
 
-    def get_problems(self, organisation, private):
-        if private:
-            return organisation.problem_set.all()
-        else:
-            return organisation.problem_set.all_moderated_published_problems()
-
     def get_context_data(self, **kwargs):
         context = super(OrganisationProblems, self).get_context_data(**kwargs)
 
         # Get a queryset of issues and apply any filters to them
-        problems = self.get_problems(context['organisation'], context['private'])
+        problems = context['organisation'].problem_set.all_moderated_published_problems()
         filtered_problems = self.filter_problems(context['selected_filters'], problems)
 
         # Build a table
-        table_args = {'private': context['private']}
-        if not context['private']:
-            table_args['cobrand'] = kwargs['cobrand']
+        table_args = {
+            'private': context['private'],
+            'cobrand': kwargs['cobrand']
+        }
 
         if context['organisation'].has_services() and context['organisation'].has_time_limits():
             problem_table = ExtendedProblemTable(filtered_problems, **table_args)
@@ -477,7 +472,7 @@ class TrustProblems(TrustAwareViewMixin,
         filtered_problems = self.filter_problems(context['selected_filters'], problems)
 
         # Build a table
-        table_args = {'private': True}
+        table_args = {'private': context['private']}
         problem_table = ExtendedProblemTable(filtered_problems, **table_args)
 
         RequestConfig(self.request, paginate={'per_page': 8}).configure(problem_table)
