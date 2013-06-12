@@ -23,7 +23,7 @@ class SuperuserLogTests(AuthorizationTestCase):
                                                    'publication_status': Problem.HIDDEN})
         self.test_urls = [
             reverse('home', kwargs={'cobrand': 'choices'}),
-            reverse('org-dashboard', kwargs={'ods_code': self.test_organisation.ods_code}),
+            reverse('trust-dashboard', kwargs={'code': self.test_organisation.trust.code}),
             reverse('private-org-problems', kwargs={'ods_code': self.test_organisation.ods_code}),
             reverse('problem-view', kwargs={'cobrand': 'choices', 'pk': self.unmoderated_problem.id}),
             reverse('problem-view', kwargs={'cobrand': 'choices', 'pk': self.private_problem.id}),

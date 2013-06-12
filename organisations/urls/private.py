@@ -9,9 +9,9 @@ from organisations.auth import StrongSetPasswordForm, StrongPasswordChangeForm
 urlpatterns = patterns(
     '',
 
-    url(r'^dashboard/(?P<ods_code>\w+)$',
-        login_required(OrganisationDashboard.as_view()),
-        name='org-dashboard',
+    url(r'^dashboard/(?P<code>\w+)$',
+        login_required(TrustDashboard.as_view()),
+        name='trust-dashboard',
         kwargs={'private': True}),
 
     url(r'^summary$',

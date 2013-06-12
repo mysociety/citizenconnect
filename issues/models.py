@@ -43,6 +43,11 @@ class ProblemQuerySet(models.query.QuerySet):
         args = self.ORDER_BY_FIELDS_FOR_MODERATION_TABLE
         return self.order_by(*args)
 
+    def open_unescalated_problems(self):
+        return self.filter(
+            Q(status__in=Problem.OPEN_STATUSES) &
+            Q(status__in=Problem.NON_ESCALATION_STATUSES)
+        )
 
 class ProblemManager(models.Manager):
     use_for_related_fields = True
@@ -89,10 +94,6 @@ class ProblemManager(models.Manager):
     def open_escalated_problems(self):
         return self.all().filter(Q(status__in=Problem.ESCALATION_STATUSES) &
                                  Q(status__in=Problem.OPEN_STATUSES))
-
-    def open_unescalated_problems(self):
-        return self.all().filter(Q(status__in=Problem.OPEN_STATUSES) &
-                                 Q(status__in=Problem.NON_ESCALATION_STATUSES))
 
     def requiring_confirmation(self):
         return self.filter(

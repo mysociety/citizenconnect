@@ -166,8 +166,8 @@ class EmailProblemsToTrustTests(TestCase):
         self.assertTrue(self.test_problem.reporter_email in first_mail.body)
         self.assertTrue(self.test_problem.category in first_mail.body)
         self.assertTrue(self.test_problem.description in first_mail.body)
-        dashboard_url = settings.SITE_BASE_URL + reverse('org-dashboard',
-                                                         kwargs={'ods_code': self.test_problem.organisation.ods_code})
+        dashboard_url = settings.SITE_BASE_URL + reverse('trust-dashboard',
+                                                         kwargs={'code': self.test_problem.organisation.trust.code})
         self.assertTrue(dashboard_url in first_mail.body)
 
         # Check that problems were marked as mailed
