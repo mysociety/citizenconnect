@@ -4,7 +4,7 @@ from organisations import models
 import reversion
 
 class OrganisationAdmin(reversion.VersionAdmin):
-    list_display = ('id', 'name', 'organisation_type', 'county', 'postcode')
+    list_display = ('id', 'name', 'organisation_type', 'trust')
 
 class TrustAdmin(reversion.VersionAdmin):
     list_display = ('id', 'name', 'code', 'email')
