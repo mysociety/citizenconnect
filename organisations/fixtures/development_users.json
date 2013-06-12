@@ -23,7 +23,7 @@
         "pk": 8,
         "model": "auth.user",
         "fields": {
-            "username": "no_provider",
+            "username": "no_trust",
             "first_name": "",
             "last_name": "",
             "is_active": true,
@@ -35,7 +35,7 @@
             ],
             "user_permissions": [],
             "password": "pbkdf2_sha256$10000$DTyoe1oF18io$r1/sQoLH8E0N+RICvFuEC94LDJteAV7/303+ufsDzOs=",
-            "email": "no_provider@example.com",
+            "email": "no_trust@example.com",
             "date_joined": "2013-03-19T11:23:21Z"
         }
     },

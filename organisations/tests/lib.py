@@ -542,8 +542,8 @@ class AuthorizationTestCase(TestCase):
         # An anonymous user
         self.anonymous_user = AnonymousUser()
 
-        # A provider user linked to no providers
-        self.no_provider = User.objects.get(pk=8)
+        # A trust user linked to no trusts
+        self.no_trust_user = User.objects.get(pk=8)
 
         # A User linked to a different trust
         self.other_provider = User.objects.get(pk=7)

@@ -199,7 +199,7 @@ class LoginRedirectTests(AuthorizationTestCase):
         resp = self.client.get(self.login_redirect_url)
         self.assertRedirects(resp, home_url)
         # Provider with no organisations
-        self.login_as(self.no_provider)
+        self.login_as(self.no_trust_user)
         resp = self.client.get(self.login_redirect_url)
         self.assertRedirects(resp, home_url)
 

@@ -36,7 +36,7 @@ class SuperuserLogTests(AuthorizationTestCase):
             self.other_ccg_user,
             self.case_handler,
             self.superuser,  # Django superuser
-            self.no_provider
+            self.no_trust_user
         ]
 
     def test_superuser_access_logged(self):
@@ -88,7 +88,7 @@ class SuperuserLogViewTests(AuthorizationTestCase):
             self.trust_user,
             self.other_provider,
             self.case_handler,
-            self.no_provider
+            self.no_trust_user
         ]
 
         for user in non_superusers:

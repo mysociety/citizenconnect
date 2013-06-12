@@ -66,8 +66,8 @@ class OrganisationModelAuthTests(AuthorizationTestCase):
         self.assertFalse(self.other_test_organisation.can_be_accessed_by(self.anonymous_user))
 
     def test_user_with_no_orgs_cannot_access_organisation(self):
-        self.assertFalse(self.test_organisation.can_be_accessed_by(self.no_provider))
-        self.assertFalse(self.other_test_organisation.can_be_accessed_by(self.no_provider))
+        self.assertFalse(self.test_organisation.can_be_accessed_by(self.no_trust_user))
+        self.assertFalse(self.other_test_organisation.can_be_accessed_by(self.no_trust_user))
 
     def test_user_with_other_org_cannot_access_different_org(self):
         self.assertFalse(self.test_organisation.can_be_accessed_by(self.other_provider))

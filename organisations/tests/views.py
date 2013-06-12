@@ -1534,7 +1534,7 @@ class BreachDashboardTests(AuthorizationTestCase):
     def test_dashboard_is_inacessible_to_anyone_else(self):
         people_who_shouldnt_have_access = [
             self.trust_user,
-            self.no_provider,
+            self.no_trust_user,
             self.other_provider,
             self.second_tier_moderator
         ]
@@ -1604,7 +1604,7 @@ class TrustBreachesTests(AuthorizationTestCase):
 
     def test_dashboard_is_inacessible_to_other_people(self):
         people_who_shouldnt_have_access = [
-            self.no_provider,
+            self.no_trust_user,
             self.other_provider,
             self.second_tier_moderator,
             self.other_ccg_user
