@@ -73,7 +73,7 @@ class PrivateNationalSummaryTable(NationalSummaryTable):
 
     def reverse_to_org_summary(self, ods_code):
         return reverse(
-            'private-org-summary',
+            'trust-summary',
             kwargs={'ods_code': ods_code}
         )
 
