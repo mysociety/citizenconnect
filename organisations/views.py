@@ -32,6 +32,7 @@ from .tables import (NationalSummaryTable,
                      PrivateNationalSummaryTable,
                      ProblemTable,
                      ExtendedProblemTable,
+                     TrustProblemTable,
                      ProblemDashboardTable,
                      EscalationDashboardTable,
                      BreachTable)
@@ -421,28 +422,59 @@ class OrganisationProblems(OrganisationAwareViewMixin,
 
         return kwargs
 
-    def get_problems(self, organisation, private):
-        if private:
-            return organisation.problem_set.all()
-        else:
-            return organisation.problem_set.all_moderated_published_problems()
-
     def get_context_data(self, **kwargs):
         context = super(OrganisationProblems, self).get_context_data(**kwargs)
 
         # Get a queryset of issues and apply any filters to them
-        problems = self.get_problems(context['organisation'], context['private'])
+        problems = context['organisation'].problem_set.all_moderated_published_problems()
         filtered_problems = self.filter_problems(context['selected_filters'], problems)
 
         # Build a table
-        table_args = {'private': context['private']}
-        if not context['private']:
-            table_args['cobrand'] = kwargs['cobrand']
+        table_args = {
+            'private': context['private'],
+            'cobrand': kwargs['cobrand']
+        }
 
         if context['organisation'].has_services() and context['organisation'].has_time_limits():
             problem_table = ExtendedProblemTable(filtered_problems, **table_args)
         else:
             problem_table = ProblemTable(filtered_problems, **table_args)
+
+        RequestConfig(self.request, paginate={'per_page': 8}).configure(problem_table)
+        context['table'] = problem_table
+        context['page_obj'] = problem_table.page
+        return context
+
+
+class TrustProblems(TrustAwareViewMixin,
+                    FilterFormMixin,
+                    TemplateView):
+
+    template_name = 'organisations/trust_problems.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(TrustProblems, self).get_form_kwargs()
+
+        # Turn off the ccg filter and filter organisations to this trust
+        kwargs['with_ccg'] = False
+        kwargs['organisations'] = Organisation.objects.filter(trust=self.trust)
+
+        # Turn off the organisation_type filter
+        kwargs['with_organisation_type'] = False
+
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super(TrustProblems, self).get_context_data(**kwargs)
+
+        # Get a queryset of issues and apply any filters to them
+        # TODO - get this from the trust's property @evdb is writing
+        problems = Problem.objects.all().filter(organisation__trust=self.trust)
+        filtered_problems = self.filter_problems(context['selected_filters'], problems)
+
+        # Build a table
+        table_args = {'private': context['private']}
+        problem_table = TrustProblemTable(filtered_problems, **table_args)
 
         RequestConfig(self.request, paginate={'per_page': 8}).configure(problem_table)
         context['table'] = problem_table

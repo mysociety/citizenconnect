@@ -12,7 +12,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.contrib.gis.geos import Point
-from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.utils.timezone import utc
 
@@ -26,9 +25,7 @@ from ..models import Organisation
 from . import (create_test_problem,
                create_test_organisation,
                create_test_service,
-               create_test_ccg,
                create_test_review,
-               create_test_trust,
                AuthorizationTestCase)
 from organisations.forms import OrganisationFinderForm
 
@@ -302,13 +299,9 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         self.public_hospital_problems_url = reverse('public-org-problems',
                                                     kwargs={'ods_code': self.hospital.ods_code,
                                                             'cobrand': 'choices'})
-        self.private_hospital_problems_url = reverse('private-org-problems',
-                                                     kwargs={'ods_code': self.hospital.ods_code})
         self.public_gp_problems_url = reverse('public-org-problems',
                                               kwargs={'ods_code': self.gp.ods_code,
                                                       'cobrand': 'choices'})
-        self.private_gp_problems_url = reverse('private-org-problems',
-                                               kwargs={'ods_code': self.gp.ods_code})
 
         # Problems
         self.staff_problem = create_test_problem({'category': 'staff',
@@ -322,30 +315,22 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         self.private_problem = create_test_problem({'organisation': self.hospital, 'public': False})
 
     def test_shows_services_for_hospitals(self):
-        for url in [self.public_hospital_problems_url, self.private_hospital_problems_url]:
-            self.login_as(self.provider)
-            resp = self.client.get(url)
-            self.assertContains(resp, '<th class="service">Department</th>', count=1, status_code=200)
+        resp = self.client.get(self.public_hospital_problems_url)
+        self.assertContains(resp, '<th class="service">Department</th>', count=1, status_code=200)
 
     def test_shows_time_limits_for_hospitals(self):
-        for url in [self.public_hospital_problems_url, self.private_hospital_problems_url]:
-            self.login_as(self.provider)
-            resp = self.client.get(url)
-            self.assertContains(resp, '<th class="time_to_acknowledge">Acknowledge</th>', count=1, status_code=200)
-            self.assertContains(resp, '<th class="time_to_address">Address</th>', count=1, status_code=200)
+        resp = self.client.get(self.public_hospital_problems_url)
+        self.assertContains(resp, '<th class="time_to_acknowledge">Acknowledge</th>', count=1, status_code=200)
+        self.assertContains(resp, '<th class="time_to_address">Address</th>', count=1, status_code=200)
 
     def test_no_services_for_gps(self):
-        for url in [self.public_gp_problems_url, self.private_gp_problems_url]:
-            self.login_as(self.other_provider)
-            resp = self.client.get(url)
-            self.assertNotContains(resp, '<th class="service">Department</th>')
+        resp = self.client.get(self.public_gp_problems_url)
+        self.assertNotContains(resp, '<th class="service">Department</th>')
 
     def test_no_time_limits_for_gps(self):
-        for url in [self.public_gp_problems_url, self.private_gp_problems_url]:
-            self.login_as(self.other_provider)
-            resp = self.client.get(url)
-            self.assertNotContains(resp, '<th class="time_to_acknowledge">Acknowledge</th>')
-            self.assertNotContains(resp, '<th class="time_to_address">Address</th>')
+        resp = self.client.get(self.public_gp_problems_url)
+        self.assertNotContains(resp, '<th class="time_to_acknowledge">Acknowledge</th>')
+        self.assertNotContains(resp, '<th class="time_to_address">Address</th>')
 
     def test_public_page_exists_and_is_accessible_to_anyone(self):
         resp = self.client.get(self.public_hospital_problems_url)
@@ -384,71 +369,6 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         self.assertTrue(unmoderated_problem_url not in resp.content)
         self.assertTrue(hidden_problem_url not in resp.content)
 
-    def test_private_page_exists(self):
-        self.login_as(self.provider)
-        resp = self.client.get(self.private_hospital_problems_url)
-        self.assertEqual(resp.status_code, 200)
-
-    def test_private_page_links_to_problems(self):
-        self.login_as(self.provider)
-        response_url = reverse('response-form', kwargs={'pk': self.staff_problem.id})
-        resp = self.client.get(self.private_hospital_problems_url)
-        self.assertTrue(response_url in resp.content)
-
-    def test_private_page_shows_hidden_private_and_unmoderated_problems(self):
-        # Add some extra problems
-        unmoderated_problem = create_test_problem({'organisation': self.hospital})
-        unmoderated_response_url = reverse('response-form', kwargs={'pk': unmoderated_problem.id})
-        hidden_problem = create_test_problem({'organisation': self.hospital,
-                                              'moderated': Problem.MODERATED,
-                                              'publication_status': Problem.HIDDEN})
-        hidden_response_url = reverse('response-form', kwargs={'pk': hidden_problem.id})
-        private_problem = create_test_problem({'organisation': self.hospital,
-                                               'moderated': Problem.MODERATED,
-                                               'publication_status': Problem.PUBLISHED,
-                                               'public': False})
-        private_response_url = reverse('response-form', kwargs={'pk': self.private_problem.id})
-        self.login_as(self.provider)
-        resp = self.client.get(self.private_hospital_problems_url)
-        self.assertTrue(unmoderated_response_url in resp.content)
-        self.assertTrue(hidden_response_url in resp.content)
-        self.assertTrue(private_response_url in resp.content)
-        self.assertTrue(private_problem.private_summary in resp.content)
-
-    def test_private_page_is_inaccessible_to_anon_users(self):
-        expected_login_url = "{0}?next={1}".format(self.login_url, self.private_hospital_problems_url)
-        resp = self.client.get(self.private_hospital_problems_url)
-        self.assertRedirects(resp, expected_login_url)
-
-    def test_private_pages_are_accessible_to_all_superusers(self):
-        for user in self.users_who_can_access_everything:
-            self.login_as(user)
-            resp = self.client.get(self.private_hospital_problems_url)
-            self.assertEqual(resp.status_code, 200)
-            resp = self.client.get(self.private_gp_problems_url)
-            self.assertEqual(resp.status_code, 200)
-
-    def test_private_page_is_inaccessible_to_other_providers(self):
-        self.login_as(self.other_provider)
-        resp = self.client.get(self.private_hospital_problems_url)
-        self.assertEqual(resp.status_code, 403)
-        self.login_as(self.provider)
-        resp = self.client.get(self.private_gp_problems_url)
-        self.assertEqual(resp.status_code, 403)
-
-    def test_private_page_is_inaccessible_to_other_ccgs(self):
-        self.login_as(self.other_ccg_user)
-        resp = self.client.get(self.private_hospital_problems_url)
-        self.assertEqual(resp.status_code, 403)
-        self.login_as(self.ccg_user)
-        resp = self.client.get(self.private_gp_problems_url)
-        self.assertEqual(resp.status_code, 403)
-
-    def test_private_page_is_accessible_to_ccg(self):
-        self.login_as(self.ccg_user)
-        resp = self.client.get(self.private_hospital_problems_url)
-        self.assertEqual(resp.status_code, 200)
-
     def test_filters_by_status(self):
         # Add a problem in a different status that would show up
         resolved_problem = create_test_problem({'organisation': self.hospital,
@@ -461,20 +381,13 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         self.assertContains(resp, self.staff_problem.reference_number)
         self.assertNotContains(resp, resolved_problem.reference_number)
 
-    def shows_all_statuses_on_private_page(self):
-        self.login_as(self.ccg_user)
-        resp = self.client.get(self.private_hospital_problems_url)
-        for status, label in Problem.STATUS_CHOICES:
-            self.assertContains(resp, '<option value={0}>{1}</option>'.format(status, label))
-
-    def shows_only_public_statuses_on_public_page(self):
-        self.login_as(self.ccg_user)
-        resp = self.client.get(self.private_hospital_problems_url)
+    def test_shows_only_public_statuses_on_public_page(self):
+        resp = self.client.get(self.public_hospital_problems_url)
         for status, label in Problem.STATUS_CHOICES:
             if status in Problem.HIDDEN_STATUSES:
-                self.assertNotContains(resp, '<option value={0}>{1}</option>'.format(status, label))
+                self.assertNotContains(resp, '<option value="{0}">{1}</option>'.format(status, label))
 
-    def ignores_private_statuses_on_public_page(self):
+    def test_ignores_private_statuses_on_public_page(self):
         # Even if we manually hack the url, it shouldn't do any filtering
         # Add a problem in a different status that would show up
         abusive_problem = create_test_problem({'organisation': self.hospital,
@@ -485,8 +398,6 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         status_filtered_url = "{0}?status={1}".format(self.public_hospital_problems_url, Problem.ABUSIVE)
         resp = self.client.get(status_filtered_url)
         self.assertContains(resp, self.staff_problem.reference_number)
-        # The default status option should still be selected, not any other
-        self.assertContains(resp, '<option value="" selected="selected">Problem status</option>')
         self.assertNotContains(resp, abusive_problem.reference_number)
 
     def test_filters_by_category(self):
@@ -501,24 +412,11 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         self.assertContains(resp, cleanliness_problem.reference_number)
         self.assertNotContains(resp, self.staff_problem.reference_number)
 
-    def test_private_page_filters_by_breach(self):
-        # Add a breach problem
-        self.login_as(self.provider)
-        breach_problem = create_test_problem({'organisation': self.hospital,
-                                              'breach': True,
-                                              'moderated': Problem.MODERATED,
-                                              'publication_status': Problem.PUBLISHED,
-                                              'moderated_description': 'Moderated'})
-        breach_filtered_url = "{0}?breach=True".format(self.private_hospital_problems_url)
-        resp = self.client.get(breach_filtered_url)
-        self.assertContains(resp, breach_problem.reference_number)
-        self.assertNotContains(resp, self.staff_problem.reference_number)
-
     def test_public_page_does_not_have_breach_filter(self):
         resp = self.client.get(self.public_hospital_problems_url)
         self.assertNotContains(resp, '<select name="breach" id="id_breach">')
 
-    def test_doesnt_show_service_for_gp(self):
+    def test_doesnt_show_service_filter_for_gp(self):
         resp = self.client.get(self.public_gp_problems_url)
         self.assertNotContains(resp, '<select name="service_id" id="id_service_id">')
 
@@ -549,17 +447,6 @@ class OrganisationProblemsTests(AuthorizationTestCase):
             self.assertEqual(resp.status_code, 200)
             self.assertEqual(resp.context['table'].data.ordering, [column])
 
-    def test_private_page_highlights_priority_problems(self):
-        # Add a priority problem
-        self.login_as(self.provider)
-        create_test_problem({'organisation': self.hospital,
-                             'moderated': Problem.MODERATED,
-                             'publication_status': Problem.PUBLISHED,
-                             'moderated_description': 'Moderated',
-                             'priority': Problem.PRIORITY_HIGH})
-        resp = self.client.get(self.private_hospital_problems_url)
-        self.assertContains(resp, 'problem-table__highlight')
-
     def test_public_page_doesnt_highlight_priority_problems(self):
         # Add a priority problem
         create_test_problem({'organisation': self.hospital,
@@ -570,16 +457,6 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         resp = self.client.get(self.public_hospital_problems_url)
         self.assertNotContains(resp, 'problem-table__highlight')
 
-    def test_private_page_shows_breach_flag(self):
-        self.login_as(self.provider)
-        create_test_problem({'organisation': self.hospital,
-                             'moderated': Problem.MODERATED,
-                             'publication_status': Problem.PUBLISHED,
-                             'moderated_description': 'Moderated',
-                             'breach': True})
-        resp = self.client.get(self.private_hospital_problems_url)
-        self.assertContains(resp, '<div class="problem-table__flag__breach">b</div>')
-
     def test_public_page_doesnt_show_breach_flag(self):
         create_test_problem({'organisation': self.hospital,
                              'moderated': Problem.MODERATED,
@@ -588,17 +465,6 @@ class OrganisationProblemsTests(AuthorizationTestCase):
                              'breach': True})
         resp = self.client.get(self.public_hospital_problems_url)
         self.assertNotContains(resp, '<div class="problem-table__flag__breach">b</div>')
-
-    def test_private_page_shows_escalated_flag(self):
-        self.login_as(self.provider)
-        create_test_problem({'organisation': self.hospital,
-                             'moderated': Problem.MODERATED,
-                             'publication_status': Problem.PUBLISHED,
-                             'moderated_description': 'Moderated',
-                             'status': Problem.ESCALATED,
-                             'commissioned': Problem.LOCALLY_COMMISSIONED})
-        resp = self.client.get(self.private_hospital_problems_url)
-        self.assertContains(resp, '<div class="problem-table__flag__escalate">e</div>')
 
     def test_public_page_doesnt_show_escalated_flag(self):
         create_test_problem({'organisation': self.hospital,
@@ -610,17 +476,6 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         resp = self.client.get(self.public_hospital_problems_url)
         self.assertNotContains(resp, '<div class="problem-table__flag__escalate">e</div>')
 
-    def test_private_page_shows_private_summary(self):
-        self.login_as(self.provider)
-        create_test_problem({'organisation': self.hospital,
-                             'moderated': Problem.MODERATED,
-                             'publication_status': Problem.PUBLISHED,
-                             'description': 'private description',
-                             'moderated_description': 'public description'})
-        resp = self.client.get(self.private_hospital_problems_url)
-        self.assertContains(resp, 'private description')
-        self.assertNotContains(resp, 'public description')
-
     def test_public_page_shows_public_summary(self):
         create_test_problem({'organisation': self.hospital,
                              'moderated': Problem.MODERATED,
@@ -630,6 +485,170 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         resp = self.client.get(self.public_hospital_problems_url)
         self.assertNotContains(resp, 'private description')
         self.assertContains(resp, 'public description')
+
+
+class TrustProblemsTests(AuthorizationTestCase):
+
+    def setUp(self):
+        super(TrustProblemsTests, self).setUp()
+
+        # Organisations
+        self.hospital = create_test_organisation({'organisation_type': 'hospitals',
+                                                  'ods_code': 'ABC123',
+                                                  'trust': self.test_trust})
+        self.gp = create_test_organisation({'organisation_type': 'gppractices',
+                                            'ods_code': 'DEF456',
+                                            'trust': self.other_test_trust})
+
+        # Useful urls
+        self.trust_problems_url = reverse('trust-problems',
+                                          kwargs={'code': self.hospital.trust.code})
+        self.other_trust_problems_url = reverse('trust-problems',
+                                                kwargs={'code': self.gp.trust.code})
+
+        # Problems
+        self.staff_problem = create_test_problem({'category': 'staff',
+                                                  'organisation': self.hospital,
+                                                  'moderated': Problem.MODERATED,
+                                                  'publication_status': Problem.PUBLISHED,
+                                                  'moderated_description': "Moderated description"})
+        # Add an explicitly public and an explicitly private problem to test
+        # privacy is respected
+        self.public_problem = create_test_problem({'organisation': self.hospital})
+        self.private_problem = create_test_problem({'organisation': self.hospital, 'public': False})
+
+    def test_private_page_exists(self):
+        self.login_as(self.provider)
+        resp = self.client.get(self.trust_problems_url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_private_page_links_to_problems(self):
+        self.login_as(self.provider)
+        response_url = reverse('response-form', kwargs={'pk': self.staff_problem.id})
+        resp = self.client.get(self.trust_problems_url)
+        self.assertTrue(response_url in resp.content)
+
+    def test_private_page_shows_hidden_private_and_unmoderated_problems(self):
+        # Add some extra problems
+        unmoderated_problem = create_test_problem({'organisation': self.hospital})
+        unmoderated_response_url = reverse('response-form', kwargs={'pk': unmoderated_problem.id})
+        hidden_problem = create_test_problem({'organisation': self.hospital,
+                                              'moderated': Problem.MODERATED,
+                                              'publication_status': Problem.HIDDEN})
+        hidden_response_url = reverse('response-form', kwargs={'pk': hidden_problem.id})
+        private_problem = create_test_problem({'organisation': self.hospital,
+                                               'moderated': Problem.MODERATED,
+                                               'publication_status': Problem.PUBLISHED,
+                                               'public': False})
+        private_response_url = reverse('response-form', kwargs={'pk': self.private_problem.id})
+        self.login_as(self.provider)
+        resp = self.client.get(self.trust_problems_url)
+        self.assertTrue(unmoderated_response_url in resp.content)
+        self.assertTrue(hidden_response_url in resp.content)
+        self.assertTrue(private_response_url in resp.content)
+        self.assertTrue(private_problem.private_summary in resp.content)
+
+    def test_private_page_is_inaccessible_to_anon_users(self):
+        expected_login_url = "{0}?next={1}".format(self.login_url, self.trust_problems_url)
+        resp = self.client.get(self.trust_problems_url)
+        self.assertRedirects(resp, expected_login_url)
+
+    def test_private_pages_are_accessible_to_all_superusers(self):
+        for user in self.users_who_can_access_everything:
+            self.login_as(user)
+            resp = self.client.get(self.trust_problems_url)
+            self.assertEqual(resp.status_code, 200)
+            resp = self.client.get(self.other_trust_problems_url)
+            self.assertEqual(resp.status_code, 200)
+
+    def test_private_page_is_inaccessible_to_other_providers(self):
+        self.login_as(self.other_provider)
+        resp = self.client.get(self.trust_problems_url)
+        self.assertEqual(resp.status_code, 403)
+        self.login_as(self.provider)
+        resp = self.client.get(self.other_trust_problems_url)
+        self.assertEqual(resp.status_code, 403)
+
+    def test_private_page_is_inaccessible_to_other_ccgs(self):
+        self.login_as(self.other_ccg_user)
+        resp = self.client.get(self.trust_problems_url)
+        self.assertEqual(resp.status_code, 403)
+        self.login_as(self.ccg_user)
+        resp = self.client.get(self.other_trust_problems_url)
+        self.assertEqual(resp.status_code, 403)
+
+    def test_private_page_is_accessible_to_ccg(self):
+        self.login_as(self.ccg_user)
+        resp = self.client.get(self.trust_problems_url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_shows_all_statuses_on_private_page(self):
+        self.login_as(self.ccg_user)
+        resp = self.client.get(self.trust_problems_url)
+        for status, label in Problem.STATUS_CHOICES:
+            self.assertContains(resp, '<option value="{0}">{1}</option>'.format(status, label))
+
+    def test_private_page_filters_by_breach(self):
+        # Add a breach problem
+        self.login_as(self.provider)
+        breach_problem = create_test_problem({'organisation': self.hospital,
+                                              'breach': True,
+                                              'moderated': Problem.MODERATED,
+                                              'publication_status': Problem.PUBLISHED,
+                                              'moderated_description': 'Moderated'})
+        breach_filtered_url = "{0}?breach=True".format(self.trust_problems_url)
+        resp = self.client.get(breach_filtered_url)
+        self.assertContains(resp, breach_problem.reference_number)
+        self.assertNotContains(resp, self.staff_problem.reference_number)
+
+    def test_private_page_highlights_priority_problems(self):
+        # Add a priority problem
+        self.login_as(self.provider)
+        create_test_problem({'organisation': self.hospital,
+                             'moderated': Problem.MODERATED,
+                             'publication_status': Problem.PUBLISHED,
+                             'moderated_description': 'Moderated',
+                             'priority': Problem.PRIORITY_HIGH})
+        resp = self.client.get(self.trust_problems_url)
+        self.assertContains(resp, 'problem-table__highlight')
+
+    def test_private_page_shows_breach_flag(self):
+        self.login_as(self.provider)
+        create_test_problem({'organisation': self.hospital,
+                             'moderated': Problem.MODERATED,
+                             'publication_status': Problem.PUBLISHED,
+                             'moderated_description': 'Moderated',
+                             'breach': True})
+        resp = self.client.get(self.trust_problems_url)
+        self.assertContains(resp, '<div class="problem-table__flag__breach">b</div>')
+
+    def test_private_page_shows_escalated_flag(self):
+        self.login_as(self.provider)
+        create_test_problem({'organisation': self.hospital,
+                             'moderated': Problem.MODERATED,
+                             'publication_status': Problem.PUBLISHED,
+                             'moderated_description': 'Moderated',
+                             'status': Problem.ESCALATED,
+                             'commissioned': Problem.LOCALLY_COMMISSIONED})
+        resp = self.client.get(self.trust_problems_url)
+        self.assertContains(resp, '<div class="problem-table__flag__escalate">e</div>')
+
+    def test_private_page_shows_private_summary(self):
+        self.login_as(self.provider)
+        create_test_problem({'organisation': self.hospital,
+                             'moderated': Problem.MODERATED,
+                             'publication_status': Problem.PUBLISHED,
+                             'description': 'private description',
+                             'moderated_description': 'public description'})
+        resp = self.client.get(self.trust_problems_url)
+        self.assertContains(resp, 'private description')
+        self.assertNotContains(resp, 'public description')
+
+    def test_private_page_includes_provider_name(self):
+        self.login_as(self.provider)
+        resp = self.client.get(self.trust_problems_url)
+        self.assertContains(resp, '<th class="orderable provider_name sortable">')
+        self.assertContains(resp, self.test_organisation.name)
 
 
 class OrganisationDashboardTests(AuthorizationTestCase):

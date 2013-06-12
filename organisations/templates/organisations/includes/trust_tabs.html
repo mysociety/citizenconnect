@@ -4,7 +4,7 @@
 
     <li><a {% if active_tab == 'breaches' %}class="active"{% endif %} href="{% url 'trust-breaches' code=trust.code %}">Breaches</a></li>
 
-    {# <li><a {% if active_tab == 'problems' %}class="active"{% endif %} href="{% url 'trust-problems' code=trust.code %}">Problems</a></li> #}
+    <li><a {% if active_tab == 'problems' %}class="active"{% endif %} href="{% url 'trust-problems' code=trust.code %}">Problems</a></li>
 
     <li><a {% if active_tab == 'reviews' %}class="active"{% endif %} href="{% url 'trust-reviews' code=trust.code %}">Reviews</a></li>
 

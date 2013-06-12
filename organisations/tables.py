@@ -217,6 +217,31 @@ class ExtendedProblemTable(ProblemTable):
                     'breach_and_escalation')
 
 
+class TrustProblemTable(ExtendedProblemTable):
+    """
+    Like ExtendedProblemTable but for trusts, so including a provider name column
+    """
+    provider_name = tables.Column(verbose_name='Provider name',
+                                  accessor='organisation.name')
+
+    class Meta:
+        order_by = ('-created',)
+        attrs = {"class": "problem-table"}
+        sequence = ('reference_number',
+                    'provider_name',
+                    'created',
+                    'status',
+                    'resolved',
+                    'category',
+                    'service',
+                    'time_to_acknowledge',
+                    'time_to_address',
+                    'happy_service',
+                    'happy_outcome',
+                    'summary',
+                    'breach_and_escalation')
+
+
 class ProblemDashboardTable(BaseProblemTable):
     """
     A base Table class for all the different dashboards which show
