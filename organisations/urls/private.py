@@ -24,9 +24,9 @@ urlpatterns = patterns(
         name='private-org-summary',
         kwargs={'private': True}),
 
-    url(r'^problems/(?P<ods_code>\w+)$',
-        login_required(OrganisationProblems.as_view()),
-        name='private-org-problems',
+    url(r'^problems/(?P<code>\w+)$',
+        login_required(TrustProblems.as_view()),
+        name='trust-problems',
         kwargs={'private': True}),
 
     url(r'^reviews/(?P<code>\w+)$',
