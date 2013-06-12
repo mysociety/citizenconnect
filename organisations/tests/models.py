@@ -38,7 +38,19 @@ class TrustModelTests(TestCase):
         problems = self.test_trust.problem_set.order_by('description')
         self.assertEqual(problems.count(), 2)
         for p in problems:
-            self.assertEqual( p.organisation.trust, self.test_trust)
+            self.assertEqual(p.organisation.trust, self.test_trust)
+
+    def test_escalation_ccg_always_in_ccgs(self):
+        ccg = create_test_ccg({})
+        trust = Trust(name="test_trust",
+                      code="ABC",
+                      email='test-trust@example.org',
+                      secondary_email='test-trust-secondary@example.org',
+                      escalation_ccg=ccg)
+
+        trust.save()
+        trust = Trust.objects.get(pk=trust.id)
+        self.assertTrue(trust.escalation_ccg in trust.ccgs.all())
 
 
 class OrganisationModelTests(TestCase):
@@ -103,21 +115,6 @@ class OrganisationMetaphoneTests(TestCase):
         self.assertEqual(self.organisation.name_metaphone, '')
         self.organisation.save()
         self.assertEqual(self.organisation.name_metaphone, 'TSTRKNSXN')
-
-
-class TrustModelTests(TestCase):
-
-    def test_escalation_ccg_always_in_ccgs(self):
-        ccg = create_test_ccg({})
-        trust = Trust(name="test_trust",
-                      code="ABC",
-                      email='test-trust@example.org',
-                      secondary_email='test-trust-secondary@example.org',
-                      escalation_ccg=ccg)
-
-        trust.save()
-        trust = Trust.objects.get(pk=trust.id)
-        self.assertTrue(trust.escalation_ccg in trust.ccgs.all())
 
 
 class CreateTestTrustMixin(object):
