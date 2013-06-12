@@ -8,6 +8,6 @@
 
     <li><a {% if active_tab == 'reviews' %}class="active"{% endif %} href="{% url 'trust-reviews' code=trust.code %}">Reviews</a></li>
 
-    {# <li><a {% if active_tab == 'summary' %}class="active"{% endif %} href="{% url 'trust-summary' code=trust.code %}">Summary</a></li> #}
+    <li><a {% if active_tab == 'summary' %}class="active"{% endif %} href="{% url 'trust-summary' code=trust.code %}">Summary</a></li>
 
  </ul>
