@@ -18,7 +18,7 @@ class ReviewTable(tables.Table):
     api_posting_id = tables.Column(verbose_name='Ref',
                                    attrs={'th': {'class': 'one-twelfth'},
                                           'td': {'class': 'problem-table__heavy-text'}})
-    api_published = tables.DateColumn(verbose_name='Received Date', format='d.m.Y',
+    api_published = tables.DateColumn(verbose_name='Received', format='d.m.Y',
                                       attrs={'th': {'class': 'two-twelfths  align-center'},
                                              'td': {'class': 'problem-table__light-text  align-center'}})
 
@@ -57,14 +57,15 @@ class TrustReviewTable(ReviewTable):
 
     """Table for the reviews for all the organisations in a Trust."""
 
-    organisation_name = tables.Column(verbose_name='Site name',
-                                      accessor='organisation.name')
+    organisation_name = tables.Column(verbose_name='Provider name',
+                                      accessor='organisation.name',
+                                      attrs={'th': {'class': 'two-twelfths'}})
 
     class Meta:
         order_by = ('-created',)
         attrs = {'class': 'problem-table problem-table--expanded'}
-        sequence = ('organisation_name',
-                    'api_posting_id',
+        sequence = ('api_posting_id',
+                    'organisation_name',
                     'api_published',
                     'rating',
                     'content')
