@@ -24,7 +24,7 @@ class SuperuserLogTests(AuthorizationTestCase):
         self.test_urls = [
             reverse('home', kwargs={'cobrand': 'choices'}),
             reverse('trust-dashboard', kwargs={'code': self.test_organisation.trust.code}),
-            reverse('private-org-problems', kwargs={'ods_code': self.test_organisation.ods_code}),
+            reverse('trust-problems', kwargs={'ods_code': self.test_organisation.ods_code}),
             reverse('problem-view', kwargs={'cobrand': 'choices', 'pk': self.unmoderated_problem.id}),
             reverse('problem-view', kwargs={'cobrand': 'choices', 'pk': self.private_problem.id}),
             reverse('problem-view', kwargs={'cobrand': 'choices', 'pk': self.hidden_problem.id})
