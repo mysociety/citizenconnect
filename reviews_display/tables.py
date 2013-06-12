@@ -10,8 +10,6 @@ from django.utils.html import conditional_escape
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 
-from .models import Rating
-
 
 class ReviewTable(tables.Table):
 
@@ -53,3 +51,20 @@ class ReviewTable(tables.Table):
     class Meta:
         order_by = ('-created',)
         attrs = {'class': 'problem-table problem-table--expanded'}
+
+
+class TrustReviewTable(ReviewTable):
+
+    """Table for the reviews for all the organisations in a Trust."""
+
+    organisation_name = tables.Column(verbose_name='Site name',
+                                      accessor='organisation.name')
+
+    class Meta:
+        order_by = ('-created',)
+        attrs = {'class': 'problem-table problem-table--expanded'}
+        sequence = ('organisation_name',
+                    'api_posting_id',
+                    'api_published',
+                    'rating',
+                    'content')
