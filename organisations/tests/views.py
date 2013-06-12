@@ -644,6 +644,12 @@ class TrustProblemsTests(AuthorizationTestCase):
         self.assertContains(resp, 'private description')
         self.assertNotContains(resp, 'public description')
 
+    def test_private_page_includes_provider_name(self):
+        self.login_as(self.provider)
+        resp = self.client.get(self.trust_problems_url)
+        self.assertContains(resp, '<th class="orderable provider_name sortable">')
+        self.assertContains(resp, self.test_organisation.name)
+
 
 class OrganisationDashboardTests(AuthorizationTestCase):
 

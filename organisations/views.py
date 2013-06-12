@@ -32,6 +32,7 @@ from .tables import (NationalSummaryTable,
                      PrivateNationalSummaryTable,
                      ProblemTable,
                      ExtendedProblemTable,
+                     TrustProblemTable,
                      ProblemDashboardTable,
                      EscalationDashboardTable,
                      BreachTable)
@@ -473,7 +474,7 @@ class TrustProblems(TrustAwareViewMixin,
 
         # Build a table
         table_args = {'private': context['private']}
-        problem_table = ExtendedProblemTable(filtered_problems, **table_args)
+        problem_table = TrustProblemTable(filtered_problems, **table_args)
 
         RequestConfig(self.request, paginate={'per_page': 8}).configure(problem_table)
         context['table'] = problem_table
