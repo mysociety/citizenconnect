@@ -450,6 +450,42 @@ class OrganisationProblems(OrganisationAwareViewMixin,
         return context
 
 
+class TrustProblems(TrustAwareViewMixin,
+                    FilterFormMixin,
+                    TemplateView):
+
+    template_name = 'organisations/trust_problems.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(TrustProblems, self).get_form_kwargs()
+
+        # Turn off the ccg filter and filter organisations to this trust
+        kwargs['with_ccg'] = False
+        kwargs['organisations'] = Organisation.objects.filter(trust=self.trust)
+
+        # Turn off the organisation_type filter
+        kwargs['with_organisation_type'] = False
+
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super(TrustProblems, self).get_context_data(**kwargs)
+
+        # Get a queryset of issues and apply any filters to them
+        # TODO - get this from the trust's property @evdb is writing
+        problems = Problem.objects.all().filter(organisation__trust=self.trust)
+        filtered_problems = self.filter_problems(context['selected_filters'], problems)
+
+        # Build a table
+        table_args = {'private': True}
+        problem_table = ExtendedProblemTable(filtered_problems, **table_args)
+
+        RequestConfig(self.request, paginate={'per_page': 8}).configure(problem_table)
+        context['table'] = problem_table
+        context['page_obj'] = problem_table.page
+        return context
+
+
 class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
     template_name = 'organisations/summary.html'
     permitted_statuses = Problem.VISIBLE_STATUSES
