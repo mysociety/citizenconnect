@@ -635,11 +635,14 @@ class EscalationDashboard(FilterFormMixin, TemplateView):
     def get_form_kwargs(self):
         kwargs = super(EscalationDashboard, self).get_form_kwargs()
 
-        # Turn off the ccg filter if the user is a ccg
+        # Turn off the ccg filter and filter organisations if the user is a ccg
         user = self.request.user
         if not user_is_superuser(user) and not user_in_group(user, auth.CUSTOMER_CONTACT_CENTRE):
             kwargs['with_ccg'] = False
             kwargs['organisations'] = Organisation.objects.filter(trust__escalation_ccg__in=user.ccgs.all())
+        else:
+            kwargs['organisations'] = Organisation.objects.all()
+
 
         # Turn off status too, because all problems on this dashboard have
         # a status of Escalated
