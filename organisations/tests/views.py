@@ -632,22 +632,22 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         self.assertContains(resp, 'public description')
 
 
-class OrganisationDashboardTests(AuthorizationTestCase):
+class TrustDashboardTests(AuthorizationTestCase):
 
     def setUp(self):
-        super(OrganisationDashboardTests, self).setUp()
+        super(TrustDashboardTests, self).setUp()
         self.problem = create_test_problem({'organisation': self.test_organisation})
-        self.dashboard_url = reverse('org-dashboard', kwargs={'ods_code': self.test_organisation.ods_code})
+        self.dashboard_url = reverse('trust-dashboard', kwargs={'code': self.test_organisation.trust.code})
 
     def test_dashboard_page_exists(self):
         self.login_as(self.provider)
         resp = self.client.get(self.dashboard_url)
         self.assertEqual(resp.status_code, 200)
 
-    def test_dashboard_page_shows_organisation_name(self):
+    def test_dashboard_page_shows_trust_name(self):
         self.login_as(self.provider)
         resp = self.client.get(self.dashboard_url)
-        self.assertTrue(self.test_organisation.name in resp.content)
+        self.assertTrue(self.test_organisation.trust.name in resp.content)
 
     def test_dashboard_shows_problems(self):
         self.login_as(self.provider)
