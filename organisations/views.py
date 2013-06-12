@@ -604,8 +604,7 @@ def login_redirect(request):
         # will get their own special dashboard with all the orgs on it
         if user.trusts.count() == 1:
             trust = user.trusts.all()[0]
-            organisation = trust.organisations.all()[0]
-            return HttpResponseRedirect(reverse('org-dashboard', kwargs={'ods_code': organisation.ods_code}))
+            return HttpResponseRedirect(reverse('trust-dashboard', kwargs={'code': trust.code}))
 
     # Anyone else goes to the normal homepage
     return HttpResponseRedirect(reverse('home', kwargs={'cobrand': 'choices'}))
