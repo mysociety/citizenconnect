@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load url from future %}
+{% load organisation_extras %}
+{% block title %}{{ trust.name }} :: Outcomes Summary{% endblock %}
+
+{% block bodyclasses %}trust-summary{% endblock %}
+
+{% block content %}
+
+{% include "organisations/includes/page_header.html" with title="Outcomes" %}
+
+{% include "organisations/includes/trust_tabs.html" with active_tab='summary' %}
+
+<div class="island  island--lightblue mb">
+    <h2>Problem Resolution</h2>
+    <div class="gw">
+        <p class="g  one-half  palm-one-whole  feature">
+        {% if issues_total.happy_outcome != None %}
+            <span class="feature__num">{{ issues_total.happy_outcome|percent }}</span><span class="feature__text"> of users who responded are happy with the resolution</span>
+        {% else %}
+            <span class="feature__text">No data on users happy with the resolution</span>
+        {% endif %}
+        </p>
+        <p class="g  one-half  palm-one-whole  feature">
+        {% if issues_total.happy_service != None %}
+           <span class="feature__num">{{ issues_total.happy_service|percent }}</span><span class="feature__text"> of users who responded are happy with the manner in which it was handled</span>
+        {% else %}
+            <span class="feature__text">No data on users happy with the manner in which it was handled</span>
+         {% endif %}
+         </p>
+    </div>
+</div>
+
+{% if organisation.average_recommendation_rating %}
+    <h2 class="rating  rating--organisation-summary  align-center  mt">
+        Average Review Rating&nbsp;
+        {% with organisation.average_recommendation_rating as value %}
+        <span class="{{ value|star_class:1 }}" aria-hidden="true"></span>
+        <span class="{{ value|star_class:2 }}" aria-hidden="true"></span>
+        <span class="{{ value|star_class:3 }}" aria-hidden="true"></span>
+        <span class="{{ value|star_class:4 }}" aria-hidden="true"></span>
+        <span class="{{ value|star_class:5 }}" aria-hidden="true"></span>
+        {% endwith %}
+    </h2>
+{% endif %}
+
+{% include 'organisations/includes/filters.html' %}
+
+<div class="table-wrapper">
+    <table class="summary-table--organisation">
+        <thead>
+            <tr>
+                <th class="status">Status</th>
+                <th colspan="4">Problems Received:</th>
+                {% if organisation.has_time_limits %}
+                    <th colspan="2">Average Time to:</th>
+                {% endif %}
+                <th colspan="2">Satisfaction:</th>
+            </tr>
+            <tr class="summary-table__subhead">
+                <th></th>
+                <th>Last 7 days</th>
+                <th>Last 4 weeks</th>
+                <th>Last 6 months</th>
+                <th>All time</th>
+                {% if organisation.has_time_limits %}
+                    <th>Acknowledge</th>
+                    <th>Respond</th>
+                {% endif %}
+                <th>Manner</th>
+                <th>Resolution</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for status in problems_by_status %}
+            <tr {% if forloop.last %}class="table__footer"{% endif %}>
+
+                <td class="status">{{ status.description }}</td>
+                <td class="week">{{ status.week }}</td>
+                <td class="four_weeks">{{ status.four_weeks }}</td>
+                <td class="six_months">{{ status.six_months }}</td>
+                <td class="all_time">{{ status.all_time }}</td>
+                {% if organisation.has_time_limits %}
+                    <td class="average_time_to_acknowledge" id="status_{{status.status}}_time_to_acknowledge">{% if status.hidden %}—{% else %}{{ status.average_time_to_acknowledge|formatted_time_interval }}{% endif %}</td>
+                    <td class="average_time_to_address" id="status_{{status.status}}_time_to_address">{% if status.hidden %}—{% else %}{{ status.average_time_to_address|formatted_time_interval }}{% endif %}</td>
+                {% endif %}
+                <td class="happy_service" id="status_{{status.status}}_happy_service">{% if status.hidden %}—{% else %}{{ status.happy_service|percent }}{% endif %}</td>
+                <td class="happy_outcome" id="status_{{status.status}}_happy_outcome">{% if status.hidden %}—{% else %}{{ status.happy_outcome|percent }}{% endif %}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}
+
+
