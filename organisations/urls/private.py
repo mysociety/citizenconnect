@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 
 from organisations.views import *
-from reviews_display.views import ReviewOrganisationList
+from reviews_display.views import ReviewTrustList
 from organisations.auth import StrongSetPasswordForm, StrongPasswordChangeForm
 
 urlpatterns = patterns(
@@ -29,9 +29,9 @@ urlpatterns = patterns(
         name='private-org-problems',
         kwargs={'private': True}),
 
-    url(r'^reviews/(?P<ods_code>\w+)$',
-        login_required(ReviewOrganisationList.as_view()),
-        name='private-org-reviews',
+    url(r'^reviews/(?P<code>\w+)$',
+        login_required(ReviewTrustList.as_view()),
+        name='trust-reviews',
         kwargs={'private': True}),
 
     url(r'^breaches/(?P<code>\w+)$',
@@ -39,7 +39,9 @@ urlpatterns = patterns(
         name='trust-breaches',
         kwargs={'private': True}),
 
-    url(r'^access-logs$', login_required(SuperuserLogs.as_view()), name='superuser-logs'),
+    url(r'^access-logs$',
+        login_required(SuperuserLogs.as_view()),
+        name='superuser-logs'),
 
     url(r'^escalation$',
         login_required(EscalationDashboard.as_view()),
