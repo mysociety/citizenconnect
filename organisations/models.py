@@ -5,7 +5,9 @@ from django.contrib.gis.db import models as geomodels
 from django.conf import settings
 from django.db import models
 from django.db import connection
+from django.db.models.signals import post_save
 from django.contrib.auth.models import User, Group
+from django.dispatch import receiver
 
 from citizenconnect.models import AuditedModel
 from .mixins import MailSendMixin, UserCreationMixin
@@ -88,6 +90,14 @@ class Trust(MailSendMixin, UserCreationMixin, AuditedModel):
 
     def __unicode__(self):
         return self.name
+
+
+@receiver(post_save, sender=Trust)
+def ensure_ccgs_contains_escalation_ccg(sender, **kwargs):
+    """ post_save signal handler to ensure that trust.escalation_ccg is always in trust.ccgs """
+    trust = kwargs['instance']
+    if trust.escalation_ccg and trust.escalation_ccg not in trust.ccgs.all():
+        trust.ccgs.add(trust.escalation_ccg)
 
 
 class Organisation(AuditedModel, geomodels.Model):

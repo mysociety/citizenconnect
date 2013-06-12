@@ -11,7 +11,7 @@ from .lib import (create_test_organisation,
                   create_test_trust,
                   AuthorizationTestCase)
 
-from ..models import Organisation
+from ..models import Organisation, Trust
 
 
 class OrganisationModelTests(TestCase):
@@ -76,6 +76,21 @@ class OrganisationMetaphoneTests(TestCase):
         self.assertEqual(self.organisation.name_metaphone, '')
         self.organisation.save()
         self.assertEqual(self.organisation.name_metaphone, 'TSTRKNSXN')
+
+
+class TrustModelTests(TestCase):
+
+    def test_escalation_ccg_always_in_ccgs(self):
+        ccg = create_test_ccg({})
+        trust = Trust(name="test_trust",
+                      code="ABC",
+                      email='test-trust@example.org',
+                      secondary_email='test-trust-secondary@example.org',
+                      escalation_ccg=ccg)
+
+        trust.save()
+        trust = Trust.objects.get(pk=trust.id)
+        self.assertTrue(trust.escalation_ccg in trust.ccgs.all())
 
 
 class CreateTestTrustMixin(object):
