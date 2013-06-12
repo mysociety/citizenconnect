@@ -143,6 +143,8 @@ class FilterFormMixin(FormMixin):
         """
         filtered_queryset = queryset
         for name, value in filters.items():
+            if name == 'organisation':
+                filtered_queryset = filtered_queryset.filter(organisation=value)
             if name == 'status':
                 filtered_queryset = filtered_queryset.filter(status=value)
             if name == 'category':
