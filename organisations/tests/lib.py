@@ -531,9 +531,9 @@ class AuthorizationTestCase(TestCase):
         self.test_password = 'password'
 
         # A user that is allowed to access the test trust
-        self.provider = User.objects.get(pk=6)
+        self.trust_user = User.objects.get(pk=6)
         # add the relation to the trust
-        self.test_trust.users.add(self.provider)
+        self.test_trust.users.add(self.trust_user)
         self.test_trust.save()
 
         # A Django superuser
@@ -542,13 +542,13 @@ class AuthorizationTestCase(TestCase):
         # An anonymous user
         self.anonymous_user = AnonymousUser()
 
-        # A provider user linked to no providers
-        self.no_provider = User.objects.get(pk=8)
+        # A trust user linked to no trusts
+        self.no_trust_user = User.objects.get(pk=8)
 
         # A User linked to a different trust
-        self.other_provider = User.objects.get(pk=7)
+        self.other_trust_user = User.objects.get(pk=7)
         # add the relation to the other trust
-        self.other_test_trust.users.add(self.other_provider)
+        self.other_test_trust.users.add(self.other_trust_user)
         self.other_test_trust.save()
 
         # An NHS Superuser
