@@ -9,7 +9,7 @@ from django_tables2 import RequestConfig
 from organisations.views import OrganisationAwareViewMixin, TrustAwareViewMixin
 
 from .models import Review
-from .tables import ReviewTable
+from .tables import ReviewTable, TrustReviewTable
 
 
 class ReviewLoadOrganisationBase(OrganisationAwareViewMixin):
@@ -44,7 +44,7 @@ class ReviewTrustList(TrustAwareViewMixin,
     def get_context_data(self, **kwargs):
         context = super(ReviewTrustList, self).get_context_data(**kwargs)
         all_reviews = Review.objects.all().filter(organisation__trust=self.trust)
-        table = ReviewTable(all_reviews)
+        table = TrustReviewTable(all_reviews)
         RequestConfig(self.request, paginate={'per_page': 8}).configure(table)
         context['table'] = table
         context['page_obj'] = table.page
