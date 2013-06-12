@@ -159,7 +159,7 @@ class LoginRedirectTests(AuthorizationTestCase):
 
     def test_login_redirect_view_used(self):
         test_values = {
-            'username': self.provider.username,
+            'username': self.trust_user.username,
             'password': self.test_password,
         }
         resp = self.client.post(self.login_url, test_values)
@@ -182,7 +182,7 @@ class LoginRedirectTests(AuthorizationTestCase):
 
     def test_provider_goes_to_provider_dashboard(self):
         dashboard_url = reverse('trust-dashboard', kwargs={'code':self.test_organisation.trust.code})
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
         resp = self.client.get(self.login_redirect_url)
         self.assertRedirects(resp, dashboard_url)
 

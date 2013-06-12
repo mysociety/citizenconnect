@@ -63,7 +63,7 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         super(ResponseFormTests, self).setUp()
         self.problem = create_test_problem({'organisation': self.test_organisation})
         self.response_form_url = reverse('response-form', kwargs={'pk': self.problem.id})
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
         # The form assumes a session variable is set, because it is when you load the form
         # in a browser, so we call the page to set it here.
         self.client.get(self.response_form_url)
@@ -241,7 +241,7 @@ class ResponseFormViewTests(AuthorizationTestCase):
         super(ResponseFormViewTests, self).setUp()
         self.problem = create_test_problem({'organisation': self.test_organisation})
         self.response_form_url = reverse('response-form', kwargs={'pk': self.problem.id})
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
 
     def test_response_page_exists(self):
         resp = self.client.get(self.response_form_url)

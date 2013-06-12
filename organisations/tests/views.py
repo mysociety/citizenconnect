@@ -77,18 +77,18 @@ class OrganisationSummaryTests(AuthorizationTestCase):
 
     def test_summary_page_exists(self):
         for url in self.urls:
-            self.login_as(self.provider)
+            self.login_as(self.trust_user)
             resp = self.client.get(url)
             self.assertEqual(resp.status_code, 200)
 
     def test_summary_page_shows_organisation_name(self):
         for url in self.urls:
-            self.login_as(self.provider)
+            self.login_as(self.trust_user)
             resp = self.client.get(url)
             self.assertTrue(self.test_organisation.name in resp.content)
 
     def test_private_summary_page_shows_all_problems(self):
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
         resp = self.client.get(self.private_summary_url)
         total = resp.context['problems_total']
         self.assertEqual(total['all_time'], 4)
@@ -122,7 +122,7 @@ class OrganisationSummaryTests(AuthorizationTestCase):
         self.assertEqual(problems_by_status[7]['description'], 'Abusive/Vexatious')
 
     def test_public_summary_page_only_shows_visible_problems(self):
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
         resp = self.client.get(self.public_summary_url)
         total = resp.context['problems_total']
         self.assertEqual(total['all_time'], 3)
@@ -151,7 +151,7 @@ class OrganisationSummaryTests(AuthorizationTestCase):
 
     def test_summary_page_applies_problem_category_filter(self):
         for url in self.urls:
-            self.login_as(self.provider)
+            self.login_as(self.trust_user)
             resp = self.client.get(url + '?category=cleanliness')
 
             total = resp.context['problems_total']
@@ -168,7 +168,7 @@ class OrganisationSummaryTests(AuthorizationTestCase):
 
     def test_summary_page_applies_department_filter(self):
         for url in self.urls:
-            self.login_as(self.provider)
+            self.login_as(self.trust_user)
             resp = self.client.get(url + '?service_id=%s' % self.service.id)
 
             problems_by_status = resp.context['problems_by_status']
@@ -182,7 +182,7 @@ class OrganisationSummaryTests(AuthorizationTestCase):
         create_test_problem({'organisation': self.test_organisation,
                              'breach': True})
 
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
         resp = self.client.get(self.private_summary_url + '?breach=True')
 
         problems_by_status = resp.context['problems_by_status']
@@ -197,7 +197,7 @@ class OrganisationSummaryTests(AuthorizationTestCase):
 
     def test_summary_page_gets_survey_data_for_problems_in_visible_statuses(self):
         for url in self.urls:
-            self.login_as(self.provider)
+            self.login_as(self.trust_user)
             resp = self.client.get(url)
             issues_total = resp.context['issues_total']
             self.assertEqual(issues_total['happy_service'], 0.666666666666667)
@@ -205,7 +205,7 @@ class OrganisationSummaryTests(AuthorizationTestCase):
 
     def test_summary_page_gets_time_limit_data_for_problems_in_visible_statuses(self):
         for url in self.urls:
-            self.login_as(self.provider)
+            self.login_as(self.trust_user)
             resp = self.client.get(url)
             issues_total = resp.context['issues_total']
             self.assertEqual(issues_total['average_time_to_acknowledge'], Decimal('6100.0000000000000000'))
@@ -221,7 +221,7 @@ class OrganisationSummaryTests(AuthorizationTestCase):
             self.assertNotContains(resp, Problem.STATUS_CHOICES[status][1])
 
     def test_private_summary_page_shows_visible_and_hidden_status_rows(self):
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
         resp = self.client.get(self.private_summary_url)
         self.assertContains(resp, 'Closed', count=1, status_code=200)
         self.assertContains(resp, 'Unable to Resolve', count=1)
@@ -229,7 +229,7 @@ class OrganisationSummaryTests(AuthorizationTestCase):
 
     def test_summary_page_does_not_include_problems_in_hidden_statuses_in_total_row_summary_stats(self):
         for url in self.urls:
-            self.login_as(self.provider)
+            self.login_as(self.trust_user)
             resp = self.client.get(url)
             summary_stats = resp.context['problems_summary_stats']
             self.assertEqual(summary_stats['happy_service'], 0.666666666666667)
@@ -239,7 +239,7 @@ class OrganisationSummaryTests(AuthorizationTestCase):
 
     def test_summary_pages_display_summary_stats_values_in_visible_status_rows(self):
         for url in self.urls:
-            self.login_as(self.provider)
+            self.login_as(self.trust_user)
             resp = self.client.get(url)
             self.assertContains(resp, '<td class="average_time_to_acknowledge" id="status_0_time_to_acknowledge">4 days</td>')
             self.assertContains(resp, '<td class="average_time_to_address" id="status_0_time_to_address">38 days</td>')
@@ -247,7 +247,7 @@ class OrganisationSummaryTests(AuthorizationTestCase):
             self.assertContains(resp, '<td class="happy_outcome" id="status_0_happy_outcome">100%</td>')
 
     def test_private_summary_page_does_not_display_summary_stats_values_in_hidden_status_rows(self):
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
         resp = self.client.get(self.private_summary_url)
         self.assertContains(resp, '<td class="average_time_to_acknowledge" id="status_7_time_to_acknowledge">—</td>')
         self.assertContains(resp, '<td class="average_time_to_address" id="status_7_time_to_address">—</td>')
@@ -323,13 +323,13 @@ class OrganisationProblemsTests(AuthorizationTestCase):
 
     def test_shows_services_for_hospitals(self):
         for url in [self.public_hospital_problems_url, self.private_hospital_problems_url]:
-            self.login_as(self.provider)
+            self.login_as(self.trust_user)
             resp = self.client.get(url)
             self.assertContains(resp, '<th class="service">Department</th>', count=1, status_code=200)
 
     def test_shows_time_limits_for_hospitals(self):
         for url in [self.public_hospital_problems_url, self.private_hospital_problems_url]:
-            self.login_as(self.provider)
+            self.login_as(self.trust_user)
             resp = self.client.get(url)
             self.assertContains(resp, '<th class="time_to_acknowledge">Acknowledge</th>', count=1, status_code=200)
             self.assertContains(resp, '<th class="time_to_address">Address</th>', count=1, status_code=200)
@@ -385,12 +385,12 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         self.assertTrue(hidden_problem_url not in resp.content)
 
     def test_private_page_exists(self):
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
         resp = self.client.get(self.private_hospital_problems_url)
         self.assertEqual(resp.status_code, 200)
 
     def test_private_page_links_to_problems(self):
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
         response_url = reverse('response-form', kwargs={'pk': self.staff_problem.id})
         resp = self.client.get(self.private_hospital_problems_url)
         self.assertTrue(response_url in resp.content)
@@ -408,7 +408,7 @@ class OrganisationProblemsTests(AuthorizationTestCase):
                                                'publication_status': Problem.PUBLISHED,
                                                'public': False})
         private_response_url = reverse('response-form', kwargs={'pk': self.private_problem.id})
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
         resp = self.client.get(self.private_hospital_problems_url)
         self.assertTrue(unmoderated_response_url in resp.content)
         self.assertTrue(hidden_response_url in resp.content)
@@ -432,7 +432,7 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         self.login_as(self.other_provider)
         resp = self.client.get(self.private_hospital_problems_url)
         self.assertEqual(resp.status_code, 403)
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
         resp = self.client.get(self.private_gp_problems_url)
         self.assertEqual(resp.status_code, 403)
 
@@ -503,7 +503,7 @@ class OrganisationProblemsTests(AuthorizationTestCase):
 
     def test_private_page_filters_by_breach(self):
         # Add a breach problem
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
         breach_problem = create_test_problem({'organisation': self.hospital,
                                               'breach': True,
                                               'moderated': Problem.MODERATED,
@@ -551,7 +551,7 @@ class OrganisationProblemsTests(AuthorizationTestCase):
 
     def test_private_page_highlights_priority_problems(self):
         # Add a priority problem
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
         create_test_problem({'organisation': self.hospital,
                              'moderated': Problem.MODERATED,
                              'publication_status': Problem.PUBLISHED,
@@ -571,7 +571,7 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         self.assertNotContains(resp, 'problem-table__highlight')
 
     def test_private_page_shows_breach_flag(self):
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
         create_test_problem({'organisation': self.hospital,
                              'moderated': Problem.MODERATED,
                              'publication_status': Problem.PUBLISHED,
@@ -590,7 +590,7 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         self.assertNotContains(resp, '<div class="problem-table__flag__breach">b</div>')
 
     def test_private_page_shows_escalated_flag(self):
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
         create_test_problem({'organisation': self.hospital,
                              'moderated': Problem.MODERATED,
                              'publication_status': Problem.PUBLISHED,
@@ -611,7 +611,7 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         self.assertNotContains(resp, '<div class="problem-table__flag__escalate">e</div>')
 
     def test_private_page_shows_private_summary(self):
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
         create_test_problem({'organisation': self.hospital,
                              'moderated': Problem.MODERATED,
                              'publication_status': Problem.PUBLISHED,
@@ -640,17 +640,17 @@ class TrustDashboardTests(AuthorizationTestCase):
         self.dashboard_url = reverse('trust-dashboard', kwargs={'code': self.test_organisation.trust.code})
 
     def test_dashboard_page_exists(self):
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
         resp = self.client.get(self.dashboard_url)
         self.assertEqual(resp.status_code, 200)
 
     def test_dashboard_page_shows_trust_name(self):
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
         resp = self.client.get(self.dashboard_url)
         self.assertTrue(self.test_organisation.trust.name in resp.content)
 
     def test_dashboard_shows_problems(self):
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
         response_url = reverse('response-form', kwargs={'pk': self.problem.id})
         resp = self.client.get(self.dashboard_url)
         self.assertTrue(response_url in resp.content)
@@ -659,7 +659,7 @@ class TrustDashboardTests(AuthorizationTestCase):
         self.closed_problem = create_test_problem({'organisation': self.test_organisation,
                                                    'status': Problem.RESOLVED})
         closed_problem_response_url = reverse('response-form', kwargs={'pk': self.closed_problem.id})
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
         resp = self.client.get(self.dashboard_url)
         self.assertTrue(closed_problem_response_url not in resp.content)
 
@@ -668,7 +668,7 @@ class TrustDashboardTests(AuthorizationTestCase):
                                                       'status': Problem.ESCALATED,
                                                       'commissioned': Problem.LOCALLY_COMMISSIONED})
         escalated_problem_response_url = reverse('response-form', kwargs={'pk': self.escalated_problem.id})
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
         resp = self.client.get(self.dashboard_url)
         self.assertTrue(escalated_problem_response_url not in resp.content)
 
@@ -695,7 +695,7 @@ class TrustDashboardTests(AuthorizationTestCase):
 
     def test_dashboard_page_highlights_priority_problems(self):
         # Add a priority problem
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
         create_test_problem({'organisation': self.test_organisation,
                              'moderated': Problem.MODERATED,
                              'publication_status': Problem.PUBLISHED,
@@ -705,7 +705,7 @@ class TrustDashboardTests(AuthorizationTestCase):
         self.assertContains(resp, 'problem-table__highlight')
 
     def test_dashboard_page_shows_breach_flag(self):
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
         create_test_problem({'organisation': self.test_organisation,
                              'moderated': Problem.MODERATED,
                              'publication_status': Problem.PUBLISHED,
@@ -1065,7 +1065,7 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
         tests = (
             # (user, permitted? )
             (None,                               False),
-            (self.provider,                      False),
+            (self.trust_user,                    False),
             (self.case_handler,                  False),
             (self.second_tier_moderator,         False),
 
@@ -1533,7 +1533,7 @@ class BreachDashboardTests(AuthorizationTestCase):
 
     def test_dashboard_is_inacessible_to_anyone_else(self):
         people_who_shouldnt_have_access = [
-            self.provider,
+            self.trust_user,
             self.no_provider,
             self.other_provider,
             self.second_tier_moderator
@@ -1598,7 +1598,7 @@ class TrustBreachesTests(AuthorizationTestCase):
         self.org_problem = create_test_problem({'organisation': self.test_organisation})
 
     def test_dashboard_accessible_to_provider(self):
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
         resp = self.client.get(self.breach_dashboard_url)
         self.assertEqual(resp.status_code, 200)
 

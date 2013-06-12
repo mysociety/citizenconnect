@@ -531,9 +531,9 @@ class AuthorizationTestCase(TestCase):
         self.test_password = 'password'
 
         # A user that is allowed to access the test trust
-        self.provider = User.objects.get(pk=6)
+        self.trust_user = User.objects.get(pk=6)
         # add the relation to the trust
-        self.test_trust.users.add(self.provider)
+        self.test_trust.users.add(self.trust_user)
         self.test_trust.save()
 
         # A Django superuser

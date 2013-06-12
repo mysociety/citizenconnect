@@ -53,7 +53,7 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         resp = self.client.get(self.test_moderated_problem_url)
         self.assertEqual(resp.status_code, 200)
 
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
         resp = self.client.get(self.test_moderated_problem_url)
         self.assertEqual(resp.status_code, 200)
 
@@ -74,7 +74,7 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_private_problem_accessible_to_allowed_users(self):
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
         resp = self.client.get(self.test_private_problem_url)
         self.assertEqual(resp.status_code, 200)
 
@@ -130,7 +130,7 @@ class ProblemPublicViewTests(AuthorizationTestCase):
             self.assertEqual(resp.status_code, 200)
 
     def test_unmoderated_problem_accessible_to_allowed_uses(self):
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
         resp = self.client.get(self.test_unmoderated_problem_url)
         self.assertEqual(resp.status_code, 200)
 
