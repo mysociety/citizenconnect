@@ -1,7 +1,4 @@
-import sys
-
 from django.core.management.base import NoArgsCommand
-
 
 
 class Command(NoArgsCommand):
@@ -14,8 +11,8 @@ class Command(NoArgsCommand):
 
     def handle_noargs(self, *args, **options):
 
-        sys.stderr.write("This is to STDERR\n");
-        sys.stdout.write("This is to STDOUT\n");
-        sys.stderr.write("This is to STDERR again\n");
+        self.stderr.write("This is to STDERR\n");
+        self.stdout.write("This is to STDOUT\n");
+        self.stderr.write("This is to STDERR again\n");
 
         raise Exception("Boom - exception raised")
