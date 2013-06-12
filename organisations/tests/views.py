@@ -90,11 +90,6 @@ class OrganisationSummaryTests(AuthorizationTestCase):
     def test_private_summary_page_shows_all_problems(self):
         self.login_as(self.provider)
         resp = self.client.get(self.private_summary_url)
-        total = resp.context['problems_total']
-        self.assertEqual(total['all_time'], 4)
-        self.assertEqual(total['week'], 4)
-        self.assertEqual(total['four_weeks'], 4)
-        self.assertEqual(total['six_months'], 4)
 
         problems_by_status = resp.context['problems_by_status']
         self.assertEqual(problems_by_status[0]['all_time'], 3)
@@ -124,11 +119,6 @@ class OrganisationSummaryTests(AuthorizationTestCase):
     def test_public_summary_page_only_shows_visible_problems(self):
         self.login_as(self.provider)
         resp = self.client.get(self.public_summary_url)
-        total = resp.context['problems_total']
-        self.assertEqual(total['all_time'], 3)
-        self.assertEqual(total['week'], 3)
-        self.assertEqual(total['four_weeks'], 3)
-        self.assertEqual(total['six_months'], 3)
 
         problems_by_status = resp.context['problems_by_status']
         self.assertEqual(problems_by_status[0]['all_time'], 3)
@@ -153,12 +143,6 @@ class OrganisationSummaryTests(AuthorizationTestCase):
         for url in self.urls:
             self.login_as(self.provider)
             resp = self.client.get(url + '?category=cleanliness')
-
-            total = resp.context['problems_total']
-            self.assertEqual(total['all_time'], 1)
-            self.assertEqual(total['week'], 1)
-            self.assertEqual(total['four_weeks'], 1)
-            self.assertEqual(total['six_months'], 1)
 
             problems_by_status = resp.context['problems_by_status']
             self.assertEqual(problems_by_status[0]['all_time'], 1)

@@ -370,8 +370,6 @@ class OrganisationSummary(OrganisationAwareViewMixin,
         summary_stats_statuses = Problem.VISIBLE_STATUSES
         count_filters['status'] = tuple(volume_statuses)
         organisation_filters = {'organisation_id': organisation.id}
-        context['problems_total'] = interval_counts(problem_filters=count_filters,
-                                                    organisation_filters=organisation_filters)
         count_filters['status'] = tuple(summary_stats_statuses)
         context['problems_summary_stats'] = interval_counts(problem_filters=count_filters,
                                                             organisation_filters=organisation_filters)
@@ -568,8 +566,6 @@ class TrustDashboard(TrustAwareViewMixin,
         RequestConfig(self.request, paginate={'per_page': 25}).configure(problems_table)
         context['table'] = problems_table
         context['page_obj'] = problems_table.page
-        # organisation_filters = {'organisation_id': context['organisation'].id}
-        # context['problems_total'] = interval_counts(organisation_filters=organisation_filters)
         return context
 
 
