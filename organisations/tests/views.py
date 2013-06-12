@@ -29,11 +29,10 @@ from . import (create_test_problem,
                AuthorizationTestCase)
 from organisations.forms import OrganisationFinderForm
 
-
-class OrganisationSummaryTests(AuthorizationTestCase):
+class SummaryTestMixin(object):
 
     def setUp(self):
-        super(OrganisationSummaryTests, self).setUp()
+        super(SummaryTestMixin, self).setUp()
 
         self.service = create_test_service({'organisation': self.test_organisation})
 
@@ -67,59 +66,23 @@ class OrganisationSummaryTests(AuthorizationTestCase):
                      'status': Problem.ABUSIVE})
         self.hidden_status_access_problem = create_test_problem(atts)
 
+
+class OrganisationSummaryTests(SummaryTestMixin, AuthorizationTestCase):
+
+    def setUp(self):
+        super(OrganisationSummaryTests, self).setUp()
         self.public_summary_url = reverse('public-org-summary', kwargs={'ods_code': self.test_organisation.ods_code,
                                                                         'cobrand': 'choices'})
-        self.private_summary_url = reverse('private-org-summary', kwargs={'ods_code': self.test_organisation.ods_code})
-        self.urls = [self.public_summary_url, self.private_summary_url]
 
-    def test_summary_page_exists(self):
-        for url in self.urls:
-            self.login_as(self.provider)
-            resp = self.client.get(url)
-            self.assertEqual(resp.status_code, 200)
+    def test_public_summary_page_is_accessible_to_everyone(self):
+        resp = self.client.get(self.public_summary_url)
+        self.assertEqual(resp.status_code, 200)
 
     def test_summary_page_shows_organisation_name(self):
-        for url in self.urls:
-            self.login_as(self.provider)
-            resp = self.client.get(url)
-            self.assertTrue(self.test_organisation.name in resp.content)
-
-    def test_private_summary_page_shows_all_problems(self):
-        self.login_as(self.provider)
-        resp = self.client.get(self.private_summary_url)
-        total = resp.context['problems_total']
-        self.assertEqual(total['all_time'], 4)
-        self.assertEqual(total['week'], 4)
-        self.assertEqual(total['four_weeks'], 4)
-        self.assertEqual(total['six_months'], 4)
-
-        problems_by_status = resp.context['problems_by_status']
-        self.assertEqual(problems_by_status[0]['all_time'], 3)
-        self.assertEqual(problems_by_status[0]['week'], 3)
-        self.assertEqual(problems_by_status[0]['four_weeks'], 3)
-        self.assertEqual(problems_by_status[0]['six_months'], 3)
-        self.assertEqual(problems_by_status[0]['description'], 'Open')
-
-        self.assertEqual(problems_by_status[1]['all_time'], 0)
-        self.assertEqual(problems_by_status[1]['week'], 0)
-        self.assertEqual(problems_by_status[1]['four_weeks'], 0)
-        self.assertEqual(problems_by_status[1]['six_months'], 0)
-        self.assertEqual(problems_by_status[1]['description'], 'In Progress')
-
-        self.assertEqual(problems_by_status[2]['all_time'], 0)
-        self.assertEqual(problems_by_status[2]['week'], 0)
-        self.assertEqual(problems_by_status[2]['four_weeks'], 0)
-        self.assertEqual(problems_by_status[2]['six_months'], 0)
-        self.assertEqual(problems_by_status[2]['description'], 'Closed')
-
-        self.assertEqual(problems_by_status[7]['all_time'], 1)
-        self.assertEqual(problems_by_status[7]['week'], 1)
-        self.assertEqual(problems_by_status[7]['four_weeks'], 1)
-        self.assertEqual(problems_by_status[7]['six_months'], 1)
-        self.assertEqual(problems_by_status[7]['description'], 'Abusive/Vexatious')
+        resp = self.client.get(self.public_summary_url)
+        self.assertTrue(self.test_organisation.name in resp.content)
 
     def test_public_summary_page_only_shows_visible_problems(self):
-        self.login_as(self.provider)
         resp = self.client.get(self.public_summary_url)
         total = resp.context['problems_total']
         self.assertEqual(total['all_time'], 3)
@@ -147,40 +110,22 @@ class OrganisationSummaryTests(AuthorizationTestCase):
         self.assertEqual(problems_by_status[2]['description'], 'Closed')
 
     def test_summary_page_applies_problem_category_filter(self):
-        for url in self.urls:
-            self.login_as(self.provider)
-            resp = self.client.get(url + '?category=cleanliness')
+        resp = self.client.get(self.public_summary_url + '?category=cleanliness')
 
-            total = resp.context['problems_total']
-            self.assertEqual(total['all_time'], 1)
-            self.assertEqual(total['week'], 1)
-            self.assertEqual(total['four_weeks'], 1)
-            self.assertEqual(total['six_months'], 1)
+        total = resp.context['problems_total']
+        self.assertEqual(total['all_time'], 1)
+        self.assertEqual(total['week'], 1)
+        self.assertEqual(total['four_weeks'], 1)
+        self.assertEqual(total['six_months'], 1)
 
-            problems_by_status = resp.context['problems_by_status']
-            self.assertEqual(problems_by_status[0]['all_time'], 1)
-            self.assertEqual(problems_by_status[0]['week'], 1)
-            self.assertEqual(problems_by_status[0]['four_weeks'], 1)
-            self.assertEqual(problems_by_status[0]['six_months'], 1)
+        problems_by_status = resp.context['problems_by_status']
+        self.assertEqual(problems_by_status[0]['all_time'], 1)
+        self.assertEqual(problems_by_status[0]['week'], 1)
+        self.assertEqual(problems_by_status[0]['four_weeks'], 1)
+        self.assertEqual(problems_by_status[0]['six_months'], 1)
 
     def test_summary_page_applies_department_filter(self):
-        for url in self.urls:
-            self.login_as(self.provider)
-            resp = self.client.get(url + '?service_id=%s' % self.service.id)
-
-            problems_by_status = resp.context['problems_by_status']
-            self.assertEqual(problems_by_status[0]['all_time'], 1)
-            self.assertEqual(problems_by_status[0]['week'], 1)
-            self.assertEqual(problems_by_status[0]['four_weeks'], 1)
-            self.assertEqual(problems_by_status[0]['six_months'], 1)
-
-    def test_summary_page_applies_breach_filter_on_private_pages(self):
-        # Add a breach problem
-        create_test_problem({'organisation': self.test_organisation,
-                             'breach': True})
-
-        self.login_as(self.provider)
-        resp = self.client.get(self.private_summary_url + '?breach=True')
+        resp = self.client.get(self.public_summary_url + '?service_id=%s' % self.service.id)
 
         problems_by_status = resp.context['problems_by_status']
         self.assertEqual(problems_by_status[0]['all_time'], 1)
@@ -193,20 +138,16 @@ class OrganisationSummaryTests(AuthorizationTestCase):
         self.assertNotContains(resp, '<select name="breach" id="id_breach">')
 
     def test_summary_page_gets_survey_data_for_problems_in_visible_statuses(self):
-        for url in self.urls:
-            self.login_as(self.provider)
-            resp = self.client.get(url)
-            issues_total = resp.context['issues_total']
-            self.assertEqual(issues_total['happy_service'], 0.666666666666667)
-            self.assertEqual(issues_total['happy_outcome'], 1.0)
+        resp = self.client.get(self.public_summary_url)
+        issues_total = resp.context['issues_total']
+        self.assertEqual(issues_total['happy_service'], 0.666666666666667)
+        self.assertEqual(issues_total['happy_outcome'], 1.0)
 
     def test_summary_page_gets_time_limit_data_for_problems_in_visible_statuses(self):
-        for url in self.urls:
-            self.login_as(self.provider)
-            resp = self.client.get(url)
-            issues_total = resp.context['issues_total']
-            self.assertEqual(issues_total['average_time_to_acknowledge'], Decimal('6100.0000000000000000'))
-            self.assertEqual(issues_total['average_time_to_address'], Decimal('54300.0000000000000000000'))
+        resp = self.client.get(self.public_summary_url)
+        issues_total = resp.context['issues_total']
+        self.assertEqual(issues_total['average_time_to_acknowledge'], Decimal('6100.0000000000000000'))
+        self.assertEqual(issues_total['average_time_to_address'], Decimal('54300.0000000000000000000'))
 
     def test_public_summary_page_shows_only_visible_status_rows(self):
         resp = self.client.get(self.public_summary_url)
