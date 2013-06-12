@@ -28,7 +28,7 @@ class BasicViewTests(BaseModerationTestCase):
 
     def test_views_inacessible_to_providers(self):
         self.client.logout()
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
 
         for url in self.all_urls:
             resp = self.client.get(url)
