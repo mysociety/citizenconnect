@@ -10,6 +10,8 @@ from django.contrib.auth.models import User, Group
 from citizenconnect.models import AuditedModel
 from .mixins import MailSendMixin, UserCreationMixin
 
+from issues.models import Problem
+
 import auth
 from .auth import user_in_groups
 from .metaphone import dm
@@ -34,7 +36,67 @@ class CCG(MailSendMixin, UserCreationMixin, AuditedModel):
         return self.name
 
 
-class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Model):
+class Trust(MailSendMixin, UserCreationMixin, AuditedModel):
+    name = models.TextField()
+    code = models.CharField(max_length=8, db_index=True, unique=True)
+    users = models.ManyToManyField(User, related_name='trusts')
+
+    # ISSUE-329: The `blank=True` should be removed when we are supplied with
+    # email addresses for all the trusts
+    # max_length set manually to make it RFC compliant (default of 75 is too short)
+    # email may not be unique
+    email = models.EmailField(max_length=254, blank=True)
+    secondary_email = models.EmailField(max_length=254, blank=True)
+
+    # Which CCG this Trust should escalate problems too
+    escalation_ccg = models.ForeignKey(CCG, blank=False, null=False, related_name='escalation_trusts')
+
+    # Which CCGs commission services from this Trust.
+    # This means that those CCGs will be able to see all the problems at
+    # this trust's organisations.
+    ccgs = models.ManyToManyField(CCG, related_name='trusts')
+
+    def can_be_accessed_by(self, user):
+        """ Can a user access this trust? """
+
+        # Deactivated users - NO
+        if not user.is_active:
+            return False
+
+        # Django superusers - YES
+        if user.is_superuser:
+            return True
+
+        # NHS Superusers, Moderators or customer contact centre users - YES
+        if user_in_groups(user, [auth.NHS_SUPERUSERS,
+                                 auth.CASE_HANDLERS,
+                                 auth.CUSTOMER_CONTACT_CENTRE]):
+            return True
+
+        # Users in this trust - YES
+        if user in self.users.all():
+            return True
+
+        # CCG users for a CCG associated with this Trust - YES
+        if user in User.objects.filter(ccgs__trusts=self).all():
+            return True
+
+        # Everyone else - NO
+        return False
+
+    def default_user_group(self):
+        """Group to ensure that users are members of"""
+        return Group.objects.get(pk=auth.TRUSTS)
+
+    @property
+    def problem_set(self):
+        return Problem.objects.filter(organisation__in=self.organisations.all())
+
+    def __unicode__(self):
+        return self.name
+
+
+class Organisation(AuditedModel, geomodels.Model):
 
     name = models.TextField()
     organisation_type = models.CharField(max_length=100, choices=settings.ORGANISATION_CHOICES)
@@ -47,19 +109,11 @@ class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Mod
     county = models.CharField(max_length=50, blank=True)
     postcode = models.CharField(max_length=10, blank=True)
 
-    # ISSUE-329: The `blank=True` on both of these should be removed
-    # when we are supplied with email addresses for all the orgs
-    # max_length set manually to make it RFC compliant (default of 75 is too short)
-    # email may not be unique
-    email = models.EmailField(max_length=254, blank=True)
-    secondary_email = models.EmailField(max_length=254, blank=True)
-
-    users = models.ManyToManyField(User, related_name='organisations')
-
     point = geomodels.PointField()
     objects = geomodels.GeoManager()
-    escalation_ccg = models.ForeignKey(CCG, blank=False, null=False, related_name='escalation_organisations')
-    ccgs = models.ManyToManyField(CCG, related_name='organisations')
+
+    # Which Trust this is in
+    trust = models.ForeignKey(Trust, blank=False, null=False, related_name='organisations')
 
     # Calculated double_metaphone field, for search by provider name
     name_metaphone = models.TextField(editable=False)
@@ -93,32 +147,9 @@ class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Mod
             return False
 
     def can_be_accessed_by(self, user):
-        # Can a given user access this Organisation?
-
-        # Deactivated users - NO
-        if not user.is_active:
-            return False
-
-        # Django superusers - YES
-        if user.is_superuser:
-            return True
-
-        # NHS Superusers, Moderators or customer contact centre users - YES
-        if user_in_groups(user, [auth.NHS_SUPERUSERS,
-                                 auth.CASE_HANDLERS,
-                                 auth.CUSTOMER_CONTACT_CENTRE]):
-            return True
-
-        # Providers in this organisation - YES
-        if user in self.users.all():
-            return True
-
-        # CCG users for a CCG associated with this organisation - YES
-        if user in User.objects.filter(ccgs__organisations=self).all():
-            return True
-
-        # Everyone else - NO
-        return False
+        """ Can a given user access this Organisation? """
+        # Access is controlled by the Trust
+        return self.trust.can_be_accessed_by(user)
 
     def save(self, *args, **kwargs):
         """
@@ -132,10 +163,6 @@ class Organisation(MailSendMixin, UserCreationMixin, AuditedModel, geomodels.Mod
         name_metaphones = dm(unicode_name)
         self.name_metaphone = name_metaphones[0]  # Ignoring the alternative for now
         super(Organisation, self).save(*args, **kwargs)
-
-    def default_user_group(self):
-        """Group to ensure that users are members of"""
-        return Group.objects.get(pk=auth.PROVIDERS)
 
     def __unicode__(self):
         return self.name

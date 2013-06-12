@@ -18,5 +18,5 @@ Problem:
 
 {{ problem.description }}
 
-To respond to this problem, please visit your dashboard at: {{ site_base_url }}{% url 'org-dashboard' ods_code=problem.organisation.ods_code %}
+To respond to this problem, please visit your dashboard at: {{ site_base_url }}{% url 'trust-dashboard' code=problem.organisation.trust.code %}
 {% endautoescape %}

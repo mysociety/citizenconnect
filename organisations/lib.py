@@ -7,7 +7,7 @@ from issues.models import Problem
 
 # Return a clause summing the number of records in a table whose field meets a criteria
 def _sum_clause(table, field, criteria):
-    return "SUM(CASE WHEN "+ table + "." + field + " " + criteria + " THEN 1 ELSE 0 END)"
+    return "SUM(CASE WHEN " + table + "." + field + " " + criteria + " THEN 1 ELSE 0 END)"
 
 
 # Return the number of records created more recently than the date supplied
@@ -22,10 +22,12 @@ def _boolean_clause(table, field):
     clause += "NULLIF(" + _sum_clause(table, field, "IS NOT NULL") + ", 0)::float" + " AS " + field
     return clause
 
+
 # Return the average of non-null values in an integer field
 def _average_value_clause(table, field, alias):
     clause = "AVG(" + table + "." + field + ") AS " + alias
     return clause
+
 
 # Generate the interval counting select values and params for problems
 def _create_problem_selects(intervals, data_intervals, boolean_fields, average_fields, select_clauses, params):
@@ -39,7 +41,7 @@ def _create_problem_selects(intervals, data_intervals, boolean_fields, average_f
         select_clauses.append("""count(issues_problem.id) as all_time""")
 
     if 'all_time_open' in data_intervals:
-        select_clauses.append(_sum_clause('issues_problem','status', "in %s") + """ as all_time_open""")
+        select_clauses.append(_sum_clause('issues_problem', 'status', "in %s") + """ as all_time_open""")
         params.append(tuple(Problem.OPEN_STATUSES))
 
     if 'all_time_closed' in data_intervals:
@@ -54,6 +56,7 @@ def _create_problem_selects(intervals, data_intervals, boolean_fields, average_f
     # Get the averages
     for field in average_fields:
         select_clauses.append(_average_value_clause('issues_problem', field, "average_" + field))
+
 
 def _apply_problem_filters(problem_filters, problem_filter_clauses, organisation_id, params):
 
@@ -81,6 +84,7 @@ def _apply_problem_filters(problem_filters, problem_filter_clauses, organisation
             problem_filter_clauses.append("""issues_problem.service_id in (select id from organisations_service where service_code in %s)""")
             params.append(service_code)
 
+
 # Generate the interval counting select values and params for reviews
 def _create_review_selects(intervals, data_intervals, select_clauses, params):
 
@@ -94,6 +98,7 @@ def _create_review_selects(intervals, data_intervals, select_clauses, params):
     # Add a review all time count
     if 'all_time' in data_intervals:
         select_clauses.append("""count(reviews_display_review) as reviews_all_time""")
+
 
 def _apply_organisation_filters(organisation_filters,
                                 organisation_filter_clauses,
@@ -127,10 +132,13 @@ def _apply_organisation_filters(organisation_filters,
         else:
             if type(ccg) != tuple:
                 ccg = (ccg,)
-            tables.append('organisations_organisation_ccgs')
-            organisation_filter_clauses.append("organisations_organisation_ccgs.organisation_id = organisations_organisation.id")
-            organisation_filter_clauses.append("organisations_organisation_ccgs.ccg_id in %s")
+            # Filtering by CCG requires joining to the Trust tables
+            # Because Trusts are connected to CCGs
+            tables.append('organisations_trust_ccgs')
+            organisation_filter_clauses.append("organisations_trust_ccgs.trust_id = organisations_organisation.trust_id")
+            organisation_filter_clauses.append("organisations_trust_ccgs.ccg_id in %s")
             params.append(ccg)
+
 
 # Return problem or review counts for a set of organisations for the last week, four weeks
 # and six months based on created date and problem and organisation filters.
@@ -242,7 +250,7 @@ def interval_counts(problem_filters={},
         if interval == 'all_time':
             having_clause = "count(" + table + ".id)"
         else:
-            having_clause = _sum_clause(table,'created', "> %s")
+            having_clause = _sum_clause(table, 'created', "> %s")
             params.append(intervals[interval])
         having_text = "HAVING " + having_clause + " >= %s"
         params.append(cutoff)

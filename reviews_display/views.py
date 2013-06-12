@@ -6,9 +6,10 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from django_tables2 import RequestConfig
 
+from organisations.views import OrganisationAwareViewMixin, TrustAwareViewMixin
 
-from .tables import ReviewTable
-from organisations.views import OrganisationAwareViewMixin
+from .models import Review
+from .tables import ReviewTable, TrustReviewTable
 
 
 class ReviewLoadOrganisationBase(OrganisationAwareViewMixin):
@@ -19,12 +20,31 @@ class ReviewLoadOrganisationBase(OrganisationAwareViewMixin):
 
 class ReviewOrganisationList(OrganisationAwareViewMixin,
                              TemplateView):
+    """ All the reviews for a given organisation """
+
     template_name = 'reviews_display/reviews_organisation_list.html'
 
     def get_context_data(self, **kwargs):
         context = super(ReviewOrganisationList, self).get_context_data(**kwargs)
         all_reviews = self.organisation.reviews.all()
         table = ReviewTable(all_reviews)
+        RequestConfig(self.request, paginate={'per_page': 8}).configure(table)
+        context['table'] = table
+        context['page_obj'] = table.page
+        context['total_reviews'] = all_reviews.count()
+        return context
+
+
+class ReviewTrustList(TrustAwareViewMixin,
+                      TemplateView):
+    """ All the reviews for a given trust """
+
+    template_name = 'reviews_display/reviews_trust_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ReviewTrustList, self).get_context_data(**kwargs)
+        all_reviews = Review.objects.all().filter(organisation__trust=self.trust)
+        table = TrustReviewTable(all_reviews)
         RequestConfig(self.request, paginate={'per_page': 8}).configure(table)
         context['table'] = table
         context['page_obj'] = table.page
