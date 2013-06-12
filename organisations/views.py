@@ -709,7 +709,7 @@ class EscalationBreaches(TemplateView):
 class TrustBreaches(TrustAwareViewMixin,
                     TemplateView):
 
-    template_name = 'organisations/organisation_breaches.html'
+    template_name = 'organisations/trust_breaches.html'
 
     def dispatch(self, request, *args, **kwargs):
         return super(TrustBreaches, self).dispatch(request, *args, **kwargs)
