@@ -11,7 +11,7 @@
 {# Not the finest hour for Django templates. The "add" filter is idiotic with regards to not coercing values #}
 {% with total_reviews|stringformat:"s" as total_reviews_string %}
   {% with "Reviews ("|add:total_reviews_string|add:")" as title %}
-    {% include "organisations/includes/page_header.html" with title=title %}
+    {% include "organisations/includes/page_header.html" with title=title organisation=trust%}
   {% endwith %}
 {% endwith %}
 
