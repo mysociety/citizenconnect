@@ -174,7 +174,7 @@ class OrganisationSummaryTests(AuthorizationTestCase):
 
     def test_public_summary_page_does_not_have_breach_filter(self):
         resp = self.client.get(self.public_summary_url)
-        self.assertNotContains(resp, '<select name="breach" id="id_breach">')
+        self.assertNotContains(resp, '<option value="breach">')
 
     def test_summary_page_gets_survey_data_for_problems_in_visible_statuses(self):
         for url in self.urls:
@@ -596,7 +596,7 @@ class OrganisationProblemsTests(AuthorizationTestCase):
 
     def test_public_page_does_not_have_breach_filter(self):
         resp = self.client.get(self.public_hospital_problems_url)
-        self.assertNotContains(resp, '<select name="breach" id="id_breach">')
+        self.assertNotContains(resp, '<option value="breach">')
 
     def test_doesnt_show_service_filter_for_gp(self):
         resp = self.client.get(self.public_gp_problems_url)
