@@ -172,9 +172,26 @@ class OrganisationSummaryTests(AuthorizationTestCase):
         self.assertEqual(problems_by_status[0]['four_weeks'], 1)
         self.assertEqual(problems_by_status[0]['six_months'], 1)
 
+    def test_summary_page_applies_formal_complaint_filter_on_private_pages(self):
+        create_test_problem({'organisation': self.test_organisation,
+                             'formal_complaint': True})
+
+        self.login_as(self.trust_user)
+        resp = self.client.get(self.private_summary_url + '?flags=formal_complaint')
+
+        problems_by_status = resp.context['problems_by_status']
+        self.assertEqual(problems_by_status[0]['all_time'], 1)
+        self.assertEqual(problems_by_status[0]['week'], 1)
+        self.assertEqual(problems_by_status[0]['four_weeks'], 1)
+        self.assertEqual(problems_by_status[0]['six_months'], 1)
+
     def test_public_summary_page_does_not_have_breach_filter(self):
         resp = self.client.get(self.public_summary_url)
         self.assertNotContains(resp, '<option value="breach">')
+
+    def test_public_summary_page_does_not_have_formal_complaint_filter(self):
+        resp = self.client.get(self.public_summary_url)
+        self.assertNotContains(resp, '<option value="formal_complaint">')
 
     def test_summary_page_gets_survey_data_for_problems_in_visible_statuses(self):
         for url in self.urls:
@@ -348,6 +365,20 @@ class TrustSummaryTests(AuthorizationTestCase):
 
         self.login_as(self.trust_user)
         resp = self.client.get(self.trust_summary_url + '?flags=breach')
+
+        problems_by_status = resp.context['problems_by_status']
+        self.assertEqual(problems_by_status[0]['all_time'], 1)
+        self.assertEqual(problems_by_status[0]['week'], 1)
+        self.assertEqual(problems_by_status[0]['four_weeks'], 1)
+        self.assertEqual(problems_by_status[0]['six_months'], 1)
+
+    def test_summary_page_applies_formal_complaint_filter_on_private_pages(self):
+        # Add a formal_complaint problem
+        create_test_problem({'organisation': self.test_organisation,
+                             'formal_complaint': True})
+
+        self.login_as(self.trust_user)
+        resp = self.client.get(self.trust_summary_url + '?flags=formal_complaint')
 
         problems_by_status = resp.context['problems_by_status']
         self.assertEqual(problems_by_status[0]['all_time'], 1)
@@ -597,6 +628,10 @@ class OrganisationProblemsTests(AuthorizationTestCase):
     def test_public_page_does_not_have_breach_filter(self):
         resp = self.client.get(self.public_hospital_problems_url)
         self.assertNotContains(resp, '<option value="breach">')
+
+    def test_public_page_does_not_have_formal_complaint_filter(self):
+        resp = self.client.get(self.public_hospital_problems_url)
+        self.assertNotContains(resp, '<option value="formal_complaint">')
 
     def test_doesnt_show_service_filter_for_gp(self):
         resp = self.client.get(self.public_gp_problems_url)
@@ -1370,6 +1405,18 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
 
         breach_filtered_url = '{0}?flags=breach'.format(self.summary_url)
         resp = self.client.get(breach_filtered_url)
+        other_test_org_record = resp.context['table'].rows[0].record
+        test_org_record = resp.context['table'].rows[1].record
+        self.assertEqual(test_org_record['week'], 1)
+        self.assertEqual(other_test_org_record['week'], 0)
+
+    def test_summary_page_filters_by_formal_complaint(self):
+        # Add a formal_complaint problem
+        create_test_problem({'organisation': self.test_organisation,
+                             'formal_complaint': True})
+
+        formal_complaint_filtered_url = '{0}?flags=formal_complaint'.format(self.summary_url)
+        resp = self.client.get(formal_complaint_filtered_url)
         other_test_org_record = resp.context['table'].rows[0].record
         test_org_record = resp.context['table'].rows[1].record
         self.assertEqual(test_org_record['week'], 1)

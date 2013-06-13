@@ -123,6 +123,7 @@ class FilterForm(forms.Form):
 
     flags = forms.TypedChoiceField(choices=[ ['', 'Choose severity'],
                                              ['breach', 'Breaches'],
+                                             ['formal_complaint', 'Formal complaints'],
                                             ],
                                     required=False,
                                     empty_value=None,  # Default value is not coerced
