@@ -11,7 +11,7 @@
     {% endif %}
 
     <li><a {% if active_tab == 'problems' %}class="active"{% endif %} href="{% if private %}
-        {% url 'private-org-problems' ods_code=organisation.ods_code %}
+        {% url 'trust-problems' code=organisation.trust.code %}
     {% else %}
         {% url 'public-org-problems' ods_code=organisation.ods_code cobrand=cobrand.name %}
     {% endif %}">Problems</a></li>

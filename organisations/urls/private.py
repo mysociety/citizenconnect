@@ -24,6 +24,11 @@ urlpatterns = patterns(
         name='private-org-summary',
         kwargs={'private': True}),
 
+    url(r'^trust-summary/(?P<code>\w+)$',
+        login_required(TrustSummary.as_view()),
+        name='trust-summary',
+        kwargs={'private': True}),
+
     url(r'^problems/(?P<code>\w+)$',
         login_required(TrustProblems.as_view()),
         name='trust-problems',
