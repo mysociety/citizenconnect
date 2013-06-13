@@ -7,4 +7,11 @@ set -e
 cd `dirname $0`/..
 source ../virtualenv-citizenconnect/bin/activate
 
-./manage.py $1
+# don't abort on error so we can capture output
+set +e
+
+# run the command
+output="`./manage.py $1`"
+
+# suppress output unless we got a non-zero exit status
+[ "$?" -ne 0 ] && echo "$output"
