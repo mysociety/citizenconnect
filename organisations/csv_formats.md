@@ -18,7 +18,7 @@ sensitive):
 
 - `ODS Code`: The ODS code of the trust
 - `Name`
-- `CCG Code`: The ODS code of the CCG (will be used for `escalation_ccg`, and for CCG memberships_)
+- `CCG Code`: The ODS code of the CCG (will be used for `escalation_ccg`, and for CCG memberships)
 - `Email`
 - `Secondary Email`
 
