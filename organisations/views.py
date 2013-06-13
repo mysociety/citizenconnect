@@ -101,6 +101,10 @@ class FilterFormMixin(FormMixin):
     """
     form_class = FilterForm
 
+    # The flags filter lets you choose the bool field to filter as true. This
+    # tuple is used to check that only expected values are filtered on.
+    allowed_flag_filters = ('breach', 'formal_complaint')
+
     def get(self, request, *args, **kwargs):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
@@ -157,8 +161,10 @@ class FilterFormMixin(FormMixin):
                 filtered_queryset = filtered_queryset.filter(service__id=value)
             if name == 'ccg':
                 filtered_queryset = filtered_queryset.filter(organisation__trust__ccgs__id__exact=value)
-            if name == 'breach':
-                filtered_queryset = filtered_queryset.filter(breach=value)
+            if name == 'flags' and value in self.allowed_flag_filters:
+                args = {value: True}
+                filtered_queryset = filtered_queryset.filter(**args)
+
         return filtered_queryset
 
     def interval_count_filters(self, filters):
@@ -184,8 +190,19 @@ class FilterFormMixin(FormMixin):
             # by default the status should filter for the permitted statuses
             problem_filters['status'] = tuple(self.permitted_statuses)
 
+        problem_filters = self.translate_flag_filters(problem_filters)
+
         return (problem_filters, organisation_filters)
 
+
+    def translate_flag_filters(self, problem_filters):
+        # For the flags translate the value of the flag to a bool filter for that field
+        if problem_filters.get('flags'):
+            flag_value = problem_filters['flags']
+            del problem_filters['flags']
+            if flag_value in self.allowed_flag_filters:
+                problem_filters[flag_value] = True
+        return problem_filters
 
 class Map(FilterFormMixin,
           TemplateView):
@@ -199,8 +216,8 @@ class Map(FilterFormMixin,
         kwargs['with_ccg'] = False
         # Turn off department filter
         kwargs['with_service_code'] = False
-        # Turn off breach filter
-        kwargs['with_breach'] = False
+        # Turn off the various flag filters
+        kwargs['with_flags'] = False
         return kwargs
 
     def get_context_data(self, **kwargs):
@@ -371,6 +388,8 @@ class OrganisationSummary(OrganisationAwareViewMixin,
         count_filters['status'] = tuple(volume_statuses)
         organisation_filters = {'organisation_id': organisation.id}
         count_filters['status'] = tuple(summary_stats_statuses)
+        count_filters = self.translate_flag_filters(count_filters)
+
         context['problems_summary_stats'] = interval_counts(problem_filters=count_filters,
                                                             organisation_filters=organisation_filters)
         status_list = []
@@ -431,6 +450,8 @@ class TrustSummary(TrustAwareViewMixin, FilterFormMixin, TemplateView):
         context['problems_total'] = self.get_interval_counts(problem_filters=count_filters,
                                                              organisation_filters=organisation_filters)
         count_filters['status'] = tuple(summary_stats_statuses)
+        count_filters = self.translate_flag_filters(count_filters)
+
         context['problems_summary_stats'] = self.get_interval_counts(problem_filters=count_filters,
                                                                      organisation_filters=organisation_filters)
         status_list = []
