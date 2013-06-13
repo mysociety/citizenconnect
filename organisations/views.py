@@ -406,6 +406,14 @@ class OrganisationSummary(OrganisationAwareViewMixin,
 class TrustSummary(TrustAwareViewMixin, FilterFormMixin, TemplateView):
     template_name = 'organisations/trust_summary.html'
 
+    def get_form_kwargs(self):
+        kwargs = super(TrustSummary, self).get_form_kwargs()
+        kwargs['with_ccg'] = False
+        kwargs['with_organisation_type'] = False
+        kwargs['with_service_code'] = False
+        kwargs['with_status'] = False
+        return kwargs
+
     def get_context_data(self, **kwargs):
         context = super(TrustSummary, self).get_context_data(**kwargs)
 
