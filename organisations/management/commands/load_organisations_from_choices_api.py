@@ -36,6 +36,6 @@ class Command(BaseCommand):
                         self.stdout.write('Created service %s for %s\n' % (service.name, organisation.name))
                 transaction.commit()
             except Exception as e:
-                print e
-                print "Error loading %s %s (%s)" % (organisation_info['name'],organisation_info['organisation_type'], organisation_info['ods_code'])
+                self.stderr.write("Error loading %s %s (%s)" % (organisation_info['name'],organisation_info['organisation_type'], organisation_info['ods_code']))
+                self.stderr.write(e)
                 transaction.rollback()

@@ -1,5 +1,4 @@
 import datetime
-import sys
 from optparse import make_option
 
 from django.core.management.base import NoArgsCommand
@@ -38,4 +37,4 @@ class Command(NoArgsCommand):
                 except OrganisationFromApiDoesNotExist:
                     pass
                 except RepliedToReviewDoesNotExist, e:
-                    sys.stderr.write('RepliedToReviewDoesNotExist: ' + str(e) + " - skipping\n")
+                    self.stderr.write('RepliedToReviewDoesNotExist: ' + str(e) + " - skipping\n")

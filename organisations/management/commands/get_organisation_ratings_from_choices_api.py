@@ -23,6 +23,6 @@ class Command(BaseCommand):
                     self.stdout.write('Updated rating for organisation %s\n' % organisation.name)
                     transaction.commit()
             except Exception as e:
-                self.stdout.write(e)
-                self.stdout.write("Error updating rating for %s" % (organisation.name))
+                self.stderr.write("Error updating rating for %s" % (organisation.name))
+                self.stderr.write(e)
                 transaction.rollback()
