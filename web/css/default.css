@@ -601,6 +601,7 @@ table .icon-warning { font-size: 1.375em; color: #d81e05; line-height: 0; }
 
 .table-link__row:hover td { background-color: #f2f2f2; cursor: pointer; }
 .table-link__row:hover td.dashboard-table__highlight { background: #d81e05; }
+.table-link__row:hover td.problem-table__highlight { background: #d81e05; }
 
 /*------------------------------------*\ $GRIDS
 \*------------------------------------*/

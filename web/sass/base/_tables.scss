@@ -341,4 +341,5 @@ table {
   background-color: $c-table-row-hover-bg;
   cursor: pointer;
   &.dashboard-table__highlight {background: $c-table-row-hover-highlight-bg;}
+  &.problem-table__highlight {background: $c-table-row-hover-highlight-bg;}
 }
