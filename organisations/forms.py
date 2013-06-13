@@ -121,16 +121,16 @@ class FilterForm(forms.Form):
                                     coerce=int,
                                     label="Problem status")
 
-    breach = forms.TypedChoiceField(choices=[['', 'Breach problems?'],
-                                             [True, 'Breaches'],
-                                             [False, 'Non-Breaches']],
+    flags = forms.TypedChoiceField(choices=[ ['', 'Choose severity'],
+                                             ['breach', 'Breaches'],
+                                            ],
                                     required=False,
                                     empty_value=None,  # Default value is not coerced
-                                    coerce=lambda x: x == 'True')  # coerce=bool will return True for 'False'
+                                  )
 
     def __init__(self, private=False, organisations=None, with_ccg=True, with_organisation_type=True,
                  with_service_code=True, with_category=True, with_status=True,
-                 with_breach=True, *args, **kwargs):
+                 with_flags=True, *args, **kwargs):
 
         super(FilterForm, self).__init__(*args, **kwargs)
 
@@ -164,9 +164,9 @@ class FilterForm(forms.Form):
                 all_statuses = [[str(status), desc] for (status, desc) in Problem.STATUS_CHOICES]
                 self.fields['status'].choices = [('', 'Problem status')] + all_statuses
 
-        if not private or (private and not with_breach):
-            # Breach is only for private pages
-            del self.fields['breach']
+        if not private or (private and not with_flags):
+            # flags are only for private pages (for now at least)
+            del self.fields['flags']
 
 
 class OrganisationFilterForm(FilterForm):

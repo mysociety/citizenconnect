@@ -164,7 +164,7 @@ class OrganisationSummaryTests(AuthorizationTestCase):
                              'breach': True})
 
         self.login_as(self.trust_user)
-        resp = self.client.get(self.private_summary_url + '?breach=True')
+        resp = self.client.get(self.private_summary_url + '?flags=breach')
 
         problems_by_status = resp.context['problems_by_status']
         self.assertEqual(problems_by_status[0]['all_time'], 1)
@@ -347,7 +347,7 @@ class TrustSummaryTests(AuthorizationTestCase):
                              'breach': True})
 
         self.login_as(self.trust_user)
-        resp = self.client.get(self.trust_summary_url + '?breach=True')
+        resp = self.client.get(self.trust_summary_url + '?flags=breach')
 
         problems_by_status = resp.context['problems_by_status']
         self.assertEqual(problems_by_status[0]['all_time'], 1)
@@ -778,7 +778,7 @@ class TrustProblemsTests(AuthorizationTestCase):
                                               'moderated': Problem.MODERATED,
                                               'publication_status': Problem.PUBLISHED,
                                               'moderated_description': 'Moderated'})
-        breach_filtered_url = "{0}?breach=True".format(self.trust_problems_url)
+        breach_filtered_url = "{0}?flags=breach".format(self.trust_problems_url)
         resp = self.client.get(breach_filtered_url)
         self.assertContains(resp, breach_problem.reference_number)
         self.assertNotContains(resp, self.staff_problem.reference_number)
@@ -1368,7 +1368,7 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
         create_test_problem({'organisation': self.test_organisation,
                              'breach': True})
 
-        breach_filtered_url = '{0}?breach=True'.format(self.summary_url)
+        breach_filtered_url = '{0}?flags=breach'.format(self.summary_url)
         resp = self.client.get(breach_filtered_url)
         other_test_org_record = resp.context['table'].rows[0].record
         test_org_record = resp.context['table'].rows[1].record
@@ -1676,7 +1676,7 @@ class EscalationDashboardTests(AuthorizationTestCase):
                                               'status': Problem.ESCALATED,
                                               'commissioned': Problem.LOCALLY_COMMISSIONED,
                                               'breach': True})
-        breach_filtered_url = '{0}?breach=True'.format(self.escalation_dashboard_url)
+        breach_filtered_url = '{0}?flags=breach'.format(self.escalation_dashboard_url)
 
         # We'll do this as the ccg user, because we should be able to
         self.login_as(self.ccg_user)
