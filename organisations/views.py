@@ -403,7 +403,6 @@ class OrganisationSummary(OrganisationAwareViewMixin,
         return context
 
 
-
 class TrustSummary(TrustAwareViewMixin, FilterFormMixin, TemplateView):
     template_name = 'organisations/trust_summary.html'
 

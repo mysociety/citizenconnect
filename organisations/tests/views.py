@@ -464,7 +464,6 @@ class TrustSummaryTests(AuthorizationTestCase):
         self.assertEqual(resp.status_code, 403)
 
 
-
 class OrganisationProblemsTests(AuthorizationTestCase):
 
     def setUp(self):
