@@ -18,7 +18,8 @@ sensitive):
 
 - `ODS Code`: The ODS code of the trust
 - `Name`
-- `CCG Code`: The ODS code of the CCG (will be used for `escalation_ccg`, and for CCG memberships_)
+- `Escalation CCG`: The ODS code of the escalation CCG. This CCG will also be added to the CCGs that this trust belongs to.
+- `Other CCGs`: The ODS codes (separated by a `|` if more than one) of CCGs that this trust belongs to, in addition to the `Escalation CCG`. May be blank.
 - `Email`
 - `Secondary Email`
 
