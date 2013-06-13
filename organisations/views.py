@@ -458,14 +458,17 @@ class TrustSummary(TrustAwareViewMixin, FilterFormMixin, TemplateView):
         organisation_problem_data = interval_counts(problem_filters=problem_filters,
                                                     organisation_filters=organisation_filters)
 
-        summary_attributes = ['all_time',
-                              'week',
-                              'four_weeks',
-                              'six_months',
-                              'happy_service',
+        count_attributes = ['all_time',
+                            'week',
+                            'four_weeks',
+                            'six_months']
+
+        average_attributes = ['happy_service',
                               'happy_outcome',
                               'average_time_to_acknowledge',
                               'average_time_to_address']
+
+        summary_attributes = count_attributes + average_attributes
 
         organisation_data = {}
 
@@ -477,6 +480,9 @@ class TrustSummary(TrustAwareViewMixin, FilterFormMixin, TemplateView):
             for attribute in summary_attributes:
                 if attribute in org_data and not org_data[attribute] is None:
                     organisation_data[attribute] += org_data[attribute]
+
+        for attribute in average_attributes:
+            organisation_data[attribute] = organisation_data[attribute] / len(organisation_problem_data)
 
         return organisation_data
 
