@@ -115,7 +115,7 @@ class Command(BaseCommand):
 
             if organisation_type_text not in type_mappings:
                 if verbose:
-                    print "Unknown organisation type %s, skipping" % organisation_type_text
+                    self.stderr.write("Unknown organisation type %s, skipping" % organisation_type_text)
                 continue
             organisation_type = type_mappings[organisation_type_text]
             organisation_defaults = {'choices_id': choices_id,

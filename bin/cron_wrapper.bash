@@ -14,4 +14,10 @@ set +e
 output="`./manage.py $1`"
 
 # suppress output unless we got a non-zero exit status
-[ "$?" -ne 0 ] && echo "$output"
+if [ "$?" -ne 0 ]
+then
+  echo ""
+  echo "### output captured before '$1' exited ###"
+  echo ""
+  echo "$output"
+fi
