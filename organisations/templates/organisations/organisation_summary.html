@@ -9,7 +9,9 @@
 
 {% include "organisations/includes/page_header.html" with title="Outcomes" %}
 
+{% if not private %}
 {% include "organisations/includes/organisation_tabs.html" with active_tab='summary' %}
+{% endif %}
 
 <div class="island  island--lightblue mb">
     <h2>Problem Resolution</h2>
