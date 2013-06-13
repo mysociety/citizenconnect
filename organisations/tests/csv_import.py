@@ -39,8 +39,8 @@ class CsvImportTests(TestCase):
         call_command('load_trusts_from_spreadsheet', 'organisations/tests/samples/trusts.csv')
         self.assertEqual(Trust.objects.count(), 3)
         self.assertEqual(CCG.objects.get(name="Ascot CCG").trusts.count(), 2)
-        self.assertEqual(CCG.objects.get(name="Banbridge CCG").trusts.count(), 1)
-        self.assertEqual(CCG.objects.get(name="Chucklemere CCG").trusts.count(), 0)
+        self.assertEqual(CCG.objects.get(name="Banbridge CCG").trusts.count(), 2)
+        self.assertEqual(CCG.objects.get(name="Chucklemere CCG").trusts.count(), 1)
 
 
         call_command('load_organisations_from_spreadsheet', 'organisations/tests/samples/organisations.csv')
@@ -50,7 +50,7 @@ class CsvImportTests(TestCase):
         self.assertEqual(Trust.objects.get(name="Banbridge North Trust").organisations.count(), 0)
 
         # Now check that the correct data has been loaded
-        
+
         ccg = CCG.objects.get(name="Ascot CCG")
         self.assertEqual(
             model_to_dict(ccg),
@@ -64,9 +64,8 @@ class CsvImportTests(TestCase):
 
         trust = Trust.objects.get(name="Ascot North Trust")
         self.assertEqual(
-            model_to_dict(trust),
+            model_to_dict(trust, exclude=['ccgs']),
             {
-                'ccgs': [ccg.id],
                 'code': 'AN1',
                 'email': 'an-trust@example.com',
                 'escalation_ccg': ccg.id,
@@ -75,6 +74,10 @@ class CsvImportTests(TestCase):
                 'secondary_email': 'an-trust-backup@example.com',
                 'users': [],
             }
+        )
+        self.assertEqual(
+            [ ccg.code for ccg in trust.ccgs.order_by('code') ],
+            [ '07A', '07B', '07C' ],
         )
 
         organisation = Organisation.objects.get(name="Ascot North Hospital 1")
