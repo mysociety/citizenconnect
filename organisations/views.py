@@ -101,6 +101,10 @@ class FilterFormMixin(FormMixin):
     """
     form_class = FilterForm
 
+    # The flags filter lets you choose the bool field to filter as true. This
+    # tuple is used to check that only expected values are filtered on.
+    allowed_flag_filters = ('breach', 'formal_complaint')
+
     def get(self, request, *args, **kwargs):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
@@ -157,7 +161,7 @@ class FilterFormMixin(FormMixin):
                 filtered_queryset = filtered_queryset.filter(service__id=value)
             if name == 'ccg':
                 filtered_queryset = filtered_queryset.filter(organisation__trust__ccgs__id__exact=value)
-            if name == 'flags':
+            if name == 'flags' and value in self.allowed_flag_filters:
                 args = {value: True}
                 filtered_queryset = filtered_queryset.filter(**args)
 
@@ -196,7 +200,8 @@ class FilterFormMixin(FormMixin):
         if problem_filters.get('flags'):
             flag_value = problem_filters['flags']
             del problem_filters['flags']
-            problem_filters[flag_value] = True
+            if flag_value in self.allowed_flag_filters:
+                problem_filters[flag_value] = True
         return problem_filters
 
 class Map(FilterFormMixin,
