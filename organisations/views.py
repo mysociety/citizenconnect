@@ -34,7 +34,6 @@ from .tables import (NationalSummaryTable,
                      ExtendedProblemTable,
                      TrustProblemTable,
                      ProblemDashboardTable,
-                     EscalationDashboardTable,
                      BreachTable)
 from .templatetags.organisation_extras import formatted_time_interval, percent
 
@@ -789,7 +788,7 @@ class EscalationDashboard(FilterFormMixin, TemplateView):
         filtered_problems = self.filter_problems(context['selected_filters'], problems)
 
         # Setup a table for the problems
-        problem_table = EscalationDashboardTable(filtered_problems)
+        problem_table = ProblemDashboardTable(filtered_problems)
         RequestConfig(self.request, paginate={'per_page': 25}).configure(problem_table)
         context['table'] = problem_table
         context['page_obj'] = problem_table.page

@@ -253,6 +253,9 @@ class ProblemDashboardTable(BaseProblemTable):
                                      order_by=('priority', 'created'),
                                      attrs={'td': {'class': 'problem-table__heavy-text'}})
 
+    provider_name = tables.Column(verbose_name='Provider name',
+                                  accessor='organisation.name')
+
     service = tables.Column(verbose_name="Service", orderable=False)
 
     def __init__(self, *args, **kwargs):
@@ -267,24 +270,10 @@ class ProblemDashboardTable(BaseProblemTable):
         order_by = ('reference_number',)
         attrs = {'class': 'problem-table problem-table--expanded'}
         sequence = ('reference_number',
-                    'created',
-                    'category',
-                    'service',
-                    'summary')
-
-
-class EscalationDashboardTable(ProblemDashboardTable):
-    provider_name = tables.Column(verbose_name='Provider name',
-                                  accessor='organisation.name')
-
-    class Meta:
-        order_by = ('-created',)
-        attrs = {'class': 'problem-table problem-table--expanded'}
-        sequence = ('reference_number',
                     'provider_name',
                     'created',
-                    'service',
                     'category',
+                    'service',
                     'summary')
 
 
