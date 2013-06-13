@@ -424,16 +424,16 @@ class TrustSummary(TrustAwareViewMixin, FilterFormMixin, TemplateView):
         summary_stats_statuses = Problem.VISIBLE_STATUSES
         count_filters['status'] = tuple(volume_statuses)
         organisation_filters = {'organisation_ids': tuple(organisation_ids)}
-        context['problems_total'] = interval_counts(problem_filters=count_filters,
-                                                    organisation_filters=organisation_filters)
+        context['problems_total'] = self.get_interval_counts(problem_filters=count_filters,
+                                                             organisation_filters=organisation_filters)
         count_filters['status'] = tuple(summary_stats_statuses)
-        context['problems_summary_stats'] = interval_counts(problem_filters=count_filters,
-                                                            organisation_filters=organisation_filters)
+        context['problems_summary_stats'] = self.get_interval_counts(problem_filters=count_filters,
+                                                                     organisation_filters=organisation_filters)
         status_list = []
         for status, description in status_rows:
             count_filters['status'] = (status,)
-            status_counts = interval_counts(problem_filters=count_filters,
-                                            organisation_filters=organisation_filters)
+            status_counts = self.get_interval_counts(problem_filters=count_filters,
+                                                     organisation_filters=organisation_filters)
             del count_filters['status']
             status_counts['description'] = description
             status_counts['status'] = status
@@ -456,6 +456,32 @@ class TrustSummary(TrustAwareViewMixin, FilterFormMixin, TemplateView):
         context['issues_total'] = issues_total
 
         return context
+
+    def get_interval_counts(self, problem_filters, organisation_filters):
+        organisation_problem_data = interval_counts(problem_filters=problem_filters,
+                                                    organisation_filters=organisation_filters)
+
+        summary_attributes = ['all_time',
+                              'week',
+                              'four_weeks',
+                              'six_months',
+                              'happy_service',
+                              'happy_outcome',
+                              'average_time_to_acknowledge',
+                              'average_time_to_address']
+
+        organisation_data = {}
+
+        for attribute in summary_attributes:
+            organisation_data[attribute] = 0
+
+        # Aggregate data
+        for org_data in organisation_problem_data:
+            for attribute in summary_attributes:
+                if attribute in org_data and not org_data[attribute] is None:
+                    organisation_data[attribute] += org_data[attribute]
+
+        return organisation_data
 
 
 class OrganisationProblems(OrganisationAwareViewMixin,
