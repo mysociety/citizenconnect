@@ -6,6 +6,8 @@ except ImportError:
 
 import reversion
 
+from django.core.serializers.base import DeserializationError
+
 
 def changed_attrs(old_version, new_version, interesting_attrs):
     """
@@ -51,14 +53,28 @@ def changes_for_model(model):
     for index, version in enumerate(history):
         # We're only interested in changes
         if index > 0:
-            old = history[index - 1].field_dict
-            new = version.field_dict
-            changed = changed_attrs(old, new, model.REVISION_ATTRS)
-            if changed:
-                change_string = changes_as_string(changed, model.TRANSITIONS)
-                if change_string:
-                    changes.append({"user": version.revision.user,
-                                    "description": change_string})
+            try:
+                old = history[index - 1].field_dict
+                new = version.field_dict
+                changed = changed_attrs(old, new, model.REVISION_ATTRS)
+                if changed:
+                    change_string = changes_as_string(changed, model.TRANSITIONS)
+                    if change_string:
+                        changes.append({"user": version.revision.user,
+                                        "description": change_string})
+            except DeserializationError:
+                # Django's deserialisation framework gets upset if it tries to get
+                # a model instance from some json or xml and the instance has fields
+                # which are no longer in the Model - eg: because you just deleted them
+                # in a South migration.
+                # In Django 1.5 you can tell it to ignorenonexistent and it'll just work
+                # which django-reversion helpfully does since:
+                # https://github.com/etianen/django-reversion/issues/221
+                # In Django 1.4 there is not this option, and thus django-reversion
+                # hits a block when trying to get its' historical versions of the model
+                # and passes on this error to us. At which point we can nothing useful
+                # with it, and so we just ignore that point in history.
+                pass
     return changes
 
 

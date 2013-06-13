@@ -1,10 +1,10 @@
-from django.test import TestCase
 from django.core.urlresolvers import reverse
 
 from issues.models import Problem
 
 from ..models import SuperuserLogEntry
 from .lib import AuthorizationTestCase, create_test_problem
+
 
 class SuperuserLogTests(AuthorizationTestCase):
 
@@ -14,37 +14,36 @@ class SuperuserLogTests(AuthorizationTestCase):
         self.unmoderated_problem = create_test_problem({'organisation': self.test_organisation})
         # Create a private problem
         self.private_problem = create_test_problem({'organisation': self.test_organisation,
-                                                              'public':False,
-                                                              'moderated': True,
-                                                              'publication_status': Problem.PUBLISHED})
+                                                    'public': False,
+                                                    'moderated': True,
+                                                    'publication_status': Problem.PUBLISHED})
         # Create a hidden problem
         self.hidden_problem = create_test_problem({'organisation': self.test_organisation,
-                                                             'moderated': True,
-                                                             'publication_status': Problem.HIDDEN})
+                                                   'moderated': True,
+                                                   'publication_status': Problem.HIDDEN})
         self.test_urls = [
-            reverse('home', kwargs={'cobrand':'choices'}),
-            reverse('org-dashboard', kwargs={'ods_code':self.test_organisation.ods_code}),
-            reverse('private-org-problems', kwargs={'ods_code':self.test_organisation.ods_code}),
-            reverse('problem-view', kwargs={'cobrand':'choices', 'pk':self.unmoderated_problem.id}),
-            reverse('problem-view', kwargs={'cobrand':'choices', 'pk':self.private_problem.id}),
-            reverse('problem-view', kwargs={'cobrand':'choices', 'pk':self.hidden_problem.id})
+            reverse('home', kwargs={'cobrand': 'choices'}),
+            reverse('trust-dashboard', kwargs={'code': self.test_trust.code}),
+            reverse('trust-problems', kwargs={'code': self.test_trust.code}),
+            reverse('problem-view', kwargs={'cobrand': 'choices', 'pk': self.unmoderated_problem.id}),
+            reverse('problem-view', kwargs={'cobrand': 'choices', 'pk': self.private_problem.id}),
+            reverse('problem-view', kwargs={'cobrand': 'choices', 'pk': self.hidden_problem.id})
         ]
         self.users_who_should_not_be_logged = [
-            self.provider,
-            self.other_provider,
+            self.trust_user,
+            self.other_trust_user,
             self.ccg_user,
             self.other_ccg_user,
             self.case_handler,
-            self.superuser, # Django superuser
-            self.pals,
-            self.no_provider
+            self.superuser,  # Django superuser
+            self.no_trust_user
         ]
 
     def test_superuser_access_logged(self):
         self.login_as(self.nhs_superuser)
 
         for path in self.test_urls:
-            resp = self.client.get(path)
+            self.client.get(path)
             self.assertIsNotNone(SuperuserLogEntry.objects.get(user=self.nhs_superuser, path=path))
 
     def test_other_user_access_not_logged(self):
@@ -54,15 +53,17 @@ class SuperuserLogTests(AuthorizationTestCase):
 
             for path in self.test_urls:
                 # The following might 403 for some users, but it shouldn't affect the logging
-                resp = self.client.get(path)
+                self.client.get(path)
                 self.assertEqual(SuperuserLogEntry.objects.all().filter(user=user, path=path).count(), 0)
+
 
 class SuperuserLogViewTests(AuthorizationTestCase):
 
     def setUp(self):
         super(SuperuserLogViewTests, self).setUp()
         self.login_as(self.nhs_superuser)
-        self.logs_url = reverse('private-org-problems', kwargs={'ods_code':self.test_organisation.ods_code})
+        self.logs_url = reverse('trust-problems',
+                                kwargs={'code': self.test_trust.code})
 
     def test_log_page_exists(self):
         resp = self.client.get(reverse('superuser-logs'))
@@ -84,11 +85,10 @@ class SuperuserLogViewTests(AuthorizationTestCase):
 
     def test_log_page_only_accessible_to_superusers(self):
         non_superusers = [
-            self.provider,
-            self.other_provider,
+            self.trust_user,
+            self.other_trust_user,
             self.case_handler,
-            self.pals,
-            self.no_provider
+            self.no_trust_user
         ]
 
         for user in non_superusers:

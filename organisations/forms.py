@@ -92,6 +92,14 @@ class FilterForm(forms.Form):
     """
     Form for processing filters on pages which filter issues
     """
+
+    organisation = forms.ModelChoiceField(
+        queryset=Organisation.objects.all(),
+        required=False,
+        empty_label='All',
+        label="Organisation"
+    )
+
     ccg = forms.ModelChoiceField(queryset=CCG.objects.all(), required=False, empty_label='All',
                                  label="CCG")
 
@@ -120,13 +128,18 @@ class FilterForm(forms.Form):
                                     empty_value=None,  # Default value is not coerced
                                     coerce=lambda x: x == 'True')  # coerce=bool will return True for 'False'
 
-    def __init__(self, private=False, with_ccg=True, with_organisation_type=True,
+    def __init__(self, private=False, organisations=None, with_ccg=True, with_organisation_type=True,
                  with_service_code=True, with_category=True, with_status=True,
                  with_breach=True, *args, **kwargs):
 
         super(FilterForm, self).__init__(*args, **kwargs)
 
         # Turn off fields selectively
+        if not organisations is None:
+            self.fields['organisation'].queryset = organisations
+        else:
+            del self.fields['organisation']
+
         if not with_ccg:
             del self.fields['ccg']
 

@@ -28,7 +28,7 @@ class AuthTests(AuthorizationTestCase):
 
     def test_user_in_group(self):
         self.assertTrue(user_in_group(self.case_handler, auth.CASE_HANDLERS))
-        self.assertFalse(user_in_group(self.case_handler, auth.PROVIDERS))
+        self.assertFalse(user_in_group(self.case_handler, auth.TRUSTS))
 
     def test_user_in_groups(self):
         example_group_list = [auth.NHS_SUPERUSERS, auth.CASE_HANDLERS]
@@ -53,34 +53,34 @@ class AuthTests(AuthorizationTestCase):
 
     def test_create_unique_username(self):
         username = create_unique_username(self.test_organisation)
-        user = User.objects.create_user(username, 'test@example.com', 'password')
+        User.objects.create_user(username, 'test@example.com', 'password')
         self.assertEqual(username, 'test_organisation')
 
-        for i in range(1,10):
+        for i in range(1, 10):
             username = create_unique_username(self.test_organisation)
             self.assertEqual(username, 'test_organisation_{0}'.format(i))
-            user = User.objects.create_user(username, 'test@example.com', 'password')
+            User.objects.create_user(username, 'test@example.com', 'password')
 
         # Now make the organisation name far too long and test that the code can handle that too.
         self.test_organisation.name = 'This is a name that is far longer than expected but who knows it might happen'
         username = create_unique_username(self.test_organisation)
-        user = User.objects.create_user(username, 'test@example.com', 'password')
+        User.objects.create_user(username, 'test@example.com', 'password')
         self.assertEqual(username, 'this_is_a_name_that_is_far_lon')
-        for i in range(1,10):
+        for i in range(1, 10):
             username = create_unique_username(self.test_organisation)
-            user = User.objects.create_user(username, 'test@example.com', 'password')
+            User.objects.create_user(username, 'test@example.com', 'password')
             self.assertEqual(username, 'this_is_a_name_that_is_far_l_{0}'.format(i))
             self.assertTrue(len(username) <= 30)
 
-        for i in range(10,20):
+        for i in range(10, 20):
             username = create_unique_username(self.test_organisation)
-            user = User.objects.create_user(username, 'test@example.com', 'password')
+            User.objects.create_user(username, 'test@example.com', 'password')
             self.assertEqual(username, 'this_is_a_name_that_is_far_{0}'.format(i))
             self.assertTrue(len(username) <= 30)
 
     def test_create_initial_password(self):
         seen_passwords = set()
-        
+
         for i in range(100):
             password = create_initial_password()
 

@@ -8,7 +8,7 @@
 
 {% block content %}
 
-<p><span class="icon-chevron-left" aria-hidden="true"></span> <a href="{% url 'org-dashboard' ods_code=issue.organisation.ods_code %}">Return to your dashboard</a></p>
+<p><span class="icon-chevron-left" aria-hidden="true"></span> <a href="{% url 'trust-dashboard' code=issue.organisation.trust.code %}">Return to your dashboard</a></p>
 
 {% include "issues/issue_header.html" with object=issue private=1 title="Respond to a problem" %}
 
