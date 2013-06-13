@@ -336,10 +336,10 @@ class TrustSummaryTests(AuthorizationTestCase):
         resp = self.client.get(self.trust_summary_url + '?service_id=%s' % self.service.id)
 
         problems_by_status = resp.context['problems_by_status']
-        self.assertEqual(problems_by_status[0]['all_time'], 1)
-        self.assertEqual(problems_by_status[0]['week'], 1)
-        self.assertEqual(problems_by_status[0]['four_weeks'], 1)
-        self.assertEqual(problems_by_status[0]['six_months'], 1)
+        self.assertEqual(problems_by_status[0]['all_time'], 3L)
+        self.assertEqual(problems_by_status[0]['week'], 3L)
+        self.assertEqual(problems_by_status[0]['four_weeks'], 3L)
+        self.assertEqual(problems_by_status[0]['six_months'], 3L)
 
     def test_summary_page_applies_breach_filter_on_private_pages(self):
         # Add a breach problem
