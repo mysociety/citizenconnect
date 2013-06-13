@@ -74,6 +74,11 @@ def _apply_problem_filters(problem_filters, problem_filter_clauses, organisation
         problem_filter_clauses.append("issues_problem.breach = %s""")
         params.append(breach)
 
+    formal_complaint = problem_filters.get('formal_complaint')
+    if formal_complaint is not None:
+        problem_filter_clauses.append("issues_problem.formal_complaint = %s""")
+        params.append(formal_complaint)
+
     service_code = problem_filters.get('service_code')
     if service_code is not None:
         if organisation_id:
