@@ -21,9 +21,9 @@
         {% endif %}
       </ul>
       {% if response %}
-        <p><a href="{% url 'org-dashboard' ods_code=response.issue.organisation.ods_code %}">Return to your provider dashboard</a></p>
+        <p><a href="{% url 'trust-dashboard' code=response.issue.organisation.trust.code %}">Return to your trust dashboard</a></p>
       {% elif issue %}
-        <p><a href="{% url 'org-dashboard' ods_code=issue.organisation.ods_code %}">Return to your provider dashboard</a></p>
+        <p><a href="{% url 'trust-dashboard' code=issue.organisation.trust.code %}">Return to your trust dashboard</a></p>
       {% endif %}
     </div>
 </div>

@@ -5,7 +5,7 @@ from django.db import transaction, IntegrityError
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.gis.geos import Point
 
-from ...models import Organisation, Service, CCG
+from ...models import Organisation, Service, Trust
 
 
 class Command(BaseCommand):
@@ -66,14 +66,14 @@ class Command(BaseCommand):
                 row[key] = self.clean_value(val)
 
             try:
+                # Remember to update the docs in organisations/csv_formats.md if you make changes here
                 choices_id = row['ChoicesID']
-                ods_code = row['OrganisationCode']
-                name = row['OrganisationName']
+                ods_code = row['ODS Code']
+                name = row['Name']
                 organisation_type_text = row['OrganisationTypeID']
                 last_updated = row['LastUpdatedDate']
 
-                trust = row['TrustName']
-                organisation_contact = row['OrganisationContact']
+                trust_code = row['Trust Code']
 
                 url = row['URL']
 
@@ -90,8 +90,6 @@ class Command(BaseCommand):
                 service_code = row['ServiceCode']
                 service_name = row['ServiceName']
 
-                ccg_code = row['CCGCode']
-
             except KeyError as message:
                 raise Exception("Missing column with the heading '{0}'".format(message))
             finally:
@@ -101,13 +99,13 @@ class Command(BaseCommand):
             if not choices_id:
                 continue
 
-            # load the CCG
+            # load the Trust
             try:
-                ccg = CCG.objects.get(code=ccg_code)
-            except CCG.DoesNotExist:
+                trust = Trust.objects.get(code=trust_code)
+            except Trust.DoesNotExist:
                 raise Exception(
-                    "Could not find CCG with code '{0}' on line {1}".format(
-                        ccg_code, rownum
+                    "Could not find Trust with code '{0}' on line {1}".format(
+                        trust_code, rownum
                     )
                 )
             finally:
@@ -128,8 +126,7 @@ class Command(BaseCommand):
                                      'city': city,
                                      'county': county,
                                      'postcode': postcode,
-                                     'email': organisation_contact,
-                                     'escalation_ccg': ccg,
+                                     'trust': trust,
                                     }
             try:
                 organisation, organisation_created = Organisation.objects.get_or_create(ods_code=ods_code,
@@ -147,11 +144,6 @@ class Command(BaseCommand):
 
                         if update:
                             Service.objects.filter(id=service.id).update(**service_defaults)
-
-                if organisation_created or update:
-                    # Delete all current CCG links and set the one we expect
-                    organisation.ccgs.clear()
-                    organisation.ccgs.add(ccg)
 
                 if organisation_created:
                     self.stdout.write('Created organisation %s\n' % organisation.name)

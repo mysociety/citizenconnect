@@ -4,7 +4,12 @@ import reversion
 
 from organisations.tests.lib import create_test_problem
 
-from ..lib import changed_attrs, changes_as_string, changes_for_model, base32_to_int, int_to_base32, MistypedIDException
+from ..lib import (changed_attrs,
+                   changes_as_string,
+                   changes_for_model,
+                   base32_to_int,
+                   int_to_base32,
+                   MistypedIDException)
 from ..models import Problem
 
 

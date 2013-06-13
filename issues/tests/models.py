@@ -133,21 +133,21 @@ class ProblemModelTests(ProblemTestCase):
         self.assertEqual(self.test_problem.moderated, Problem.NOT_MODERATED)
 
     def test_public_problem_accessible_to_everyone(self):
-        self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.provider))
+        self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.trust_user))
         self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.superuser))
         self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.anonymous_user))
-        self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.other_provider))
+        self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.other_trust_user))
         self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.ccg_user))
         self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.other_ccg_user))
 
     def test_private_problem_accessible_to_allowed_user(self):
-        self.assertTrue(self.test_private_problem.can_be_accessed_by(self.provider))
+        self.assertTrue(self.test_private_problem.can_be_accessed_by(self.trust_user))
 
     def test_private_problem_inaccessible_to_anon_user(self):
         self.assertFalse(self.test_private_problem.can_be_accessed_by(self.anonymous_user))
 
-    def test_private_problem_inaccessible_to_other_provider_user(self):
-        self.assertFalse(self.test_private_problem.can_be_accessed_by(self.other_provider))
+    def test_private_problem_inaccessible_to_other_trust_user(self):
+        self.assertFalse(self.test_private_problem.can_be_accessed_by(self.other_trust_user))
 
     def test_private_problem_inaccessible_to_other_ccg_user(self):
         self.assertFalse(self.test_private_problem.can_be_accessed_by(self.other_ccg_user))
@@ -156,40 +156,34 @@ class ProblemModelTests(ProblemTestCase):
         for user in self.users_who_can_access_everything:
             self.assertTrue(self.test_private_problem.can_be_accessed_by(user))
 
-    def test_private_problem_accessible_to_pals_user(self):
-        self.assertTrue(self.test_private_problem.can_be_accessed_by(self.pals))
-
     def test_private_problem_accessible_to_ccg_user(self):
         self.assertTrue(self.test_private_problem.can_be_accessed_by(self.ccg_user))
 
     def test_unmoderated_problem_inaccessible_to_anon_user(self):
         self.assertFalse(self.test_problem.can_be_accessed_by(self.anonymous_user))
 
-    def test_unmoderated_problem_inaccessible_to_other_provider_user(self):
-        self.assertFalse(self.test_problem.can_be_accessed_by(self.other_provider))
+    def test_unmoderated_problem_inaccessible_to_other_trust_user(self):
+        self.assertFalse(self.test_problem.can_be_accessed_by(self.other_trust_user))
 
     def test_unmoderated_problem_inaccessible_to_other_ccg_user(self):
         self.assertFalse(self.test_problem.can_be_accessed_by(self.other_ccg_user))
 
     def test_unmoderated_problem_accessible_to_allowed_users(self):
-        self.assertTrue(self.test_problem.can_be_accessed_by(self.provider))
+        self.assertTrue(self.test_problem.can_be_accessed_by(self.trust_user))
         self.assertTrue(self.test_problem.can_be_accessed_by(self.ccg_user))
 
     def test_unmoderated_problem_accessible_to_superusers(self):
         for user in self.users_who_can_access_everything:
             self.assertTrue(self.test_problem.can_be_accessed_by(user))
 
-    def test_unmoderated_problem_accessible_to_pals_user(self):
-        self.assertTrue(self.test_problem.can_be_accessed_by(self.pals))
-
     def test_hidden_status_problem_accessible_to_allowed_user(self):
-        self.assertTrue(self.test_hidden_status_problem.can_be_accessed_by(self.provider))
+        self.assertTrue(self.test_hidden_status_problem.can_be_accessed_by(self.trust_user))
 
     def test_hidden_status_problem_inaccessible_to_anon_user(self):
         self.assertFalse(self.test_hidden_status_problem.can_be_accessed_by(self.anonymous_user))
 
-    def test_hidden_status_problem_inaccessible_to_other_provider_user(self):
-        self.assertFalse(self.test_hidden_status_problem.can_be_accessed_by(self.other_provider))
+    def test_hidden_status_problem_inaccessible_to_other_trust_user(self):
+        self.assertFalse(self.test_hidden_status_problem.can_be_accessed_by(self.other_trust_user))
 
     def test_hidden_status_problem_inaccessible_to_other_ccg_user(self):
         self.assertFalse(self.test_hidden_status_problem.can_be_accessed_by(self.other_ccg_user))
@@ -197,9 +191,6 @@ class ProblemModelTests(ProblemTestCase):
     def test_hidden_status_problem_accessible_to_superusers(self):
         for user in self.users_who_can_access_everything:
             self.assertTrue(self.test_hidden_status_problem.can_be_accessed_by(user))
-
-    def test_hidden_status_problem_accessible_to_pals_user(self):
-        self.assertTrue(self.test_hidden_status_problem.can_be_accessed_by(self.pals))
 
     def test_hidden_status_problem_accessible_to_ccg_user(self):
         self.assertTrue(self.test_hidden_status_problem.can_be_accessed_by(self.ccg_user))
@@ -377,11 +368,11 @@ class ProblemModelEscalationTests(ProblemTestCase):
 
     def setUp(self):
         super(ProblemModelEscalationTests, self).setUp()
-        self.test_organisation.email = 'test@example.org'
-        self.test_organisation.save()
 
-        self.test_organisation.escalation_ccg.email = 'ccg@example.org'
-        self.test_organisation.save()
+        self.test_trust = self.test_organisation.trust
+        self.test_escalation_ccg = self.test_trust.escalation_ccg
+        self.test_escalation_ccg.email = 'ccg@example.org'
+        self.test_escalation_ccg.save()
 
     def test_send_escalation_email_method_raises_when_not_escalated(self):
         problem = self.test_problem

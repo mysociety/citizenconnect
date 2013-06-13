@@ -17,6 +17,12 @@ class Command(BaseCommand):
             help='Show verbose output'),
         )
 
+    def clean_value(self, value):
+        if value == 'NULL':
+            return ''
+        else:
+            return value
+
     @transaction.commit_manually
     def handle(self, *args, **options):
         filename = args[0]
@@ -32,8 +38,12 @@ class Command(BaseCommand):
         for row in reader:
             rownum += 1
 
+            for key, val in row.items():
+                row[key] = self.clean_value(val)
+
             try:
-                code = row['Code']
+                # Remember to update the docs in organisations/csv_formats.md if you make changes here
+                code = row['ODS Code']
                 name = row['Name']
                 region = row['Region']
                 email = row['Email']

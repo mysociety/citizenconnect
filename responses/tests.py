@@ -63,7 +63,7 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         super(ResponseFormTests, self).setUp()
         self.problem = create_test_problem({'organisation': self.test_organisation})
         self.response_form_url = reverse('response-form', kwargs={'pk': self.problem.id})
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
         # The form assumes a session variable is set, because it is when you load the form
         # in a browser, so we call the page to set it here.
         self.client.get(self.response_form_url)
@@ -157,7 +157,7 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         resp = self.client.post(self.response_form_url, test_form_values)
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, "response has been published online")
-        self.assertContains(resp, reverse('org-dashboard', kwargs={'ods_code': self.test_organisation.ods_code}))
+        self.assertContains(resp, reverse('trust-dashboard', kwargs={'code': self.test_organisation.trust.code}))
 
     def test_form_shows_issue_confirmation_with_link(self):
         response_text = ''
@@ -169,7 +169,7 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         resp = self.client.post(self.response_form_url, test_form_values)
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, "the problem status has been updated")
-        self.assertContains(resp, reverse('org-dashboard', kwargs={'ods_code': self.test_organisation.ods_code}))
+        self.assertContains(resp, reverse('trust-dashboard', kwargs={'code': self.test_organisation.trust.code}))
 
     def test_form_shows_both_confirmations_with_link(self):
         response_text = 'new response'
@@ -182,7 +182,7 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, "response has been published online")
         self.assertContains(resp, "the problem status has been updated")
-        self.assertContains(resp, reverse('org-dashboard', kwargs={'ods_code': self.test_organisation.ods_code}))
+        self.assertContains(resp, reverse('trust-dashboard', kwargs={'code': self.test_organisation.trust.code}))
 
     def test_initial_version_set_when_form_loads(self):
         self.client.get(self.response_form_url)
@@ -241,7 +241,7 @@ class ResponseFormViewTests(AuthorizationTestCase):
         super(ResponseFormViewTests, self).setUp()
         self.problem = create_test_problem({'organisation': self.test_organisation})
         self.response_form_url = reverse('response-form', kwargs={'pk': self.problem.id})
-        self.login_as(self.provider)
+        self.login_as(self.trust_user)
 
     def test_response_page_exists(self):
         resp = self.client.get(self.response_form_url)
@@ -271,9 +271,9 @@ class ResponseFormViewTests(AuthorizationTestCase):
         resp = self.client.get(self.response_form_url)
         self.assertRedirects(resp, expected_login_url)
 
-    def test_other_providers_cant_respond(self):
+    def test_other_trusts_cant_respond(self):
         self.client.logout()
-        self.login_as(self.other_provider)
+        self.login_as(self.other_trust_user)
         resp = self.client.get(self.response_form_url)
         self.assertEqual(resp.status_code, 403)
 
@@ -321,10 +321,10 @@ class ResponseFormViewTests(AuthorizationTestCase):
             'publication_status': Problem.PUBLISHED,
             'moderated': Problem.MODERATED
         })
-        form_which_should_403_for_other_providers = reverse('response-form', kwargs={'pk': public_published_problem.id})
+        form_which_should_403_for_other_trusts = reverse('response-form', kwargs={'pk': public_published_problem.id})
         self.client.logout()
-        self.login_as(self.other_provider)
-        resp = self.client.get(form_which_should_403_for_other_providers)
+        self.login_as(self.other_trust_user)
+        resp = self.client.get(form_which_should_403_for_other_trusts)
         self.assertEqual(resp.status_code, 403)  # This was a 200 with the bug
 
     def test_response_form_contains_moderated_description_and_description(self):

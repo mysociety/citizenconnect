@@ -217,6 +217,31 @@ class ExtendedProblemTable(ProblemTable):
                     'breach_and_escalation')
 
 
+class TrustProblemTable(ExtendedProblemTable):
+    """
+    Like ExtendedProblemTable but for trusts, so including a provider name column
+    """
+    provider_name = tables.Column(verbose_name='Provider name',
+                                  accessor='organisation.name')
+
+    class Meta:
+        order_by = ('-created',)
+        attrs = {"class": "problem-table"}
+        sequence = ('reference_number',
+                    'provider_name',
+                    'created',
+                    'status',
+                    'resolved',
+                    'category',
+                    'service',
+                    'time_to_acknowledge',
+                    'time_to_address',
+                    'happy_service',
+                    'happy_outcome',
+                    'summary',
+                    'breach_and_escalation')
+
+
 class ProblemDashboardTable(BaseProblemTable):
     """
     A base Table class for all the different dashboards which show
@@ -227,6 +252,9 @@ class ProblemDashboardTable(BaseProblemTable):
     reference_number = tables.Column(verbose_name="Ref.",
                                      order_by=('priority', 'created'),
                                      attrs={'td': {'class': 'problem-table__heavy-text'}})
+
+    provider_name = tables.Column(verbose_name='Provider name',
+                                  accessor='organisation.name')
 
     service = tables.Column(verbose_name="Service", orderable=False)
 
@@ -242,24 +270,10 @@ class ProblemDashboardTable(BaseProblemTable):
         order_by = ('reference_number',)
         attrs = {'class': 'problem-table problem-table--expanded'}
         sequence = ('reference_number',
-                    'created',
-                    'category',
-                    'service',
-                    'summary')
-
-
-class EscalationDashboardTable(ProblemDashboardTable):
-    provider_name = tables.Column(verbose_name='Provider name',
-                                  accessor='organisation.name')
-
-    class Meta:
-        order_by = ('-created',)
-        attrs = {'class': 'problem-table problem-table--expanded'}
-        sequence = ('reference_number',
                     'provider_name',
                     'created',
-                    'service',
                     'category',
+                    'service',
                     'summary')
 
 

@@ -1,6 +1,7 @@
 import auth
 from .auth import user_in_group
-from .models import SuperuserLogEntry, Organisation
+from .models import SuperuserLogEntry
+
 
 class SuperuserLogEntryMiddleware(object):
     def process_response(self, request, response):
