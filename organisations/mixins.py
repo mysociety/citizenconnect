@@ -11,8 +11,6 @@ from django.utils.timezone import utc
 
 from django.contrib.auth.models import User
 
-import auth
-
 
 class MailSendMixin(models.Model):
 
