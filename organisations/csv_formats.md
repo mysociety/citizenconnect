@@ -42,6 +42,18 @@ sensitive):
 - `ServiceCode`
 - `ServiceName`
 
+## Trust users
+
+- `Name`
+- `Email`
+- `Code`: The ODS code for the trust.
+
+## CCG users
+
+- `Name`
+- `Email`
+- `Code`: The CCG code
+
 # Representing Null values
 
 Ideally leave the field blank, or for some fields the value `NULL` can be used.
