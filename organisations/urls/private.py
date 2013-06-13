@@ -19,7 +19,12 @@ urlpatterns = patterns(
         name='private-national-summary',
         kwargs={'private': True}),
 
-    url(r'^summary/(?P<code>\w+)$',
+    url(r'^summary/(?P<ods_code>\w+)$',
+        login_required(OrganisationSummary.as_view()),
+        name='private-org-summary',
+        kwargs={'private': True}),
+
+    url(r'^trust-summary/(?P<code>\w+)$',
         login_required(TrustSummary.as_view()),
         name='trust-summary',
         kwargs={'private': True}),
