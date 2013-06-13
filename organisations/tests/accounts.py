@@ -39,7 +39,7 @@ class BasicAccountTests(TestCase):
         self.assertContains(resp, "Login")
 
     def test_user_can_login_and_gets_redirected_if_next_specified(self):
-        dashboard_url = reverse('org-dashboard', kwargs={'ods_code': self.test_organisation.ods_code})
+        dashboard_url = reverse('trust-dashboard', kwargs={'code':self.test_organisation.trust.code})
         test_values = {
             'username': self.test_user.username,
             'password': 'password',
@@ -159,7 +159,7 @@ class LoginRedirectTests(AuthorizationTestCase):
 
     def test_login_redirect_view_used(self):
         test_values = {
-            'username': self.provider.username,
+            'username': self.trust_user.username,
             'password': self.test_password,
         }
         resp = self.client.post(self.login_url, test_values)
@@ -181,8 +181,8 @@ class LoginRedirectTests(AuthorizationTestCase):
         self.assertRedirects(resp, second_tier_moderation_url)
 
     def test_provider_goes_to_provider_dashboard(self):
-        dashboard_url = reverse('org-dashboard', kwargs={'ods_code': self.test_organisation.ods_code})
-        self.login_as(self.provider)
+        dashboard_url = reverse('trust-dashboard', kwargs={'code':self.test_organisation.trust.code})
+        self.login_as(self.trust_user)
         resp = self.client.get(self.login_redirect_url)
         self.assertRedirects(resp, dashboard_url)
 
@@ -199,7 +199,7 @@ class LoginRedirectTests(AuthorizationTestCase):
         resp = self.client.get(self.login_redirect_url)
         self.assertRedirects(resp, home_url)
         # Provider with no organisations
-        self.login_as(self.no_provider)
+        self.login_as(self.no_trust_user)
         resp = self.client.get(self.login_redirect_url)
         self.assertRedirects(resp, home_url)
 

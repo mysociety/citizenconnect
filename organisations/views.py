@@ -371,8 +371,6 @@ class OrganisationSummary(OrganisationAwareViewMixin,
         summary_stats_statuses = Problem.VISIBLE_STATUSES
         count_filters['status'] = tuple(volume_statuses)
         organisation_filters = {'organisation_id': organisation.id}
-        context['problems_total'] = interval_counts(problem_filters=count_filters,
-                                                    organisation_filters=organisation_filters)
         count_filters['status'] = tuple(summary_stats_statuses)
         context['problems_summary_stats'] = interval_counts(problem_filters=count_filters,
                                                             organisation_filters=organisation_filters)
@@ -665,22 +663,20 @@ class PrivateNationalSummary(Summary):
                                                                      threshold=threshold)
 
 
-class OrganisationDashboard(OrganisationAwareViewMixin,
-                            TemplateView):
-    template_name = 'organisations/dashboard.html'
+class TrustDashboard(TrustAwareViewMixin,
+                     TemplateView):
+    template_name = 'organisations/trust_dashboard.html'
 
     def get_context_data(self, **kwargs):
         # Get all the problems
-        context = super(OrganisationDashboard, self).get_context_data(**kwargs)
+        context = super(TrustDashboard, self).get_context_data(**kwargs)
 
         # Get the models related to this organisation, and let the db sort them
-        problems = context['organisation'].problem_set.open_unescalated_problems()
+        problems = context['trust'].problem_set.open_unescalated_problems()
         problems_table = ProblemDashboardTable(problems)
         RequestConfig(self.request, paginate={'per_page': 25}).configure(problems_table)
         context['table'] = problems_table
         context['page_obj'] = problems_table.page
-        organisation_filters = {'organisation_id': context['organisation'].id}
-        context['problems_total'] = interval_counts(organisation_filters=organisation_filters)
         return context
 
 
@@ -715,8 +711,7 @@ def login_redirect(request):
         # will get their own special dashboard with all the orgs on it
         if user.trusts.count() == 1:
             trust = user.trusts.all()[0]
-            organisation = trust.organisations.all()[0]
-            return HttpResponseRedirect(reverse('org-dashboard', kwargs={'ods_code': organisation.ods_code}))
+            return HttpResponseRedirect(reverse('trust-dashboard', kwargs={'code': trust.code}))
 
     # Anyone else goes to the normal homepage
     return HttpResponseRedirect(reverse('home', kwargs={'cobrand': 'choices'}))

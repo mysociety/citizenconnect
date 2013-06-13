@@ -23,20 +23,20 @@ class SuperuserLogTests(AuthorizationTestCase):
                                                    'publication_status': Problem.HIDDEN})
         self.test_urls = [
             reverse('home', kwargs={'cobrand': 'choices'}),
-            reverse('org-dashboard', kwargs={'ods_code': self.test_organisation.ods_code}),
-            reverse('private-org-problems', kwargs={'ods_code': self.test_organisation.ods_code}),
+            reverse('trust-dashboard', kwargs={'code': self.test_trust.code}),
+            reverse('trust-problems', kwargs={'code': self.test_trust.code}),
             reverse('problem-view', kwargs={'cobrand': 'choices', 'pk': self.unmoderated_problem.id}),
             reverse('problem-view', kwargs={'cobrand': 'choices', 'pk': self.private_problem.id}),
             reverse('problem-view', kwargs={'cobrand': 'choices', 'pk': self.hidden_problem.id})
         ]
         self.users_who_should_not_be_logged = [
-            self.provider,
-            self.other_provider,
+            self.trust_user,
+            self.other_trust_user,
             self.ccg_user,
             self.other_ccg_user,
             self.case_handler,
             self.superuser,  # Django superuser
-            self.no_provider
+            self.no_trust_user
         ]
 
     def test_superuser_access_logged(self):
@@ -62,8 +62,8 @@ class SuperuserLogViewTests(AuthorizationTestCase):
     def setUp(self):
         super(SuperuserLogViewTests, self).setUp()
         self.login_as(self.nhs_superuser)
-        self.logs_url = reverse('private-org-problems',
-                                kwargs={'ods_code': self.test_organisation.ods_code})
+        self.logs_url = reverse('trust-problems',
+                                kwargs={'code': self.test_trust.code})
 
     def test_log_page_exists(self):
         resp = self.client.get(reverse('superuser-logs'))
@@ -85,10 +85,10 @@ class SuperuserLogViewTests(AuthorizationTestCase):
 
     def test_log_page_only_accessible_to_superusers(self):
         non_superusers = [
-            self.provider,
-            self.other_provider,
+            self.trust_user,
+            self.other_trust_user,
             self.case_handler,
-            self.no_provider
+            self.no_trust_user
         ]
 
         for user in non_superusers:

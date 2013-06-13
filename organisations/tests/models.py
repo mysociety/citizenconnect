@@ -9,9 +9,48 @@ from django.utils.timezone import utc
 from .lib import (create_test_organisation,
                   create_test_ccg,
                   create_test_trust,
+                  create_test_problem,
                   AuthorizationTestCase)
 
-from ..models import Organisation
+from ..models import Organisation, Trust
+
+
+class TrustModelTests(TestCase):
+
+    def setUp(self):
+        # create a trust
+        self.test_trust = create_test_trust({'code': 'MYTRUST'})
+
+        # create three orgs, two of which belong to the trust, and one that does not
+        self.test_trust_org_1 = create_test_organisation({"trust": self.test_trust, "ods_code": "test1"})
+        self.test_trust_org_2 = create_test_organisation({"trust": self.test_trust, "ods_code": "test2"})
+        self.test_other_org = create_test_organisation({"ods_code": "other"})
+
+        # create a problem in each org
+        for org in Organisation.objects.all():
+            create_test_problem({
+                'organisation': org,
+                'description': "Problem with '{0}'".format(org.trust.code),
+            })
+
+    def test_trust_problem_set(self):
+        # check that the right problems are found using the problem_set
+        problems = self.test_trust.problem_set.order_by('description')
+        self.assertEqual(problems.count(), 2)
+        for p in problems:
+            self.assertEqual(p.organisation.trust, self.test_trust)
+
+    def test_escalation_ccg_always_in_ccgs(self):
+        ccg = create_test_ccg({})
+        trust = Trust(name="test_trust",
+                      code="ABC",
+                      email='test-trust@example.org',
+                      secondary_email='test-trust-secondary@example.org',
+                      escalation_ccg=ccg)
+
+        trust.save()
+        trust = Trust.objects.get(pk=trust.id)
+        self.assertTrue(trust.escalation_ccg in trust.ccgs.all())
 
 
 class OrganisationModelTests(TestCase):
@@ -26,8 +65,8 @@ class OrganisationModelAuthTests(AuthorizationTestCase):
         super(OrganisationModelAuthTests, self).setUp()
 
     def test_user_can_access_provider_happy_path(self):
-        self.assertTrue(self.test_organisation.can_be_accessed_by(self.provider))
-        self.assertTrue(self.other_test_organisation.can_be_accessed_by(self.other_provider))
+        self.assertTrue(self.test_organisation.can_be_accessed_by(self.trust_user))
+        self.assertTrue(self.other_test_organisation.can_be_accessed_by(self.other_trust_user))
 
     def test_superusers_can_access_any_provider(self):
         for user in self.users_who_can_access_everything:
@@ -39,12 +78,12 @@ class OrganisationModelAuthTests(AuthorizationTestCase):
         self.assertFalse(self.other_test_organisation.can_be_accessed_by(self.anonymous_user))
 
     def test_user_with_no_orgs_cannot_access_organisation(self):
-        self.assertFalse(self.test_organisation.can_be_accessed_by(self.no_provider))
-        self.assertFalse(self.other_test_organisation.can_be_accessed_by(self.no_provider))
+        self.assertFalse(self.test_organisation.can_be_accessed_by(self.no_trust_user))
+        self.assertFalse(self.other_test_organisation.can_be_accessed_by(self.no_trust_user))
 
     def test_user_with_other_org_cannot_access_different_org(self):
-        self.assertFalse(self.test_organisation.can_be_accessed_by(self.other_provider))
-        self.assertFalse(self.other_test_organisation.can_be_accessed_by(self.provider))
+        self.assertFalse(self.test_organisation.can_be_accessed_by(self.other_trust_user))
+        self.assertFalse(self.other_test_organisation.can_be_accessed_by(self.trust_user))
 
     def test_user_with_no_ccgs_cannot_access_orgs(self):
         self.assertFalse(self.test_organisation.can_be_accessed_by(self.no_ccg_user))
