@@ -44,13 +44,13 @@ sensitive):
 
 ## Trust users
 
-- `Name`
+- `Username`
 - `Email`
 - `Code`: The ODS code for the trust.
 
 ## CCG users
 
-- `Name`
+- `Username`
 - `Email`
 - `Code`: The CCG code
 
