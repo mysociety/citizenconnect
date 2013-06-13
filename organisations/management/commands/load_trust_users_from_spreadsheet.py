@@ -2,8 +2,11 @@ import csv
 
 from django.core.management.base import BaseCommand, CommandError
 from django.template.loader import get_template
+from django.template import Context
+from django.conf import settings
+from django.core import mail
 
-from ...models import Trust, CCG
+from ...models import Trust
 from ... import auth
 
 
@@ -31,3 +34,16 @@ class Command(BaseCommand):
             trust = Trust.objects.get(code=trust_code)
 
             user, created = trust.users.get_or_create(username=username, email=email)
+
+            if created:
+                context = Context({
+                    'user': user,
+                    'site_base_url': settings.SITE_BASE_URL
+                })
+                mail.send_mail(
+                    subject=subject_template.render(context),
+                    message=message_template.render(context),
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[email],
+                    fail_silently=False
+                )
