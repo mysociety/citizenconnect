@@ -98,3 +98,17 @@ class CsvImportTests(TestCase):
                 'trust': trust.id
             }
         )
+
+    def test_user_imports(self):
+        # Load up some test CCGs and trusts
+        call_command('load_ccgs_from_spreadsheet', 'organisations/tests/samples/ccgs.csv')
+        call_command('load_trusts_from_spreadsheet', 'organisations/tests/samples/trusts.csv')
+
+        self.assertEqual(User.objects.count(), 0)
+        call_command('load_trust_users_from_spreadsheet', 'organisations/tests/samples/trust_users.csv')
+        self.assertEqual(User.objects.count(), 3)
+
+        # Check the correct data was loaded
+        trust = Trust.objects.get(name='Ascot North Trust')
+
+        self.assertEqual(trust.users.count(), 1)
