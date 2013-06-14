@@ -41,7 +41,7 @@ class Command(BaseCommand):
         for row in reader:
             rownum += 1
 
-            name = row["Name"]
+            username = row["Username"]
             email = row["Email"]
             try:
 
@@ -50,7 +50,7 @@ class Command(BaseCommand):
                 is_second_tier_moderator = self.true_if_x(row["Second Tier Moderators"], rownum)
                 is_ccc = self.true_if_x(row["Customer Contact Centre"], rownum)
 
-                user, created = User.objects.get_or_create(username=name, email=email)
+                user, created = User.objects.get_or_create(username=username, email=email)
                 if is_super:
                     user.groups.add(auth.NHS_SUPERUSERS)
                 if is_case_handler:
@@ -77,7 +77,7 @@ class Command(BaseCommand):
             except Exception as e:
                 if verbose:
                     skipped += 1
-                self.stderr.write("Skipping %s: %s" % (name, e))
+                self.stderr.write("Skipping %s: %s" % (username, e))
                 transaction.rollback()
 
         if verbose:

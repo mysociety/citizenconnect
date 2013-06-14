@@ -66,7 +66,7 @@ class Command(BaseCommand):
                 row[key] = self.clean_value(val)
 
             try:
-                # Remember to update the docs in organisations/csv_formats.md if you make changes here
+                # Remember to update the docs in documentation/csv_formats.md if you make changes here
                 choices_id = row['ChoicesID']
                 ods_code = row['ODS Code']
                 name = row['Name']
@@ -113,7 +113,7 @@ class Command(BaseCommand):
 
             if organisation_type_text not in type_mappings:
                 if verbose:
-                    self.stderr.write("Unknown organisation type %s, skipping" % organisation_type_text)
+                    print "Unknown organisation type %s, skipping" % organisation_type_text
                 continue
             organisation_type = type_mappings[organisation_type_text]
             organisation_defaults = {'choices_id': choices_id,
