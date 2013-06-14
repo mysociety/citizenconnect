@@ -64,7 +64,6 @@ class ProblemAPITests(TestCase):
         self.assertEqual(problem.public_reporter_name, True)
         self.assertEqual(problem.publication_status, True)
         self.assertEqual(problem.source, self.test_problem['source'])
-        self.assertEqual(problem.moderated, Problem.MODERATED)
         self.assertEqual(problem.requires_second_tier_moderation, False)
         self.assertEqual(problem.breach, True)
         self.assertEqual(problem.commissioned, Problem.NATIONALLY_COMMISSIONED)
