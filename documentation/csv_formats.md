@@ -47,7 +47,23 @@ There are several sample csv files in the [documentation/csv_samples folder](htt
 - `ServiceCode`
 - `ServiceName`
 
-# Representing Null values
+## Users
+
+Some of these values are "flags" that can be true or false. To set them true use the value `x`, or leave blank for false. If the flag is true then the user will be assigned that status.
+
+Passwords are not specified in this import. For new users a random password is created. They should use the password reset facility to set a new one (reset email will be sent to the address specified in the import).
+
+- `Name`: The username, will be used when logging in.
+- `Email`: The email address that password resets etc will be sent to
+- `NHS Superusers`: Flag for superuser status
+- `Case Handlers`: Flag for case handler status
+- `Second Tier Moderators`: Flag for second tier moderator status
+- `Customer Contact Centre`: Flag for CCC status
+
+Note that the last row in the sample CSV is deliberately bad, and is there for the test scripts.
+
+
+# Representing Empty values
 
 Ideally leave the field blank, or for some fields the value `NULL` can be used.
 This appears to be needed in some cases where the spreadsheet software does not
