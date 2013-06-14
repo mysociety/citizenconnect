@@ -63,7 +63,7 @@ Some of these values are "flags" that can be true or false. To set them true use
 
 Passwords are not specified in this import. For new users a random password is created. They should use the password reset facility to set a new one (reset email will be sent to the address specified in the import).
 
-- `Name`: The username, will be used when logging in.
+- `Username`: The username, will be used when logging in.
 - `Email`: The email address that password resets etc will be sent to
 - `NHS Superusers`: Flag for superuser status
 - `Case Handlers`: Flag for case handler status
