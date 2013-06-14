@@ -31,7 +31,7 @@ def from_csv(filename, trust_or_ccg_model):
         user, created = trust_or_ccg.users.get_or_create(username=username, email=email)
 
         if created:
-            user.password = auth.create_initial_password()
+            user.set_password(auth.create_initial_password())
             user.groups.add(trust_or_ccg.default_user_group())
             user.save()
 

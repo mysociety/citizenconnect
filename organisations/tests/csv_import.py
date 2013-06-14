@@ -119,6 +119,11 @@ class CsvImportTests(TestCase):
         ccg = CCG.objects.get(name='Ascot CCG')
         self.assertEqual(ccg.users.count(), 1)
 
+        # test that users' passwords _ARE_ usable - if not usable then
+        # the password cannot be reset. See #689
+        for user in [ccg.users.all()[0], trust.users.all()[0]]:
+            self.assertTrue(user.has_usable_password())        
+
         self.assertEqual(len(mail.outbox), 6)
         last_mail = mail.outbox[0]
 
