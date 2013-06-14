@@ -65,7 +65,7 @@ class Command(BaseCommand):
                 row[key] = self.clean_value(val)
 
             try:
-                # Remember to update the docs in organisations/csv_formats.md if you make changes here
+                # Remember to update the docs in documentation/csv_formats.md if you make changes here
                 ods_code = self.clean_value(row['ODS Code'])
                 name     = self.clean_value(row['Name']    )
                 email    = self.clean_value(row['Email']   )

@@ -7,6 +7,10 @@ They all expect CSV with the first row being the a header row describing the
 contents of each column. These are the headers expected (they are case
 sensitive):
 
+## Sample files
+
+There are several sample csv files in the [documentation/csv_samples folder](https://github.com/mysociety/citizenconnect/blob/master/documentation/csv_samples). These are used in the test suite so should always be accurate.
+
 ## CCGs
 
 - `ODS Code`: The ODS code

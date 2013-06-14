@@ -33,17 +33,17 @@ class CsvImportTests(TestCase):
 
     def test_happy_path(self):
 
-        call_command('load_ccgs_from_spreadsheet', 'organisations/tests/samples/ccgs.csv')
+        call_command('load_ccgs_from_spreadsheet', 'documentation/csv_samples/ccgs.csv')
         self.assertEqual(CCG.objects.count(), 3)
 
-        call_command('load_trusts_from_spreadsheet', 'organisations/tests/samples/trusts.csv')
+        call_command('load_trusts_from_spreadsheet', 'documentation/csv_samples/trusts.csv')
         self.assertEqual(Trust.objects.count(), 3)
         self.assertEqual(CCG.objects.get(name="Ascot CCG").trusts.count(), 2)
         self.assertEqual(CCG.objects.get(name="Banbridge CCG").trusts.count(), 2)
         self.assertEqual(CCG.objects.get(name="Chucklemere CCG").trusts.count(), 1)
 
 
-        call_command('load_organisations_from_spreadsheet', 'organisations/tests/samples/organisations.csv')
+        call_command('load_organisations_from_spreadsheet', 'documentation/csv_samples/organisations.csv')
         self.assertEqual(Organisation.objects.count(), 3)
         self.assertEqual(Trust.objects.get(name="Ascot North Trust").organisations.count(), 2)
         self.assertEqual(Trust.objects.get(name="Ascot South Trust").organisations.count(), 1)
