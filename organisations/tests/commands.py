@@ -90,7 +90,7 @@ class CreateNonOrganisationAccountTests(TestCase):
         self._call_command([os.path.join(settings.PROJECT_ROOT,
                                          'documentation',
                                          'csv_samples',
-                                         'non_provider_accounts.csv')])
+                                         'users.csv')])
         self.expect_groups('spreadsheetsuper@example.com', [auth.NHS_SUPERUSERS])
         self.expect_groups('spreadsheetcasehandler@example.com', [auth.CASE_HANDLERS])
         self.expect_groups('spreadsheetcasemod@example.com', [auth.CASE_HANDLERS,
