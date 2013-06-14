@@ -1,5 +1,6 @@
 import csv
 
+from django.core.management.base import CommandError
 from django.template.loader import get_template
 from django.template import Context
 from django.conf import settings
@@ -22,7 +23,10 @@ def from_csv(filename, trust_or_ccg_model):
         email = row["Email"]
         code = row['Code']
 
-        trust_or_ccg = trust_or_ccg_model.objects.get(code=code)
+        try:
+            trust_or_ccg = trust_or_ccg_model.objects.get(code=code)
+        except trust_or_ccg_model.DoesNotExist:
+            raise CommandError("Could not find a {0} with the code {1}".format(trust_or_ccg_model.__name__, code))
 
         user, created = trust_or_ccg.users.get_or_create(username=username, email=email)
 
