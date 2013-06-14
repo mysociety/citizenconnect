@@ -153,7 +153,7 @@ class CsvImportTests(TestCase):
             self.assertFalse(auth.user_in_group(user, group))
 
     def test_other_users(self):
-        call_command('load_users_from_csv', self.other_users_csv)
+        call_command('load_other_users_from_csv', self.other_users_csv)
 
         self.expect_groups('spreadsheetsuper@example.com', [auth.NHS_SUPERUSERS])
         self.expect_groups('spreadsheetcasehandler@example.com', [auth.CASE_HANDLERS])
