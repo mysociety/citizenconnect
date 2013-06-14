@@ -43,6 +43,17 @@ sensitive):
 - `ServiceCode`
 - `ServiceName`
 
+## Trust and CCG users
+
+Users for the trusts and CCGs should be listed in separate CSV files (one for trusts, one for CCGs). If a user belongs to several trusts or CCGs there should be multiple entries in the CSV, one per organisation that they belong to.
+
+If the users do not exist they are created and an intro email sent, if the do exist their membership is confirmed. Note that deleting a user from the CSV will **not** delete them from the organisation.
+
+- `Username`
+- `Email`
+- `Code`: The ODS code for the trust or CCG.
+
+
 # Representing Null values
 
 Ideally leave the field blank, or for some fields the value `NULL` can be used.

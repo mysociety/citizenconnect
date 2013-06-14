@@ -101,3 +101,32 @@ class CsvImportTests(TestCase):
                 'trust': trust.id
             }
         )
+
+    def test_user_imports(self):
+        # Load up some test CCGs and trusts
+        call_command('load_ccgs_from_spreadsheet', 'organisations/tests/samples/ccgs.csv')
+        call_command('load_trusts_from_spreadsheet', 'organisations/tests/samples/trusts.csv')
+
+        self.assertEqual(User.objects.count(), 0)
+        call_command('load_trust_users_from_spreadsheet', 'organisations/tests/samples/trust_users.csv')
+        self.assertEqual(User.objects.count(), 3)
+        call_command('load_ccg_users_from_spreadsheet', 'organisations/tests/samples/ccg_users.csv')
+        self.assertEqual(User.objects.count(), 6)
+
+        trust = Trust.objects.get(name='Ascot North Trust')
+        self.assertEqual(trust.users.count(), 2) # has two users in CSV
+        self.assertEqual(Trust.objects.get(name='Ascot South Trust').users.count(), 1)
+
+        ccg = CCG.objects.get(name='Ascot CCG')
+        self.assertEqual(ccg.users.count(), 1)
+
+        # test that users' passwords _ARE_ usable - if not usable then
+        # the password cannot be reset. See #689
+        for user in [ccg.users.all()[0], trust.users.all()[0]]:
+            self.assertTrue(user.has_usable_password())        
+
+        self.assertEqual(len(mail.outbox), 6)
+        last_mail = mail.outbox[0]
+
+        self.assertEqual(last_mail.subject, 'Welcome to Care Connect')
+        self.assertIn("You're receiving this e-mail because an account has been created for you on the  Care Connect website.", last_mail.body)
