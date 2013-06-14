@@ -238,8 +238,9 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
             'Resolved': [[ACKNOWLEDGED, RESOLVED], [ESCALATED_ACKNOWLEDGED, ESCALATED_RESOLVED]]
         },
         'publication_status': {
-            'Published': [[HIDDEN, PUBLISHED]],
-            'Hidden': [[PUBLISHED, HIDDEN]]
+            'Published': [[NOT_MODERATED_PUB, PUBLISHED], [HIDDEN, PUBLISHED]],
+            'Hidden': [[NOT_MODERATED_PUB, HIDDEN], [PUBLISHED, HIDDEN]],
+            'Unmoderated': [[HIDDEN, NOT_MODERATED_PUB], [PUBLISHED, NOT_MODERATED_PUB]],
         },
         'moderated': {
             'Moderated': [[NOT_MODERATED, MODERATED]]
