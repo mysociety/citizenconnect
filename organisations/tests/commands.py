@@ -77,7 +77,7 @@ class CreateNonOrganisationAccountTests(TestCase):
         sys.stderr = self.old_stderr
 
     def _call_command(self, args=[], opts={}):
-        call_command('create_non_organisation_accounts', *args, **opts)
+        call_command('load_users_from_spreadsheet', *args, **opts)
 
     def expect_groups(self, email, expected_groups):
         user = User.objects.get(email=email)
