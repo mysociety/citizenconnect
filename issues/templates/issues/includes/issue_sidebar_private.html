@@ -1,0 +1,94 @@
+<div class="split-box  split-box--alert  split-box--alert--lrg">
+    <div class="split-box__inner">
+        {% if object.is_high_priority %}
+            <p class="split-box__left  split-box--red">Priority</p>
+        {% endif %}
+        <p class="split-box__right">{{ object.reference_number }}</p>
+    </div>
+</div>
+
+{% object.breach %}
+    <h2 class="alert  alert--orange">Breach</h2>
+{% endif %}
+
+<div class="meta-data-wrap">
+    <h3 class="meta-data-label">Status</h3>
+    <div class="meta-data">
+        <ul class="meta-data-list">
+            <li>
+                {% if object.status == object.NEW %}
+                    <span class="bordered-circle  bordered-circle--pink" aria-hidden="true"></span> Open
+                {% elif object.status in object.OPEN_STATUSES %}
+                    <span class="bordered-circle  bordered-circle--orange" aria-hidden="true"></span> {{ object.get_status_display }}
+                {% else %}
+                    <span class="bordered-circle  bordered-circle--green" aria-hidden="true"></span> Closed - {{ object.get_status_display }}
+                {% endif %}
+            </li>
+            <li><span class="icon-eye" aria-hidden="true"></span> {{ object.get_publication_status_display }}</li>
+            {% if object.happy_service != None %}
+                <li>
+                    {% if object.happy_service %}
+                        <span class="icon-checkmark  meta-data-list__icon-green" aria-hidden="true"></span>
+                    {% else %}
+                        <span class="icon-x  meta-data-list__icon-red" aria-hidden="true"></span>
+                    {% endif %}
+                    &nbsp;Happy with Manner
+                </li>
+            {% endif %}
+            {% if object.happy_outcome != None %}
+                <li>
+                    {% if object.happy_outcome %}
+                        <span class="icon-checkmark  meta-data-list__icon-green" aria-hidden="true"></span>
+                    {% else %}
+                        <span class="icon-x  meta-data-list__icon-red" aria-hidden="true"></span>
+                    {% endif %}
+                    &nbsp;Happy with Resolution
+                </li>
+            {% endif %}
+            {% if object.formal_complaint %}
+                <li class="formal-complaint">
+                    <span class="icon-warning  meta-data-list__icon-red" aria-hidden="true"></span> Formal complaint
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+
+<div class="meta-data-wrap">
+    <h3 class="meta-data-label">Privacy</h3>
+    <div class="meta-data">
+        <ul class="meta-data-list">
+            <li class="public">
+                {% if object.public and object.public_reporter_name %}
+                    <span class="bordered-circle  bordered-circle--green" aria-hidden="true"></span> Public
+                {% elif object.public and not object.public_reporter_name %}
+                    <span class="bordered-circle  bordered-circle--orange" aria-hidden="true"></span> Public with hidden name
+                {% else %}
+                    <span class="bordered-circle  bordered-circle--pink" aria-hidden="true"></span> Private
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="meta-data-wrap">
+    <h3 class="meta-data-label">Details</h3>
+    <div class="meta-data">
+        <ul class="meta-data-list">
+            <li>
+                <span class="icon-tag" aria-hidden="true"></span> {{ object.get_category_display }}
+            </li>
+            <li>
+                <span class="icon-user" aria-hidden="true"></span> {{ object.reporter_name_display }}
+            </li>
+            <li>
+                <span class="icon-calendar" aria-hidden="true"></span> {{ object.created|date:"h:ia" }} {{ object.created|date:"d M Y" }}
+            </li>
+            {% object.commissioned != None %}
+                <li class="commissioned">
+                    <span class="icon-eye" aria-hidden="true"></span> {{ object.get_commissioned_display }}
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
