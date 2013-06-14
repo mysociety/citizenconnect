@@ -11,5 +11,4 @@ class Command(BaseCommand):
         if len(args) is 0:
             raise CommandError("Please supply a csv file to import from")
 
-        filename = args[0]
-        from_csv(filename, CCG)
+        from_csv(filename=args[0], trust_or_ccg_model=CCG)
