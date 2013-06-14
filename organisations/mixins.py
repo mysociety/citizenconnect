@@ -47,7 +47,7 @@ class MailSendMixin(models.Model):
 
         # We can't send email if we don't have an email address
         if not self.email:  # ISSUE-329
-            raise ValueError("{0} {1} needs an email to find/create related user".format(class_name, self.id))
+            raise ValueError("{0} {1} needs an email in order to send an email".format(class_name, self.id))
 
         # Organisations send emails to two email addresses
         recipient_list = [self.email]
