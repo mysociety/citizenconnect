@@ -7,7 +7,18 @@
 
 {% block content %}
 
-{% include "issues/includes/issue_detail.html" with object=object title="Problem" %}
+{% include "issues/includes/issue_header.html" with object=object private=private title=title %}
+
+<div class="gw">
+
+    <div class="g  two-thirds  palm-one-whole">
+        {% include "issues/includes/issue_meta.html" with object=object private=private title=title %}
+    </div>
+    <div class="meta-data-sidebar  g  one-third  palm-one-whole">
+        {% include "issues/includes/issue_sidebar.html" with object=object private=private title=title %}
+    </div>
+
+</div>
 
 <a href="{% url 'feedback' cobrand=cobrand.name %}">Report as unsuitable</a>
 
