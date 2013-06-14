@@ -321,7 +321,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
 
     @property
     def reporter_name_display(self):
-        if self.public_reporter_name:
+        if self.public_reporter_name and self.moderated == Problem.MODERATED:
             return self.reporter_name
         else:
             return "Anonymous"
