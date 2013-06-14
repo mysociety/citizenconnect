@@ -102,7 +102,7 @@ class CsvImportTests(TestCase):
             }
         )
 
-    def test_trust_user_imports(self):
+    def test_user_imports(self):
         # Load up some test CCGs and trusts
         call_command('load_ccgs_from_spreadsheet', 'organisations/tests/samples/ccgs.csv')
         call_command('load_trusts_from_spreadsheet', 'organisations/tests/samples/trusts.csv')
@@ -110,22 +110,17 @@ class CsvImportTests(TestCase):
         self.assertEqual(User.objects.count(), 0)
         call_command('load_trust_users_from_spreadsheet', 'organisations/tests/samples/trust_users.csv')
         self.assertEqual(User.objects.count(), 3)
+        call_command('load_ccg_users_from_spreadsheet', 'organisations/tests/samples/ccg_users.csv')
+        self.assertEqual(User.objects.count(), 6)
 
-        # Check the correct data was loaded
         trust = Trust.objects.get(name='Ascot North Trust')
-
         self.assertEqual(trust.users.count(), 1)
 
-    def test_ccg_user_imports(self):
-        # Load up some test CCGs and trusts
-        call_command('load_ccgs_from_spreadsheet', 'organisations/tests/samples/ccgs.csv')
-        call_command('load_trusts_from_spreadsheet', 'organisations/tests/samples/trusts.csv')
-
-        self.assertEqual(User.objects.count(), 0)
-        call_command('load_ccg_users_from_spreadsheet', 'organisations/tests/samples/ccg_users.csv')
-        self.assertEqual(User.objects.count(), 3)
-
-        # Check the correct data was loaded
         ccg = CCG.objects.get(name='Ascot CCG')
-
         self.assertEqual(ccg.users.count(), 1)
+
+        self.assertEqual(len(mail.outbox), 6)
+        last_mail = mail.outbox[0]
+
+        self.assertEqual(last_mail.subject, 'Welcome to Care Connect')
+        self.assertIn("You're receiving this e-mail because an account has been created for you on the  Care Connect website.", last_mail.body)
