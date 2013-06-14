@@ -5,6 +5,7 @@ from django.template.loader import get_template
 from django.template import Context
 from django.conf import settings
 from django.core import mail
+from django.contrib.auth.models import User
 
 from .. import auth
 
@@ -28,11 +29,16 @@ def from_csv(filename, trust_or_ccg_model):
         except trust_or_ccg_model.DoesNotExist:
             raise CommandError("Could not find a {0} with the code {1}".format(trust_or_ccg_model.__name__, code))
 
-        user, created = trust_or_ccg.users.get_or_create(username=username, email=email)
+        # get the user, creating if not found
+        user, created = User.objects.get_or_create(username=username, email=email)
+
+        # Ensure that the user is added to the org and the correct group, will
+        # be no-ops if already done.
+        trust_or_ccg.users.add(user)
+        user.groups.add(trust_or_ccg.default_user_group())
 
         if created:
             user.set_password(auth.create_initial_password())
-            user.groups.add(trust_or_ccg.default_user_group())
             user.save()
 
             context = Context({

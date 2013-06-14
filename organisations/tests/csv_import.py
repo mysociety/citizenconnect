@@ -114,7 +114,8 @@ class CsvImportTests(TestCase):
         self.assertEqual(User.objects.count(), 6)
 
         trust = Trust.objects.get(name='Ascot North Trust')
-        self.assertEqual(trust.users.count(), 1)
+        self.assertEqual(trust.users.count(), 2) # has two users in CSV
+        self.assertEqual(Trust.objects.get(name='Ascot South Trust').users.count(), 1)
 
         ccg = CCG.objects.get(name='Ascot CCG')
         self.assertEqual(ccg.users.count(), 1)

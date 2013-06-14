@@ -1,4 +1,5 @@
 Username,Email,Code
 "ascot_trust_user","ascot_trust_user@example.com","AN1"
 "ascot_other_trust_user","ascot_other_trust_user@example.com","AS1"
+"ascot_other_trust_user","ascot_other_trust_user@example.com","AN1"
 "banbridge_trust_user","banbridge_trust_user@example.com","BN1"
