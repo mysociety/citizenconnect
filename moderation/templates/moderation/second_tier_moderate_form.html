@@ -6,11 +6,11 @@
 {% block bodyclasses %}second-tier-moderate-form{% endblock %}
 {% block content %}
 
-{% include "issues/issue_header.html" with object=issue private=1 title="Moderate problem" %}
+{% include "issues/includes/issue_header.html" with object=issue private=1 title="Moderate problem" %}
 <div class="gw">
 
     <div class="g  two-thirds  palm-one-whole">
-        {% include "issues/issue_meta.html" with object=issue private=1 title="Moderate problem" %}
+        {% include "issues/includes/issue_meta.html" with object=issue private=1 title="Moderate problem" %}
 
         <div class="second-tier-moderate-form">
             <form method="post">
@@ -58,7 +58,7 @@
     </div>
 
     <div class="meta-data-sidebar  g  one-third  palm-one-whole">
-        {% include "issues/issue_sidebar.html" with object=issue private=1 title="Moderate problem" %}
+        {% include "issues/includes/issue_sidebar.html" with object=issue private=1 title="Moderate problem" %}
     </div>
 
 </div>

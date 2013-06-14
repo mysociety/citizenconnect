@@ -7,7 +7,7 @@
 
 {% block content %}
 
-{% include "issues/issue_detail.html" with object=object title="Problem" %}
+{% include "issues/includes/issue_detail.html" with object=object title="Problem" %}
 
 <a href="{% url 'feedback' cobrand=cobrand.name %}">Report as unsuitable</a>
 
