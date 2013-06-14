@@ -10,12 +10,12 @@
 
 <p><span class="icon-chevron-left" aria-hidden="true"></span> <a href="{% url 'trust-dashboard' code=issue.organisation.trust.code %}">Return to your dashboard</a></p>
 
-{% include "issues/includes/issue_header.html" with object=issue private=1 title="Respond to a problem" %}
+{% include "issues/includes/issue_header.html" with object=issue title="Respond to a problem" %}
 
 <div class="gw">
 
     <div class="g  two-thirds  palm-one-whole">
-        {% include "issues/includes/issue_meta.html" with object=issue private=1 %}
+        {% include "issues/includes/issue_meta_private.html" with object=issue %}
 
         <div class="response-form">
             <form method="post">
@@ -66,7 +66,7 @@
 
     </div>
     <div class="meta-data-sidebar  g  one-third  palm-one-whole">
-        {% include "issues/includes/issue_sidebar.html" with object=issue private=1 %}
+        {% include "issues/includes/issue_sidebar_private.html" with object=issue %}
     </div>
 </div>
 {% endblock %}
