@@ -22,49 +22,6 @@ class DevNull(object):
         pass
 
 
-
-class CreateAccountsForTrustsAndCCGsTests(TestCase):
-
-    def _call_command(self):
-        args = []
-        opts = {}
-        call_command('create_accounts_for_trusts_and_ccgs', *args, **opts)
-
-    def test_happy_path(self):
-        # Quiet logging for this test - there a CCGs loaded that don't have email
-        logging.disable(logging.CRITICAL)
-
-        test_trust_with_email = create_test_trust({"email": "trust@example.com"})
-        test_ccg_with_email = create_test_ccg({"email": "ccg@example.com"})
-
-        self._call_command()
-
-        # Check that user was created
-        for obj in [test_trust_with_email, test_ccg_with_email]:
-            users = obj.__class__.objects.get(pk=obj.id).users
-            self.assertEqual(users.count(), 1)
-            self.assertEqual(users.all()[0].email, obj.email)
-
-        logging.disable(logging.NOTSET)
-
-    def test_handles_trusts_or_ccgs_with_no_email(self):  # ISSUE-329
-        # Quiet logging for this test
-        logging.disable(logging.CRITICAL)
-
-        test_trust_no_email = create_test_trust({"email": ""})
-        test_ccg_no_email = create_test_ccg({"email": ""})
-
-        # This would raise an error if it didn't handle it
-        self._call_command()
-
-        # Check that user was created
-        for obj in [test_trust_no_email, test_ccg_no_email]:
-            users = obj.__class__.objects.get(pk=obj.id).users
-            self.assertEqual(users.count(), 0)
-
-        logging.disable(logging.NOTSET)
-
-
 class CreateNonOrganisationAccountTests(TestCase):
 
     # The fixture has a bad row that will cause the command to write to stderr -
