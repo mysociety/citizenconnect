@@ -57,7 +57,7 @@ If the users do not exist they are created and an intro email sent, if the do ex
 - `Email`
 - `Code`: The ODS code for the trust or CCG.
 
-## Users
+## Other Users
 
 Some of these values are "flags" that can be true or false. To set them true use the value `x`, or leave blank for false. If the flag is true then the user will be assigned that status.
 

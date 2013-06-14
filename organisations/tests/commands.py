@@ -22,47 +22,6 @@ class DevNull(object):
         pass
 
 
-class CreateNonOrganisationAccountTests(TestCase):
-
-    # The fixture has a bad row that will cause the command to write to stderr -
-    # we don't want to see this output during the test run
-    def setUp(self):
-        self.old_stderr = sys.stderr
-        sys.stderr = DevNull()
-
-    def tearDown(self):
-        sys.stderr = self.old_stderr
-
-    def _call_command(self, args=[], opts={}):
-        call_command('load_users_from_csv', *args, **opts)
-
-    def expect_groups(self, email, expected_groups):
-        user = User.objects.get(email=email)
-        self.assertTrue(auth.user_in_groups(user, expected_groups))
-        other_groups = [group for group in auth.ALL_GROUPS if not group in expected_groups]
-        for group in other_groups:
-            self.assertFalse(auth.user_in_group(user, group))
-
-    def test_happy_path(self):
-        self._call_command([os.path.join(settings.PROJECT_ROOT,
-                                         'documentation',
-                                         'csv_samples',
-                                         'users.csv')])
-        self.expect_groups('spreadsheetsuper@example.com', [auth.NHS_SUPERUSERS])
-        self.expect_groups('spreadsheetcasehandler@example.com', [auth.CASE_HANDLERS])
-        self.expect_groups('spreadsheetcasemod@example.com', [auth.CASE_HANDLERS,
-                                                              auth.SECOND_TIER_MODERATORS])
-        self.expect_groups('spreadsheetccc@example.com', [auth.CUSTOMER_CONTACT_CENTRE])
-        bad_row_users = User.objects.filter(email='spreadsheetbadrow@example.com')
-        # Should not have created a user if the groups are ambiguous
-        self.assertEqual(0, len(bad_row_users))
-        # Should have sent an email to each created user
-        self.assertEqual(len(mail.outbox), 4)
-        first_email = mail.outbox[0]
-        expected_text = "You're receiving this e-mail because an account has been created"
-        self.assertTrue(expected_text in first_email.body)
-
-
 class GetOrganisationRatingsFromChoicesAPITests(ExampleFileAPITest):
 
     @classmethod
