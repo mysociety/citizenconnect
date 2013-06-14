@@ -160,8 +160,13 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
 
     HIDDEN = 0
     PUBLISHED = 1
+    NOT_MODERATED_PUB = 2
 
-    PUBLICATION_STATUS_CHOICES = ((HIDDEN, "Hidden"), (PUBLISHED, "Published"))
+    PUBLICATION_STATUS_CHOICES = (
+        (NOT_MODERATED_PUB, "Not moderated"),
+        (HIDDEN, "Hidden"),
+        (PUBLISHED, "Published")
+    )
 
     NOT_MODERATED = 0
     MODERATED = 1
@@ -287,7 +292,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     time_to_address = models.IntegerField(blank=True, null=True)
     resolved = models.DateTimeField(blank=True, null=True)
 
-    publication_status = models.IntegerField(default=HIDDEN,
+    publication_status = models.IntegerField(default=NOT_MODERATED_PUB,
                                              blank=False,
                                              choices=PUBLICATION_STATUS_CHOICES)
     moderated = models.IntegerField(default=NOT_MODERATED,
