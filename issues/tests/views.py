@@ -129,7 +129,7 @@ class ProblemPublicViewTests(AuthorizationTestCase):
             resp = self.client.get(self.test_private_problem_url)
             self.assertEqual(resp.status_code, 200)
 
-    def test_unmoderated_problem_accessible_to_allowed_uses(self):
+    def test_unmoderated_problem_accessible_to_everyone(self):
         self.login_as(self.trust_user)
         resp = self.client.get(self.test_unmoderated_problem_url)
         self.assertEqual(resp.status_code, 200)
@@ -138,25 +138,29 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         resp = self.client.get(self.test_unmoderated_problem_url)
         self.assertEqual(resp.status_code, 200)
 
-    def test_unmoderated_problem_inaccessible_to_anon_user(self):
+        self.client.logout()
         resp = self.client.get(self.test_unmoderated_problem_url)
-        self.assertEqual(resp.status_code, 403)
+        self.assertEqual(resp.status_code, 200)
 
-    def test_unmoderated_problem_inaccessible_to_other_trust_user(self):
         self.login_as(self.other_trust_user)
         resp = self.client.get(self.test_unmoderated_problem_url)
-        self.assertEqual(resp.status_code, 403)
+        self.assertEqual(resp.status_code, 200)
 
-    def test_unmoderated_problem_inaccessible_to_other_ccg_user(self):
         self.login_as(self.other_ccg_user)
         resp = self.client.get(self.test_unmoderated_problem_url)
-        self.assertEqual(resp.status_code, 403)
+        self.assertEqual(resp.status_code, 200)
 
-    def test_unmoderated_problem_accessible_to_superusers(self):
         for user in self.users_who_can_access_everything:
             self.login_as(user)
             resp = self.client.get(self.test_unmoderated_problem_url)
             self.assertEqual(resp.status_code, 200)
+
+    def test_unmoderated_problem_doesnt_show_details(self):
+        self.client.logout()
+        resp = self.client.get(self.test_unmoderated_problem_url)
+        self.assertNotContains(resp, self.test_unmoderated_problem.description)
+        self.assertNotContains(resp, self.test_unmoderated_problem.reporter_name)
+        self.assertNotContains(resp, "Responses")
 
     def test_anon_user_sees_moderated_description_only(self):
         resp = self.client.get(self.test_moderated_problem_url)

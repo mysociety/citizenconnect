@@ -19,6 +19,8 @@ class ProblemTestCase(AuthorizationTestCase):
 
     def setUp(self):
         super(ProblemTestCase, self).setUp()
+
+        # A brand new, unmoderated problem, all public
         self.test_problem = Problem(organisation=self.test_organisation,
                                     description='A Test Problem',
                                     category='cleanliness',
@@ -33,6 +35,7 @@ class ProblemTestCase(AuthorizationTestCase):
                                     time_to_address=None,
                                     cobrand='choices')
 
+        # A brand new, moderated problem, all public
         self.test_moderated_problem = Problem(organisation=self.test_organisation,
                                               description='A Test Problem',
                                               category='cleanliness',
@@ -49,6 +52,7 @@ class ProblemTestCase(AuthorizationTestCase):
                                               time_to_address=None,
                                               cobrand='choices')
 
+        # A brand new, unmoderated problem that the user would like kept private
         self.test_private_problem = Problem(organisation=self.test_organisation,
                                             description='A Test Private Problem',
                                             category='cleanliness',
@@ -63,6 +67,29 @@ class ProblemTestCase(AuthorizationTestCase):
                                             time_to_address=None,
                                             cobrand='choices')
 
+        # A problem that has been moderated and rejected - ie: not published
+        self.test_moderated_hidden_problem = Problem(
+            organisation=self.test_organisation,
+            description='A Test Private Problem',
+            category='cleanliness',
+            reporter_name='Test User',
+            reporter_email='reporter@example.com',
+            reporter_phone='01111 111 111',
+            public=True,
+            public_reporter_name=True,
+            preferred_contact_method=Problem.CONTACT_EMAIL,
+            status=Problem.NEW,
+            moderated=Problem.MODERATED,
+            publication_status=Problem.HIDDEN,
+            time_to_acknowledge=None,
+            time_to_address=None,
+            cobrand='choices'
+        )
+
+        # A problem that has been moderated, and marked as Abusive/Vexatious
+        # (hence should not be shown to the public) but passed moderation.
+        # (Not sure how that would happen in real life, perhaps a spam repeat
+        # of a similar one)
         self.test_hidden_status_problem = Problem(organisation=self.test_organisation,
                                                   description='A Test Hidden Problem',
                                                   category='cleanliness',
@@ -73,6 +100,7 @@ class ProblemTestCase(AuthorizationTestCase):
                                                   public_reporter_name=True,
                                                   preferred_contact_method=Problem.CONTACT_EMAIL,
                                                   status=Problem.ABUSIVE,
+                                                  moderated=Problem.MODERATED,
                                                   publication_status=Problem.PUBLISHED,
                                                   time_to_acknowledge=None,
                                                   time_to_address=None,
@@ -132,68 +160,54 @@ class ProblemModelTests(ProblemTestCase):
     def test_defaults_to_unmoderated(self):
         self.assertEqual(self.test_problem.moderated, Problem.NOT_MODERATED)
 
-    def test_public_problem_accessible_to_everyone(self):
-        self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.trust_user))
-        self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.superuser))
+    def test_moderated_public_problem_accessible_to_everyone(self):
         self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.anonymous_user))
-        self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.other_trust_user))
+        self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.trust_user))
         self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.ccg_user))
+        self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.other_trust_user))
         self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.other_ccg_user))
-
-    def test_private_problem_accessible_to_allowed_user(self):
-        self.assertTrue(self.test_private_problem.can_be_accessed_by(self.trust_user))
-
-    def test_private_problem_inaccessible_to_anon_user(self):
-        self.assertFalse(self.test_private_problem.can_be_accessed_by(self.anonymous_user))
-
-    def test_private_problem_inaccessible_to_other_trust_user(self):
-        self.assertFalse(self.test_private_problem.can_be_accessed_by(self.other_trust_user))
-
-    def test_private_problem_inaccessible_to_other_ccg_user(self):
-        self.assertFalse(self.test_private_problem.can_be_accessed_by(self.other_ccg_user))
-
-    def test_private_problem_accessible_to_superusers(self):
         for user in self.users_who_can_access_everything:
-            self.assertTrue(self.test_private_problem.can_be_accessed_by(user))
+            self.assertTrue(self.test_moderated_problem.can_be_accessed_by(user))
 
-    def test_private_problem_accessible_to_ccg_user(self):
-        self.assertTrue(self.test_private_problem.can_be_accessed_by(self.ccg_user))
-
-    def test_unmoderated_problem_inaccessible_to_anon_user(self):
-        self.assertFalse(self.test_problem.can_be_accessed_by(self.anonymous_user))
-
-    def test_unmoderated_problem_inaccessible_to_other_trust_user(self):
-        self.assertFalse(self.test_problem.can_be_accessed_by(self.other_trust_user))
-
-    def test_unmoderated_problem_inaccessible_to_other_ccg_user(self):
-        self.assertFalse(self.test_problem.can_be_accessed_by(self.other_ccg_user))
-
-    def test_unmoderated_problem_accessible_to_allowed_users(self):
+    def test_unmoderated_public_problem_accessible_to_everyone(self):
+        self.assertTrue(self.test_problem.can_be_accessed_by(self.anonymous_user))
         self.assertTrue(self.test_problem.can_be_accessed_by(self.trust_user))
         self.assertTrue(self.test_problem.can_be_accessed_by(self.ccg_user))
-
-    def test_unmoderated_problem_accessible_to_superusers(self):
+        self.assertTrue(self.test_problem.can_be_accessed_by(self.other_trust_user))
+        self.assertTrue(self.test_problem.can_be_accessed_by(self.other_ccg_user))
         for user in self.users_who_can_access_everything:
             self.assertTrue(self.test_problem.can_be_accessed_by(user))
 
-    def test_hidden_status_problem_accessible_to_allowed_user(self):
+    def test_unmoderated_private_problem_accessible_to_everyone(self):
+        self.assertTrue(self.test_private_problem.can_be_accessed_by(self.anonymous_user))
+        self.assertTrue(self.test_private_problem.can_be_accessed_by(self.trust_user))
+        self.assertTrue(self.test_private_problem.can_be_accessed_by(self.ccg_user))
+        self.assertTrue(self.test_private_problem.can_be_accessed_by(self.other_trust_user))
+        self.assertTrue(self.test_private_problem.can_be_accessed_by(self.other_ccg_user))
+        for user in self.users_who_can_access_everything:
+            self.assertTrue(self.test_private_problem.can_be_accessed_by(user))
+
+    def test_moderated_hidden_problem_accessible_to_allowed_users(self):
+        self.assertTrue(self.test_moderated_hidden_problem.can_be_accessed_by(self.trust_user))
+        self.assertTrue(self.test_moderated_hidden_problem.can_be_accessed_by(self.ccg_user))
+        for user in self.users_who_can_access_everything:
+            self.assertTrue(self.test_moderated_hidden_problem.can_be_accessed_by(user))
+
+    def test_moderated_hidden_problem_inaccessible_to_not_allowed_users(self):
+        self.assertFalse(self.test_moderated_hidden_problem.can_be_accessed_by(self.anonymous_user))
+        self.assertFalse(self.test_moderated_hidden_problem.can_be_accessed_by(self.other_trust_user))
+        self.assertFalse(self.test_moderated_hidden_problem.can_be_accessed_by(self.other_ccg_user))
+
+    def test_hidden_status_problem_accessible_to_allowed_users(self):
         self.assertTrue(self.test_hidden_status_problem.can_be_accessed_by(self.trust_user))
-
-    def test_hidden_status_problem_inaccessible_to_anon_user(self):
-        self.assertFalse(self.test_hidden_status_problem.can_be_accessed_by(self.anonymous_user))
-
-    def test_hidden_status_problem_inaccessible_to_other_trust_user(self):
-        self.assertFalse(self.test_hidden_status_problem.can_be_accessed_by(self.other_trust_user))
-
-    def test_hidden_status_problem_inaccessible_to_other_ccg_user(self):
-        self.assertFalse(self.test_hidden_status_problem.can_be_accessed_by(self.other_ccg_user))
-
-    def test_hidden_status_problem_accessible_to_superusers(self):
+        self.assertTrue(self.test_hidden_status_problem.can_be_accessed_by(self.ccg_user))
         for user in self.users_who_can_access_everything:
             self.assertTrue(self.test_hidden_status_problem.can_be_accessed_by(user))
 
-    def test_hidden_status_problem_accessible_to_ccg_user(self):
-        self.assertTrue(self.test_hidden_status_problem.can_be_accessed_by(self.ccg_user))
+    def test_hidden_status_problem_inaccessible_to_not_allowed_users(self):
+        self.assertFalse(self.test_hidden_status_problem.can_be_accessed_by(self.anonymous_user))
+        self.assertFalse(self.test_hidden_status_problem.can_be_accessed_by(self.other_trust_user))
+        self.assertFalse(self.test_hidden_status_problem.can_be_accessed_by(self.other_ccg_user))
 
     def test_timedelta_to_minutes(self):
         t = timedelta(minutes=30)
