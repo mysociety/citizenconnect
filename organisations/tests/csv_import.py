@@ -27,23 +27,32 @@ class CsvImportTests(TestCase):
     def setUp(self):
         self.old_stdout = sys.stderr
         sys.stdout = DevNull()
+        
+        # Paths to the various sample CSV files
+        csv_dir = 'documentation/csv_samples/'
+        self.ccgs_csv = csv_dir + 'ccgs.csv'
+        self.trusts_csv = csv_dir + 'trusts.csv'
+        self.organisations_csv = csv_dir + 'organisations.csv'
+        self.ccg_users_csv = csv_dir + 'ccg_users.csv'
+        self.trust_users_csv = csv_dir + 'trust_users.csv'
+
 
     def tearDown(self):
         sys.stdout = self.old_stdout
 
     def test_happy_path(self):
 
-        call_command('load_ccgs_from_csv', 'documentation/csv_samples/ccgs.csv')
+        call_command('load_ccgs_from_csv', self.ccgs_csv)
         self.assertEqual(CCG.objects.count(), 3)
 
-        call_command('load_trusts_from_csv', 'documentation/csv_samples/trusts.csv')
+        call_command('load_trusts_from_csv', self.trusts_csv)
         self.assertEqual(Trust.objects.count(), 3)
         self.assertEqual(CCG.objects.get(name="Ascot CCG").trusts.count(), 2)
         self.assertEqual(CCG.objects.get(name="Banbridge CCG").trusts.count(), 2)
         self.assertEqual(CCG.objects.get(name="Chucklemere CCG").trusts.count(), 1)
 
 
-        call_command('load_organisations_from_csv', 'documentation/csv_samples/organisations.csv')
+        call_command('load_organisations_from_csv', self.organisations_csv)
         self.assertEqual(Organisation.objects.count(), 3)
         self.assertEqual(Trust.objects.get(name="Ascot North Trust").organisations.count(), 2)
         self.assertEqual(Trust.objects.get(name="Ascot South Trust").organisations.count(), 1)
@@ -104,13 +113,13 @@ class CsvImportTests(TestCase):
 
     def test_user_imports(self):
         # Load up some test CCGs and trusts
-        call_command('load_ccgs_from_spreadsheet', 'organisations/tests/samples/ccgs.csv')
-        call_command('load_trusts_from_spreadsheet', 'organisations/tests/samples/trusts.csv')
+        call_command('load_ccgs_from_csv', self.ccgs_csv)
+        call_command('load_trusts_from_csv', self.trusts_csv)
 
         self.assertEqual(User.objects.count(), 0)
-        call_command('load_trust_users_from_spreadsheet', 'organisations/tests/samples/trust_users.csv')
+        call_command('load_trust_users_from_spreadsheet', self.trust_users_csv)
         self.assertEqual(User.objects.count(), 3)
-        call_command('load_ccg_users_from_spreadsheet', 'organisations/tests/samples/ccg_users.csv')
+        call_command('load_ccg_users_from_spreadsheet', self.ccg_users_csv)
         self.assertEqual(User.objects.count(), 6)
 
         trust = Trust.objects.get(name='Ascot North Trust')
