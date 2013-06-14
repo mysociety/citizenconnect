@@ -7,7 +7,7 @@
     </div>
 </div>
 
-{% object.breach %}
+{% if object.breach %}
     <h2 class="alert  alert--orange">Breach</h2>
 {% endif %}
 
@@ -84,7 +84,7 @@
             <li>
                 <span class="icon-calendar" aria-hidden="true"></span> {{ object.created|date:"h:ia" }} {{ object.created|date:"d M Y" }}
             </li>
-            {% object.commissioned != None %}
+            {% if object.commissioned != None %}
                 <li class="commissioned">
                     <span class="icon-eye" aria-hidden="true"></span> {{ object.get_commissioned_display }}
                 </li>
