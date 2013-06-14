@@ -6,7 +6,7 @@ There is proper documentation in `documentation/csv_formats.md`.
 
 The management commands that use these files are:
 
-- `organisations/management/commands/load_ccgs_from_spreadsheet.py`
-- `organisations/management/commands/load_trusts_from_spreadsheet.py`
-- `organisations/management/commands/load_organisations_from_spreadsheet.py`
-- `organisations/management/commands/load_users_from_spreadsheet.py`
+- `organisations/management/commands/load_ccgs_from_csv.py`
+- `organisations/management/commands/load_trusts_from_csv.py`
+- `organisations/management/commands/load_organisations_from_csv.py`
+- `organisations/management/commands/load_users_from_csv.py`
