@@ -117,9 +117,9 @@ class CsvImportTests(TestCase):
         call_command('load_trusts_from_csv', self.trusts_csv)
 
         self.assertEqual(User.objects.count(), 0)
-        call_command('load_trust_users_from_spreadsheet', self.trust_users_csv)
+        call_command('load_trust_users_from_csv', self.trust_users_csv)
         self.assertEqual(User.objects.count(), 3)
-        call_command('load_ccg_users_from_spreadsheet', self.ccg_users_csv)
+        call_command('load_ccg_users_from_csv', self.ccg_users_csv)
         self.assertEqual(User.objects.count(), 6)
 
         trust = Trust.objects.get(name='Ascot North Trust')
