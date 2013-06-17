@@ -22,10 +22,11 @@ from .auth import (user_in_group,
                    user_is_superuser,
                    enforce_organisation_access_check,
                    enforce_trust_access_check,
+                   enforce_ccg_access_check,
                    user_can_access_escalation_dashboard,
                    user_can_access_private_national_summary,
                    user_is_escalation_body)
-from .models import Organisation, SuperuserLogEntry, Trust
+from .models import Organisation, SuperuserLogEntry, Trust, CCG
 from .forms import OrganisationFinderForm, FilterForm, OrganisationFilterForm
 from .lib import interval_counts
 from .tables import (NationalSummaryTable,
@@ -692,8 +693,8 @@ class PrivateNationalSummary(Summary):
                 organisation_filters['ccg'] = tuple(ccg_ids)
 
         return super(PrivateNationalSummary, self).get_interval_counts(problem_filters=problem_filters,
-                                                                     organisation_filters=organisation_filters,
-                                                                     threshold=threshold)
+                                                                       organisation_filters=organisation_filters,
+                                                                       threshold=threshold)
 
 
 class TrustDashboard(TrustAwareViewMixin,
@@ -706,6 +707,33 @@ class TrustDashboard(TrustAwareViewMixin,
 
         # Get the models related to this organisation, and let the db sort them
         problems = context['trust'].problem_set.open_unescalated_problems()
+        problems_table = ProblemDashboardTable(problems)
+        RequestConfig(self.request, paginate={'per_page': 25}).configure(problems_table)
+        context['table'] = problems_table
+        context['page_obj'] = problems_table.page
+        return context
+
+
+class CCGDashboard(PrivateViewMixin, TemplateView):
+    template_name = 'organisations/ccg_dashboard.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        # Set ccg here so that we can use it anywhere in the class
+        # without worrying about whether it has been set yet
+        self.ccg = CCG.objects.get(code=kwargs['code'])
+        return super(CCGDashboard, self).dispatch(request, *args, **kwargs)
+
+    # Get the organisation name
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(CCGDashboard, self).get_context_data(**kwargs)
+        context['ccg'] = self.ccg
+        # Check that the user can access the ccg if this is private
+        if context['private']:
+            enforce_ccg_access_check(context['ccg'], self.request.user)
+
+        # Get the problems related to this ccg, and let the db sort them
+        problems = context['ccg'].problem_set.open_unescalated_problems()
         problems_table = ProblemDashboardTable(problems)
         RequestConfig(self.request, paginate={'per_page': 25}).configure(problems_table)
         context['table'] = problems_table
@@ -727,8 +755,12 @@ def login_redirect(request):
     if user_in_group(user, auth.NHS_SUPERUSERS):
         return HttpResponseRedirect(reverse('private-national-summary'))
 
-    # CCG, and customer contact centre users go to the escalation dashboard
-    elif user_in_groups(user, [auth.CCG, auth.CUSTOMER_CONTACT_CENTRE]):
+    # CCG users get their own problem dashboard
+    elif user_in_group(user, auth.CCG):
+        return HttpResponseRedirect(reverse('ccg-dashboard'))
+
+    # Customer contact centre users go to the escalation dashboard
+    elif user_in_group(user, auth.CUSTOMER_CONTACT_CENTRE):
         return HttpResponseRedirect(reverse('escalation-dashboard'))
 
     # Moderators go to the moderation queue
