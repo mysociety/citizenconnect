@@ -479,21 +479,25 @@ class ProblemManagerTests(ManagerTest):
         # Brand new problems
         self.new_public_unmoderated_problem = create_test_problem({
             'organisation': self.test_organisation,
+            'publication_status': Problem.NOT_MODERATED,
             'public': True
         })
         self.new_private_unmoderated_problem = create_test_problem({
             'organisation': self.test_organisation,
+            'publication_status': Problem.NOT_MODERATED,
             'public': False
         })
 
         # Problems that have been closed before being moderated
         self.closed_public_unmoderated_problem = create_test_problem({
             'organisation': self.test_organisation,
+            'publication_status': Problem.NOT_MODERATED,
             'public': True,
             'status': Problem.RESOLVED
         })
         self.closed_private_unmoderated_problem = create_test_problem({
             'organisation': self.test_organisation,
+            'publication_status': Problem.NOT_MODERATED,
             'public': False,
             'status': Problem.RESOLVED
         })
