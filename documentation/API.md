@@ -6,15 +6,15 @@ https://citizenconnect.staging.mysociety.org/api/v0.1/problem
 ````
 
 ## Posting to the API
-The api accepts the following fields and values: 
+The api accepts the following fields and values:
 
 ### organisation
-Required for problems. The ODS Code of an organisation, an example you can use is: `RN542` (Andover War Memorial Hospital). Optional for questions. 
+Required for problems. The ODS Code of an organisation, an example you can use is: `RN542` (Andover War Memorial Hospital). Optional for questions.
 
 ### service_code
-Optional. The service code of a department, only available for hospitals, for `RN542` you can use: `SRV0062` (Minor Injuries Unit) Ignored for questions 
+Optional. The service code of a department, only available for hospitals, for `RN542` you can use: `SRV0062` (Minor Injuries Unit) Ignored for questions
 
-### commissioned 
+### commissioned
 Required. Whether the service is commissioned locally or nationally. Use `0` or `1` for locally or nationally commissioned.
 
 ### description
@@ -28,7 +28,7 @@ Required. The problem or question category, currently we have:
 For both questions and  problems: [`staff`, `access`, `delays`, `treatment`, `communication`, `cleanliness`, `equipment`, `medicines`, `dignity`, `parking`, `lostproperty`, `food`, `other`]
 
 ### breach
-Optional. Whether the problem constitutes a breach of standards. Send `0` or `1` for false or true. Defaults to false. 
+Optional. Whether the problem constitutes a breach of standards. Send `0` or `1` for false or true. Defaults to false.
 
 ### priority
 Optional. Whether the problem is a priority (user is asked 'is this happening right now'). Invalid for the following categories [equipment, parking, lostproperty, other]. Send `20` for normal priority, `50` for high priority, defaults to normal priority.
@@ -42,11 +42,11 @@ Required. The reporter of the problem/question's name.
 ### reporter_email
 Mandatory. The reporter's email address.
 
-### reporter_phone 
+### reporter_phone
 Optional. The reporter's phone number.
 
 ### public
-Optional. Whether or not the reporter wanted the problem/question made public, send `0` or `1` for false or true. Defaults to false. 
+Optional. Whether or not the reporter wanted the problem/question made public, send `0` or `1` for false or true. Defaults to false.
 
 ### publication_status
 Optional. The publication status of the problem or question i.e. whether the report should be published to members of the public. Send `0` or `1` for hidden or published. Will default to hidden.
@@ -76,11 +76,11 @@ The api returns a json string for errors too, with all errors being contained in
     {
         "errors":
         {
-                "category": ["This field is required."], 
-                "description": ["This field is required."], 
-                "__all__": ["You must provide either a phone number or an email address."], 
-                "organisation": ["This field is required."], 
-                "source": ["This field is required."], 
+                "category": ["This field is required."],
+                "description": ["This field is required."],
+                "__all__": ["You must provide either a phone number or an email address."],
+                "organisation": ["This field is required."],
+                "source": ["This field is required."],
                 "preferred_contact_method": ["This field is required."]
         }
     }
