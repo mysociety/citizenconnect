@@ -71,17 +71,12 @@ class ProblemModerationForm(ModerationForm):
             requires_second_tier_moderation = False
         return requires_second_tier_moderation
 
-    def clean_moderated(self):
-        # If you are submitting the form, you have moderated it, so always return MODERATED
-        return Problem.MODERATED
-
     class Meta:
         model = Problem
 
         fields = [
             'publication_status',
             'moderated_description',
-            'moderated',
             'status',
             'requires_second_tier_moderation',
             'breach',
@@ -90,7 +85,6 @@ class ProblemModerationForm(ModerationForm):
 
         widgets = {
             'publication_status': HiddenInput,
-            'moderated': HiddenInput,
             'requires_second_tier_moderation': HiddenInput
         }
 
