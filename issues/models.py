@@ -321,7 +321,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
 
     @property
     def reporter_name_display(self):
-        if self.public_reporter_name and self.moderated == Problem.MODERATED:
+        if self.public_reporter_name and self.publication_status is not Problem.NOT_MODERATED:
             return self.reporter_name
         else:
             return "Anonymous"
@@ -370,7 +370,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     def is_publicly_visible(self):
         # All problems are visible, unless:
         # They have been moderated and hidden
-        if self.moderated == Problem.MODERATED and self.publication_status == Problem.HIDDEN:
+        if self.publication_status == Problem.HIDDEN:
             return False
         # They have been explicitly put in a hidden status
         elif int(self.status) in Problem.HIDDEN_STATUSES:
