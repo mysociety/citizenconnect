@@ -757,7 +757,9 @@ def login_redirect(request):
 
     # CCG users get their own problem dashboard
     elif user_in_group(user, auth.CCG):
-        return HttpResponseRedirect(reverse('ccg-dashboard'))
+        if user.ccgs.count() == 1:
+            ccg = user.ccgs.all()[0]
+            return HttpResponseRedirect(reverse('ccg-dashboard', kwargs={'code': ccg.code}))
 
     # Customer contact centre users go to the escalation dashboard
     elif user_in_group(user, auth.CUSTOMER_CONTACT_CENTRE):
@@ -772,8 +774,6 @@ def login_redirect(request):
 
     # Trusts
     elif user_in_group(user, auth.TRUSTS):
-        # For now, trust users go to their first org's dashboard - eventually they
-        # will get their own special dashboard with all the orgs on it
         if user.trusts.count() == 1:
             trust = user.trusts.all()[0]
             return HttpResponseRedirect(reverse('trust-dashboard', kwargs={'code': trust.code}))
