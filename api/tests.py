@@ -29,7 +29,6 @@ class ProblemAPITests(TestCase):
             'reporter_name': self.problem_uuid,
             'reporter_email': 'steve@mysociety.org',
             'reporter_phone': '01111 111 111',
-            'publication_status': Problem.PUBLISHED,
             'public': 1,
             'public_reporter_name': 1,
             'preferred_contact_method': Problem.CONTACT_PHONE,
@@ -62,8 +61,8 @@ class ProblemAPITests(TestCase):
         self.assertEqual(problem.reporter_phone, self.test_problem_defaults['reporter_phone'])
         self.assertEqual(problem.public, self.test_problem_defaults['public'])
         self.assertEqual(problem.public_reporter_name, True)
-        self.assertEqual(problem.publication_status, Problem.PUBLISHED)
         self.assertEqual(problem.source, self.test_problem_defaults['source'])
+        self.assertEqual(problem.publication_status, problem.PUBLISHED)
         self.assertEqual(problem.requires_second_tier_moderation, False)
         self.assertEqual(problem.breach, True)
         self.assertEqual(problem.commissioned, Problem.NATIONALLY_COMMISSIONED)
@@ -178,15 +177,23 @@ class ProblemAPITests(TestCase):
         errors = json.loads(content_json['errors'])
         self.assertEqual(errors['moderated_description'][0],  'You must moderate a version of the problem details when publishing public problems.')
 
-    def test_problem_cannot_be_published_if_requires_second_tier_moderation(self):
+    def test_publication_status_is_always_set_to_to_published(self):
+        self.test_problem_defaults['publication_status'] = Problem.REJECTED
+        resp = self.client.post(self.problem_api_url, self.test_problem_defaults)
+        self.assertEquals(resp.status_code, 201)
+    
+        problem = Problem.objects.get(reporter_name=self.problem_uuid)
+        self.assertEqual(problem.publication_status, problem.PUBLISHED)
+
+
+    def test_problem_set_to_not_moderated_if_requires_second_tier_moderation(self):
         problem_requiring_second_tier_moderation = self.test_problem_defaults
         problem_requiring_second_tier_moderation['requires_second_tier_moderation'] = 1
         resp = self.client.post(self.problem_api_url, problem_requiring_second_tier_moderation)
-        self.assertEquals(resp.status_code, 400)
+        self.assertEquals(resp.status_code, 201)
 
-        content_json = json.loads(resp.content)
-        errors = json.loads(content_json['errors'])
-        self.assertEqual(errors['publication_status'][0], 'A problem that requires second tier moderation cannot be published.')
+        problem = Problem.objects.get(reporter_name=self.problem_uuid)
+        self.assertEqual(problem.publication_status, Problem.NOT_MODERATED)
 
     def test_preferred_contact_method_is_optional_and_defaults_to_email(self):
         problem_without_preferred_contact_method = self.test_problem_defaults
@@ -278,14 +285,6 @@ class ProblemAPITests(TestCase):
         content_json = json.loads(resp.content)
         self.assertEqual(content_json['reference_number'], expected_reference_number)
         self.assertEqual(problem.status, Problem.NEW)
-
-    def test_publication_status_is_optional_and_defaults_to_hidden(self):
-        del self.test_problem_defaults['publication_status']
-        resp = self.client.post(self.problem_api_url, self.test_problem_defaults)
-        self.assertEquals(resp.status_code, 201)
-
-        problem = Problem.objects.get(reporter_name=self.problem_uuid)
-        self.assertEqual(problem.publication_status, problem.REJECTED)
 
     def test_returns_unauthorized_without_basic_auth(self):
         del self.client.defaults['HTTP_AUTHORIZATION']
