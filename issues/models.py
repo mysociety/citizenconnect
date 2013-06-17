@@ -165,11 +165,6 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         (PUBLISHED, "Published")
     )
 
-    NOT_MODERATED = 0
-    MODERATED = 1
-
-    MODERATED_STATUS_CHOICES = ((NOT_MODERATED, "Not moderated"), (MODERATED, "Moderated"))
-
     LOCALLY_COMMISSIONED = 0
     NATIONALLY_COMMISSIONED = 1
 
@@ -290,9 +285,6 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     publication_status = models.IntegerField(default=NOT_MODERATED_PUB,
                                              blank=False,
                                              choices=PUBLICATION_STATUS_CHOICES)
-    moderated = models.IntegerField(default=NOT_MODERATED,
-                                    blank=False,
-                                    choices=MODERATED_STATUS_CHOICES)
     moderated_description = models.TextField(blank=True)
     breach = models.BooleanField(default=False, blank=False)
     requires_second_tier_moderation = models.BooleanField(default=False, blank=False)

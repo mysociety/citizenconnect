@@ -125,11 +125,8 @@ class ProblemModelTests(ProblemTestCase):
     def test_defaults_to_confirmation_not_required(self):
         self.assertFalse(self.test_problem.confirmation_required)
 
-    def test_defaults_to_undecided(self):
+    def test_defaults_to_not_moderated(self):
         self.assertEqual(self.test_problem.publication_status, Problem.NOT_MODERATED_PUB)
-
-    def test_defaults_to_unmoderated(self):
-        self.assertEqual(self.test_problem.moderated, Problem.NOT_MODERATED)
 
     def test_public_problem_accessible_to_everyone(self):
         self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.trust_user))
