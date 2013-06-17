@@ -2,8 +2,12 @@ from django.conf.urls import patterns, url
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 
-from organisations.views import *
 from reviews_display.views import ReviewTrustList
+
+from organisations.views.base import *
+from organisations.views.organisations import *
+from organisations.views.trusts import *
+from organisations.views.ccgs import *
 from organisations.auth import StrongSetPasswordForm, StrongPasswordChangeForm
 
 urlpatterns = patterns(
@@ -43,12 +47,17 @@ urlpatterns = patterns(
 
     url(r'^ccg/(?P<code>\w+)/escalation$',
         login_required(EscalationDashboard.as_view()),
-        name='escalation-dashboard',
+        name='ccg-escalation-dashboard',
         kwargs={'private': True}),
 
     url(r'^ccg/(?P<code>\w+)/breaches$',
         login_required(EscalationBreaches.as_view()),
-        name='escalation-breaches',
+        name='ccg-escalation-breaches',
+        kwargs={'private': True}),
+
+    url(r'^ccg/(?P<code>\w+)/summary$',
+        login_required(PrivateNationalSummary.as_view()),
+        name='ccg-private-national-summary',
         kwargs={'private': True}),
 
     # Organisation urls

@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, url
 
-from organisations.views import *
+from organisations.views.base import *
+from organisations.views.organisations import *
 
 urlpatterns = patterns(
     '',
