@@ -1,21 +1,20 @@
 # Django imports
-from django.views.generic import FormView, TemplateView
+from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 
 # App imports
-from citizenconnect.shortcuts import render
-from organisations.views import PickProviderBase
+from organisations.views.base import PickProviderBase
 from organisations.models import Organisation
-from .models import Review, Rating, Question
+from .models import Review, Question
 from . import forms
 
 
 class ReviewPickProvider(PickProviderBase):
     result_link_url_name = 'review-form'
     title_text = 'Share Your Experience'
-    
+
 
 class ReviewForm(CreateView):
     template_name = 'reviews/review-form.html'

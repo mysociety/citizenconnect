@@ -181,7 +181,7 @@ class LoginRedirectTests(AuthorizationTestCase):
         self.assertRedirects(resp, second_tier_moderation_url)
 
     def test_provider_goes_to_provider_dashboard(self):
-        dashboard_url = reverse('trust-dashboard', kwargs={'code':self.test_organisation.trust.code})
+        dashboard_url = reverse('trust-dashboard', kwargs={'code': self.test_organisation.trust.code})
         self.login_as(self.trust_user)
         resp = self.client.get(self.login_redirect_url)
         self.assertRedirects(resp, dashboard_url)
@@ -208,11 +208,11 @@ class LoginRedirectTests(AuthorizationTestCase):
         resp = self.client.get(self.login_redirect_url)
         self.assertRedirects(resp, expected_login_url)
 
-    def test_ccg_user_goes_to_escalation_dashboard(self):
-        escalation_dashboard_url = reverse('escalation-dashboard')
+    def test_ccg_user_goes_to_ccg_dashboard(self):
+        ccg_dashboard_url = reverse('ccg-dashboard', kwargs={'code': self.test_ccg.code})
         self.login_as(self.ccg_user)
         resp = self.client.get(self.login_redirect_url)
-        self.assertRedirects(resp, escalation_dashboard_url)
+        self.assertRedirects(resp, ccg_dashboard_url)
 
     def test_customer_contact_centre_user_goes_to_escalation_dashboard(self):
         escalation_dashboard_url = reverse('escalation-dashboard')

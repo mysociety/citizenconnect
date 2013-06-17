@@ -53,6 +53,55 @@ class TrustModelTests(TestCase):
         self.assertTrue(trust.escalation_ccg in trust.ccgs.all())
 
 
+class CCGModelTests(TestCase):
+
+    def setUp(self):
+        # create a ccg
+        self.test_ccg = create_test_ccg({'code': 'CCG1'})
+
+        # create a trust
+        self.test_trust = create_test_trust({'code': 'MYTRUST', 'escalation_ccg': self.test_ccg})
+
+        # create three orgs, two of which belong to the ccg, and one that does not
+        self.test_trust_org_1 = create_test_organisation({"trust": self.test_trust, "ods_code": "test1"})
+        self.test_trust_org_2 = create_test_organisation({"trust": self.test_trust, "ods_code": "test2"})
+        self.test_other_org = create_test_organisation({"ods_code": "other"})
+
+        # create a problem in each org
+        for org in Organisation.objects.all():
+            create_test_problem({
+                'organisation': org,
+                'description': "Problem with '{0}'".format(org.trust.code),
+            })
+
+    def test_ccg_problem_set(self):
+        # check that the right problems are found using the problem_set
+        problems = self.test_ccg.problem_set.order_by('description')
+        self.assertEqual(problems.count(), 2)
+        for p in problems:
+            self.assertEqual(p.organisation.trust.ccgs.all()[0], self.test_ccg)
+
+
+class CCGModelAuthTests(AuthorizationTestCase):
+
+    def setUp(self):
+        super(CCGModelAuthTests, self).setUp()
+
+    def test_allowed_users_can_access_ccg(self):
+        self.assertTrue(self.test_ccg.can_be_accessed_by(self.ccg_user))
+        for user in self.users_who_can_access_everything:
+            self.assertTrue(self.test_ccg.can_be_accessed_by(user))
+
+    def test_disallowed_users_cannot_access_ccg(self):
+        self.assertFalse(self.test_ccg.can_be_accessed_by(self.anonymous_user))
+        self.assertFalse(self.test_ccg.can_be_accessed_by(self.trust_user))
+        self.assertFalse(self.test_ccg.can_be_accessed_by(self.other_trust_user))
+        self.assertFalse(self.test_ccg.can_be_accessed_by(self.no_trust_user))
+        self.assertFalse(self.test_ccg.can_be_accessed_by(self.other_ccg_user))
+        self.assertFalse(self.other_test_ccg.can_be_accessed_by(self.ccg_user))
+        self.assertFalse(self.test_ccg.can_be_accessed_by(self.no_ccg_user))
+
+
 class OrganisationModelTests(TestCase):
     def test_organisation_type_name(self):
         test_org = create_test_organisation({'organisation_type': 'hospitals'})
