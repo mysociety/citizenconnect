@@ -471,6 +471,8 @@ class ManagerTest(TestCase):
         for instance in actual:
             self.assertTrue(instance in expected, "Missing {0} '{1}' from actual".format(instance, instance.description))
 
+            
+
 
 class ProblemManagerTests(ManagerTest):
 
@@ -677,7 +679,25 @@ class ProblemManagerTests(ManagerTest):
 
         self.all_problems = self.open_problems + self.closed_problems
         self.all_published_visible_problems = self.open_published_visible_problems + [self.closed_public_moderated_problem_published,
-                                                                                                  self.closed_private_moderated_problem_published]
+                                                                                      self.closed_private_moderated_problem_published]
+        self.all_not_rejected_visible_problems = [
+            self.new_public_unmoderated_problem,
+            self.new_private_unmoderated_problem,
+            self.closed_public_unmoderated_problem,
+            self.closed_private_unmoderated_problem,
+            self.new_public_moderated_problem_published,
+            self.new_private_moderated_problem_published,
+            self.closed_public_moderated_problem_published,
+            self.closed_private_moderated_problem_published,
+            self.breach_public_moderated_problem_published,
+
+            # not shown as all escalated states are not visible, but will be when shown again. Sigh.
+            # self.escalated_public_moderated_problem_published,
+            # self.escalated_acknowledged_public_moderated_problem_published,
+            # self.escalated_resolved_public_moderated_problem_published,
+            # self.escalated_private_unmoderated_problem,
+        ]
+
         self.problems_requiring_second_tier_moderation = [self.public_problem_requiring_second_tier_moderation,
                                                           self.private_problem_requiring_second_tier_moderation]
 
@@ -709,6 +729,10 @@ class ProblemManagerTests(ManagerTest):
     def test_all_published_visible_problems_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.all_published_visible_problems(),
                                self.all_published_visible_problems)
+
+    def test_all_published_visible_problems_returns_correct_problems(self):
+        self.compare_querysets(Problem.objects.all_not_rejected_visible_problems(),
+                               self.all_not_rejected_visible_problems)
 
     def test_problems_requiring_second_tier_moderation_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.problems_requiring_second_tier_moderation(),

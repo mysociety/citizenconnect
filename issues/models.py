@@ -85,6 +85,12 @@ class ProblemManager(models.Manager):
         return self.all().filter(publication_status=Problem.PUBLISHED,
                                  status__in=Problem.VISIBLE_STATUSES)
 
+    def all_not_rejected_visible_problems(self):
+        return self  \
+            .all()  \
+            .filter(status__in=Problem.VISIBLE_STATUSES)  \
+            .exclude(publication_status=Problem.REJECTED)
+
     def problems_requiring_second_tier_moderation(self):
         return self.all().filter(requires_second_tier_moderation=True)
 
