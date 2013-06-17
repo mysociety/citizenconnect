@@ -9,44 +9,58 @@ from organisations.auth import StrongSetPasswordForm, StrongPasswordChangeForm
 urlpatterns = patterns(
     '',
 
-    url(r'^ccg/dashboard/(?P<code>\w+)$',
-        login_required(CCGDashboard.as_view()),
-        name='ccg-dashboard',
-        kwargs={'private': True}),
-
-    url(r'^trust/dashboard/(?P<code>\w+)$',
+    # Trust urls
+    url(r'^trust/(?P<code>\w+)/dashboard$',
         login_required(TrustDashboard.as_view()),
         name='trust-dashboard',
         kwargs={'private': True}),
 
-    url(r'^summary$',
-        login_required(PrivateNationalSummary.as_view()),
-        name='private-national-summary',
-        kwargs={'private': True}),
-
-    url(r'^summary/(?P<ods_code>\w+)$',
-        login_required(OrganisationSummary.as_view()),
-        name='private-org-summary',
-        kwargs={'private': True}),
-
-    url(r'^trust/summary/(?P<code>\w+)$',
+    url(r'^trust/(?P<code>\w+)/summary$',
         login_required(TrustSummary.as_view()),
         name='trust-summary',
         kwargs={'private': True}),
 
-    url(r'^problems/(?P<code>\w+)$',
+    url(r'^trust/(?P<code>\w+)/problems$',
         login_required(TrustProblems.as_view()),
         name='trust-problems',
         kwargs={'private': True}),
 
-    url(r'^reviews/(?P<code>\w+)$',
+    url(r'^trust/(?P<code>\w+)/reviews$',
         login_required(ReviewTrustList.as_view()),
         name='trust-reviews',
         kwargs={'private': True}),
 
-    url(r'^breaches/(?P<code>\w+)$',
+    url(r'^trust/(?P<code>\w+)/breaches$',
         login_required(TrustBreaches.as_view()),
         name='trust-breaches',
+        kwargs={'private': True}),
+
+    # CCG urls
+    url(r'^ccg/(?P<code>\w+)/dashboard$',
+        login_required(CCGDashboard.as_view()),
+        name='ccg-dashboard',
+        kwargs={'private': True}),
+
+    url(r'^ccg/(?P<code>\w+)/escalation$',
+        login_required(EscalationDashboard.as_view()),
+        name='escalation-dashboard',
+        kwargs={'private': True}),
+
+    url(r'^ccg/(?P<code>\w+)/breaches$',
+        login_required(EscalationBreaches.as_view()),
+        name='escalation-breaches',
+        kwargs={'private': True}),
+
+    # Organisation urls
+    url(r'^organisation/(?P<ods_code>\w+)/summary$',
+        login_required(OrganisationSummary.as_view()),
+        name='private-org-summary',
+        kwargs={'private': True}),
+
+    # Body-independent urls
+    url(r'^summary$',
+        login_required(PrivateNationalSummary.as_view()),
+        name='private-national-summary',
         kwargs={'private': True}),
 
     url(r'^access-logs$',
