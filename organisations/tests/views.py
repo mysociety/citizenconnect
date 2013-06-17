@@ -951,6 +951,93 @@ class TrustDashboardTests(AuthorizationTestCase):
         self.assertContains(resp, '<div class="problem-table__flag__breach">b</div>')
 
 
+class CCGDashboardTests(AuthorizationTestCase):
+
+    def setUp(self):
+        super(CCGDashboardTests, self).setUp()
+        self.problem = create_test_problem({'organisation': self.test_organisation})
+        self.dashboard_url = reverse('ccg-dashboard', kwargs={'code': self.test_ccg.code})
+
+    def test_dashboard_page_exists(self):
+        self.login_as(self.ccg_user)
+        resp = self.client.get(self.dashboard_url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_dashboard_page_shows_ccg_name(self):
+        self.login_as(self.ccg_user)
+        resp = self.client.get(self.dashboard_url)
+        self.assertTrue(self.test_ccg.name in resp.content)
+
+    def test_dashboard_shows_problems(self):
+        self.login_as(self.ccg_user)
+        response_url = reverse('response-form', kwargs={'pk': self.problem.id})
+        resp = self.client.get(self.dashboard_url)
+        self.assertTrue(response_url in resp.content)
+
+    def test_dashboard_doesnt_show_closed_problems(self):
+        self.closed_problem = create_test_problem({'organisation': self.test_organisation,
+                                                   'status': Problem.RESOLVED})
+        closed_problem_response_url = reverse('response-form', kwargs={'pk': self.closed_problem.id})
+        self.login_as(self.ccg_user)
+        resp = self.client.get(self.dashboard_url)
+        self.assertTrue(closed_problem_response_url not in resp.content)
+
+    def test_dashboard_doesnt_show_escalated_problems(self):
+        self.escalated_problem = create_test_problem({'organisation': self.test_organisation,
+                                                      'status': Problem.ESCALATED,
+                                                      'commissioned': Problem.LOCALLY_COMMISSIONED})
+        escalated_problem_response_url = reverse('response-form', kwargs={'pk': self.escalated_problem.id})
+        self.login_as(self.ccg_user)
+        resp = self.client.get(self.dashboard_url)
+        self.assertTrue(escalated_problem_response_url not in resp.content)
+
+    def test_dashboard_page_is_inaccessible_to_anon_users(self):
+        expected_login_url = "{0}?next={1}".format(self.login_url, self.dashboard_url)
+        resp = self.client.get(self.dashboard_url)
+        self.assertRedirects(resp, expected_login_url)
+
+    def test_dashboard_page_is_accessible_to_superusers(self):
+        for user in self.users_who_can_access_everything:
+            self.login_as(user)
+            resp = self.client.get(self.dashboard_url)
+            self.assertEqual(resp.status_code, 200)
+
+    def test_dashboard_page_is_inaccessible_to_trust_users(self):
+        self.login_as(self.trust_user)
+        resp = self.client.get(self.dashboard_url)
+        self.assertEqual(resp.status_code, 403)
+
+        self.login_as(self.other_trust_user)
+        resp = self.client.get(self.dashboard_url)
+        self.assertEqual(resp.status_code, 403)
+
+    def test_dashboard_page_is_inaccessible_to_other_ccgs(self):
+        self.login_as(self.other_ccg_user)
+        resp = self.client.get(self.dashboard_url)
+        self.assertEqual(resp.status_code, 403)
+
+    def test_dashboard_page_highlights_priority_problems(self):
+        # Add a priority problem
+        self.login_as(self.ccg_user)
+        create_test_problem({'organisation': self.test_organisation,
+                             'moderated': Problem.MODERATED,
+                             'publication_status': Problem.PUBLISHED,
+                             'moderated_description': 'Moderated',
+                             'priority': Problem.PRIORITY_HIGH})
+        resp = self.client.get(self.dashboard_url)
+        self.assertContains(resp, 'problem-table__highlight')
+
+    def test_dashboard_page_shows_breach_flag(self):
+        self.login_as(self.ccg_user)
+        create_test_problem({'organisation': self.test_organisation,
+                             'moderated': Problem.MODERATED,
+                             'publication_status': Problem.PUBLISHED,
+                             'moderated_description': 'Moderated',
+                             'breach': True})
+        resp = self.client.get(self.dashboard_url)
+        self.assertContains(resp, '<div class="problem-table__flag__breach">b</div>')
+
+
 class OrganisationMapTests(AuthorizationTestCase):
 
     def setUp(self):
