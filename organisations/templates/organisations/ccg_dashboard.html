@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load url from future %}
+{% load organisation_extras %}
+{% load render_table from django_tables2 %}
+
+{% block title %}{{ ccg.name }} Dashboard{% endblock %}
+
+{% block bodyclasses %}ccg-dashboard{% endblock %}
+
+{% block content %}
+
+{% include "organisations/includes/page_header.html" with title=ccg.name|add:" Dashboard" %}
+
+{% include "organisations/includes/ccg_tabs.html" with active_tab='ccg-dashboard' %}
+
+{% render_table table 'organisations/includes/problem-table.html' %}
+
+{% endblock %}
