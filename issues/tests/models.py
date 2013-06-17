@@ -466,9 +466,10 @@ class ProblemModelEscalationTests(ProblemTestCase):
 class ManagerTest(TestCase):
 
     def compare_querysets(self, actual, expected):
-        self.assertEqual(len(actual), len(expected))
-        for model in expected:
-            self.assertTrue(model in actual)
+        for instance in expected:
+            self.assertTrue(instance in actual, "Missing {0} '{1}' from actual".format(instance, instance.description))
+        for instance in actual:
+            self.assertTrue(instance in expected, "Missing {0} '{1}' from actual".format(instance, instance.description))
 
 
 class ProblemManagerTests(ManagerTest):
@@ -478,11 +479,13 @@ class ProblemManagerTests(ManagerTest):
 
         # Brand new problems
         self.new_public_unmoderated_problem = create_test_problem({
+            'description': 'new_public_unmoderated_problem',
             'organisation': self.test_organisation,
             'publication_status': Problem.NOT_MODERATED,
             'public': True
         })
         self.new_private_unmoderated_problem = create_test_problem({
+            'description': 'new_private_unmoderated_problem',
             'organisation': self.test_organisation,
             'publication_status': Problem.NOT_MODERATED,
             'public': False
@@ -490,12 +493,14 @@ class ProblemManagerTests(ManagerTest):
 
         # Problems that have been closed before being moderated
         self.closed_public_unmoderated_problem = create_test_problem({
+            'description': 'closed_public_unmoderated_problem',
             'organisation': self.test_organisation,
             'publication_status': Problem.NOT_MODERATED,
             'public': True,
             'status': Problem.RESOLVED
         })
         self.closed_private_unmoderated_problem = create_test_problem({
+            'description': 'closed_private_unmoderated_problem',
             'organisation': self.test_organisation,
             'publication_status': Problem.NOT_MODERATED,
             'public': False,
@@ -504,21 +509,25 @@ class ProblemManagerTests(ManagerTest):
 
         # Problems that have been moderated
         self.new_public_rejected_problem = create_test_problem({
+            'description': 'new_public_rejected_problem',
             'organisation': self.test_organisation,
             'public': True,
             'publication_status': Problem.REJECTED
         })
         self.new_public_moderated_problem_published = create_test_problem({
+            'description': 'new_public_moderated_problem_published',
             'organisation': self.test_organisation,
             'public': True,
             'publication_status': Problem.PUBLISHED
         })
         self.new_private_rejected_problem = create_test_problem({
+            'description': 'new_private_rejected_problem',
             'organisation': self.test_organisation,
             'public': False,
             'publication_status': Problem.REJECTED
         })
         self.new_private_moderated_problem_published = create_test_problem({
+            'description': 'new_private_moderated_problem_published',
             'organisation': self.test_organisation,
             'public': False,
             'publication_status': Problem.PUBLISHED
@@ -526,24 +535,28 @@ class ProblemManagerTests(ManagerTest):
 
         # Problems that have been closed and moderated
         self.closed_public_rejected_problem = create_test_problem({
+            'description': 'closed_public_rejected_problem',
             'organisation': self.test_organisation,
             'public': True,
             'publication_status': Problem.REJECTED,
             'status': Problem.RESOLVED
         })
         self.closed_public_moderated_problem_published = create_test_problem({
+            'description': 'closed_public_moderated_problem_published',
             'organisation': self.test_organisation,
             'public': True,
             'publication_status': Problem.PUBLISHED,
             'status': Problem.RESOLVED
         })
         self.closed_private_rejected_problem = create_test_problem({
+            'description': 'closed_private_rejected_problem',
             'organisation': self.test_organisation,
             'public': False,
             'publication_status': Problem.REJECTED,
             'status': Problem.RESOLVED
         })
         self.closed_private_moderated_problem_published = create_test_problem({
+            'description': 'closed_private_moderated_problem_published',
             'organisation': self.test_organisation,
             'public': False,
             'publication_status': Problem.PUBLISHED,
@@ -552,6 +565,7 @@ class ProblemManagerTests(ManagerTest):
 
         # Problems that have been escalated and moderated
         self.escalated_public_moderated_problem_published = create_test_problem({
+            'description': 'escalated_public_moderated_problem_published',
             'organisation': self.test_organisation,
             'public': True,
             'publication_status': Problem.PUBLISHED,
@@ -560,6 +574,7 @@ class ProblemManagerTests(ManagerTest):
         })
 
         self.escalated_acknowledged_public_moderated_problem_published = create_test_problem({
+            'description': 'escalated_acknowledged_public_moderated_problem_published',
             'organisation': self.test_organisation,
             'public': True,
             'publication_status': Problem.PUBLISHED,
@@ -568,6 +583,7 @@ class ProblemManagerTests(ManagerTest):
         })
 
         self.escalated_resolved_public_moderated_problem_published = create_test_problem({
+            'description': 'escalated_resolved_public_moderated_problem_published',
             'organisation': self.test_organisation,
             'public': True,
             'publication_status': Problem.PUBLISHED,
@@ -577,6 +593,7 @@ class ProblemManagerTests(ManagerTest):
 
         # Unmoderated escalated problems
         self.escalated_private_unmoderated_problem = create_test_problem({
+            'description': 'escalated_private_unmoderated_problem',
             'organisation': self.test_organisation,
             'public': False,
             'status': Problem.ESCALATED,
@@ -585,6 +602,7 @@ class ProblemManagerTests(ManagerTest):
 
         # A breach of care standards problem
         self.breach_public_moderated_problem_published = create_test_problem({
+            'description': 'breach_public_moderated_problem_published',
             'organisation': self.test_organisation,
             'public': True,
             'status': Problem.ACKNOWLEDGED,
@@ -594,12 +612,14 @@ class ProblemManagerTests(ManagerTest):
 
         # Problems requiring second tier moderation
         self.public_problem_requiring_second_tier_moderation = create_test_problem({
+            'description': 'public_problem_requiring_second_tier_moderation',
             'organisation': self.test_organisation,
             'public': True,
             'requires_second_tier_moderation': True,
             'publication_status': Problem.REJECTED
         })
         self.private_problem_requiring_second_tier_moderation = create_test_problem({
+            'description': 'private_problem_requiring_second_tier_moderation',
             'organisation': self.test_organisation,
             'public': False,
             'requires_second_tier_moderation': True,
@@ -609,6 +629,7 @@ class ProblemManagerTests(ManagerTest):
         # Problems in hidden statuses
 
         self.public_published_abusive_problem = create_test_problem({
+            'description': 'public_published_abusive_problem',
             'organisation': self.test_organisation,
             'public': True,
             'publication_status': Problem.PUBLISHED,
