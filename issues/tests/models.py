@@ -503,7 +503,7 @@ class ProblemManagerTests(ManagerTest):
         })
 
         # Problems that have been moderated
-        self.new_public_moderated_problem_hidden = create_test_problem({
+        self.new_public_rejected_problem = create_test_problem({
             'organisation': self.test_organisation,
             'public': True,
             'publication_status': Problem.REJECTED
@@ -513,7 +513,7 @@ class ProblemManagerTests(ManagerTest):
             'public': True,
             'publication_status': Problem.PUBLISHED
         })
-        self.new_private_moderated_problem_hidden = create_test_problem({
+        self.new_private_rejected_problem = create_test_problem({
             'organisation': self.test_organisation,
             'public': False,
             'publication_status': Problem.REJECTED
@@ -525,7 +525,7 @@ class ProblemManagerTests(ManagerTest):
         })
 
         # Problems that have been closed and moderated
-        self.closed_public_moderated_problem_hidden = create_test_problem({
+        self.closed_public_rejected_problem = create_test_problem({
             'organisation': self.test_organisation,
             'public': True,
             'publication_status': Problem.REJECTED,
@@ -537,7 +537,7 @@ class ProblemManagerTests(ManagerTest):
             'publication_status': Problem.PUBLISHED,
             'status': Problem.RESOLVED
         })
-        self.closed_private_moderated_problem_hidden = create_test_problem({
+        self.closed_private_rejected_problem = create_test_problem({
             'organisation': self.test_organisation,
             'public': False,
             'publication_status': Problem.REJECTED,
@@ -621,25 +621,25 @@ class ProblemManagerTests(ManagerTest):
                                           self.escalated_private_unmoderated_problem]
         self.closed_unmoderated_problems = [self.closed_public_unmoderated_problem,
                                             self.closed_private_unmoderated_problem]
-        self.open_moderated_problems = [self.new_public_moderated_problem_hidden,
+        self.open_moderated_problems = [self.new_public_rejected_problem,
                                         self.new_public_moderated_problem_published,
-                                        self.new_private_moderated_problem_hidden,
+                                        self.new_private_rejected_problem,
                                         self.new_private_moderated_problem_published,
                                         self.escalated_public_moderated_problem_published,
                                         self.escalated_acknowledged_public_moderated_problem_published,
                                         self.public_problem_requiring_second_tier_moderation,
                                         self.private_problem_requiring_second_tier_moderation,
                                         self.breach_public_moderated_problem_published]
-        self.closed_problems = self.closed_unmoderated_problems + [self.closed_public_moderated_problem_hidden,
+        self.closed_problems = self.closed_unmoderated_problems + [self.closed_public_rejected_problem,
                                                                    self.closed_public_moderated_problem_published,
-                                                                   self.closed_private_moderated_problem_hidden,
+                                                                   self.closed_private_rejected_problem,
                                                                    self.closed_private_moderated_problem_published,
                                                                    self.public_published_abusive_problem,
                                                                    self.escalated_resolved_public_moderated_problem_published]
 
-        self.closed_resolved_problems = self.closed_unmoderated_problems + [self.closed_public_moderated_problem_hidden,
+        self.closed_resolved_problems = self.closed_unmoderated_problems + [self.closed_public_rejected_problem,
                                                                             self.closed_public_moderated_problem_published,
-                                                                            self.closed_private_moderated_problem_hidden,
+                                                                            self.closed_private_rejected_problem,
                                                                             self.closed_private_moderated_problem_published,
                                                                             self.public_published_abusive_problem,
                                                                             self.escalated_resolved_public_moderated_problem_published]
