@@ -8,23 +8,23 @@ class Migration(DataMigration):
 
     # Captured from the issues/models.py file at the time of writing
     HIDDEN = 0
-    NOT_MODERATED_PUB = 2
-    NOT_MODERATED = 0
+    NOT_MODERATED = 2
+    NOT_MODERATED_ORIGINAL = 0 # the value used on the 'moderated' field
 
     def forwards(self, orm):
-        "Change all unmoderated problems to have pub status 'NOT_MODERATED_PUB'"
+        "Change all unmoderated problems to have pub status 'NOT_MODERATED'"
         
-        for problem in orm.Problem.objects.filter(moderated=self.NOT_MODERATED):
-            problem.publication_status = self.NOT_MODERATED_PUB
+        for problem in orm.Problem.objects.filter(moderated=self.NOT_MODERATED_ORIGINAL):
+            problem.publication_status = self.NOT_MODERATED
             problem.save()
 
 
     def backwards(self, orm):
-        "Make all NOT_MODERATED_PUB issues be hidden and not moderated"
+        "Make all NOT_MODERATED issues be hidden and not moderated"
 
-        for problem in orm.Problem.objects.filter(publication_status=self.NOT_MODERATED_PUB):
+        for problem in orm.Problem.objects.filter(publication_status=self.NOT_MODERATED):
             problem.publication_status = self.HIDDEN
-            problem.moderated = self.NOT_MODERATED
+            problem.moderated = self.NOT_MODERATED_ORIGINAL
             problem.save()
 
 

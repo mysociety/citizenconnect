@@ -45,7 +45,7 @@ class Command(BaseCommand):
 
             # set the publication_status
             if int(random.random() * 10 ) < 4:
-                new_problem.publication_status = Problem.NOT_MODERATED_PUB
+                new_problem.publication_status = Problem.NOT_MODERATED
             elif int(random.random() * 10 ) < 4:
                 new_problem.publication_status = Problem.PUBLISHED
             else: 

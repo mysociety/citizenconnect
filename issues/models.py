@@ -71,7 +71,7 @@ class ProblemManager(models.Manager):
         return self.all().filter(Q(status__in=Problem.CLOSED_STATUSES))
 
     def unmoderated_problems(self):
-        return self.all().filter(publication_status=Problem.NOT_MODERATED_PUB)
+        return self.all().filter(publication_status=Problem.NOT_MODERATED)
 
     def open_moderated_published_visible_problems(self):
         return self.open_problems().filter(publication_status=Problem.PUBLISHED,
@@ -157,10 +157,10 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
 
     HIDDEN = 0
     PUBLISHED = 1
-    NOT_MODERATED_PUB = 2
+    NOT_MODERATED = 2
 
     PUBLICATION_STATUS_CHOICES = (
-        (NOT_MODERATED_PUB, "Not moderated"),
+        (NOT_MODERATED, "Not moderated"),
         (HIDDEN, "Hidden"),
         (PUBLISHED, "Published")
     )
@@ -230,9 +230,9 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
             'Resolved': [[ACKNOWLEDGED, RESOLVED], [ESCALATED_ACKNOWLEDGED, ESCALATED_RESOLVED]]
         },
         'publication_status': {
-            'Published': [[NOT_MODERATED_PUB, PUBLISHED], [HIDDEN, PUBLISHED]],
-            'Hidden': [[NOT_MODERATED_PUB, HIDDEN], [PUBLISHED, HIDDEN]],
-            'Unmoderated': [[HIDDEN, NOT_MODERATED_PUB], [PUBLISHED, NOT_MODERATED_PUB]],
+            'Published': [[NOT_MODERATED, PUBLISHED], [HIDDEN, PUBLISHED]],
+            'Hidden': [[NOT_MODERATED, HIDDEN], [PUBLISHED, HIDDEN]],
+            'Unmoderated': [[HIDDEN, NOT_MODERATED], [PUBLISHED, NOT_MODERATED]],
         },
     }
 
@@ -282,7 +282,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     time_to_address = models.IntegerField(blank=True, null=True)
     resolved = models.DateTimeField(blank=True, null=True)
 
-    publication_status = models.IntegerField(default=NOT_MODERATED_PUB,
+    publication_status = models.IntegerField(default=NOT_MODERATED,
                                              blank=False,
                                              choices=PUBLICATION_STATUS_CHOICES)
     moderated_description = models.TextField(blank=True)
