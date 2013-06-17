@@ -11,7 +11,9 @@
 
     <h1>Overview of Participating Providers</h1>
 
-    {% if show_escalation_tabs %}
+    {% if user|is_ccg %}
+        {% include "organisations/includes/ccg_tabs.html" with active_tab='summary' %}
+    {% elif show_escalation_tabs %}
         {% include "organisations/includes/escalation_tabs.html" with active_tab='summary' %}
     {% endif %}
 

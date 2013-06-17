@@ -2,6 +2,7 @@
 {% load url from future %}
 {% load staticfiles %}
 {% load render_table from django_tables2 %}
+{% load page_auth %}
 
 {% block title %}Breach Problems{% endblock %}
 
@@ -12,7 +13,11 @@
     <h1>Breach Problems</h1>
 </div>
 
-{% include 'organisations/includes/escalation_tabs.html' with active_tab='breaches' %}
+{% if user|is_ccg %}
+    {% include 'organisations/includes/ccg_tabs.html' with active_tab='breaches' %}
+{% else %}
+    {% include 'organisations/includes/escalation_tabs.html' with active_tab='breaches' %}
+{% endif %}
 
 {% render_table table 'organisations/includes/problem-table.html' %}
 
