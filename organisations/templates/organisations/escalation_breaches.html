@@ -13,11 +13,7 @@
     <h1>Breach Problems</h1>
 </div>
 
-{% if user|is_ccg %}
-    {% include 'organisations/includes/ccg_tabs.html' with active_tab='breaches' %}
-{% else %}
-    {% include 'organisations/includes/escalation_tabs.html' with active_tab='breaches' %}
-{% endif %}
+{% include tabs_template with active_tab='breaches' ccg=ccg%}
 
 {% render_table table 'organisations/includes/problem-table.html' %}
 

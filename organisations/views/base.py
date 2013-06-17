@@ -19,7 +19,7 @@ from issues.models import Problem
 from .. import auth
 from ..auth import (user_in_group,
                     user_is_superuser,
-                    user_can_access_escalation_dashboard,
+                    user_can_access_national_escalation_dashboard,
                     user_can_access_private_national_summary,
                     user_is_escalation_body)
 from ..models import Organisation, SuperuserLogEntry
@@ -355,11 +355,12 @@ class PrivateNationalSummary(Summary):
     summary_table_class = PrivateNationalSummaryTable
 
     def dispatch(self, request, *args, **kwargs):
-
-        if not user_can_access_private_national_summary(request.user):
-            raise PermissionDenied()
-
+        self.enforce_access(request.user)
         return super(PrivateNationalSummary, self).dispatch(request, *args, **kwargs)
+
+    def enforce_access(self, user):
+        if not user_can_access_private_national_summary(user):
+            raise PermissionDenied()
 
     def get_context_data(self, **kwargs):
 
@@ -370,32 +371,11 @@ class PrivateNationalSummary(Summary):
         context = super(PrivateNationalSummary, self).get_context_data(**kwargs)
 
         # Determine if we should show the page as part of some tabbed navigation
-        if user_is_escalation_body(self.request.user):
-            context['show_escalation_tabs'] = True
+        if user_in_group(self.request.user, auth.CUSTOMER_CONTACT_CENTRE):
+            context['show_tabs'] = True
+            context['tabs_template'] = 'organisations/includes/escalation_tabs.html'
 
         return context
-
-    def get_interval_counts(self, problem_filters, organisation_filters, threshold):
-
-        user = self.request.user
-
-        # If the user is in a CCG Group then filter results to that CCG.
-        if user_in_group(user, auth.CCG):
-
-            # If the user has assigned CCGs then limit to those. If they have
-            # none then throw an exception (they should not have gotten past user_can_access_private_national_summary)
-            ccgs = user.ccgs.all()
-            if not len(ccgs):
-                raise Exception("CCG group user '{0}' has no ccgs - they should not have gotten past check in dispatch".format(user))
-            ccg_ids = [ccg.id for ccg in ccgs]
-            # Don't remove the ccg filter they've added if it's in their ccgs
-            selected_ccg = organisation_filters.get('ccg')
-            if not selected_ccg or not int(selected_ccg) in ccg_ids:
-                organisation_filters['ccg'] = tuple(ccg_ids)
-
-        return super(PrivateNationalSummary, self).get_interval_counts(problem_filters=problem_filters,
-                                                                       organisation_filters=organisation_filters,
-                                                                       threshold=threshold)
 
 
 @login_required
@@ -458,42 +438,39 @@ class EscalationDashboard(FilterFormMixin, TemplateView):
     template_name = 'organisations/escalation_dashboard.html'
 
     def dispatch(self, request, *args, **kwargs):
-        if not user_can_access_escalation_dashboard(request.user):
-            raise PermissionDenied()
+        self.enforce_access(request.user)
         return super(EscalationDashboard, self).dispatch(request, *args, **kwargs)
+
+    def enforce_access(self, user):
+        if not user_can_access_national_escalation_dashboard(user):
+            raise PermissionDenied()
 
     def get_form_kwargs(self):
         kwargs = super(EscalationDashboard, self).get_form_kwargs()
-
-        # Turn off the ccg filter and filter organisations if the user is a ccg
-        # or a
-        user = self.request.user
-        if not user_is_superuser(user) and not user_in_group(user, auth.CUSTOMER_CONTACT_CENTRE):
-            kwargs['with_ccg'] = False
-            kwargs['organisations'] = Organisation.objects.filter(trust__escalation_ccg__in=user.ccgs.all())
-        else:
-            kwargs['organisations'] = Organisation.objects.all()
-
-
-        # Turn off status too, because all problems on this dashboard have
+        kwargs['organisations'] = self.get_organisations()
+        # Turn off status because all problems on this dashboard have
         # a status of Escalated
         kwargs['with_status'] = False
 
         return kwargs
 
-    def get_context_data(self, **kwargs):
-        context = super(EscalationDashboard, self).get_context_data(**kwargs)
+    def get_organisations(self):
+        return Organisation.objects.all()
 
+    def get_problems(self):
         problems = Problem.objects.open_escalated_problems()
         user = self.request.user
 
-        # Restrict problem queryset for non-superuser users (i.e. CCG users)
-        if not user_is_superuser(user) and not user_in_group(user, auth.CUSTOMER_CONTACT_CENTRE):
-            problems = problems.filter(organisation__trust__escalation_ccg__in=(user.ccgs.all()),
-                                       commissioned=Problem.LOCALLY_COMMISSIONED)
-        # Restrict problem queryset for non-CCG users (i.e. Customer Contact Centre)
-        elif not user_is_superuser(user) and not user_in_group(user, auth.CCG):
+        # Restrict problem queryset for Customer Contact Centre users
+        if user_in_group(user, auth.CUSTOMER_CONTACT_CENTRE):
             problems = problems.filter(commissioned=Problem.NATIONALLY_COMMISSIONED)
+
+        return problems
+
+    def get_context_data(self, **kwargs):
+        context = super(EscalationDashboard, self).get_context_data(**kwargs)
+
+        problems = self.get_problems()
 
         # Apply form filters on top of this
         filtered_problems = self.filter_problems(context['selected_filters'], problems)
@@ -507,6 +484,8 @@ class EscalationDashboard(FilterFormMixin, TemplateView):
         # These tables are always in the private context
         context['private'] = True
 
+        context['tabs_template'] = 'organisations/includes/escalation_tabs.html'
+
         return context
 
 
@@ -515,19 +494,20 @@ class EscalationBreaches(TemplateView):
     template_name = 'organisations/escalation_breaches.html'
 
     def dispatch(self, request, *args, **kwargs):
-        if not user_can_access_escalation_dashboard(request.user):
-            raise PermissionDenied()
+        self.enforce_access(request.user)
         return super(EscalationBreaches, self).dispatch(request, *args, **kwargs)
+
+    def enforce_access(self, user):
+        if not user_can_access_national_escalation_dashboard(user):
+            raise PermissionDenied()
+
+    def get_problems(self):
+        return Problem.objects.open_problems().filter(breach=True)
 
     def get_context_data(self, **kwargs):
         context = super(EscalationBreaches, self).get_context_data(**kwargs)
-        problems = Problem.objects.open_problems().filter(breach=True)
 
-        # Restrict problem queryset for non-superuser users (i.e. CCG users)
-        user = self.request.user
-        if not user_is_superuser(user) and not user_in_group(user, auth.CUSTOMER_CONTACT_CENTRE):
-            problems = problems.filter(organisation__trust__escalation_ccg__in=(user.ccgs.all()))
-        # Everyone else see's all breaches
+        problems = self.get_problems()
 
         # Setup a table for the problems
         problem_table = BreachTable(problems, private=True)
@@ -537,5 +517,7 @@ class EscalationBreaches(TemplateView):
 
         # These tables are always in the private context
         context['private'] = True
+
+        context['tabs_template'] = 'organisations/includes/escalation_tabs.html'
 
         return context

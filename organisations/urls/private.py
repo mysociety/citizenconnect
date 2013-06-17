@@ -46,18 +46,18 @@ urlpatterns = patterns(
         kwargs={'private': True}),
 
     url(r'^ccg/(?P<code>\w+)/escalation$',
-        login_required(EscalationDashboard.as_view()),
+        login_required(CCGEscalationDashboard.as_view()),
         name='ccg-escalation-dashboard',
         kwargs={'private': True}),
 
     url(r'^ccg/(?P<code>\w+)/breaches$',
-        login_required(EscalationBreaches.as_view()),
+        login_required(CCGEscalationBreaches.as_view()),
         name='ccg-escalation-breaches',
         kwargs={'private': True}),
 
     url(r'^ccg/(?P<code>\w+)/summary$',
-        login_required(PrivateNationalSummary.as_view()),
-        name='ccg-private-national-summary',
+        login_required(CCGSummary.as_view()),
+        name='ccg-summary',
         kwargs={'private': True}),
 
     # Organisation urls

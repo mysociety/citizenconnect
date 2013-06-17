@@ -152,7 +152,7 @@ class TrustProblems(TrustAwareViewMixin,
 
         # Get a queryset of issues and apply any filters to them
         # TODO - get this from the trust's property @evdb is writing
-        problems = Problem.objects.all().filter(organisation__trust=self.trust)
+        problems = self.trust.problem_set.all()
         filtered_problems = self.filter_problems(context['selected_filters'], problems)
 
         # Build a table
