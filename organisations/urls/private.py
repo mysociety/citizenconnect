@@ -9,7 +9,12 @@ from organisations.auth import StrongSetPasswordForm, StrongPasswordChangeForm
 urlpatterns = patterns(
     '',
 
-    url(r'^dashboard/(?P<code>\w+)$',
+    url(r'^ccg/dashboard/(?P<code>\w+)$',
+        login_required(CCGDashboard.as_view()),
+        name='ccg-dashboard',
+        kwargs={'private': True}),
+
+    url(r'^trust/dashboard/(?P<code>\w+)$',
         login_required(TrustDashboard.as_view()),
         name='trust-dashboard',
         kwargs={'private': True}),
@@ -24,7 +29,7 @@ urlpatterns = patterns(
         name='private-org-summary',
         kwargs={'private': True}),
 
-    url(r'^trust-summary/(?P<code>\w+)$',
+    url(r'^trust/summary/(?P<code>\w+)$',
         login_required(TrustSummary.as_view()),
         name='trust-summary',
         kwargs={'private': True}),
