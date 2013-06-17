@@ -36,6 +36,8 @@ Optional. Whether the problem is a priority (user is asked 'is this happening ri
 ### requires_second_tier_moderation
 Optional. Whether the problem requires second tier moderation. Send `0` or `1` for false or true. Defaults to false.
 
+If true then the `publication_status` of the problem will be set to `NOT_MODERATED` rather than the default of `PUBLISHED`.
+
 ### reporter_name
 Required. The reporter of the problem/question's name.
 
@@ -47,9 +49,6 @@ Optional. The reporter's phone number.
 
 ### public
 Optional. Whether or not the reporter wanted the problem/question made public, send `0` or `1` for false or true. Defaults to false.
-
-### publication_status
-Optional. The publication status of the problem or question i.e. whether the report should be published to members of the public. Send `0` or `1` for hidden or published. Will default to hidden.
 
 ### public_reporter_name
 Optional. Whether or not the reporter wanted their name made public, send `0` or `1` for false or true. Defaults to false
