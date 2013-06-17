@@ -242,14 +242,11 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
             'Hidden': [[NOT_MODERATED_PUB, HIDDEN], [PUBLISHED, HIDDEN]],
             'Unmoderated': [[HIDDEN, NOT_MODERATED_PUB], [PUBLISHED, NOT_MODERATED_PUB]],
         },
-        'moderated': {
-            'Moderated': [[NOT_MODERATED, MODERATED]]
-        }
     }
 
     # Which attrs are interesting to compare for revisions
     # The order of these determines the order they are output as a string
-    REVISION_ATTRS = ['moderated', 'publication_status', 'status']
+    REVISION_ATTRS = ['publication_status', 'status']
 
     SOURCE_PHONE = 'phone'
     SOURCE_EMAIL = 'email'
