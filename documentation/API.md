@@ -49,7 +49,7 @@ Optional. The reporter's phone number.
 Optional. Whether or not the reporter wanted the problem/question made public, send `0` or `1` for false or true. Defaults to false. 
 
 ### publication_status
-Optional. The publication status of the problem or question i.e. whether the report should be published to members of the public. Send `0` or `1` for unpublished or published. Will default to unpublished.
+Optional. The publication status of the problem or question i.e. whether the report should be published to members of the public. Send `0` or `1` for hidden or published. Will default to hidden.
 
 ### public_reporter_name
 Optional. Whether or not the reporter wanted their name made public, send `0` or `1` for false or true. Defaults to false
