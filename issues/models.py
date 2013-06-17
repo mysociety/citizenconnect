@@ -71,21 +71,18 @@ class ProblemManager(models.Manager):
         return self.all().filter(Q(status__in=Problem.CLOSED_STATUSES))
 
     def unmoderated_problems(self):
-        return self.all().filter(moderated=Problem.NOT_MODERATED)
+        return self.all().filter(publication_status=Problem.NOT_MODERATED_PUB)
 
     def open_moderated_published_visible_problems(self):
-        return self.open_problems().filter(moderated=Problem.MODERATED,
-                                           publication_status=Problem.PUBLISHED,
+        return self.open_problems().filter(publication_status=Problem.PUBLISHED,
                                            status__in=Problem.VISIBLE_STATUSES)
 
     def closed_moderated_published_visible_problems(self):
-        return self.closed_problems().filter(moderated=Problem.MODERATED,
-                                             publication_status=Problem.PUBLISHED,
+        return self.closed_problems().filter(publication_status=Problem.PUBLISHED,
                                              status__in=Problem.VISIBLE_STATUSES)
 
     def all_moderated_published_problems(self):
-        return self.all().filter(moderated=Problem.MODERATED,
-                                 publication_status=Problem.PUBLISHED,
+        return self.all().filter(publication_status=Problem.PUBLISHED,
                                  status__in=Problem.VISIBLE_STATUSES)
 
     def problems_requiring_second_tier_moderation(self):
@@ -372,8 +369,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
 
     def is_publicly_visible(self):
         return (self.publication_status == Problem.PUBLISHED \
-                and int(self.status) in Problem.VISIBLE_STATUSES \
-                and self.moderated == Problem.MODERATED)
+                and int(self.status) in Problem.VISIBLE_STATUSES)
 
     def can_be_accessed_by(self, user):
         """
