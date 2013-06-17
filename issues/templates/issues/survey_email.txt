@@ -7,7 +7,7 @@ Recently you reported a problem to us which we directed to {{ problem.organisati
 
 If your problem has been closed we would welcome some feedback from you about how it was handled and whether it was resolved to your satisfaction.
 
-All things considered were you satisfied that your problem was resolved?
+1. All things considered were you satisfied that your problem was resolved?
 
 If the answer is 'Yes', please click on the link below:
 
