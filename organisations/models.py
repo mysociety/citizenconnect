@@ -10,7 +10,7 @@ from django.contrib.auth.models import User, Group
 from django.dispatch import receiver
 
 from citizenconnect.models import AuditedModel
-from .mixins import MailSendMixin, UserCreationMixin
+from .mixins import MailSendMixin
 
 from issues.models import Problem
 
@@ -19,7 +19,7 @@ from .auth import user_in_group, user_in_groups
 from .metaphone import dm
 
 
-class CCG(MailSendMixin, UserCreationMixin, AuditedModel):
+class CCG(MailSendMixin, AuditedModel):
     name = models.TextField()
     code = models.CharField(max_length=8, db_index=True, unique=True)
     users = models.ManyToManyField(User, related_name='ccgs')
@@ -64,7 +64,7 @@ class CCG(MailSendMixin, UserCreationMixin, AuditedModel):
         return self.name
 
 
-class Trust(MailSendMixin, UserCreationMixin, AuditedModel):
+class Trust(MailSendMixin, AuditedModel):
     name = models.TextField()
     code = models.CharField(max_length=8, db_index=True, unique=True)
     users = models.ManyToManyField(User, related_name='trusts')

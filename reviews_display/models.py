@@ -114,21 +114,7 @@ class Review(AuditedModel):
         NHS_CHOICES_API_MAX_REVIEW_AGE_IN_DAYS days old, the entry is deleted
 
         """
-
-        # For replies try to load the review they relate to. If not found raise
-        # an exception. Because of the order that the API gives us results in
-        # this might be quite common.
-        if api_review['api_category'] == 'reply':
-            try:
-                api_review['in_reply_to'] = cls.objects.get(api_posting_id=api_review['in_reply_to_id'])
-            except cls.DoesNotExist:
-                raise RepliedToReviewDoesNotExist(
-                    "Could not find review with api_posting_id of {0} for reply {1}".format(
-                        api_review['in_reply_to_id'],
-                        api_review['api_posting_id']
-                    )
-                )
-
+        
         unique_args = dict(
             api_posting_id=api_review['api_posting_id'],
             api_postingorganisationid=api_review['api_postingorganisationid']
@@ -158,6 +144,20 @@ class Review(AuditedModel):
                 )
             )
 
+        # For replies try to load the review they relate to. If not found raise
+        # an exception. Because of the order that the API gives us results in
+        # this might be quite common.
+        if api_review['api_category'] == 'reply':
+            try:
+                api_review['in_reply_to'] = cls.objects.get(api_posting_id=api_review['in_reply_to_id'])
+            except cls.DoesNotExist:
+                raise RepliedToReviewDoesNotExist(
+                    "Could not find review with api_posting_id of {0} for reply {1}".format(
+                        api_review['in_reply_to_id'],
+                        api_review['api_posting_id']
+                    )
+                )
+        
         defaults = api_review.copy()
         del defaults['ratings']
         del defaults['organisation_choices_id']

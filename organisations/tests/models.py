@@ -199,42 +199,6 @@ class UserCreationTestsMixin(object):
         # add the user to test_object_foo_with_user
         self.test_object_foo_with_user.users.add(self.user_foo)
 
-    def test_user_creation_where_test_object_has_no_email(self):  # ISSUE-329
-        test_object = self.test_object_no_email
-
-        self.assertEqual(test_object.users.count(), 0)
-        self.assertRaises(ValueError, lambda: test_object.ensure_related_user_exists())
-        self.assertEqual(test_object.users.count(), 0)
-
-    def test_user_creation_where_user_exists(self):
-        test_object = self.test_object_foo_with_user
-
-        self.assertEqual(test_object.users.count(), 1)
-        test_object.ensure_related_user_exists()
-        self.assertEqual(test_object.users.count(), 1)
-
-    def test_user_creation_where_user_missing(self):
-        test_object = self.test_object_no_user
-
-        self.assertEqual(test_object.users.count(), 0)
-        test_object.ensure_related_user_exists()
-        self.assertEqual(test_object.users.count(), 1)
-
-        # test that password _is_ usable - if it is not usable then the password
-        # cannot be reset. See #689
-        user = test_object.users.all()[0]
-        self.assertTrue(user.has_usable_password())
-        self.assertEqual(user.email, test_object.email)
-
-    def test_user_creation_where_user_exists_but_not_related(self):
-        test_object = self.test_object_foo_no_user
-
-        self.assertEqual(test_object.users.count(), 0)
-        test_object.ensure_related_user_exists()
-        self.assertEqual(test_object.users.count(), 1)
-
-        self.assertEqual(test_object.users.all()[0].id, self.user_foo.id)
-
 
 class SendMailTestsMixin(object):
 
@@ -249,34 +213,6 @@ class SendMailTestsMixin(object):
     def test_send_mail_raises_if_recipient_list_provided(self):
         test_object = self.test_object
         self.assertRaises(TypeError, test_object.send_mail, subject="Test Subject", message="Test message", recipient_list="bob@foo.com")
-
-    def test_send_mail_creates_user(self):
-        test_object = self.test_object
-
-        self.assertEqual(test_object.users.count(), 0)
-        test_object.send_mail('test', 'foo')
-        self.assertEqual(test_object.users.count(), 1)
-
-    def test_send_mail_that_the_intro_email_is_sent(self):
-        test_object = self.test_object
-
-        self.assertFalse(test_object.intro_email_sent)
-        test_object.send_mail('test', 'foo')
-        self.assertTrue(test_object.intro_email_sent)
-
-        self.assertEqual(len(mail.outbox), 2)
-        intro_mail = mail.outbox[0]
-        trigger_mail = mail.outbox[1]
-
-        self.assertTrue(test_object.users.all()[0].username in intro_mail.body)
-        self.assertTrue(test_object.email in intro_mail.to)
-
-        self.assertEqual(trigger_mail.subject, 'test')
-        self.assertEqual(trigger_mail.body,    'foo')
-
-        # print
-        # print intro_mail.subject
-        # print intro_mail.body
 
     def test_send_mail_intro_email_not_sent_twice(self):
         test_object = self.test_object
