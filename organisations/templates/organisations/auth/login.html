@@ -17,7 +17,7 @@
         </ul>
     {% endif %}
 
-    <form method="post" action="{% url 'django.contrib.auth.views.login' %}" class="gw">
+    <form method="post" action="{% url 'ratelimitbackend.views.login' %}" class="gw">
         {% csrf_token %}
         <div class="g two-fifths palm-one-whole">
             <label for="id_username">Username</label>
