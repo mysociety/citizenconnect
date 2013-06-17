@@ -16,27 +16,20 @@ from django.contrib.gis.geos import Polygon
 from citizenconnect.shortcuts import render
 from issues.models import Problem
 
-import auth
-from .auth import (user_in_group,
-                   user_in_groups,
-                   user_is_superuser,
-                   enforce_organisation_access_check,
-                   enforce_trust_access_check,
-                   enforce_ccg_access_check,
-                   user_can_access_escalation_dashboard,
-                   user_can_access_private_national_summary,
-                   user_is_escalation_body)
-from .models import Organisation, SuperuserLogEntry, Trust, CCG
-from .forms import OrganisationFinderForm, FilterForm, OrganisationFilterForm
-from .lib import interval_counts
-from .tables import (NationalSummaryTable,
-                     PrivateNationalSummaryTable,
-                     ProblemTable,
-                     ExtendedProblemTable,
-                     TrustProblemTable,
-                     ProblemDashboardTable,
-                     BreachTable)
-from .templatetags.organisation_extras import formatted_time_interval, percent
+from .. import auth
+from ..auth import (user_in_group,
+                    user_is_superuser,
+                    user_can_access_escalation_dashboard,
+                    user_can_access_private_national_summary,
+                    user_is_escalation_body)
+from ..models import Organisation, SuperuserLogEntry
+from ..forms import OrganisationFinderForm, FilterForm
+from ..lib import interval_counts
+from ..tables import (NationalSummaryTable,
+                      PrivateNationalSummaryTable,
+                      ProblemDashboardTable,
+                      BreachTable)
+from ..templatetags.organisation_extras import formatted_time_interval, percent
 
 
 class PrivateViewMixin(object):
@@ -51,48 +44,6 @@ class PrivateViewMixin(object):
             context['private'] = True
         else:
             context['private'] = False
-        return context
-
-
-class OrganisationAwareViewMixin(PrivateViewMixin):
-    """Mixin class for views which need to have a reference to a particular
-    organisation, such as problem forms."""
-
-    def dispatch(self, request, *args, **kwargs):
-        # Set organisation here so that we can use it anywhere in the class
-        # without worrying about whether it has been set yet
-        self.organisation = Organisation.objects.get(ods_code=kwargs['ods_code'])
-        return super(OrganisationAwareViewMixin, self).dispatch(request, *args, **kwargs)
-
-    # Get the organisation name
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super(OrganisationAwareViewMixin, self).get_context_data(**kwargs)
-        context['organisation'] = self.organisation
-        # Check that the user can access the organisation if this is private
-        if context['private']:
-            enforce_organisation_access_check(context['organisation'], self.request.user)
-        return context
-
-
-class TrustAwareViewMixin(PrivateViewMixin):
-    """Mixin class for views which need to have a reference to a particular
-    trust, such as trust dashboards."""
-
-    def dispatch(self, request, *args, **kwargs):
-        # Set trust here so that we can use it anywhere in the class
-        # without worrying about whether it has been set yet
-        self.trust = Trust.objects.get(code=kwargs['code'])
-        return super(TrustAwareViewMixin, self).dispatch(request, *args, **kwargs)
-
-    # Get the organisation name
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super(TrustAwareViewMixin, self).get_context_data(**kwargs)
-        context['trust'] = self.trust
-        # Check that the user can access the trust if this is private
-        if context['private']:
-            enforce_trust_access_check(context['trust'], self.request.user)
         return context
 
 
@@ -195,7 +146,6 @@ class FilterFormMixin(FormMixin):
 
         return (problem_filters, organisation_filters)
 
-
     def translate_flag_filters(self, problem_filters):
         # For the flags translate the value of the flag to a bool filter for that field
         if problem_filters.get('flags'):
@@ -204,6 +154,7 @@ class FilterFormMixin(FormMixin):
             if flag_value in self.allowed_flag_filters:
                 problem_filters[flag_value] = True
         return problem_filters
+
 
 class Map(FilterFormMixin,
           TemplateView):
@@ -343,256 +294,6 @@ class PickProviderBase(ListView):
             return render(self.request, self.form_template_name, self.get_context_data(object_list=self.object_list))
 
 
-class OrganisationPickProvider(PickProviderBase):
-    pass
-
-
-class OrganisationSummary(OrganisationAwareViewMixin,
-                          FilterFormMixin,
-                          TemplateView):
-    template_name = 'organisations/organisation_summary.html'
-
-    # Use an OrganisationFilterForm instead of a normal one
-    form_class = OrganisationFilterForm
-
-    def get_form_kwargs(self):
-        kwargs = super(OrganisationSummary, self).get_form_kwargs()
-
-        kwargs['organisation'] = self.organisation
-        # Only show service_id if the organisation has services
-        if not self.organisation.has_services():
-            kwargs['with_service_id'] = False
-
-        # We don't want a status filter
-        kwargs['with_status'] = False
-
-        return kwargs
-
-    def get_context_data(self, **kwargs):
-        context = super(OrganisationSummary, self).get_context_data(**kwargs)
-
-        organisation = context['organisation']
-
-        # Load the user-selected filters from the form
-        count_filters = context['selected_filters']
-
-        # Figure out which statuses to calculate summary stats and lines in
-        # the summary table from
-        if context['private']:
-            status_rows = Problem.STATUS_CHOICES
-            volume_statuses = Problem.ALL_STATUSES
-        else:
-            status_rows = Problem.VISIBLE_STATUS_CHOICES
-            volume_statuses = Problem.VISIBLE_STATUSES
-
-        summary_stats_statuses = Problem.VISIBLE_STATUSES
-        count_filters['status'] = tuple(volume_statuses)
-        organisation_filters = {'organisation_id': organisation.id}
-        count_filters['status'] = tuple(summary_stats_statuses)
-        count_filters = self.translate_flag_filters(count_filters)
-
-        context['problems_summary_stats'] = interval_counts(problem_filters=count_filters,
-                                                            organisation_filters=organisation_filters)
-        status_list = []
-        for status, description in status_rows:
-            count_filters['status'] = (status,)
-            status_counts = interval_counts(problem_filters=count_filters,
-                                            organisation_filters=organisation_filters)
-            del count_filters['status']
-            status_counts['description'] = description
-            status_counts['status'] = status
-            if status in Problem.VISIBLE_STATUSES:
-                status_counts['hidden'] = False
-            else:
-                status_counts['hidden'] = True
-            status_list.append(status_counts)
-        context['problems_by_status'] = status_list
-
-        # Generate a dictionary of overall issue boolean counts to use in the summary
-        # statistics
-        issues_total = {}
-        summary_attributes = ['happy_service',
-                              'happy_outcome',
-                              'average_time_to_acknowledge',
-                              'average_time_to_address']
-        for attribute in summary_attributes:
-            issues_total[attribute] = context['problems_summary_stats'][attribute]
-        context['issues_total'] = issues_total
-
-        return context
-
-
-class TrustSummary(TrustAwareViewMixin, FilterFormMixin, TemplateView):
-    template_name = 'organisations/trust_summary.html'
-
-    def get_form_kwargs(self):
-        kwargs = super(TrustSummary, self).get_form_kwargs()
-        kwargs['with_ccg'] = False
-        kwargs['with_organisation_type'] = False
-        kwargs['with_service_code'] = False
-        kwargs['with_status'] = False
-        return kwargs
-
-    def get_context_data(self, **kwargs):
-        context = super(TrustSummary, self).get_context_data(**kwargs)
-
-        trust = context['trust']
-        organisation_ids = [org.id for org in trust.organisations.all()]
-
-        # Load the user-selected filters from the form
-        count_filters = context['selected_filters']
-
-        status_rows = Problem.STATUS_CHOICES
-        volume_statuses = Problem.ALL_STATUSES
-
-        summary_stats_statuses = Problem.VISIBLE_STATUSES
-        count_filters['status'] = tuple(volume_statuses)
-        organisation_filters = {'organisation_ids': tuple(organisation_ids)}
-        context['problems_total'] = self.get_interval_counts(problem_filters=count_filters,
-                                                             organisation_filters=organisation_filters)
-        count_filters['status'] = tuple(summary_stats_statuses)
-        count_filters = self.translate_flag_filters(count_filters)
-
-        context['problems_summary_stats'] = self.get_interval_counts(problem_filters=count_filters,
-                                                                     organisation_filters=organisation_filters)
-        status_list = []
-        for status, description in status_rows:
-            count_filters['status'] = (status,)
-            status_counts = self.get_interval_counts(problem_filters=count_filters,
-                                                     organisation_filters=organisation_filters)
-            del count_filters['status']
-            status_counts['description'] = description
-            status_counts['status'] = status
-            if status in Problem.VISIBLE_STATUSES:
-                status_counts['hidden'] = False
-            else:
-                status_counts['hidden'] = True
-            status_list.append(status_counts)
-        context['problems_by_status'] = status_list
-
-        # Generate a dictionary of overall issue boolean counts to use in the summary
-        # statistics
-        issues_total = {}
-        summary_attributes = ['happy_service',
-                              'happy_outcome',
-                              'average_time_to_acknowledge',
-                              'average_time_to_address']
-        for attribute in summary_attributes:
-            issues_total[attribute] = context['problems_summary_stats'][attribute]
-        context['issues_total'] = issues_total
-
-        return context
-
-    def get_interval_counts(self, problem_filters, organisation_filters):
-        organisation_problem_data = interval_counts(problem_filters=problem_filters,
-                                                    organisation_filters=organisation_filters)
-
-        count_attributes = ['all_time',
-                            'week',
-                            'four_weeks',
-                            'six_months']
-
-        average_attributes = ['happy_service',
-                              'happy_outcome',
-                              'average_time_to_acknowledge',
-                              'average_time_to_address']
-
-        summary_attributes = count_attributes + average_attributes
-
-        organisation_data = {}
-
-        for attribute in summary_attributes:
-            organisation_data[attribute] = 0
-
-        # Aggregate data
-        for org_data in organisation_problem_data:
-            for attribute in summary_attributes:
-                if attribute in org_data and not org_data[attribute] is None:
-                    organisation_data[attribute] += org_data[attribute]
-
-        for attribute in average_attributes:
-            organisation_data[attribute] = organisation_data[attribute] / len(organisation_problem_data)
-
-        return organisation_data
-
-
-class OrganisationProblems(OrganisationAwareViewMixin,
-                           FilterFormMixin,
-                           TemplateView):
-    template_name = 'organisations/organisation_problems.html'
-
-    form_class = OrganisationFilterForm
-
-    def get_form_kwargs(self):
-        kwargs = super(OrganisationProblems, self).get_form_kwargs()
-
-        kwargs['organisation'] = self.organisation
-        # Only show service_id if the organisation has services
-        if not self.organisation.has_services():
-            kwargs['with_service_id'] = False
-
-        return kwargs
-
-    def get_context_data(self, **kwargs):
-        context = super(OrganisationProblems, self).get_context_data(**kwargs)
-
-        # Get a queryset of issues and apply any filters to them
-        problems = context['organisation'].problem_set.all_moderated_published_problems()
-        filtered_problems = self.filter_problems(context['selected_filters'], problems)
-
-        # Build a table
-        table_args = {
-            'private': context['private'],
-            'cobrand': kwargs['cobrand']
-        }
-
-        if context['organisation'].has_services() and context['organisation'].has_time_limits():
-            problem_table = ExtendedProblemTable(filtered_problems, **table_args)
-        else:
-            problem_table = ProblemTable(filtered_problems, **table_args)
-
-        RequestConfig(self.request, paginate={'per_page': 8}).configure(problem_table)
-        context['table'] = problem_table
-        context['page_obj'] = problem_table.page
-        return context
-
-
-class TrustProblems(TrustAwareViewMixin,
-                    FilterFormMixin,
-                    TemplateView):
-
-    template_name = 'organisations/trust_problems.html'
-
-    def get_form_kwargs(self):
-        kwargs = super(TrustProblems, self).get_form_kwargs()
-
-        # Turn off the ccg filter and filter organisations to this trust
-        kwargs['with_ccg'] = False
-        kwargs['organisations'] = Organisation.objects.filter(trust=self.trust)
-
-        # Turn off the organisation_type filter
-        kwargs['with_organisation_type'] = False
-
-        return kwargs
-
-    def get_context_data(self, **kwargs):
-        context = super(TrustProblems, self).get_context_data(**kwargs)
-
-        # Get a queryset of issues and apply any filters to them
-        # TODO - get this from the trust's property @evdb is writing
-        problems = Problem.objects.all().filter(organisation__trust=self.trust)
-        filtered_problems = self.filter_problems(context['selected_filters'], problems)
-
-        # Build a table
-        table_args = {'private': context['private']}
-        problem_table = TrustProblemTable(filtered_problems, **table_args)
-
-        RequestConfig(self.request, paginate={'per_page': 8}).configure(problem_table)
-        context['table'] = problem_table
-        context['page_obj'] = problem_table.page
-        return context
-
-
 class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
     template_name = 'organisations/summary.html'
     permitted_statuses = Problem.VISIBLE_STATUSES
@@ -697,50 +398,6 @@ class PrivateNationalSummary(Summary):
                                                                        threshold=threshold)
 
 
-class TrustDashboard(TrustAwareViewMixin,
-                     TemplateView):
-    template_name = 'organisations/trust_dashboard.html'
-
-    def get_context_data(self, **kwargs):
-        # Get all the problems
-        context = super(TrustDashboard, self).get_context_data(**kwargs)
-
-        # Get the models related to this organisation, and let the db sort them
-        problems = context['trust'].problem_set.open_unescalated_problems()
-        problems_table = ProblemDashboardTable(problems)
-        RequestConfig(self.request, paginate={'per_page': 25}).configure(problems_table)
-        context['table'] = problems_table
-        context['page_obj'] = problems_table.page
-        return context
-
-
-class CCGDashboard(PrivateViewMixin, TemplateView):
-    template_name = 'organisations/ccg_dashboard.html'
-
-    def dispatch(self, request, *args, **kwargs):
-        # Set ccg here so that we can use it anywhere in the class
-        # without worrying about whether it has been set yet
-        self.ccg = CCG.objects.get(code=kwargs['code'])
-        return super(CCGDashboard, self).dispatch(request, *args, **kwargs)
-
-    # Get the organisation name
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super(CCGDashboard, self).get_context_data(**kwargs)
-        context['ccg'] = self.ccg
-        # Check that the user can access the ccg if this is private
-        if context['private']:
-            enforce_ccg_access_check(context['ccg'], self.request.user)
-
-        # Get the problems related to this ccg, and let the db sort them
-        problems = context['ccg'].problem_set.open_unescalated_problems()
-        problems_table = ProblemDashboardTable(problems)
-        RequestConfig(self.request, paginate={'per_page': 25}).configure(problems_table)
-        context['table'] = problems_table
-        context['page_obj'] = problems_table.page
-        return context
-
-
 @login_required
 def login_redirect(request):
     """
@@ -809,6 +466,7 @@ class EscalationDashboard(FilterFormMixin, TemplateView):
         kwargs = super(EscalationDashboard, self).get_form_kwargs()
 
         # Turn off the ccg filter and filter organisations if the user is a ccg
+        # or a
         user = self.request.user
         if not user_is_superuser(user) and not user_in_group(user, auth.CUSTOMER_CONTACT_CENTRE):
             kwargs['with_ccg'] = False
@@ -870,30 +528,6 @@ class EscalationBreaches(TemplateView):
         if not user_is_superuser(user) and not user_in_group(user, auth.CUSTOMER_CONTACT_CENTRE):
             problems = problems.filter(organisation__trust__escalation_ccg__in=(user.ccgs.all()))
         # Everyone else see's all breaches
-
-        # Setup a table for the problems
-        problem_table = BreachTable(problems, private=True)
-        RequestConfig(self.request, paginate={'per_page': 25}).configure(problem_table)
-        context['table'] = problem_table
-        context['page_obj'] = problem_table.page
-
-        # These tables are always in the private context
-        context['private'] = True
-
-        return context
-
-
-class TrustBreaches(TrustAwareViewMixin,
-                    TemplateView):
-
-    template_name = 'organisations/trust_breaches.html'
-
-    def dispatch(self, request, *args, **kwargs):
-        return super(TrustBreaches, self).dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super(TrustBreaches, self).get_context_data(**kwargs)
-        problems = Problem.objects.open_problems().filter(breach=True, organisation__trust=context['trust'])
 
         # Setup a table for the problems
         problem_table = BreachTable(problems, private=True)
