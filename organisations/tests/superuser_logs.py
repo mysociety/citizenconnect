@@ -15,11 +15,9 @@ class SuperuserLogTests(AuthorizationTestCase):
         # Create a private problem
         self.private_problem = create_test_problem({'organisation': self.test_organisation,
                                                     'public': False,
-                                                    'moderated': True,
                                                     'publication_status': Problem.PUBLISHED})
         # Create a hidden problem
         self.hidden_problem = create_test_problem({'organisation': self.test_organisation,
-                                                   'moderated': True,
                                                    'publication_status': Problem.HIDDEN})
         self.test_urls = [
             reverse('home', kwargs={'cobrand': 'choices'}),

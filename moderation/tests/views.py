@@ -72,7 +72,7 @@ class HomeViewTests(BaseModerationTestCase):
         self.closed_problem = create_test_problem({'organisation': self.test_organisation,
                                                    'status': Problem.RESOLVED})
         self.moderated_problem = create_test_problem({'organisation': self.test_organisation,
-                                                      'moderated': Problem.MODERATED})
+                                                      'publication_status': Problem.PUBLISHED})
 
         self.login_as(self.case_handler)
 
@@ -197,7 +197,7 @@ class ModerateFormViewTests(BaseModerationTestCase):
         self.closed_problem = create_test_problem({'organisation': self.test_organisation,
                                                    'status': Problem.RESOLVED})
         self.moderated_problem = create_test_problem({'organisation': self.test_organisation,
-                                                      'moderated': Problem.MODERATED})
+                                                      'publication_status': Problem.PUBLISHED})
 
         self.login_as(self.case_handler)
 

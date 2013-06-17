@@ -71,21 +71,18 @@ class ProblemManager(models.Manager):
         return self.all().filter(Q(status__in=Problem.CLOSED_STATUSES))
 
     def unmoderated_problems(self):
-        return self.all().filter(moderated=Problem.NOT_MODERATED)
+        return self.all().filter(publication_status=Problem.NOT_MODERATED)
 
     def open_moderated_published_visible_problems(self):
-        return self.open_problems().filter(moderated=Problem.MODERATED,
-                                           publication_status=Problem.PUBLISHED,
+        return self.open_problems().filter(publication_status=Problem.PUBLISHED,
                                            status__in=Problem.VISIBLE_STATUSES)
 
     def closed_moderated_published_visible_problems(self):
-        return self.closed_problems().filter(moderated=Problem.MODERATED,
-                                             publication_status=Problem.PUBLISHED,
+        return self.closed_problems().filter(publication_status=Problem.PUBLISHED,
                                              status__in=Problem.VISIBLE_STATUSES)
 
     def all_moderated_published_problems(self):
-        return self.all().filter(moderated=Problem.MODERATED,
-                                 publication_status=Problem.PUBLISHED,
+        return self.all().filter(publication_status=Problem.PUBLISHED,
                                  status__in=Problem.VISIBLE_STATUSES)
 
     def problems_requiring_second_tier_moderation(self):
@@ -160,13 +157,13 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
 
     HIDDEN = 0
     PUBLISHED = 1
+    NOT_MODERATED = 2
 
-    PUBLICATION_STATUS_CHOICES = ((HIDDEN, "Hidden"), (PUBLISHED, "Published"))
-
-    NOT_MODERATED = 0
-    MODERATED = 1
-
-    MODERATED_STATUS_CHOICES = ((NOT_MODERATED, "Not moderated"), (MODERATED, "Moderated"))
+    PUBLICATION_STATUS_CHOICES = (
+        (NOT_MODERATED, "Not moderated"),
+        (HIDDEN, "Hidden"),
+        (PUBLISHED, "Published")
+    )
 
     LOCALLY_COMMISSIONED = 0
     NATIONALLY_COMMISSIONED = 1
@@ -233,17 +230,15 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
             'Resolved': [[ACKNOWLEDGED, RESOLVED], [ESCALATED_ACKNOWLEDGED, ESCALATED_RESOLVED]]
         },
         'publication_status': {
-            'Published': [[HIDDEN, PUBLISHED]],
-            'Hidden': [[PUBLISHED, HIDDEN]]
+            'Published': [[NOT_MODERATED, PUBLISHED], [HIDDEN, PUBLISHED]],
+            'Hidden': [[NOT_MODERATED, HIDDEN], [PUBLISHED, HIDDEN]],
+            'Unmoderated': [[HIDDEN, NOT_MODERATED], [PUBLISHED, NOT_MODERATED]],
         },
-        'moderated': {
-            'Moderated': [[NOT_MODERATED, MODERATED]]
-        }
     }
 
     # Which attrs are interesting to compare for revisions
     # The order of these determines the order they are output as a string
-    REVISION_ATTRS = ['moderated', 'publication_status', 'status']
+    REVISION_ATTRS = ['publication_status', 'status']
 
     SOURCE_PHONE = 'phone'
     SOURCE_EMAIL = 'email'
@@ -287,12 +282,9 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     time_to_address = models.IntegerField(blank=True, null=True)
     resolved = models.DateTimeField(blank=True, null=True)
 
-    publication_status = models.IntegerField(default=HIDDEN,
+    publication_status = models.IntegerField(default=NOT_MODERATED,
                                              blank=False,
                                              choices=PUBLICATION_STATUS_CHOICES)
-    moderated = models.IntegerField(default=NOT_MODERATED,
-                                    blank=False,
-                                    choices=MODERATED_STATUS_CHOICES)
     moderated_description = models.TextField(blank=True)
     breach = models.BooleanField(default=False, blank=False)
     requires_second_tier_moderation = models.BooleanField(default=False, blank=False)
@@ -369,8 +361,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
 
     def is_publicly_visible(self):
         return (self.publication_status == Problem.PUBLISHED \
-                and int(self.status) in Problem.VISIBLE_STATUSES \
-                and self.moderated == Problem.MODERATED)
+                and int(self.status) in Problem.VISIBLE_STATUSES)
 
     def can_be_accessed_by(self, user):
         """

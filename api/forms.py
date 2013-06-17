@@ -13,8 +13,6 @@ class ProblemAPIForm(forms.ModelForm):
     service_code = forms.CharField(required=False)
     # Make source required
     source = forms.CharField(required=True)
-    # Make moderated optional (we set it ourselves)
-    moderated = forms.IntegerField(required=False)
     # Make commissioned required
     commissioned = forms.ChoiceField(required=True, choices=Problem.COMMISSIONED_CHOICES)
     # Add an escalated flag with which we'll set the Problem status
@@ -47,10 +45,6 @@ class ProblemAPIForm(forms.ModelForm):
         # Always set status to Problem.New. Note that if escalated is set
         # we will modify this in clean
         return Problem.NEW
-
-    def clean_moderated(self):
-        # If you are submitting the form, you have moderated it, so always return MODERATED
-        return Problem.MODERATED
 
     def clean_priority(self):
         if not self.cleaned_data.get('priority'):
@@ -119,7 +113,6 @@ class ProblemAPIForm(forms.ModelForm):
             'service',
             'description',
             'moderated_description',
-            'moderated',
             'requires_second_tier_moderation',
             'category',
             'reporter_name',
