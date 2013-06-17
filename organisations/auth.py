@@ -67,6 +67,11 @@ def enforce_trust_access_check(trust, user):
         raise PermissionDenied()
 
 
+def enforce_ccg_access_check(ccg, user):
+    if not ccg.can_be_accessed_by(user):
+        raise PermissionDenied()
+
+
 def enforce_moderation_access_check(user):
     if not user_is_superuser(user) and not user_in_group(user, CASE_HANDLERS):
         raise PermissionDenied()
