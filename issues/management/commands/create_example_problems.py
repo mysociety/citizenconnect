@@ -49,7 +49,7 @@ class Command(BaseCommand):
             elif int(random.random() * 10 ) < 4:
                 new_problem.publication_status = Problem.PUBLISHED
             else: 
-                new_problem.publication_status = Problem.HIDDEN
+                new_problem.publication_status = Problem.REJECTED
 
             new_problem.category= Problem.CATEGORY_CHOICES[int(random.random() * len(Problem.CATEGORY_CHOICES))][0]
             new_problem.organisation = organisations[int(random.random() * len(organisations))]

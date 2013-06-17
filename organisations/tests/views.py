@@ -572,7 +572,7 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         unmoderated_problem_url = reverse('problem-view', kwargs={'pk': unmoderated_problem.id,
                                                                   'cobrand': 'choices'})
         hidden_problem = create_test_problem({'organisation': self.hospital,
-                                              'publication_status': Problem.HIDDEN})
+                                              'publication_status': Problem.REJECTED})
         hidden_problem_url = reverse('problem-view', kwargs={'pk': hidden_problem.id,
                                                              'cobrand': 'choices'})
         resp = self.client.get(self.public_hospital_problems_url)
@@ -738,7 +738,7 @@ class TrustProblemsTests(AuthorizationTestCase):
         unmoderated_problem = create_test_problem({'organisation': self.hospital})
         unmoderated_response_url = reverse('response-form', kwargs={'pk': unmoderated_problem.id})
         hidden_problem = create_test_problem({'organisation': self.hospital,
-                                              'publication_status': Problem.HIDDEN})
+                                              'publication_status': Problem.REJECTED})
         hidden_response_url = reverse('response-form', kwargs={'pk': hidden_problem.id})
         private_problem = create_test_problem({'organisation': self.hospital,
                                                'publication_status': Problem.PUBLISHED,
@@ -955,7 +955,7 @@ class OrganisationMapTests(AuthorizationTestCase):
     def test_public_map_doesnt_include_unmoderated_or_unpublished_or_hidden_status_problems(self):
         create_test_problem({'organisation': self.other_gp})
         create_test_problem({'organisation': self.other_gp,
-                             'publication_status': Problem.HIDDEN})
+                             'publication_status': Problem.REJECTED})
         create_test_problem({'organisation': self.other_gp,
                              'publication_status': Problem.PUBLISHED,
                              'status': Problem.ABUSIVE})

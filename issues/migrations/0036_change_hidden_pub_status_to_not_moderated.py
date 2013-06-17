@@ -7,7 +7,7 @@ from django.db import models
 class Migration(DataMigration):
 
     # Captured from the issues/models.py file at the time of writing
-    HIDDEN = 0
+    REJECTED = 0
     NOT_MODERATED = 2
     NOT_MODERATED_ORIGINAL = 0 # the value used on the 'moderated' field
 
@@ -23,7 +23,7 @@ class Migration(DataMigration):
         "Make all NOT_MODERATED issues be hidden and not moderated"
 
         for problem in orm.Problem.objects.filter(publication_status=self.NOT_MODERATED):
-            problem.publication_status = self.HIDDEN
+            problem.publication_status = self.REJECTED
             problem.moderated = self.NOT_MODERATED_ORIGINAL
             problem.save()
 

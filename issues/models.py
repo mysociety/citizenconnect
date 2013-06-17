@@ -155,13 +155,13 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
 
     PREFIX = 'P'
 
-    HIDDEN = 0
+    REJECTED = 0
     PUBLISHED = 1
     NOT_MODERATED = 2
 
     PUBLICATION_STATUS_CHOICES = (
         (NOT_MODERATED, "Not moderated"),
-        (HIDDEN, "Hidden"),
+        (REJECTED, "Rejected"),
         (PUBLISHED, "Published")
     )
 
@@ -230,9 +230,9 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
             'Resolved': [[ACKNOWLEDGED, RESOLVED], [ESCALATED_ACKNOWLEDGED, ESCALATED_RESOLVED]]
         },
         'publication_status': {
-            'Published': [[NOT_MODERATED, PUBLISHED], [HIDDEN, PUBLISHED]],
-            'Hidden': [[NOT_MODERATED, HIDDEN], [PUBLISHED, HIDDEN]],
-            'Unmoderated': [[HIDDEN, NOT_MODERATED], [PUBLISHED, NOT_MODERATED]],
+            'Published': [[NOT_MODERATED, PUBLISHED], [REJECTED, PUBLISHED]],
+            'Rejected': [[NOT_MODERATED, REJECTED], [PUBLISHED, REJECTED]],
+            'Unmoderated': [[REJECTED, NOT_MODERATED], [PUBLISHED, NOT_MODERATED]],
         },
     }
 

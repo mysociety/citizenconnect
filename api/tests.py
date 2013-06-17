@@ -285,7 +285,7 @@ class ProblemAPITests(TestCase):
         self.assertEquals(resp.status_code, 201)
 
         problem = Problem.objects.get(reporter_name=self.problem_uuid)
-        self.assertEqual(problem.publication_status, problem.HIDDEN)
+        self.assertEqual(problem.publication_status, problem.REJECTED)
 
     def test_returns_unauthorized_without_basic_auth(self):
         del self.client.defaults['HTTP_AUTHORIZATION']

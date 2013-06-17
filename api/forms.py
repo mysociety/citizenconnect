@@ -53,7 +53,7 @@ class ProblemAPIForm(forms.ModelForm):
 
     def clean_publication_status(self):
         if not self.cleaned_data.get('publication_status'):
-            self.cleaned_data['publication_status'] = Problem.HIDDEN
+            self.cleaned_data['publication_status'] = Problem.REJECTED
         return self.cleaned_data['publication_status']
 
     def clean_preferred_contact_method(self):

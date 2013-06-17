@@ -373,7 +373,7 @@ class PublicLookupFormTests(TestCase):
         self.assertRedirects(resp, self.problem_url)
 
     def test_rejects_hidden_problems(self):
-        self.test_problem.publication_status = Problem.HIDDEN
+        self.test_problem.publication_status = Problem.REJECTED
         self.test_problem.save()
         resp = self.client.post(self.homepage_url, {'reference_number': self.problem_reference})
         self.assertFormError(resp, 'form', None, 'Sorry, that reference number is not available')

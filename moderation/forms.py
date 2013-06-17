@@ -28,12 +28,12 @@ class ModerationForm(ConcurrentFormMixin, forms.ModelForm):
     def clean_publication_status(self):
         # Status is hidden, but if people click the "Publish" button, we should
         # publish it, and vice versa if they click "Keep Private", we default
-        # to HIDDEN regardless for security
+        # to REJECTED regardless for security
         publication_status = self.cleaned_data['publication_status']
         if 'publish' in self.data:
             publication_status = Problem.PUBLISHED
         else:
-            publication_status = Problem.HIDDEN
+            publication_status = Problem.REJECTED
         return publication_status
 
     def clean(self):

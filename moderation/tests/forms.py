@@ -110,7 +110,7 @@ class ModerationFormTests(BaseModerationTestCase):
         }
         self.form_values.update(test_form_values)
         del self.form_values['publish']
-        self.assert_expected_publication_status(Problem.HIDDEN,
+        self.assert_expected_publication_status(Problem.REJECTED,
                                                 self.form_values,
                                                 self.problem_form_url,
                                                 self.test_problem)
@@ -121,7 +121,7 @@ class ModerationFormTests(BaseModerationTestCase):
         }
         self.form_values.update(test_form_values)
         del self.form_values['publish']
-        self.assert_expected_publication_status(Problem.HIDDEN,
+        self.assert_expected_publication_status(Problem.REJECTED,
                                                 self.form_values,
                                                 self.problem_form_url,
                                                 self.test_problem)
@@ -203,7 +203,7 @@ class ModerationFormTests(BaseModerationTestCase):
 
 
     def test_moderation_form_doesnt_require_moderated_description_when_hiding_problems(self):
-        expected_status = Problem.HIDDEN
+        expected_status = Problem.REJECTED
         test_form_values = {
             'keep_private': ''
         }
@@ -398,7 +398,7 @@ class SecondTierModerationFormTests(BaseModerationTestCase):
         self.assertEqual(problem.publication_status, expected_status)
 
     def test_second_tier_moderation_form_doesnt_require_moderated_description_when_hiding_problems(self):
-        expected_status = Problem.HIDDEN
+        expected_status = Problem.REJECTED
         test_form_values = {
             'keep_private': ''
         }
@@ -421,7 +421,7 @@ class SecondTierModerationFormTests(BaseModerationTestCase):
         }
         self.form_values.update(test_form_values)
         del self.form_values['publish']
-        self.assert_expected_publication_status(Problem.HIDDEN,
+        self.assert_expected_publication_status(Problem.REJECTED,
                                                 self.form_values,
                                                 self.second_tier_problem_form_url,
                                                 self.test_second_tier_moderation_problem)

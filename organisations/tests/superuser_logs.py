@@ -18,7 +18,7 @@ class SuperuserLogTests(AuthorizationTestCase):
                                                     'publication_status': Problem.PUBLISHED})
         # Create a hidden problem
         self.hidden_problem = create_test_problem({'organisation': self.test_organisation,
-                                                   'publication_status': Problem.HIDDEN})
+                                                   'publication_status': Problem.REJECTED})
         self.test_urls = [
             reverse('home', kwargs={'cobrand': 'choices'}),
             reverse('trust-dashboard', kwargs={'code': self.test_trust.code}),

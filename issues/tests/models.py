@@ -63,7 +63,7 @@ class ProblemTestCase(AuthorizationTestCase):
                                             cobrand='choices')
 
         self.test_hidden_status_problem = Problem(organisation=self.test_organisation,
-                                                  description='A Test Hidden Problem',
+                                                  description='A Test Rejected Problem',
                                                   category='cleanliness',
                                                   reporter_name='Test User',
                                                   reporter_email='reporter@example.com',
@@ -506,7 +506,7 @@ class ProblemManagerTests(ManagerTest):
         self.new_public_moderated_problem_hidden = create_test_problem({
             'organisation': self.test_organisation,
             'public': True,
-            'publication_status': Problem.HIDDEN
+            'publication_status': Problem.REJECTED
         })
         self.new_public_moderated_problem_published = create_test_problem({
             'organisation': self.test_organisation,
@@ -516,7 +516,7 @@ class ProblemManagerTests(ManagerTest):
         self.new_private_moderated_problem_hidden = create_test_problem({
             'organisation': self.test_organisation,
             'public': False,
-            'publication_status': Problem.HIDDEN
+            'publication_status': Problem.REJECTED
         })
         self.new_private_moderated_problem_published = create_test_problem({
             'organisation': self.test_organisation,
@@ -528,7 +528,7 @@ class ProblemManagerTests(ManagerTest):
         self.closed_public_moderated_problem_hidden = create_test_problem({
             'organisation': self.test_organisation,
             'public': True,
-            'publication_status': Problem.HIDDEN,
+            'publication_status': Problem.REJECTED,
             'status': Problem.RESOLVED
         })
         self.closed_public_moderated_problem_published = create_test_problem({
@@ -540,7 +540,7 @@ class ProblemManagerTests(ManagerTest):
         self.closed_private_moderated_problem_hidden = create_test_problem({
             'organisation': self.test_organisation,
             'public': False,
-            'publication_status': Problem.HIDDEN,
+            'publication_status': Problem.REJECTED,
             'status': Problem.RESOLVED
         })
         self.closed_private_moderated_problem_published = create_test_problem({
@@ -597,13 +597,13 @@ class ProblemManagerTests(ManagerTest):
             'organisation': self.test_organisation,
             'public': True,
             'requires_second_tier_moderation': True,
-            'publication_status': Problem.HIDDEN
+            'publication_status': Problem.REJECTED
         })
         self.private_problem_requiring_second_tier_moderation = create_test_problem({
             'organisation': self.test_organisation,
             'public': False,
             'requires_second_tier_moderation': True,
-            'publication_status': Problem.HIDDEN
+            'publication_status': Problem.REJECTED
         })
 
         # Problems in hidden statuses
