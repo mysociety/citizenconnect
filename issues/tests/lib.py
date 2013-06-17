@@ -102,6 +102,11 @@ class LibTests(TestCase):
         self.assertEqual(actual, expected)
 
     def test_changes_for_model(self):
+
+        # Call the hompage to force the reversion.middleware to be loaded. This
+        # is required for this test to pass in isolation. Not sure why.
+        self.client.get('/')
+
         # Make a problem and give it some history
         with reversion.create_revision():
             problem = create_test_problem({'status': Problem.NEW,
