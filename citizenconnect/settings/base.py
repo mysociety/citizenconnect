@@ -216,6 +216,10 @@ PASSWORD_COMPLEXITY = {
     "PUNCTUATION": 1,
 }
 
+AUTHENTICATION_BACKENDS = (
+    'citizenconnect.backends.RateLimitedBackend',
+)
+
 
 # Now get the mySociety configuration
 from .mysociety import *
