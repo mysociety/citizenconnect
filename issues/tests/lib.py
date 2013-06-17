@@ -72,12 +72,10 @@ class LibTests(TestCase):
 
     def test_changes_as_string_escalated_acknowledged(self):
         old_escalated = {'status': Problem.ESCALATED,
-                         'publication_status': Problem.HIDDEN,
-                         'moderated': Problem.MODERATED}
+                         'publication_status': Problem.HIDDEN}
 
         new_escalated_acknowledged = {'status': Problem.ESCALATED_ACKNOWLEDGED,
-                                      'publication_status': Problem.HIDDEN,
-                                      'moderated': Problem.MODERATED}
+                                      'publication_status': Problem.HIDDEN}
 
         expected = "Acknowledged"
         changes = changed_attrs(old_escalated, new_escalated_acknowledged, Problem.REVISION_ATTRS)
@@ -86,12 +84,10 @@ class LibTests(TestCase):
 
     def test_changes_as_string_escalated_resolved(self):
         old_escalated_acknowledged = {'status': Problem.ESCALATED_ACKNOWLEDGED,
-                                      'publication_status': Problem.HIDDEN,
-                                      'moderated': Problem.MODERATED}
+                                      'publication_status': Problem.HIDDEN}
 
         new_escalated_resolved = {'status': Problem.ESCALATED_RESOLVED,
-                                  'publication_status': Problem.HIDDEN,
-                                  'moderated': Problem.MODERATED}
+                                  'publication_status': Problem.HIDDEN}
 
         expected = "Resolved"
         changes = changed_attrs(old_escalated_acknowledged, new_escalated_resolved, Problem.REVISION_ATTRS)
