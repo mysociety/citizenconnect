@@ -2,7 +2,8 @@ from django.conf.urls import patterns, url
 
 from organisations.views import *
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     url(r'^map$', Map.as_view(), name='org-map'),
     url(r'^pick-provider$', OrganisationPickProvider.as_view(), name='org-pick-provider'),
     url(r'^summary$', Summary.as_view(), name='org-all-summary'),
