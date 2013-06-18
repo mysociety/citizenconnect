@@ -1,7 +1,7 @@
 import logging
 logger = logging.getLogger(__name__)
 
-from datetime import datetime, timedelta
+from datetime import datetime
 import hmac
 import hashlib
 
@@ -48,6 +48,7 @@ class ProblemQuerySet(models.query.QuerySet):
             Q(status__in=Problem.OPEN_STATUSES) &
             Q(status__in=Problem.NON_ESCALATION_STATUSES)
         )
+
 
 class ProblemManager(models.Manager):
     use_for_related_fields = True
