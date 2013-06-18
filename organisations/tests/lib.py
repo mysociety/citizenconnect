@@ -205,6 +205,8 @@ class IntervalCountsTest(TestCase):
         for age in review_ages:
             create_review_with_age(self.test_organisation, age)
 
+        self.rejected_problem = create_problem_with_age(self.test_organisation, 1, {'publication_status': Problem.REJECTED})
+
     def test_organisation_interval_counts(self):
         organisation_filters = {'organisation_id': self.test_organisation.id}
         expected_counts = {'week': 3,

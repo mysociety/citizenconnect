@@ -42,11 +42,15 @@ class Command(BaseCommand):
                                   time_to_address=template_problem.time_to_address)
 
             new_problem.public = int(random.random() * 2)
-            if new_problem.public == 1:
-                if int(random.random() * 10) < 8:
-                    new_problem.moderated = 1
-                    if int(random.random() * 10) < 8:
-                        new_problem.publication_status = 1
+
+            # set the publication_status
+            if int(random.random() * 10 ) < 4:
+                new_problem.publication_status = Problem.NOT_MODERATED
+            elif int(random.random() * 10 ) < 4:
+                new_problem.publication_status = Problem.PUBLISHED
+            else: 
+                new_problem.publication_status = Problem.REJECTED
+
             new_problem.category= Problem.CATEGORY_CHOICES[int(random.random() * len(Problem.CATEGORY_CHOICES))][0]
             new_problem.organisation = organisations[int(random.random() * len(organisations))]
             services = new_problem.organisation.services.all()

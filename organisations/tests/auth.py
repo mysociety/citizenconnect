@@ -9,7 +9,9 @@ from organisations.auth import (user_is_superuser,
                                 is_valid_username_char,
                                 create_unique_username,
                                 create_initial_password,
-                                user_is_escalation_body)
+                                user_is_escalation_body,
+                                user_can_access_national_escalation_dashboard,
+                                user_can_access_private_national_summary)
 from organisations.tests.lib import AuthorizationTestCase
 
 
@@ -34,6 +36,46 @@ class AuthTests(AuthorizationTestCase):
         example_group_list = [auth.NHS_SUPERUSERS, auth.CASE_HANDLERS]
         self.assertTrue(user_in_groups(self.nhs_superuser, example_group_list))
         self.assertFalse(user_in_groups(self.ccg_user, example_group_list))
+
+    def test_user_can_access_national_escalation_dashboard(self):
+        for user in self.users_who_can_access_everything:
+            self.assertTrue(user_can_access_national_escalation_dashboard(user))
+        self.assertTrue(user_can_access_national_escalation_dashboard(self.customer_contact_centre_user))
+
+        users_who_shouldnt_have_access = [
+            self.ccg_user,
+            self.other_ccg_user,
+            self.no_ccg_user,
+            self.trust_user,
+            self.other_trust_user,
+            self.no_trust_user,
+            self.case_handler,
+            self.second_tier_moderator,
+            self.anonymous_user
+        ]
+
+        for user in users_who_shouldnt_have_access:
+            self.assertFalse(user_can_access_national_escalation_dashboard(user), "{0} can access the national escalation dashboard when they shouldn't be able to".format(user))
+
+    def test_user_can_access_private_national_summary(self):
+        for user in self.users_who_can_access_everything:
+            self.assertTrue(user_can_access_private_national_summary(user))
+        self.assertTrue(user_can_access_private_national_summary(self.customer_contact_centre_user))
+
+        users_who_shouldnt_have_access = [
+            self.ccg_user,
+            self.other_ccg_user,
+            self.no_ccg_user,
+            self.trust_user,
+            self.other_trust_user,
+            self.no_trust_user,
+            self.case_handler,
+            self.second_tier_moderator,
+            self.anonymous_user
+        ]
+
+        for user in users_who_shouldnt_have_access:
+            self.assertFalse(user_can_access_private_national_summary(user), "{0} can access the national private summary when they shouldn't be able to".format(user))
 
     def test_is_valid_username_char(self):
         for char in string.whitespace:

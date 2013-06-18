@@ -7,7 +7,8 @@ from django.http import Http404
 # App imports
 from citizenconnect.shortcuts import render
 from organisations.models import Organisation, Service
-from organisations.views import PickProviderBase, OrganisationAwareViewMixin
+from organisations.views.base import PickProviderBase
+from organisations.views.organisations import OrganisationAwareViewMixin
 from organisations.auth import enforce_problem_access_check
 from organisations.lib import interval_counts
 

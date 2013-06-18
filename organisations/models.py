@@ -15,7 +15,7 @@ from .mixins import MailSendMixin
 from issues.models import Problem
 
 import auth
-from .auth import user_in_groups
+from .auth import user_in_group, user_in_groups
 from .metaphone import dm
 
 
@@ -33,6 +33,32 @@ class CCG(MailSendMixin, AuditedModel):
     def default_user_group(self):
         """Group to ensure that users are members of"""
         return Group.objects.get(pk=auth.CCG)
+
+    def can_be_accessed_by(self, user):
+        """ Can a user access this ccg? """
+
+        # Deactivated users - NO
+        if not user.is_active:
+            return False
+
+        # Django superusers - YES
+        if user.is_superuser:
+            return True
+
+        # NHS Superusers - YES
+        if user_in_group(user, auth.NHS_SUPERUSERS):
+            return True
+
+        # Users in this ccg - YES
+        if user in self.users.all():
+            return True
+
+        # Everyone else - NO
+        return False
+
+    @property
+    def problem_set(self):
+        return Problem.objects.filter(organisation__trust__in=self.trusts.all())
 
     def __unicode__(self):
         return self.name
