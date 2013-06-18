@@ -7,4 +7,4 @@ class MonitoredModelBackend(ModelBackend):
 
     @monitor_login
     def authenticate(self, **credentials):
-        super(MonitoredModelBackend, self).authenticate(**credentials)
+        return super(MonitoredModelBackend, self).authenticate(**credentials)
