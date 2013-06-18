@@ -21,9 +21,9 @@ class FailedAttempt( models.Model ):
     timestamp = models.DateTimeField( 'Last failed attempt', auto_now=True )
 
     def too_many_failures( self ):
-        """ 
+        """
         Check if the minimum number of failures needed for a block
-        has been reached 
+        has been reached
         """
         return self.failures >= FLB_MAX_FAILURES
 
@@ -36,9 +36,9 @@ class FailedAttempt( models.Model ):
                minutes=FLB_BLOCK_INTERVAL )
 
     def blocked( self ):
-        """ 
-        Shortcut function for checking both too_many_failures 
-        and recent_failure 
+        """
+        Shortcut function for checking both too_many_failures
+        and recent_failure
         """
         return self.too_many_failures( ) and self.recent_failure( )
     blocked.boolean = True
