@@ -49,25 +49,10 @@
 
             <h2>Ratings (optional)</h2>
 
-        {% for rating_form in rating_forms %}
-            {% for hidden in rating_form.hidden_fields %}
-                {{ hidden }}
+            {% for rating_form in rating_forms %}
+                {% include "reviews/rating-form.html" %}
+                {% include "message_list.html" with messages=rating_form.answer.errors message_type='error' %}
             {% endfor %}
-
-            <div class="gw">
-                <div class="g  two-thirds">
-                    <p class="info">{{ rating_form.question.label }}</p>
-                </div>
-
-                <div class="review-form__rating-answer  g  one-third">
-                    {{ rating_form.answer }}
-                    <div class="rateit" data-rateit-backingfld="#{{ rating_form.answer.auto_id }}"></div>
-                </div>
-            </div>
-
-            {% include "message_list.html" with messages=rating_form.answer.errors message_type='error' %}
-
-        {% endfor %}
         </fieldset>
 
 

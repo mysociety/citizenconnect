@@ -1,0 +1,15 @@
+{% for hidden in rating_form.hidden_fields %}
+    {{ hidden }}
+{% endfor %}
+
+<div class="gw">
+    <div class="g  two-thirds">
+        <p class="info">{{ rating_form.question.label }}</p>
+    </div>
+
+    <div class="review-form__rating-answer  g  one-third">
+        {{ rating_form.answer }}
+        <div class="rateit" data-rateit-backingfld="#{{ rating_form.answer.auto_id }}"></div>
+    </div>
+</div>
+
