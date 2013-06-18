@@ -98,7 +98,8 @@ MIDDLEWARE_CLASSES = (
     'pagination.middleware.PaginationMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'organisations.middleware.SuperuserLogEntryMiddleware'
+    'organisations.middleware.SuperuserLogEntryMiddleware',
+    'failedloginblocker.middleware.FailedLoginBlockerMiddleware',
 )
 
 ROOT_URLCONF = 'citizenconnect.urls'
@@ -142,7 +143,8 @@ INSTALLED_APPS = (
     'moderation',
     'api',
     'responses',
-    'reversion'
+    'reversion',
+    'failedloginblocker',
 )
 
 
@@ -215,6 +217,13 @@ PASSWORD_COMPLEXITY = {
     "PUNCTUATION": 1,
 }
 
+# Failed login blocker configuration
+FLB_MAX_FAILURES = 3
+FLB_BLOCK_INTERVAL = 60 # minutes
+
+AUTHENTICATION_BACKENDS = (
+    'failedloginblocker.backends.MonitoredModelBackend',
+)
 
 # Now get the mySociety configuration
 from .mysociety import *
