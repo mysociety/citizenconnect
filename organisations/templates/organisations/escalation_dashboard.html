@@ -2,6 +2,7 @@
 {% load url from future %}
 {% load staticfiles %}
 {% load render_table from django_tables2 %}
+{% load page_auth %}
 
 {% block title %}Escalated Problems{% endblock %}
 
@@ -12,7 +13,7 @@
     <h1>Escalated Problems</h1>
 </div>
 
-{% include 'organisations/includes/escalation_tabs.html' with active_tab='dashboard' %}
+{% include tabs_template with active_tab='escalation-dashboard' ccg=ccg %}
 
 {% include 'organisations/includes/filters.html' %}
 

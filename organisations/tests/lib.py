@@ -205,6 +205,8 @@ class IntervalCountsTest(TestCase):
         for age in review_ages:
             create_review_with_age(self.test_organisation, age)
 
+        self.rejected_problem = create_problem_with_age(self.test_organisation, 1, {'publication_status': Problem.REJECTED})
+
     def test_organisation_interval_counts(self):
         organisation_filters = {'organisation_id': self.test_organisation.id}
         expected_counts = {'week': 3,
@@ -387,13 +389,19 @@ class IntervalCountsTest(TestCase):
         actual = interval_counts(organisation_filters=organisation_filters)
         self.assertEqual(expected_counts, actual)
 
-    def test_filter_by_breach(self):
+    def test_filter_by_breach_filter(self):
+        self._test_filter_by_bool_filters('breach')
+
+    def test_filter_by_formal_complaint_filter(self):
+        self._test_filter_by_bool_filters('formal_complaint')
+
+    def _test_filter_by_bool_filters(self, filter):
         # Add some specific breach problems in for self.test_organisation
-        create_problem_with_age(self.test_organisation, 1, {'breach': True})
-        create_problem_with_age(self.test_organisation, 10, {'breach': True})
-        create_problem_with_age(self.test_organisation, 100, {'breach': True})
-        create_problem_with_age(self.test_organisation, 365, {'breach': True})
-        problem_filters = {'breach': True}
+        create_problem_with_age(self.test_organisation, 1, {filter: True})
+        create_problem_with_age(self.test_organisation, 10, {filter: True})
+        create_problem_with_age(self.test_organisation, 100, {filter: True})
+        create_problem_with_age(self.test_organisation, 365, {filter: True})
+        problem_filters = {filter: True}
         threshold = ['six_months', 1]
         expected_counts = [{'week': 1,
                             'four_weeks': 2,
@@ -408,8 +416,8 @@ class IntervalCountsTest(TestCase):
                             'average_time_to_address': None}]
         actual = interval_counts(problem_filters=problem_filters, threshold=threshold)
         self.assertEqual(expected_counts, actual)
-
-        problem_filters = {'breach': False}
+        
+        problem_filters = {filter: False}
         expected_counts = [{'week': 2,
                             'four_weeks': 3,
                             'id': self.other_test_organisation.id,

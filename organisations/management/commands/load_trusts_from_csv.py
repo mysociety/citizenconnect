@@ -31,7 +31,7 @@ class Command(BaseCommand):
         #     default=False,
         #     help='Delete existing trusts, and associated organisations etc'),
         # )
-        
+
 
     def clean_value(self, value):
         if value == 'NULL':
@@ -65,12 +65,13 @@ class Command(BaseCommand):
                 row[key] = self.clean_value(val)
 
             try:
-                # Remember to update the docs in organisations/csv_formats.md if you make changes here
+                # Remember to update the docs in documentation/csv_formats.md if you make changes here
                 ods_code = self.clean_value(row['ODS Code'])
                 name     = self.clean_value(row['Name']    )
                 email    = self.clean_value(row['Email']   )
                 secondary_email = self.clean_value(row['Secondary Email'])
-                ccg_code = self.clean_value(row['CCG Code'] )
+                escalation_ccg_code = self.clean_value(row['Escalation CCG'] )
+                other_ccg_codes = self.clean_value(row['Other CCGs'] or '').split(r'|')
 
             except KeyError as message:
                 raise Exception("Missing column with the heading '{0}'".format(message))
@@ -81,23 +82,38 @@ class Command(BaseCommand):
             if not ods_code:
                 continue
 
-            # load the CCG
+            # load the various CCGs
             try:
-                ccg = CCG.objects.get(code=ccg_code)
+                escalation_ccg = CCG.objects.get(code=escalation_ccg_code)
             except CCG.DoesNotExist:
                 raise Exception(
-                    "Could not find CCG with code '{0}' on line {1}".format(
-                        ccg_code, rownum
+                    "Could not find 'Escalation CCG' with code '{0}' on line {1}".format(
+                        escalation_ccg_code, rownum
                     )
                 )
             finally:
                 transaction.rollback()
 
+            all_ccgs = set()
+            all_ccgs.add(escalation_ccg)
+            for other_code in other_ccg_codes:
+                if other_code == '': continue
+                try:
+                    all_ccgs.add(CCG.objects.get(code=other_code))
+                except CCG.DoesNotExist:
+                    raise Exception(
+                        "Could not find 'Other CCGs' entry with code '{0}' on line {1}".format(
+                            other_code, rownum
+                        )
+                    )
+                finally:
+                    transaction.rollback()
+
             trust_defaults = {
                 'name': name,
                 'email': email,
                 'secondary_email': secondary_email,
-                'escalation_ccg': ccg,
+                'escalation_ccg': escalation_ccg,
             }
 
             try:
@@ -112,7 +128,8 @@ class Command(BaseCommand):
                 if trust_created or update:
                     # Delete all current CCG links and set the one we expect
                     trust.ccgs.clear()
-                    trust.ccgs.add(ccg)
+                    for ccg in all_ccgs:
+                        trust.ccgs.add(ccg)
 
                 if trust_created:
                     self.stdout.write('Created trust %s\n' % trust.name)

@@ -3,6 +3,7 @@
         "pk": 2,
         "model": "reviews_submit.question",
         "fields": {
+            "is_required": false,
             "org_type": "hospitals",
             "updated": "2013-04-29T11:58:37.116Z",
             "api_question_id": 2,
@@ -13,6 +14,7 @@
         "pk": 3,
         "model": "reviews_submit.question",
         "fields": {
+            "is_required": false,
             "org_type": "hospitals",
             "updated": "2013-04-29T11:58:37.145Z",
             "api_question_id": 3,
@@ -23,6 +25,7 @@
         "pk": 4,
         "model": "reviews_submit.question",
         "fields": {
+            "is_required": false,
             "org_type": "hospitals",
             "updated": "2013-04-29T11:58:37.175Z",
             "api_question_id": 4,
@@ -33,6 +36,7 @@
         "pk": 5,
         "model": "reviews_submit.question",
         "fields": {
+            "is_required": false,
             "org_type": "hospitals",
             "updated": "2013-04-29T11:58:37.204Z",
             "api_question_id": 5,
@@ -43,6 +47,7 @@
         "pk": 6,
         "model": "reviews_submit.question",
         "fields": {
+            "is_required": false,
             "org_type": "hospitals",
             "updated": "2013-04-29T11:58:37.233Z",
             "api_question_id": 6,
@@ -53,6 +58,7 @@
         "pk": 7,
         "model": "reviews_submit.question",
         "fields": {
+            "is_required": true,
             "org_type": "hospitals",
             "updated": "2013-04-29T11:58:37.262Z",
             "api_question_id": 7,
@@ -63,6 +69,7 @@
         "pk": 9,
         "model": "reviews_submit.question",
         "fields": {
+            "is_required": false,
             "org_type": "gppractices",
             "updated": "2013-04-29T11:58:50.065Z",
             "api_question_id": 2,
@@ -73,6 +80,7 @@
         "pk": 10,
         "model": "reviews_submit.question",
         "fields": {
+            "is_required": false,
             "org_type": "gppractices",
             "updated": "2013-04-29T11:58:50.094Z",
             "api_question_id": 3,
@@ -83,6 +91,7 @@
         "pk": 11,
         "model": "reviews_submit.question",
         "fields": {
+            "is_required": false,
             "org_type": "gppractices",
             "updated": "2013-04-29T11:58:50.123Z",
             "api_question_id": 4,
@@ -93,6 +102,7 @@
         "pk": 12,
         "model": "reviews_submit.question",
         "fields": {
+            "is_required": false,
             "org_type": "gppractices",
             "updated": "2013-04-29T11:58:50.153Z",
             "api_question_id": 5,
@@ -103,6 +113,7 @@
         "pk": 13,
         "model": "reviews_submit.question",
         "fields": {
+            "is_required": true,
             "org_type": "gppractices",
             "updated": "2013-04-29T11:58:50.183Z",
             "api_question_id": 7,
@@ -113,6 +124,7 @@
         "pk": 14,
         "model": "reviews_submit.question",
         "fields": {
+            "is_required": false,
             "org_type": "gppractices",
             "updated": "2013-04-29T11:58:50.212Z",
             "api_question_id": 8,

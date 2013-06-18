@@ -10,16 +10,16 @@ from django.contrib.auth.models import User, Group
 from django.dispatch import receiver
 
 from citizenconnect.models import AuditedModel
-from .mixins import MailSendMixin, UserCreationMixin
+from .mixins import MailSendMixin
 
 from issues.models import Problem
 
 import auth
-from .auth import user_in_groups
+from .auth import user_in_group, user_in_groups
 from .metaphone import dm
 
 
-class CCG(MailSendMixin, UserCreationMixin, AuditedModel):
+class CCG(MailSendMixin, AuditedModel):
     name = models.TextField()
     code = models.CharField(max_length=8, db_index=True, unique=True)
     users = models.ManyToManyField(User, related_name='ccgs')
@@ -34,11 +34,37 @@ class CCG(MailSendMixin, UserCreationMixin, AuditedModel):
         """Group to ensure that users are members of"""
         return Group.objects.get(pk=auth.CCG)
 
+    def can_be_accessed_by(self, user):
+        """ Can a user access this ccg? """
+
+        # Deactivated users - NO
+        if not user.is_active:
+            return False
+
+        # Django superusers - YES
+        if user.is_superuser:
+            return True
+
+        # NHS Superusers - YES
+        if user_in_group(user, auth.NHS_SUPERUSERS):
+            return True
+
+        # Users in this ccg - YES
+        if user in self.users.all():
+            return True
+
+        # Everyone else - NO
+        return False
+
+    @property
+    def problem_set(self):
+        return Problem.objects.filter(organisation__trust__in=self.trusts.all())
+
     def __unicode__(self):
         return self.name
 
 
-class Trust(MailSendMixin, UserCreationMixin, AuditedModel):
+class Trust(MailSendMixin, AuditedModel):
     name = models.TextField()
     code = models.CharField(max_length=8, db_index=True, unique=True)
     users = models.ManyToManyField(User, related_name='trusts')

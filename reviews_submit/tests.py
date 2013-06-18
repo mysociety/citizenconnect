@@ -68,7 +68,7 @@ class ReviewFormDateCompareTest(TestCase):
             ( 4, 2012,   4, 2011,   False ),
             ( 5, 2012,   4, 2011,   False )
         ]
-        
+
         for mm_a, yyyy_a, mm_b, yyyy_b, expected in tests:
             # print mm_a, yyyy_a, mm_b, yyyy_b, expected
             dt_a = datetime.date(year=yyyy_a, month=mm_a, day=1)
@@ -95,16 +95,21 @@ class ReviewFormViewBase(object):
                                  }
 
         questions = Question.objects.filter(org_type=self.organisation.organisation_type).order_by('id')
+        self.questions = questions
 
         # store the questions we want to ask
-        for prefix, question in enumerate(questions):
-            prefix += 1
+        for counter, question in enumerate(questions):
+            prefix = str(question.id)
 
-            answer_index = (prefix-1) % 6
+            answer_index = counter % 6
             if answer_index == 5:
                 answer_id = ''
             else:
                 answer_id = question.answers.all()[answer_index].id
+
+            # Set all required questions to have an answer
+            if question.is_required:
+                answer_id = question.answers.all()[0].id
 
             entry = {}
             entry[str(prefix) + '-question'] = question.id
@@ -127,8 +132,8 @@ class ReviewFormViewBase(object):
         })
 
         # check ratings correctly stored
-        for prefix, rating in enumerate(review.ratings.order_by('question__id')):
-            prefix = str(prefix + 1)
+        for rating in review.ratings.all():
+            prefix = str(rating.question.id)
             # print 'Q: ' + str(rating.question)
             # print 'A: ' + str(rating.answer)
 
@@ -157,7 +162,8 @@ class ReviewFormViewTest(ReviewFormViewBase, TestCase):
         self.assertContains(resp, '<h1>Share Your Experience: %s</h1>' % self.organisation.name, count=1, status_code=200)
         self.assertTrue('organisation' in resp.context)
         self.assertEquals(resp.context['organisation'].pk, self.organisation.pk)
-        self.assertTrue('rating_forms' in resp.context)
+        self.assertTrue('required_rating_forms' in resp.context)
+        self.assertTrue('optional_rating_forms' in resp.context)
 
     def test_submitting_a_valid_review(self):
         self.assertEquals(self.organisation.submitted_reviews.count(), 0)
@@ -198,6 +204,11 @@ class ReviewFormViewTest(ReviewFormViewBase, TestCase):
         self.assertFormError(resp, 'form', 'agree_to_terms',
                              'You must agree to the terms and conditions to use this service.')
 
+    def test_form_requires_valid_email_address(self):
+        self.review_post_data['email'] = 'not an email'
+        resp = self.client.post(self.review_form_url, self.review_post_data)
+        self.assertFormError(resp, 'form', 'email', 'Enter a valid e-mail address.')
+
     def test_form_requires_visit_date(self):
         self.review_post_data['month_year_of_visit_year'] = None
         self.review_post_data['month_year_of_visit_month'] = None
@@ -209,6 +220,26 @@ class ReviewFormViewTest(ReviewFormViewBase, TestCase):
         self.review_post_data['comment'] = ''
         self.client.post(self.review_form_url, self.review_post_data)
         self.assertEquals(self.organisation.submitted_reviews.count(), 0)
+
+    def test_leaving_required_rating_empty(self):
+        required_questions = self.questions.filter(is_required=True)
+        self.assertTrue(len(required_questions), "Need some required questions for this test")
+
+        prefix = str(required_questions[0].id)
+        del self.review_post_data[prefix + '-answer']
+
+        resp = self.client.post(self.review_form_url, self.review_post_data)
+
+        # Would be better to use assertFormSetError from
+        #  https://code.djangoproject.com/ticket/11603 here, but it's a
+        # Django 1.6 thing
+        self.assertContains(
+            resp,
+            'Rating is required.'
+        )
+
+        # check that we've not been redirected
+        self.assertEqual(resp.status_code, 200) # not a redirect
 
 
 class ReviewFormViewBrowserTest(ReviewFormViewBase, SeleniumTestCase):

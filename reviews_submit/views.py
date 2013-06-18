@@ -1,21 +1,20 @@
 # Django imports
-from django.views.generic import FormView, TemplateView
+from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 
 # App imports
-from citizenconnect.shortcuts import render
-from organisations.views import PickProviderBase
+from organisations.views.base import PickProviderBase
 from organisations.models import Organisation
-from .models import Review, Rating, Question
+from .models import Review, Question
 from . import forms
 
 
 class ReviewPickProvider(PickProviderBase):
     result_link_url_name = 'review-form'
     title_text = 'Share Your Experience'
-    
+
 
 class ReviewForm(CreateView):
     template_name = 'reviews/review-form.html'
@@ -26,7 +25,11 @@ class ReviewForm(CreateView):
         # without worrying about whether it has been set yet
         self.cobrand = kwargs['cobrand']
         self.organisation = Organisation.objects.get(ods_code=kwargs['ods_code'])
-        self.questions = Question.objects.filter(org_type=self.organisation.organisation_type)
+
+        self.all_questions = Question.objects.filter(org_type=self.organisation.organisation_type)
+        self.required_questions = self.all_questions.filter(is_required=True)
+        self.optional_questions = self.all_questions.filter(is_required=False)
+
         return super(ReviewForm, self).dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
@@ -38,7 +41,10 @@ class ReviewForm(CreateView):
     def get_context_data(self, **kwargs):
         context = super(ReviewForm, self).get_context_data(**kwargs)
         context['organisation'] = self.organisation
-        context['rating_forms'] = forms.ratings_forms_for_review(self.get_object(), self.request, self.questions)
+
+        review = self.get_object()
+        context['required_rating_forms'] = forms.ratings_forms_for_review(review, self.request, self.required_questions)
+        context['optional_rating_forms'] = forms.ratings_forms_for_review(review, self.request, self.optional_questions)
 
         return context
 
@@ -49,7 +55,7 @@ class ReviewForm(CreateView):
 
     def form_valid(self, form):
         review = form.save()
-        rating_forms = forms.ratings_forms_for_review(review, self.request, self.questions)
+        rating_forms = forms.ratings_forms_for_review(review, self.request, self.all_questions)
         for rating_form in rating_forms:
             if not rating_form.is_valid():
                 return self.render_to_response(self.get_context_data(form=form))

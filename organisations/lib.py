@@ -60,6 +60,10 @@ def _create_problem_selects(intervals, data_intervals, boolean_fields, average_f
 
 def _apply_problem_filters(problem_filters, problem_filter_clauses, organisation_id, params):
 
+    # Filter out any REJECTED problems.
+    problem_filter_clauses.append("issues_problem.publication_status != %s")
+    params.append(Problem.REJECTED)
+
     # Apply problem filters to the issue table
     for criteria in ['status', 'service_id', 'category', 'moderated', 'publication_status']:
         value = problem_filters.get(criteria)
@@ -73,6 +77,11 @@ def _apply_problem_filters(problem_filters, problem_filter_clauses, organisation
     if breach is not None:
         problem_filter_clauses.append("issues_problem.breach = %s""")
         params.append(breach)
+
+    formal_complaint = problem_filters.get('formal_complaint')
+    if formal_complaint is not None:
+        problem_filter_clauses.append("issues_problem.formal_complaint = %s""")
+        params.append(formal_complaint)
 
     service_code = problem_filters.get('service_code')
     if service_code is not None:
