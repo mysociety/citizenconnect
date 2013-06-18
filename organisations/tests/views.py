@@ -955,19 +955,28 @@ class OrganisationMapTests(AuthorizationTestCase):
         self.assertEqual(response_json[1]['ods_code'], self.hospital.ods_code)
         self.assertEqual(response_json[1]['all_time_open'], 0)
 
-    def test_public_map_doesnt_include_unmoderated_or_unpublished_or_hidden_status_problems(self):
+    def test_public_map_doesnt_include_rejected_or_hidden_status_problems(self):
+        # These problems should show up
+        # A brand new un-moderated problem
         create_test_problem({'organisation': self.other_gp})
-        create_test_problem({'organisation': self.other_gp,
+        # A problem the moderator has accepted
+        create_test_problem({'organisation': self.hospital,
+                            'publication_status': Problem.PUBLISHED})
+
+        # These problems should not be shown
+        # A problem the moderator has rejected
+        create_test_problem({'organisation': self.hospital,
                              'publication_status': Problem.REJECTED})
+        # A problem the moderator has accepted, but a trust user has said
+        # is abusive/vexatious (possibly because it's a dupe)
         create_test_problem({'organisation': self.other_gp,
                              'publication_status': Problem.PUBLISHED,
                              'status': Problem.ABUSIVE})
-        create_test_problem({'organisation': self.other_gp,
-                            'publication_status': Problem.PUBLISHED})
 
         resp = self.client.get(self.map_url)
         response_json = json.loads(resp.context['organisations'])
         self.assertEqual(response_json[0]['all_time_open'], 1)
+        self.assertEqual(response_json[1]['all_time_open'], 1)
 
     def test_public_map_provider_urls_are_to_public_summary_pages(self):
         expected_hospital_url = reverse('public-org-summary', kwargs={'ods_code': self.hospital.ods_code,
