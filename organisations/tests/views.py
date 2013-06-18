@@ -554,7 +554,7 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         resp = self.client.get(self.public_hospital_problems_url)
         self.assertContains(resp, staff_problem_url)
 
-    def test_public_page_shows_private_problems_without_links(self):
+    def test_public_page_shows_private_problems(self):
         # Add a private problem
         private_problem = create_test_problem({'organisation': self.hospital,
                                                'publication_status': Problem.PUBLISHED,
@@ -564,20 +564,23 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         resp = self.client.get(self.public_hospital_problems_url)
         self.assertTrue(private_problem.reference_number in resp.content)
         self.assertTrue(private_problem.summary in resp.content)
-        self.assertTrue(private_problem_url not in resp.content)
+        self.assertTrue(private_problem_url in resp.content)
 
-    def test_public_page_doesnt_show_hidden_or_unmoderated_problems(self):
-        # Add some problems which shouldn't show up
-        unmoderated_problem = create_test_problem({'organisation': self.hospital})
-        unmoderated_problem_url = reverse('problem-view', kwargs={'pk': unmoderated_problem.id,
-                                                                  'cobrand': 'choices'})
-        hidden_problem = create_test_problem({'organisation': self.hospital,
+    def test_public_page_doesnt_show_rejected_problems(self):
+        rejected_problem = create_test_problem({'organisation': self.hospital,
                                               'publication_status': Problem.REJECTED})
-        hidden_problem_url = reverse('problem-view', kwargs={'pk': hidden_problem.id,
+        rejected_problem_url = reverse('problem-view', kwargs={'pk': rejected_problem.id,
                                                              'cobrand': 'choices'})
         resp = self.client.get(self.public_hospital_problems_url)
-        self.assertTrue(unmoderated_problem_url not in resp.content)
-        self.assertTrue(hidden_problem_url not in resp.content)
+        self.assertTrue(rejected_problem_url not in resp.content)
+
+    def test_public_page_shows_not_moderated_problems(self):
+        unmoderated_problem = create_test_problem({'organisation': self.hospital,
+                                                   'publication_status': Problem.NOT_MODERATED})
+        unmoderated_problem_url = reverse('problem-view', kwargs={'pk': unmoderated_problem.id,
+                                                                  'cobrand': 'choices'})
+        resp = self.client.get(self.public_hospital_problems_url)
+        self.assertTrue(unmoderated_problem_url in resp.content)
 
     def test_filters_by_status(self):
         # Add a problem in a different status that would show up

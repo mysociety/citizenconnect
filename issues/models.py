@@ -74,17 +74,23 @@ class ProblemManager(models.Manager):
     def unmoderated_problems(self):
         return self.all().filter(publication_status=Problem.NOT_MODERATED)
 
-    def open_moderated_published_visible_problems(self):
+    def open_published_visible_problems(self):
         return self.open_problems().filter(publication_status=Problem.PUBLISHED,
                                            status__in=Problem.VISIBLE_STATUSES)
 
-    def closed_moderated_published_visible_problems(self):
+    def closed_published_visible_problems(self):
         return self.closed_problems().filter(publication_status=Problem.PUBLISHED,
                                              status__in=Problem.VISIBLE_STATUSES)
 
-    def all_moderated_published_problems(self):
+    def all_published_visible_problems(self):
         return self.all().filter(publication_status=Problem.PUBLISHED,
                                  status__in=Problem.VISIBLE_STATUSES)
+
+    def all_not_rejected_visible_problems(self):
+        return self  \
+            .all()  \
+            .filter(status__in=Problem.VISIBLE_STATUSES)  \
+            .exclude(publication_status=Problem.REJECTED)
 
     def problems_requiring_second_tier_moderation(self):
         return self.all().filter(requires_second_tier_moderation=True)
