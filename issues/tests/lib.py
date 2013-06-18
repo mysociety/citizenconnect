@@ -16,20 +16,19 @@ from ..models import Problem
 class LibTests(TestCase):
 
     def setUp(self):
-        self.old = {'status': Problem.NEW, 'publication_status': Problem.HIDDEN, 'moderated': Problem.NOT_MODERATED}
-        self.new = {'status': Problem.ACKNOWLEDGED, 'publication_status': Problem.PUBLISHED, 'moderated': Problem.MODERATED}
+        self.old = {'status': Problem.NEW, 'publication_status': Problem.NOT_MODERATED}
+        self.new = {'status': Problem.ACKNOWLEDGED, 'publication_status': Problem.PUBLISHED}
 
-        self.old_missing = {'publication_status': Problem.HIDDEN, 'moderated': Problem.NOT_MODERATED}
+        self.old_missing = {'publication_status': Problem.NOT_MODERATED}
         self.new_missing = {'status': Problem.ACKNOWLEDGED, 'publication_status': Problem.PUBLISHED}
 
-        self.old_unchanged = {'status': Problem.NEW, 'publication_status': Problem.HIDDEN, 'moderated': Problem.NOT_MODERATED}
-        self.new_unchanged = {'status': Problem.ACKNOWLEDGED, 'publication_status': Problem.HIDDEN, 'moderated': Problem.MODERATED}
+        self.old_unchanged = {'status': Problem.NEW, 'publication_status': Problem.NOT_MODERATED}
+        self.new_unchanged = {'status': Problem.ACKNOWLEDGED, 'publication_status': Problem.REJECTED}
 
     def test_changed_attrs_happy_path(self):
         expected_changed = {
             'status': [Problem.NEW, Problem.ACKNOWLEDGED],
-            'publication_status': [Problem.HIDDEN, Problem.PUBLISHED],
-            'moderated': [Problem.NOT_MODERATED, Problem.MODERATED]
+            'publication_status': [Problem.NOT_MODERATED, Problem.PUBLISHED],
         }
         actual_changed = changed_attrs(self.old, self.new, Problem.REVISION_ATTRS)
         self.assertEqual(actual_changed, expected_changed)
@@ -37,8 +36,7 @@ class LibTests(TestCase):
     def test_changed_attrs_missing_attrs(self):
         expected_changed = {
             'status': [None, Problem.ACKNOWLEDGED],
-            'publication_status': [Problem.HIDDEN, Problem.PUBLISHED],
-            'moderated': [Problem.NOT_MODERATED, None]
+            'publication_status': [Problem.NOT_MODERATED, Problem.PUBLISHED],
         }
         actual_changed = changed_attrs(self.old_missing, self.new_missing, Problem.REVISION_ATTRS)
         self.assertEqual(actual_changed, expected_changed)
@@ -46,41 +44,38 @@ class LibTests(TestCase):
     def test_changed_attrs_unchanged_attrs(self):
         expected_changed = {
             'status': [Problem.NEW, Problem.ACKNOWLEDGED],
-            'moderated': [Problem.NOT_MODERATED, Problem.MODERATED]
+            'publication_status': [Problem.NOT_MODERATED, Problem.REJECTED]
         }
         actual_changed = changed_attrs(self.old_unchanged, self.new_unchanged, Problem.REVISION_ATTRS)
         self.assertEqual(actual_changed, expected_changed)
 
     def test_changes_as_string_happy_path(self):
-        expected = "Moderated, Published and Acknowledged"
+        expected = "Published and Acknowledged"
         changes = changed_attrs(self.old, self.new, Problem.REVISION_ATTRS)
         actual = changes_as_string(changes, Problem.TRANSITIONS)
         self.assertEqual(actual, expected)
 
     def test_changes_as_string_unchanged_attrs(self):
-        expected = "Moderated and Acknowledged"
+        expected = "Rejected and Acknowledged"
         changes = changed_attrs(self.old_unchanged, self.new_unchanged, Problem.REVISION_ATTRS)
         actual = changes_as_string(changes, Problem.TRANSITIONS)
         self.assertEqual(actual, expected)
 
     def test_changes_as_string_escalated(self):
         new_escalated = {'status': Problem.ESCALATED,
-                         'publication_status': Problem.HIDDEN,
-                         'moderated': Problem.MODERATED}
+                         'publication_status': Problem.REJECTED,}
 
-        expected = "Moderated and Escalated"
+        expected = "Rejected and Escalated"
         changes = changed_attrs(self.old, new_escalated, Problem.REVISION_ATTRS)
         actual = changes_as_string(changes, Problem.TRANSITIONS)
         self.assertEqual(actual, expected)
 
     def test_changes_as_string_escalated_acknowledged(self):
         old_escalated = {'status': Problem.ESCALATED,
-                         'publication_status': Problem.HIDDEN,
-                         'moderated': Problem.MODERATED}
+                         'publication_status': Problem.REJECTED}
 
         new_escalated_acknowledged = {'status': Problem.ESCALATED_ACKNOWLEDGED,
-                                      'publication_status': Problem.HIDDEN,
-                                      'moderated': Problem.MODERATED}
+                                      'publication_status': Problem.REJECTED}
 
         expected = "Acknowledged"
         changes = changed_attrs(old_escalated, new_escalated_acknowledged, Problem.REVISION_ATTRS)
@@ -89,12 +84,10 @@ class LibTests(TestCase):
 
     def test_changes_as_string_escalated_resolved(self):
         old_escalated_acknowledged = {'status': Problem.ESCALATED_ACKNOWLEDGED,
-                                      'publication_status': Problem.HIDDEN,
-                                      'moderated': Problem.MODERATED}
+                                      'publication_status': Problem.REJECTED}
 
         new_escalated_resolved = {'status': Problem.ESCALATED_RESOLVED,
-                                  'publication_status': Problem.HIDDEN,
-                                  'moderated': Problem.MODERATED}
+                                  'publication_status': Problem.REJECTED}
 
         expected = "Resolved"
         changes = changed_attrs(old_escalated_acknowledged, new_escalated_resolved, Problem.REVISION_ATTRS)
@@ -102,11 +95,15 @@ class LibTests(TestCase):
         self.assertEqual(actual, expected)
 
     def test_changes_for_model(self):
+
+        # Call the hompage to force the reversion.middleware to be loaded. This
+        # is required for this test to pass in isolation. Not sure why.
+        self.client.get('/')
+
         # Make a problem and give it some history
         with reversion.create_revision():
             problem = create_test_problem({'status': Problem.NEW,
-                                           'moderated': Problem.NOT_MODERATED,
-                                           'publication_status': Problem.HIDDEN})
+                                           'publication_status': Problem.NOT_MODERATED})
 
         problem = Problem.objects.get(pk=problem.id)
         problem.status = Problem.ACKNOWLEDGED
@@ -119,7 +116,6 @@ class LibTests(TestCase):
             problem.save()
 
         problem = Problem.objects.get(pk=problem.id)
-        problem.moderated = Problem.MODERATED
         problem.publication_status = Problem.PUBLISHED
         with reversion.create_revision():
             problem.save()
@@ -127,7 +123,7 @@ class LibTests(TestCase):
         expected_changes = [
             {'user': None, 'description': 'Acknowledged'},
             {'user': None, 'description': 'Resolved'},
-            {'user': None, 'description': 'Moderated and Published'}
+            {'user': None, 'description': 'Published'},
         ]
         actual_changes = changes_for_model(problem)
 
