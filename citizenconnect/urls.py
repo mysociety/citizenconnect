@@ -6,7 +6,7 @@ from django.views.generic import RedirectView
 
 from .views import Home, DevHomepageSelector, About, Feedback, FeedbackConfirm
 # Admin section
-from django.contrib import admin
+from ratelimitbackend import admin
 admin.autodiscover()
 
 

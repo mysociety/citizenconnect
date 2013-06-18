@@ -15,7 +15,7 @@ class BasicAccountTests(TestCase):
         # Create a dummy user and organisation
         self.test_trust = create_test_trust()
         self.test_organisation = create_test_organisation({'trust': self.test_trust})
-        self.test_user = User.objects.create_user('Test User', 'user@example.com', 'password')
+        self.test_user = User.objects.create_user('test_user', 'user@example.com', 'password')
         self.test_user.save()
 
         self.test_trust.users.add(self.test_user)

@@ -98,7 +98,8 @@ MIDDLEWARE_CLASSES = (
     'pagination.middleware.PaginationMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'organisations.middleware.SuperuserLogEntryMiddleware'
+    'organisations.middleware.SuperuserLogEntryMiddleware',
+    'ratelimitbackend.middleware.RateLimitMiddleware'
 )
 
 ROOT_URLCONF = 'citizenconnect.urls'
@@ -214,6 +215,10 @@ PASSWORD_COMPLEXITY = {
     "DIGITS": 1,
     "PUNCTUATION": 1,
 }
+
+AUTHENTICATION_BACKENDS = (
+    'citizenconnect.backends.RateLimitedBackend',
+)
 
 
 # Now get the mySociety configuration

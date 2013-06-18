@@ -1,4 +1,4 @@
-from django.contrib import admin
+from ratelimitbackend import admin
 from reviews_submit import models
 
 # tweak to taste - simple at the top and more custom below

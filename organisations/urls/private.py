@@ -60,7 +60,7 @@ urlpatterns = patterns(
 
     # Authentication related urls
     url(r'^login$',
-        'django.contrib.auth.views.login',
+        'ratelimitbackend.views.login',
         name='login',
         kwargs={'template_name': 'organisations/auth/login.html'}),
 

@@ -1,4 +1,4 @@
-from django.contrib import admin
+from ratelimitbackend import admin
 
 import reversion
 
