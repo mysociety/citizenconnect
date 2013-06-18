@@ -31,4 +31,5 @@ class FailedLoginBlockerTest(TestCase):
         failed_attempt = FailedAttempt.objects.all()[0]
         self.assertEqual(3, failed_attempt.failures)
 
+        # After 3 failed login attempts, an exception should be raised.
         self.assertRaises(LoginBlockedError, self.client.login, **credentials)
