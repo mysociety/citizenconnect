@@ -6,9 +6,10 @@ and 1 day are used.
 The easiest way to remove a block is to delete the FailedAttempt record (e.g.
 via the admin).
 """
+from datetime import timedelta
 
 from django.db import models
-from datetime import datetime, timedelta
+from django.utils import timezone
 from django.conf import settings
 
 # default values that can be overriden in settings.py
@@ -33,7 +34,7 @@ class FailedAttempt(models.Model):
         Checks if the timestamp one the FailedAttempt object is
         recent enough to result in an increase in failures
         """
-        return datetime.now() < self.timestamp + timedelta(minutes=FLB_BLOCK_INTERVAL)
+        return timezone.now() < self.timestamp + timedelta(minutes=FLB_BLOCK_INTERVAL)
 
     def blocked(self):
         """
