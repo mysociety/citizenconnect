@@ -77,10 +77,23 @@ class RatingForm(forms.ModelForm):
 
     def __init__(self, question, *args, **kwargs):
         super(RatingForm, self).__init__(*args, **kwargs)
+
+        self.question = question
+
         self.fields['question'].label = question.title
 
         self.fields['answer'].queryset = question.answers.all()
         self.fields['answer'].empty_label = '-- please select one --'
+
+    def clean_answer(self):
+
+        answer = self.cleaned_data.get('answer')
+
+        if self.question.is_required and answer is None:
+            raise forms.ValidationError("Rating is required.")
+            
+        return answer
+
 
     class Meta:
         model = Rating
@@ -99,8 +112,8 @@ class RatingForm(forms.ModelForm):
 def ratings_forms_for_review(review, request, questions):
 
     rating_forms = []
-    for prefix, q in enumerate(questions):
-        prefix += 1  # want these 1 based
+    for q in questions:
+        prefix = str(q.id)  # be sure that the form names are unique
         instance = Rating(question=q, review=review)
 
         rating_forms.append(

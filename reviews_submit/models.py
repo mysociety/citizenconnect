@@ -13,7 +13,7 @@ class Review(AuditedModel):
 
     """A Review of a provider that has been left on the site."""
 
-    email = models.CharField(max_length=100)
+    email = models.EmailField(max_length=254)
     display_name = models.CharField(max_length=100)
     is_anonymous = models.BooleanField(default=False)
     title = models.CharField(max_length=255, blank=False)
@@ -40,7 +40,7 @@ class Rating(models.Model):
 
 class Question(models.Model):
 
-    """Organisations type specific questions for ratings."""
+    """Organisation type specific questions for ratings."""
 
     title = models.CharField(max_length=255)
     api_question_id = models.IntegerField()
@@ -48,6 +48,7 @@ class Question(models.Model):
                                 choices=settings.ORGANISATION_CHOICES,
                                 blank=False)
     updated = models.DateTimeField(default=timezone.now)
+    is_required = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.title
