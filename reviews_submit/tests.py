@@ -95,16 +95,21 @@ class ReviewFormViewBase(object):
                                  }
 
         questions = Question.objects.filter(org_type=self.organisation.organisation_type).order_by('id')
+        self.questions = questions
 
         # store the questions we want to ask
         for counter, question in enumerate(questions):
             prefix = str(question.id)
 
-            answer_index = (counter) % 6
+            answer_index = counter % 6
             if answer_index == 5:
                 answer_id = ''
             else:
                 answer_id = question.answers.all()[answer_index].id
+
+            # Set all required questions to have an answer
+            if question.is_required:
+                answer_id = question.answers.all()[0].id
 
             entry = {}
             entry[str(prefix) + '-question'] = question.id
@@ -215,6 +220,26 @@ class ReviewFormViewTest(ReviewFormViewBase, TestCase):
         self.review_post_data['comment'] = ''
         self.client.post(self.review_form_url, self.review_post_data)
         self.assertEquals(self.organisation.submitted_reviews.count(), 0)
+
+    def test_leaving_required_rating_empty(self):
+        required_questions = self.questions.filter(is_required=True)
+        self.assertTrue(len(required_questions), "Need some required questions for this test")
+
+        prefix = str(required_questions[0].id)
+        del self.review_post_data[prefix + '-answer']
+
+        resp = self.client.post(self.review_form_url, self.review_post_data)
+
+        # Would be better to use assertFormSetError from
+        #  https://code.djangoproject.com/ticket/11603 here, but it's a
+        # Django 1.6 thing
+        self.assertContains(
+            resp,
+            'Rating is required.'
+        )
+
+        # check that we've not been redirected
+        self.assertEqual(resp.status_code, 200) # not a redirect
 
 
 class ReviewFormViewBrowserTest(ReviewFormViewBase, SeleniumTestCase):
