@@ -5,6 +5,11 @@ from .exceptions import LoginBlockedError
 
 
 class FailedLoginBlockerMiddleware(object):
+    """
+    When a `LoginBlockedError` is raised this middleware intercepts it and renders
+    a blocked template with a 403 status.
+    """
+
     def process_exception(self, request, exception):
         if type(exception) is not LoginBlockedError:
             return

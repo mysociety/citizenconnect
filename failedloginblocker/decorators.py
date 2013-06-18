@@ -6,7 +6,7 @@ from .exceptions import LoginBlockedError
 
 def monitor_login(auth_func):
     """
-    Function that replaces Django authentication() function with one that
+    Function that decorates Django authenticate() function with one that
     tracks failed logins and blocks further attempts based on a threshold
     """
 
@@ -15,7 +15,7 @@ def monitor_login(auth_func):
         return auth_func
 
     def decorate(*args, **kwargs):
-        """ Wrapper for Django authentication function """
+        """ Wrapper for Django authenticate function """
         user = kwargs.get('username', '')
         if not user:
             raise ValueError('username must be supplied by the \
