@@ -245,7 +245,6 @@ class TrustProblemsTests(AuthorizationTestCase):
         # Problems
         self.staff_problem = create_test_problem({'category': 'staff',
                                                   'organisation': self.hospital,
-                                                  'moderated': Problem.MODERATED,
                                                   'publication_status': Problem.PUBLISHED,
                                                   'moderated_description': "Moderated description"})
         # Add an explicitly public and an explicitly private problem to test
@@ -269,11 +268,9 @@ class TrustProblemsTests(AuthorizationTestCase):
         unmoderated_problem = create_test_problem({'organisation': self.hospital})
         unmoderated_response_url = reverse('response-form', kwargs={'pk': unmoderated_problem.id})
         hidden_problem = create_test_problem({'organisation': self.hospital,
-                                              'moderated': Problem.MODERATED,
-                                              'publication_status': Problem.HIDDEN})
+                                              'publication_status': Problem.REJECTED})
         hidden_response_url = reverse('response-form', kwargs={'pk': hidden_problem.id})
         private_problem = create_test_problem({'organisation': self.hospital,
-                                               'moderated': Problem.MODERATED,
                                                'publication_status': Problem.PUBLISHED,
                                                'public': False})
         private_response_url = reverse('response-form', kwargs={'pk': self.private_problem.id})
@@ -329,7 +326,6 @@ class TrustProblemsTests(AuthorizationTestCase):
         self.login_as(self.trust_user)
         breach_problem = create_test_problem({'organisation': self.hospital,
                                               'breach': True,
-                                              'moderated': Problem.MODERATED,
                                               'publication_status': Problem.PUBLISHED,
                                               'moderated_description': 'Moderated'})
         breach_filtered_url = "{0}?flags=breach".format(self.trust_problems_url)
@@ -341,7 +337,6 @@ class TrustProblemsTests(AuthorizationTestCase):
         # Add a priority problem
         self.login_as(self.trust_user)
         create_test_problem({'organisation': self.hospital,
-                             'moderated': Problem.MODERATED,
                              'publication_status': Problem.PUBLISHED,
                              'moderated_description': 'Moderated',
                              'priority': Problem.PRIORITY_HIGH})
@@ -351,7 +346,6 @@ class TrustProblemsTests(AuthorizationTestCase):
     def test_private_page_shows_breach_flag(self):
         self.login_as(self.trust_user)
         create_test_problem({'organisation': self.hospital,
-                             'moderated': Problem.MODERATED,
                              'publication_status': Problem.PUBLISHED,
                              'moderated_description': 'Moderated',
                              'breach': True})
@@ -361,7 +355,6 @@ class TrustProblemsTests(AuthorizationTestCase):
     def test_private_page_shows_escalated_flag(self):
         self.login_as(self.trust_user)
         create_test_problem({'organisation': self.hospital,
-                             'moderated': Problem.MODERATED,
                              'publication_status': Problem.PUBLISHED,
                              'moderated_description': 'Moderated',
                              'status': Problem.ESCALATED,
@@ -372,7 +365,6 @@ class TrustProblemsTests(AuthorizationTestCase):
     def test_private_page_shows_private_summary(self):
         self.login_as(self.trust_user)
         create_test_problem({'organisation': self.hospital,
-                             'moderated': Problem.MODERATED,
                              'publication_status': Problem.PUBLISHED,
                              'description': 'private description',
                              'moderated_description': 'public description'})
@@ -452,7 +444,6 @@ class TrustDashboardTests(AuthorizationTestCase):
         # Add a priority problem
         self.login_as(self.trust_user)
         create_test_problem({'organisation': self.test_organisation,
-                             'moderated': Problem.MODERATED,
                              'publication_status': Problem.PUBLISHED,
                              'moderated_description': 'Moderated',
                              'priority': Problem.PRIORITY_HIGH})
@@ -462,7 +453,6 @@ class TrustDashboardTests(AuthorizationTestCase):
     def test_dashboard_page_shows_breach_flag(self):
         self.login_as(self.trust_user)
         create_test_problem({'organisation': self.test_organisation,
-                             'moderated': Problem.MODERATED,
                              'publication_status': Problem.PUBLISHED,
                              'moderated_description': 'Moderated',
                              'breach': True})

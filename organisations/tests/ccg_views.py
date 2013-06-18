@@ -80,7 +80,6 @@ class CCGDashboardTests(AuthorizationTestCase):
         # Add a priority problem
         self.login_as(self.ccg_user)
         create_test_problem({'organisation': self.test_organisation,
-                             'moderated': Problem.MODERATED,
                              'publication_status': Problem.PUBLISHED,
                              'moderated_description': 'Moderated',
                              'priority': Problem.PRIORITY_HIGH})
@@ -90,7 +89,6 @@ class CCGDashboardTests(AuthorizationTestCase):
     def test_dashboard_page_shows_breach_flag(self):
         self.login_as(self.ccg_user)
         create_test_problem({'organisation': self.test_organisation,
-                             'moderated': Problem.MODERATED,
                              'publication_status': Problem.PUBLISHED,
                              'moderated_description': 'Moderated',
                              'breach': True})
@@ -378,7 +376,6 @@ class CCGSummaryTests(AuthorizationTestCase):
         create_test_problem({'organisation': self.test_organisation})
         create_test_problem({'organisation': self.other_test_organisation,
                              'publication_status': Problem.PUBLISHED,
-                             'moderated': Problem.MODERATED,
                              'status': Problem.ABUSIVE})
         self.login_as(self.ccg_user)
 

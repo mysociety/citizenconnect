@@ -134,7 +134,7 @@ class OrganisationProblems(OrganisationAwareViewMixin,
         context = super(OrganisationProblems, self).get_context_data(**kwargs)
 
         # Get a queryset of issues and apply any filters to them
-        problems = context['organisation'].problem_set.all_moderated_published_problems()
+        problems = context['organisation'].problem_set.all_not_rejected_visible_problems()
         filtered_problems = self.filter_problems(context['selected_filters'], problems)
 
         # Build a table
