@@ -28,12 +28,12 @@ class ModerationForm(ConcurrentFormMixin, forms.ModelForm):
     def clean_publication_status(self):
         # Status is hidden, but if people click the "Publish" button, we should
         # publish it, and vice versa if they click "Keep Private", we default
-        # to HIDDEN regardless for security
+        # to REJECTED regardless for security
         publication_status = self.cleaned_data['publication_status']
         if 'publish' in self.data:
             publication_status = Problem.PUBLISHED
         else:
-            publication_status = Problem.HIDDEN
+            publication_status = Problem.REJECTED
         return publication_status
 
     def clean(self):
@@ -71,17 +71,12 @@ class ProblemModerationForm(ModerationForm):
             requires_second_tier_moderation = False
         return requires_second_tier_moderation
 
-    def clean_moderated(self):
-        # If you are submitting the form, you have moderated it, so always return MODERATED
-        return Problem.MODERATED
-
     class Meta:
         model = Problem
 
         fields = [
             'publication_status',
             'moderated_description',
-            'moderated',
             'status',
             'requires_second_tier_moderation',
             'breach',
@@ -90,7 +85,6 @@ class ProblemModerationForm(ModerationForm):
 
         widgets = {
             'publication_status': HiddenInput,
-            'moderated': HiddenInput,
             'requires_second_tier_moderation': HiddenInput
         }
 

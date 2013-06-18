@@ -519,7 +519,6 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         # Problems
         self.staff_problem = create_test_problem({'category': 'staff',
                                                   'organisation': self.hospital,
-                                                  'moderated': Problem.MODERATED,
                                                   'publication_status': Problem.PUBLISHED,
                                                   'moderated_description': "Moderated description"})
         # Add an explicitly public and an explicitly private problem to test
@@ -558,7 +557,6 @@ class OrganisationProblemsTests(AuthorizationTestCase):
     def test_public_page_shows_private_problems_without_links(self):
         # Add a private problem
         private_problem = create_test_problem({'organisation': self.hospital,
-                                               'moderated': Problem.MODERATED,
                                                'publication_status': Problem.PUBLISHED,
                                                'public': False})
         private_problem_url = reverse('problem-view', kwargs={'pk': self.private_problem.id,
@@ -574,8 +572,7 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         unmoderated_problem_url = reverse('problem-view', kwargs={'pk': unmoderated_problem.id,
                                                                   'cobrand': 'choices'})
         hidden_problem = create_test_problem({'organisation': self.hospital,
-                                              'moderated': Problem.MODERATED,
-                                              'publication_status': Problem.HIDDEN})
+                                              'publication_status': Problem.REJECTED})
         hidden_problem_url = reverse('problem-view', kwargs={'pk': hidden_problem.id,
                                                              'cobrand': 'choices'})
         resp = self.client.get(self.public_hospital_problems_url)
@@ -586,7 +583,6 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         # Add a problem in a different status that would show up
         resolved_problem = create_test_problem({'organisation': self.hospital,
                                                 'status': Problem.ACKNOWLEDGED,
-                                                'moderated': Problem.MODERATED,
                                                 'publication_status': Problem.PUBLISHED,
                                                 'moderated_description': 'Moderated'})
         status_filtered_url = "{0}?status={1}".format(self.public_hospital_problems_url, Problem.NEW)
@@ -605,7 +601,6 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         # Add a problem in a different status that would show up
         abusive_problem = create_test_problem({'organisation': self.hospital,
                                                'status': Problem.ABUSIVE,
-                                               'moderated': Problem.MODERATED,
                                                'publication_status': Problem.PUBLISHED,
                                                'moderated_description': 'Moderated'})
         status_filtered_url = "{0}?status={1}".format(self.public_hospital_problems_url, Problem.ABUSIVE)
@@ -617,7 +612,6 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         # Add a problem in a different status that would show up
         cleanliness_problem = create_test_problem({'organisation': self.hospital,
                                                    'category': 'cleanliness',
-                                                   'moderated': Problem.MODERATED,
                                                    'publication_status': Problem.PUBLISHED,
                                                    'moderated_description': 'Moderated'})
         category_filtered_url = "{0}?category=cleanliness".format(self.public_hospital_problems_url)
@@ -643,7 +637,6 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         # Add a problem about a specific service
         service_problem = create_test_problem({'organisation': self.hospital,
                                                'service': service,
-                                               'moderated': Problem.MODERATED,
                                                'publication_status': Problem.PUBLISHED,
                                                'moderated_description': 'Moderated'})
         service_filtered_url = "{0}?service_id={1}".format(self.public_hospital_problems_url, service.id)
@@ -667,7 +660,6 @@ class OrganisationProblemsTests(AuthorizationTestCase):
     def test_public_page_doesnt_highlight_priority_problems(self):
         # Add a priority problem
         create_test_problem({'organisation': self.hospital,
-                             'moderated': Problem.MODERATED,
                              'publication_status': Problem.PUBLISHED,
                              'moderated_description': 'Moderated',
                              'priority': Problem.PRIORITY_HIGH})
@@ -676,7 +668,6 @@ class OrganisationProblemsTests(AuthorizationTestCase):
 
     def test_public_page_doesnt_show_breach_flag(self):
         create_test_problem({'organisation': self.hospital,
-                             'moderated': Problem.MODERATED,
                              'publication_status': Problem.PUBLISHED,
                              'moderated_description': 'Moderated',
                              'breach': True})
@@ -685,7 +676,6 @@ class OrganisationProblemsTests(AuthorizationTestCase):
 
     def test_public_page_doesnt_show_escalated_flag(self):
         create_test_problem({'organisation': self.hospital,
-                             'moderated': Problem.MODERATED,
                              'publication_status': Problem.PUBLISHED,
                              'moderated_description': 'Moderated',
                              'status': Problem.ESCALATED,
@@ -695,7 +685,6 @@ class OrganisationProblemsTests(AuthorizationTestCase):
 
     def test_public_page_shows_public_summary(self):
         create_test_problem({'organisation': self.hospital,
-                             'moderated': Problem.MODERATED,
                              'publication_status': Problem.PUBLISHED,
                              'description': 'private description',
                              'moderated_description': 'public description'})
@@ -726,7 +715,6 @@ class TrustProblemsTests(AuthorizationTestCase):
         # Problems
         self.staff_problem = create_test_problem({'category': 'staff',
                                                   'organisation': self.hospital,
-                                                  'moderated': Problem.MODERATED,
                                                   'publication_status': Problem.PUBLISHED,
                                                   'moderated_description': "Moderated description"})
         # Add an explicitly public and an explicitly private problem to test
@@ -750,11 +738,9 @@ class TrustProblemsTests(AuthorizationTestCase):
         unmoderated_problem = create_test_problem({'organisation': self.hospital})
         unmoderated_response_url = reverse('response-form', kwargs={'pk': unmoderated_problem.id})
         hidden_problem = create_test_problem({'organisation': self.hospital,
-                                              'moderated': Problem.MODERATED,
-                                              'publication_status': Problem.HIDDEN})
+                                              'publication_status': Problem.REJECTED})
         hidden_response_url = reverse('response-form', kwargs={'pk': hidden_problem.id})
         private_problem = create_test_problem({'organisation': self.hospital,
-                                               'moderated': Problem.MODERATED,
                                                'publication_status': Problem.PUBLISHED,
                                                'public': False})
         private_response_url = reverse('response-form', kwargs={'pk': self.private_problem.id})
@@ -810,7 +796,6 @@ class TrustProblemsTests(AuthorizationTestCase):
         self.login_as(self.trust_user)
         breach_problem = create_test_problem({'organisation': self.hospital,
                                               'breach': True,
-                                              'moderated': Problem.MODERATED,
                                               'publication_status': Problem.PUBLISHED,
                                               'moderated_description': 'Moderated'})
         breach_filtered_url = "{0}?flags=breach".format(self.trust_problems_url)
@@ -822,7 +807,6 @@ class TrustProblemsTests(AuthorizationTestCase):
         # Add a priority problem
         self.login_as(self.trust_user)
         create_test_problem({'organisation': self.hospital,
-                             'moderated': Problem.MODERATED,
                              'publication_status': Problem.PUBLISHED,
                              'moderated_description': 'Moderated',
                              'priority': Problem.PRIORITY_HIGH})
@@ -832,7 +816,6 @@ class TrustProblemsTests(AuthorizationTestCase):
     def test_private_page_shows_breach_flag(self):
         self.login_as(self.trust_user)
         create_test_problem({'organisation': self.hospital,
-                             'moderated': Problem.MODERATED,
                              'publication_status': Problem.PUBLISHED,
                              'moderated_description': 'Moderated',
                              'breach': True})
@@ -842,7 +825,6 @@ class TrustProblemsTests(AuthorizationTestCase):
     def test_private_page_shows_escalated_flag(self):
         self.login_as(self.trust_user)
         create_test_problem({'organisation': self.hospital,
-                             'moderated': Problem.MODERATED,
                              'publication_status': Problem.PUBLISHED,
                              'moderated_description': 'Moderated',
                              'status': Problem.ESCALATED,
@@ -853,7 +835,6 @@ class TrustProblemsTests(AuthorizationTestCase):
     def test_private_page_shows_private_summary(self):
         self.login_as(self.trust_user)
         create_test_problem({'organisation': self.hospital,
-                             'moderated': Problem.MODERATED,
                              'publication_status': Problem.PUBLISHED,
                              'description': 'private description',
                              'moderated_description': 'public description'})
@@ -933,7 +914,6 @@ class TrustDashboardTests(AuthorizationTestCase):
         # Add a priority problem
         self.login_as(self.trust_user)
         create_test_problem({'organisation': self.test_organisation,
-                             'moderated': Problem.MODERATED,
                              'publication_status': Problem.PUBLISHED,
                              'moderated_description': 'Moderated',
                              'priority': Problem.PRIORITY_HIGH})
@@ -943,7 +923,6 @@ class TrustDashboardTests(AuthorizationTestCase):
     def test_dashboard_page_shows_breach_flag(self):
         self.login_as(self.trust_user)
         create_test_problem({'organisation': self.test_organisation,
-                             'moderated': Problem.MODERATED,
                              'publication_status': Problem.PUBLISHED,
                              'moderated_description': 'Moderated',
                              'breach': True})
@@ -976,15 +955,12 @@ class OrganisationMapTests(AuthorizationTestCase):
     def test_public_map_doesnt_include_unmoderated_or_unpublished_or_hidden_status_problems(self):
         create_test_problem({'organisation': self.other_gp})
         create_test_problem({'organisation': self.other_gp,
-                             'publication_status': Problem.HIDDEN,
-                             'moderated': Problem.MODERATED})
+                             'publication_status': Problem.REJECTED})
         create_test_problem({'organisation': self.other_gp,
                              'publication_status': Problem.PUBLISHED,
-                             'moderated': Problem.MODERATED,
                              'status': Problem.ABUSIVE})
         create_test_problem({'organisation': self.other_gp,
-                            'publication_status': Problem.PUBLISHED,
-                            'moderated': Problem.MODERATED})
+                            'publication_status': Problem.PUBLISHED})
 
         resp = self.client.get(self.map_url)
         response_json = json.loads(resp.context['organisations'])
@@ -1015,11 +991,9 @@ class OrganisationMapTests(AuthorizationTestCase):
         # Create some problems to filter
         create_test_problem({'organisation': self.other_gp,
                              'publication_status': Problem.PUBLISHED,
-                             'moderated': Problem.MODERATED,
                              'category': 'staff'})
         create_test_problem({'organisation': self.other_gp,
                              'publication_status': Problem.PUBLISHED,
-                             'moderated': Problem.MODERATED,
                              'category': 'cleanliness'})
 
         category_filtered_url = "{0}?category=staff".format(self.map_url)
@@ -1036,11 +1010,9 @@ class OrganisationMapTests(AuthorizationTestCase):
         # Create some problems to filter
         create_test_problem({'organisation': self.hospital,
                              'publication_status': Problem.PUBLISHED,
-                             'moderated': Problem.MODERATED,
                              'status': Problem.NEW})
         create_test_problem({'organisation': self.hospital,
                              'publication_status': Problem.PUBLISHED,
-                             'moderated': Problem.MODERATED,
                              'status': Problem.ACKNOWLEDGED})
 
         status_filtered_url = "{0}?status={1}".format(self.map_url, Problem.ACKNOWLEDGED)
@@ -1113,7 +1085,6 @@ class SummaryTests(AuthorizationTestCase):
         create_test_problem({'organisation': self.test_organisation, 'category': 'staff'})
         create_test_problem({'organisation': self.other_test_organisation,
                              'publication_status': Problem.PUBLISHED,
-                             'moderated': Problem.MODERATED,
                              'status': Problem.ABUSIVE,
                              'category': 'cleanliness'})
         create_test_review({'organisation': self.test_organisation,
@@ -1221,7 +1192,6 @@ class SummaryBrowserTests(SeleniumTestCase, AuthorizationTestCase):
         create_test_problem({'organisation': self.test_organisation, 'category': 'staff'})
         create_test_problem({'organisation': self.other_test_organisation,
                              'publication_status': Problem.PUBLISHED,
-                             'moderated': Problem.MODERATED,
                              'status': Problem.ABUSIVE,
                              'category': 'cleanliness'})
         create_test_review({'organisation': self.test_organisation,
@@ -1292,7 +1262,6 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
         create_test_problem({'organisation': self.test_organisation})
         create_test_problem({'organisation': self.other_test_organisation,
                              'publication_status': Problem.PUBLISHED,
-                             'moderated': Problem.MODERATED,
                              'status': Problem.ABUSIVE})
         self.login_as(self.superuser)
 

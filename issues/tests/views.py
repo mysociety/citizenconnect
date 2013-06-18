@@ -13,14 +13,12 @@ class ProblemPublicViewTests(AuthorizationTestCase):
     def setUp(self):
         super(ProblemPublicViewTests, self).setUp()
         self.test_moderated_problem = create_test_problem({'organisation': self.test_organisation,
-                                                           'moderated': Problem.MODERATED,
                                                            'publication_status': Problem.PUBLISHED,
                                                            'moderated_description': "A moderated description"})
         self.test_unmoderated_problem = create_test_problem({'organisation': self.test_organisation})
         self.test_private_problem = create_test_problem({'organisation': self.test_organisation,
                                                          'public': False,
                                                          'public_reporter_name': False,
-                                                         'moderated': Problem.MODERATED,
                                                          'publication_status': Problem.PUBLISHED})
 
         self.test_moderated_problem_url = reverse('problem-view', kwargs={'pk': self.test_moderated_problem.id,
@@ -174,7 +172,6 @@ class ProblemPublicViewTests(AuthorizationTestCase):
     # def test_escalated_statuses_highlighted(self):
     #     for status in Problem.ESCALATION_STATUSES:
     #         problem = create_test_problem({'organisation': self.test_organisation,
-    #                                        'moderated': Problem.MODERATED,
     #                                        'publication_status': Problem.PUBLISHED,
     #                                        'moderated_description': "A moderated description",
     #                                        'status': status,
@@ -193,7 +190,6 @@ class ProblemPublicViewTests(AuthorizationTestCase):
 
         # A closed problem
         self.closed_problem = create_test_problem({'organisation': self.test_organisation,
-                                                   'moderated': Problem.MODERATED,
                                                    'publication_status': Problem.PUBLISHED,
                                                    'moderated_description': "A moderated description",
                                                    'status': Problem.RESOLVED})
@@ -210,7 +206,6 @@ class ProblemPublicViewTests(AuthorizationTestCase):
 
         # A high priority problem
         self.high_priority_problem = create_test_problem({'organisation': self.test_organisation,
-                                                          'moderated': Problem.MODERATED,
                                                           'publication_status': Problem.PUBLISHED,
                                                           'moderated_description': "A moderated description",
                                                           'status': Problem.NEW,
@@ -223,7 +218,6 @@ class ProblemPublicViewTests(AuthorizationTestCase):
     def test_doesnt_show_breach_on_public_pages(self):
         # A breach problem
         self.breach_problem = create_test_problem({'organisation': self.test_organisation,
-                                                   'moderated': Problem.MODERATED,
                                                    'publication_status': Problem.PUBLISHED,
                                                    'moderated_description': "A moderated description",
                                                    'status': Problem.NEW,
@@ -236,7 +230,6 @@ class ProblemPublicViewTests(AuthorizationTestCase):
     def test_doesnt_show_publication_status_on_public_pages(self):
         # A published problem
         self.published_problem = create_test_problem({'organisation': self.test_organisation,
-                                                      'moderated': Problem.MODERATED,
                                                       'publication_status': Problem.PUBLISHED,
                                                       'moderated_description': "A moderated description",
                                                       'status': Problem.NEW,
@@ -339,8 +332,7 @@ class HomePageTests(TestCase):
     def setUp(self):
         self.homepage_url = reverse('home', kwargs={'cobrand': 'choices'})
         self.test_organisation = create_test_organisation({'ods_code': '11111'})
-        public_atts = {'moderated': Problem.MODERATED,
-                       'publication_status': Problem.PUBLISHED}
+        public_atts = {'publication_status': Problem.PUBLISHED}
         # Some problems and reviews
         create_problem_with_age(self.test_organisation, age=1, attributes=public_atts)
         create_review_with_age(self.test_organisation, age=2)
@@ -365,10 +357,8 @@ class PublicLookupFormTests(TestCase):
         self.homepage_url = reverse('home', kwargs={'cobrand': 'choices'})
         self.test_organisation = create_test_organisation({'ods_code': '11111'})
         self.test_problem = create_test_problem({'organisation': self.test_organisation,
-                                                 'moderated': Problem.MODERATED,
                                                  'publication_status': Problem.PUBLISHED})
         self.closed_problem = create_test_problem({'organisation': self.test_organisation,
-                                                   'moderated': Problem.MODERATED,
                                                    'publication_status': Problem.PUBLISHED,
                                                    'status': Problem.RESOLVED})
         self.problem_url = reverse('problem-view', kwargs={'pk':self.test_problem.id,
@@ -387,7 +377,7 @@ class PublicLookupFormTests(TestCase):
         self.assertRedirects(resp, self.problem_url)
 
     def test_rejects_hidden_problems(self):
-        self.test_problem.publication_status = Problem.HIDDEN
+        self.test_problem.publication_status = Problem.REJECTED
         self.test_problem.save()
         resp = self.client.post(self.homepage_url, {'reference_number': self.problem_reference})
         self.assertFormError(resp, 'form', None, 'Sorry, that reference number is not available')
