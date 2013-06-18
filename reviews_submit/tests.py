@@ -157,7 +157,8 @@ class ReviewFormViewTest(ReviewFormViewBase, TestCase):
         self.assertContains(resp, '<h1>Share Your Experience: %s</h1>' % self.organisation.name, count=1, status_code=200)
         self.assertTrue('organisation' in resp.context)
         self.assertEquals(resp.context['organisation'].pk, self.organisation.pk)
-        self.assertTrue('rating_forms' in resp.context)
+        self.assertTrue('required_rating_forms' in resp.context)
+        self.assertTrue('optional_rating_forms' in resp.context)
 
     def test_submitting_a_valid_review(self):
         self.assertEquals(self.organisation.submitted_reviews.count(), 0)

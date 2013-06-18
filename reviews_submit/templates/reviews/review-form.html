@@ -45,15 +45,28 @@
         </fieldset>
 
 
+        {% if required_rating_forms %}
         <fieldset class="island">
 
-            <h2>Ratings (optional)</h2>
+            <h2>Ratings (required)</h2>
 
-            {% for rating_form in rating_forms %}
+            {% for rating_form in required_rating_forms %}
                 {% include "reviews/rating-form.html" %}
                 {% include "message_list.html" with messages=rating_form.answer.errors message_type='error' %}
             {% endfor %}
         </fieldset>
+        {% endif %}
+
+        {% if optional_rating_forms %}
+        <fieldset class="island">
+            <h2>Ratings (optional)</h2>
+
+            {% for rating_form in optional_rating_forms %}
+                {% include "reviews/rating-form.html" %}
+                {% include "message_list.html" with messages=rating_form.answer.errors message_type='error' %}
+            {% endfor %}
+        </fieldset>
+        {% endif %}
 
 
         <fieldset class="island">
