@@ -135,6 +135,7 @@ class ProblemForm(forms.ModelForm):
             'reporter_name',
             'reporter_phone',
             'reporter_email',
+            'reporter_under_16',
             'preferred_contact_method',
             'public',
             'public_reporter_name',
