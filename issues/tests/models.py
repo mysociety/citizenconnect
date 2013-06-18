@@ -78,7 +78,7 @@ class ProblemTestCase(AuthorizationTestCase):
             public_reporter_name=True,
             preferred_contact_method=Problem.CONTACT_EMAIL,
             status=Problem.NEW,
-            publication_status=Problem.HIDDEN,
+            publication_status=Problem.REJECTED,
             time_to_acknowledge=None,
             time_to_address=None,
             cobrand='choices'
