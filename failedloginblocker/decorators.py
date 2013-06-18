@@ -25,10 +25,6 @@ def monitor_login(auth_func):
             fa = FailedAttempt.objects.get(username=user)
             if fa.recent_failure():
                 if fa.too_many_failures():
-                    # block the authentication attempt because
-                    # of too many recent failures
-                    fa.failures += 1
-                    fa.save()
                     raise LoginBlockedError()
             else:
                 # the block interval is over, reset the count
