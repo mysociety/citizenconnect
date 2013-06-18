@@ -10,9 +10,9 @@ class LookupFormTests(BaseModerationTestCase):
     def setUp(self):
         super(LookupFormTests, self).setUp()
         self.closed_problem = create_test_problem({'organisation':self.test_organisation,
-                                                             'status': Problem.RESOLVED})
+                                                   'status': Problem.RESOLVED})
         self.moderated_problem = create_test_problem({'organisation':self.test_organisation,
-                                                                'moderated': Problem.MODERATED})
+                                                      'publication_status': Problem.PUBLISHED})
         self.login_as(self.case_handler)
 
     def test_happy_path(self):
@@ -53,7 +53,6 @@ class ModerationFormTests(BaseModerationTestCase):
             'moderated_description': self.test_problem.description,
             'publish': '',
             'status': self.test_problem.status,
-            'moderated': self.test_problem.moderated,
             'commissioned': Problem.NATIONALLY_COMMISSIONED,
             'responses-TOTAL_FORMS': 0,
             'responses-INITIAL_FORMS': 0,
@@ -61,11 +60,6 @@ class ModerationFormTests(BaseModerationTestCase):
         }
         # Get the form as the client to set the initial session vars
         self.client.get(self.problem_form_url)
-
-    def test_moderation_form_sets_moderated(self):
-        resp = self.client.post(self.problem_form_url, self.form_values)
-        problem = Problem.objects.get(pk=self.test_problem.id)
-        self.assertEqual(problem.moderated, Problem.MODERATED)
 
     def test_moderation_form_sets_moderated_description(self):
         moderated_description = "{0} moderated".format(self.test_problem.description)
@@ -116,7 +110,7 @@ class ModerationFormTests(BaseModerationTestCase):
         }
         self.form_values.update(test_form_values)
         del self.form_values['publish']
-        self.assert_expected_publication_status(Problem.HIDDEN,
+        self.assert_expected_publication_status(Problem.REJECTED,
                                                 self.form_values,
                                                 self.problem_form_url,
                                                 self.test_problem)
@@ -127,7 +121,7 @@ class ModerationFormTests(BaseModerationTestCase):
         }
         self.form_values.update(test_form_values)
         del self.form_values['publish']
-        self.assert_expected_publication_status(Problem.HIDDEN,
+        self.assert_expected_publication_status(Problem.REJECTED,
                                                 self.form_values,
                                                 self.problem_form_url,
                                                 self.test_problem)
@@ -209,7 +203,7 @@ class ModerationFormTests(BaseModerationTestCase):
 
 
     def test_moderation_form_doesnt_require_moderated_description_when_hiding_problems(self):
-        expected_status = Problem.HIDDEN
+        expected_status = Problem.REJECTED
         test_form_values = {
             'keep_private': ''
         }
@@ -284,7 +278,6 @@ class ModerationFormConcurrencyTests(BaseModerationTestCase):
             'moderated_description': self.test_problem.description,
             'publish': '',
             'status': self.test_problem.status,
-            'moderated': self.test_problem.moderated,
             'commissioned': Problem.NATIONALLY_COMMISSIONED,
             'responses-TOTAL_FORMS': 0,
             'responses-INITIAL_FORMS': 0,
@@ -405,7 +398,7 @@ class SecondTierModerationFormTests(BaseModerationTestCase):
         self.assertEqual(problem.publication_status, expected_status)
 
     def test_second_tier_moderation_form_doesnt_require_moderated_description_when_hiding_problems(self):
-        expected_status = Problem.HIDDEN
+        expected_status = Problem.REJECTED
         test_form_values = {
             'keep_private': ''
         }
@@ -428,7 +421,7 @@ class SecondTierModerationFormTests(BaseModerationTestCase):
         }
         self.form_values.update(test_form_values)
         del self.form_values['publish']
-        self.assert_expected_publication_status(Problem.HIDDEN,
+        self.assert_expected_publication_status(Problem.REJECTED,
                                                 self.form_values,
                                                 self.second_tier_problem_form_url,
                                                 self.test_second_tier_moderation_problem)

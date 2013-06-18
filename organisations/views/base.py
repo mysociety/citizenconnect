@@ -177,10 +177,6 @@ class Map(FilterFormMixin,
 
         problem_filters, organisation_filters = self.interval_count_filters(context['selected_filters'])
 
-        # Show counts for moderated, published problems
-        problem_filters['moderated'] = Problem.MODERATED
-        problem_filters['publication_status'] = Problem.PUBLISHED
-
         organisations_within_map_bounds_ids = [col.id for col in self.organisations_within_map_bounds()]
         organisations_list = []
 

@@ -1,7 +1,7 @@
 import logging
 logger = logging.getLogger(__name__)
 
-from datetime import datetime, timedelta
+from datetime import datetime
 import hmac
 import hashlib
 
@@ -49,6 +49,7 @@ class ProblemQuerySet(models.query.QuerySet):
             Q(status__in=Problem.NON_ESCALATION_STATUSES)
         )
 
+
 class ProblemManager(models.Manager):
     use_for_related_fields = True
 
@@ -71,22 +72,25 @@ class ProblemManager(models.Manager):
         return self.all().filter(Q(status__in=Problem.CLOSED_STATUSES))
 
     def unmoderated_problems(self):
-        return self.all().filter(moderated=Problem.NOT_MODERATED)
+        return self.all().filter(publication_status=Problem.NOT_MODERATED)
 
-    def open_moderated_published_visible_problems(self):
-        return self.open_problems().filter(moderated=Problem.MODERATED,
-                                           publication_status=Problem.PUBLISHED,
+    def open_published_visible_problems(self):
+        return self.open_problems().filter(publication_status=Problem.PUBLISHED,
                                            status__in=Problem.VISIBLE_STATUSES)
 
-    def closed_moderated_published_visible_problems(self):
-        return self.closed_problems().filter(moderated=Problem.MODERATED,
-                                             publication_status=Problem.PUBLISHED,
+    def closed_published_visible_problems(self):
+        return self.closed_problems().filter(publication_status=Problem.PUBLISHED,
                                              status__in=Problem.VISIBLE_STATUSES)
 
-    def all_moderated_published_problems(self):
-        return self.all().filter(moderated=Problem.MODERATED,
-                                 publication_status=Problem.PUBLISHED,
+    def all_published_visible_problems(self):
+        return self.all().filter(publication_status=Problem.PUBLISHED,
                                  status__in=Problem.VISIBLE_STATUSES)
+
+    def all_not_rejected_visible_problems(self):
+        return self  \
+            .all()  \
+            .filter(status__in=Problem.VISIBLE_STATUSES)  \
+            .exclude(publication_status=Problem.REJECTED)
 
     def problems_requiring_second_tier_moderation(self):
         return self.all().filter(requires_second_tier_moderation=True)
@@ -158,15 +162,15 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
 
     PREFIX = 'P'
 
-    HIDDEN = 0
+    REJECTED = 0
     PUBLISHED = 1
+    NOT_MODERATED = 2
 
-    PUBLICATION_STATUS_CHOICES = ((HIDDEN, "Hidden"), (PUBLISHED, "Published"))
-
-    NOT_MODERATED = 0
-    MODERATED = 1
-
-    MODERATED_STATUS_CHOICES = ((NOT_MODERATED, "Not moderated"), (MODERATED, "Moderated"))
+    PUBLICATION_STATUS_CHOICES = (
+        (NOT_MODERATED, "Not moderated"),
+        (REJECTED, "Rejected"),
+        (PUBLISHED, "Published")
+    )
 
     LOCALLY_COMMISSIONED = 0
     NATIONALLY_COMMISSIONED = 1
@@ -233,17 +237,15 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
             'Resolved': [[ACKNOWLEDGED, RESOLVED], [ESCALATED_ACKNOWLEDGED, ESCALATED_RESOLVED]]
         },
         'publication_status': {
-            'Published': [[HIDDEN, PUBLISHED]],
-            'Hidden': [[PUBLISHED, HIDDEN]]
+            'Published': [[NOT_MODERATED, PUBLISHED], [REJECTED, PUBLISHED]],
+            'Rejected': [[NOT_MODERATED, REJECTED], [PUBLISHED, REJECTED]],
+            'Unmoderated': [[REJECTED, NOT_MODERATED], [PUBLISHED, NOT_MODERATED]],
         },
-        'moderated': {
-            'Moderated': [[NOT_MODERATED, MODERATED]]
-        }
     }
 
     # Which attrs are interesting to compare for revisions
     # The order of these determines the order they are output as a string
-    REVISION_ATTRS = ['moderated', 'publication_status', 'status']
+    REVISION_ATTRS = ['publication_status', 'status']
 
     SOURCE_PHONE = 'phone'
     SOURCE_EMAIL = 'email'
@@ -287,12 +289,9 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     time_to_address = models.IntegerField(blank=True, null=True)
     resolved = models.DateTimeField(blank=True, null=True)
 
-    publication_status = models.IntegerField(default=HIDDEN,
+    publication_status = models.IntegerField(default=NOT_MODERATED,
                                              blank=False,
                                              choices=PUBLICATION_STATUS_CHOICES)
-    moderated = models.IntegerField(default=NOT_MODERATED,
-                                    blank=False,
-                                    choices=MODERATED_STATUS_CHOICES)
     moderated_description = models.TextField(blank=True)
     breach = models.BooleanField(default=False, blank=False)
     requires_second_tier_moderation = models.BooleanField(default=False, blank=False)
@@ -321,7 +320,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
 
     @property
     def reporter_name_display(self):
-        if self.public_reporter_name:
+        if self.public_reporter_name and self.publication_status is not Problem.NOT_MODERATED:
             return self.reporter_name
         else:
             return "Anonymous"
@@ -368,16 +367,21 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
             return field
 
     def is_publicly_visible(self):
-        return (self.publication_status == Problem.PUBLISHED \
-                and int(self.status) in Problem.VISIBLE_STATUSES \
-                and self.moderated == Problem.MODERATED)
+        # All problems are visible, unless:
+        # They have been moderated and rejected
+        if self.publication_status == Problem.REJECTED:
+            return False
+        # They have been explicitly put in a hidden status
+        elif int(self.status) in Problem.HIDDEN_STATUSES:
+            return False
+        else:
+            return True
 
     def can_be_accessed_by(self, user):
         """
         Whether or not an issue is accessible to a given user.
         In practice the issue is publically accessible to everyone if it's
-        in a visible status and has been moderated to be publically available,
-        otherwise only people with access to the organisation it is assigned to can access it.
+        publicly visible, or the user has access to the organisation it is assigned.
         """
         return (self.is_publicly_visible() or self.organisation.can_be_accessed_by(user))
 
