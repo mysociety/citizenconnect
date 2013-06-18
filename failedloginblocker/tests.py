@@ -1,6 +1,10 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
+from django.contrib import auth
+
+from .models import FailedAttempt
+from .exceptions import LoginBlockedError
 
 
 class FailedLoginBlockerTest(TestCase):
@@ -9,18 +13,22 @@ class FailedLoginBlockerTest(TestCase):
         self.login_url = reverse('login')
 
     def test_blocked_after_three_failed_login_attempts(self):
-        login_params = {
+        credentials = {
             'username': self.test_user.username,
             'password': 'wrong_password',
         }
-        resp = self.client.post(self.login_url, login_params)
-        self.assertEqual(200, resp.status_code)
 
-        resp = self.client.post(self.login_url, login_params)
-        self.assertEqual(200, resp.status_code)
+        self.client.login(**credentials)
+        failed_attempt = FailedAttempt.objects.all()[0]
+        self.assertEqual(self.test_user.username, failed_attempt.username)
+        self.assertEqual(1, failed_attempt.failures)
 
-        resp = self.client.post(self.login_url, login_params)
-        self.assertEqual(200, resp.status_code)
+        self.client.login(**credentials)
+        failed_attempt = FailedAttempt.objects.all()[0]
+        self.assertEqual(2, failed_attempt.failures)
 
-        resp = self.client.post(self.login_url, login_params)
-        self.assertEqual(403, resp.status_code)
+        self.client.login(**credentials)
+        failed_attempt = FailedAttempt.objects.all()[0]
+        self.assertEqual(3, failed_attempt.failures)
+
+        self.assertRaises(LoginBlockedError, self.client.login, **credentials)
