@@ -81,6 +81,15 @@ class ProblemCreateFormTests(ProblemCreateFormBase, TestCase):
         self.assertEqual(problem.public, True)
         self.assertEqual(problem.public_reporter_name, False)
 
+    def test_problem_form_sets_name_to_private_for_under_16(self):
+        self.test_problem['privacy'] = ProblemForm.PRIVACY_PUBLIC # all public
+        self.test_problem['reporter_under_16'] = True
+        self.client.post(self.form_url, self.test_problem)
+        # Check in db
+        problem = Problem.objects.get(reporter_name=self.uuid)
+        self.assertEqual(problem.public, True)
+        self.assertEqual(problem.public_reporter_name, False)
+
     def test_problem_form_respects_public_privacy(self):
         self.test_problem['privacy'] = ProblemForm.PRIVACY_PUBLIC
         self.client.post(self.form_url, self.test_problem)

@@ -81,6 +81,10 @@ class ProblemForm(forms.ModelForm):
             cleaned_data['public'] = True
             cleaned_data['public_reporter_name'] = True
 
+        # Override the public_reporter_name based on the reporter_under_16 setting
+        if cleaned_data['reporter_under_16']:
+            cleaned_data['public_reporter_name'] = False
+
         return super(ProblemForm, self).clean()
 
 
