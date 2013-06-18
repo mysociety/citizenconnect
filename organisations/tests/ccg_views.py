@@ -472,3 +472,32 @@ class CCGSummaryTests(AuthorizationTestCase):
         resp = self.client.get(formal_complaint_filtered_url)
         test_org_record = resp.context['table'].rows[0].record
         self.assertEqual(test_org_record['week'], 1)
+
+
+class CCGTabsTests(AuthorizationTestCase):
+    """Test that the tabs shown on trust pages link to the right places"""
+
+    def setUp(self):
+        super(CCGTabsTests, self).setUp()
+        self.dashboard_url = reverse('ccg-dashboard', kwargs={'code': self.test_ccg.code})
+        self.escalation_dashboard_url = reverse('ccg-escalation-dashboard', kwargs={'code': self.test_ccg.code})
+        self.breaches_url = reverse('ccg-escalation-breaches', kwargs={'code': self.test_ccg.code})
+        self.summary_url = reverse('ccg-summary', kwargs={'code': self.test_ccg.code})
+        self.tab_urls = [
+            self.dashboard_url,
+            self.escalation_dashboard_url,
+            self.breaches_url,
+            self.summary_url
+        ]
+        self.login_as(self.trust_user)
+
+    def _check_tabs(self, page_url, resp):
+        for url in self.tab_urls:
+            self.assertContains(resp, url, msg_prefix="Response for {0} does not contain url: {1}".format(page_url, url))
+
+    def test_tabs(self):
+        for user in [self.nhs_superuser, self.ccg_user]:
+            self.login_as(user)
+            for url in self.tab_urls:
+                resp = self.client.get(url)
+                self._check_tabs(url, resp)

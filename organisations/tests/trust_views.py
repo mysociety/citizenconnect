@@ -516,3 +516,34 @@ class TrustBreachesTests(AuthorizationTestCase):
         self.org_breach_problem.save()
         resp = self.client.get(self.breach_dashboard_url)
         self.assertContains(resp, 'problem-table__highlight')
+
+
+class TrustTabsTests(AuthorizationTestCase):
+    """Test that the tabs shown on trust pages link to the right places"""
+
+    def setUp(self):
+        super(TrustTabsTests, self).setUp()
+        self.dashboard_url = reverse('trust-dashboard', kwargs={'code': self.test_trust.code})
+        self.breaches_url = reverse('trust-breaches', kwargs={'code': self.test_trust.code})
+        self.problems_url = reverse('trust-problems', kwargs={'code': self.test_trust.code})
+        self.reviews_url = reverse('trust-reviews', kwargs={'code': self.test_trust.code})
+        self.summary_url = reverse('trust-summary', kwargs={'code': self.test_trust.code})
+        self.tab_urls = [
+            self.dashboard_url,
+            self.breaches_url,
+            self.problems_url,
+            self.reviews_url,
+            self.summary_url
+        ]
+        self.login_as(self.trust_user)
+
+    def _check_tabs(self, page_url, resp):
+        for url in self.tab_urls:
+            self.assertContains(resp, url, msg_prefix="Response for {0} does not contain url: {1}".format(page_url, url))
+
+    def test_tabs(self):
+        for user in [self.trust_user, self.nhs_superuser, self.ccg_user]:
+            self.login_as(user)
+            for url in self.tab_urls:
+                resp = self.client.get(url)
+                self._check_tabs(url, resp)

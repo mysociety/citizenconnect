@@ -466,3 +466,36 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         resp = self.client.get(self.public_hospital_problems_url)
         self.assertNotContains(resp, 'private description')
         self.assertContains(resp, 'public description')
+
+
+class OrganisationTabsTests(AuthorizationTestCase):
+    """Test that the tabs shown on trust pages link to the right places"""
+
+    def setUp(self):
+        super(OrganisationTabsTests, self).setUp()
+        self.summary_url = reverse('public-org-summary', kwargs={'ods_code': self.test_organisation.ods_code, 'cobrand': 'choices'})
+        self.problems_url = reverse('public-org-problems', kwargs={'ods_code': self.test_organisation.ods_code, 'cobrand': 'choices'})
+        self.reviews_url = reverse('review-organisation-list', kwargs={'ods_code': self.test_organisation.ods_code, 'cobrand': 'choices'})
+        self.tab_urls = [
+            self.reviews_url,
+            self.problems_url,
+            self.summary_url
+        ]
+        self.login_as(self.trust_user)
+
+    def _check_tabs(self, page_url, resp):
+        for url in self.tab_urls:
+            self.assertContains(resp, url, msg_prefix="Response for {0} does not contain url: {1}".format(page_url, url))
+
+    def test_tabs(self):
+        self.client.logout()
+        # Anon users should see these links
+        for url in self.tab_urls:
+                resp = self.client.get(url)
+                self._check_tabs(url, resp)
+        # Logged in users should see the same links
+        for user in [self.nhs_superuser, self.ccg_user, self.trust_user, self.other_trust_user, self.other_ccg_user]:
+            self.login_as(user)
+            for url in self.tab_urls:
+                resp = self.client.get(url)
+                self._check_tabs(url, resp)
