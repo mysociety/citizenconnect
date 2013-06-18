@@ -60,6 +60,10 @@ def _create_problem_selects(intervals, data_intervals, boolean_fields, average_f
 
 def _apply_problem_filters(problem_filters, problem_filter_clauses, organisation_id, params):
 
+    # Filter out any REJECTED problems.
+    problem_filter_clauses.append("issues_problem.publication_status != %s")
+    params.append(Problem.REJECTED)
+
     # Apply problem filters to the issue table
     for criteria in ['status', 'service_id', 'category', 'moderated', 'publication_status']:
         value = problem_filters.get(criteria)
