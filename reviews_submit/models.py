@@ -13,7 +13,7 @@ class Review(AuditedModel):
 
     """A Review of a provider that has been left on the site."""
 
-    email = models.CharField(max_length=100)
+    email = models.EmailField(max_length=254)
     display_name = models.CharField(max_length=100)
     is_anonymous = models.BooleanField(default=False)
     title = models.CharField(max_length=255, blank=False)
