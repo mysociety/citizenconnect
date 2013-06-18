@@ -216,6 +216,9 @@ PASSWORD_COMPLEXITY = {
     "PUNCTUATION": 1,
 }
 
+# Failed login blocker configuration
+FLB_MAX_FAILURES = 3
+FLB_BLOCK_INTERVAL = 60 # minutes
 
 # Now get the mySociety configuration
 from .mysociety import *
