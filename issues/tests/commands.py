@@ -151,10 +151,10 @@ class EmailProblemsToTrustTests(TestCase):
     def test_happy_path(self):
         self._call_command()
 
-        # intro mail, problem mail, other problem mail
-        self.assertEqual(len(mail.outbox), 3)
+        # problem mail, other problem mail
+        self.assertEqual(len(mail.outbox), 2)
 
-        first_mail = mail.outbox[1]
+        first_mail = mail.outbox[0]
         self.assertEqual(first_mail.subject, 'Care Connect: New Problem')
         self.assertEqual(first_mail.from_email, settings.DEFAULT_FROM_EMAIL)
         expected_recipients = [
@@ -199,7 +199,7 @@ class EmailProblemsToTrustTests(TestCase):
         self.test_problem.save()
         self._call_command()
 
-        first_mail = mail.outbox[1]
+        first_mail = mail.outbox[0]
 
         self.assertTrue(self.test_problem.reporter_phone in first_mail.body)
         self.assertTrue(self.test_problem.reporter_email not in first_mail.body)
@@ -213,8 +213,8 @@ class EmailProblemsToTrustTests(TestCase):
             # intro mail, intro mail again, other problem mail
             mock_send_mail.side_effect = [Exception('A fake error in sending mail'), 1, 1]
             self._call_command()
-            # Check it still sent one mail
-            self.assertEqual(mock_send_mail.call_count, 3)
+            # Check it tried to send two emails
+            self.assertEqual(mock_send_mail.call_count, 2)
             # Check that the errored issue is still marked as not mailed
             self.test_problem = Problem.objects.get(pk=self.test_problem.id)
             self.assertFalse(self.test_problem.mailed)

@@ -1,4 +1,4 @@
-"Name","Email","NHS Superusers","Case Handlers","Second Tier Moderators","Customer Contact Centre"
+"Username","Email","NHS Superusers","Case Handlers","Second Tier Moderators","Customer Contact Centre"
 "A Super User","spreadsheetsuper@example.com",x,,,
 "A Case Handler","spreadsheetcasehandler@example.com",,x,,
 "Case Handler/Second Tier","spreadsheetcasemod@example.com",,x,x,

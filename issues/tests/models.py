@@ -401,9 +401,9 @@ class ProblemModelEscalationTests(ProblemTestCase):
 
         problem.send_escalation_email()
 
-        self.assertEqual(len(mail.outbox), 2)
+        self.assertEqual(len(mail.outbox), 1)
 
-        escalation_email = mail.outbox[1]
+        escalation_email = mail.outbox[0]
 
         self.assertTrue("Problem has been escalated" in escalation_email.subject)
         self.assertEqual(escalation_email.to, ['ccg@example.org'])
