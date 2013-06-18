@@ -22,7 +22,7 @@ class LookupFormTests(BaseModerationTestCase):
         self.closed_problem = create_test_problem({'organisation': self.test_organisation,
                                                    'status': Problem.RESOLVED})
         self.moderated_problem = create_test_problem({'organisation': self.test_organisation,
-                                                      'moderated': Problem.MODERATED})
+                                                      'publication_status': Problem.PUBLISHED})
         self.login_as(self.case_handler)
 
         self.lookup_url = reverse('response-lookup')
@@ -319,7 +319,6 @@ class ResponseFormViewTests(AuthorizationTestCase):
             'public': True,
             'status': Problem.ACKNOWLEDGED,
             'publication_status': Problem.PUBLISHED,
-            'moderated': Problem.MODERATED
         })
         form_which_should_403_for_other_trusts = reverse('response-form', kwargs={'pk': public_published_problem.id})
         self.client.logout()
@@ -337,7 +336,6 @@ class ResponseFormViewTests(AuthorizationTestCase):
                 'public': True,
                 'status': Problem.ACKNOWLEDGED,
                 'publication_status': Problem.PUBLISHED,
-                'moderated': Problem.MODERATED,
                 'description': "A description",
                 'moderated_description': "A moderated description",
             })

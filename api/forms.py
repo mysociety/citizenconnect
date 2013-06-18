@@ -13,8 +13,6 @@ class ProblemAPIForm(forms.ModelForm):
     service_code = forms.CharField(required=False)
     # Make source required
     source = forms.CharField(required=True)
-    # Make moderated optional (we set it ourselves)
-    moderated = forms.IntegerField(required=False)
     # Make commissioned required
     commissioned = forms.ChoiceField(required=True, choices=Problem.COMMISSIONED_CHOICES)
     # Add an escalated flag with which we'll set the Problem status
@@ -23,8 +21,10 @@ class ProblemAPIForm(forms.ModelForm):
     status = forms.IntegerField(required=False)
     # Make priority optional (we will set a default)
     priority = forms.IntegerField(required=False)
+
     # Make publication_status optional (we will set a default)
     publication_status = forms.IntegerField(required=False)
+
     # Make preferred_contact_method optional (we will set a default)
     preferred_contact_method = forms.CharField(required=False)
 
@@ -48,19 +48,10 @@ class ProblemAPIForm(forms.ModelForm):
         # we will modify this in clean
         return Problem.NEW
 
-    def clean_moderated(self):
-        # If you are submitting the form, you have moderated it, so always return MODERATED
-        return Problem.MODERATED
-
     def clean_priority(self):
         if not self.cleaned_data.get('priority'):
             self.cleaned_data['priority'] = Problem.PRIORITY_NORMAL
         return self.cleaned_data['priority']
-
-    def clean_publication_status(self):
-        if not self.cleaned_data.get('publication_status'):
-            self.cleaned_data['publication_status'] = Problem.HIDDEN
-        return self.cleaned_data['publication_status']
 
     def clean_preferred_contact_method(self):
         if not self.cleaned_data.get('preferred_contact_method'):
@@ -86,6 +77,12 @@ class ProblemAPIForm(forms.ModelForm):
                 self._errors['service_code'] = self.error_class(['Sorry, that service is not recognised.'])
                 del cleaned_data['service_code']
 
+        # Always mark problems as published, unless they require moderation
+        if cleaned_data.get('requires_second_tier_moderation') is True:
+            cleaned_data['publication_status'] = Problem.NOT_MODERATED
+        else:
+            cleaned_data['publication_status'] = Problem.PUBLISHED
+
         # If we are publishing the problem and the reporter wants it public,
         # it must have a moderated_description so that we have something to show for it
         # on public pages
@@ -93,11 +90,6 @@ class ProblemAPIForm(forms.ModelForm):
             if not 'moderated_description' in cleaned_data or not cleaned_data['moderated_description']:
                 self._errors['moderated_description'] = self.error_class(['You must moderate a version of the problem details when publishing public problems.'])
                 del cleaned_data['moderated_description']
-
-        # If a problem is flagged as requiring second tier moderation, it can't be published
-        if cleaned_data.get('requires_second_tier_moderation') is True and cleaned_data.get('publication_status') == Problem.PUBLISHED:
-            self._errors['publication_status'] = self.error_class(['A problem that requires second tier moderation cannot be published.'])
-            del cleaned_data['publication_status']
 
         if cleaned_data.get('priority') == Problem.PRIORITY_HIGH and not cleaned_data.get('category') in Problem.CATEGORIES_PERMITTING_SETTING_OF_PRIORITY_AT_SUBMISSION:
             self._errors['priority'] = self.error_class(['The problem is not in a category which permits setting of a high priority.'])
@@ -119,7 +111,6 @@ class ProblemAPIForm(forms.ModelForm):
             'service',
             'description',
             'moderated_description',
-            'moderated',
             'requires_second_tier_moderation',
             'category',
             'reporter_name',
@@ -138,6 +129,7 @@ class ProblemAPIForm(forms.ModelForm):
 
         widgets = {
             'service': HiddenInput,
+            'publication_status': HiddenInput,
             'organisation': HiddenInput,
             'status': HiddenInput
         }
