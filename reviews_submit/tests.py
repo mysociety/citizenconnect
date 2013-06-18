@@ -68,7 +68,7 @@ class ReviewFormDateCompareTest(TestCase):
             ( 4, 2012,   4, 2011,   False ),
             ( 5, 2012,   4, 2011,   False )
         ]
-        
+
         for mm_a, yyyy_a, mm_b, yyyy_b, expected in tests:
             # print mm_a, yyyy_a, mm_b, yyyy_b, expected
             dt_a = datetime.date(year=yyyy_a, month=mm_a, day=1)
@@ -97,10 +97,10 @@ class ReviewFormViewBase(object):
         questions = Question.objects.filter(org_type=self.organisation.organisation_type).order_by('id')
 
         # store the questions we want to ask
-        for prefix, question in enumerate(questions):
-            prefix += 1
+        for counter, question in enumerate(questions):
+            prefix = str(question.id)
 
-            answer_index = (prefix-1) % 6
+            answer_index = (counter) % 6
             if answer_index == 5:
                 answer_id = ''
             else:
@@ -127,8 +127,8 @@ class ReviewFormViewBase(object):
         })
 
         # check ratings correctly stored
-        for prefix, rating in enumerate(review.ratings.order_by('question__id')):
-            prefix = str(prefix + 1)
+        for rating in review.ratings.all():
+            prefix = str(rating.question.id)
             # print 'Q: ' + str(rating.question)
             # print 'A: ' + str(rating.answer)
 

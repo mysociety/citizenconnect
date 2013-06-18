@@ -99,8 +99,8 @@ class RatingForm(forms.ModelForm):
 def ratings_forms_for_review(review, request, questions):
 
     rating_forms = []
-    for prefix, q in enumerate(questions):
-        prefix += 1  # want these 1 based
+    for q in questions:
+        prefix = str(q.id)  # be sure that the form names are unique
         instance = Rating(question=q, review=review)
 
         rating_forms.append(
