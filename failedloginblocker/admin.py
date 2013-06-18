@@ -1,7 +1,8 @@
 """Admin settings for the failedloginblocker module"""
 
 from django.contrib import admin
-from failedloginblocker.models import FailedAttempt
+
+from .models import FailedAttempt
 
 
 class AdminFailedAttempt(admin.ModelAdmin):

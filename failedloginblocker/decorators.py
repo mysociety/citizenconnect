@@ -1,7 +1,7 @@
 """ Decorators used by failedloginblocker """
 
-from failedloginblocker.models import FailedAttempt
-from failedloginblocker.exceptions import LoginBlockedError
+from .models import FailedAttempt
+from .exceptions import LoginBlockedError
 
 
 def monitor_login(auth_func):
