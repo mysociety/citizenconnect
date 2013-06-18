@@ -221,5 +221,9 @@ PASSWORD_COMPLEXITY = {
 FLB_MAX_FAILURES = 3
 FLB_BLOCK_INTERVAL = 60 # minutes
 
+AUTHENTICATION_BACKENDS = (
+    'failedloginblocker.backends.MonitoredModelBackend',
+)
+
 # Now get the mySociety configuration
 from .mysociety import *
