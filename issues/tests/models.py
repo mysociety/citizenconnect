@@ -147,6 +147,21 @@ class ProblemModelTests(ProblemTestCase):
 
     def test_defaults_to_not_under_16(self):
         self.assertFalse(self.test_problem.reporter_under_16)
+    
+    def test_under_16s_name_never_public(self):
+        problem = self.test_problem
+        problem.reporter_under_16 = True
+        problem.public_reporter_name = True
+        
+        # Should not pass clean
+        with self.assertRaises(ValidationError) as context_manager:
+            problem.full_clean()
+        self.assertEqual(context_manager.exception.messages[0], 'The reporter name cannot public if the reporter is under 16.')
+
+        # This should be is ok (ie not raise exception)
+        problem.public_reporter_name = False
+        problem.full_clean()
+
 
     def test_defaults_to_no_confirmation_sent(self):
         self.assertFalse(self.test_problem.confirmation_sent)

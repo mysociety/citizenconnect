@@ -354,6 +354,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         """
         super(Problem, self).clean()
         self.validate_preferred_contact_method_and_reporter_phone(self.preferred_contact_method, self.reporter_phone)
+        self.validate_reporter_under_16_and_public_reporter_name(self.reporter_under_16, self.public_reporter_name)
 
     @classmethod
     def validate_preferred_contact_method_and_reporter_phone(cls, preferred_contact_method, reporter_phone):
@@ -361,6 +362,12 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         # this is a separate method so we can call if from form easily to share error message
         if preferred_contact_method == cls.CONTACT_PHONE and not reporter_phone:
             raise ValidationError('You must provide a phone number if you prefer to be contacted by phone')
+
+    @classmethod
+    def validate_reporter_under_16_and_public_reporter_name(cls, reporter_under_16, public_reporter_name ):
+        if reporter_under_16 == True and public_reporter_name == True:
+            raise ValidationError('The reporter name cannot public if the reporter is under 16.')
+
 
     def summarise(self, field):
         summary_length = 30
