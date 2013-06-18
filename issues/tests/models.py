@@ -145,6 +145,9 @@ class ProblemModelTests(ProblemTestCase):
     def test_defaults_to_not_mailed(self):
         self.assertFalse(self.test_problem.mailed)
 
+    def test_defaults_to_not_under_16(self):
+        self.assertFalse(self.test_problem.reporter_under_16)
+
     def test_defaults_to_no_confirmation_sent(self):
         self.assertFalse(self.test_problem.confirmation_sent)
 

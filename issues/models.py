@@ -262,9 +262,12 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     # We need
     description = models.TextField(verbose_name='', validators=[MaxLengthValidator(2000)])
     source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True)
+
     reporter_name = models.CharField(max_length=200, blank=False, verbose_name='')
     reporter_phone = models.CharField(max_length=50, blank=True, verbose_name='')
     reporter_email = models.EmailField(max_length=254, blank=False, verbose_name='')
+    reporter_under_16 = models.BooleanField(default=False)
+
     preferred_contact_method = models.CharField(max_length=100, choices=CONTACT_CHOICES, default=CONTACT_EMAIL)
     category = models.CharField(max_length=100,
                                 choices=CATEGORY_CHOICES,
