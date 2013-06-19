@@ -19,10 +19,10 @@ from .auth import user_in_group, user_in_groups
 from .metaphone import dm
 
 
-class CCG(MailSendMixin, AuditedModel):
+class Regulator(MailSendMixin, AuditedModel):
     name = models.TextField()
     code = models.CharField(max_length=8, db_index=True, unique=True)
-    users = models.ManyToManyField(User, related_name='ccgs')
+    users = models.ManyToManyField(User, related_name='regulators')
 
     # ISSUE-329: The `blank=True` should be removed when we are supplied with
     # email addresses for all the orgs
@@ -35,7 +35,7 @@ class CCG(MailSendMixin, AuditedModel):
         return Group.objects.get(pk=auth.CCG)
 
     def can_be_accessed_by(self, user):
-        """ Can a user access this ccg? """
+        """ Can a user access this regulator? """
 
         # Deactivated users - NO
         if not user.is_active:
@@ -49,7 +49,7 @@ class CCG(MailSendMixin, AuditedModel):
         if user_in_group(user, auth.NHS_SUPERUSERS):
             return True
 
-        # Users in this ccg - YES
+        # Users in this regulator - YES
         if user in self.users.all():
             return True
 
@@ -76,13 +76,13 @@ class Trust(MailSendMixin, AuditedModel):
     email = models.EmailField(max_length=254, blank=True)
     secondary_email = models.EmailField(max_length=254, blank=True)
 
-    # Which CCG this Trust should escalate problems too
-    escalation_ccg = models.ForeignKey(CCG, blank=False, null=False, related_name='escalation_trusts')
+    # Which Regulator this Trust should escalate problems too
+    escalation_regulator = models.ForeignKey(Regulator, blank=False, null=False, related_name='escalation_trusts')
 
-    # Which CCGs commission services from this Trust.
-    # This means that those CCGs will be able to see all the problems at
+    # Which Regulators commission services from this Trust.
+    # This means that those Regulators will be able to see all the problems at
     # this trust's organisations.
-    ccgs = models.ManyToManyField(CCG, related_name='trusts')
+    regulators = models.ManyToManyField(Regulator, related_name='trusts')
 
     def can_be_accessed_by(self, user):
         """ Can a user access this trust? """
@@ -105,8 +105,8 @@ class Trust(MailSendMixin, AuditedModel):
         if user in self.users.all():
             return True
 
-        # CCG users for a CCG associated with this Trust - YES
-        if user in User.objects.filter(ccgs__trusts=self).all():
+        # Regulator users for a Regulator associated with this Trust - YES
+        if user in User.objects.filter(regulators__trusts=self).all():
             return True
 
         # Everyone else - NO
@@ -125,11 +125,11 @@ class Trust(MailSendMixin, AuditedModel):
 
 
 @receiver(post_save, sender=Trust)
-def ensure_ccgs_contains_escalation_ccg(sender, **kwargs):
-    """ post_save signal handler to ensure that trust.escalation_ccg is always in trust.ccgs """
+def ensure_regulators_contains_escalation_regulator(sender, **kwargs):
+    """ post_save signal handler to ensure that trust.escalation_regulator is always in trust.regulators """
     trust = kwargs['instance']
-    if trust.escalation_ccg and trust.escalation_ccg not in trust.ccgs.all():
-        trust.ccgs.add(trust.escalation_ccg)
+    if trust.escalation_regulator and trust.escalation_regulator not in trust.regulators.all():
+        trust.regulators.add(trust.escalation_regulator)
 
 
 class Organisation(AuditedModel, geomodels.Model):
