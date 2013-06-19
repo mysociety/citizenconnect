@@ -250,11 +250,17 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     SOURCE_PHONE = 'phone'
     SOURCE_EMAIL = 'email'
     SOURCE_SMS = 'sms'
+    SOURCE_TWITTER = 'twitter'
+    SOURCE_FACEBOOK = 'facebook'
+    SOURCE_MMS = 'mms'
 
     SOURCE_CHOICES = (
         (SOURCE_EMAIL, 'Email'),
         (SOURCE_PHONE, 'Phone'),
-        (SOURCE_SMS, 'SMS')
+        (SOURCE_SMS, 'SMS'),
+        (SOURCE_TWITTER, 'Twitter'),
+        (SOURCE_FACEBOOK, 'Facebook'),
+        (SOURCE_MMS, 'MMS'),
     )
 
     COBRAND_CHOICES = [(cobrand, cobrand) for cobrand in settings.ALLOWED_COBRANDS]

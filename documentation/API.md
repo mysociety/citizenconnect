@@ -57,7 +57,7 @@ Optional. Whether or not the reporter wanted their name made public, send `0` or
 Optional. The reporter's preferred contact method, the available options are: `phone`, `email`. Defaults to `email`.
 
 ### source
-Required. The source of the original report, ie: whether they phoned, emailed or texted. Available options: [`email`, `phone`, `sms`]
+Required. The source of the original report, ie: whether they phoned, emailed, texted etc. Available options: [`email`, `phone`, `sms`, `twitter`, `facebook`, `mms`]
 
 ### escalated
 Optional. Whether or not this problem has been escalated. Send `0` or `1` for true or false. Defaults to false.
