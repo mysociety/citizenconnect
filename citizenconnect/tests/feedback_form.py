@@ -14,6 +14,7 @@ class FeedbackFormTest(TestCase):
     def test_feedback_form_exists(self):
         resp = self.client.get(self.feedback_form_url)
         self.assertEquals(200, resp.status_code)
+        self.assertNotContains(resp, "RE: Problem")
 
     def test_posting_feedback(self):
         resp = self.client.post(self.feedback_form_url, {'name': 'Bob', 'email': 'bob@example.com', 'feedback_comments': 'Test XYZ Comment'})
@@ -34,4 +35,4 @@ class FeedbackFormTest(TestCase):
     def test_report_problem_as_unsuitable(self):
         problem = create_test_problem()
         resp = self.client.get(self.feedback_form_url + '?problem_id={0}'.format(problem.id))
-        self.assertContains(resp, "RE: Problem {0}".format(problem.id))
+        self.assertContains(resp, "RE: Problem reference {0}".format(problem.id))
