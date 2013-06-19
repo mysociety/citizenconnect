@@ -98,3 +98,24 @@
     });
 
 })(window.jQuery, window.CitizenConnect.priorityCategories);
+
+
+/*
+  If the "under 16" box is ticked we should hide the "all public" option and
+  if it was ticked select the "private" option.
+*/
+$(function () {
+  var $private_checkbox = $('#id_privacy_0');
+  var $publish_with_name_box = $($('#id_privacy_2').parents('li').get(0));
+  $('input[name="reporter_under_16"]').click(function () {
+      var $ele = $(this);
+      if ($ele.is(':checked')) {
+        if ($publish_with_name_box.find('input').is(':checked')) {
+          $private_checkbox.click();
+        }
+        $publish_with_name_box.hide();
+      } else {
+        $publish_with_name_box.show();
+      }
+   });
+});
