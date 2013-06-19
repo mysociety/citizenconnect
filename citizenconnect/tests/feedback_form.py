@@ -3,6 +3,8 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.core import mail
 
+from organisations.tests.lib import create_test_problem
+
 
 class FeedbackFormTest(TestCase):
     def setUp(self):
@@ -28,3 +30,8 @@ class FeedbackFormTest(TestCase):
         self.assertEquals(200, resp.status_code)
         self.assertContains(resp, "This field is required")
         self.assertEqual(len(mail.outbox), 0)
+
+    def test_report_problem_as_unsuitable(self):
+        problem = create_test_problem()
+        resp = self.client.get(self.feedback_form_url + '?problem_id={0}'.format(problem.id))
+        self.assertContains(resp, "RE: Problem {0}".format(problem.id))
