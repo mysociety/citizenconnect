@@ -59,9 +59,9 @@
         $('input[name="category"]:checked').change();
 
         // Problem description
-        $description = $("#id_description");
-        $descriptionCount = $('.description-count');
-        $descriptionErrors = $(".description-errors");
+        var $description = $("#id_description");
+        var $descriptionCount = $('.description-count');
+        var $descriptionErrors = $(".description-errors");
         showDescriptionCount($descriptionCount, $description);
 
         // Count down the available text when things change
@@ -70,10 +70,10 @@
         });
 
         // Check length before submitting
-        $(".problem-form").submit(function(e){
+        $(".problem-form").submit(function(){
             if($description.val().length > descriptionLimit) {
                 // TODO - show an error message
-                alert("Sorry, your message is too large");
+                window.alert("Sorry, your message is too large");
                 return false;
             }
         });
