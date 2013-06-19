@@ -56,6 +56,11 @@ class Feedback(FormView):
     template_name = 'feedback_form.html'
     form_class = FeedbackForm
 
+    def get_initial(self):
+        initial = super(Feedback, self).get_initial()
+        initial['feedback_comments'] = "RE: Problem {0}\n\n".format(self.request.GET.get('problem_id'))
+        return initial
+
     def form_valid(self, form):
         feedback_template = get_template('feedback_email.txt')
 
