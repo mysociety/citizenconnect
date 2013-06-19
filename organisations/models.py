@@ -58,34 +58,34 @@ class Regulator(MailSendMixin, AuditedModel):
 
     @property
     def problem_set(self):
-        return Problem.objects.filter(organisation__trust__in=self.trusts.all())
+        return Problem.objects.filter(organisation__parent__in=self.site_parents.all())
 
     def __unicode__(self):
         return self.name
 
 
-class Trust(MailSendMixin, AuditedModel):
+class SiteParent(MailSendMixin, AuditedModel):
     name = models.TextField()
     code = models.CharField(max_length=8, db_index=True, unique=True)
-    users = models.ManyToManyField(User, related_name='trusts')
+    users = models.ManyToManyField(User, related_name='site_parents')
 
     # ISSUE-329: The `blank=True` should be removed when we are supplied with
-    # email addresses for all the trusts
+    # email addresses for all the Site Parents
     # max_length set manually to make it RFC compliant (default of 75 is too short)
     # email may not be unique
     email = models.EmailField(max_length=254, blank=True)
     secondary_email = models.EmailField(max_length=254, blank=True)
 
-    # Which Regulator this Trust should escalate problems too
-    escalation_regulator = models.ForeignKey(Regulator, blank=False, null=False, related_name='escalation_trusts')
+    # Which Regulator this Site Parent should escalate problems too
+    escalation_regulator = models.ForeignKey(Regulator, blank=False, null=False, related_name='escalation_site_parents')
 
-    # Which Regulators commission services from this Trust.
+    # Which Regulators commission services from this Site Parent.
     # This means that those Regulators will be able to see all the problems at
-    # this trust's organisations.
-    regulators = models.ManyToManyField(Regulator, related_name='trusts')
+    # this Site Parent's organisations.
+    regulators = models.ManyToManyField(Regulator, related_name='site_parents')
 
     def can_be_accessed_by(self, user):
-        """ Can a user access this trust? """
+        """ Can a user access this site parent? """
 
         # Deactivated users - NO
         if not user.is_active:
@@ -101,12 +101,12 @@ class Trust(MailSendMixin, AuditedModel):
                                  auth.CUSTOMER_CONTACT_CENTRE]):
             return True
 
-        # Users in this trust - YES
+        # Users in this Site Parent - YES
         if user in self.users.all():
             return True
 
-        # Regulator users for a Regulator associated with this Trust - YES
-        if user in User.objects.filter(regulators__trusts=self).all():
+        # Regulator users for a Regulator associated with this Site Parent - YES
+        if user in User.objects.filter(regulators__site_parents=self).all():
             return True
 
         # Everyone else - NO
@@ -124,12 +124,12 @@ class Trust(MailSendMixin, AuditedModel):
         return self.name
 
 
-@receiver(post_save, sender=Trust)
+@receiver(post_save, sender=SiteParent)
 def ensure_regulators_contains_escalation_regulator(sender, **kwargs):
-    """ post_save signal handler to ensure that trust.escalation_regulator is always in trust.regulators """
-    trust = kwargs['instance']
-    if trust.escalation_regulator and trust.escalation_regulator not in trust.regulators.all():
-        trust.regulators.add(trust.escalation_regulator)
+    """ post_save signal handler to ensure that site_parent.escalation_regulator is always in site_parent.regulators """
+    site_parent = kwargs['instance']
+    if site_parent.escalation_regulator and site_parent.escalation_regulator not in site_parent.regulators.all():
+        site_parent.regulators.add(site_parent.escalation_regulator)
 
 
 class Organisation(AuditedModel, geomodels.Model):
@@ -148,8 +148,8 @@ class Organisation(AuditedModel, geomodels.Model):
     point = geomodels.PointField()
     objects = geomodels.GeoManager()
 
-    # Which Trust this is in
-    trust = models.ForeignKey(Trust, blank=False, null=False, related_name='organisations')
+    # Who is the parent (An NHS Trust or GP Practice)?
+    parent = models.ForeignKey(SiteParent, blank=False, null=False, related_name='organisations')
 
     # Calculated double_metaphone field, for search by provider name
     name_metaphone = models.TextField(editable=False)
@@ -184,8 +184,8 @@ class Organisation(AuditedModel, geomodels.Model):
 
     def can_be_accessed_by(self, user):
         """ Can a given user access this Organisation? """
-        # Access is controlled by the Trust
-        return self.trust.can_be_accessed_by(user)
+        # Access is controlled by the Site Parent
+        return self.parent.can_be_accessed_by(user)
 
     def save(self, *args, **kwargs):
         """
