@@ -1,11 +1,13 @@
 # Django imports
 from django.views.generic import TemplateView
 from django_tables2 import RequestConfig
+from django.core.urlresolvers import reverse
 
 # App imports
 from issues.models import Problem
 
-from ..auth import enforce_organisation_access_check
+from .. import auth
+from ..auth import enforce_organisation_access_check, user_can_access_private_national_summary, user_in_group
 from ..models import Organisation
 from ..forms import OrganisationFilterForm
 from ..lib import interval_counts
@@ -109,6 +111,16 @@ class OrganisationSummary(OrganisationAwareViewMixin,
         for attribute in summary_attributes:
             issues_total[attribute] = context['problems_summary_stats'][attribute]
         context['issues_total'] = issues_total
+
+        if context['private']:
+            if user_can_access_private_national_summary(self.request.user):
+                context['back_to_summaries_link'] = reverse('private-national-summary')
+            elif user_in_group(self.request.user, auth.CCG):
+                context['back_to_summaries_link'] = reverse('ccg-summary', kwargs={'code': self.request.user.ccgs.all()[0].code})
+            elif user_in_group(self.request.user, auth.TRUSTS):
+                context['back_to_summaries_link'] = reverse('trust-summary', kwargs={'code': self.request.user.trusts.all()[0].code})
+        else:
+            context['back_to_summaries_link'] = reverse('org-all-summary', kwargs={'cobrand': kwargs['cobrand']})
 
         return context
 
