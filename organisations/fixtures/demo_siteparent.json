@@ -1,11 +1,11 @@
 [
 {
         "pk": 1,
-        "model": "organisations.trust",
+        "model": "organisations.siteparent",
         "fields": {
-            "name": "Demo Trust",
+            "name": "Demo Site Parent",
             "code": "YYYYYYY",
-            "email": "demotrust@example.com",
+            "email": "demositeparent@example.com",
             "escalation_regulator": 1,
             "regulators": [1],
             "users": [],
