@@ -15,13 +15,22 @@ class Migration(SchemaMigration):
         db.send_create_signal('organisations', ['Regulator'])
 
         # Rename the M2M table for field users on CCG
-        old_m2m_name = db.shorten_name('organisations_ccg_users')
-        new_m2m_name = db.shorten_name('organisations_regulator_users')
-        db.rename_table(old_m2m_name, new_m2m_name)
+        old_users_m2m_name = db.shorten_name('organisations_ccg_users')
+        new_users_m2m_name = db.shorten_name('organisations_regulator_users')
+        db.rename_table(old_users_m2m_name, new_users_m2m_name)
         # Rename field 'organisations_regulator_users.ccg_id' to 'regulator_id'
-        db.rename_column(new_m2m_name, 'ccg_id', 'regulator_id')
+        db.rename_column(new_users_m2m_name, 'ccg_id', 'regulator_id')
         # Changing field 'organisations_regulator_users.regulator_id' to point to Regulator
-        db.alter_column(new_m2m_name, 'regulator_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['organisations.Regulator']))
+        db.alter_column(new_users_m2m_name, 'regulator_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['organisations.Regulator']))
+
+        # Rename the M2M table for field regulators on Trust
+        old_regulators_m2m_name = db.shorten_name('organisations_trust_ccgs')
+        new_regulators_m2m_name = db.shorten_name('organisations_trust_regulators')
+        db.rename_table(old_regulators_m2m_name, new_regulators_m2m_name)
+        # Rename field 'organisations_trust_regulators.ccg_id' to 'regulator_id'
+        db.rename_column(new_regulators_m2m_name, 'ccg_id', 'regulator_id')
+        # Changing field 'organisations_trust_regulators.regulator_id' to point to Regulator
+        db.alter_column(new_regulators_m2m_name, 'regulator_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['organisations.Regulator']))
 
         # Rename field 'Trust.escalation_ccg' to 'Trust.escalation_regulator'
         db.rename_column('organisations_trust', 'escalation_ccg_id', 'escalation_regulator_id')
@@ -37,13 +46,22 @@ class Migration(SchemaMigration):
         db.send_create_signal('organisations', ['CCG'])
 
         # Rename the M2M table for field users on Regulator
-        old_m2m_name = db.shorten_name('organisations_regulator_users')
-        new_m2m_name = db.shorten_name('organisations_ccg_users')
-        db.rename_table(old_m2m_name, new_m2m_name)
+        old_users_m2m_name = db.shorten_name('organisations_regulator_users')
+        new_users_m2m_name = db.shorten_name('organisations_ccg_users')
+        db.rename_table(old_users_m2m_name, new_users_m2m_name)
         # Rename field 'organisations_regulator_users.regulator_id' to 'ccg_id'
-        db.rename_column(new_m2m_name, 'regulator_id', 'ccg_id')
+        db.rename_column(new_users_m2m_name, 'regulator_id', 'ccg_id')
         # Changing field 'organisations_regulator_users.ccg_id' to point to CCG
-        db.alter_column(new_m2m_name, 'ccg_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['organisations.CCG']))
+        db.alter_column(new_users_m2m_name, 'ccg_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['organisations.CCG']))
+
+        # Rename the M2M table for field regulators on Trust
+        old_regulators_m2m_name = db.shorten_name('organisations_trust_regulators')
+        new_regulators_m2m_name = db.shorten_name('organisations_trust_ccgs')
+        db.rename_table(old_regulators_m2m_name, new_regulators_m2m_name)
+        # Rename field 'organisations_trust_ccgs.regulator_id' to 'ccg_id'
+        db.rename_column(new_regulators_m2m_name, 'regulator_id', 'ccg_id')
+        # Changing field 'organisations_trust_ccgs.ccg_id' to point to CCG
+        db.alter_column(new_regulators_m2m_name, 'ccg_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['organisations.CCG']))
 
         # Rename field 'Trust.escalation_regulator' to 'Trust.escalation_ccg'
         db.rename_column('organisations_trust', 'escalation_regulator_id', 'escalation_ccg_id')
