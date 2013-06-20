@@ -48,6 +48,7 @@ $(document).ready(function () {
     var hoverBubbleTemplate = $("script[name=hover-bubble]").html();
     var londonCentre = new L.LatLng(51.505, -0.09);
     var northEastCentre = new L.LatLng(54.95, -1.62);
+    var selectedProvider = window.location.hash.slice(1);
     var londonZoomLevel = 10;
     var northEastZoomLevel = 10;
     var map = new L.Map('map', {
@@ -288,6 +289,11 @@ $(document).ready(function () {
             var popupOptions = {offset: new L.Point(2,-4)};
             marker.bindPopup(marker.popupContent, popupOptions).openPopup();
         });
+
+        if (selectedProvider) {
+            var provider = _.findWhere(CitizenConnect.providers, {ods_code: selectedProvider});
+            zoomToPoint(provider.lat, provider.lon);
+        }
 
         // Add the markers
         drawProviders(defaultProviders);
