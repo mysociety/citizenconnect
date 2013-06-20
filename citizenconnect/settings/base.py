@@ -145,6 +145,7 @@ INSTALLED_APPS = (
     'responses',
     'reversion',
     'failedloginblocker',
+    'geocoder',
 )
 
 
