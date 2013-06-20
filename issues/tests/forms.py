@@ -81,6 +81,15 @@ class ProblemCreateFormTests(ProblemCreateFormBase, TestCase):
         self.assertEqual(problem.public, True)
         self.assertEqual(problem.public_reporter_name, False)
 
+    def test_problem_form_sets_name_to_private_for_under_16(self):
+        self.test_problem['privacy'] = ProblemForm.PRIVACY_PUBLIC # all public
+        self.test_problem['reporter_under_16'] = True
+        self.client.post(self.form_url, self.test_problem)
+        # Check in db
+        problem = Problem.objects.get(reporter_name=self.uuid)
+        self.assertEqual(problem.public, True)
+        self.assertEqual(problem.public_reporter_name, False)
+
     def test_problem_form_respects_public_privacy(self):
         self.test_problem['privacy'] = ProblemForm.PRIVACY_PUBLIC
         self.client.post(self.form_url, self.test_problem)
@@ -175,6 +184,39 @@ class ProblemCreateFormBrowserTests(ProblemCreateFormBase, SeleniumTestCase):
         # Select a category it does not apply to
         d.find_element_by_css_selector('input[name="category"][value="parking"]').click()
         self.assertTrue(self.is_elevate_priority_hidden())
+
+    def test_under_16_toggling(self):
+        d = self.driver
+        d.get(self.full_url(self.form_url))
+
+        under_16_input = d.find_element_by_id('id_reporter_under_16')
+        keep_private_input = d.find_element_by_id('id_privacy_0')
+        publish_with_name_input = d.find_element_by_id('id_privacy_2')
+
+        # get the li using jQuery, because selenium has poor tools for traversing the DOM tree.
+        publish_with_name_li = d.execute_script('return $("#id_privacy_2").parents("li").get(0)')
+
+        # Should intially not be selected and publish_with_name visible
+        self.assertFalse(under_16_input.is_selected())
+        self.assertTrue(keep_private_input.is_selected())
+        self.assertTrue(publish_with_name_li.is_displayed())
+        publish_with_name_li.click() # click li because input is hidden
+        self.assertFalse(keep_private_input.is_selected())
+        self.assertTrue(publish_with_name_input.is_selected())
+
+        # check it, publish_with_name should be hidden
+        under_16_input.click()
+        self.assertTrue(under_16_input.is_selected())
+        self.assertTrue(keep_private_input.is_selected())
+        self.assertFalse(publish_with_name_input.is_selected())
+        self.assertFalse(publish_with_name_li.is_displayed())
+
+        # uncheck, publish_with_name visible again
+        under_16_input.click()
+        self.assertFalse(under_16_input.is_selected())
+        self.assertTrue(keep_private_input.is_selected())
+        self.assertTrue(publish_with_name_li.is_displayed())
+
 
 
 class ProblemSurveyFormTests(TestCase):
