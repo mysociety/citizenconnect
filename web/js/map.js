@@ -280,7 +280,7 @@ $(document).ready(function () {
      * @param {Number} zoom The zoom level, defaults to 15
      */
     var zoomToPoint = function(lat, lon, zoom) {
-        zoom || (zoom = 15);
+        zoom = zoom || 15;
         map.setView([lat, lon], zoom);
     };
 
@@ -297,7 +297,7 @@ $(document).ready(function () {
             openMarkerPopup(provider.marker, provider.marker.popupContent);
             map.off('zoomend', openMarker);
             map.on('zoomend', requestProvidersInBounds);
-        }
+        };
         map.off('zoomend', requestProvidersInBounds);
         map.on('zoomend', openMarker);
     };
