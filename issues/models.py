@@ -284,7 +284,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     public_reporter_name = models.BooleanField()
     status = models.IntegerField(default=NEW, choices=STATUS_CHOICES, db_index=True)
     priority = models.IntegerField(default=PRIORITY_NORMAL, choices=PRIORITY_CHOICES)
-    organisation = models.ForeignKey('organisations.Site')
+    site = models.ForeignKey('organisations.Site')
     service = models.ForeignKey('organisations.Service',
                                 null=True,
                                 blank=True,
@@ -397,9 +397,9 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         """
         Whether or not an issue is accessible to a given user.
         In practice the issue is publically accessible to everyone if it's
-        publicly visible, or the user has access to the organisation it is assigned.
+        publicly visible, or the user has access to the Site it is assigned.
         """
-        return (self.is_publicly_visible() or self.organisation.can_be_accessed_by(user))
+        return (self.is_publicly_visible() or self.site.can_be_accessed_by(user))
 
     def set_time_to_values(self):
         """
@@ -502,7 +502,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
 
         if self.commissioned == self.LOCALLY_COMMISSIONED:
             # Send email to the CCG
-            self.organisation.trust.escalation_ccg.send_mail(**kwargs)
+            self.site.trust.escalation_ccg.send_mail(**kwargs)
         elif self.commissioned == self.NATIONALLY_COMMISSIONED:
             # send email to CCC
             mail.send_mail(
