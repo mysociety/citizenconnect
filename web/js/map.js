@@ -97,6 +97,26 @@ $(document).ready(function () {
     // reference to the control around all the time.
     var zoomControl = map.zoomControl;
 
+    /**
+    * Enable select2 on the org name select.
+    */
+    var $select = $("#map-search-org-name");
+    var $blank_option = $('<option></option>');
+
+    var $placeholder = $select.find('option:first').remove();
+
+    $select.prepend($blank_option);
+    $select.select2({
+      placeholder: $placeholder.text(),
+      allowClear: true
+    });
+
+    $select.on('change', function(e) {
+        var provider = findProvider({ods_code: $select.val()});
+        zoomToProvider(provider);
+        window.location.hash = provider.ods_code;
+    });
+
     // Function to lock all the map controls so that you can't
     // interact with it (ie: during reloading of map pins)
     var disableMapControls = function() {
@@ -396,22 +416,5 @@ $(document).ready(function () {
     });
 });
 
-
-/*
-
-  Enable select2 on the org name select.
-
-*/
-
 $(function () {
-  var $select = $("#map-search-org-name");
-  var $blank_option = $('<option></option>');
-
-  var $placeholder = $select.find('option:first').remove();
-
-  $select.prepend($blank_option);
-  $select.select2({
-    placeholder: $placeholder.text(),
-    allowClear: true
-  });
 });
