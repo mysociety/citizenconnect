@@ -59,8 +59,6 @@ class Command(BaseCommand):
             centre = Point(osgb36_x, osgb36_y, srid=Place.SRID_OSGB36)
             centre.transform(Place.SRID_WGS84)
 
-            # do any filtering of the places here, eg if outside covered areas
-
             # create the place
             place = Place(
                 name = name,
@@ -68,4 +66,9 @@ class Command(BaseCommand):
                 centre = centre,
                 source = Place.SOURCE_OS_50K_GAZETEER,
             )
+
+            # skip entries outside the allowed bonding boxes
+            if not place.is_in_allowed_bounding_boxes():
+                continue
+
             place.save()

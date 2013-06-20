@@ -31,7 +31,7 @@ class Place(geomodels.Model):
     objects = geomodels.GeoManager()
 
 
-    def is_in_allowed_bounding_box(self):
+    def is_in_allowed_bounding_boxes(self):
         for bbox in settings.GEOCODER_BOUNDING_BOXES:
             polygon = Polygon.from_bbox(bbox)
             if polygon.contains(self.centre):

@@ -13,13 +13,13 @@ class GeocoderModelTests(TestCase):
         # xmin, ymin, xmax, ymax
         ( -1,   50,   1,    52 ),
     ))
-    def test_is_in_allowed_bounding_box(self):
+    def test_is_in_allowed_bounding_boxes(self):
         defaults = dict(context_name="Context", source=Place.SOURCE_OS_LOCATOR)
         good_place = Place(name='Allowed', centre=Point(0, 51),  **defaults)
         bad_place  = Place(name='Bad',     centre=Point(-2, 51), **defaults)
 
-        self.assertTrue(good_place.is_in_allowed_bounding_box())
-        self.assertFalse(bad_place.is_in_allowed_bounding_box())
+        self.assertTrue(good_place.is_in_allowed_bounding_boxes())
+        self.assertFalse(bad_place.is_in_allowed_bounding_boxes())
 
 
 class CsvImportTests(TestCase):
@@ -30,6 +30,10 @@ class CsvImportTests(TestCase):
         self.os_locator_data_filename       = csv_dir + 'OS_Locator2013_1_OPEN_sample.txt'
         self.os_50k_gazetteer_data_filename = csv_dir + '50kgaz2013_sample.txt'
 
+    @override_settings(GEOCODER_BOUNDING_BOXES=(
+        # xmin, ymin, xmax, ymax
+        ( -0.8, 51.1, 0.6,  51.8 ), # London
+    ))
     def test_os_locator(self):
 
         call_command('import_from_OS_locator', self.os_locator_data_filename)
@@ -47,6 +51,10 @@ class CsvImportTests(TestCase):
         self.assertEqual( place.centre.x, -0.11587620309898315 )
         self.assertEqual( place.centre.y, 51.361488927177462   )
 
+    @override_settings(GEOCODER_BOUNDING_BOXES=(
+        # xmin, ymin, xmax, ymax
+        ( -0.8, 51.1, 0.6,  51.8 ), # London
+    ))
     def test_50k_gazetteer(self):
 
         call_command('import_from_OS_50k_gazetteer', self.os_50k_gazetteer_data_filename)
