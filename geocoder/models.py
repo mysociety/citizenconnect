@@ -3,6 +3,10 @@ from django.contrib.gis.db import models as geomodels
 
 class Place(geomodels.Model):
 
+    # Required for coordinate conversions
+    SRID_WGS84  = 4326
+    SRID_OSGB36 = 27700
+
     # Name is shorter and should be used when searching.
     name = models.CharField(max_length=250)
 
