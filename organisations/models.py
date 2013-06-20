@@ -81,7 +81,7 @@ class SiteParent(MailSendMixin, AuditedModel):
 
     # Which Regulators commission services from this Site Parent.
     # This means that those Regulators will be able to see all the problems at
-    # this Site Parent's organisations.
+    # this Site Parent's sites.
     regulators = models.ManyToManyField(Regulator, related_name='site_parents')
 
     def can_be_accessed_by(self, user):
@@ -118,7 +118,7 @@ class SiteParent(MailSendMixin, AuditedModel):
 
     @property
     def problem_set(self):
-        return Problem.objects.filter(organisation__in=self.organisations.all())
+        return Problem.objects.filter(organisation__in=self.sites.all())
 
     def __unicode__(self):
         return self.name
@@ -132,12 +132,12 @@ def ensure_regulators_contains_escalation_regulator(sender, **kwargs):
         site_parent.regulators.add(site_parent.escalation_regulator)
 
 
-class Organisation(AuditedModel, geomodels.Model):
+class Site(AuditedModel, geomodels.Model):
 
     name = models.TextField()
-    organisation_type = models.CharField(max_length=100, choices=settings.ORGANISATION_CHOICES)
+    site_type = models.CharField(max_length=100, choices=settings.SITE_TYPE_CHOICES)
     choices_id = models.IntegerField(db_index=True)
-    ods_code = models.CharField(max_length=8, db_index=True, unique=True)
+    code = models.CharField(max_length=12, db_index=True, unique=True)
     address_line1 = models.CharField(max_length=255, blank=True)
     address_line2 = models.CharField(max_length=255, blank=True)
     address_line3 = models.CharField(max_length=255, blank=True)
@@ -149,7 +149,7 @@ class Organisation(AuditedModel, geomodels.Model):
     objects = geomodels.GeoManager()
 
     # Who is the parent (An NHS Trust or GP Practice)?
-    parent = models.ForeignKey(SiteParent, blank=False, null=False, related_name='organisations')
+    parent = models.ForeignKey(SiteParent, blank=False, null=False, related_name='sites')
 
     # Calculated double_metaphone field, for search by provider name
     name_metaphone = models.TextField(editable=False)
@@ -158,9 +158,9 @@ class Organisation(AuditedModel, geomodels.Model):
     average_recommendation_rating = models.FloatField(blank=True, null=True)
 
     @property
-    def organisation_type_name(self):
-        for code, label in settings.ORGANISATION_CHOICES:
-            if code == self.organisation_type:
+    def site_type_name(self):
+        for code, label in settings.SITE_TYPE_CHOICES:
+            if code == self.site_type:
                 return label
 
         # should never get here, but best to have a fallback
@@ -171,19 +171,19 @@ class Organisation(AuditedModel, geomodels.Model):
         return list(self.problem_set.open_problems())
 
     def has_time_limits(self):
-        if self.organisation_type == 'hospitals':
+        if self.site_type == 'hospitals':
             return True
         else:
             return False
 
     def has_services(self):
-        if self.organisation_type == 'hospitals':
+        if self.site_type == 'hospitals':
             return True
         else:
             return False
 
     def can_be_accessed_by(self, user):
-        """ Can a given user access this Organisation? """
+        """ Can a given user access this Site? """
         # Access is controlled by the Site Parent
         return self.parent.can_be_accessed_by(user)
 
@@ -198,7 +198,7 @@ class Organisation(AuditedModel, geomodels.Model):
             unicode_name = unicode(self.name, encoding='utf-8', errors='ignore')
         name_metaphones = dm(unicode_name)
         self.name_metaphone = name_metaphones[0]  # Ignoring the alternative for now
-        super(Organisation, self).save(*args, **kwargs)
+        super(Site, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return self.name
@@ -207,7 +207,7 @@ class Organisation(AuditedModel, geomodels.Model):
 class Service(AuditedModel):
     name = models.TextField()
     service_code = models.TextField(db_index=True)
-    organisation = models.ForeignKey(Organisation, related_name='services')
+    site = models.ForeignKey(Site, related_name='services')
 
     @classmethod
     def service_codes(cls):
@@ -221,7 +221,7 @@ class Service(AuditedModel):
         return self.name
 
     class Meta:
-        unique_together = (("service_code", "organisation"),)
+        unique_together = (("service_code", "site"),)
 
 
 class SuperuserLogEntry(AuditedModel):
