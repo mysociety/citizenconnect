@@ -333,3 +333,14 @@ $(document).ready(function () {
         });
     });
 });
+
+
+/*
+  
+  Enable select2 on the org name select.
+
+*/
+
+$(function () {
+  $('#map-search-org-name').select2();
+});
