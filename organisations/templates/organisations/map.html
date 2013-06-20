@@ -36,7 +36,7 @@
   <select id="map-search-org-name">
     <option value="">-- Choose an organisation --</option>
     {% for org in name_search_organisations %}
-      <option value="{{ org.id }}">{{ org.name }}</option>
+      <option value="{{ org.ods_code }}">{{ org.name }}</option>
     {% endfor %}
   </select>
 </div>
