@@ -179,9 +179,14 @@ textarea {
     display: table;
     ul { display: table-row; }
     li {
+        padding: 1.25em 0.5em;
+        vertical-align: top;
         background: none;
         display: table-cell;
         width: 33%;
+        p {
+          padding-left: 3.5em;
+        }
     }
 }
 

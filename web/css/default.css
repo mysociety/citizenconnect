@@ -377,7 +377,8 @@ input[type=text]:focus, .text-input:focus, textarea:focus { -webkit-box-shadow: 
 
 .big-radio-group--horizontal { display: table; }
 .big-radio-group--horizontal ul { display: table-row; }
-.big-radio-group--horizontal li { background: none; display: table-cell; width: 33%; }
+.big-radio-group--horizontal li { padding: 1.25em 0.5em; vertical-align: top; background: none; display: table-cell; width: 33%; }
+.big-radio-group--horizontal li p { padding-left: 3.5em; }
 
 .ie6 .big-radio-group, .ie7 .big-radio-group { display: block; }
 .ie6 .big-radio-group ul, .ie7 .big-radio-group ul { display: block; padding: 0; }
