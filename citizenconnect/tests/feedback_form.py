@@ -32,10 +32,9 @@ class FeedbackFormTest(TestCase):
         self.assertEqual(len(mail.outbox), 0)
 
     def test_report_problem_as_unsuitable(self):
-        problem = create_test_problem()
-        resp = self.client.get(self.feedback_form_url + '?problem_id={0}'.format(problem.id))
-        self.assertContains(resp, "RE: Problem reference {0}".format(problem.id))
+        resp = self.client.get(self.feedback_form_url + '?problem_id=42')
+        self.assertContains(resp, 'RE: Problem reference 42')
 
     def test_feedback_form_doesnt_reference_problem_by_default(self):
         resp = self.client.get(self.feedback_form_url)
-        self.assertNotContains(resp, "RE: Problem")
+        self.assertNotContains(resp, "RE: Problem reference")
