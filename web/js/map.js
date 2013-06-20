@@ -343,7 +343,7 @@ $(document).ready(function () {
         map.addLayer(markersGroup);
 
         if (selectedProvider) {
-            var provider = _.findWhere(CitizenConnect.providers, {ods_code: selectedProvider});
+            var provider = findProvider({ods_code: selectedProvider});
             if (provider) {
                 zoomToProvider(provider);
             }
