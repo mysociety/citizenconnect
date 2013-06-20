@@ -4,7 +4,7 @@
         "model": "reviews_submit.question",
         "fields": {
             "is_required": false,
-            "org_type": "hospitals",
+            "site_type": "hospitals",
             "updated": "2013-04-29T11:58:37.116Z",
             "api_question_id": 2,
             "title": "How satisfied are you with the cleanliness of the area you were treated in?"
@@ -15,7 +15,7 @@
         "model": "reviews_submit.question",
         "fields": {
             "is_required": false,
-            "org_type": "hospitals",
+            "site_type": "hospitals",
             "updated": "2013-04-29T11:58:37.145Z",
             "api_question_id": 3,
             "title": "How satisfied are you that the hospital staff worked well together?"
@@ -26,7 +26,7 @@
         "model": "reviews_submit.question",
         "fields": {
             "is_required": false,
-            "org_type": "hospitals",
+            "site_type": "hospitals",
             "updated": "2013-04-29T11:58:37.175Z",
             "api_question_id": 4,
             "title": "How satisfied are you that you were treated with dignity and respect by the staff?"
@@ -37,7 +37,7 @@
         "model": "reviews_submit.question",
         "fields": {
             "is_required": false,
-            "org_type": "hospitals",
+            "site_type": "hospitals",
             "updated": "2013-04-29T11:58:37.204Z",
             "api_question_id": 5,
             "title": "How satisfied are you that you were involved in decisions about your care?"
@@ -48,7 +48,7 @@
         "model": "reviews_submit.question",
         "fields": {
             "is_required": false,
-            "org_type": "hospitals",
+            "site_type": "hospitals",
             "updated": "2013-04-29T11:58:37.233Z",
             "api_question_id": 6,
             "title": "How satisfied are you that the hospital provides same-sex accommodation?"
@@ -59,7 +59,7 @@
         "model": "reviews_submit.question",
         "fields": {
             "is_required": true,
-            "org_type": "hospitals",
+            "site_type": "hospitals",
             "updated": "2013-04-29T11:58:37.262Z",
             "api_question_id": 7,
             "title": "How likely are you to recommend this hospital to friends and family if they needed similar care or treatment?"
@@ -70,7 +70,7 @@
         "model": "reviews_submit.question",
         "fields": {
             "is_required": false,
-            "org_type": "gppractices",
+            "site_type": "gppractices",
             "updated": "2013-04-29T11:58:50.065Z",
             "api_question_id": 2,
             "title": "Are you able to get through to the surgery by telephone?"
@@ -81,7 +81,7 @@
         "model": "reviews_submit.question",
         "fields": {
             "is_required": false,
-            "org_type": "gppractices",
+            "site_type": "gppractices",
             "updated": "2013-04-29T11:58:50.094Z",
             "api_question_id": 3,
             "title": "Are you able to get an appointment when you want one?"
@@ -92,7 +92,7 @@
         "model": "reviews_submit.question",
         "fields": {
             "is_required": false,
-            "org_type": "gppractices",
+            "site_type": "gppractices",
             "updated": "2013-04-29T11:58:50.123Z",
             "api_question_id": 4,
             "title": "Do the staff treat you with dignity and respect?"
@@ -103,7 +103,7 @@
         "model": "reviews_submit.question",
         "fields": {
             "is_required": false,
-            "org_type": "gppractices",
+            "site_type": "gppractices",
             "updated": "2013-04-29T11:58:50.153Z",
             "api_question_id": 5,
             "title": "Does the surgery involve you in decisions about your care and treatment?"
@@ -114,7 +114,7 @@
         "model": "reviews_submit.question",
         "fields": {
             "is_required": true,
-            "org_type": "gppractices",
+            "site_type": "gppractices",
             "updated": "2013-04-29T11:58:50.183Z",
             "api_question_id": 7,
             "title": "How likely are you to recommend this GP practice to friends and family if they needed similar care or treatment?"
@@ -125,7 +125,7 @@
         "model": "reviews_submit.question",
         "fields": {
             "is_required": false,
-            "org_type": "gppractices",
+            "site_type": "gppractices",
             "updated": "2013-04-29T11:58:50.212Z",
             "api_question_id": 8,
             "title": "This GP practice provides accurate and up to date information on services and opening hours"
