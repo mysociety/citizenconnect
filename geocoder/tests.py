@@ -1,13 +1,25 @@
-# import logging
-# import os
-# import sys
-# from StringIO import StringIO
-
 from django.test import TestCase
+from django.test.utils import override_settings
 from django.core.management import call_command
 from django.forms.models import model_to_dict
 
 from .models import Place
+
+from django.contrib.gis.geos import Point
+
+class GeocoderModelTests(TestCase):
+
+    @override_settings(GEOCODER_BOUNDING_BOXES=(
+        # xmin, ymin, xmax, ymax
+        ( -1,   50,   1,    52 ),
+    ))
+    def test_is_in_allowed_bounding_box(self):
+        defaults = dict(context_name="Context", source=Place.SOURCE_OS_LOCATOR)
+        good_place = Place(name='Allowed', centre=Point(0, 51),  **defaults)
+        bad_place  = Place(name='Bad',     centre=Point(-2, 51), **defaults)
+
+        self.assertTrue(good_place.is_in_allowed_bounding_box())
+        self.assertFalse(bad_place.is_in_allowed_bounding_box())
 
 
 class CsvImportTests(TestCase):
@@ -51,3 +63,4 @@ class CsvImportTests(TestCase):
         )
         self.assertEqual( place.centre.x, -0.1061755458136722 )
         self.assertEqual( place.centre.y, 51.517070389322676   )
+

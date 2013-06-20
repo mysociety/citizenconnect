@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.gis.db import models as geomodels
+from django.contrib.gis.geos import Polygon
+
+from django.conf import settings
 
 class Place(geomodels.Model):
 
@@ -26,3 +29,11 @@ class Place(geomodels.Model):
     source = models.IntegerField(choices=SOURCE_CHOICES)
 
     objects = geomodels.GeoManager()
+
+
+    def is_in_allowed_bounding_box(self):
+        for bbox in settings.GEOCODER_BOUNDING_BOXES:
+            polygon = Polygon.from_bbox(bbox)
+            if polygon.contains(self.centre):
+                return True
+        return False
