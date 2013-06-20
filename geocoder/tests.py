@@ -15,7 +15,8 @@ class CsvImportTests(TestCase):
     def setUp(self):
         # Paths to the various sample data files
         csv_dir = 'geocoder/test_data/'
-        self.os_locator_data_filename = csv_dir + 'OS_Locator2013_1_OPEN_sample.txt'
+        self.os_locator_data_filename       = csv_dir + 'OS_Locator2013_1_OPEN_sample.txt'
+        self.os_50k_gazetteer_data_filename = csv_dir + '50kgaz2013_sample.txt'
 
     def test_os_locator(self):
 
@@ -33,3 +34,20 @@ class CsvImportTests(TestCase):
         )
         self.assertEqual( place.centre.x, -0.11587620309898315 )
         self.assertEqual( place.centre.y, 51.361488927177462   )
+
+    def test_50k_gazetteer(self):
+
+        call_command('import_from_OS_50k_gazetteer', self.os_50k_gazetteer_data_filename)
+        self.assertEqual(Place.objects.count(), 10)
+
+        place = Place.objects.get(name="Farringdon Station")
+        self.assertEqual(
+            model_to_dict(place, exclude=['centre','id']),
+            {
+                'name': 'Farringdon Station',
+                'context_name': 'Farringdon Station, City of London',
+                'source': Place.SOURCE_OS_50K_GAZETEER,
+            }
+        )
+        self.assertEqual( place.centre.x, -0.1061755458136722 )
+        self.assertEqual( place.centre.y, 51.517070389322676   )
