@@ -178,7 +178,7 @@ $(document).ready(function () {
             }
 
             // Create the marker
-            marker = L.marker([nhsCentre.lat, nhsCentre.lon], {
+            marker = nhsCentre.marker = L.marker([nhsCentre.lat, nhsCentre.lon], {
                 riseOnHover:true,
                 icon: iconClass
             });
@@ -264,6 +264,22 @@ $(document).ready(function () {
         map.setView([lat, lon], zoom);
     };
 
+    /**
+     * Zoom to the given provider an open the popup for them.
+     *
+     * @param {Object} provider The provider to zoom to
+     */
+    var zoomToProvider = function(provider) {
+        zoomToPoint(provider.lat, provider.lon);
+        // Need to wait until the provider has been zoomed.
+        // openMarkerPopup(provider.marker);
+    };
+
+    var openMarkerPopup = function(marker) {
+        var popupOptions = {offset: new L.Point(2,-4)};
+        marker.bindPopup(marker.popupContent, popupOptions).openPopup();
+    };
+
     wax.tilejson('https://dnv9my2eseobd.cloudfront.net/v3/jedidiah.map-3lyys17i.jsonp', function(tilejson) {
         var mapCentre = londonCentre;
         var mapZoomLevel = londonZoomLevel;
@@ -285,18 +301,18 @@ $(document).ready(function () {
         // because it needs to know whether or not to spiderify them, so
         // we need to tell it what we want to do when someone clicks an already
         // spiderified link.
-        oms.addListener('click', function(marker) {
-            var popupOptions = {offset: new L.Point(2,-4)};
-            marker.bindPopup(marker.popupContent, popupOptions).openPopup();
-        });
-
-        if (selectedProvider) {
-            var provider = _.findWhere(CitizenConnect.providers, {ods_code: selectedProvider});
-            zoomToPoint(provider.lat, provider.lon);
-        }
+        oms.addListener('click', openMarkerPopup);
 
         // Add the markers
         drawProviders(defaultProviders);
+
+        if (selectedProvider) {
+            var provider = _.findWhere(CitizenConnect.providers, {ods_code: selectedProvider});
+            if (provider) {
+                zoomToProvider(provider);
+            }
+        }
+
         map.addLayer(markersGroup);
     });
 
