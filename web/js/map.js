@@ -336,11 +336,20 @@ $(document).ready(function () {
 
 
 /*
-  
+
   Enable select2 on the org name select.
 
 */
 
 $(function () {
-  $('#map-search-org-name').select2();
+  var $select = $("#map-search-org-name");
+  var $blank_option = $('<option></option>');
+
+  var $placeholder = $select.find('option:first').remove();
+
+  $select.prepend($blank_option);
+  $select.select2({
+    placeholder: $placeholder.text(),
+    allowClear: true
+  });
 });

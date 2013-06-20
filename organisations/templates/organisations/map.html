@@ -33,7 +33,8 @@
 </ul>
 
 <div class="map-search-controls">
-  <select id="map-search-org-name" placeholder="Choose organisation name">
+  <select id="map-search-org-name">
+    <option value="">-- Choose an organisation --</option>
     {% for org in name_search_organisations %}
       <option value="{{ org.id }}">{{ org.name }}</option>
     {% endfor %}
