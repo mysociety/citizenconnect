@@ -20,6 +20,8 @@ from .metaphone import dm
 
 
 class Regulator(MailSendMixin, AuditedModel):
+    """A regulatory body that commissions services and deals with escalated problems"""
+
     name = models.TextField()
     code = models.CharField(max_length=8, db_index=True, unique=True)
     users = models.ManyToManyField(User, related_name='regulators')
@@ -65,6 +67,13 @@ class Regulator(MailSendMixin, AuditedModel):
 
 
 class SiteParent(MailSendMixin, AuditedModel):
+    """
+    A Generic body which is the parent of Sites.
+
+    For Hospitals this is an NHS Trust, for GP branch sites, this is the
+    parent GP surgery.
+    """
+
     name = models.TextField()
     code = models.CharField(max_length=8, db_index=True, unique=True)
     users = models.ManyToManyField(User, related_name='site_parents')
@@ -133,6 +142,7 @@ def ensure_regulators_contains_escalation_regulator(sender, **kwargs):
 
 
 class Site(AuditedModel, geomodels.Model):
+    """ A GP branch, Hospital or Clinic """
 
     name = models.TextField()
     site_type = models.CharField(max_length=100, choices=settings.SITE_TYPE_CHOICES)
