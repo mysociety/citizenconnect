@@ -271,13 +271,44 @@ $(document).ready(function () {
      */
     var zoomToProvider = function(provider) {
         zoomToPoint(provider.lat, provider.lon);
-        // Need to wait until the provider has been zoomed.
-        // openMarkerPopup(provider.marker);
+
+        // This is a very contrived way of waiting until the above function has completed.
+        var openMarker = function() {
+            openMarkerPopup(provider.marker, provider.marker.popupContent);
+            map.off('zoomend', openMarker);
+            map.on('zoomend', requestProvidersInBounds);
+        }
+        map.off('zoomend', requestProvidersInBounds);
+        map.on('zoomend', openMarker);
     };
 
-    var openMarkerPopup = function(marker) {
+    /**
+     * Open a popup on a marker.
+     *
+     * @param {L.marker} marker The marker to bind the popup to
+     * @param {String} popupContent The contents of the popup
+     */
+    var openMarkerPopup = function(marker, popupContent) {
         var popupOptions = {offset: new L.Point(2,-4)};
-        marker.bindPopup(marker.popupContent, popupOptions).openPopup();
+        marker.bindPopup(popupContent, popupOptions).openPopup();
+    };
+
+    /**
+     * Request a list of providers within the current bounding box for
+     * the map.
+     *
+     * This is a separate function so that it can be bound and unbound
+     * when we're doing our own zooming (such as when we search for a
+     * provider).
+     */
+    var requestProvidersInBounds = function() {
+        getRequest(window.location.pathname, {bounds: getBoundingBoxFromMap(map), format: 'json'})
+        .done(function(providers) {
+            drawProviders(providers);
+        }).error(function(jqXHR) {
+            // TODO: Let the user know about the server error and/or retry request.
+            console.error(jqXHR);
+        });
     };
 
     wax.tilejson('https://dnv9my2eseobd.cloudfront.net/v3/jedidiah.map-3lyys17i.jsonp', function(tilejson) {
@@ -287,21 +318,15 @@ $(document).ready(function () {
         map.addLayer(new wax.leaf.connector(httpstilejson)).setView(mapCentre, 1);
         map.setView(mapCentre, mapZoomLevel);
 
-        map.on('dragend zoomend', function(e) {
-
-            getRequest(window.location.pathname, {bounds: getBoundingBoxFromMap(map), format: 'json'}).done(function(providers) {
-                drawProviders(providers);
-            }).error(function(jqXHR) {
-                // TODO: Let the user know about the server error and/or retry request.
-                console.error(jqXHR);
-            });
-        });
+        map.on('dragend zoomend', requestProvidersInBounds);
 
         // OverlappingMarkerSpiderifier controls click events on markers
         // because it needs to know whether or not to spiderify them, so
         // we need to tell it what we want to do when someone clicks an already
         // spiderified link.
-        oms.addListener('click', openMarkerPopup);
+        oms.addListener('click', function(marker) {
+            openMarkerPopup(marker, marker.popupContent);
+        });
 
         // Add the markers
         drawProviders(defaultProviders);
