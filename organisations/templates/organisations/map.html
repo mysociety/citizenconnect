@@ -32,6 +32,14 @@
     <li><a href="#" id="northeast">North East England</a></li>
 </ul>
 
+<div class="map-search-controls">
+  <select id="map-search-org-name" placeholder="Choose organisation name">
+    {% for org in name_search_organisations %}
+      <option value="{{ org.id }}">{{ org.name }}</option>
+    {% endfor %}
+  </select>
+</div>
+
 <div class="map-container">
     <div id="map" class="map"></div>
 </div>

@@ -205,6 +205,9 @@ class Map(FilterFormMixin,
         # Make it into a JSON string
         context['organisations'] = json.dumps(organisations_list)
 
+        # Load all the organisations to use for the name select
+        context['name_search_organisations'] = Organisation.objects.all().only('id', 'name').order_by('name')
+
         return context
 
     def render_to_response(self, context, **response_kwargs):
