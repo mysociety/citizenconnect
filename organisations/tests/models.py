@@ -12,7 +12,7 @@ from .lib import (create_test_organisation,
                   create_test_problem,
                   AuthorizationTestCase)
 
-from ..models import Organisation, Trust
+from ..models import Site, SiteParent
 
 
 class TrustModelTests(TestCase):
@@ -27,7 +27,7 @@ class TrustModelTests(TestCase):
         self.test_other_org = create_test_organisation({"ods_code": "other"})
 
         # create a problem in each org
-        for org in Organisation.objects.all():
+        for org in Site.objects.all():
             create_test_problem({
                 'organisation': org,
                 'description': "Problem with '{0}'".format(org.trust.code),
@@ -38,19 +38,19 @@ class TrustModelTests(TestCase):
         problems = self.test_trust.problem_set.order_by('description')
         self.assertEqual(problems.count(), 2)
         for p in problems:
-            self.assertEqual(p.organisation.trust, self.test_trust)
+            self.assertEqual(p.site.parent, self.test_trust)
 
     def test_escalation_ccg_always_in_ccgs(self):
         ccg = create_test_ccg({})
-        trust = Trust(name="test_trust",
-                      code="ABC",
-                      email='test-trust@example.org',
-                      secondary_email='test-trust-secondary@example.org',
-                      escalation_ccg=ccg)
+        trust = SiteParent(name="test_trust",
+                           code="ABC",
+                           email='test-trust@example.org',
+                           secondary_email='test-trust-secondary@example.org',
+                           escalation_regulator=ccg)
 
         trust.save()
-        trust = Trust.objects.get(pk=trust.id)
-        self.assertTrue(trust.escalation_ccg in trust.ccgs.all())
+        trust = SiteParent.objects.get(pk=trust.id)
+        self.assertTrue(trust.escalation_regulator in trust.regulators.all())
 
 
 class CCGModelTests(TestCase):
@@ -60,17 +60,17 @@ class CCGModelTests(TestCase):
         self.test_ccg = create_test_ccg({'code': 'CCG1'})
 
         # create a trust
-        self.test_trust = create_test_trust({'code': 'MYTRUST', 'escalation_ccg': self.test_ccg})
+        self.test_trust = create_test_trust({'code': 'MYTRUST', 'escalation_regulator': self.test_ccg})
 
         # create three orgs, two of which belong to the ccg, and one that does not
-        self.test_trust_org_1 = create_test_organisation({"trust": self.test_trust, "ods_code": "test1"})
-        self.test_trust_org_2 = create_test_organisation({"trust": self.test_trust, "ods_code": "test2"})
-        self.test_other_org = create_test_organisation({"ods_code": "other"})
+        self.test_trust_org_1 = create_test_organisation({"parent": self.test_trust, "code": "test1"})
+        self.test_trust_org_2 = create_test_organisation({"parent": self.test_trust, "code": "test2"})
+        self.test_other_org = create_test_organisation({"code": "other"})
 
         # create a problem in each org
-        for org in Organisation.objects.all():
+        for org in Site.objects.all():
             create_test_problem({
-                'organisation': org,
+                'site': org,
                 'description': "Problem with '{0}'".format(org.trust.code),
             })
 
@@ -79,7 +79,7 @@ class CCGModelTests(TestCase):
         problems = self.test_ccg.problem_set.order_by('description')
         self.assertEqual(problems.count(), 2)
         for p in problems:
-            self.assertEqual(p.organisation.trust.ccgs.all()[0], self.test_ccg)
+            self.assertEqual(p.site.parent.regulators.all()[0], self.test_ccg)
 
 
 class CCGModelAuthTests(AuthorizationTestCase):
@@ -104,8 +104,8 @@ class CCGModelAuthTests(AuthorizationTestCase):
 
 class OrganisationModelTests(TestCase):
     def test_organisation_type_name(self):
-        test_org = create_test_organisation({'organisation_type': 'hospitals'})
-        self.assertEqual(test_org.organisation_type_name, 'Hospital')
+        test_org = create_test_organisation({'site_type': 'hospitals'})
+        self.assertEqual(test_org.site_type_name, 'Hospital')
 
 
 class OrganisationModelAuthTests(AuthorizationTestCase):
@@ -153,17 +153,17 @@ class OrganisationMetaphoneTests(TestCase):
         # Make an organisation without saving it
 
         trust = create_test_trust()
-        self.organisation = Organisation(name=u'Test Organisation',
-                                         organisation_type='gppractices',
-                                         choices_id='12702',
-                                         ods_code='F84021',
-                                         point=Point(51.536, -0.06213),
-                                         trust=trust)
+        self.site = Site(name=u'Test Organisation',
+                         site_type='gppractices',
+                         choices_id='12702',
+                         code='F84021',
+                         point=Point(51.536, -0.06213),
+                         parent=trust)
 
     def test_name_metaphone_created_on_save(self):
-        self.assertEqual(self.organisation.name_metaphone, '')
-        self.organisation.save()
-        self.assertEqual(self.organisation.name_metaphone, 'TSTRKNSXN')
+        self.assertEqual(self.site.name_metaphone, '')
+        self.site.save()
+        self.assertEqual(self.site.name_metaphone, 'TSTRKNSXN')
 
 
 class CreateTestTrustMixin(object):

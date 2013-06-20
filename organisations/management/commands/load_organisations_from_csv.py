@@ -5,7 +5,7 @@ from django.db import transaction, IntegrityError
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.gis.geos import Point
 
-from ...models import Organisation, Service, Trust
+from ...models import Site, Service, SiteParent
 
 
 class Command(BaseCommand):
@@ -50,7 +50,7 @@ class Command(BaseCommand):
             if verbose:
                 self.stdout.write("Deleting existing organisations and services")
             Service.objects.all().delete()
-            Organisation.objects.all().delete()
+            Site.objects.all().delete()
 
         if verbose:
             processed = 0
@@ -101,8 +101,8 @@ class Command(BaseCommand):
 
             # load the Trust
             try:
-                trust = Trust.objects.get(code=trust_code)
-            except Trust.DoesNotExist:
+                trust = SiteParent.objects.get(code=trust_code)
+            except SiteParent.DoesNotExist:
                 raise Exception(
                     "Could not find Trust with code '{0}' on line {1}".format(
                         trust_code, rownum
@@ -129,10 +129,10 @@ class Command(BaseCommand):
                                      'trust': trust,
                                     }
             try:
-                organisation, organisation_created = Organisation.objects.get_or_create(ods_code=ods_code,
-                                                                                        defaults=organisation_defaults)
+                organisation, organisation_created = Site.objects.get_or_create(ods_code=ods_code,
+                                                                                defaults=organisation_defaults)
                 if update:
-                    Organisation.objects.filter(id=organisation.id).update(**organisation_defaults)
+                    Site.objects.filter(id=organisation.id).update(**organisation_defaults)
                 service = None
                 # Only hospitals have services
                 if organisation_type == 'hospitals':

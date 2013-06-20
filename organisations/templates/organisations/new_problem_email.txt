@@ -12,11 +12,11 @@ Email address: {{ problem.reporter_email }}
 
 Category: {{ problem.category }}
 
-Sent to: {{ problem.organisation.name }} {{ problem.service.name }}
+Sent to: {{ problem.site.name }} {{ problem.service.name }}
 
 Problem:
 
 {{ problem.description }}
 
-To respond to this problem, please visit your dashboard at: {{ site_base_url }}{% url 'trust-dashboard' code=problem.organisation.trust.code %}
+To respond to this problem, please visit your dashboard at: {{ site_base_url }}{% url 'trust-dashboard' code=problem.site.parent.code %}
 {% endautoescape %}

@@ -214,7 +214,7 @@ class ModerateFormViewTests(BaseModerationTestCase):
         self.assertContains(resp, self.test_problem.reference_number)
         self.assertContains(resp, self.test_problem.reporter_name)
         self.assertContains(resp, self.test_problem.description)
-        self.assertContains(resp, self.test_problem.organisation.name)
+        self.assertContains(resp, self.test_problem.site.name)
         self.assertContains(resp, response1.response)
         self.assertContains(resp, response2.response)
 

@@ -15,7 +15,7 @@ from django.db.models import Q
 # App imports
 from issues.models import Problem
 
-from .models import Organisation, CCG, Service
+from .models import Site, Regulator, Service
 from .metaphone import dm
 
 
@@ -41,7 +41,7 @@ class OrganisationFinderForm(forms.Form):
         if response_code == 200:
             point_data = json.load(point_response)
             point = Point(point_data["wgs84_lon"], point_data["wgs84_lat"])
-            return Organisation.objects.filter(point__distance_lt=(point, Distance(mi=5))).distance(point).order_by('distance')
+            return Site.objects.filter(point__distance_lt=(point, Distance(mi=5))).distance(point).order_by('distance')
         elif response_code == 404:
             validation_message = 'Sorry, no postcode matches that query. Please try again, or try searching by provider name'
             raise forms.ValidationError(validation_message)
@@ -64,19 +64,19 @@ class OrganisationFinderForm(forms.Form):
                 organisations = self.organisations_from_postcode(postcode, partial=True)
                 validation_message = "Sorry, there are no matches within 5 miles of %s. Please try again. %s" % (location, self.PILOT_SEARCH_CAVEAT)
             else:
-                organisations = Organisation.objects.filter(name__icontains=location)
+                organisations = Site.objects.filter(name__icontains=location)
                 if len(organisations) < 5:
                     # Try a metaphone search to give more results
                     location_metaphone = dm(location)
                     # First do a __startswith or __endswith
-                    alt_orgs = Organisation.objects.filter(Q(name_metaphone__startswith=location_metaphone[0])
-                                                           | Q(name_metaphone__endswith=location_metaphone[0]),
-                                                           ~Q(pk__in=list([a.id for a in organisations])))
+                    alt_orgs = Site.objects.filter(Q(name_metaphone__startswith=location_metaphone[0])
+                                                   | Q(name_metaphone__endswith=location_metaphone[0]),
+                                                   ~Q(pk__in=list([a.id for a in organisations])))
                     organisations = list(chain(organisations, alt_orgs))
                     if len(organisations) < 10:
                         # Try a metaphone __contains to give even more results
-                        more_orgs = Organisation.objects.filter(Q(name_metaphone__contains=location_metaphone[0]),
-                                                                ~Q(pk__in=list([a.id for a in organisations])))
+                        more_orgs = Site.objects.filter(Q(name_metaphone__contains=location_metaphone[0]),
+                                                        ~Q(pk__in=list([a.id for a in organisations])))
                         organisations = list(chain(organisations, more_orgs))
 
                 validation_message = "We couldn't find any matches for '%s'. Please try again. %s" % (location, self.PILOT_SEARCH_CAVEAT)
@@ -94,16 +94,16 @@ class FilterForm(forms.Form):
     """
 
     organisation = forms.ModelChoiceField(
-        queryset=Organisation.objects.all(),
+        queryset=Site.objects.all(),
         required=False,
         empty_label='All',
         label="Organisation"
     )
 
-    ccg = forms.ModelChoiceField(queryset=CCG.objects.all(), required=False, empty_label='All',
+    ccg = forms.ModelChoiceField(queryset=Regulator.objects.all(), required=False, empty_label='All',
                                  label="CCG")
 
-    organisation_type = forms.ChoiceField(choices=[('', 'All types')] + settings.ORGANISATION_CHOICES,
+    organisation_type = forms.ChoiceField(choices=[('', 'All types')] + settings.SITE_TYPE_CHOICES,
                                           required=False)
 
     # A service_code, eg: SRV123 which are consistent across the NHS

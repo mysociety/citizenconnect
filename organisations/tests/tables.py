@@ -9,9 +9,9 @@ from .lib import create_test_organisation, create_test_problem
 
 class ProblemTableTest(TestCase):
     def setUp(self):
-        self.organisation = create_test_organisation()
+        self.site = create_test_organisation()
         problem_attributes = {'description': "<script>alert('xss')</script>",
-                              'organisation': self.organisation,
+                              'site': self.site,
                               'publication_status': Problem.PUBLISHED,
                               'moderated_description': "<script>alert('xss')</script>"}
         self.problem = create_test_problem(problem_attributes)

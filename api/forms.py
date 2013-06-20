@@ -1,7 +1,7 @@
 from django import forms
 from django.forms.widgets import HiddenInput
 
-from organisations.models import Organisation, Service
+from organisations.models import Site, Service
 from issues.models import Problem
 
 
@@ -34,8 +34,8 @@ class ProblemAPIForm(forms.ModelForm):
 
         if 'organisation' in cleaned_data and cleaned_data['organisation']:
             try:
-                return Organisation.objects.get(ods_code=cleaned_data['organisation'])
-            except Organisation.DoesNotExist:
+                return Site.objects.get(ods_code=cleaned_data['organisation'])
+            except Site.DoesNotExist:
                 raise forms.ValidationError('Sorry, that organisation is not recognised.')
 
     def clean_service(self):

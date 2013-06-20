@@ -6,7 +6,7 @@ from django.http import Http404
 
 # App imports
 from citizenconnect.shortcuts import render
-from organisations.models import Organisation, Service
+from organisations.models import Site, Service
 from organisations.views.base import PickProviderBase
 from organisations.views.organisations import OrganisationAwareViewMixin
 from organisations.auth import enforce_problem_access_check
@@ -34,19 +34,19 @@ class ProblemCreate(OrganisationAwareViewMixin, CreateView):
         self.object.cobrand = context['cobrand']['name']
         self.object.save()
         context['object'] = self.object
-        context['summary'] = interval_counts(organisation_filters={'organisation_id': self.object.organisation.id})
+        context['summary'] = interval_counts(organisation_filters={'organisation_id': self.object.site.id})
         return render(self.request, self.confirm_template, context)
 
     def get_initial(self):
         initial = super(ProblemCreate, self).get_initial()
         initial = initial.copy()
-        self.organisation = get_object_or_404(Organisation, ods_code=self.kwargs['ods_code'])
-        initial['organisation'] = self.organisation
+        self.site = get_object_or_404(Site, ods_code=self.kwargs['ods_code'])
+        initial['site'] = self.site
         return initial
 
     def get_form(self, form_class):
         form = super(ProblemCreate, self).get_form(form_class)
-        services = Service.objects.filter(organisation=self.organisation).order_by('name')
+        services = Service.objects.filter(site=self.site).order_by('name')
         if len(services) == 0:
             form.fields['service'].widget = HiddenInput()
         else:

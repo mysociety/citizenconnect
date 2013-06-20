@@ -34,7 +34,7 @@
             <p>
               {{ organisation.city|default:"" }}
               {% if organisation.city %} &mdash; {% endif %}
-              {{ organisation.organisation_type_name }}
+              {{ organisation.site_type_name }}
             </p>
         </div>
         <address>{% if organisation.address_line1 %}

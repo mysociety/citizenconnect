@@ -6,7 +6,7 @@ from django.conf import settings
 from django.db.models import Count
 from django.utils import timezone
 
-from organisations.models import Organisation
+from organisations.models import Site
 from organisations.choices_api import ChoicesAPI
 
 
@@ -14,7 +14,7 @@ class Command(BaseCommand):
     help = 'Push new reviews to the Choices API'
 
     def handle(self, *args, **options):
-        organisations = Organisation.objects.annotate(num_reviews=Count('submitted_reviews')).filter(num_reviews__gt=0)
+        organisations = Site.objects.annotate(num_reviews=Count('submitted_reviews')).filter(num_reviews__gt=0)
 
         for organisation in organisations:
             url = self.choices_api_url(organisation.ods_code)

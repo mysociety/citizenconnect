@@ -3,7 +3,7 @@ from django.contrib.gis.geos import Point
 from django.db import transaction
 
 from ...choices_api import ChoicesAPI
-from ...models import Organisation, Service
+from ...models import Site, Service
 
 
 class Command(BaseCommand):
@@ -15,18 +15,18 @@ class Command(BaseCommand):
         api = ChoicesAPI()
         organisation_info_list = api.find_all_organisations('all')
         for organisation_info in organisation_info_list:
-            organisation = Organisation(name=organisation_info['name'],
-                                        organisation_type=organisation_info['organisation_type'],
-                                        choices_id=organisation_info['choices_id'],
-                                        ods_code=organisation_info['ods_code'],
-                                        point=Point(organisation_info['coordinates']['lon'],
-                                                    organisation_info['coordinates']['lat']))
+            organisation = Site(name=organisation_info['name'],
+                                site_type=organisation_info['organisation_type'],
+                                choices_id=organisation_info['choices_id'],
+                                code=organisation_info['ods_code'],
+                                point=Point(organisation_info['coordinates']['lon'],
+                                            organisation_info['coordinates']['lat']))
 
             try:
                 organisation.save()
                 self.stdout.write('Created organisation %s\n' % organisation.name)
-                if organisation.organisation_type == 'hospitals':
-                    service_info_list = api.get_organisation_services(organisation.organisation_type,
+                if organisation.site_type == 'hospitals':
+                    service_info_list = api.get_organisation_services(organisation.site_type,
                                                                       organisation.choices_id)
                     for service_info in service_info_list:
                         service = Service(organisation=organisation,
@@ -36,6 +36,7 @@ class Command(BaseCommand):
                         self.stdout.write('Created service %s for %s\n' % (service.name, organisation.name))
                 transaction.commit()
             except Exception as e:
-                self.stderr.write("Error loading %s %s (%s)" % (organisation_info['name'],organisation_info['organisation_type'], organisation_info['ods_code']))
+                self.stderr.write("Error loading %s %s (%s)" % (organisation_info['name'],
+                                  organisation_info['organisation_type'], organisation_info['ods_code']))
                 self.stderr.write(e)
                 transaction.rollback()

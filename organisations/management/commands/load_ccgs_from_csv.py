@@ -1,10 +1,11 @@
 import csv
 from optparse import make_option
 
-from django.db import transaction, IntegrityError
-from django.core.management.base import BaseCommand, CommandError
+from django.db import transaction
+from django.core.management.base import BaseCommand
 
-from ...models import CCG
+from ...models import Regulator
+
 
 class Command(BaseCommand):
     help = 'Load CCGs from a spreadsheet'
@@ -59,8 +60,8 @@ class Command(BaseCommand):
             ccg_defaults = {'name': name, 'email': email}
 
             try:
-                ccg, ccg_created = CCG.objects.get_or_create(code=code,
-                                                             defaults=ccg_defaults)
+                ccg, ccg_created = Regulator.objects.get_or_create(code=code,
+                                                                   defaults=ccg_defaults)
                 if ccg_created:
                     self.stdout.write('Created CCG %s\n' % ccg.name)
                 if verbose:
@@ -73,10 +74,8 @@ class Command(BaseCommand):
                 self.stderr.write("Skipping %s %s: %s" % (name, code, e))
                 transaction.rollback()
 
-
         if verbose:
             # First row is a header, so ignore it in the count
             self.stdout.write("Total records in file: {0}\n".format(rownum-1))
             self.stdout.write("Processed {0} records\n".format(processed))
             self.stdout.write("Skipped {0} records\n".format(skipped))
-

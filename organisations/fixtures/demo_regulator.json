@@ -1,7 +1,7 @@
 [
 {
         "pk": 1,
-        "model": "organisations.ccg",
+        "model": "organisations.regulator",
         "fields": {
             "name": "Demo CCG",
             "code": "XXXXXXX",

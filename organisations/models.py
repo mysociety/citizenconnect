@@ -19,10 +19,12 @@ from .auth import user_in_group, user_in_groups
 from .metaphone import dm
 
 
-class CCG(MailSendMixin, AuditedModel):
+class Regulator(MailSendMixin, AuditedModel):
+    """A regulatory body that commissions services and deals with escalated problems"""
+
     name = models.TextField()
     code = models.CharField(max_length=8, db_index=True, unique=True)
-    users = models.ManyToManyField(User, related_name='ccgs')
+    users = models.ManyToManyField(User, related_name='regulators')
 
     # ISSUE-329: The `blank=True` should be removed when we are supplied with
     # email addresses for all the orgs
@@ -35,7 +37,7 @@ class CCG(MailSendMixin, AuditedModel):
         return Group.objects.get(pk=auth.CCG)
 
     def can_be_accessed_by(self, user):
-        """ Can a user access this ccg? """
+        """ Can a user access this regulator? """
 
         # Deactivated users - NO
         if not user.is_active:
@@ -49,7 +51,7 @@ class CCG(MailSendMixin, AuditedModel):
         if user_in_group(user, auth.NHS_SUPERUSERS):
             return True
 
-        # Users in this ccg - YES
+        # Users in this regulator - YES
         if user in self.users.all():
             return True
 
@@ -58,34 +60,41 @@ class CCG(MailSendMixin, AuditedModel):
 
     @property
     def problem_set(self):
-        return Problem.objects.filter(organisation__trust__in=self.trusts.all())
+        return Problem.objects.filter(organisation__parent__in=self.site_parents.all())
 
     def __unicode__(self):
         return self.name
 
 
-class Trust(MailSendMixin, AuditedModel):
+class SiteParent(MailSendMixin, AuditedModel):
+    """
+    A Generic body which is the parent of Sites.
+
+    For Hospitals this is an NHS Trust, for GP branch sites, this is the
+    parent GP surgery.
+    """
+
     name = models.TextField()
     code = models.CharField(max_length=8, db_index=True, unique=True)
-    users = models.ManyToManyField(User, related_name='trusts')
+    users = models.ManyToManyField(User, related_name='site_parents')
 
     # ISSUE-329: The `blank=True` should be removed when we are supplied with
-    # email addresses for all the trusts
+    # email addresses for all the Site Parents
     # max_length set manually to make it RFC compliant (default of 75 is too short)
     # email may not be unique
     email = models.EmailField(max_length=254, blank=True)
     secondary_email = models.EmailField(max_length=254, blank=True)
 
-    # Which CCG this Trust should escalate problems too
-    escalation_ccg = models.ForeignKey(CCG, blank=False, null=False, related_name='escalation_trusts')
+    # Which Regulator this Site Parent should escalate problems too
+    escalation_regulator = models.ForeignKey(Regulator, blank=False, null=False, related_name='escalation_site_parents')
 
-    # Which CCGs commission services from this Trust.
-    # This means that those CCGs will be able to see all the problems at
-    # this trust's organisations.
-    ccgs = models.ManyToManyField(CCG, related_name='trusts')
+    # Which Regulators commission services from this Site Parent.
+    # This means that those Regulators will be able to see all the problems at
+    # this Site Parent's sites.
+    regulators = models.ManyToManyField(Regulator, related_name='site_parents')
 
     def can_be_accessed_by(self, user):
-        """ Can a user access this trust? """
+        """ Can a user access this site parent? """
 
         # Deactivated users - NO
         if not user.is_active:
@@ -101,12 +110,12 @@ class Trust(MailSendMixin, AuditedModel):
                                  auth.CUSTOMER_CONTACT_CENTRE]):
             return True
 
-        # Users in this trust - YES
+        # Users in this Site Parent - YES
         if user in self.users.all():
             return True
 
-        # CCG users for a CCG associated with this Trust - YES
-        if user in User.objects.filter(ccgs__trusts=self).all():
+        # Regulator users for a Regulator associated with this Site Parent - YES
+        if user in User.objects.filter(regulators__site_parents=self).all():
             return True
 
         # Everyone else - NO
@@ -118,26 +127,27 @@ class Trust(MailSendMixin, AuditedModel):
 
     @property
     def problem_set(self):
-        return Problem.objects.filter(organisation__in=self.organisations.all())
+        return Problem.objects.filter(organisation__in=self.sites.all())
 
     def __unicode__(self):
         return self.name
 
 
-@receiver(post_save, sender=Trust)
-def ensure_ccgs_contains_escalation_ccg(sender, **kwargs):
-    """ post_save signal handler to ensure that trust.escalation_ccg is always in trust.ccgs """
-    trust = kwargs['instance']
-    if trust.escalation_ccg and trust.escalation_ccg not in trust.ccgs.all():
-        trust.ccgs.add(trust.escalation_ccg)
+@receiver(post_save, sender=SiteParent)
+def ensure_regulators_contains_escalation_regulator(sender, **kwargs):
+    """ post_save signal handler to ensure that site_parent.escalation_regulator is always in site_parent.regulators """
+    site_parent = kwargs['instance']
+    if site_parent.escalation_regulator and site_parent.escalation_regulator not in site_parent.regulators.all():
+        site_parent.regulators.add(site_parent.escalation_regulator)
 
 
-class Organisation(AuditedModel, geomodels.Model):
+class Site(AuditedModel, geomodels.Model):
+    """ A GP branch, Hospital or Clinic """
 
     name = models.TextField()
-    organisation_type = models.CharField(max_length=100, choices=settings.ORGANISATION_CHOICES)
+    site_type = models.CharField(max_length=100, choices=settings.SITE_TYPE_CHOICES)
     choices_id = models.IntegerField(db_index=True)
-    ods_code = models.CharField(max_length=8, db_index=True, unique=True)
+    code = models.CharField(max_length=12, db_index=True, unique=True)
     address_line1 = models.CharField(max_length=255, blank=True)
     address_line2 = models.CharField(max_length=255, blank=True)
     address_line3 = models.CharField(max_length=255, blank=True)
@@ -148,8 +158,8 @@ class Organisation(AuditedModel, geomodels.Model):
     point = geomodels.PointField()
     objects = geomodels.GeoManager()
 
-    # Which Trust this is in
-    trust = models.ForeignKey(Trust, blank=False, null=False, related_name='organisations')
+    # Who is the parent (An NHS Trust or GP Practice)?
+    parent = models.ForeignKey(SiteParent, blank=False, null=False, related_name='sites')
 
     # Calculated double_metaphone field, for search by provider name
     name_metaphone = models.TextField(editable=False)
@@ -158,9 +168,9 @@ class Organisation(AuditedModel, geomodels.Model):
     average_recommendation_rating = models.FloatField(blank=True, null=True)
 
     @property
-    def organisation_type_name(self):
-        for code, label in settings.ORGANISATION_CHOICES:
-            if code == self.organisation_type:
+    def site_type_name(self):
+        for code, label in settings.SITE_TYPE_CHOICES:
+            if code == self.site_type:
                 return label
 
         # should never get here, but best to have a fallback
@@ -171,21 +181,21 @@ class Organisation(AuditedModel, geomodels.Model):
         return list(self.problem_set.open_problems())
 
     def has_time_limits(self):
-        if self.organisation_type == 'hospitals':
+        if self.site_type == 'hospitals':
             return True
         else:
             return False
 
     def has_services(self):
-        if self.organisation_type == 'hospitals':
+        if self.site_type == 'hospitals':
             return True
         else:
             return False
 
     def can_be_accessed_by(self, user):
-        """ Can a given user access this Organisation? """
-        # Access is controlled by the Trust
-        return self.trust.can_be_accessed_by(user)
+        """ Can a given user access this Site? """
+        # Access is controlled by the Site Parent
+        return self.parent.can_be_accessed_by(user)
 
     def save(self, *args, **kwargs):
         """
@@ -198,7 +208,7 @@ class Organisation(AuditedModel, geomodels.Model):
             unicode_name = unicode(self.name, encoding='utf-8', errors='ignore')
         name_metaphones = dm(unicode_name)
         self.name_metaphone = name_metaphones[0]  # Ignoring the alternative for now
-        super(Organisation, self).save(*args, **kwargs)
+        super(Site, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return self.name
@@ -207,7 +217,7 @@ class Organisation(AuditedModel, geomodels.Model):
 class Service(AuditedModel):
     name = models.TextField()
     service_code = models.TextField(db_index=True)
-    organisation = models.ForeignKey(Organisation, related_name='services')
+    site = models.ForeignKey(Site, related_name='services')
 
     @classmethod
     def service_codes(cls):
@@ -221,7 +231,7 @@ class Service(AuditedModel):
         return self.name
 
     class Meta:
-        unique_together = (("service_code", "organisation"),)
+        unique_together = (("service_code", "site"),)
 
 
 class SuperuserLogEntry(AuditedModel):
