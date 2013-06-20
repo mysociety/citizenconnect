@@ -305,6 +305,7 @@ $(document).ready(function () {
 
         // Add the markers
         drawProviders(defaultProviders);
+        map.addLayer(markersGroup);
 
         if (selectedProvider) {
             var provider = _.findWhere(CitizenConnect.providers, {ods_code: selectedProvider});
@@ -312,8 +313,6 @@ $(document).ready(function () {
                 zoomToProvider(provider);
             }
         }
-
-        map.addLayer(markersGroup);
     });
 
     // Tabs
