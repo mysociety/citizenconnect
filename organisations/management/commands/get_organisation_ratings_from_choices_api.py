@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 
 from ...choices_api import ChoicesAPI
-from ...models import Organisation
+from ...models import Site
 
 
 class Command(BaseCommand):
@@ -12,9 +12,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         api = ChoicesAPI()
-        for organisation in Organisation.objects.all():
+        for organisation in Site.objects.all():
             try:
-                rating = api.get_organisation_recommendation_rating(organisation_type=organisation.organisation_type,
+                rating = api.get_organisation_recommendation_rating(organisation_type=organisation.site_type,
                                                                     choices_id=organisation.choices_id)
                 if rating is not None:
                     organisation.average_recommendation_rating = rating

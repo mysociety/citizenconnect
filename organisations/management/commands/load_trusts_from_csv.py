@@ -5,7 +5,7 @@ from django.db import transaction, IntegrityError
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.gis.geos import Point
 
-from ...models import Trust, Service, CCG
+from ...models import SiteParent, Service, Regulator
 
 
 class Command(BaseCommand):
@@ -52,7 +52,7 @@ class Command(BaseCommand):
         #     if verbose:
         #         self.stdout.write("Deleting existing trusts and services")
         #     Service.objects.all().delete()
-        #     Trust.objects.all().delete()
+        #     SiteParent.objects.all().delete()
 
         if verbose:
             processed = 0
@@ -84,8 +84,8 @@ class Command(BaseCommand):
 
             # load the various CCGs
             try:
-                escalation_ccg = CCG.objects.get(code=escalation_ccg_code)
-            except CCG.DoesNotExist:
+                escalation_ccg = Regulator.objects.get(code=escalation_ccg_code)
+            except Regulator.DoesNotExist:
                 raise Exception(
                     "Could not find 'Escalation CCG' with code '{0}' on line {1}".format(
                         escalation_ccg_code, rownum
@@ -99,8 +99,8 @@ class Command(BaseCommand):
             for other_code in other_ccg_codes:
                 if other_code == '': continue
                 try:
-                    all_ccgs.add(CCG.objects.get(code=other_code))
-                except CCG.DoesNotExist:
+                    all_ccgs.add(Regulator.objects.get(code=other_code))
+                except Regulator.DoesNotExist:
                     raise Exception(
                         "Could not find 'Other CCGs' entry with code '{0}' on line {1}".format(
                             other_code, rownum
@@ -117,13 +117,13 @@ class Command(BaseCommand):
             }
 
             try:
-                trust, trust_created = Trust.objects.get_or_create(
+                trust, trust_created = SiteParent.objects.get_or_create(
                     code=ods_code,
                     defaults=trust_defaults
                 )
 
                 if update:
-                    Trust.objects.filter(id=trust.id).update(**trust_defaults)
+                    SiteParent.objects.filter(id=trust.id).update(**trust_defaults)
 
                 if trust_created or update:
                     # Delete all current CCG links and set the one we expect

@@ -21,7 +21,7 @@ class ProblemAPITests(TestCase):
         # on primary key increments
         self.problem_uuid = uuid.uuid4().hex
         self.test_problem_defaults = {
-            'organisation': self.test_organisation.ods_code,
+            'site': self.test_organisation.ods_code,
             'service_code': self.test_service.service_code,
             'description': 'This is a problem',
             'moderated_description': 'This is a moderated problem',
@@ -51,7 +51,7 @@ class ProblemAPITests(TestCase):
 
         content_json = json.loads(resp.content)
         self.assertTrue(content_json['reference_number'], expected_reference_number)
-        self.assertEqual(problem.organisation, self.test_organisation)
+        self.assertEqual(problem.site, self.test_organisation)
         self.assertEqual(problem.service, self.test_service)
         self.assertEqual(problem.description, self.test_problem_defaults['description'])
         self.assertEqual(problem.moderated_description, self.test_problem_defaults['moderated_description'])
@@ -181,7 +181,7 @@ class ProblemAPITests(TestCase):
         self.test_problem_defaults['publication_status'] = Problem.REJECTED
         resp = self.client.post(self.problem_api_url, self.test_problem_defaults)
         self.assertEquals(resp.status_code, 201)
-    
+
         problem = Problem.objects.get(reporter_name=self.problem_uuid)
         self.assertEqual(problem.publication_status, problem.PUBLISHED)
 

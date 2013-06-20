@@ -8,7 +8,7 @@ from issues.models import Problem
 
 from .. import auth
 from ..auth import enforce_organisation_access_check, user_can_access_private_national_summary, user_in_group
-from ..models import Organisation
+from ..models import Site
 from ..forms import OrganisationFilterForm
 from ..lib import interval_counts
 from ..tables import ProblemTable, ExtendedProblemTable
@@ -23,7 +23,7 @@ class OrganisationAwareViewMixin(PrivateViewMixin):
     def dispatch(self, request, *args, **kwargs):
         # Set organisation here so that we can use it anywhere in the class
         # without worrying about whether it has been set yet
-        self.organisation = Organisation.objects.get(ods_code=kwargs['ods_code'])
+        self.organisation = Site.objects.get(code=kwargs['code'])
         return super(OrganisationAwareViewMixin, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):

@@ -1,20 +1,10 @@
-import logging
-import os
-import sys
 from StringIO import StringIO
 
-from django.test import TestCase
-from django.core import mail
 from django.core.management import call_command
-from django.conf import settings
-from django.contrib.auth.models import User
 
-from .lib import create_test_organisation, create_test_ccg, create_test_service, create_test_problem, create_test_trust
+from .lib import create_test_organisation
 from .choices_api import ExampleFileAPITest
-from ..models import Organisation
-
-from organisations import auth
-from issues.models import Problem
+from ..models import Site
 
 
 class DevNull(object):
@@ -43,7 +33,7 @@ class GetOrganisationRatingsFromChoicesAPITests(ExampleFileAPITest):
         self._call_command(stdout=stdout)
         self.assertEquals(stdout.getvalue(), 'Updated rating for organisation Test Organisation\n')
 
-        organisation = Organisation.objects.get(pk=organisation.id)
+        organisation = Site.objects.get(pk=organisation.id)
 
         # Because we store things in a float field, there will be some rounding
         # that happens on different systems, but realistically, 3 D.P. is

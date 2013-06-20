@@ -92,7 +92,7 @@ def enforce_response_access_check(problem, user):
     Can a user respond to a problem?
     For now, this is equivalent to being able to access the organisation.
     """
-    enforce_organisation_access_check(problem.organisation, user)
+    enforce_organisation_access_check(problem.site, user)
 
 
 def user_can_access_national_escalation_dashboard(user):

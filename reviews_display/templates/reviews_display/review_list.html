@@ -15,11 +15,11 @@
   {% for review in object_list %}
     <li>
 
-      <a href="{% url 'review-organisation-list' cobrand=cobrand.name ods_code=review.organisation.ods_code %}">
-        {{ review.organisation.name }}
+      <a href="{% url 'review-organisation-list' cobrand=cobrand.name code=review.site.code %}">
+        {{ review.site.name }}
       </a>:
 
-      <a href="{% url 'review-detail' cobrand=cobrand.name ods_code=review.organisation.ods_code api_posting_id=review.api_posting_id %}">
+      <a href="{% url 'review-detail' cobrand=cobrand.name code=review.site.code api_posting_id=review.api_posting_id %}">
         {{ review.title }}
       </a>
 

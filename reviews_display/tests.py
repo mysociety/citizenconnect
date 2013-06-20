@@ -15,9 +15,9 @@ from django.core.management import call_command
 from django.core.urlresolvers import reverse
 from django.utils.timezone import utc
 
-from organisations.tests.lib import create_test_organisation, create_test_trust, AuthorizationTestCase
+from organisations.tests.lib import create_test_organisation, AuthorizationTestCase
 
-from .models import Review, OrganisationFromApiDoesNotExist, RepliedToReviewDoesNotExist
+from .models import Review, SiteFromApiDoesNotExist, RepliedToReviewDoesNotExist
 from .reviews_api import ReviewsAPI
 
 
@@ -336,7 +336,7 @@ class ReviewModelTests(TestCase):
         Review.upsert_or_delete_from_api_data(sample_review)
 
     def test_reply(self):
-        review = create_test_review({'organisation': self.organisation}, {})
+        review = create_test_review({'site': self.organisation}, {})
 
         sample_review = self.sample_review.copy()
         sample_review['api_category'] = 'reply'
@@ -349,11 +349,10 @@ class ReviewModelTests(TestCase):
         self.assertEqual(reply.in_reply_to, review)
         self.assertEqual(list(review.replies.all()), [reply])
 
-
     def test_reply_where_original_does_not_exist(self):
         sample_review = self.sample_review.copy()
         sample_review['api_category'] = 'reply'
-        sample_review['in_reply_to_id'] = '1234567' # does not exist
+        sample_review['in_reply_to_id'] = '1234567'  # does not exist
 
         self.assertRaises(
             RepliedToReviewDoesNotExist,
@@ -361,12 +360,11 @@ class ReviewModelTests(TestCase):
             sample_review
         )
 
-
     def test_not_found_organisation(self):
         sample_review = self.sample_review.copy()
         sample_review['organisation_choices_id'] = '12345678'  # won't be in db
         self.assertRaises(
-            OrganisationFromApiDoesNotExist,
+            SiteFromApiDoesNotExist,
             Review.upsert_or_delete_from_api_data,
             sample_review
         )
@@ -394,9 +392,9 @@ class ReviewModelTests(TestCase):
 class ReviewOrganisationListTests(TestCase):
 
     def setUp(self):
-        self.test_organisation = create_test_organisation({'ods_code': 'ABC'})
+        self.test_organisation = create_test_organisation({'code': 'ABC'})
         self.test_other_organisation = create_test_organisation(
-            {'ods_code': 'DEF'})
+            {'code': 'DEF'})
         self.org_review = create_test_review({
                                              'organisation': self.test_organisation}, {})
         self.other_org_review = create_test_review({
@@ -405,7 +403,7 @@ class ReviewOrganisationListTests(TestCase):
     def test_organisation_reviews_page(self):
         reviews_list_url = reverse('review-organisation-list',
                                    kwargs={
-                                       'ods_code': self.test_organisation.ods_code,
+                                       'code': self.test_organisation.ods_code,
                                        'cobrand': 'choices'
                                    })
         resp = self.client.get(reviews_list_url)
@@ -442,7 +440,7 @@ class ReviewTrustListTests(AuthorizationTestCase):
 class ReviewDetailTests(TestCase):
 
     def setUp(self):
-        self.test_organisation = create_test_organisation({'ods_code': 'ABC'})
+        self.test_organisation = create_test_organisation({'code': 'ABC'})
         self.org_review = create_test_review({
                                              'organisation': self.test_organisation}, {})
         self.org_reply = create_test_review({
@@ -454,7 +452,7 @@ class ReviewDetailTests(TestCase):
     def test_organisation_reviews_page(self):
         review_detail_url = reverse('review-detail',
                                     kwargs={
-                                        'ods_code': self.test_organisation.ods_code,
+                                        'code': self.test_organisation.ods_code,
                                     'api_posting_id': self.org_review.api_posting_id,
                                     'cobrand': 'choices'})
         resp = self.client.get(review_detail_url)

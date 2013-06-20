@@ -6,7 +6,7 @@ from django_tables2 import RequestConfig
 from issues.models import Problem
 
 from ..auth import enforce_trust_access_check
-from ..models import Organisation, Trust
+from ..models import Site, SiteParent
 from ..lib import interval_counts
 from ..tables import (TrustProblemTable,
                       ProblemDashboardTable,
@@ -22,7 +22,7 @@ class TrustAwareViewMixin(PrivateViewMixin):
     def dispatch(self, request, *args, **kwargs):
         # Set trust here so that we can use it anywhere in the class
         # without worrying about whether it has been set yet
-        self.trust = Trust.objects.get(code=kwargs['code'])
+        self.trust = SiteParent.objects.get(code=kwargs['code'])
         return super(TrustAwareViewMixin, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -50,7 +50,7 @@ class TrustSummary(TrustAwareViewMixin, FilterFormMixin, TemplateView):
         context = super(TrustSummary, self).get_context_data(**kwargs)
 
         trust = context['trust']
-        organisation_ids = [org.id for org in trust.organisations.all()]
+        organisation_ids = [org.id for org in trust.sites.all()]
 
         # Load the user-selected filters from the form
         count_filters = context['selected_filters']
@@ -140,7 +140,7 @@ class TrustProblems(TrustAwareViewMixin,
 
         # Turn off the ccg filter and filter organisations to this trust
         kwargs['with_ccg'] = False
-        kwargs['organisations'] = Organisation.objects.filter(trust=self.trust)
+        kwargs['organisations'] = Site.objects.filter(trust=self.trust)
 
         # Turn off the organisation_type filter
         kwargs['with_organisation_type'] = False

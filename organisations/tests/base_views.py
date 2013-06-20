@@ -20,7 +20,7 @@ from citizenconnect.browser_testing import SeleniumTestCase
 from issues.models import Problem
 
 import organisations
-from ..models import Organisation
+from ..models import Site
 from . import (create_test_problem,
                create_test_organisation,
                create_test_service,
@@ -415,22 +415,22 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
     def test_filters_by_ccg(self):
         # Check see both ccgs
         resp = self.client.get(self.summary_url)
-        for trust in self.test_ccg.trusts.all():
-            for org in trust.organisations.all():
+        for trust in self.test_ccg.site_parents.all():
+            for org in trust.sites.all():
                 self.assertContains(resp, org.name)
-        for trust in self.other_test_ccg.trusts.all():
-            for org in trust.organisations.all():
+        for trust in self.other_test_ccg.site_parents.all():
+            for org in trust.sites.all():
                 self.assertContains(resp, org.name)
 
         # Apply CCG filter
         resp = self.client.get("{0}?ccg={1}".format(self.summary_url, self.test_ccg.id))
 
         # Check filter applied
-        for trust in self.test_ccg.trusts.all():
-            for org in trust.organisations.all():
+        for trust in self.test_ccg.site_parents.all():
+            for org in trust.sites.all():
                 self.assertContains(resp, org.name)
-        for trust in self.other_test_ccg.trusts.all():
-            for org in trust.organisations.all():
+        for trust in self.other_test_ccg.site_parents.all():
+            for org in trust.sites.all():
                 self.assertNotContains(resp, org.name)
 
     def test_summary_page_applies_threshold_from_settings(self):
@@ -584,7 +584,7 @@ class ProviderPickerTests(TestCase):
         mock_results = MagicMock()
         ordered_results = mock_results.distance().order_by('distance')
         ordered_results.return_value = []
-        Organisation.objects.filter = mock_results
+        Site.objects.filter = mock_results
         resp = self.client.get(self.results_url)
         expected_message = 'Sorry, there are no matches within 5 miles of SW1A 1AA. Please try again'
         self.assertContains(resp, expected_message, count=1, status_code=200)

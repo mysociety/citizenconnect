@@ -1,17 +1,17 @@
-from organisations.models import Organisation
-from organisations.tests.lib import create_test_problem, create_test_organisation
+from organisations.tests.lib import create_test_problem
 from issues.models import Problem
 from responses.models import ProblemResponse
 
 from .lib import BaseModerationTestCase
 
+
 class LookupFormTests(BaseModerationTestCase):
 
     def setUp(self):
         super(LookupFormTests, self).setUp()
-        self.closed_problem = create_test_problem({'organisation':self.test_organisation,
+        self.closed_problem = create_test_problem({'organisation': self.test_organisation,
                                                    'status': Problem.RESOLVED})
-        self.moderated_problem = create_test_problem({'organisation':self.test_organisation,
+        self.moderated_problem = create_test_problem({'organisation': self.test_organisation,
                                                       'publication_status': Problem.PUBLISHED})
         self.login_as(self.case_handler)
 
@@ -42,6 +42,7 @@ class LookupFormTests(BaseModerationTestCase):
     def test_form_allows_closed_problems(self):
         resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.closed_problem.id)})
         self.assertRedirects(resp, '/private/moderate/{0}'.format(self.closed_problem.id))
+
 
 class ModerationFormTests(BaseModerationTestCase):
 

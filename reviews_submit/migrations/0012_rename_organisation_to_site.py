@@ -7,6 +7,11 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
+    # This must have happened first, otherwise we can't change the table
+    depends_on = (
+        ("organisations", "0035_rename_organisation_to_site"),
+    )
+
     def forwards(self, orm):
         # Rename column 'reviews_submit_review.organisation' to 'site'
         db.rename_column('reviews_submit_review', 'organisation_id', 'site_id')

@@ -1,10 +1,10 @@
 import random
 
-from django.db import transaction, IntegrityError
 from django.core.management.base import BaseCommand, CommandError
 
 from ...models import Problem
-from organisations.models import Organisation
+from organisations.models import Site
+
 
 class Command(BaseCommand):
     help = """Create some example problems based on existing problems and assign them
@@ -19,7 +19,7 @@ class Command(BaseCommand):
 
         i = 0
         existing_problems = Problem.objects.all()
-        organisations = Organisation.objects.all()
+        organisations = Site.objects.all()
 
         if not existing_problems.count():
             raise CommandError("There are no existing problems in the database to base the new example ones on")
@@ -44,16 +44,16 @@ class Command(BaseCommand):
             new_problem.public = int(random.random() * 2)
 
             # set the publication_status
-            if int(random.random() * 10 ) < 4:
+            if int(random.random() * 10) < 4:
                 new_problem.publication_status = Problem.NOT_MODERATED
-            elif int(random.random() * 10 ) < 4:
+            elif int(random.random() * 10) < 4:
                 new_problem.publication_status = Problem.PUBLISHED
-            else: 
+            else:
                 new_problem.publication_status = Problem.REJECTED
 
-            new_problem.category= Problem.CATEGORY_CHOICES[int(random.random() * len(Problem.CATEGORY_CHOICES))][0]
-            new_problem.organisation = organisations[int(random.random() * len(organisations))]
-            services = new_problem.organisation.services.all()
+            new_problem.category = Problem.CATEGORY_CHOICES[int(random.random() * len(Problem.CATEGORY_CHOICES))][0]
+            new_problem.site = organisations[int(random.random() * len(organisations))]
+            services = new_problem.site.services.all()
             if len(services) > 0:
                 new_problem.service = services[int(random.random() * len(services))]
             new_problem.save()

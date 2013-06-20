@@ -12,9 +12,6 @@ from organisations.tests.lib import create_test_problem, AuthorizationTestCase
 from moderation.tests.lib import BaseModerationTestCase
 
 
-# from organisations.models import Organisation
-
-
 class LookupFormTests(BaseModerationTestCase):
 
     def setUp(self):

@@ -20,9 +20,8 @@ from .. import auth
 from ..auth import (user_in_group,
                     user_is_superuser,
                     user_can_access_national_escalation_dashboard,
-                    user_can_access_private_national_summary,
-                    user_is_escalation_body)
-from ..models import Organisation, SuperuserLogEntry
+                    user_can_access_private_national_summary)
+from ..models import Site, SuperuserLogEntry
 from ..forms import OrganisationFinderForm, FilterForm
 from ..lib import interval_counts
 from ..tables import (NationalSummaryTable,
@@ -231,7 +230,7 @@ class Map(FilterFormMixin,
         else:
             map_bounds = self.london_area
 
-        return Organisation.objects.filter(point__within=map_bounds)
+        return Site.objects.filter(point__within=map_bounds)
 
 
 class PickProviderBase(ListView):
@@ -239,7 +238,7 @@ class PickProviderBase(ListView):
     form_template_name = 'pick_provider.html'
     result_link_url_name = 'public-org-summary'
     paginate_by = 10
-    model = Organisation
+    model = Site
     context_object_name = 'organisations'
 
     def __init__(self, *args, **kwargs):
@@ -451,7 +450,7 @@ class EscalationDashboard(FilterFormMixin, TemplateView):
         return kwargs
 
     def get_organisations(self):
-        return Organisation.objects.all()
+        return Site.objects.all()
 
     def get_problems(self):
         problems = Problem.objects.open_escalated_problems()

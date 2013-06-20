@@ -40,7 +40,7 @@ ALLOWED_COBRANDS:
   - choices
   - myhealthlondon
 
-# Organisation choices
+# Site type choices
 SITE_TYPE_CHOICES:
   - ['gppractices', 'GP']
   - ['hospitals', 'Hospital']
