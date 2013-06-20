@@ -311,6 +311,16 @@ $(document).ready(function () {
         });
     };
 
+    /**
+     * Find a provider by a set of attributes.
+     *
+     * @param {Object} attrs The attributes to search by
+     * @return {Object} The provider found by the search (if any)
+     */
+    var findProvider = function(attrs) {
+        return _.findWhere(CitizenConnect.providers, attrs);
+    };
+
     wax.tilejson('https://dnv9my2eseobd.cloudfront.net/v3/jedidiah.map-3lyys17i.jsonp', function(tilejson) {
         var mapCentre = londonCentre;
         var mapZoomLevel = londonZoomLevel;
