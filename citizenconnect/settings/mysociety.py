@@ -34,9 +34,9 @@ API_BASICAUTH_PASSWORD = config.get('API_BASICAUTH_PASSWORD')
 
 ALLOWED_COBRANDS = config.get('ALLOWED_COBRANDS')
 
-ORGANISATION_CHOICES = config.get('ORGANISATION_CHOICES')
+SITE_TYPE_CHOICES = config.get('SITE_TYPE_CHOICES')
 
-ORGANISATION_TYPES = [organisation_type for organisation_type, label in ORGANISATION_CHOICES]
+SITE_TYPES = [organisation_type for organisation_type, label in SITE_TYPE_CHOICES]
 
 MAPIT_BASE_URL = config.get('MAPIT_BASE_URL')
 

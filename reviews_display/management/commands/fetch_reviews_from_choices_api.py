@@ -28,7 +28,7 @@ class Command(NoArgsCommand):
             one_week_ago = datetime.date.today() - datetime.timedelta(days=7)
             api_args = dict(since=one_week_ago, max_fetch=100)
 
-        for type in settings.ORGANISATION_TYPES:
+        for type in settings.SITE_TYPES:
             reviews = ReviewsAPI(organisation_type=type, **api_args)
 
             for review in reviews:

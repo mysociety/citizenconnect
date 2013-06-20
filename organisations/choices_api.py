@@ -48,7 +48,7 @@ class ChoicesAPI():
 
         organisations = []
 
-        for organisation_type in settings.ORGANISATION_TYPES:
+        for organisation_type in settings.SITE_TYPES:
             results = self.find_organisations(organisation_type, search_type, search_value)
             organisations.extend(results)
 
@@ -58,7 +58,7 @@ class ChoicesAPI():
 
         if search_type not in self.search_types():
             raise ValueError("Unknown search type: %s" % (search_type))
-        if organisation_type not in settings.ORGANISATION_TYPES:
+        if organisation_type not in settings.SITE_TYPES:
             raise ValueError("Unknown organisation type: %s" % (organisation_type))
         path_elements = ['organisations',
                          organisation_type,

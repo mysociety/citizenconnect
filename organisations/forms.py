@@ -103,7 +103,7 @@ class FilterForm(forms.Form):
     ccg = forms.ModelChoiceField(queryset=CCG.objects.all(), required=False, empty_label='All',
                                  label="CCG")
 
-    organisation_type = forms.ChoiceField(choices=[('', 'All types')] + settings.ORGANISATION_CHOICES,
+    organisation_type = forms.ChoiceField(choices=[('', 'All types')] + settings.SITE_TYPE_CHOICES,
                                           required=False)
 
     # A service_code, eg: SRV123 which are consistent across the NHS

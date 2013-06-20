@@ -41,7 +41,7 @@ ALLOWED_COBRANDS:
   - myhealthlondon
 
 # Organisation choices
-ORGANISATION_CHOICES:
+SITE_TYPE_CHOICES:
   - ['gppractices', 'GP']
   - ['hospitals', 'Hospital']
 
