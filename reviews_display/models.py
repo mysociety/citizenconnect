@@ -6,7 +6,7 @@ from django.conf import settings
 from django.db import models
 from django.forms.models import model_to_dict
 
-from organisations.models import Organisation
+from organisations.models import Site
 from citizenconnect.models import AuditedModel
 
 
@@ -53,7 +53,7 @@ class Review(AuditedModel):
     in_reply_to = models.ForeignKey('Review', related_name='replies', blank=True, null=True)
 
     # The organisation that this review concerns
-    organisation = models.ForeignKey(Organisation, related_name='reviews')
+    organisation = models.ForeignKey(Site, related_name='reviews')
 
     # The name to display for the author. May be 'Anonymous'
     author_display_name = models.TextField()
@@ -114,7 +114,7 @@ class Review(AuditedModel):
         NHS_CHOICES_API_MAX_REVIEW_AGE_IN_DAYS days old, the entry is deleted
 
         """
-        
+
         unique_args = dict(
             api_posting_id=api_review['api_posting_id'],
             api_postingorganisationid=api_review['api_postingorganisationid']
@@ -157,7 +157,7 @@ class Review(AuditedModel):
                         api_review['api_posting_id']
                     )
                 )
-        
+
         defaults = api_review.copy()
         del defaults['ratings']
         del defaults['organisation_choices_id']

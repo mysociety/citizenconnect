@@ -19,7 +19,7 @@ class Review(AuditedModel):
     title = models.CharField(max_length=255, blank=False)
     comment = models.TextField(blank=False)
     month_year_of_visit = models.DateField()
-    organisation = models.ForeignKey('organisations.Organisation', related_name='submitted_reviews')
+    organisation = models.ForeignKey('organisations.Site', related_name='submitted_reviews')
     last_sent_to_api = models.DateTimeField(null=True)
 
     def __unicode__(self):
@@ -45,7 +45,7 @@ class Question(models.Model):
     title = models.CharField(max_length=255)
     api_question_id = models.IntegerField()
     org_type = models.CharField(max_length=100,
-                                choices=settings.ORGANISATION_CHOICES,
+                                choices=settings.SITE_TYPE_CHOICES,
                                 blank=False)
     updated = models.DateTimeField(default=timezone.now)
     is_required = models.BooleanField(default=False)

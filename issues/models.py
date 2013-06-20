@@ -281,7 +281,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     public_reporter_name = models.BooleanField()
     status = models.IntegerField(default=NEW, choices=STATUS_CHOICES, db_index=True)
     priority = models.IntegerField(default=PRIORITY_NORMAL, choices=PRIORITY_CHOICES)
-    organisation = models.ForeignKey('organisations.Organisation')
+    organisation = models.ForeignKey('organisations.Site')
     service = models.ForeignKey('organisations.Service',
                                 null=True,
                                 blank=True,
