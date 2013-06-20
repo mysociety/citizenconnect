@@ -14,7 +14,6 @@ class FeedbackFormTest(TestCase):
     def test_feedback_form_exists(self):
         resp = self.client.get(self.feedback_form_url)
         self.assertEquals(200, resp.status_code)
-        self.assertNotContains(resp, "RE: Problem")
 
     def test_posting_feedback(self):
         resp = self.client.post(self.feedback_form_url, {'name': 'Bob', 'email': 'bob@example.com', 'feedback_comments': 'Test XYZ Comment'})
@@ -36,3 +35,7 @@ class FeedbackFormTest(TestCase):
         problem = create_test_problem()
         resp = self.client.get(self.feedback_form_url + '?problem_id={0}'.format(problem.id))
         self.assertContains(resp, "RE: Problem reference {0}".format(problem.id))
+
+    def test_feedback_form_doesnt_reference_problem_by_default(self):
+        resp = self.client.get(self.feedback_form_url)
+        self.assertNotContains(resp, "RE: Problem")
