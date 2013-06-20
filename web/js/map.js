@@ -252,6 +252,18 @@ $(document).ready(function () {
         });
     };
 
+    /**
+     * Zoom and pan to a specified point on the map.
+     *
+     * @param {Number} lat The latitude to pan to
+     * @param {Number} lon The londitude to zoom to
+     * @param {Number} zoom The zoom level, defaults to 15
+     */
+    var zoomToPoint = function(lat, lon, zoom) {
+        zoom || (zoom = 15);
+        map.setView([lat, lon], zoom);
+    };
+
     wax.tilejson('https://dnv9my2eseobd.cloudfront.net/v3/jedidiah.map-3lyys17i.jsonp', function(tilejson) {
         var mapCentre = isNorthEast ? northEastCentre : londonCentre;
         var mapZoomLevel = isNorthEast ? northEastZoomLevel : londonZoomLevel;
