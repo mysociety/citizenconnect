@@ -48,7 +48,6 @@ $(document).ready(function () {
     var hoverBubbleTemplate = $("script[name=hover-bubble]").html();
     var londonCentre = new L.LatLng(51.505, -0.09);
     var northEastCentre = new L.LatLng(54.95, -1.62);
-    var isNorthEast = (window.location.hash == "#northeast");
     var londonZoomLevel = 10;
     var northEastZoomLevel = 10;
     var map = new L.Map('map', {
@@ -265,8 +264,8 @@ $(document).ready(function () {
     };
 
     wax.tilejson('https://dnv9my2eseobd.cloudfront.net/v3/jedidiah.map-3lyys17i.jsonp', function(tilejson) {
-        var mapCentre = isNorthEast ? northEastCentre : londonCentre;
-        var mapZoomLevel = isNorthEast ? northEastZoomLevel : londonZoomLevel;
+        var mapCentre = londonCentre;
+        var mapZoomLevel = londonZoomLevel;
 
         map.addLayer(new wax.leaf.connector(httpstilejson)).setView(mapCentre, 1);
         map.setView(mapCentre, mapZoomLevel);
@@ -289,11 +288,6 @@ $(document).ready(function () {
             var popupOptions = {offset: new L.Point(2,-4)};
             marker.bindPopup(marker.popupContent, popupOptions).openPopup();
         });
-
-        if (isNorthEast) {
-            map.fire('dragend');
-            $('ul.tab-nav a').toggleClass('active');
-        }
 
         // Add the markers
         drawProviders(defaultProviders);
