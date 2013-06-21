@@ -95,7 +95,7 @@ class CCGModelAuthTests(AuthorizationTestCase):
     def test_disallowed_users_cannot_access_ccg(self):
         self.assertFalse(self.test_ccg.can_be_accessed_by(self.anonymous_user))
         self.assertFalse(self.test_ccg.can_be_accessed_by(self.trust_user))
-        self.assertFalse(self.test_ccg.can_be_accessed_by(self.other_trust_user))
+        self.assertFalse(self.test_ccg.can_be_accessed_by(self.gp_surgery_user))
         self.assertFalse(self.test_ccg.can_be_accessed_by(self.no_trust_user))
         self.assertFalse(self.test_ccg.can_be_accessed_by(self.other_ccg_user))
         self.assertFalse(self.other_test_ccg.can_be_accessed_by(self.ccg_user))
@@ -114,36 +114,36 @@ class OrganisationModelAuthTests(AuthorizationTestCase):
         super(OrganisationModelAuthTests, self).setUp()
 
     def test_user_can_access_provider_happy_path(self):
-        self.assertTrue(self.test_organisation.can_be_accessed_by(self.trust_user))
-        self.assertTrue(self.test_gp_branch.can_be_accessed_by(self.other_trust_user))
+        self.assertTrue(self.test_hospital.can_be_accessed_by(self.trust_user))
+        self.assertTrue(self.test_gp_branch.can_be_accessed_by(self.gp_surgery_user))
 
     def test_superusers_can_access_any_provider(self):
         for user in self.users_who_can_access_everything:
-            self.assertTrue(self.test_organisation.can_be_accessed_by(user))
+            self.assertTrue(self.test_hospital.can_be_accessed_by(user))
             self.assertTrue(self.test_gp_branch.can_be_accessed_by(user))
 
     def test_anon_user_cannot_access_any_provider(self):
-        self.assertFalse(self.test_organisation.can_be_accessed_by(self.anonymous_user))
+        self.assertFalse(self.test_hospital.can_be_accessed_by(self.anonymous_user))
         self.assertFalse(self.test_gp_branch.can_be_accessed_by(self.anonymous_user))
 
     def test_user_with_no_orgs_cannot_access_organisation(self):
-        self.assertFalse(self.test_organisation.can_be_accessed_by(self.no_trust_user))
+        self.assertFalse(self.test_hospital.can_be_accessed_by(self.no_trust_user))
         self.assertFalse(self.test_gp_branch.can_be_accessed_by(self.no_trust_user))
 
     def test_user_with_other_org_cannot_access_different_org(self):
-        self.assertFalse(self.test_organisation.can_be_accessed_by(self.other_trust_user))
+        self.assertFalse(self.test_hospital.can_be_accessed_by(self.gp_surgery_user))
         self.assertFalse(self.test_gp_branch.can_be_accessed_by(self.trust_user))
 
     def test_user_with_no_ccgs_cannot_access_orgs(self):
-        self.assertFalse(self.test_organisation.can_be_accessed_by(self.no_ccg_user))
+        self.assertFalse(self.test_hospital.can_be_accessed_by(self.no_ccg_user))
         self.assertFalse(self.test_gp_branch.can_be_accessed_by(self.no_ccg_user))
 
     def test_user_with_other_ccg_cannot_access_org_with_no_ccg(self):
-        self.assertFalse(self.test_organisation.can_be_accessed_by(self.other_ccg_user))
+        self.assertFalse(self.test_hospital.can_be_accessed_by(self.other_ccg_user))
         self.assertFalse(self.test_gp_branch.can_be_accessed_by(self.ccg_user))
 
     def test_user_with_ccg_can_access_ccg_org(self):
-        self.assertTrue(self.test_organisation.can_be_accessed_by(self.ccg_user))
+        self.assertTrue(self.test_hospital.can_be_accessed_by(self.ccg_user))
         self.assertTrue(self.test_gp_branch.can_be_accessed_by(self.other_ccg_user))
 
 

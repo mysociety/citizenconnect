@@ -11,13 +11,13 @@ class SuperuserLogTests(AuthorizationTestCase):
     def setUp(self):
         super(SuperuserLogTests, self).setUp()
         # Create an unmoderated problem
-        self.unmoderated_problem = create_test_problem({'organisation': self.test_organisation})
+        self.unmoderated_problem = create_test_problem({'organisation': self.test_hospital})
         # Create a private problem
-        self.private_problem = create_test_problem({'organisation': self.test_organisation,
+        self.private_problem = create_test_problem({'organisation': self.test_hospital,
                                                     'public': False,
                                                     'publication_status': Problem.PUBLISHED})
         # Create a hidden problem
-        self.hidden_problem = create_test_problem({'organisation': self.test_organisation,
+        self.hidden_problem = create_test_problem({'organisation': self.test_hospital,
                                                    'publication_status': Problem.REJECTED})
         self.test_urls = [
             reverse('home', kwargs={'cobrand': 'choices'}),
@@ -29,7 +29,7 @@ class SuperuserLogTests(AuthorizationTestCase):
         ]
         self.users_who_should_not_be_logged = [
             self.trust_user,
-            self.other_trust_user,
+            self.gp_surgery_user,
             self.ccg_user,
             self.other_ccg_user,
             self.case_handler,
@@ -84,7 +84,7 @@ class SuperuserLogViewTests(AuthorizationTestCase):
     def test_log_page_only_accessible_to_superusers(self):
         non_superusers = [
             self.trust_user,
-            self.other_trust_user,
+            self.gp_surgery_user,
             self.case_handler,
             self.no_trust_user
         ]

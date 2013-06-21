@@ -18,10 +18,10 @@ class TrustSummaryTests(AuthorizationTestCase):
     def setUp(self):
         super(TrustSummaryTests, self).setUp()
 
-        self.service = create_test_service({'organisation': self.test_organisation})
+        self.service = create_test_service({'organisation': self.test_hospital})
 
         # Problems
-        atts = {'organisation': self.test_organisation}
+        atts = {'organisation': self.test_hospital}
         atts.update({'category': 'cleanliness',
                      'happy_service': True,
                      'happy_outcome': None,
@@ -50,7 +50,7 @@ class TrustSummaryTests(AuthorizationTestCase):
                      'status': Problem.ABUSIVE})
         self.hidden_status_access_problem = create_test_problem(atts)
 
-        self.trust_summary_url = reverse('trust-summary', kwargs={'code': self.test_organisation.parent.code})
+        self.trust_summary_url = reverse('trust-summary', kwargs={'code': self.test_hospital.parent.code})
 
     def test_summary_page_exists(self):
         self.login_as(self.trust_user)
@@ -60,7 +60,7 @@ class TrustSummaryTests(AuthorizationTestCase):
     def test_summary_page_shows_trust_name(self):
         self.login_as(self.trust_user)
         resp = self.client.get(self.trust_summary_url)
-        self.assertTrue(self.test_organisation.parent.name in resp.content)
+        self.assertTrue(self.test_hospital.parent.name in resp.content)
 
     def test_summary_page_applies_problem_category_filter(self):
         self.login_as(self.trust_user)
@@ -90,7 +90,7 @@ class TrustSummaryTests(AuthorizationTestCase):
 
     def test_summary_page_applies_breach_filter_on_private_pages(self):
         # Add a breach problem
-        create_test_problem({'organisation': self.test_organisation,
+        create_test_problem({'organisation': self.test_hospital,
                              'breach': True})
 
         self.login_as(self.trust_user)
@@ -104,7 +104,7 @@ class TrustSummaryTests(AuthorizationTestCase):
 
     def test_summary_page_applies_formal_complaint_filter_on_private_pages(self):
         # Add a formal_complaint problem
-        create_test_problem({'organisation': self.test_organisation,
+        create_test_problem({'organisation': self.test_hospital,
                              'formal_complaint': True})
 
         self.login_as(self.trust_user)
@@ -213,7 +213,7 @@ class TrustSummaryTests(AuthorizationTestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_private_summary_page_is_inaccessible_to_other_providers(self):
-        self.login_as(self.other_trust_user)
+        self.login_as(self.gp_surgery_user)
         resp = self.client.get(self.trust_summary_url)
         self.assertEqual(resp.status_code, 403)
 
@@ -295,7 +295,7 @@ class TrustProblemsTests(AuthorizationTestCase):
             self.assertEqual(resp.status_code, 200)
 
     def test_private_page_is_inaccessible_to_other_providers(self):
-        self.login_as(self.other_trust_user)
+        self.login_as(self.gp_surgery_user)
         resp = self.client.get(self.trust_problems_url)
         self.assertEqual(resp.status_code, 403)
         self.login_as(self.trust_user)
@@ -376,15 +376,15 @@ class TrustProblemsTests(AuthorizationTestCase):
         self.login_as(self.trust_user)
         resp = self.client.get(self.trust_problems_url)
         self.assertContains(resp, '<th class="orderable provider_name sortable">')
-        self.assertContains(resp, self.test_organisation.name)
+        self.assertContains(resp, self.test_hospital.name)
 
 
 class TrustDashboardTests(AuthorizationTestCase):
 
     def setUp(self):
         super(TrustDashboardTests, self).setUp()
-        self.problem = create_test_problem({'organisation': self.test_organisation})
-        self.dashboard_url = reverse('trust-dashboard', kwargs={'code': self.test_organisation.parent.code})
+        self.problem = create_test_problem({'organisation': self.test_hospital})
+        self.dashboard_url = reverse('trust-dashboard', kwargs={'code': self.test_hospital.parent.code})
 
     def test_dashboard_page_exists(self):
         self.login_as(self.trust_user)
@@ -394,7 +394,7 @@ class TrustDashboardTests(AuthorizationTestCase):
     def test_dashboard_page_shows_trust_name(self):
         self.login_as(self.trust_user)
         resp = self.client.get(self.dashboard_url)
-        self.assertTrue(self.test_organisation.parent.name in resp.content)
+        self.assertTrue(self.test_hospital.parent.name in resp.content)
 
     def test_dashboard_shows_problems(self):
         self.login_as(self.trust_user)
@@ -403,7 +403,7 @@ class TrustDashboardTests(AuthorizationTestCase):
         self.assertTrue(response_url in resp.content)
 
     def test_dashboard_doesnt_show_closed_problems(self):
-        self.closed_problem = create_test_problem({'organisation': self.test_organisation,
+        self.closed_problem = create_test_problem({'organisation': self.test_hospital,
                                                    'status': Problem.RESOLVED})
         closed_problem_response_url = reverse('response-form', kwargs={'pk': self.closed_problem.id})
         self.login_as(self.trust_user)
@@ -411,7 +411,7 @@ class TrustDashboardTests(AuthorizationTestCase):
         self.assertTrue(closed_problem_response_url not in resp.content)
 
     def test_dashboard_doesnt_show_escalated_problems(self):
-        self.escalated_problem = create_test_problem({'organisation': self.test_organisation,
+        self.escalated_problem = create_test_problem({'organisation': self.test_hospital,
                                                       'status': Problem.ESCALATED,
                                                       'commissioned': Problem.LOCALLY_COMMISSIONED})
         escalated_problem_response_url = reverse('response-form', kwargs={'pk': self.escalated_problem.id})
@@ -431,7 +431,7 @@ class TrustDashboardTests(AuthorizationTestCase):
             self.assertEqual(resp.status_code, 200)
 
     def test_dashboard_page_is_inaccessible_to_other_trusts(self):
-        self.login_as(self.other_trust_user)
+        self.login_as(self.gp_surgery_user)
         resp = self.client.get(self.dashboard_url)
         self.assertEqual(resp.status_code, 403)
 
@@ -443,7 +443,7 @@ class TrustDashboardTests(AuthorizationTestCase):
     def test_dashboard_page_highlights_priority_problems(self):
         # Add a priority problem
         self.login_as(self.trust_user)
-        create_test_problem({'organisation': self.test_organisation,
+        create_test_problem({'organisation': self.test_hospital,
                              'publication_status': Problem.PUBLISHED,
                              'moderated_description': 'Moderated',
                              'priority': Problem.PRIORITY_HIGH})
@@ -452,7 +452,7 @@ class TrustDashboardTests(AuthorizationTestCase):
 
     def test_dashboard_page_shows_breach_flag(self):
         self.login_as(self.trust_user)
-        create_test_problem({'organisation': self.test_organisation,
+        create_test_problem({'organisation': self.test_hospital,
                              'publication_status': Problem.PUBLISHED,
                              'moderated_description': 'Moderated',
                              'breach': True})
@@ -465,11 +465,11 @@ class TrustBreachesTests(AuthorizationTestCase):
     def setUp(self):
         super(TrustBreachesTests, self).setUp()
         self.breach_dashboard_url = reverse('trust-breaches', kwargs={'code': self.test_trust.code})
-        self.org_breach_problem = create_test_problem({'organisation': self.test_organisation,
+        self.org_breach_problem = create_test_problem({'organisation': self.test_hospital,
                                                        'breach': True})
         self.other_org_breach_problem = create_test_problem({'organisation': self.test_gp_branch,
                                                              'breach': True})
-        self.org_problem = create_test_problem({'organisation': self.test_organisation})
+        self.org_problem = create_test_problem({'organisation': self.test_hospital})
 
     def test_dashboard_accessible_to_provider(self):
         self.login_as(self.trust_user)
@@ -479,7 +479,7 @@ class TrustBreachesTests(AuthorizationTestCase):
     def test_dashboard_is_inacessible_to_other_people(self):
         people_who_shouldnt_have_access = [
             self.no_trust_user,
-            self.other_trust_user,
+            self.gp_surgery_user,
             self.second_tier_moderator,
             self.other_ccg_user
         ]

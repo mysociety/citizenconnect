@@ -181,7 +181,7 @@ class LoginRedirectTests(AuthorizationTestCase):
         self.assertRedirects(resp, second_tier_moderation_url)
 
     def test_provider_goes_to_provider_dashboard(self):
-        dashboard_url = reverse('trust-dashboard', kwargs={'code': self.test_organisation.parent.code})
+        dashboard_url = reverse('trust-dashboard', kwargs={'code': self.test_hospital.parent.code})
         self.login_as(self.trust_user)
         resp = self.client.get(self.login_redirect_url)
         self.assertRedirects(resp, dashboard_url)

@@ -21,7 +21,7 @@ class ProblemTestCase(AuthorizationTestCase):
         super(ProblemTestCase, self).setUp()
 
         # A brand new, unmoderated problem, all public
-        self.test_problem = Problem(organisation=self.test_organisation,
+        self.test_problem = Problem(organisation=self.test_hospital,
                                     description='A Test Problem',
                                     category='cleanliness',
                                     reporter_name='Test User',
@@ -36,7 +36,7 @@ class ProblemTestCase(AuthorizationTestCase):
                                     cobrand='choices')
 
         # A brand new, moderated problem, all public
-        self.test_moderated_problem = Problem(organisation=self.test_organisation,
+        self.test_moderated_problem = Problem(organisation=self.test_hospital,
                                               description='A Test Problem',
                                               category='cleanliness',
                                               reporter_name='Test User',
@@ -52,7 +52,7 @@ class ProblemTestCase(AuthorizationTestCase):
                                               cobrand='choices')
 
         # A brand new, unmoderated problem that the user would like kept private
-        self.test_private_problem = Problem(organisation=self.test_organisation,
+        self.test_private_problem = Problem(organisation=self.test_hospital,
                                             description='A Test Private Problem',
                                             category='cleanliness',
                                             reporter_name='Test User',
@@ -68,7 +68,7 @@ class ProblemTestCase(AuthorizationTestCase):
 
         # A problem that has been moderated and rejected - ie: not published
         self.test_moderated_hidden_problem = Problem(
-            organisation=self.test_organisation,
+            organisation=self.test_hospital,
             description='A Test Private Problem',
             category='cleanliness',
             reporter_name='Test User',
@@ -88,7 +88,7 @@ class ProblemTestCase(AuthorizationTestCase):
         # (hence should not be shown to the public) but passed moderation.
         # (Not sure how that would happen in real life, perhaps a spam repeat
         # of a similar one)
-        self.test_hidden_status_problem = Problem(organisation=self.test_organisation,
+        self.test_hidden_status_problem = Problem(organisation=self.test_hospital,
                                                   description='A Test Rejected Problem',
                                                   category='cleanliness',
                                                   reporter_name='Test User',
@@ -176,7 +176,7 @@ class ProblemModelTests(ProblemTestCase):
         self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.anonymous_user))
         self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.trust_user))
         self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.ccg_user))
-        self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.other_trust_user))
+        self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.gp_surgery_user))
         self.assertTrue(self.test_moderated_problem.can_be_accessed_by(self.other_ccg_user))
         for user in self.users_who_can_access_everything:
             self.assertTrue(self.test_moderated_problem.can_be_accessed_by(user))
@@ -185,7 +185,7 @@ class ProblemModelTests(ProblemTestCase):
         self.assertTrue(self.test_problem.can_be_accessed_by(self.anonymous_user))
         self.assertTrue(self.test_problem.can_be_accessed_by(self.trust_user))
         self.assertTrue(self.test_problem.can_be_accessed_by(self.ccg_user))
-        self.assertTrue(self.test_problem.can_be_accessed_by(self.other_trust_user))
+        self.assertTrue(self.test_problem.can_be_accessed_by(self.gp_surgery_user))
         self.assertTrue(self.test_problem.can_be_accessed_by(self.other_ccg_user))
         for user in self.users_who_can_access_everything:
             self.assertTrue(self.test_problem.can_be_accessed_by(user))
@@ -194,7 +194,7 @@ class ProblemModelTests(ProblemTestCase):
         self.assertTrue(self.test_private_problem.can_be_accessed_by(self.anonymous_user))
         self.assertTrue(self.test_private_problem.can_be_accessed_by(self.trust_user))
         self.assertTrue(self.test_private_problem.can_be_accessed_by(self.ccg_user))
-        self.assertTrue(self.test_private_problem.can_be_accessed_by(self.other_trust_user))
+        self.assertTrue(self.test_private_problem.can_be_accessed_by(self.gp_surgery_user))
         self.assertTrue(self.test_private_problem.can_be_accessed_by(self.other_ccg_user))
         for user in self.users_who_can_access_everything:
             self.assertTrue(self.test_private_problem.can_be_accessed_by(user))
@@ -207,7 +207,7 @@ class ProblemModelTests(ProblemTestCase):
 
     def test_moderated_hidden_problem_inaccessible_to_not_allowed_users(self):
         self.assertFalse(self.test_moderated_hidden_problem.can_be_accessed_by(self.anonymous_user))
-        self.assertFalse(self.test_moderated_hidden_problem.can_be_accessed_by(self.other_trust_user))
+        self.assertFalse(self.test_moderated_hidden_problem.can_be_accessed_by(self.gp_surgery_user))
         self.assertFalse(self.test_moderated_hidden_problem.can_be_accessed_by(self.other_ccg_user))
 
     def test_hidden_status_problem_accessible_to_allowed_users(self):
@@ -218,7 +218,7 @@ class ProblemModelTests(ProblemTestCase):
 
     def test_hidden_status_problem_inaccessible_to_not_allowed_users(self):
         self.assertFalse(self.test_hidden_status_problem.can_be_accessed_by(self.anonymous_user))
-        self.assertFalse(self.test_hidden_status_problem.can_be_accessed_by(self.other_trust_user))
+        self.assertFalse(self.test_hidden_status_problem.can_be_accessed_by(self.gp_surgery_user))
         self.assertFalse(self.test_hidden_status_problem.can_be_accessed_by(self.other_ccg_user))
 
     def test_timedelta_to_minutes(self):
@@ -395,7 +395,6 @@ class ProblemModelEscalationTests(ProblemTestCase):
     def setUp(self):
         super(ProblemModelEscalationTests, self).setUp()
 
-        self.test_trust = self.test_organisation.parent
         self.test_escalation_ccg = self.test_trust.escalation_ccg
         self.test_escalation_ccg.email = 'ccg@example.org'
         self.test_escalation_ccg.save()
@@ -475,7 +474,7 @@ class ProblemModelEscalationTests(ProblemTestCase):
 
     def test_send_escalation_email_called_on_create_escalated(self):
         problem = Problem(
-            organisation=self.test_organisation,
+            organisation=self.test_hospital,
             description='A Test Problem',
             category='cleanliness',
             reporter_name='Test User',

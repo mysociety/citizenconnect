@@ -18,10 +18,10 @@ class OrganisationSummaryTests(AuthorizationTestCase):
     def setUp(self):
         super(OrganisationSummaryTests, self).setUp()
 
-        self.service = create_test_service({'organisation': self.test_organisation})
+        self.service = create_test_service({'organisation': self.test_hospital})
 
         # Problems
-        atts = {'organisation': self.test_organisation}
+        atts = {'organisation': self.test_hospital}
         atts.update({'category': 'cleanliness',
                      'happy_service': True,
                      'happy_outcome': None,
@@ -50,9 +50,9 @@ class OrganisationSummaryTests(AuthorizationTestCase):
                      'status': Problem.ABUSIVE})
         self.hidden_status_access_problem = create_test_problem(atts)
 
-        self.public_summary_url = reverse('public-org-summary', kwargs={'ods_code': self.test_organisation.ods_code,
+        self.public_summary_url = reverse('public-org-summary', kwargs={'ods_code': self.test_hospital.ods_code,
                                                                         'cobrand': 'choices'})
-        self.private_summary_url = reverse('private-org-summary', kwargs={'ods_code': self.test_organisation.ods_code})
+        self.private_summary_url = reverse('private-org-summary', kwargs={'ods_code': self.test_hospital.ods_code})
         self.urls = [self.public_summary_url, self.private_summary_url]
 
     def test_summary_page_exists(self):
@@ -65,7 +65,7 @@ class OrganisationSummaryTests(AuthorizationTestCase):
         for url in self.urls:
             self.login_as(self.trust_user)
             resp = self.client.get(url)
-            self.assertTrue(self.test_organisation.name in resp.content)
+            self.assertTrue(self.test_hospital.name in resp.content)
 
     def test_private_summary_page_shows_all_problems(self):
         self.login_as(self.trust_user)
@@ -143,7 +143,7 @@ class OrganisationSummaryTests(AuthorizationTestCase):
 
     def test_summary_page_applies_breach_filter_on_private_pages(self):
         # Add a breach problem
-        create_test_problem({'organisation': self.test_organisation,
+        create_test_problem({'organisation': self.test_hospital,
                              'breach': True})
 
         self.login_as(self.trust_user)
@@ -156,7 +156,7 @@ class OrganisationSummaryTests(AuthorizationTestCase):
         self.assertEqual(problems_by_status[0]['six_months'], 1)
 
     def test_summary_page_applies_formal_complaint_filter_on_private_pages(self):
-        create_test_problem({'organisation': self.test_organisation,
+        create_test_problem({'organisation': self.test_hospital,
                              'formal_complaint': True})
 
         self.login_as(self.trust_user)
@@ -256,7 +256,7 @@ class OrganisationSummaryTests(AuthorizationTestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_private_summary_page_is_inaccessible_to_other_trusts(self):
-        self.login_as(self.other_trust_user)
+        self.login_as(self.gp_surgery_user)
         resp = self.client.get(self.private_summary_url)
         self.assertEqual(resp.status_code, 403)
 
@@ -473,9 +473,9 @@ class OrganisationTabsTests(AuthorizationTestCase):
 
     def setUp(self):
         super(OrganisationTabsTests, self).setUp()
-        self.summary_url = reverse('public-org-summary', kwargs={'ods_code': self.test_organisation.ods_code, 'cobrand': 'choices'})
-        self.problems_url = reverse('public-org-problems', kwargs={'ods_code': self.test_organisation.ods_code, 'cobrand': 'choices'})
-        self.reviews_url = reverse('review-organisation-list', kwargs={'ods_code': self.test_organisation.ods_code, 'cobrand': 'choices'})
+        self.summary_url = reverse('public-org-summary', kwargs={'ods_code': self.test_hospital.ods_code, 'cobrand': 'choices'})
+        self.problems_url = reverse('public-org-problems', kwargs={'ods_code': self.test_hospital.ods_code, 'cobrand': 'choices'})
+        self.reviews_url = reverse('review-organisation-list', kwargs={'ods_code': self.test_hospital.ods_code, 'cobrand': 'choices'})
         self.tab_urls = [
             self.reviews_url,
             self.problems_url,
@@ -494,7 +494,7 @@ class OrganisationTabsTests(AuthorizationTestCase):
                 resp = self.client.get(url)
                 self._check_tabs(url, resp)
         # Logged in users should see the same links
-        for user in [self.nhs_superuser, self.ccg_user, self.trust_user, self.other_trust_user, self.other_ccg_user]:
+        for user in [self.nhs_superuser, self.ccg_user, self.trust_user, self.gp_surgery_user, self.other_ccg_user]:
             self.login_as(user)
             for url in self.tab_urls:
                 resp = self.client.get(url)

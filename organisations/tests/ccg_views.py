@@ -15,7 +15,7 @@ class CCGDashboardTests(AuthorizationTestCase):
 
     def setUp(self):
         super(CCGDashboardTests, self).setUp()
-        self.problem = create_test_problem({'organisation': self.test_organisation})
+        self.problem = create_test_problem({'organisation': self.test_hospital})
         self.dashboard_url = reverse('ccg-dashboard', kwargs={'code': self.test_ccg.code})
 
     def test_dashboard_page_exists(self):
@@ -35,7 +35,7 @@ class CCGDashboardTests(AuthorizationTestCase):
         self.assertTrue(response_url in resp.content)
 
     def test_dashboard_doesnt_show_closed_problems(self):
-        self.closed_problem = create_test_problem({'organisation': self.test_organisation,
+        self.closed_problem = create_test_problem({'organisation': self.test_hospital,
                                                    'status': Problem.RESOLVED})
         closed_problem_response_url = reverse('response-form', kwargs={'pk': self.closed_problem.id})
         self.login_as(self.ccg_user)
@@ -43,7 +43,7 @@ class CCGDashboardTests(AuthorizationTestCase):
         self.assertTrue(closed_problem_response_url not in resp.content)
 
     def test_dashboard_doesnt_show_escalated_problems(self):
-        self.escalated_problem = create_test_problem({'organisation': self.test_organisation,
+        self.escalated_problem = create_test_problem({'organisation': self.test_hospital,
                                                       'status': Problem.ESCALATED,
                                                       'commissioned': Problem.LOCALLY_COMMISSIONED})
         escalated_problem_response_url = reverse('response-form', kwargs={'pk': self.escalated_problem.id})
@@ -67,7 +67,7 @@ class CCGDashboardTests(AuthorizationTestCase):
         resp = self.client.get(self.dashboard_url)
         self.assertEqual(resp.status_code, 403)
 
-        self.login_as(self.other_trust_user)
+        self.login_as(self.gp_surgery_user)
         resp = self.client.get(self.dashboard_url)
         self.assertEqual(resp.status_code, 403)
 
@@ -79,7 +79,7 @@ class CCGDashboardTests(AuthorizationTestCase):
     def test_dashboard_page_highlights_priority_problems(self):
         # Add a priority problem
         self.login_as(self.ccg_user)
-        create_test_problem({'organisation': self.test_organisation,
+        create_test_problem({'organisation': self.test_hospital,
                              'publication_status': Problem.PUBLISHED,
                              'moderated_description': 'Moderated',
                              'priority': Problem.PRIORITY_HIGH})
@@ -88,7 +88,7 @@ class CCGDashboardTests(AuthorizationTestCase):
 
     def test_dashboard_page_shows_breach_flag(self):
         self.login_as(self.ccg_user)
-        create_test_problem({'organisation': self.test_organisation,
+        create_test_problem({'organisation': self.test_hospital,
                              'publication_status': Problem.PUBLISHED,
                              'moderated_description': 'Moderated',
                              'breach': True})
@@ -101,10 +101,10 @@ class CCGEscalationDashboardTests(AuthorizationTestCase):
     def setUp(self):
         super(CCGEscalationDashboardTests, self).setUp()
         self.escalation_dashboard_url = reverse('ccg-escalation-dashboard', kwargs={'code': self.test_ccg.code})
-        self.org_local_escalated_problem = create_test_problem({'organisation': self.test_organisation,
+        self.org_local_escalated_problem = create_test_problem({'organisation': self.test_hospital,
                                                                 'status': Problem.ESCALATED,
                                                                 'commissioned': Problem.LOCALLY_COMMISSIONED})
-        self.org_national_escalated_problem = create_test_problem({'organisation': self.test_organisation,
+        self.org_national_escalated_problem = create_test_problem({'organisation': self.test_hospital,
                                                                    'status': Problem.ESCALATED,
                                                                    'commissioned': Problem.NATIONALLY_COMMISSIONED})
         self.other_org_local_escalated_problem = create_test_problem({'organisation': self.test_gp_branch,
@@ -114,20 +114,20 @@ class CCGEscalationDashboardTests(AuthorizationTestCase):
                                                                          'status': Problem.ESCALATED,
                                                                          'commissioned': Problem.NATIONALLY_COMMISSIONED})
 
-        self.org_local_escalated_acknowledged_problem = create_test_problem({'organisation': self.test_organisation,
+        self.org_local_escalated_acknowledged_problem = create_test_problem({'organisation': self.test_hospital,
                                                                              'status': Problem.ESCALATED_ACKNOWLEDGED,
                                                                              'commissioned': Problem.LOCALLY_COMMISSIONED})
-        self.org_local_escalated_resolved_problem = create_test_problem({'organisation': self.test_organisation,
+        self.org_local_escalated_resolved_problem = create_test_problem({'organisation': self.test_hospital,
                                                                          'status': Problem.ESCALATED_RESOLVED,
                                                                          'commissioned': Problem.LOCALLY_COMMISSIONED})
         # Add two services to the test org
-        self.service_one = create_test_service({'organisation': self.test_organisation})
-        self.service_two = create_test_service({'organisation': self.test_organisation,
+        self.service_one = create_test_service({'organisation': self.test_hospital})
+        self.service_two = create_test_service({'organisation': self.test_hospital,
                                                 'name': 'service two',
                                                 'service_code': 'SRV222'})
-        self.test_organisation.services.add(self.service_one)
-        self.test_organisation.services.add(self.service_two)
-        self.test_organisation.save()
+        self.test_hospital.services.add(self.service_one)
+        self.test_hospital.services.add(self.service_two)
+        self.test_hospital.save()
 
     def test_dashboard_accessible_to_ccg_users(self):
         self.login_as(self.ccg_user)
@@ -145,7 +145,7 @@ class CCGEscalationDashboardTests(AuthorizationTestCase):
             self.customer_contact_centre_user,
             self.trust_user,
             self.no_trust_user,
-            self.other_trust_user,
+            self.gp_surgery_user,
             self.second_tier_moderator,
             self.other_ccg_user
         ]
@@ -164,7 +164,7 @@ class CCGEscalationDashboardTests(AuthorizationTestCase):
         self.login_as(self.ccg_user)
         # Remove the test ccg from the ccgs for this org so that we know access is coming
         # via the escalation_ccg field, not the ccgs association
-        self.test_organisation.parent.ccgs.remove(self.test_ccg)
+        self.test_hospital.parent.ccgs.remove(self.test_ccg)
         resp = self.client.get(self.escalation_dashboard_url)
         self.assertContains(resp, self.org_local_escalated_problem.reference_number)
         # Does not show other org's problem or nationally commmissioned problem for this org
@@ -192,7 +192,7 @@ class CCGEscalationDashboardTests(AuthorizationTestCase):
         self.assertNotContains(resp, status_filter_to_look_for)
 
     def test_filters_by_provider_type(self):
-        # self.test_organisation is a hospital
+        # self.test_hospital is a hospital
         # add a GP org to this ccg
         ccg_gp = create_test_organisation({"ods_code": "GP", "parent": self.test_trust})
         # Add a local commissioned, escalated problem to that new gp
@@ -211,11 +211,11 @@ class CCGEscalationDashboardTests(AuthorizationTestCase):
 
     def test_filters_by_department(self):
         # Add some problems to the test org against specific services
-        service_one_problem = create_test_problem({'organisation': self.test_organisation,
+        service_one_problem = create_test_problem({'organisation': self.test_hospital,
                                                    'service': self.service_one,
                                                    'status': Problem.ESCALATED,
                                                    'commissioned': Problem.LOCALLY_COMMISSIONED})
-        service_two_problem = create_test_problem({'organisation': self.test_organisation,
+        service_two_problem = create_test_problem({'organisation': self.test_hospital,
                                                    'service': self.service_two,
                                                    'status': Problem.ESCALATED,
                                                    'commissioned': Problem.LOCALLY_COMMISSIONED})
@@ -231,12 +231,12 @@ class CCGEscalationDashboardTests(AuthorizationTestCase):
         self.assertNotContains(resp, self.org_local_escalated_problem.reference_number)
 
     def test_filters_by_problem_category(self):
-        cleanliness_problem = create_test_problem({'organisation': self.test_organisation,
+        cleanliness_problem = create_test_problem({'organisation': self.test_hospital,
                                                    'service': self.service_one,
                                                    'status': Problem.ESCALATED,
                                                    'commissioned': Problem.LOCALLY_COMMISSIONED,
                                                    'category': 'cleanliness'})
-        delays_problem = create_test_problem({'organisation': self.test_organisation,
+        delays_problem = create_test_problem({'organisation': self.test_hospital,
                                               'service': self.service_two,
                                               'status': Problem.ESCALATED,
                                               'commissioned': Problem.LOCALLY_COMMISSIONED,
@@ -253,7 +253,7 @@ class CCGEscalationDashboardTests(AuthorizationTestCase):
         self.assertNotContains(resp, self.org_local_escalated_problem.reference_number)
 
     def test_filters_by_breach(self):
-        breach_problem = create_test_problem({'organisation': self.test_organisation,
+        breach_problem = create_test_problem({'organisation': self.test_hospital,
                                               'service': self.service_two,
                                               'status': Problem.ESCALATED,
                                               'commissioned': Problem.LOCALLY_COMMISSIONED,
@@ -270,7 +270,7 @@ class CCGEscalationDashboardTests(AuthorizationTestCase):
 
     def test_dashboard_shows_breach_flag(self):
         # Add a breach problem that should show up
-        create_test_problem({'organisation': self.test_organisation,
+        create_test_problem({'organisation': self.test_hospital,
                              'service': self.service_two,
                              'status': Problem.ESCALATED,
                              'commissioned': Problem.LOCALLY_COMMISSIONED,
@@ -298,11 +298,11 @@ class CCGBreachDashboardTests(AuthorizationTestCase):
     def setUp(self):
         super(CCGBreachDashboardTests, self).setUp()
         self.breach_dashboard_url = reverse('ccg-escalation-breaches', kwargs={'code': self.test_ccg.code})
-        self.org_breach_problem = create_test_problem({'organisation': self.test_organisation,
+        self.org_breach_problem = create_test_problem({'organisation': self.test_hospital,
                                                        'breach': True})
         self.other_org_breach_problem = create_test_problem({'organisation': self.test_gp_branch,
                                                              'breach': True})
-        self.org_problem = create_test_problem({'organisation': self.test_organisation})
+        self.org_problem = create_test_problem({'organisation': self.test_hospital})
 
     def test_dashboard_accessible_to_ccg_users(self):
         self.login_as(self.ccg_user)
@@ -320,7 +320,7 @@ class CCGBreachDashboardTests(AuthorizationTestCase):
             self.customer_contact_centre_user,
             self.trust_user,
             self.no_trust_user,
-            self.other_trust_user,
+            self.gp_surgery_user,
             self.second_tier_moderator,
             self.other_ccg_user
         ]
@@ -373,7 +373,7 @@ class CCGSummaryTests(AuthorizationTestCase):
     def setUp(self):
         super(CCGSummaryTests, self).setUp()
         self.summary_url = reverse('ccg-summary', kwargs={'code': self.test_ccg.code})
-        create_test_problem({'organisation': self.test_organisation})
+        create_test_problem({'organisation': self.test_hospital})
         create_test_problem({'organisation': self.test_gp_branch,
                              'publication_status': Problem.PUBLISHED,
                              'status': Problem.ABUSIVE})
@@ -455,7 +455,7 @@ class CCGSummaryTests(AuthorizationTestCase):
 
     def test_summary_page_filters_by_breach(self):
         # Add a breach problem
-        create_test_problem({'organisation': self.test_organisation,
+        create_test_problem({'organisation': self.test_hospital,
                              'breach': True})
 
         breach_filtered_url = '{0}?flags=breach'.format(self.summary_url)
@@ -465,7 +465,7 @@ class CCGSummaryTests(AuthorizationTestCase):
 
     def test_summary_page_filters_by_formal_complaint(self):
         # Add a formal_complaint problem
-        create_test_problem({'organisation': self.test_organisation,
+        create_test_problem({'organisation': self.test_hospital,
                              'formal_complaint': True})
 
         formal_complaint_filtered_url = '{0}?flags=formal_complaint'.format(self.summary_url)

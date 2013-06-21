@@ -69,9 +69,9 @@ class HomeViewTests(BaseModerationTestCase):
     def setUp(self):
         super(HomeViewTests, self).setUp()
 
-        self.closed_problem = create_test_problem({'organisation': self.test_organisation,
+        self.closed_problem = create_test_problem({'organisation': self.test_hospital,
                                                    'status': Problem.RESOLVED})
-        self.moderated_problem = create_test_problem({'organisation': self.test_organisation,
+        self.moderated_problem = create_test_problem({'organisation': self.test_hospital,
                                                       'publication_status': Problem.PUBLISHED})
 
         self.login_as(self.case_handler)
@@ -104,7 +104,7 @@ class HomeViewTests(BaseModerationTestCase):
         # add high priority entry
         create_test_problem(
             {
-                'organisation': self.test_organisation,
+                'organisation': self.test_hospital,
                 'priority': Problem.PRIORITY_HIGH
             }
         )
@@ -118,9 +118,9 @@ class SecondTierModerationHomeViewTests(BaseModerationTestCase):
 
     def setUp(self):
         super(SecondTierModerationHomeViewTests, self).setUp()
-        self.second_tier_moderation = create_test_problem({'organisation': self.test_organisation,
+        self.second_tier_moderation = create_test_problem({'organisation': self.test_hospital,
                                                            'requires_second_tier_moderation': True})
-        self.no_second_tier_moderation = create_test_problem({'organisation': self.test_organisation})
+        self.no_second_tier_moderation = create_test_problem({'organisation': self.test_hospital})
         self.login_as(self.second_tier_moderator)
 
     def test_issues_in_context(self):
@@ -194,9 +194,9 @@ class ModerateFormViewTests(BaseModerationTestCase):
     def setUp(self):
         super(ModerateFormViewTests, self).setUp()
 
-        self.closed_problem = create_test_problem({'organisation': self.test_organisation,
+        self.closed_problem = create_test_problem({'organisation': self.test_hospital,
                                                    'status': Problem.RESOLVED})
-        self.moderated_problem = create_test_problem({'organisation': self.test_organisation,
+        self.moderated_problem = create_test_problem({'organisation': self.test_hospital,
                                                       'publication_status': Problem.PUBLISHED})
 
         self.login_as(self.case_handler)

@@ -419,7 +419,7 @@ class ReviewTrustListTests(AuthorizationTestCase):
     def setUp(self):
         super(ReviewTrustListTests, self).setUp()
         self.org_review = create_test_review({
-            'organisation': self.test_organisation},
+            'organisation': self.test_hospital},
             {}
         )
         self.other_org_review = create_test_review({'organisation': self.test_gp_branch}, {})
