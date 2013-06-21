@@ -335,10 +335,15 @@ $(document).ready(function () {
      * Find a provider by a set of attributes.
      *
      * @param {Object} attrs The attributes to search by
-     * @return {Object} The provider found by the search (if any)
+     * @param {Function} callback The function to call with the provider found (if any)
      */
-    var findProvider = function(attrs) {
-        return _.findWhere(CitizenConnect.providers, attrs);
+    var findProvider = function(attrs, callback) {
+        $.ajax({
+            url: window.location.pathname + '/' + attrs.ods_code,
+            success: function(provider) {
+                callback(provider);
+            }
+        });
     };
 
     wax.tilejson('https://dnv9my2eseobd.cloudfront.net/v3/jedidiah.map-3lyys17i.jsonp', function(tilejson) {
