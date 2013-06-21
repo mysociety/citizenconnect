@@ -145,6 +145,7 @@ INSTALLED_APPS = (
     'responses',
     'reversion',
     'failedloginblocker',
+    'geocoder',
 )
 
 
@@ -225,5 +226,18 @@ AUTHENTICATION_BACKENDS = (
     'failedloginblocker.backends.MonitoredModelBackend',
 )
 
+# Where should the geocoder load data for?
+GEOCODER_BOUNDING_BOXES=(
+    # xmin, ymin, xmax, ymax
+    ( -0.8, 51.1, 0.6,  51.8 ), # London
+    
+)
+
 # Now get the mySociety configuration
 from .mysociety import *
+
+
+
+
+
+

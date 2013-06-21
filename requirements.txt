@@ -12,6 +12,7 @@ furl
 python-dateutil
 pytz
 lxml==3.2.1
+progressbar
 
 ### Django related
 Django==1.4.5
