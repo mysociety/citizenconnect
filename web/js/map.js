@@ -178,6 +178,27 @@ $(document).ready(function () {
         return issueType;
     };
 
+    var iconClassForOpenIssues = function(allTimeOpen) {
+        var iconClass;
+        // Determine the icon colour based on issue count (crudely)
+        if(allTimeOpen <= 0) {
+            iconClass = nhsCentreIcon_5;
+        }
+        else if(allTimeOpen <= 3) {
+            iconClass = nhsCentreIcon_4;
+        }
+        else if(allTimeOpen <= 6) {
+            iconClass = nhsCentreIcon_3;
+        }
+        else if(allTimeOpen <= 12) {
+            iconClass = nhsCentreIcon_2;
+        }
+        else {
+            iconClass = nhsCentreIcon_1;
+        }
+        return iconClass;
+    };
+
     // Function to draw an array of providers onto the map
     var drawProviders = function(providers) {
         // Wipe anything that's already on the map
@@ -187,23 +208,7 @@ $(document).ready(function () {
         _.each(providers, function(nhsCentre) {
             var marker, iconClass;
 
-            // Determine the icon colour based on issue count (crudely)
-            if(nhsCentre.all_time_open <= 0) {
-                iconClass = nhsCentreIcon_5;
-            }
-            else if(nhsCentre.all_time_open <= 3) {
-                iconClass = nhsCentreIcon_4;
-            }
-            else if(nhsCentre.all_time_open <= 6) {
-                iconClass = nhsCentreIcon_3;
-            }
-            else if(nhsCentre.all_time_open <= 12) {
-                iconClass = nhsCentreIcon_2;
-            }
-            else {
-                iconClass = nhsCentreIcon_1;
-            }
-
+            iconClass = iconClassForOpenIssues(nhsCentre.all_time_open);
             // Create the marker
             marker = nhsCentre.marker = L.marker([nhsCentre.lat, nhsCentre.lon], {
                 riseOnHover:true,
