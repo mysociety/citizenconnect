@@ -35,7 +35,7 @@ class ResponseLookup(FormView):
         # Determine if we should show the page as part of some tabbed navigation
         if user_is_escalation_body(self.request.user):
             context['show_escalation_tabs'] = True
-        elif user_in_group(self.request.user, auth.TRUSTS) and self.request.user.organisations.count() == 1:
+        elif user_in_group(self.request.user, auth.ORGANISATION_PARENTS) and self.request.user.organisations.count() == 1:
             print "showing organisation tabs"
             context['show_organisation_tabs'] = True
             context['organisation'] = self.request.user.organisations.all()[0]

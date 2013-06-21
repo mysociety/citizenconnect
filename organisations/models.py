@@ -120,7 +120,7 @@ class OrganisationParent(MailSendMixin, AuditedModel):
 
     def default_user_group(self):
         """Group to ensure that users are members of"""
-        return Group.objects.get(pk=auth.TRUSTS)
+        return Group.objects.get(pk=auth.ORGANISATION_PARENTS)
 
     @property
     def problem_set(self):

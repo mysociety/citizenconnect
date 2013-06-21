@@ -405,8 +405,8 @@ def login_redirect(request):
     elif user_in_group(user, auth.SECOND_TIER_MODERATORS):
         return HttpResponseRedirect(reverse('second-tier-moderate-home'))
 
-    # Trusts
-    elif user_in_group(user, auth.TRUSTS):
+    # Organisation Parents
+    elif user_in_group(user, auth.ORGANISATION_PARENTS):
         if user.trusts.count() == 1:
             trust = user.trusts.all()[0]
             return HttpResponseRedirect(reverse('trust-dashboard', kwargs={'code': trust.code}))

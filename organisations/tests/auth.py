@@ -30,7 +30,7 @@ class AuthTests(AuthorizationTestCase):
 
     def test_user_in_group(self):
         self.assertTrue(user_in_group(self.case_handler, auth.CASE_HANDLERS))
-        self.assertFalse(user_in_group(self.case_handler, auth.TRUSTS))
+        self.assertFalse(user_in_group(self.case_handler, auth.ORGANISATION_PARENTS))
 
     def test_user_in_groups(self):
         example_group_list = [auth.NHS_SUPERUSERS, auth.CASE_HANDLERS]
