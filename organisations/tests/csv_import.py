@@ -111,7 +111,7 @@ class CsvImportTests(TestCase):
                 'ods_code': 'ANH1',
                 'organisation_type': 'hospitals',
                 'postcode': 'NW8 7BT ',
-                'trust': trust.id
+                'parent': trust.id
             }
         )
 

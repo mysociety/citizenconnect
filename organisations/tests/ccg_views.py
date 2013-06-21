@@ -164,7 +164,7 @@ class CCGEscalationDashboardTests(AuthorizationTestCase):
         self.login_as(self.ccg_user)
         # Remove the test ccg from the ccgs for this org so that we know access is coming
         # via the escalation_ccg field, not the ccgs association
-        self.test_organisation.trust.ccgs.remove(self.test_ccg)
+        self.test_organisation.parent.ccgs.remove(self.test_ccg)
         resp = self.client.get(self.escalation_dashboard_url)
         self.assertContains(resp, self.org_local_escalated_problem.reference_number)
         # Does not show other org's problem or nationally commmissioned problem for this org
@@ -194,7 +194,7 @@ class CCGEscalationDashboardTests(AuthorizationTestCase):
     def test_filters_by_provider_type(self):
         # self.test_organisation is a hospital
         # add a GP org to this ccg
-        ccg_gp = create_test_organisation({"ods_code": "GP", "trust": self.test_trust})
+        ccg_gp = create_test_organisation({"ods_code": "GP", "parent": self.test_trust})
         # Add a local commissioned, escalated problem to that new gp
         self.gp_local_escalated_problem = create_test_problem({'organisation': ccg_gp,
                                                                'status': Problem.ESCALATED,

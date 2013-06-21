@@ -112,7 +112,7 @@ class FilterFormMixin(FormMixin):
             if name == 'service_id':
                 filtered_queryset = filtered_queryset.filter(service__id=value)
             if name == 'ccg':
-                filtered_queryset = filtered_queryset.filter(organisation__trust__ccgs__id__exact=value)
+                filtered_queryset = filtered_queryset.filter(organisation__parent__ccgs__id__exact=value)
             if name == 'flags' and value in self.allowed_flag_filters:
                 args = {value: True}
                 filtered_queryset = filtered_queryset.filter(**args)

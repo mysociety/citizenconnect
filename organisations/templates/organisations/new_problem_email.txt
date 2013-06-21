@@ -18,5 +18,5 @@ Problem:
 
 {{ problem.description }}
 
-To respond to this problem, please visit your dashboard at: {{ site_base_url }}{% url 'trust-dashboard' code=problem.organisation.trust.code %}
+To respond to this problem, please visit your dashboard at: {{ site_base_url }}{% url 'trust-dashboard' code=problem.organisation.parent.code %}
 {% endautoescape %}

@@ -89,8 +89,8 @@ def create_test_organisation(attributes={}):
         'point': Point(coords['lon'], coords['lat'])
     }
     default_attributes.update(attributes)
-    if 'trust' not in attributes:
-        default_attributes['trust'] = create_test_trust({'code': default_attributes['ods_code']})
+    if 'parent' not in attributes:
+        default_attributes['parent'] = create_test_trust({'code': default_attributes['ods_code']})
     instance = Organisation(**dict((k, v) for (k, v) in default_attributes.items() if '__' not in k))
     instance.save()
     return instance
@@ -172,11 +172,11 @@ class IntervalCountsTest(TestCase):
 
         self.test_organisation = create_test_organisation({'ods_code': 'XXX999',
                                                            'organisation_type': 'hospitals',
-                                                           'trust': self.test_trust})
+                                                           'parent': self.test_trust})
         self.other_test_organisation = create_test_organisation({'ods_code': 'ABC222',
                                                                  'name': 'Other Test Organisation',
                                                                  'organisation_type': 'gppractices',
-                                                                 'trust': self.other_test_trust})
+                                                                 'parent': self.other_test_trust})
 
         self.test_org_injuries = create_test_service({"service_code": 'ABC123',
                                                       "organisation_id": self.test_organisation.id})
@@ -528,11 +528,11 @@ class AuthorizationTestCase(TestCase):
 
         # Organisations
         self.test_organisation = create_test_organisation({'organisation_type': 'hospitals',
-                                                           'trust': self.test_trust,
+                                                           'parent': self.test_trust,
                                                            'point': Point(-0.2, 51.5)})
         self.other_test_organisation = create_test_organisation({'ods_code': '12345',
                                                                  'name': 'Other Test Organisation',
-                                                                 'trust': self.other_test_trust,
+                                                                 'parent': self.other_test_trust,
                                                                  'point': Point(-0.1, 51.5)})
 
         # Users

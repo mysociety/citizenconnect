@@ -22,15 +22,15 @@ class TrustModelTests(TestCase):
         self.test_trust = create_test_trust({'code': 'MYTRUST'})
 
         # create three orgs, two of which belong to the trust, and one that does not
-        self.test_trust_org_1 = create_test_organisation({"trust": self.test_trust, "ods_code": "test1"})
-        self.test_trust_org_2 = create_test_organisation({"trust": self.test_trust, "ods_code": "test2"})
+        self.test_trust_org_1 = create_test_organisation({"parent": self.test_trust, "ods_code": "test1"})
+        self.test_trust_org_2 = create_test_organisation({"parent": self.test_trust, "ods_code": "test2"})
         self.test_other_org = create_test_organisation({"ods_code": "other"})
 
         # create a problem in each org
         for org in Organisation.objects.all():
             create_test_problem({
                 'organisation': org,
-                'description': "Problem with '{0}'".format(org.trust.code),
+                'description': "Problem with '{0}'".format(org.parent.code),
             })
 
     def test_trust_problem_set(self):
@@ -38,7 +38,7 @@ class TrustModelTests(TestCase):
         problems = self.test_trust.problem_set.order_by('description')
         self.assertEqual(problems.count(), 2)
         for p in problems:
-            self.assertEqual(p.organisation.trust, self.test_trust)
+            self.assertEqual(p.organisation.parent, self.test_trust)
 
     def test_escalation_ccg_always_in_ccgs(self):
         ccg = create_test_ccg({})
@@ -63,15 +63,15 @@ class CCGModelTests(TestCase):
         self.test_trust = create_test_trust({'code': 'MYTRUST', 'escalation_ccg': self.test_ccg})
 
         # create three orgs, two of which belong to the ccg, and one that does not
-        self.test_trust_org_1 = create_test_organisation({"trust": self.test_trust, "ods_code": "test1"})
-        self.test_trust_org_2 = create_test_organisation({"trust": self.test_trust, "ods_code": "test2"})
+        self.test_trust_org_1 = create_test_organisation({"parent": self.test_trust, "ods_code": "test1"})
+        self.test_trust_org_2 = create_test_organisation({"parent": self.test_trust, "ods_code": "test2"})
         self.test_other_org = create_test_organisation({"ods_code": "other"})
 
         # create a problem in each org
         for org in Organisation.objects.all():
             create_test_problem({
                 'organisation': org,
-                'description': "Problem with '{0}'".format(org.trust.code),
+                'description': "Problem with '{0}'".format(org.parent.code),
             })
 
     def test_ccg_problem_set(self):
@@ -79,7 +79,7 @@ class CCGModelTests(TestCase):
         problems = self.test_ccg.problem_set.order_by('description')
         self.assertEqual(problems.count(), 2)
         for p in problems:
-            self.assertEqual(p.organisation.trust.ccgs.all()[0], self.test_ccg)
+            self.assertEqual(p.organisation.parent.ccgs.all()[0], self.test_ccg)
 
 
 class CCGModelAuthTests(AuthorizationTestCase):
@@ -158,7 +158,7 @@ class OrganisationMetaphoneTests(TestCase):
                                          choices_id='12702',
                                          ods_code='F84021',
                                          point=Point(51.536, -0.06213),
-                                         trust=trust)
+                                         parent=trust)
 
     def test_name_metaphone_created_on_save(self):
         self.assertEqual(self.organisation.name_metaphone, '')

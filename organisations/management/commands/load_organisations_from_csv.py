@@ -126,7 +126,7 @@ class Command(BaseCommand):
                                      'city': city,
                                      'county': county,
                                      'postcode': postcode,
-                                     'trust': trust,
+                                     'parent': trust,
                                     }
             try:
                 organisation, organisation_created = Organisation.objects.get_or_create(ods_code=ods_code,

@@ -274,10 +274,10 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         # Organisations
         self.hospital = create_test_organisation({'organisation_type': 'hospitals',
                                                   'ods_code': 'ABC123',
-                                                  'trust': self.test_trust})
+                                                  'parent': self.test_trust})
         self.gp = create_test_organisation({'organisation_type': 'gppractices',
                                             'ods_code': 'DEF456',
-                                            'trust': self.other_test_trust})
+                                            'parent': self.other_test_trust})
 
         # Useful urls
         self.public_hospital_problems_url = reverse('public-org-problems',

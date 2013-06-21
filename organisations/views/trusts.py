@@ -140,7 +140,7 @@ class TrustProblems(TrustAwareViewMixin,
 
         # Turn off the ccg filter and filter organisations to this trust
         kwargs['with_ccg'] = False
-        kwargs['organisations'] = Organisation.objects.filter(trust=self.trust)
+        kwargs['organisations'] = Organisation.objects.filter(parent=self.trust)
 
         # Turn off the organisation_type filter
         kwargs['with_organisation_type'] = False
@@ -151,7 +151,6 @@ class TrustProblems(TrustAwareViewMixin,
         context = super(TrustProblems, self).get_context_data(**kwargs)
 
         # Get a queryset of issues and apply any filters to them
-        # TODO - get this from the trust's property @evdb is writing
         problems = self.trust.problem_set.all()
         filtered_problems = self.filter_problems(context['selected_filters'], problems)
 
@@ -192,7 +191,7 @@ class TrustBreaches(TrustAwareViewMixin,
 
     def get_context_data(self, **kwargs):
         context = super(TrustBreaches, self).get_context_data(**kwargs)
-        problems = Problem.objects.open_problems().filter(breach=True, organisation__trust=context['trust'])
+        problems = Problem.objects.open_problems().filter(breach=True, organisation__parent=context['trust'])
 
         # Setup a table for the problems
         problem_table = BreachTable(problems, private=True)

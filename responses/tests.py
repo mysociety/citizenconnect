@@ -157,7 +157,7 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         resp = self.client.post(self.response_form_url, test_form_values)
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, "response has been published online")
-        self.assertContains(resp, reverse('trust-dashboard', kwargs={'code': self.test_organisation.trust.code}))
+        self.assertContains(resp, reverse('trust-dashboard', kwargs={'code': self.test_organisation.parent.code}))
 
     def test_form_shows_issue_confirmation_with_link(self):
         response_text = ''
@@ -169,7 +169,7 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         resp = self.client.post(self.response_form_url, test_form_values)
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, "the problem status has been updated")
-        self.assertContains(resp, reverse('trust-dashboard', kwargs={'code': self.test_organisation.trust.code}))
+        self.assertContains(resp, reverse('trust-dashboard', kwargs={'code': self.test_organisation.parent.code}))
 
     def test_form_shows_both_confirmations_with_link(self):
         response_text = 'new response'
@@ -182,7 +182,7 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, "response has been published online")
         self.assertContains(resp, "the problem status has been updated")
-        self.assertContains(resp, reverse('trust-dashboard', kwargs={'code': self.test_organisation.trust.code}))
+        self.assertContains(resp, reverse('trust-dashboard', kwargs={'code': self.test_organisation.parent.code}))
 
     def test_initial_version_set_when_form_loads(self):
         self.client.get(self.response_form_url)

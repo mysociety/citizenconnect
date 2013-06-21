@@ -60,12 +60,12 @@ class CCGEscalationDashboard(CCGAwareViewMixin, EscalationDashboard):
 
     def get_organisations(self):
         organisations = super(CCGEscalationDashboard, self).get_organisations()
-        return organisations.filter(trust__escalation_ccg=self.ccg)
+        return organisations.filter(parent__escalation_ccg=self.ccg)
 
     def get_problems(self):
         problems = super(CCGEscalationDashboard, self).get_problems()
         # Filter to the current CCG
-        return problems.filter(organisation__trust__escalation_ccg=self.ccg,
+        return problems.filter(organisation__parent__escalation_ccg=self.ccg,
                                commissioned=Problem.LOCALLY_COMMISSIONED)
 
     def get_context_data(self, **kwargs):
@@ -85,7 +85,7 @@ class CCGEscalationBreaches(CCGAwareViewMixin, EscalationBreaches):
     def get_problems(self):
         problems = super(CCGEscalationBreaches, self).get_problems()
         # Filter them to the current ccg
-        problems = problems.filter(organisation__trust__escalation_ccg=self.ccg)
+        problems = problems.filter(organisation__parent__escalation_ccg=self.ccg)
         return problems
 
     def get_context_data(self, **kwargs):

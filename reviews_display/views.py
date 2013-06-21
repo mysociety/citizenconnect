@@ -44,7 +44,7 @@ class ReviewTrustList(TrustAwareViewMixin,
 
     def get_context_data(self, **kwargs):
         context = super(ReviewTrustList, self).get_context_data(**kwargs)
-        all_reviews = Review.objects.all().filter(organisation__trust=self.trust)
+        all_reviews = Review.objects.all().filter(organisation__parent=self.trust)
         table = TrustReviewTable(all_reviews)
         RequestConfig(self.request, paginate={'per_page': 8}).configure(table)
         context['table'] = table

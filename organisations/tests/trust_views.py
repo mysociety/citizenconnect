@@ -50,7 +50,7 @@ class TrustSummaryTests(AuthorizationTestCase):
                      'status': Problem.ABUSIVE})
         self.hidden_status_access_problem = create_test_problem(atts)
 
-        self.trust_summary_url = reverse('trust-summary', kwargs={'code': self.test_organisation.trust.code})
+        self.trust_summary_url = reverse('trust-summary', kwargs={'code': self.test_organisation.parent.code})
 
     def test_summary_page_exists(self):
         self.login_as(self.trust_user)
@@ -60,7 +60,7 @@ class TrustSummaryTests(AuthorizationTestCase):
     def test_summary_page_shows_trust_name(self):
         self.login_as(self.trust_user)
         resp = self.client.get(self.trust_summary_url)
-        self.assertTrue(self.test_organisation.trust.name in resp.content)
+        self.assertTrue(self.test_organisation.parent.name in resp.content)
 
     def test_summary_page_applies_problem_category_filter(self):
         self.login_as(self.trust_user)
@@ -231,16 +231,16 @@ class TrustProblemsTests(AuthorizationTestCase):
         # Organisations
         self.hospital = create_test_organisation({'organisation_type': 'hospitals',
                                                   'ods_code': 'ABC123',
-                                                  'trust': self.test_trust})
+                                                  'parent': self.test_trust})
         self.gp = create_test_organisation({'organisation_type': 'gppractices',
                                             'ods_code': 'DEF456',
-                                            'trust': self.other_test_trust})
+                                            'parent': self.other_test_trust})
 
         # Useful urls
         self.trust_problems_url = reverse('trust-problems',
-                                          kwargs={'code': self.hospital.trust.code})
+                                          kwargs={'code': self.hospital.parent.code})
         self.other_trust_problems_url = reverse('trust-problems',
-                                                kwargs={'code': self.gp.trust.code})
+                                                kwargs={'code': self.gp.parent.code})
 
         # Problems
         self.staff_problem = create_test_problem({'category': 'staff',
@@ -384,7 +384,7 @@ class TrustDashboardTests(AuthorizationTestCase):
     def setUp(self):
         super(TrustDashboardTests, self).setUp()
         self.problem = create_test_problem({'organisation': self.test_organisation})
-        self.dashboard_url = reverse('trust-dashboard', kwargs={'code': self.test_organisation.trust.code})
+        self.dashboard_url = reverse('trust-dashboard', kwargs={'code': self.test_organisation.parent.code})
 
     def test_dashboard_page_exists(self):
         self.login_as(self.trust_user)
@@ -394,7 +394,7 @@ class TrustDashboardTests(AuthorizationTestCase):
     def test_dashboard_page_shows_trust_name(self):
         self.login_as(self.trust_user)
         resp = self.client.get(self.dashboard_url)
-        self.assertTrue(self.test_organisation.trust.name in resp.content)
+        self.assertTrue(self.test_organisation.parent.name in resp.content)
 
     def test_dashboard_shows_problems(self):
         self.login_as(self.trust_user)

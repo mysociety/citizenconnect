@@ -147,12 +147,12 @@ class ProblemModelTests(ProblemTestCase):
 
     def test_defaults_to_not_under_16(self):
         self.assertFalse(self.test_problem.reporter_under_16)
-    
+
     def test_under_16s_name_never_public(self):
         problem = self.test_problem
         problem.reporter_under_16 = True
         problem.public_reporter_name = True
-        
+
         # Should not pass clean
         with self.assertRaises(ValidationError) as context_manager:
             problem.full_clean()
@@ -395,7 +395,7 @@ class ProblemModelEscalationTests(ProblemTestCase):
     def setUp(self):
         super(ProblemModelEscalationTests, self).setUp()
 
-        self.test_trust = self.test_organisation.trust
+        self.test_trust = self.test_organisation.parent
         self.test_escalation_ccg = self.test_trust.escalation_ccg
         self.test_escalation_ccg.email = 'ccg@example.org'
         self.test_escalation_ccg.save()
@@ -501,7 +501,7 @@ class ManagerTest(TestCase):
         for instance in actual:
             self.assertTrue(instance in expected, "Missing {0} '{1}' from actual".format(instance, instance.description))
 
-            
+
 
 
 class ProblemManagerTests(ManagerTest):
