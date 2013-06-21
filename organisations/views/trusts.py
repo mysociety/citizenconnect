@@ -8,7 +8,7 @@ from issues.models import Problem
 from ..auth import enforce_trust_access_check
 from ..models import Organisation, OrganisationParent
 from ..lib import interval_counts
-from ..tables import (TrustProblemTable,
+from ..tables import (OrganisationParentProblemTable,
                       ProblemDashboardTable,
                       BreachTable)
 
@@ -156,7 +156,7 @@ class OrganisationParentProblems(OrganisationParentAwareViewMixin,
 
         # Build a table
         table_args = {'private': context['private']}
-        problem_table = TrustProblemTable(filtered_problems, **table_args)
+        problem_table = OrganisationParentProblemTable(filtered_problems, **table_args)
 
         RequestConfig(self.request, paginate={'per_page': 8}).configure(problem_table)
         context['table'] = problem_table
