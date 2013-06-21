@@ -165,10 +165,10 @@ class IntervalCountsTest(TestCase):
         self.test_trust.ccgs.add(self.test_ccg)
         self.test_trust.save()
 
-        self.other_test_trust = create_test_trust({'escalation_ccg': self.other_test_ccg,
-                                                   'code': 'TRUST2'})
-        self.other_test_trust.ccgs.add(self.other_test_ccg)
-        self.other_test_trust.save()
+        self.test_gp_surgery = create_test_trust({'escalation_ccg': self.other_test_ccg,
+                                                  'code': 'TRUST2'})
+        self.test_gp_surgery.ccgs.add(self.other_test_ccg)
+        self.test_gp_surgery.save()
 
         self.test_organisation = create_test_organisation({'ods_code': 'XXX999',
                                                            'organisation_type': 'hospitals',
@@ -176,7 +176,7 @@ class IntervalCountsTest(TestCase):
         self.other_test_organisation = create_test_organisation({'ods_code': 'ABC222',
                                                                  'name': 'Other Test Organisation',
                                                                  'organisation_type': 'gppractices',
-                                                                 'parent': self.other_test_trust})
+                                                                 'parent': self.test_gp_surgery})
 
         self.test_org_injuries = create_test_service({"service_code": 'ABC123',
                                                       "organisation_id": self.test_organisation.id})
@@ -517,14 +517,14 @@ class AuthorizationTestCase(TestCase):
 
         # Trusts
         self.test_trust = create_test_trust({'escalation_ccg': self.test_ccg})
-        self.other_test_trust = create_test_trust({'name': 'other test trust',
+        self.test_gp_surgery = create_test_trust({'name': 'other test trust',
                                                    'code': 'XYZ',
                                                    'escalation_ccg': self.other_test_ccg})
 
         self.test_trust.ccgs.add(self.test_ccg)
         self.test_trust.save()
-        self.other_test_trust.ccgs.add(self.other_test_ccg)
-        self.other_test_trust.save()
+        self.test_gp_surgery.ccgs.add(self.other_test_ccg)
+        self.test_gp_surgery.save()
 
         # Organisations
         self.test_organisation = create_test_organisation({'organisation_type': 'hospitals',
@@ -532,7 +532,7 @@ class AuthorizationTestCase(TestCase):
                                                            'point': Point(-0.2, 51.5)})
         self.other_test_organisation = create_test_organisation({'ods_code': '12345',
                                                                  'name': 'Other Test Organisation',
-                                                                 'parent': self.other_test_trust,
+                                                                 'parent': self.test_gp_surgery,
                                                                  'point': Point(-0.1, 51.5)})
 
         # Users
@@ -556,8 +556,8 @@ class AuthorizationTestCase(TestCase):
         # A User linked to a different trust
         self.other_trust_user = User.objects.get(pk=7)
         # add the relation to the other trust
-        self.other_test_trust.users.add(self.other_trust_user)
-        self.other_test_trust.save()
+        self.test_gp_surgery.users.add(self.other_trust_user)
+        self.test_gp_surgery.save()
 
         # An NHS Superuser
         self.nhs_superuser = User.objects.get(pk=4)
