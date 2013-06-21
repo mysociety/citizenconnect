@@ -111,10 +111,13 @@ $(document).ready(function () {
       allowClear: true
     });
 
+    var openPopupFor;
+
     $select.on('change', function(e) {
         var odsCode = $select.val();
         findProvider(odsCode, function(provider) {
             zoomToPoint(provider.lat, provider.lon);
+            openPopupFor = odsCode;
             window.location.hash = odsCode;
         });
     });
@@ -233,6 +236,10 @@ $(document).ready(function () {
             markersGroup.addLayer(marker);
             // Tell oms about the marker too
             oms.addMarker(marker);
+
+            if (openPopupFor === nhsCentre.ods_code) {
+                openMarkerPopup(marker, marker.popupContent);
+            }
         });
     };
 
@@ -374,6 +381,7 @@ $(document).ready(function () {
             findProvider(selectedProvider, function(provider) {
                 if (provider) {
                     zoomToPoint(provider.lat, provider.lon);
+                    openPopupFor = selectedProvider;
                 }
             });
         }
