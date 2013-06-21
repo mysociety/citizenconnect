@@ -49,7 +49,7 @@ class CsvImportTests(TestCase):
         call_command('load_ccgs_from_csv', self.ccgs_csv)
         self.assertEqual(CCG.objects.count(), 3)
 
-        call_command('load_trusts_from_csv', self.trusts_csv)
+        call_command('load_organisation_parents_from_csv', self.trusts_csv)
         self.assertEqual(OrganisationParent.objects.count(), 3)
         self.assertEqual(CCG.objects.get(name="Ascot CCG").organisation_parents.count(), 2)
         self.assertEqual(CCG.objects.get(name="Banbridge CCG").organisation_parents.count(), 2)
@@ -118,10 +118,10 @@ class CsvImportTests(TestCase):
     def test_user_imports(self):
         # Load up some test CCGs and trusts
         call_command('load_ccgs_from_csv', self.ccgs_csv)
-        call_command('load_trusts_from_csv', self.trusts_csv)
+        call_command('load_organisation_parents_from_csv', self.trusts_csv)
 
         self.assertEqual(User.objects.count(), 0)
-        call_command('load_trust_users_from_csv', self.trust_users_csv)
+        call_command('load_organisation_parent_users_from_csv', self.trust_users_csv)
         self.assertEqual(User.objects.count(), 3)
         call_command('load_ccg_users_from_csv', self.ccg_users_csv)
         self.assertEqual(User.objects.count(), 6)
