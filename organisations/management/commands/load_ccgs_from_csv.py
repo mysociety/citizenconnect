@@ -26,7 +26,6 @@ class Command(BaseCommand):
     @transaction.commit_manually
     def handle(self, *args, **options):
         filename = args[0]
-        allowed_regions = ['London']
         reader = csv.DictReader(open(filename), delimiter=',', quotechar='"')
         rownum = 0
         verbose = options['verbose']
@@ -49,12 +48,6 @@ class Command(BaseCommand):
                 email = row['Email']
             except KeyError as message:
                 raise Exception("Missing column with the heading '{0}'".format(message))
-
-            if region not in allowed_regions:
-                if verbose:
-                    self.stdout.write("Skipping %s - not in allowed regions\n" % name)
-                    skipped += 1
-                continue
 
             ccg_defaults = {'name': name, 'email': email}
 
