@@ -40,7 +40,7 @@ class OrganisationParentReviews(OrganisationParentAwareViewMixin,
                                 TemplateView):
     """ All the reviews for a given trust """
 
-    template_name = 'reviews_display/reviews_trust_list.html'
+    template_name = 'reviews_display/organisation_parent_reviews.html'
 
     def get_context_data(self, **kwargs):
         context = super(OrganisationParentReviews, self).get_context_data(**kwargs)
