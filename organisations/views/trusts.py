@@ -15,7 +15,7 @@ from ..tables import (TrustProblemTable,
 from .base import PrivateViewMixin, FilterFormMixin
 
 
-class TrustAwareViewMixin(PrivateViewMixin):
+class OrganisationParentAwareViewMixin(PrivateViewMixin):
     """Mixin class for views which need to have a reference to a particular
     trust, such as trust dashboards."""
 
@@ -23,11 +23,11 @@ class TrustAwareViewMixin(PrivateViewMixin):
         # Set trust here so that we can use it anywhere in the class
         # without worrying about whether it has been set yet
         self.trust = OrganisationParent.objects.get(code=kwargs['code'])
-        return super(TrustAwareViewMixin, self).dispatch(request, *args, **kwargs)
+        return super(OrganisationParentAwareViewMixin, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(TrustAwareViewMixin, self).get_context_data(**kwargs)
+        context = super(OrganisationParentAwareViewMixin, self).get_context_data(**kwargs)
         context['trust'] = self.trust
         # Check that the user can access the trust if this is private
         if context['private']:
@@ -35,7 +35,7 @@ class TrustAwareViewMixin(PrivateViewMixin):
         return context
 
 
-class TrustSummary(TrustAwareViewMixin, FilterFormMixin, TemplateView):
+class TrustSummary(OrganisationParentAwareViewMixin, FilterFormMixin, TemplateView):
     template_name = 'organisations/trust_summary.html'
 
     def get_form_kwargs(self):
@@ -129,7 +129,7 @@ class TrustSummary(TrustAwareViewMixin, FilterFormMixin, TemplateView):
         return organisation_data
 
 
-class TrustProblems(TrustAwareViewMixin,
+class TrustProblems(OrganisationParentAwareViewMixin,
                     FilterFormMixin,
                     TemplateView):
 
@@ -164,7 +164,7 @@ class TrustProblems(TrustAwareViewMixin,
         return context
 
 
-class TrustDashboard(TrustAwareViewMixin,
+class TrustDashboard(OrganisationParentAwareViewMixin,
                      TemplateView):
     template_name = 'organisations/trust_dashboard.html'
 
@@ -181,7 +181,7 @@ class TrustDashboard(TrustAwareViewMixin,
         return context
 
 
-class TrustBreaches(TrustAwareViewMixin,
+class TrustBreaches(OrganisationParentAwareViewMixin,
                     TemplateView):
 
     template_name = 'organisations/trust_breaches.html'

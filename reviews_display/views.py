@@ -7,7 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django_tables2 import RequestConfig
 
 from organisations.views.organisations import OrganisationAwareViewMixin
-from organisations.views.trusts import TrustAwareViewMixin
+from organisations.views.trusts import OrganisationParentAwareViewMixin
 
 from .models import Review
 from .tables import ReviewTable, TrustReviewTable
@@ -36,7 +36,7 @@ class ReviewOrganisationList(OrganisationAwareViewMixin,
         return context
 
 
-class ReviewTrustList(TrustAwareViewMixin,
+class ReviewTrustList(OrganisationParentAwareViewMixin,
                       TemplateView):
     """ All the reviews for a given trust """
 
