@@ -64,7 +64,13 @@ class CCG(MailSendMixin, AuditedModel):
         return self.name
 
 
-class Trust(MailSendMixin, AuditedModel):
+class OrganisationParent(MailSendMixin, AuditedModel):
+    """
+    Something that is the parent body of an Organisation.
+
+    In the case of Hospitals or Clinics, this is an NHS Trust, in the
+    case of GP Branches, this is the main surgery
+    """
     name = models.TextField()
     code = models.CharField(max_length=8, db_index=True, unique=True)
     users = models.ManyToManyField(User, related_name='trusts')
@@ -79,7 +85,7 @@ class Trust(MailSendMixin, AuditedModel):
     # Which CCG this Trust should escalate problems too
     escalation_ccg = models.ForeignKey(CCG, blank=False, null=False, related_name='escalation_trusts')
 
-    # Which CCGs commission services from this Trust.
+    # Which CCGs commission services from this Parent.
     # This means that those CCGs will be able to see all the problems at
     # this trust's organisations.
     ccgs = models.ManyToManyField(CCG, related_name='trusts')
@@ -124,7 +130,7 @@ class Trust(MailSendMixin, AuditedModel):
         return self.name
 
 
-@receiver(post_save, sender=Trust)
+@receiver(post_save, sender=OrganisationParent)
 def ensure_ccgs_contains_escalation_ccg(sender, **kwargs):
     """ post_save signal handler to ensure that trust.escalation_ccg is always in trust.ccgs """
     trust = kwargs['instance']
@@ -149,7 +155,7 @@ class Organisation(AuditedModel, geomodels.Model):
     objects = geomodels.GeoManager()
 
     # Which Trust this is in
-    trust = models.ForeignKey(Trust, blank=False, null=False, related_name='organisations')
+    trust = models.ForeignKey(OrganisationParent, blank=False, null=False, related_name='organisations')
 
     # Calculated double_metaphone field, for search by provider name
     name_metaphone = models.TextField(editable=False)
