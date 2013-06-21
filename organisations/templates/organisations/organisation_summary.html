@@ -7,6 +7,12 @@
 
 {% block content %}
 
+<div class="cf">
+    {% if back_to_summaries_link %}
+        <a href="{{ back_to_summaries_link }}" class="back-btn  fr  mt--b"><span class="icon-chevron-left" aria-hidden="true"></span> Back to summaries</a>
+    {% endif %}
+</div>
+
 {% include "organisations/includes/page_header.html" with title="Outcomes" %}
 
 {% if not private %}

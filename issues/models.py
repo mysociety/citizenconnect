@@ -250,11 +250,17 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     SOURCE_PHONE = 'phone'
     SOURCE_EMAIL = 'email'
     SOURCE_SMS = 'sms'
+    SOURCE_TWITTER = 'twitter'
+    SOURCE_FACEBOOK = 'facebook'
+    SOURCE_MMS = 'mms'
 
     SOURCE_CHOICES = (
         (SOURCE_EMAIL, 'Email'),
         (SOURCE_PHONE, 'Phone'),
-        (SOURCE_SMS, 'SMS')
+        (SOURCE_SMS, 'SMS'),
+        (SOURCE_TWITTER, 'Twitter'),
+        (SOURCE_FACEBOOK, 'Facebook'),
+        (SOURCE_MMS, 'MMS'),
     )
 
     COBRAND_CHOICES = [(cobrand, cobrand) for cobrand in settings.ALLOWED_COBRANDS]
@@ -262,9 +268,12 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     # We need
     description = models.TextField(verbose_name='', validators=[MaxLengthValidator(2000)])
     source = models.CharField(max_length=50, choices=SOURCE_CHOICES, blank=True)
+
     reporter_name = models.CharField(max_length=200, blank=False, verbose_name='')
     reporter_phone = models.CharField(max_length=50, blank=True, verbose_name='')
     reporter_email = models.EmailField(max_length=254, blank=False, verbose_name='')
+    reporter_under_16 = models.BooleanField(default=False)
+
     preferred_contact_method = models.CharField(max_length=100, choices=CONTACT_CHOICES, default=CONTACT_EMAIL)
     category = models.CharField(max_length=100,
                                 choices=CATEGORY_CHOICES,
@@ -351,6 +360,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         """
         super(Problem, self).clean()
         self.validate_preferred_contact_method_and_reporter_phone(self.preferred_contact_method, self.reporter_phone)
+        self.validate_reporter_under_16_and_public_reporter_name(self.reporter_under_16, self.public_reporter_name)
 
     @classmethod
     def validate_preferred_contact_method_and_reporter_phone(cls, preferred_contact_method, reporter_phone):
@@ -358,6 +368,12 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         # this is a separate method so we can call if from form easily to share error message
         if preferred_contact_method == cls.CONTACT_PHONE and not reporter_phone:
             raise ValidationError('You must provide a phone number if you prefer to be contacted by phone')
+
+    @classmethod
+    def validate_reporter_under_16_and_public_reporter_name(cls, reporter_under_16, public_reporter_name ):
+        if reporter_under_16 == True and public_reporter_name == True:
+            raise ValidationError('The reporter name cannot public if the reporter is under 16.')
+
 
     def summarise(self, field):
         summary_length = 30
