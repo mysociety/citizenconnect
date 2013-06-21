@@ -112,9 +112,10 @@ $(document).ready(function () {
     });
 
     $select.on('change', function(e) {
-        var provider = findProvider({ods_code: $select.val()});
-        zoomToProvider(provider);
-        window.location.hash = provider.ods_code;
+        findProvider({ods_code: $select.val()}, function(provider) {
+            zoomToProvider(provider);
+            window.location.hash = provider.ods_code;
+        });
     });
 
     // Function to lock all the map controls so that you can't
@@ -368,10 +369,11 @@ $(document).ready(function () {
         map.addLayer(markersGroup);
 
         if (selectedProvider) {
-            var provider = findProvider({ods_code: selectedProvider});
-            if (provider) {
-                zoomToProvider(provider);
-            }
+            findProvider({ods_code: selectedProvider}, function(provider) {
+                if (provider) {
+                    zoomToProvider(provider);
+                }
+            });
         }
     });
 
