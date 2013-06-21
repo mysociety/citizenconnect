@@ -13,10 +13,10 @@ from . import (create_test_problem,
                AuthorizationTestCase)
 
 
-class TrustSummaryTests(AuthorizationTestCase):
+class OrganisationParentSummaryTests(AuthorizationTestCase):
 
     def setUp(self):
-        super(TrustSummaryTests, self).setUp()
+        super(OrganisationParentSummaryTests, self).setUp()
 
         self.service = create_test_service({'organisation': self.test_hospital})
 
@@ -223,10 +223,10 @@ class TrustSummaryTests(AuthorizationTestCase):
         self.assertEqual(resp.status_code, 403)
 
 
-class TrustProblemsTests(AuthorizationTestCase):
+class OrganisationParentProblemsTests(AuthorizationTestCase):
 
     def setUp(self):
-        super(TrustProblemsTests, self).setUp()
+        super(OrganisationParentProblemsTests, self).setUp()
 
         # Organisations
         self.hospital = create_test_organisation({'organisation_type': 'hospitals',
@@ -379,10 +379,10 @@ class TrustProblemsTests(AuthorizationTestCase):
         self.assertContains(resp, self.test_hospital.name)
 
 
-class TrustDashboardTests(AuthorizationTestCase):
+class OrganisationParentDashboardTests(AuthorizationTestCase):
 
     def setUp(self):
-        super(TrustDashboardTests, self).setUp()
+        super(OrganisationParentDashboardTests, self).setUp()
         self.problem = create_test_problem({'organisation': self.test_hospital})
         self.dashboard_url = reverse('trust-dashboard', kwargs={'code': self.test_hospital.parent.code})
 
@@ -460,10 +460,10 @@ class TrustDashboardTests(AuthorizationTestCase):
         self.assertContains(resp, '<div class="problem-table__flag__breach">b</div>')
 
 
-class TrustBreachesTests(AuthorizationTestCase):
+class OrganisationParentBreachesTests(AuthorizationTestCase):
 
     def setUp(self):
-        super(TrustBreachesTests, self).setUp()
+        super(OrganisationParentBreachesTests, self).setUp()
         self.breach_dashboard_url = reverse('trust-breaches', kwargs={'code': self.test_trust.code})
         self.org_breach_problem = create_test_problem({'organisation': self.test_hospital,
                                                        'breach': True})

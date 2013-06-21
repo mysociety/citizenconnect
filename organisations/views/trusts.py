@@ -35,11 +35,11 @@ class OrganisationParentAwareViewMixin(PrivateViewMixin):
         return context
 
 
-class TrustSummary(OrganisationParentAwareViewMixin, FilterFormMixin, TemplateView):
+class OrganisationParentSummary(OrganisationParentAwareViewMixin, FilterFormMixin, TemplateView):
     template_name = 'organisations/trust_summary.html'
 
     def get_form_kwargs(self):
-        kwargs = super(TrustSummary, self).get_form_kwargs()
+        kwargs = super(OrganisationParentSummary, self).get_form_kwargs()
         kwargs['with_ccg'] = False
         kwargs['with_organisation_type'] = False
         kwargs['with_service_code'] = False
@@ -47,7 +47,7 @@ class TrustSummary(OrganisationParentAwareViewMixin, FilterFormMixin, TemplateVi
         return kwargs
 
     def get_context_data(self, **kwargs):
-        context = super(TrustSummary, self).get_context_data(**kwargs)
+        context = super(OrganisationParentSummary, self).get_context_data(**kwargs)
 
         trust = context['trust']
         organisation_ids = [org.id for org in trust.organisations.all()]
@@ -129,14 +129,14 @@ class TrustSummary(OrganisationParentAwareViewMixin, FilterFormMixin, TemplateVi
         return organisation_data
 
 
-class TrustProblems(OrganisationParentAwareViewMixin,
-                    FilterFormMixin,
-                    TemplateView):
+class OrganisationParentProblems(OrganisationParentAwareViewMixin,
+                                 FilterFormMixin,
+                                 TemplateView):
 
     template_name = 'organisations/trust_problems.html'
 
     def get_form_kwargs(self):
-        kwargs = super(TrustProblems, self).get_form_kwargs()
+        kwargs = super(OrganisationParentProblems, self).get_form_kwargs()
 
         # Turn off the ccg filter and filter organisations to this trust
         kwargs['with_ccg'] = False
@@ -148,7 +148,7 @@ class TrustProblems(OrganisationParentAwareViewMixin,
         return kwargs
 
     def get_context_data(self, **kwargs):
-        context = super(TrustProblems, self).get_context_data(**kwargs)
+        context = super(OrganisationParentProblems, self).get_context_data(**kwargs)
 
         # Get a queryset of issues and apply any filters to them
         problems = self.trust.problem_set.all()
@@ -164,13 +164,13 @@ class TrustProblems(OrganisationParentAwareViewMixin,
         return context
 
 
-class TrustDashboard(OrganisationParentAwareViewMixin,
-                     TemplateView):
+class OrganisationParentDashboard(OrganisationParentAwareViewMixin,
+                                  TemplateView):
     template_name = 'organisations/trust_dashboard.html'
 
     def get_context_data(self, **kwargs):
         # Get all the problems
-        context = super(TrustDashboard, self).get_context_data(**kwargs)
+        context = super(OrganisationParentDashboard, self).get_context_data(**kwargs)
 
         # Get the models related to this organisation, and let the db sort them
         problems = context['trust'].problem_set.open_unescalated_problems()
@@ -181,16 +181,16 @@ class TrustDashboard(OrganisationParentAwareViewMixin,
         return context
 
 
-class TrustBreaches(OrganisationParentAwareViewMixin,
-                    TemplateView):
+class OrganisationParentBreaches(OrganisationParentAwareViewMixin,
+                                 TemplateView):
 
     template_name = 'organisations/trust_breaches.html'
 
     def dispatch(self, request, *args, **kwargs):
-        return super(TrustBreaches, self).dispatch(request, *args, **kwargs)
+        return super(OrganisationParentBreaches, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        context = super(TrustBreaches, self).get_context_data(**kwargs)
+        context = super(OrganisationParentBreaches, self).get_context_data(**kwargs)
         problems = Problem.objects.open_problems().filter(breach=True, organisation__parent=context['trust'])
 
         # Setup a table for the problems

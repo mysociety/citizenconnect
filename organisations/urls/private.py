@@ -15,17 +15,17 @@ urlpatterns = patterns(
 
     # Trust urls
     url(r'^trust/(?P<code>\w+)/dashboard$',
-        login_required(TrustDashboard.as_view()),
+        login_required(OrganisationParentDashboard.as_view()),
         name='trust-dashboard',
         kwargs={'private': True}),
 
     url(r'^trust/(?P<code>\w+)/summary$',
-        login_required(TrustSummary.as_view()),
+        login_required(OrganisationParentSummary.as_view()),
         name='trust-summary',
         kwargs={'private': True}),
 
     url(r'^trust/(?P<code>\w+)/problems$',
-        login_required(TrustProblems.as_view()),
+        login_required(OrganisationParentProblems.as_view()),
         name='trust-problems',
         kwargs={'private': True}),
 
@@ -35,7 +35,7 @@ urlpatterns = patterns(
         kwargs={'private': True}),
 
     url(r'^trust/(?P<code>\w+)/breaches$',
-        login_required(TrustBreaches.as_view()),
+        login_required(OrganisationParentBreaches.as_view()),
         name='trust-breaches',
         kwargs={'private': True}),
 
