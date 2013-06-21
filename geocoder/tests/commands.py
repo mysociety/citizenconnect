@@ -1,34 +1,35 @@
+import sys
+
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.core.management import call_command
 from django.forms.models import model_to_dict
 
-from .models import Place
+from ..models import Place
 
 from django.contrib.gis.geos import Point
 
-class GeocoderModelTests(TestCase):
 
-    @override_settings(GEOCODER_BOUNDING_BOXES=(
-        # xmin, ymin, xmax, ymax
-        ( -1,   50,   1,    52 ),
-    ))
-    def test_is_in_allowed_bounding_boxes(self):
-        defaults = dict(context_name="Context", source=Place.SOURCE_OS_LOCATOR)
-        good_place = Place(name='Allowed', centre=Point(0, 51),  **defaults)
-        bad_place  = Place(name='Bad',     centre=Point(-2, 51), **defaults)
-
-        self.assertTrue(good_place.is_in_allowed_bounding_boxes())
-        self.assertFalse(bad_place.is_in_allowed_bounding_boxes())
+class DevNull(object):
+    def write(self, data):
+        pass
 
 
-class CsvImportTests(TestCase):
+class GeocoderCsvImportTests(TestCase):
 
     def setUp(self):
+
+        # Mute stderr (the progress bar output)
+        self.old_stderr = sys.stderr
+        sys.stderr = DevNull()
+
         # Paths to the various sample data files
-        csv_dir = 'geocoder/test_data/'
+        csv_dir = 'geocoder/tests/test_data/'
         self.os_locator_data_filename       = csv_dir + 'OS_Locator2013_1_OPEN_sample.txt'
         self.os_50k_gazetteer_data_filename = csv_dir + '50kgaz2013_sample.txt'
+
+    def tearDown(self):
+        sys.stderr = self.old_stderr
 
     @override_settings(GEOCODER_BOUNDING_BOXES=(
         # xmin, ymin, xmax, ymax
