@@ -199,6 +199,15 @@ $(document).ready(function () {
         return iconClass;
     };
 
+    var templateForProvider = function(nhsCentre) {
+        return _.template(hoverBubbleTemplate, {
+            nhsCentre: nhsCentre,
+            issueType: currentIssueType(),
+            icon: iconClassForOpenIssues(nhsCentre.all_time_open),
+            starClass: starClass
+        });
+    };
+
     // Function to draw an array of providers onto the map
     var drawProviders = function(providers) {
         // Wipe anything that's already on the map
@@ -215,7 +224,7 @@ $(document).ready(function () {
                 icon: iconClass
             });
 
-            marker.popupContent = _.template(hoverBubbleTemplate, {nhsCentre: nhsCentre, issueType: currentIssueType(), icon: iconClass, starClass: starClass});
+            marker.popupContent = templateForProvider(nhsCentre);
 
             // Save some custom data in the marker
             marker.nhsCentre = nhsCentre;
