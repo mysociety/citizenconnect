@@ -112,9 +112,10 @@ $(document).ready(function () {
     });
 
     $select.on('change', function(e) {
-        findProvider({ods_code: $select.val()}, function(provider) {
-            zoomToProvider(provider);
-            window.location.hash = provider.ods_code;
+        var odsCode = $select.val();
+        findProvider(odsCode, function(provider) {
+            zoomToPoint(provider.lat, provider.lon);
+            window.location.hash = ods_code;
         });
     });
 
@@ -357,9 +358,9 @@ $(document).ready(function () {
      * @param {Object} attrs The attributes to search by
      * @param {Function} callback The function to call with the provider found (if any)
      */
-    var findProvider = function(attrs, callback) {
+    var findProvider = function(odsCode, callback) {
         $.ajax({
-            url: window.location.pathname + '/' + attrs.ods_code,
+            url: window.location.pathname + '/' + odsCode,
             success: function(provider) {
                 callback(provider);
             }
@@ -388,9 +389,9 @@ $(document).ready(function () {
         map.addLayer(markersGroup);
 
         if (selectedProvider) {
-            findProvider({ods_code: selectedProvider}, function(provider) {
+            findProvider(selectedProvider, function(provider) {
                 if (provider) {
-                    zoomToProvider(provider);
+                    zoomToPoint(provider.lat, provider.lon);
                 }
             });
         }
