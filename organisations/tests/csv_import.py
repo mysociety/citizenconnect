@@ -10,7 +10,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
 
-from ..models import Organisation, Trust, CCG
+from ..models import Organisation, OrganisationParent, CCG
 
 from organisations import auth
 from issues.models import Problem
@@ -50,7 +50,7 @@ class CsvImportTests(TestCase):
         self.assertEqual(CCG.objects.count(), 3)
 
         call_command('load_trusts_from_csv', self.trusts_csv)
-        self.assertEqual(Trust.objects.count(), 3)
+        self.assertEqual(OrganisationParent.objects.count(), 3)
         self.assertEqual(CCG.objects.get(name="Ascot CCG").trusts.count(), 2)
         self.assertEqual(CCG.objects.get(name="Banbridge CCG").trusts.count(), 2)
         self.assertEqual(CCG.objects.get(name="Chucklemere CCG").trusts.count(), 1)
@@ -58,9 +58,9 @@ class CsvImportTests(TestCase):
 
         call_command('load_organisations_from_csv', self.organisations_csv)
         self.assertEqual(Organisation.objects.count(), 3)
-        self.assertEqual(Trust.objects.get(name="Ascot North Trust").organisations.count(), 2)
-        self.assertEqual(Trust.objects.get(name="Ascot South Trust").organisations.count(), 1)
-        self.assertEqual(Trust.objects.get(name="Banbridge North Trust").organisations.count(), 0)
+        self.assertEqual(OrganisationParent.objects.get(name="Ascot North Trust").organisations.count(), 2)
+        self.assertEqual(OrganisationParent.objects.get(name="Ascot South Trust").organisations.count(), 1)
+        self.assertEqual(OrganisationParent.objects.get(name="Banbridge North Trust").organisations.count(), 0)
 
         # Now check that the correct data has been loaded
 
@@ -75,7 +75,7 @@ class CsvImportTests(TestCase):
             }
         )
 
-        trust = Trust.objects.get(name="Ascot North Trust")
+        trust = OrganisationParent.objects.get(name="Ascot North Trust")
         self.assertEqual(
             model_to_dict(trust, exclude=['ccgs']),
             {
@@ -126,9 +126,9 @@ class CsvImportTests(TestCase):
         call_command('load_ccg_users_from_csv', self.ccg_users_csv)
         self.assertEqual(User.objects.count(), 6)
 
-        trust = Trust.objects.get(name='Ascot North Trust')
+        trust = OrganisationParent.objects.get(name='Ascot North Trust')
         self.assertEqual(trust.users.count(), 2) # has two users in CSV
-        self.assertEqual(Trust.objects.get(name='Ascot South Trust').users.count(), 1)
+        self.assertEqual(OrganisationParent.objects.get(name='Ascot South Trust').users.count(), 1)
 
         ccg = CCG.objects.get(name='Ascot CCG')
         self.assertEqual(ccg.users.count(), 1)

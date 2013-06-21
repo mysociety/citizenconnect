@@ -5,7 +5,7 @@ from django.db import transaction, IntegrityError
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.gis.geos import Point
 
-from ...models import Organisation, Service, Trust
+from ...models import Organisation, Service, OrganisationParent
 
 
 class Command(BaseCommand):
@@ -99,12 +99,12 @@ class Command(BaseCommand):
             if not choices_id:
                 continue
 
-            # load the Trust
+            # load the Parent
             try:
-                trust = Trust.objects.get(code=trust_code)
-            except Trust.DoesNotExist:
+                trust = OrganisationParent.objects.get(code=trust_code)
+            except OrganisationParent.DoesNotExist:
                 raise Exception(
-                    "Could not find Trust with code '{0}' on line {1}".format(
+                    "Could not find Organisation Parent with code '{0}' on line {1}".format(
                         trust_code, rownum
                     )
                 )

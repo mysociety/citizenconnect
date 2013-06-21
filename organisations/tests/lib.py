@@ -15,7 +15,7 @@ from issues.models import Problem
 from reviews_display.models import Review
 
 from ..lib import interval_counts
-from ..models import Organisation, Service, CCG, Trust
+from ..models import Organisation, Service, CCG, OrganisationParent
 
 api_posting_id_counter = 328409234
 
@@ -72,7 +72,7 @@ def create_test_trust(attributes={}):
     default_attributes.update(attributes)
     if 'escalation_ccg' not in attributes:
         default_attributes['escalation_ccg'] = create_test_ccg({"code": default_attributes['code']})
-    instance = Trust(**dict((k, v) for (k, v) in default_attributes.items() if '__' not in k))
+    instance = OrganisationParent(**dict((k, v) for (k, v) in default_attributes.items() if '__' not in k))
     instance.save()
     return instance
 
@@ -416,7 +416,7 @@ class IntervalCountsTest(TestCase):
                             'average_time_to_address': None}]
         actual = interval_counts(problem_filters=problem_filters, threshold=threshold)
         self.assertEqual(expected_counts, actual)
-        
+
         problem_filters = {filter: False}
         expected_counts = [{'week': 2,
                             'four_weeks': 3,

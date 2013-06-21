@@ -12,7 +12,7 @@ from .lib import (create_test_organisation,
                   create_test_problem,
                   AuthorizationTestCase)
 
-from ..models import Organisation, Trust
+from ..models import Organisation, OrganisationParent
 
 
 class TrustModelTests(TestCase):
@@ -42,14 +42,14 @@ class TrustModelTests(TestCase):
 
     def test_escalation_ccg_always_in_ccgs(self):
         ccg = create_test_ccg({})
-        trust = Trust(name="test_trust",
+        trust = OrganisationParent(name="test_trust",
                       code="ABC",
                       email='test-trust@example.org',
                       secondary_email='test-trust-secondary@example.org',
                       escalation_ccg=ccg)
 
         trust.save()
-        trust = Trust.objects.get(pk=trust.id)
+        trust = OrganisationParent.objects.get(pk=trust.id)
         self.assertTrue(trust.escalation_ccg in trust.ccgs.all())
 
 

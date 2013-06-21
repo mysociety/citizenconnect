@@ -5,7 +5,7 @@ from django.db import transaction, IntegrityError
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.gis.geos import Point
 
-from ...models import Trust, Service, CCG
+from ...models import OrganisationParent, Service, CCG
 
 
 class Command(BaseCommand):
@@ -52,7 +52,7 @@ class Command(BaseCommand):
         #     if verbose:
         #         self.stdout.write("Deleting existing trusts and services")
         #     Service.objects.all().delete()
-        #     Trust.objects.all().delete()
+        #     OrganisationParent.objects.all().delete()
 
         if verbose:
             processed = 0
@@ -117,13 +117,13 @@ class Command(BaseCommand):
             }
 
             try:
-                trust, trust_created = Trust.objects.get_or_create(
+                trust, trust_created = OrganisationParent.objects.get_or_create(
                     code=ods_code,
                     defaults=trust_defaults
                 )
 
                 if update:
-                    Trust.objects.filter(id=trust.id).update(**trust_defaults)
+                    OrganisationParent.objects.filter(id=trust.id).update(**trust_defaults)
 
                 if trust_created or update:
                     # Delete all current CCG links and set the one we expect
@@ -132,9 +132,9 @@ class Command(BaseCommand):
                         trust.ccgs.add(ccg)
 
                 if trust_created:
-                    self.stdout.write('Created trust %s\n' % trust.name)
+                    self.stdout.write('Created organisation parent %s\n' % trust.name)
                 elif verbose:
-                    self.stdout.write('Trust %s exists\n' % ods_code)
+                    self.stdout.write('Organisation Parent %s exists\n' % ods_code)
                 if verbose:
                     processed += 1
                 transaction.commit()

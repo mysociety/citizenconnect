@@ -143,9 +143,9 @@ def _apply_organisation_filters(organisation_filters,
                 ccg = (ccg,)
             # Filtering by CCG requires joining to the Trust tables
             # Because Trusts are connected to CCGs
-            tables.append('organisations_trust_ccgs')
-            organisation_filter_clauses.append("organisations_trust_ccgs.trust_id = organisations_organisation.trust_id")
-            organisation_filter_clauses.append("organisations_trust_ccgs.ccg_id in %s")
+            tables.append('organisations_organisationparent_ccgs')
+            organisation_filter_clauses.append("organisations_organisationparent_ccgs.organisationparent_id = organisations_organisation.trust_id")
+            organisation_filter_clauses.append("organisations_organisationparent_ccgs.ccg_id in %s")
             params.append(ccg)
 
 

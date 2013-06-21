@@ -6,7 +6,7 @@ from django_tables2 import RequestConfig
 from issues.models import Problem
 
 from ..auth import enforce_trust_access_check
-from ..models import Organisation, Trust
+from ..models import Organisation, OrganisationParent
 from ..lib import interval_counts
 from ..tables import (TrustProblemTable,
                       ProblemDashboardTable,
@@ -22,7 +22,7 @@ class TrustAwareViewMixin(PrivateViewMixin):
     def dispatch(self, request, *args, **kwargs):
         # Set trust here so that we can use it anywhere in the class
         # without worrying about whether it has been set yet
-        self.trust = Trust.objects.get(code=kwargs['code'])
+        self.trust = OrganisationParent.objects.get(code=kwargs['code'])
         return super(TrustAwareViewMixin, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
