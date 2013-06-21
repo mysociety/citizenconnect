@@ -422,10 +422,7 @@ class ReviewTrustListTests(AuthorizationTestCase):
             'organisation': self.test_organisation},
             {}
         )
-        self.other_org_review = create_test_review({
-            'organisation': self.other_test_organisation},
-            {}
-        )
+        self.other_org_review = create_test_review({'organisation': self.test_gp_branch}, {})
 
     def test_trust_reviews_page(self):
         reviews_list_url = reverse('trust-reviews',

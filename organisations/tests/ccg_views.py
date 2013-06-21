@@ -107,10 +107,10 @@ class CCGEscalationDashboardTests(AuthorizationTestCase):
         self.org_national_escalated_problem = create_test_problem({'organisation': self.test_organisation,
                                                                    'status': Problem.ESCALATED,
                                                                    'commissioned': Problem.NATIONALLY_COMMISSIONED})
-        self.other_org_local_escalated_problem = create_test_problem({'organisation': self.other_test_organisation,
+        self.other_org_local_escalated_problem = create_test_problem({'organisation': self.test_gp_branch,
                                                                       'status': Problem.ESCALATED,
                                                                       'commissioned': Problem.LOCALLY_COMMISSIONED})
-        self.other_org_national_escalated_problem = create_test_problem({'organisation': self.other_test_organisation,
+        self.other_org_national_escalated_problem = create_test_problem({'organisation': self.test_gp_branch,
                                                                          'status': Problem.ESCALATED,
                                                                          'commissioned': Problem.NATIONALLY_COMMISSIONED})
 
@@ -300,7 +300,7 @@ class CCGBreachDashboardTests(AuthorizationTestCase):
         self.breach_dashboard_url = reverse('ccg-escalation-breaches', kwargs={'code': self.test_ccg.code})
         self.org_breach_problem = create_test_problem({'organisation': self.test_organisation,
                                                        'breach': True})
-        self.other_org_breach_problem = create_test_problem({'organisation': self.other_test_organisation,
+        self.other_org_breach_problem = create_test_problem({'organisation': self.test_gp_branch,
                                                              'breach': True})
         self.org_problem = create_test_problem({'organisation': self.test_organisation})
 
@@ -374,7 +374,7 @@ class CCGSummaryTests(AuthorizationTestCase):
         super(CCGSummaryTests, self).setUp()
         self.summary_url = reverse('ccg-summary', kwargs={'code': self.test_ccg.code})
         create_test_problem({'organisation': self.test_organisation})
-        create_test_problem({'organisation': self.other_test_organisation,
+        create_test_problem({'organisation': self.test_gp_branch,
                              'publication_status': Problem.PUBLISHED,
                              'status': Problem.ABUSIVE})
         self.login_as(self.ccg_user)

@@ -467,7 +467,7 @@ class TrustBreachesTests(AuthorizationTestCase):
         self.breach_dashboard_url = reverse('trust-breaches', kwargs={'code': self.test_trust.code})
         self.org_breach_problem = create_test_problem({'organisation': self.test_organisation,
                                                        'breach': True})
-        self.other_org_breach_problem = create_test_problem({'organisation': self.other_test_organisation,
+        self.other_org_breach_problem = create_test_problem({'organisation': self.test_gp_branch,
                                                              'breach': True})
         self.org_problem = create_test_problem({'organisation': self.test_organisation})
 

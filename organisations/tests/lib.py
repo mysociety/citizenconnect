@@ -173,10 +173,10 @@ class IntervalCountsTest(TestCase):
         self.test_organisation = create_test_organisation({'ods_code': 'XXX999',
                                                            'organisation_type': 'hospitals',
                                                            'parent': self.test_trust})
-        self.other_test_organisation = create_test_organisation({'ods_code': 'ABC222',
-                                                                 'name': 'Other Test Organisation',
-                                                                 'organisation_type': 'gppractices',
-                                                                 'parent': self.test_gp_surgery})
+        self.test_gp_branch = create_test_organisation({'ods_code': 'ABC222',
+                                                        'name': 'Test GP Branch',
+                                                        'organisation_type': 'gppractices',
+                                                        'parent': self.test_gp_surgery})
 
         self.test_org_injuries = create_test_service({"service_code": 'ABC123',
                                                       "organisation_id": self.test_organisation.id})
@@ -197,7 +197,7 @@ class IntervalCountsTest(TestCase):
                               65: {},
                               70: {}}
         for age, attributes in other_problem_ages.items():
-            create_problem_with_age(self.other_test_organisation, age, attributes)
+            create_problem_with_age(self.test_gp_branch, age, attributes)
 
         # Create a similar spread of reviews
         review_ages = [6, 12, 13, 50, 55]
@@ -212,8 +212,8 @@ class IntervalCountsTest(TestCase):
         expected_counts = {'week': 3,
                            'four_weeks': 5,
                            'id': self.test_organisation.id,
-                           'name': 'Test Organisation',
-                           'ods_code': 'XXX999',
+                           'name': self.test_organisation.name,
+                           'ods_code': self.test_organisation.ods_code,
                            'six_months': 6,
                            'all_time': 6,
                            'happy_outcome': 0.5,
@@ -225,9 +225,9 @@ class IntervalCountsTest(TestCase):
     def test_overall_interval_counts(self):
         expected_counts = [{'week': 2,
                             'four_weeks': 3,
-                            'id': self.other_test_organisation.id,
-                            'name': 'Other Test Organisation',
-                            'ods_code': 'ABC222',
+                            'id': self.test_gp_branch.id,
+                            'name': self.test_gp_branch.name,
+                            'ods_code': self.test_gp_branch.ods_code,
                             'six_months': 5,
                             'all_time': 5,
                             'happy_outcome': None,
@@ -237,8 +237,8 @@ class IntervalCountsTest(TestCase):
                            {'week': 3,
                            'four_weeks': 5,
                            'id': self.test_organisation.id,
-                           'name': 'Test Organisation',
-                           'ods_code': 'XXX999',
+                           'name': self.test_organisation.name,
+                           'ods_code': self.test_organisation.ods_code,
                            'six_months': 6,
                            'all_time': 6,
                            'happy_outcome': 0.5,
@@ -251,9 +251,9 @@ class IntervalCountsTest(TestCase):
     def test_extra_organisation_data(self):
         expected_counts = [{'week': 2,
                             'four_weeks': 3,
-                            'id': self.other_test_organisation.id,
-                            'name': 'Other Test Organisation',
-                            'ods_code': 'ABC222',
+                            'id': self.test_gp_branch.id,
+                            'name': self.test_gp_branch.name,
+                            'ods_code': self.test_gp_branch.ods_code,
                             'lon': 51.536000000000001,
                             'lat': -0.062129999999999998,
                             'type': 'GP',
@@ -266,8 +266,8 @@ class IntervalCountsTest(TestCase):
                            {'week': 3,
                            'four_weeks': 5,
                            'id': self.test_organisation.id,
-                           'name': 'Test Organisation',
-                           'ods_code': 'XXX999',
+                           'name': self.test_organisation.name,
+                           'ods_code': self.test_organisation.ods_code,
                            'lon': 51.536000000000001,
                            'lat': -0.062129999999999998,
                            'type': 'Hospital',
@@ -281,9 +281,9 @@ class IntervalCountsTest(TestCase):
         self.assertEqual(expected_counts, actual)
 
     def test_problem_data_intervals(self):
-        expected_counts = [{'id': self.other_test_organisation.id,
-                            'name': 'Other Test Organisation',
-                            'ods_code': 'ABC222',
+        expected_counts = [{'id': self.test_gp_branch.id,
+                            'name': self.test_gp_branch.name,
+                            'ods_code': self.test_gp_branch.ods_code,
                             'all_time': 5,
                             'all_time_open': 5,
                             'all_time_closed': 0,
@@ -292,8 +292,8 @@ class IntervalCountsTest(TestCase):
                             'average_time_to_acknowledge': None,
                             'average_time_to_address': None},
                            {'id': self.test_organisation.id,
-                           'name': 'Test Organisation',
-                           'ods_code': 'XXX999',
+                           'name': self.test_organisation.name,
+                           'ods_code': self.test_organisation.ods_code,
                            'all_time': 6,
                            'all_time_open': 4,
                            'all_time_closed': 2,
@@ -305,16 +305,16 @@ class IntervalCountsTest(TestCase):
         self.assertEqual(expected_counts, actual)
 
     def test_review_data_intervals(self):
-        expected_counts = [{'id': self.other_test_organisation.id,
-                            'name': 'Other Test Organisation',
-                            'ods_code': 'ABC222',
+        expected_counts = [{'id': self.test_gp_branch.id,
+                            'name': self.test_gp_branch.name,
+                            'ods_code': self.test_gp_branch.ods_code,
                             'reviews_week': 0,
                             'reviews_four_weeks': 0,
                             'reviews_six_months': 0,
                             'reviews_all_time': 0},
                            {'id': self.test_organisation.id,
-                           'name': 'Test Organisation',
-                           'ods_code': 'XXX999',
+                           'name': self.test_organisation.name,
+                           'ods_code': self.test_organisation.ods_code,
                            'reviews_week': 1,
                            'reviews_four_weeks': 3,
                            'reviews_six_months': 5,
@@ -329,8 +329,8 @@ class IntervalCountsTest(TestCase):
         expected_counts = [{'week': 0,
                            'four_weeks': 1,
                            'id': self.test_organisation.id,
-                           'name': 'Test Organisation',
-                           'ods_code': 'XXX999',
+                           'name': self.test_organisation.name,
+                           'ods_code': self.test_organisation.ods_code,
                            'six_months': 1,
                            'all_time': 1,
                            'happy_outcome': None,
@@ -343,9 +343,9 @@ class IntervalCountsTest(TestCase):
         organisation_filters = {'organisation_type': 'gppractices'}
         expected_counts = [{'week': 2,
                             'four_weeks': 3,
-                            'id': self.other_test_organisation.id,
-                            'name': 'Other Test Organisation',
-                            'ods_code': 'ABC222',
+                            'id': self.test_gp_branch.id,
+                            'name': self.test_gp_branch.name,
+                            'ods_code': self.test_gp_branch.ods_code,
                             'six_months': 5,
                             'all_time': 5,
                             'happy_outcome': None,
@@ -359,8 +359,8 @@ class IntervalCountsTest(TestCase):
         expected_counts = [{'week': 1,
                            'four_weeks': 2,
                            'id': self.test_organisation.id,
-                           'name': 'Test Organisation',
-                           'ods_code': 'XXX999',
+                           'name': self.test_organisation.name,
+                           'ods_code': self.test_organisation.ods_code,
                            'six_months': 2,
                            'all_time': 2,
                            'happy_outcome': 0.5,
@@ -377,9 +377,9 @@ class IntervalCountsTest(TestCase):
         # have to work all this out
         expected_counts = [{'week': 2,
                             'four_weeks': 3,
-                            'id': self.other_test_organisation.id,
-                            'name': 'Other Test Organisation',
-                            'ods_code': 'ABC222',
+                            'id': self.test_gp_branch.id,
+                            'name': self.test_gp_branch.name,
+                            'ods_code': self.test_gp_branch.ods_code,
                             'six_months': 5,
                             'all_time': 5,
                             'happy_outcome': None,
@@ -406,8 +406,8 @@ class IntervalCountsTest(TestCase):
         expected_counts = [{'week': 1,
                             'four_weeks': 2,
                             'id': self.test_organisation.id,
-                            'name': 'Test Organisation',
-                            'ods_code': 'XXX999',
+                            'name': self.test_organisation.name,
+                            'ods_code': self.test_organisation.ods_code,
                             'six_months': 3,
                             'all_time': 4,
                             'happy_outcome': None,
@@ -420,9 +420,9 @@ class IntervalCountsTest(TestCase):
         problem_filters = {filter: False}
         expected_counts = [{'week': 2,
                             'four_weeks': 3,
-                            'id': self.other_test_organisation.id,
-                            'name': 'Other Test Organisation',
-                            'ods_code': 'ABC222',
+                            'id': self.test_gp_branch.id,
+                            'name': self.test_gp_branch.name,
+                            'ods_code': self.test_gp_branch.ods_code,
                             'six_months': 5,
                             'all_time': 5,
                             'happy_outcome': None,
@@ -432,8 +432,8 @@ class IntervalCountsTest(TestCase):
                            {'week': 3,
                            'four_weeks': 5,
                            'id': self.test_organisation.id,
-                           'name': 'Test Organisation',
-                           'ods_code': 'XXX999',
+                           'name': self.test_organisation.name,
+                           'ods_code': self.test_organisation.ods_code,
                            'six_months': 6,
                            'all_time': 6,
                            'happy_outcome': 0.5,
@@ -447,8 +447,8 @@ class IntervalCountsTest(TestCase):
         expected_counts = [{'week': 3,
                            'four_weeks': 5,
                            'id': self.test_organisation.id,
-                           'name': 'Test Organisation',
-                           'ods_code': 'XXX999',
+                           'name': self.test_organisation.name,
+                           'ods_code': self.test_organisation.ods_code,
                            'six_months': 6,
                            'all_time': 6,
                            'happy_outcome': 0.5,
@@ -462,8 +462,8 @@ class IntervalCountsTest(TestCase):
         expected_counts = [{'week': 3,
                            'four_weeks': 5,
                            'id': self.test_organisation.id,
-                           'name': 'Test Organisation',
-                           'ods_code': 'XXX999',
+                           'name': self.test_organisation.name,
+                           'ods_code': self.test_organisation.ods_code,
                            'six_months': 6,
                            'all_time': 6,
                            'happy_outcome': 0.5,
@@ -474,12 +474,12 @@ class IntervalCountsTest(TestCase):
         self.assertEqual(expected_counts, actual)
 
     def test_filtering_with_organisation_ids(self):
-        organisation_filters = {'organisation_ids': (self.other_test_organisation.id, self.test_organisation.id)}
+        organisation_filters = {'organisation_ids': (self.test_gp_branch.id, self.test_organisation.id)}
         expected_counts = [{'week': 2,
                             'four_weeks': 3,
-                            'id': self.other_test_organisation.id,
-                            'name': 'Other Test Organisation',
-                            'ods_code': 'ABC222',
+                            'id': self.test_gp_branch.id,
+                            'name': self.test_gp_branch.name,
+                            'ods_code': self.test_gp_branch.ods_code,
                             'six_months': 5,
                             'all_time': 5,
                             'happy_outcome': None,
@@ -489,8 +489,8 @@ class IntervalCountsTest(TestCase):
                            {'week': 3,
                            'four_weeks': 5,
                            'id': self.test_organisation.id,
-                           'name': 'Test Organisation',
-                           'ods_code': 'XXX999',
+                           'name': self.test_organisation.name,
+                           'ods_code': self.test_organisation.ods_code,
                            'six_months': 6,
                            'all_time': 6,
                            'happy_outcome': 0.5,
@@ -530,10 +530,10 @@ class AuthorizationTestCase(TestCase):
         self.test_organisation = create_test_organisation({'organisation_type': 'hospitals',
                                                            'parent': self.test_trust,
                                                            'point': Point(-0.2, 51.5)})
-        self.other_test_organisation = create_test_organisation({'ods_code': '12345',
-                                                                 'name': 'Other Test Organisation',
-                                                                 'parent': self.test_gp_surgery,
-                                                                 'point': Point(-0.1, 51.5)})
+        self.test_gp_branch = create_test_organisation({'ods_code': '12345',
+                                                        'name': 'Test GP Branch',
+                                                        'parent': self.test_gp_surgery,
+                                                        'point': Point(-0.1, 51.5)})
 
         # Users
         self.test_password = 'password'
