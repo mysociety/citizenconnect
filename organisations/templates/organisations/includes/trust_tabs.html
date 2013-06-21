@@ -1,13 +1,13 @@
 {% load url from future %}
 <ul class="tab-nav">
-    <li><a {% if active_tab == 'dashboard' %}class="active"{% endif %} href="{% url 'trust-dashboard' code=trust.code %}">Inbox</a></li>
+    <li><a {% if active_tab == 'dashboard' %}class="active"{% endif %} href="{% url 'org-parent-dashboard' code=trust.code %}">Inbox</a></li>
 
-    <li><a {% if active_tab == 'breaches' %}class="active"{% endif %} href="{% url 'trust-breaches' code=trust.code %}">Breaches</a></li>
+    <li><a {% if active_tab == 'breaches' %}class="active"{% endif %} href="{% url 'org-parent-breaches' code=trust.code %}">Breaches</a></li>
 
-    <li><a {% if active_tab == 'problems' %}class="active"{% endif %} href="{% url 'trust-problems' code=trust.code %}">Problems</a></li>
+    <li><a {% if active_tab == 'problems' %}class="active"{% endif %} href="{% url 'org-parent-problems' code=trust.code %}">Problems</a></li>
 
-    <li><a {% if active_tab == 'reviews' %}class="active"{% endif %} href="{% url 'trust-reviews' code=trust.code %}">Reviews</a></li>
+    <li><a {% if active_tab == 'reviews' %}class="active"{% endif %} href="{% url 'org-parent-reviews' code=trust.code %}">Reviews</a></li>
 
-    <li><a {% if active_tab == 'summary' %}class="active"{% endif %} href="{% url 'trust-summary' code=trust.code %}">Summary</a></li>
+    <li><a {% if active_tab == 'summary' %}class="active"{% endif %} href="{% url 'org-parent-summary' code=trust.code %}">Summary</a></li>
 
  </ul>

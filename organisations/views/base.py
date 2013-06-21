@@ -409,7 +409,7 @@ def login_redirect(request):
     elif user_in_group(user, auth.ORGANISATION_PARENTS):
         if user.trusts.count() == 1:
             trust = user.trusts.all()[0]
-            return HttpResponseRedirect(reverse('trust-dashboard', kwargs={'code': trust.code}))
+            return HttpResponseRedirect(reverse('org-parent-dashboard', kwargs={'code': trust.code}))
 
     # Anyone else goes to the normal homepage
     return HttpResponseRedirect(reverse('home', kwargs={'cobrand': 'choices'}))

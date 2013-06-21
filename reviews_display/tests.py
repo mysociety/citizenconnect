@@ -414,10 +414,10 @@ class ReviewOrganisationListTests(TestCase):
         self.assertEqual(resp.context['table'].rows[0].record, self.org_review)
 
 
-class ReviewTrustListTests(AuthorizationTestCase):
+class OrganisationParentReviewsTests(AuthorizationTestCase):
 
     def setUp(self):
-        super(ReviewTrustListTests, self).setUp()
+        super(OrganisationParentReviewsTests, self).setUp()
         self.org_review = create_test_review({
             'organisation': self.test_hospital},
             {}
@@ -425,7 +425,7 @@ class ReviewTrustListTests(AuthorizationTestCase):
         self.other_org_review = create_test_review({'organisation': self.test_gp_branch}, {})
 
     def test_trust_reviews_page(self):
-        reviews_list_url = reverse('trust-reviews',
+        reviews_list_url = reverse('org-parent-reviews',
                                    kwargs={
                                        'code': self.test_trust.code,
                                    })

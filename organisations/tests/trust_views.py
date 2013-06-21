@@ -50,7 +50,7 @@ class OrganisationParentSummaryTests(AuthorizationTestCase):
                      'status': Problem.ABUSIVE})
         self.hidden_status_access_problem = create_test_problem(atts)
 
-        self.trust_summary_url = reverse('trust-summary', kwargs={'code': self.test_hospital.parent.code})
+        self.trust_summary_url = reverse('org-parent-summary', kwargs={'code': self.test_hospital.parent.code})
 
     def test_summary_page_exists(self):
         self.login_as(self.trust_user)
@@ -237,9 +237,9 @@ class OrganisationParentProblemsTests(AuthorizationTestCase):
                                             'parent': self.test_gp_surgery})
 
         # Useful urls
-        self.trust_problems_url = reverse('trust-problems',
+        self.trust_problems_url = reverse('org-parent-problems',
                                           kwargs={'code': self.hospital.parent.code})
-        self.other_trust_problems_url = reverse('trust-problems',
+        self.other_trust_problems_url = reverse('org-parent-problems',
                                                 kwargs={'code': self.gp.parent.code})
 
         # Problems
@@ -384,7 +384,7 @@ class OrganisationParentDashboardTests(AuthorizationTestCase):
     def setUp(self):
         super(OrganisationParentDashboardTests, self).setUp()
         self.problem = create_test_problem({'organisation': self.test_hospital})
-        self.dashboard_url = reverse('trust-dashboard', kwargs={'code': self.test_hospital.parent.code})
+        self.dashboard_url = reverse('org-parent-dashboard', kwargs={'code': self.test_hospital.parent.code})
 
     def test_dashboard_page_exists(self):
         self.login_as(self.trust_user)
@@ -464,7 +464,7 @@ class OrganisationParentBreachesTests(AuthorizationTestCase):
 
     def setUp(self):
         super(OrganisationParentBreachesTests, self).setUp()
-        self.breach_dashboard_url = reverse('trust-breaches', kwargs={'code': self.test_trust.code})
+        self.breach_dashboard_url = reverse('org-parent-breaches', kwargs={'code': self.test_trust.code})
         self.org_breach_problem = create_test_problem({'organisation': self.test_hospital,
                                                        'breach': True})
         self.other_org_breach_problem = create_test_problem({'organisation': self.test_gp_branch,
@@ -523,11 +523,11 @@ class TrustTabsTests(AuthorizationTestCase):
 
     def setUp(self):
         super(TrustTabsTests, self).setUp()
-        self.dashboard_url = reverse('trust-dashboard', kwargs={'code': self.test_trust.code})
-        self.breaches_url = reverse('trust-breaches', kwargs={'code': self.test_trust.code})
-        self.problems_url = reverse('trust-problems', kwargs={'code': self.test_trust.code})
-        self.reviews_url = reverse('trust-reviews', kwargs={'code': self.test_trust.code})
-        self.summary_url = reverse('trust-summary', kwargs={'code': self.test_trust.code})
+        self.dashboard_url = reverse('org-parent-dashboard', kwargs={'code': self.test_trust.code})
+        self.breaches_url = reverse('org-parent-breaches', kwargs={'code': self.test_trust.code})
+        self.problems_url = reverse('org-parent-problems', kwargs={'code': self.test_trust.code})
+        self.reviews_url = reverse('org-parent-reviews', kwargs={'code': self.test_trust.code})
+        self.summary_url = reverse('org-parent-summary', kwargs={'code': self.test_trust.code})
         self.tab_urls = [
             self.dashboard_url,
             self.breaches_url,

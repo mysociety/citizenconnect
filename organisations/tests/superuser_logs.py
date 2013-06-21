@@ -21,8 +21,8 @@ class SuperuserLogTests(AuthorizationTestCase):
                                                    'publication_status': Problem.REJECTED})
         self.test_urls = [
             reverse('home', kwargs={'cobrand': 'choices'}),
-            reverse('trust-dashboard', kwargs={'code': self.test_trust.code}),
-            reverse('trust-problems', kwargs={'code': self.test_trust.code}),
+            reverse('org-parent-dashboard', kwargs={'code': self.test_trust.code}),
+            reverse('org-parent-problems', kwargs={'code': self.test_trust.code}),
             reverse('problem-view', kwargs={'cobrand': 'choices', 'pk': self.unmoderated_problem.id}),
             reverse('problem-view', kwargs={'cobrand': 'choices', 'pk': self.private_problem.id}),
             reverse('problem-view', kwargs={'cobrand': 'choices', 'pk': self.hidden_problem.id})
@@ -60,7 +60,7 @@ class SuperuserLogViewTests(AuthorizationTestCase):
     def setUp(self):
         super(SuperuserLogViewTests, self).setUp()
         self.login_as(self.nhs_superuser)
-        self.logs_url = reverse('trust-problems',
+        self.logs_url = reverse('org-parent-problems',
                                 kwargs={'code': self.test_trust.code})
 
     def test_log_page_exists(self):

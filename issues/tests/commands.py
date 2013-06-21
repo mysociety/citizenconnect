@@ -166,7 +166,7 @@ class EmailProblemsToTrustTests(TestCase):
         self.assertTrue(self.test_problem.reporter_email in first_mail.body)
         self.assertTrue(self.test_problem.category in first_mail.body)
         self.assertTrue(self.test_problem.description in first_mail.body)
-        dashboard_url = settings.SITE_BASE_URL + reverse('trust-dashboard',
+        dashboard_url = settings.SITE_BASE_URL + reverse('org-parent-dashboard',
                                                          kwargs={'code': self.test_problem.organisation.parent.code})
         self.assertTrue(dashboard_url in first_mail.body)
 
