@@ -215,13 +215,12 @@ $(document).ready(function () {
         markersGroup.clearLayers();
 
         _.each(providers, function(nhsCentre) {
-            var marker, iconClass;
+            var marker;
 
-            iconClass = iconClassForOpenIssues(nhsCentre.all_time_open);
             // Create the marker
-            marker = nhsCentre.marker = L.marker([nhsCentre.lat, nhsCentre.lon], {
+            marker = L.marker([nhsCentre.lat, nhsCentre.lon], {
                 riseOnHover:true,
-                icon: iconClass
+                icon: iconClassForOpenIssues(nhsCentre.all_time_open)
             });
 
             marker.popupContent = templateForProvider(nhsCentre);
