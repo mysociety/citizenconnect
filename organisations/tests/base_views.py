@@ -156,6 +156,16 @@ class OrganisationMapTests(AuthorizationTestCase):
         self.assertEqual(len(response_json), 1)
 
 
+class MapOrganisationTests(TestCase):
+    def setUp(self):
+        self.test_org = create_test_organisation()
+        self.map_org_url = reverse('single-org-map', kwargs={'cobrand': 'choices', 'ods_code': self.test_org.ods_code})
+
+    def test_single_map_org_page_exists(self):
+        resp = self.client.get(self.map_org_url)
+        self.assertEqual(200, resp.status_code)
+
+
 class OrganisationMapBrowserTests(SeleniumTestCase):
 
     def setUp(self):
