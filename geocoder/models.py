@@ -11,7 +11,7 @@ class Place(geomodels.Model):
     SRID_OSGB36 = 27700
 
     # Name is shorter and should be used when searching.
-    name = models.CharField(max_length=250)
+    name = models.CharField(max_length=250, db_index=True)
 
     # Longer name, eg: "High Street, Putney" that can be displayed to user.
     context_name = models.CharField(max_length=250)
