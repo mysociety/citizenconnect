@@ -11,7 +11,7 @@
 
 {% include "organisations/includes/page_header.html" with title=trust.name|add:" Dashboard" %}
 
-{% include "organisations/includes/trust_tabs.html" with active_tab='dashboard' %}
+{% include "organisations/includes/organisation_parent_tabs.html" with active_tab='dashboard' %}
 
 {% render_table table 'organisations/includes/problem-table.html' %}
 

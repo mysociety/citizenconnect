@@ -36,7 +36,7 @@ class OrganisationParentAwareViewMixin(PrivateViewMixin):
 
 
 class OrganisationParentSummary(OrganisationParentAwareViewMixin, FilterFormMixin, TemplateView):
-    template_name = 'organisations/trust_summary.html'
+    template_name = 'organisations/organisation_parent_summary.html'
 
     def get_form_kwargs(self):
         kwargs = super(OrganisationParentSummary, self).get_form_kwargs()
@@ -133,7 +133,7 @@ class OrganisationParentProblems(OrganisationParentAwareViewMixin,
                                  FilterFormMixin,
                                  TemplateView):
 
-    template_name = 'organisations/trust_problems.html'
+    template_name = 'organisations/organisation_parent_problems.html'
 
     def get_form_kwargs(self):
         kwargs = super(OrganisationParentProblems, self).get_form_kwargs()
@@ -166,7 +166,7 @@ class OrganisationParentProblems(OrganisationParentAwareViewMixin,
 
 class OrganisationParentDashboard(OrganisationParentAwareViewMixin,
                                   TemplateView):
-    template_name = 'organisations/trust_dashboard.html'
+    template_name = 'organisations/organisation_parent_dashboard.html'
 
     def get_context_data(self, **kwargs):
         # Get all the problems
@@ -184,7 +184,7 @@ class OrganisationParentDashboard(OrganisationParentAwareViewMixin,
 class OrganisationParentBreaches(OrganisationParentAwareViewMixin,
                                  TemplateView):
 
-    template_name = 'organisations/trust_breaches.html'
+    template_name = 'organisations/organisation_parent_breaches.html'
 
     def dispatch(self, request, *args, **kwargs):
         return super(OrganisationParentBreaches, self).dispatch(request, *args, **kwargs)
