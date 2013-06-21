@@ -58,7 +58,7 @@ class CCG(MailSendMixin, AuditedModel):
 
     @property
     def problem_set(self):
-        return Problem.objects.filter(organisation__trust__in=self.organisation_parents.all())
+        return Problem.objects.filter(organisation__parent__in=self.organisation_parents.all())
 
     def __unicode__(self):
         return self.name
@@ -155,7 +155,7 @@ class Organisation(AuditedModel, geomodels.Model):
     objects = geomodels.GeoManager()
 
     # Which Trust this is in
-    trust = models.ForeignKey(OrganisationParent, blank=False, null=False, related_name='organisations')
+    parent = models.ForeignKey(OrganisationParent, blank=False, null=False, related_name='organisations')
 
     # Calculated double_metaphone field, for search by provider name
     name_metaphone = models.TextField(editable=False)
@@ -190,8 +190,8 @@ class Organisation(AuditedModel, geomodels.Model):
 
     def can_be_accessed_by(self, user):
         """ Can a given user access this Organisation? """
-        # Access is controlled by the Trust
-        return self.trust.can_be_accessed_by(user)
+        # Access is controlled by the Parent
+        return self.parent.can_be_accessed_by(user)
 
     def save(self, *args, **kwargs):
         """
