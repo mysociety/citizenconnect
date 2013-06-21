@@ -165,15 +165,21 @@ $(document).ready(function () {
         }
     };
 
-    // Function to draw an array of providers onto the map
-    var drawProviders = function(providers) {
-        // current selected issue type, to pass into the popups
+    /**
+     * Current selected issue type, to pass into the popups
+     */
+    var currentIssueType = function() {
         var issueType = '';
         var $categoryFilter = $(".filters form select[name=category]");
         if ($categoryFilter.val() !== '') {
             issueType = $categoryFilter.children("option:selected").text();
         }
 
+        return issueType;
+    };
+
+    // Function to draw an array of providers onto the map
+    var drawProviders = function(providers) {
         // Wipe anything that's already on the map
         oms.clearMarkers();
         markersGroup.clearLayers();
@@ -204,7 +210,7 @@ $(document).ready(function () {
                 icon: iconClass
             });
 
-            marker.popupContent = _.template(hoverBubbleTemplate, {nhsCentre: nhsCentre, issueType: issueType, icon: iconClass, starClass: starClass});
+            marker.popupContent = _.template(hoverBubbleTemplate, {nhsCentre: nhsCentre, issueType: currentIssueType(), icon: iconClass, starClass: starClass});
 
             // Save some custom data in the marker
             marker.nhsCentre = nhsCentre;
