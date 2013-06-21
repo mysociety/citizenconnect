@@ -242,21 +242,7 @@ class MapOrganisation(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(MapOrganisation, self).get_context_data(**kwargs)
         organisation = Organisation.objects.get(ods_code=kwargs['ods_code'])
-        organisation_filters = {'organisation_id': organisation.id}
-
-        org_data = interval_counts(
-            organisation_filters=organisation_filters,
-            extra_organisation_data=['coords', 'type', 'average_recommendation_rating'],
-            data_intervals=['all_time_open', 'all_time_closed'],
-            average_fields=['time_to_address'],
-            boolean_fields=['happy_outcome']
-        )
-
-        org_data['url'] = reverse('public-org-summary',
-                                    kwargs={'ods_code': org_data['ods_code'],
-                                            'cobrand': self.kwargs['cobrand']})
-        org_data['average_time_to_address'] = formatted_time_interval(org_data['average_time_to_address'])
-        org_data['happy_outcome'] = percent(org_data['happy_outcome'])
+        org_data = {'lat': organisation.point.y, 'lon': organisation.point.x}
         context['organisation'] = json.dumps(org_data)
         return context
 
