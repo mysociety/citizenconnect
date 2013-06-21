@@ -58,7 +58,7 @@ class CCG(MailSendMixin, AuditedModel):
 
     @property
     def problem_set(self):
-        return Problem.objects.filter(organisation__trust__in=self.trusts.all())
+        return Problem.objects.filter(organisation__trust__in=self.organisation_parents.all())
 
     def __unicode__(self):
         return self.name
@@ -82,13 +82,13 @@ class OrganisationParent(MailSendMixin, AuditedModel):
     email = models.EmailField(max_length=254, blank=True)
     secondary_email = models.EmailField(max_length=254, blank=True)
 
-    # Which CCG this Trust should escalate problems too
+    # Which CCG this Parent should escalate problems too
     escalation_ccg = models.ForeignKey(CCG, blank=False, null=False, related_name='escalation_trusts')
 
     # Which CCGs commission services from this Parent.
     # This means that those CCGs will be able to see all the problems at
-    # this trust's organisations.
-    ccgs = models.ManyToManyField(CCG, related_name='trusts')
+    # this parent's organisations.
+    ccgs = models.ManyToManyField(CCG, related_name='organisation_parents')
 
     def can_be_accessed_by(self, user):
         """ Can a user access this trust? """
@@ -107,12 +107,12 @@ class OrganisationParent(MailSendMixin, AuditedModel):
                                  auth.CUSTOMER_CONTACT_CENTRE]):
             return True
 
-        # Users in this trust - YES
+        # Users in this Parent - YES
         if user in self.users.all():
             return True
 
-        # CCG users for a CCG associated with this Trust - YES
-        if user in User.objects.filter(ccgs__trusts=self).all():
+        # CCG users for a CCG associated with this Parent - YES
+        if user in User.objects.filter(ccgs__organisation_parents=self).all():
             return True
 
         # Everyone else - NO

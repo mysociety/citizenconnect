@@ -415,10 +415,10 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
     def test_filters_by_ccg(self):
         # Check see both ccgs
         resp = self.client.get(self.summary_url)
-        for trust in self.test_ccg.trusts.all():
+        for trust in self.test_ccg.organisation_parents.all():
             for org in trust.organisations.all():
                 self.assertContains(resp, org.name)
-        for trust in self.other_test_ccg.trusts.all():
+        for trust in self.other_test_ccg.organisation_parents.all():
             for org in trust.organisations.all():
                 self.assertContains(resp, org.name)
 
@@ -426,10 +426,10 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
         resp = self.client.get("{0}?ccg={1}".format(self.summary_url, self.test_ccg.id))
 
         # Check filter applied
-        for trust in self.test_ccg.trusts.all():
+        for trust in self.test_ccg.organisation_parents.all():
             for org in trust.organisations.all():
                 self.assertContains(resp, org.name)
-        for trust in self.other_test_ccg.trusts.all():
+        for trust in self.other_test_ccg.organisation_parents.all():
             for org in trust.organisations.all():
                 self.assertNotContains(resp, org.name)
 

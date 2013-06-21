@@ -51,9 +51,9 @@ class CsvImportTests(TestCase):
 
         call_command('load_trusts_from_csv', self.trusts_csv)
         self.assertEqual(OrganisationParent.objects.count(), 3)
-        self.assertEqual(CCG.objects.get(name="Ascot CCG").trusts.count(), 2)
-        self.assertEqual(CCG.objects.get(name="Banbridge CCG").trusts.count(), 2)
-        self.assertEqual(CCG.objects.get(name="Chucklemere CCG").trusts.count(), 1)
+        self.assertEqual(CCG.objects.get(name="Ascot CCG").organisation_parents.count(), 2)
+        self.assertEqual(CCG.objects.get(name="Banbridge CCG").organisation_parents.count(), 2)
+        self.assertEqual(CCG.objects.get(name="Chucklemere CCG").organisation_parents.count(), 1)
 
 
         call_command('load_organisations_from_csv', self.organisations_csv)
