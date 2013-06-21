@@ -1,10 +1,11 @@
 import csv
-# from optparse import make_option
+from progressbar import ProgressBar
 
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.gis.geos import Point
 
 from ...models import Place
+
 
 # Taken from the tech spec http://www.ordnancesurvey.co.uk/oswebsite/docs/user-guides/os-locator-user-guide.pdf
 FIELDNAMES = (
@@ -33,10 +34,16 @@ class Command(BaseCommand):
         reader = csv.DictReader(open(filename), fieldnames=FIELDNAMES, delimiter=':', quotechar='"')
         rownum = 0
 
+        # hacky way to approximate the number of rows in the file
+        pbar = ProgressBar( maxval=len(list(open(filename))) ).start()
+
         # There is nothing reliabe to use for detecting duplicates, delete database instead.
         Place.objects.filter(source=Place.SOURCE_OS_LOCATOR).delete()
 
         for row in reader:
+            rownum += 1
+            pbar.update(rownum)
+
             name     = row['Name']
             locality = row['Locality']
             osgb36_x = int(row['Centx'])
@@ -52,7 +59,7 @@ class Command(BaseCommand):
             # create a point for the centre
             centre = Point(osgb36_x, osgb36_y, srid=Place.SRID_OSGB36)
             centre.transform(Place.SRID_WGS84)
-            
+
             # create the place
             place = Place(
                 name = name,
@@ -66,3 +73,6 @@ class Command(BaseCommand):
                 continue
 
             place.save()
+
+        pbar.finish()
+

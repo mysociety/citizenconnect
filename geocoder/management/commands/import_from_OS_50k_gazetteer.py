@@ -1,5 +1,5 @@
 import csv
-# from optparse import make_option
+from progressbar import ProgressBar
 
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.gis.geos import Point
@@ -39,10 +39,16 @@ class Command(BaseCommand):
         reader = csv.DictReader(open(filename), fieldnames=FIELDNAMES, delimiter=':', quotechar='"')
         rownum = 0
 
+        # hacky way to approximate the number of rows in the file
+        pbar = ProgressBar( maxval=len(list(open(filename))) ).start()
+
         # There is nothing reliabe to use for detecting duplicates, delete database instead.
         Place.objects.filter(source=Place.SOURCE_OS_50K_GAZETEER).delete()
 
         for row in reader:
+            rownum += 1
+            pbar.update(rownum)
+
             name     = row['DEF_NAM']
             county = row['FULL_COUNTY']
             osgb36_x = int(row['EAST'])
@@ -72,3 +78,5 @@ class Command(BaseCommand):
                 continue
 
             place.save()
+
+        pbar.finish()
