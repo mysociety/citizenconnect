@@ -7,7 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django_tables2 import RequestConfig
 
 from organisations.views.organisations import OrganisationAwareViewMixin
-from organisations.views.trusts import OrganisationParentAwareViewMixin
+from organisations.views.organisation_parents import OrganisationParentAwareViewMixin
 
 from .models import Review
 from .tables import ReviewTable, TrustReviewTable

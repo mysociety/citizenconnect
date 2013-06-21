@@ -6,7 +6,7 @@ from reviews_display.views import OrganisationParentReviews
 
 from organisations.views.base import *
 from organisations.views.organisations import *
-from organisations.views.trusts import *
+from organisations.views.organisation_parents import *
 from organisations.views.ccgs import *
 from organisations.auth import StrongSetPasswordForm, StrongPasswordChangeForm
 
