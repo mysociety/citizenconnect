@@ -306,24 +306,6 @@ $(document).ready(function () {
     };
 
     /**
-     * Zoom to the given provider an open the popup for them.
-     *
-     * @param {Object} provider The provider to zoom to
-     */
-    var zoomToProvider = function(provider) {
-        zoomToPoint(provider.lat, provider.lon);
-
-        // This is a very contrived way of waiting until the above function has completed.
-        var openMarker = function() {
-            openMarkerPopup(provider.marker, provider.marker.popupContent);
-            map.off('zoomend', openMarker);
-            map.on('zoomend', requestProvidersInBounds);
-        };
-        map.off('zoomend', requestProvidersInBounds);
-        map.on('zoomend', openMarker);
-    };
-
-    /**
      * Open a popup on a marker.
      *
      * @param {L.marker} marker The marker to bind the popup to
