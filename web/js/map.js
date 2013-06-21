@@ -115,7 +115,7 @@ $(document).ready(function () {
         var odsCode = $select.val();
         findProvider(odsCode, function(provider) {
             zoomToPoint(provider.lat, provider.lon);
-            window.location.hash = ods_code;
+            window.location.hash = odsCode;
         });
     });
 
