@@ -149,7 +149,8 @@ class Review(AuditedModel):
         # this might be quite common.
         if api_review['api_category'] == 'reply':
             try:
-                api_review['in_reply_to'] = cls.objects.get(api_posting_id=api_review['in_reply_to_id'])
+                api_review['in_reply_to'] = cls.objects.get(api_posting_id=api_review['in_reply_to_id'],
+                                                            api_postingorganisationid=api_review['in_reply_to_organisation_id'])
             except cls.DoesNotExist:
                 raise RepliedToReviewDoesNotExist(
                     "Could not find review with api_posting_id of {0} for reply {1}".format(
@@ -162,6 +163,7 @@ class Review(AuditedModel):
         del defaults['ratings']
         del defaults['organisation_choices_id']
         del defaults['in_reply_to_id']
+        del defaults['in_reply_to_organisation_id']
         defaults['organisation'] = organisation
 
         review, created = cls.objects.get_or_create(
