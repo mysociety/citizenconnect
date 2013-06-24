@@ -263,8 +263,20 @@ class MapSearch(TemplateView):
         return context
 
     def render_to_response(self, context, **kwargs):
-        results_list = json.dumps(list(context['results']))
-        return HttpResponse(results_list, content_type='application/json', **kwargs)
+
+        to_serialize = []
+        for obj in context['results'][:8]:
+            to_serialize.append({
+                "id":   obj.id,
+                "text": obj.name,
+                "lat":  obj.point.y,
+                "lon":  obj.point.x,
+            });
+
+        json_string = json.dumps( to_serialize, sort_keys=True, indent=4 )
+
+        kwargs['content_type'] = 'application/json'
+        return HttpResponse(json_string, **kwargs)
 
 
 class PickProviderBase(ListView):
