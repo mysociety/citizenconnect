@@ -341,6 +341,7 @@ class ReviewModelTests(TestCase):
         sample_review = self.sample_review.copy()
         sample_review['api_category'] = 'reply'
         sample_review['in_reply_to_id'] = review.api_posting_id
+        sample_review['in_reply_to_organisation_id'] = review.api_postingorganisationid
 
         Review.upsert_or_delete_from_api_data(sample_review)
 
@@ -349,18 +350,17 @@ class ReviewModelTests(TestCase):
         self.assertEqual(reply.in_reply_to, review)
         self.assertEqual(list(review.replies.all()), [reply])
 
-
     def test_reply_where_original_does_not_exist(self):
         sample_review = self.sample_review.copy()
         sample_review['api_category'] = 'reply'
-        sample_review['in_reply_to_id'] = '1234567' # does not exist
+        sample_review['in_reply_to_id'] = '1234567'  # does not exist
+        sample_review['in_reply_to_organisation_id'] = '0'
 
         self.assertRaises(
             RepliedToReviewDoesNotExist,
             Review.upsert_or_delete_from_api_data,
             sample_review
         )
-
 
     def test_not_found_organisation(self):
         sample_review = self.sample_review.copy()
