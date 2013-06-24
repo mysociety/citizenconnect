@@ -33,11 +33,11 @@ class CsvImportTests(TestCase):
         # Paths to the various sample CSV files
         csv_dir = 'documentation/csv_samples/'
         self.ccgs_csv          = csv_dir + 'ccgs.csv'
-        self.trusts_csv        = csv_dir + 'trusts.csv'
+        self.trusts_csv        = csv_dir + 'organisation_parents.csv'
         self.organisations_csv = csv_dir + 'organisations.csv'
         self.other_users_csv   = csv_dir + 'other_users.csv'
         self.ccg_users_csv     = csv_dir + 'ccg_users.csv'
-        self.trust_users_csv   = csv_dir + 'trust_users.csv'
+        self.trust_users_csv   = csv_dir + 'organisation_parent_users.csv'
 
     def tearDown(self):
         sys.stdout = self.old_stdout
