@@ -156,7 +156,7 @@ class OrganisationMapTests(AuthorizationTestCase):
         self.assertEqual(len(response_json), 1)
 
 
-class MapOrganisationTests(TestCase):
+class MapOrganisationCoordsTests(TestCase):
     def setUp(self):
         self.test_org = create_test_organisation()
         self.map_org_url = reverse('org-coords-map', kwargs={'cobrand': 'choices', 'ods_code': self.test_org.ods_code})
