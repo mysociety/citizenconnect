@@ -5,10 +5,10 @@ import reversion
 
 
 class OrganisationAdmin(reversion.VersionAdmin):
-    list_display = ('id', 'name', 'organisation_type', 'trust')
+    list_display = ('id', 'name', 'organisation_type', 'parent')
 
 
-class TrustAdmin(reversion.VersionAdmin):
+class OrganisationParentAdmin(reversion.VersionAdmin):
     list_display = ('id', 'name', 'code', 'email')
 
 
@@ -21,6 +21,6 @@ class ServiceAdmin(reversion.VersionAdmin):
 
 
 admin.site.register(models.Organisation, OrganisationAdmin)
-admin.site.register(models.OrganisationParent, TrustAdmin)
+admin.site.register(models.OrganisationParent, OrganisationParentAdmin)
 admin.site.register(models.CCG, CCGAdmin)
 admin.site.register(models.Service, ServiceAdmin)
