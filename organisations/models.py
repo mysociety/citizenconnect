@@ -143,7 +143,7 @@ class Organisation(AuditedModel, geomodels.Model):
     name = models.TextField()
     organisation_type = models.CharField(max_length=100, choices=settings.ORGANISATION_CHOICES)
     choices_id = models.IntegerField(db_index=True)
-    ods_code = models.CharField(max_length=8, db_index=True, unique=True)
+    ods_code = models.CharField(max_length=12, db_index=True, unique=True)
     address_line1 = models.CharField(max_length=255, blank=True)
     address_line2 = models.CharField(max_length=255, blank=True)
     address_line3 = models.CharField(max_length=255, blank=True)
