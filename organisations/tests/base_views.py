@@ -166,6 +166,15 @@ class MapOrganisationCoordsTests(TestCase):
         self.assertEqual(200, resp.status_code)
 
 
+class MapSearchTests(TestCase):
+    def setUp(self):
+        self.place_search_url = reverse('org-map-search', kwargs={'cobrand': 'choices'})
+
+    def test_search_page_exists(self):
+        resp = self.client.get(self.place_search_url)
+        self.assertEqual(200, resp.status_code)
+
+
 class OrganisationMapBrowserTests(SeleniumTestCase):
 
     def setUp(self):

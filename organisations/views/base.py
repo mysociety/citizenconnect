@@ -250,6 +250,23 @@ class MapOrganisationCoords(TemplateView):
         return HttpResponse(context['organisation'], content_type='application/json', **response_kwargs)
 
 
+class MapSearch(TemplateView):
+
+    def get_context_data(self, **kwargs):
+        context = super(MapSearch, self).get_context_data()
+
+        term = self.request.GET.get('term', '')
+        organisations = Organisation.objects.filter(name__istartswith=term)
+
+        context['results'] = organisations
+
+        return context
+
+    def render_to_response(self, context, **kwargs):
+        results_list = json.dumps(list(context['results']))
+        return HttpResponse(results_list, content_type='application/json', **kwargs)
+
+
 class PickProviderBase(ListView):
     template_name = 'provider_results.html'
     form_template_name = 'pick_provider.html'
