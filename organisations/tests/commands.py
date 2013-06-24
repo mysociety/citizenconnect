@@ -9,7 +9,7 @@ from django.core.management import call_command
 from django.conf import settings
 from django.contrib.auth.models import User
 
-from .lib import create_test_organisation, create_test_ccg, create_test_service, create_test_problem, create_test_trust
+from .lib import create_test_organisation, create_test_ccg, create_test_service, create_test_problem, create_test_organisation_parent
 from .choices_api import ExampleFileAPITest
 from ..models import Organisation
 

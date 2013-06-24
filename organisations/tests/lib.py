@@ -61,7 +61,7 @@ def create_test_ccg(attributes={}):
     return instance
 
 
-def create_test_trust(attributes={}):
+def create_test_organisation_parent(attributes={}):
     # Make a Trust
     default_attributes = {
         'name': 'Test Trust',
@@ -90,7 +90,7 @@ def create_test_organisation(attributes={}):
     }
     default_attributes.update(attributes)
     if 'parent' not in attributes:
-        default_attributes['parent'] = create_test_trust({'code': default_attributes['ods_code']})
+        default_attributes['parent'] = create_test_organisation_parent({'code': default_attributes['ods_code']})
     instance = Organisation(**dict((k, v) for (k, v) in default_attributes.items() if '__' not in k))
     instance.save()
     return instance
@@ -161,11 +161,11 @@ class IntervalCountsTest(TestCase):
         self.test_ccg = create_test_ccg()
         self.other_test_ccg = create_test_ccg({'name': 'Other test ccg', 'code': 'CCG2'})
 
-        self.test_trust = create_test_trust({'escalation_ccg': self.test_ccg})
+        self.test_trust = create_test_organisation_parent({'escalation_ccg': self.test_ccg})
         self.test_trust.ccgs.add(self.test_ccg)
         self.test_trust.save()
 
-        self.test_gp_surgery = create_test_trust({'escalation_ccg': self.other_test_ccg,
+        self.test_gp_surgery = create_test_organisation_parent({'escalation_ccg': self.other_test_ccg,
                                                   'code': 'TRUST2'})
         self.test_gp_surgery.ccgs.add(self.other_test_ccg)
         self.test_gp_surgery.save()
@@ -516,8 +516,8 @@ class AuthorizationTestCase(TestCase):
         self.other_test_ccg = create_test_ccg({'name': 'other test ccg', 'code': 'XYZ'})
 
         # Trusts
-        self.test_trust = create_test_trust({'escalation_ccg': self.test_ccg})
-        self.test_gp_surgery = create_test_trust({'name': 'other test trust',
+        self.test_trust = create_test_organisation_parent({'escalation_ccg': self.test_ccg})
+        self.test_gp_surgery = create_test_organisation_parent({'name': 'other test trust',
                                                   'code': 'XYZ',
                                                   'escalation_ccg': self.other_test_ccg})
 

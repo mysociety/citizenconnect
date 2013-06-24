@@ -15,7 +15,7 @@ from django.core.management import call_command
 from django.core.urlresolvers import reverse
 from django.utils.timezone import utc
 
-from organisations.tests.lib import create_test_organisation, create_test_trust, AuthorizationTestCase
+from organisations.tests.lib import create_test_organisation, create_test_organisation_parent, AuthorizationTestCase
 
 from .models import Review, OrganisationFromApiDoesNotExist, RepliedToReviewDoesNotExist
 from .reviews_api import ReviewsAPI

@@ -10,7 +10,7 @@ from django.utils.timezone import utc
 from django.conf import settings
 from django.test.utils import override_settings
 
-from organisations.tests.lib import (create_test_trust,
+from organisations.tests.lib import (create_test_organisation_parent,
                                      create_test_organisation,
                                      create_test_service,
                                      create_test_problem)
@@ -124,7 +124,7 @@ class EmailProblemsToTrustTests(TestCase):
 
     def setUp(self):
         # Add some test data
-        self.test_trust = create_test_trust({
+        self.test_trust = create_test_organisation_parent({
             "email": "recipient@example.com",
             "secondary_email": "recipient2@example.com",
         })

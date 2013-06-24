@@ -8,7 +8,7 @@ from django.utils.timezone import utc
 
 from .lib import (create_test_organisation,
                   create_test_ccg,
-                  create_test_trust,
+                  create_test_organisation_parent,
                   create_test_problem,
                   AuthorizationTestCase)
 
@@ -19,7 +19,7 @@ class TrustModelTests(TestCase):
 
     def setUp(self):
         # create a trust
-        self.test_trust = create_test_trust({'code': 'MYTRUST'})
+        self.test_trust = create_test_organisation_parent({'code': 'MYTRUST'})
 
         # create three orgs, two of which belong to the trust, and one that does not
         self.test_trust_org_1 = create_test_organisation({"parent": self.test_trust, "ods_code": "test1"})
@@ -60,7 +60,7 @@ class CCGModelTests(TestCase):
         self.test_ccg = create_test_ccg({'code': 'CCG1'})
 
         # create a trust
-        self.test_trust = create_test_trust({'code': 'MYTRUST', 'escalation_ccg': self.test_ccg})
+        self.test_trust = create_test_organisation_parent({'code': 'MYTRUST', 'escalation_ccg': self.test_ccg})
 
         # create three orgs, two of which belong to the ccg, and one that does not
         self.test_trust_org_1 = create_test_organisation({"parent": self.test_trust, "ods_code": "test1"})
@@ -152,7 +152,7 @@ class OrganisationMetaphoneTests(TestCase):
     def setUp(self):
         # Make an organisation without saving it
 
-        trust = create_test_trust()
+        trust = create_test_organisation_parent()
         self.organisation = Organisation(name=u'Test Organisation',
                                          organisation_type='gppractices',
                                          choices_id='12702',
@@ -172,7 +172,7 @@ class CreateTestTrustMixin(object):
     def create_test_object(self, attributes={}):
         attributes['code'] = 'F{0}'.format(self.ods_counter)
         self.ods_counter += 1
-        return create_test_trust(attributes)
+        return create_test_organisation_parent(attributes)
 
 
 class CreateTestCCGMixin(object):
