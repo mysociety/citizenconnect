@@ -258,14 +258,14 @@ class MapSearch(TemplateView):
         term = self.request.GET.get('term', '')
         organisations = Organisation.objects.filter(name__istartswith=term)
 
-        context['results'] = organisations
+        context['organisations'] = organisations
 
         return context
 
     def render_to_response(self, context, **kwargs):
 
         to_serialize = []
-        for obj in context['results'][:8]:
+        for obj in context['organisations'][:8]:
             to_serialize.append({
                 "id":   obj.id,
                 "text": obj.name,
