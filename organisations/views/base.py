@@ -257,39 +257,43 @@ class MapSearch(TemplateView):
         context = super(MapSearch, self).get_context_data()
 
         term = self.request.GET.get('term', '')
-        organisations = Organisation.objects.filter(name__istartswith=term)
 
-        context['organisations'] = organisations
 
-        places = Place.objects.filter(name__istartswith=term)
-        places = places.order_by('name')
+        if len(term):
+            to_serialize = []
+            organisations = Organisation.objects.filter(name__istartswith=term)
 
-        context['places'] = places
+            for obj in organisations[:8]:
+                to_serialize.append({
+                    "id":   obj.id,
+                    "text": obj.name,
+                    "type": "organisation",
+                    "lat":  obj.point.y,
+                    "lon":  obj.point.x,
+                });
+
+            places = Place.objects.filter(name__istartswith=term)
+            places = places.order_by('name')
+
+            for obj in places[:8]:
+                to_serialize.append({
+                    "id":   obj.id,
+                    "text": obj.name,
+                    "type": "place",
+                    "lat":  obj.centre.y,
+                    "lon":  obj.centre.x,
+                });
+
+            context['results'] = to_serialize
+        else:
+            context['results'] = []
+
 
         return context
 
     def render_to_response(self, context, **kwargs):
 
-        to_serialize = []
-        for obj in context['organisations'][:8]:
-            to_serialize.append({
-                "id":   obj.id,
-                "text": obj.name,
-                "type": "organisation",
-                "lat":  obj.point.y,
-                "lon":  obj.point.x,
-            });
-
-        for obj in context['places'][:8]:
-            to_serialize.append({
-                "id":   obj.id,
-                "text": obj.name,
-                "type": "place",
-                "lat":  obj.centre.y,
-                "lon":  obj.centre.x,
-            });
-
-        json_string = json.dumps( to_serialize, sort_keys=True, indent=4 )
+        json_string = json.dumps(context['results'], sort_keys=True, indent=4)
 
         kwargs['content_type'] = 'application/json'
         return HttpResponse(json_string, **kwargs)
