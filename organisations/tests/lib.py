@@ -62,7 +62,7 @@ def create_test_ccg(attributes={}):
 
 
 def create_test_organisation_parent(attributes={}):
-    # Make a Trust
+    # Make an Organisation Parent
     default_attributes = {
         'name': 'Test Trust',
         'code': 'TRUST1',
@@ -515,11 +515,11 @@ class AuthorizationTestCase(TestCase):
         self.test_ccg = create_test_ccg()
         self.other_test_ccg = create_test_ccg({'name': 'other test ccg', 'code': 'XYZ'})
 
-        # Trusts
+        # Organisation Parent
         self.test_trust = create_test_organisation_parent({'escalation_ccg': self.test_ccg})
         self.test_gp_surgery = create_test_organisation_parent({'name': 'other test trust',
-                                                  'code': 'XYZ',
-                                                  'escalation_ccg': self.other_test_ccg})
+                                                                'code': 'XYZ',
+                                                                'escalation_ccg': self.other_test_ccg})
 
         self.test_trust.ccgs.add(self.test_ccg)
         self.test_trust.save()

@@ -120,7 +120,7 @@ class EmailSurveysToReportersTests(EmailToReportersBase, TestCase):
         self.assertEqual(len(mail.outbox), 0)
 
 
-class EmailProblemsToTrustTests(TestCase):
+class EmailProblemsToOrganisationParentTests(TestCase):
 
     def setUp(self):
         # Add some test data

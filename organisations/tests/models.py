@@ -15,7 +15,7 @@ from .lib import (create_test_organisation,
 from ..models import Organisation, OrganisationParent
 
 
-class TrustModelTests(TestCase):
+class OrganisationParentModelTests(TestCase):
 
     def setUp(self):
         # create a trust
@@ -43,10 +43,10 @@ class TrustModelTests(TestCase):
     def test_escalation_ccg_always_in_ccgs(self):
         ccg = create_test_ccg({})
         trust = OrganisationParent(name="test_trust",
-                      code="ABC",
-                      email='test-trust@example.org',
-                      secondary_email='test-trust-secondary@example.org',
-                      escalation_ccg=ccg)
+                                   code="ABC",
+                                   email='test-trust@example.org',
+                                   secondary_email='test-trust-secondary@example.org',
+                                   escalation_ccg=ccg)
 
         trust.save()
         trust = OrganisationParent.objects.get(pk=trust.id)
@@ -166,7 +166,7 @@ class OrganisationMetaphoneTests(TestCase):
         self.assertEqual(self.organisation.name_metaphone, 'TSTRKNSXN')
 
 
-class CreateTestTrustMixin(object):
+class CreateTestOrganisationParentMixin(object):
     ods_counter = 0
 
     def create_test_object(self, attributes={}):
@@ -235,7 +235,7 @@ class SendMailTestsMixin(object):
 # This is a bit convoluted. We want to test the user creation and email sending
 # for the Organisations and the CCGs. Use this matrix of mixins to do all the
 # tests without any code repetition.
-class TrustModelUserCreationTests(CreateTestTrustMixin, UserCreationTestsMixin, TestCase):
+class OrganisationParentModelUserCreationTests(CreateTestOrganisationParentMixin, UserCreationTestsMixin, TestCase):
     pass
 
 
@@ -243,7 +243,7 @@ class CCGModelUserCreationTests(CreateTestCCGMixin, UserCreationTestsMixin, Test
     pass
 
 
-class TrustModelSendMailTests(CreateTestTrustMixin, SendMailTestsMixin, TestCase):
+class OrganisationParentModelSendMailTests(CreateTestOrganisationParentMixin, SendMailTestsMixin, TestCase):
     pass
 
 

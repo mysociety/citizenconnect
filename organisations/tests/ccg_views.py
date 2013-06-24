@@ -425,11 +425,11 @@ class CCGSummaryTests(AuthorizationTestCase):
 
             # check they see orgs for test_ccg and not for other_ccg
             resp = self.client.get(self.summary_url)
-            for trust in self.test_ccg.organisation_parents.all():
-                for org in trust.organisations.all():
+            for org_parent in self.test_ccg.organisation_parents.all():
+                for org in org_parent.organisations.all():
                     self.assertContains(resp, org.name)
-            for trust in self.other_test_ccg.organisation_parents.all():
-                for org in trust.organisations.all():
+            for org_parent in self.other_test_ccg.organisation_parents.all():
+                for org in org_parent.organisations.all():
                     self.assertNotContains(resp, org.name)
 
     def test_ccg_filter_hidden(self):
@@ -475,7 +475,7 @@ class CCGSummaryTests(AuthorizationTestCase):
 
 
 class CCGTabsTests(AuthorizationTestCase):
-    """Test that the tabs shown on trust pages link to the right places"""
+    """Test that the tabs shown on ccg pages link to the right places"""
 
     def setUp(self):
         super(CCGTabsTests, self).setUp()

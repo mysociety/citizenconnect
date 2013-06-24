@@ -91,7 +91,7 @@ class OrganisationParent(MailSendMixin, AuditedModel):
     ccgs = models.ManyToManyField(CCG, related_name='organisation_parents')
 
     def can_be_accessed_by(self, user):
-        """ Can a user access this trust? """
+        """ Can a user access this Organisation Parent? """
 
         # Deactivated users - NO
         if not user.is_active:
@@ -132,10 +132,10 @@ class OrganisationParent(MailSendMixin, AuditedModel):
 
 @receiver(post_save, sender=OrganisationParent)
 def ensure_ccgs_contains_escalation_ccg(sender, **kwargs):
-    """ post_save signal handler to ensure that trust.escalation_ccg is always in trust.ccgs """
-    trust = kwargs['instance']
-    if trust.escalation_ccg and trust.escalation_ccg not in trust.ccgs.all():
-        trust.ccgs.add(trust.escalation_ccg)
+    """ post_save signal handler to ensure that organisation_parent.escalation_ccg is always in organisation_parent.ccgs """
+    organisation_parent = kwargs['instance']
+    if organisation_parent.escalation_ccg and organisation_parent.escalation_ccg not in organisation_parent.ccgs.all():
+        organisation_parent.ccgs.add(organisation_parent.escalation_ccg)
 
 
 class Organisation(AuditedModel, geomodels.Model):

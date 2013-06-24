@@ -39,7 +39,6 @@ class CsvImportTests(TestCase):
         self.ccg_users_csv     = csv_dir + 'ccg_users.csv'
         self.trust_users_csv   = csv_dir + 'trust_users.csv'
 
-
     def tearDown(self):
         sys.stdout = self.old_stdout
         sys.stderr = self.old_stderr
@@ -75,21 +74,21 @@ class CsvImportTests(TestCase):
             }
         )
 
-        trust = OrganisationParent.objects.get(name="Ascot North Trust")
+        org_parent = OrganisationParent.objects.get(name="Ascot North Trust")
         self.assertEqual(
-            model_to_dict(trust, exclude=['ccgs']),
+            model_to_dict(org_parent, exclude=['ccgs']),
             {
                 'code': 'AN1',
                 'email': 'an-trust@example.com',
                 'escalation_ccg': ccg.id,
-                'id': trust.id,
+                'id': org_parent.id,
                 'name': 'Ascot North Trust',
                 'secondary_email': 'an-trust-backup@example.com',
                 'users': [],
             }
         )
         self.assertEqual(
-            [ ccg.code for ccg in trust.ccgs.order_by('code') ],
+            [ ccg.code for ccg in org_parent.ccgs.order_by('code') ],
             [ '07A', '07B', '07C' ],
         )
 
@@ -111,12 +110,12 @@ class CsvImportTests(TestCase):
                 'ods_code': 'ANH1',
                 'organisation_type': 'hospitals',
                 'postcode': 'NW8 7BT ',
-                'parent': trust.id
+                'parent': org_parent.id
             }
         )
 
     def test_user_imports(self):
-        # Load up some test CCGs and trusts
+        # Load up some test CCGs and organisation parents
         call_command('load_ccgs_from_csv', self.ccgs_csv)
         call_command('load_organisation_parents_from_csv', self.trusts_csv)
 
@@ -126,8 +125,8 @@ class CsvImportTests(TestCase):
         call_command('load_ccg_users_from_csv', self.ccg_users_csv)
         self.assertEqual(User.objects.count(), 6)
 
-        trust = OrganisationParent.objects.get(name='Ascot North Trust')
-        self.assertEqual(trust.users.count(), 2) # has two users in CSV
+        org_parent = OrganisationParent.objects.get(name='Ascot North Trust')
+        self.assertEqual(org_parent.users.count(), 2)  # has two users in CSV
         self.assertEqual(OrganisationParent.objects.get(name='Ascot South Trust').users.count(), 1)
 
         ccg = CCG.objects.get(name='Ascot CCG')
@@ -135,7 +134,7 @@ class CsvImportTests(TestCase):
 
         # test that users' passwords _ARE_ usable - if not usable then
         # the password cannot be reset. See #689
-        for user in [ccg.users.all()[0], trust.users.all()[0]]:
+        for user in [ccg.users.all()[0], org_parent.users.all()[0]]:
             self.assertTrue(user.has_usable_password())
 
         self.assertEqual(len(mail.outbox), 6)

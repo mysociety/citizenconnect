@@ -63,7 +63,7 @@ class OrganisationMapTests(AuthorizationTestCase):
         # A problem the moderator has rejected
         create_test_problem({'organisation': self.hospital,
                              'publication_status': Problem.REJECTED})
-        # A problem the moderator has accepted, but a trust user has said
+        # A problem the moderator has accepted, but a organisation parent user has said
         # is abusive/vexatious (possibly because it's a dupe)
         create_test_problem({'organisation': self.other_gp,
                              'publication_status': Problem.PUBLISHED,
@@ -415,22 +415,22 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
     def test_filters_by_ccg(self):
         # Check see both ccgs
         resp = self.client.get(self.summary_url)
-        for trust in self.test_ccg.organisation_parents.all():
-            for org in trust.organisations.all():
+        for org_parent in self.test_ccg.organisation_parents.all():
+            for org in org_parent.organisations.all():
                 self.assertContains(resp, org.name)
-        for trust in self.other_test_ccg.organisation_parents.all():
-            for org in trust.organisations.all():
+        for org_parent in self.other_test_ccg.organisation_parents.all():
+            for org in org_parent.organisations.all():
                 self.assertContains(resp, org.name)
 
         # Apply CCG filter
         resp = self.client.get("{0}?ccg={1}".format(self.summary_url, self.test_ccg.id))
 
         # Check filter applied
-        for trust in self.test_ccg.organisation_parents.all():
-            for org in trust.organisations.all():
+        for org_parent in self.test_ccg.organisation_parents.all():
+            for org in org_parent.organisations.all():
                 self.assertContains(resp, org.name)
-        for trust in self.other_test_ccg.organisation_parents.all():
-            for org in trust.organisations.all():
+        for org_parent in self.other_test_ccg.organisation_parents.all():
+            for org in org_parent.organisations.all():
                 self.assertNotContains(resp, org.name)
 
     def test_summary_page_applies_threshold_from_settings(self):
