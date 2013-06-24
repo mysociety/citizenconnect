@@ -249,6 +249,7 @@ class MapOrganisationCoords(TemplateView):
     def render_to_response(self, context, **response_kwargs):
         return HttpResponse(context['organisation'], content_type='application/json', **response_kwargs)
 
+
 class PickProviderBase(ListView):
     template_name = 'provider_results.html'
     form_template_name = 'pick_provider.html'
