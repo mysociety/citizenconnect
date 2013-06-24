@@ -107,8 +107,20 @@ $(document).ready(function () {
 
     $select.prepend($blank_option);
     $select.select2({
-      placeholder: $placeholder.text(),
-      allowClear: true
+        ajax: {
+            url: window.location.pathname + '/search',
+            dataType: 'json',
+            data: function(term, page) {
+                return {
+                    term: term
+                };
+            },
+            results: function(data, page) {
+                return data;
+            }
+        },
+        placeholder: $placeholder.text(),
+        allowClear: true
     });
 
     var openPopupFor;
