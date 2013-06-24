@@ -20,11 +20,17 @@
             <li class="message-list__success">Thank you, the problem status has been updated.</li>
         {% endif %}
       </ul>
+
       {% if response %}
-        <p><a href="{% url 'org-parent-dashboard' code=response.issue.organisation.parent.code %}">Return to your trust dashboard</a></p>
+        <p><a href="{% url 'org-parent-dashboard' code=response.issue.organisation.parent.code %}">
+          Return to the '{{ response.issue.organisation.parent.name }}' dashboard
+        </a></p>
       {% elif issue %}
-        <p><a href="{% url 'org-parent-dashboard' code=issue.organisation.parent.code %}">Return to your trust dashboard</a></p>
+        <p><a href="{% url 'org-parent-dashboard' code=issue.organisation.parent.code %}">
+          Return to the '{{ response.issue.organisation.parent.name }}' dashboard
+        </a></p>
       {% endif %}
+
     </div>
 </div>
 {% endblock %}

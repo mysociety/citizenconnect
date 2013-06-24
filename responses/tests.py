@@ -241,6 +241,11 @@ class ResponseFormViewTests(AuthorizationTestCase):
         super(ResponseFormViewTests, self).setUp()
         self.problem = create_test_problem({'organisation': self.test_hospital})
         self.response_form_url = reverse('response-form', kwargs={'pk': self.problem.id})
+        self.test_form_values = {
+            'response': 'This is the response.',
+            'issue': self.problem.id,
+            'issue_status': Problem.RESOLVED,
+        }        
         self.login_as(self.trust_user)
 
     def test_response_page_exists(self):
@@ -296,13 +301,7 @@ class ResponseFormViewTests(AuthorizationTestCase):
         # Call the form to simulate a browser and get a session into self.client
         self.client.get(self.response_form_url)
         self.assertTrue(self.problem.id in self.client.session['object_versions'])
-        # Post to the form with some new data
-        test_form_values = {
-            'response': '',
-            'issue': self.problem.id,
-            'issue_status': Problem.RESOLVED,
-        }
-        resp = self.client.post(self.response_form_url, test_form_values)
+        resp = self.client.post(self.response_form_url, self.test_form_values)
         self.assertEqual(resp.status_code, 200)
         self.assertFalse(self.problem.id in self.client.session['object_versions'])
 
@@ -344,6 +343,27 @@ class ResponseFormViewTests(AuthorizationTestCase):
         resp = self.client.get(response_form_url)
         self.assertContains(resp, moderated_problem.description)
         self.assertContains(resp, moderated_problem.moderated_description)
+    
+    def _change_user_and_submit(self, user_to_test_as):
+
+        # logout, login and get the form
+        self.client.logout()
+        self.login_as(self.customer_contact_centre_user)
+        resp = self.client.get(self.response_form_url)
+        self.assertEqual(resp.status_code, 200)
+        
+        # submit the form, 
+        resp = self.client.post(self.response_form_url, self.test_form_values)
+        self.assertEqual(resp.status_code, 200)
+        return resp
+
+    def test_response_form_post_submit_displays_correct_dashboard_link_for_user(self):
+        # After a submit the response form providers links back to the
+        # dashboard. This link should be appropriate to the type of user.
+        # See #825 for details.
+        
+        resp = self._change_user_and_submit(self.customer_contact_centre_user)
+        self.assertContains(resp, "Return to the '" + self.test_hospital.parent.name + "' dashboard") 
 
 
 class ResponseModelTests(TransactionTestCase, ConcurrencyTestMixin):
