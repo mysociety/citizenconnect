@@ -62,8 +62,8 @@ def enforce_organisation_access_check(organisation, user):
         raise PermissionDenied()
 
 
-def enforce_trust_access_check(trust, user):
-    if not trust.can_be_accessed_by(user):
+def enforce_organisation_parent_access_check(organisation_parent, user):
+    if not organisation_parent.can_be_accessed_by(user):
         raise PermissionDenied()
 
 

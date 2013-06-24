@@ -5,7 +5,7 @@ from django_tables2 import RequestConfig
 # App imports
 from issues.models import Problem
 
-from ..auth import enforce_trust_access_check
+from ..auth import enforce_organisation_parent_access_check
 from ..models import Organisation, OrganisationParent
 from ..lib import interval_counts
 from ..tables import (OrganisationParentProblemTable,
@@ -31,7 +31,7 @@ class OrganisationParentAwareViewMixin(PrivateViewMixin):
         context['organisation_parent'] = self.organisation_parent
         # Check that the user can access the organisation_parent if this is private
         if context['private']:
-            enforce_trust_access_check(context['organisation_parent'], self.request.user)
+            enforce_organisation_parent_access_check(context['organisation_parent'], self.request.user)
         return context
 
 
