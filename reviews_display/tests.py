@@ -431,7 +431,7 @@ class OrganisationParentReviewsTests(AuthorizationTestCase):
                                    })
         self.login_as(self.trust_user)
         resp = self.client.get(reviews_list_url)
-        self.assertEqual(resp.context['trust'], self.test_trust)
+        self.assertEqual(resp.context['organisation_parent'], self.test_trust)
         self.assertEqual(len(resp.context['table'].rows), 1)
         self.assertEqual(resp.context['table'].rows[0].record, self.org_review)
 

@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% load url from future %}
 {% load organisation_extras %}
-{% block title %}{{ trust.name }} :: Outcomes Summary{% endblock %}
+{% block title %}{{ organisation_parent.name }} :: Outcomes Summary{% endblock %}
 
 {% block bodyclasses %}org-parent-summary{% endblock %}
 
 {% block content %}
 
-{% include "organisations/includes/page_header.html" with title="Outcomes" %}
+{% include "organisations/includes/page_header.html" with title="Outcomes" organisation=organisation_parent %}
 
 {% include "organisations/includes/organisation_parent_tabs.html" with active_tab='summary' %}
 

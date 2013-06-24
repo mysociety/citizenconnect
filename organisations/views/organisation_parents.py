@@ -17,21 +17,21 @@ from .base import PrivateViewMixin, FilterFormMixin
 
 class OrganisationParentAwareViewMixin(PrivateViewMixin):
     """Mixin class for views which need to have a reference to a particular
-    trust, such as trust dashboards."""
+    Organisation Parent, such as organisation parent dashboards."""
 
     def dispatch(self, request, *args, **kwargs):
-        # Set trust here so that we can use it anywhere in the class
+        # Set organisation_parent here so that we can use it anywhere in the class
         # without worrying about whether it has been set yet
-        self.trust = OrganisationParent.objects.get(code=kwargs['code'])
+        self.organisation_parent = OrganisationParent.objects.get(code=kwargs['code'])
         return super(OrganisationParentAwareViewMixin, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(OrganisationParentAwareViewMixin, self).get_context_data(**kwargs)
-        context['trust'] = self.trust
-        # Check that the user can access the trust if this is private
+        context['organisation_parent'] = self.organisation_parent
+        # Check that the user can access the organisation_parent if this is private
         if context['private']:
-            enforce_trust_access_check(context['trust'], self.request.user)
+            enforce_trust_access_check(context['organisation_parent'], self.request.user)
         return context
 
 
@@ -49,8 +49,8 @@ class OrganisationParentSummary(OrganisationParentAwareViewMixin, FilterFormMixi
     def get_context_data(self, **kwargs):
         context = super(OrganisationParentSummary, self).get_context_data(**kwargs)
 
-        trust = context['trust']
-        organisation_ids = [org.id for org in trust.organisations.all()]
+        organisation_parent = context['organisation_parent']
+        organisation_ids = [org.id for org in organisation_parent.organisations.all()]
 
         # Load the user-selected filters from the form
         count_filters = context['selected_filters']
@@ -138,9 +138,9 @@ class OrganisationParentProblems(OrganisationParentAwareViewMixin,
     def get_form_kwargs(self):
         kwargs = super(OrganisationParentProblems, self).get_form_kwargs()
 
-        # Turn off the ccg filter and filter organisations to this trust
+        # Turn off the ccg filter and filter organisations to this organisation_parent
         kwargs['with_ccg'] = False
-        kwargs['organisations'] = Organisation.objects.filter(parent=self.trust)
+        kwargs['organisations'] = Organisation.objects.filter(parent=self.organisation_parent)
 
         # Turn off the organisation_type filter
         kwargs['with_organisation_type'] = False
@@ -151,7 +151,7 @@ class OrganisationParentProblems(OrganisationParentAwareViewMixin,
         context = super(OrganisationParentProblems, self).get_context_data(**kwargs)
 
         # Get a queryset of issues and apply any filters to them
-        problems = self.trust.problem_set.all()
+        problems = self.organisation_parent.problem_set.all()
         filtered_problems = self.filter_problems(context['selected_filters'], problems)
 
         # Build a table
@@ -173,7 +173,7 @@ class OrganisationParentDashboard(OrganisationParentAwareViewMixin,
         context = super(OrganisationParentDashboard, self).get_context_data(**kwargs)
 
         # Get the models related to this organisation, and let the db sort them
-        problems = context['trust'].problem_set.open_unescalated_problems()
+        problems = context['organisation_parent'].problem_set.open_unescalated_problems()
         problems_table = ProblemDashboardTable(problems)
         RequestConfig(self.request, paginate={'per_page': 25}).configure(problems_table)
         context['table'] = problems_table
@@ -191,7 +191,7 @@ class OrganisationParentBreaches(OrganisationParentAwareViewMixin,
 
     def get_context_data(self, **kwargs):
         context = super(OrganisationParentBreaches, self).get_context_data(**kwargs)
-        problems = Problem.objects.open_problems().filter(breach=True, organisation__parent=context['trust'])
+        problems = Problem.objects.open_problems().filter(breach=True, organisation__parent=context['organisation_parent'])
 
         # Setup a table for the problems
         problem_table = BreachTable(problems, private=True)

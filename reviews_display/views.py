@@ -38,13 +38,13 @@ class ReviewOrganisationList(OrganisationAwareViewMixin,
 
 class OrganisationParentReviews(OrganisationParentAwareViewMixin,
                                 TemplateView):
-    """ All the reviews for a given trust """
+    """ All the reviews for a given organisation parent """
 
     template_name = 'reviews_display/organisation_parent_reviews.html'
 
     def get_context_data(self, **kwargs):
         context = super(OrganisationParentReviews, self).get_context_data(**kwargs)
-        all_reviews = Review.objects.all().filter(organisation__parent=self.trust)
+        all_reviews = Review.objects.all().filter(organisation__parent=self.organisation_parent)
         table = TrustReviewTable(all_reviews)
         RequestConfig(self.request, paginate={'per_page': 8}).configure(table)
         context['table'] = table
