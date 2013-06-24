@@ -9,7 +9,8 @@ from django.contrib.auth.models import User
 
 from .. import auth
 
-def from_csv(filename, trust_or_ccg_model):
+
+def from_csv(filename, org_parent_or_ccg_model):
 
     reader = csv.DictReader(open(filename), delimiter=',', quotechar='"')
 
@@ -25,17 +26,17 @@ def from_csv(filename, trust_or_ccg_model):
         code = row['Code']
 
         try:
-            trust_or_ccg = trust_or_ccg_model.objects.get(code=code)
-        except trust_or_ccg_model.DoesNotExist:
-            raise CommandError("Could not find a {0} with the code {1}".format(trust_or_ccg_model.__name__, code))
+            org_parent_or_ccg = org_parent_or_ccg_model.objects.get(code=code)
+        except org_parent_or_ccg_model.DoesNotExist:
+            raise CommandError("Could not find a {0} with the code {1}".format(org_parent_or_ccg_model.__name__, code))
 
         # get the user, creating if not found
         user, created = User.objects.get_or_create(username=username, email=email)
 
         # Ensure that the user is added to the org and the correct group, will
         # be no-ops if already done.
-        trust_or_ccg.users.add(user)
-        user.groups.add(trust_or_ccg.default_user_group())
+        org_parent_or_ccg.users.add(user)
+        user.groups.add(org_parent_or_ccg.default_user_group())
 
         if created:
             user.set_password(auth.create_initial_password())
