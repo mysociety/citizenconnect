@@ -53,7 +53,7 @@ class ReviewTable(tables.Table):
         attrs = {'class': 'problem-table problem-table--expanded'}
 
 
-class TrustReviewTable(ReviewTable):
+class OrganisationParentReviewTable(ReviewTable):
 
     """Table for the reviews for all the organisations in a Trust."""
 

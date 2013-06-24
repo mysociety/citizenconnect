@@ -10,7 +10,7 @@ from organisations.views.organisations import OrganisationAwareViewMixin
 from organisations.views.organisation_parents import OrganisationParentAwareViewMixin
 
 from .models import Review
-from .tables import ReviewTable, TrustReviewTable
+from .tables import ReviewTable, OrganisationParentReviewTable
 
 
 class ReviewLoadOrganisationBase(OrganisationAwareViewMixin):
@@ -45,7 +45,7 @@ class OrganisationParentReviews(OrganisationParentAwareViewMixin,
     def get_context_data(self, **kwargs):
         context = super(OrganisationParentReviews, self).get_context_data(**kwargs)
         all_reviews = Review.objects.all().filter(organisation__parent=self.organisation_parent)
-        table = TrustReviewTable(all_reviews)
+        table = OrganisationParentReviewTable(all_reviews)
         RequestConfig(self.request, paginate={'per_page': 8}).configure(table)
         context['table'] = table
         context['page_obj'] = table.page
