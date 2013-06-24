@@ -76,7 +76,7 @@ class OrganisationParent(MailSendMixin, AuditedModel):
     users = models.ManyToManyField(User, related_name='organisation_parents')
 
     # ISSUE-329: The `blank=True` should be removed when we are supplied with
-    # email addresses for all the trusts
+    # email addresses for all the organisation parents
     # max_length set manually to make it RFC compliant (default of 75 is too short)
     # email may not be unique
     email = models.EmailField(max_length=254, blank=True)
@@ -154,7 +154,7 @@ class Organisation(AuditedModel, geomodels.Model):
     point = geomodels.PointField()
     objects = geomodels.GeoManager()
 
-    # Which Trust this is in
+    # The parent of this organisation
     parent = models.ForeignKey(OrganisationParent, blank=False, null=False, related_name='organisations')
 
     # Calculated double_metaphone field, for search by provider name

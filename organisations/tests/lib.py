@@ -576,7 +576,7 @@ class AuthorizationTestCase(TestCase):
         self.test_ccg.users.add(self.ccg_user)
         self.test_ccg.save()
 
-        # A CCG user for the CCG that other test trust belongs to
+        # A CCG user for the CCG that gp surgery belongs to
         self.other_ccg_user = User.objects.get(pk=13)
         self.other_test_ccg.users.add(self.other_ccg_user)
         self.other_test_ccg.save()

@@ -13,7 +13,7 @@ from organisations.auth import StrongSetPasswordForm, StrongPasswordChangeForm
 urlpatterns = patterns(
     '',
 
-    # Trust urls
+    # Organisation Parent urls
     url(r'^org-parent/(?P<code>\w+)/dashboard$',
         login_required(OrganisationParentDashboard.as_view()),
         name='org-parent-dashboard',

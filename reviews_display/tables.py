@@ -55,7 +55,7 @@ class ReviewTable(tables.Table):
 
 class OrganisationParentReviewTable(ReviewTable):
 
-    """Table for the reviews for all the organisations in a Trust."""
+    """Table for the reviews for all the organisations under an Organisation Parent."""
 
     organisation_name = tables.Column(verbose_name='Provider name',
                                       accessor='organisation.name',

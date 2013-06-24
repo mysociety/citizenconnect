@@ -518,11 +518,11 @@ class OrganisationParentBreachesTests(AuthorizationTestCase):
         self.assertContains(resp, 'problem-table__highlight')
 
 
-class TrustTabsTests(AuthorizationTestCase):
-    """Test that the tabs shown on trust pages link to the right places"""
+class OrganisationParentTabsTests(AuthorizationTestCase):
+    """Test that the tabs shown on Organisation Parent pages link to the right places"""
 
     def setUp(self):
-        super(TrustTabsTests, self).setUp()
+        super(OrganisationParentTabsTests, self).setUp()
         self.dashboard_url = reverse('org-parent-dashboard', kwargs={'code': self.test_trust.code})
         self.breaches_url = reverse('org-parent-breaches', kwargs={'code': self.test_trust.code})
         self.problems_url = reverse('org-parent-problems', kwargs={'code': self.test_trust.code})

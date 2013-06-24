@@ -469,7 +469,7 @@ class OrganisationProblemsTests(AuthorizationTestCase):
 
 
 class OrganisationTabsTests(AuthorizationTestCase):
-    """Test that the tabs shown on trust pages link to the right places"""
+    """Test that the tabs shown on organisation pages link to the right places"""
 
     def setUp(self):
         super(OrganisationTabsTests, self).setUp()
