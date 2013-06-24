@@ -265,7 +265,7 @@ class MapSearch(TemplateView):
 
             for obj in organisations[:8]:
                 to_serialize.append({
-                    "id":   obj.id,
+                    "id":   obj.ods_code,
                     "text": obj.name,
                     "type": "organisation",
                     "lat":  obj.point.y,
