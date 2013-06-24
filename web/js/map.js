@@ -113,7 +113,7 @@ $(document).ready(function () {
                 };
             },
             results: function(data, page) {
-                return data;
+                return {results:data};
             }
         },
         placeholder: "Search for an organisation or area",
