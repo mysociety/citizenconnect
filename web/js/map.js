@@ -239,6 +239,7 @@ $(document).ready(function () {
 
             if (openPopupFor === nhsCentre.ods_code) {
                 openMarkerPopup(marker, marker.popupContent);
+                openPopupFor = false;
             }
         });
     };
