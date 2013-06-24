@@ -32,7 +32,7 @@ class Review(AuditedModel):
     # IDs for this review, and for the system where the review was created. Use Char
     # rather than number as it would appear that letters are used in some ids. The
     # max length should be fine as according to the API spec max is 10...
-    api_posting_id = models.CharField(max_length=20, unique=True)
+    api_posting_id = models.CharField(max_length=20)
     api_postingorganisationid = models.CharField(max_length=20)
 
     # published and updated timestamps.
@@ -114,7 +114,7 @@ class Review(AuditedModel):
         NHS_CHOICES_API_MAX_REVIEW_AGE_IN_DAYS days old, the entry is deleted
 
         """
-        
+
         unique_args = dict(
             api_posting_id=api_review['api_posting_id'],
             api_postingorganisationid=api_review['api_postingorganisationid']
@@ -157,7 +157,7 @@ class Review(AuditedModel):
                         api_review['api_posting_id']
                     )
                 )
-        
+
         defaults = api_review.copy()
         del defaults['ratings']
         del defaults['organisation_choices_id']
@@ -187,6 +187,9 @@ class Review(AuditedModel):
             review.ratings.create(**rating)
 
         return True
+
+    class Meta:
+        unique_together = (("api_posting_id", "api_postingorganisationid"),)
 
 
 class Rating(AuditedModel):
