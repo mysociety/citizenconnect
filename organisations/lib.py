@@ -141,8 +141,8 @@ def _apply_organisation_filters(organisation_filters,
         else:
             if type(ccg) != tuple:
                 ccg = (ccg,)
-            # Filtering by CCG requires joining to the Trust tables
-            # Because Trusts are connected to CCGs
+            # Filtering by CCG requires joining to the Organisation Parent tables
+            # Because Organisation Parent are connected to CCGs
             tables.append('organisations_organisationparent_ccgs')
             organisation_filter_clauses.append("organisations_organisationparent_ccgs.organisationparent_id = organisations_organisation.parent_id")
             organisation_filter_clauses.append("organisations_organisationparent_ccgs.ccg_id in %s")
