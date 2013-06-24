@@ -238,6 +238,9 @@ $(document).ready(function () {
             // Tell oms about the marker too
             oms.addMarker(marker);
 
+            // When a provider is chosen from the dropdown, we mark it
+            // as needing to be opened, so we do it here, after the marker
+            // has been drawn.
             if (openPopupFor === nhsCentre.ods_code) {
                 openMarkerPopup(marker, marker.popupContent);
                 openPopupFor = false;
