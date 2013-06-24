@@ -101,7 +101,7 @@ class Command(BaseCommand):
 
             # load the Parent
             try:
-                trust = OrganisationParent.objects.get(code=trust_code)
+                organisation_parent = OrganisationParent.objects.get(code=trust_code)
             except OrganisationParent.DoesNotExist:
                 raise Exception(
                     "Could not find Organisation Parent with code '{0}' on line {1}".format(
@@ -126,7 +126,7 @@ class Command(BaseCommand):
                                      'city': city,
                                      'county': county,
                                      'postcode': postcode,
-                                     'parent': trust,
+                                     'parent': organisation_parent,
                                     }
             try:
                 organisation, organisation_created = Organisation.objects.get_or_create(ods_code=ods_code,
