@@ -30,6 +30,7 @@ from ..tables import (NationalSummaryTable,
                       ProblemDashboardTable,
                       BreachTable)
 from ..templatetags.organisation_extras import formatted_time_interval, percent
+from geocoder.models import Place
 
 
 class PrivateViewMixin(object):
@@ -260,6 +261,11 @@ class MapSearch(TemplateView):
 
         context['organisations'] = organisations
 
+        places = Place.objects.filter(name__istartswith=term)
+        places = places.order_by('name')
+
+        context['places'] = places
+
         return context
 
     def render_to_response(self, context, **kwargs):
@@ -269,8 +275,18 @@ class MapSearch(TemplateView):
             to_serialize.append({
                 "id":   obj.id,
                 "text": obj.name,
+                "type": "organisation",
                 "lat":  obj.point.y,
                 "lon":  obj.point.x,
+            });
+
+        for obj in context['places'][:8]:
+            to_serialize.append({
+                "id":   obj.id,
+                "text": obj.name,
+                "type": "place",
+                "lat":  obj.centre.y,
+                "lon":  obj.centre.x,
             });
 
         json_string = json.dumps( to_serialize, sort_keys=True, indent=4 )
