@@ -16,7 +16,7 @@ There are several sample csv files in the [documentation/csv_samples folder](htt
 - `ODS Code`: The ODS code
 - `Name`
 - `Region`: A geographic region, eg "London"
-- `Email`
+- `Email`: The email alerts should be sent to. This is not used to create user accounts.
 
 ## Trusts and GP Surgeries
 
@@ -24,8 +24,8 @@ There are several sample csv files in the [documentation/csv_samples folder](htt
 - `Name`
 - `Escalation CCG`: The ODS code of the escalation CCG. This CCG will also be added to the CCGs that this trust/surgery belongs to.
 - `Other CCGs`: The ODS codes (separated by a `|` if more than one) of CCGs that this trust/surgery belongs to, in addition to the `Escalation CCG`. May be blank.
-- `Email`
-- `Secondary Email`
+- `Email`: The email alerts should be sent to. This is not used to create user accounts.
+- `Secondary Email`: Another email alerts should be sent to. This is not used to create user accounts.
 
 ## Organisations
 
