@@ -73,7 +73,7 @@ class OrganisationParent(MailSendMixin, AuditedModel):
     """
     name = models.TextField()
     code = models.CharField(max_length=8, db_index=True, unique=True)
-    users = models.ManyToManyField(User, related_name='trusts')
+    users = models.ManyToManyField(User, related_name='organisation_parents')
 
     # ISSUE-329: The `blank=True` should be removed when we are supplied with
     # email addresses for all the trusts

@@ -118,7 +118,7 @@ class OrganisationSummary(OrganisationAwareViewMixin,
             elif user_in_group(self.request.user, auth.CCG):
                 context['back_to_summaries_link'] = reverse('ccg-summary', kwargs={'code': self.request.user.ccgs.all()[0].code})
             elif user_in_group(self.request.user, auth.ORGANISATION_PARENTS):
-                context['back_to_summaries_link'] = reverse('org-parent-summary', kwargs={'code': self.request.user.trusts.all()[0].code})
+                context['back_to_summaries_link'] = reverse('org-parent-summary', kwargs={'code': self.request.user.organisation_parents.all()[0].code})
         else:
             context['back_to_summaries_link'] = reverse('org-all-summary', kwargs={'cobrand': kwargs['cobrand']})
 

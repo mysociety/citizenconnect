@@ -407,9 +407,9 @@ def login_redirect(request):
 
     # Organisation Parents
     elif user_in_group(user, auth.ORGANISATION_PARENTS):
-        if user.trusts.count() == 1:
-            trust = user.trusts.all()[0]
-            return HttpResponseRedirect(reverse('org-parent-dashboard', kwargs={'code': trust.code}))
+        if user.organisation_parents.count() == 1:
+            organisation_parent = user.organisation_parents.all()[0]
+            return HttpResponseRedirect(reverse('org-parent-dashboard', kwargs={'code': organisation_parent.code}))
 
     # Anyone else goes to the normal homepage
     return HttpResponseRedirect(reverse('home', kwargs={'cobrand': 'choices'}))
