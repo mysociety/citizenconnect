@@ -100,13 +100,10 @@ $(document).ready(function () {
     /**
     * Enable select2 on the org name select.
     */
-    var $select = $("#map-search-org-name");
-    var $blank_option = $('<option></option>');
+    var $searchBox = $("#map-search-org-name");
 
-    var $placeholder = $select.find('option:first').remove();
-
-    $select.prepend($blank_option);
-    $select.select2({
+    $searchBox.select2({
+        minimumInputLength: 1,
         ajax: {
             url: window.location.pathname + '/search',
             dataType: 'json',
@@ -119,14 +116,14 @@ $(document).ready(function () {
                 return data;
             }
         },
-        placeholder: $placeholder.text(),
+        placeholder: "Search for an organisation or area",
         allowClear: true
     });
 
     var openPopupFor;
 
-    $select.on('change', function(e) {
-        var odsCode = $select.val();
+    $searchBox.on('change', function(e) {
+        var odsCode = $searchBox.val();
         findProvider(odsCode, function(provider) {
             zoomToPoint(provider.lat, provider.lon);
             map.fire('zoomend');
