@@ -117,6 +117,7 @@ $(document).ready(function () {
         var odsCode = $select.val();
         findProvider(odsCode, function(provider) {
             zoomToPoint(provider.lat, provider.lon);
+            map.fire('zoomend');
             openPopupFor = odsCode;
             window.location.hash = odsCode;
         });
