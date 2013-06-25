@@ -278,7 +278,7 @@ class MapSearch(TemplateView):
             for obj in places[:8]:
                 to_serialize.append({
                     "id":   obj.id,
-                    "text": obj.name,
+                    "text": obj.context_name,
                     "type": "place",
                     "lat":  obj.centre.y,
                     "lon":  obj.centre.x,
