@@ -67,6 +67,7 @@ class Command(BaseCommand):
             try:
                 # Remember to update the docs in documentation/csv_formats.md if you make changes here
                 ods_code = self.clean_value(row['ODS Code'])
+                choices_id = self.clean_value(row['Choices ID'])
                 name = self.clean_value(row['Name'])
                 email = self.clean_value(row['Email'])
                 secondary_email = self.clean_value(row['Secondary Email'])
@@ -111,6 +112,7 @@ class Command(BaseCommand):
                     transaction.rollback()
 
             org_parent_defaults = {
+                'choices_id': choices_id,
                 'name': name,
                 'email': email,
                 'secondary_email': secondary_email,

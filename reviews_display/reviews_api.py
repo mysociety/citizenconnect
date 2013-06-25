@@ -134,9 +134,11 @@ class ReviewsAPI(object):
 
         # for replies we should extract what it is a reply to
         if review['api_category'] == 'reply':
-            review["in_reply_to_id"] = entry.find("in-reply-to").get("ref")
+            review["in_reply_to_id"] = entry.find("in-reply-to").get("postingid")
+            review["in_reply_to_organisation_id"] = entry.find("in-reply-to").get("postingorganisationid")
         else:
             review["in_reply_to_id"] = None
+            review["in_reply_to_organisation_id"] = None
 
         # get the organisation
         org_url = entry.find(
