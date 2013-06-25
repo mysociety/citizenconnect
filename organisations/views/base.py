@@ -268,7 +268,7 @@ class MapSearch(TemplateView):
             if is_valid_postcode(postcode) or is_valid_partial_postcode(postcode):
                 pass # TODO: return co-ordinates for this postcode from mapit
 
-            organisations = Organisation.objects.filter(name__istartswith=term)
+            organisations = Organisation.objects.filter(name__icontains=term)
 
             for obj in organisations[:8]:
                 to_serialize.append({
