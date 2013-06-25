@@ -6,7 +6,7 @@ from django.conf import settings
 from django.db import models
 from django.forms.models import model_to_dict
 
-from organisations.models import Organisation
+from organisations.models import Organisation, OrganisationParent
 from citizenconnect.models import AuditedModel
 
 
@@ -102,7 +102,7 @@ class Review(AuditedModel):
         cls.objects.filter(api_published__lte=oldest_permitted).delete()
 
     @classmethod
-    def upsert_or_delete_from_api_data(cls, api_review):
+    def upsert_or_delete_from_api_data(cls, api_review, organisation_type):
         """
 
         Given a review scraped from the API creates or updates an entry in the
@@ -137,9 +137,19 @@ class Review(AuditedModel):
 
         # Load the org. If not possible skip this review.
         try:
-            organisation = Organisation.objects.get(
-                choices_id=api_review['organisation_choices_id'])
-        except Organisation.DoesNotExist:
+            # For a hospital, this is the org given in the api data,
+            # for the GP, the data given is the id of the surgery, so we
+            # need to get that org and then get all its' branches
+            if organisation_type == "gppractices":
+                gp_surgery = OrganisationParent.objects.get(
+                    choices_id=api_review['organisation_choices_id']
+                )
+                organisations = list(gp_surgery.organisations.all())
+            else:
+                organisation = Organisation.objects.get(
+                    choices_id=api_review['organisation_choices_id'])
+                organisations = [organisation]
+        except (Organisation.DoesNotExist, OrganisationParent.DoesNotExist):
             raise OrganisationFromApiDoesNotExist(
                 "Could not find organisation with choices_id = '{0}'".format(
                     api_review['organisation_choices_id']
@@ -166,10 +176,14 @@ class Review(AuditedModel):
         del defaults['organisation_choices_id']
         del defaults['in_reply_to_id']
         del defaults['in_reply_to_organisation_id']
-        defaults['organisation'] = organisation
 
         review, created = cls.objects.get_or_create(
             defaults=defaults, **unique_args)
+
+        # Assign organisations
+        # Assigning like this clears any existing relationships so it doesn't
+        # matter if it was newly created or existed already
+        review.organisations = organisations
 
         if not created:
             for field in defaults.keys():

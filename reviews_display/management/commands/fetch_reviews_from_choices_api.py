@@ -33,7 +33,7 @@ class Command(NoArgsCommand):
 
             for review in reviews:
                 try:
-                    Review.upsert_or_delete_from_api_data(review)
+                    Review.upsert_or_delete_from_api_data(review, type)
                 except OrganisationFromApiDoesNotExist:
                     pass
                 except RepliedToReviewDoesNotExist, e:

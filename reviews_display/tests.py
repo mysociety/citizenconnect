@@ -39,13 +39,16 @@ def create_test_rating(attributes, review):
 
 api_posting_id_counter = 185684
 
+
 def create_test_review(attributes, ratings_attributes):
     """Create a test review instance, with optional attributes"""
 
     # Create a test org to assign the rating to if one's not supplied
     if not attributes.get('organisation'):
         organisation = create_test_organisation({})
-        attributes['organisation'] = organisation
+    else:
+        organisation = attributes.get('organisation')
+        del attributes['organisation']
 
     now = datetime.datetime.utcnow().replace(tzinfo=utc)
 
@@ -69,6 +72,7 @@ def create_test_review(attributes, ratings_attributes):
     instance = Review(**dict((k, v) for (
         k, v) in default_attributes.items() if '__' not in k))
     instance.save()
+    instance.organisations.add(organisation)
 
     # Create some dummy ratings if there are none supplied
     if not ratings_attributes:
@@ -235,8 +239,7 @@ class ReviewModelTests(TestCase):
     def test_upsert_or_deletes(self):
 
         # insert entry and check it exists
-        self.assertTrue(Review.upsert_or_delete_from_api_data(
-            self.sample_review))
+        self.assertTrue(Review.upsert_or_delete_from_api_data(self.sample_review, self.organisation.organisation_type))
         review = Review.objects.get(
             api_posting_id=self.sample_review['api_posting_id']
         )
@@ -246,14 +249,13 @@ class ReviewModelTests(TestCase):
         self.assertEqual(review.content_improved, self.sample_review['content_improved'])
 
         # do it again (unchanged) and check it is still there
-        self.assertTrue(Review.upsert_or_delete_from_api_data(
-            self.sample_review))
+        self.assertTrue(Review.upsert_or_delete_from_api_data(self.sample_review, self.organisation.organisation_type))
 
         # upsert_or_delete with a changed comment and check it is updated
         new_title = "This is the changed title"
         new_sample = self.sample_review.copy()
         new_sample.update({"title": new_title})
-        self.assertTrue(Review.upsert_or_delete_from_api_data(new_sample))
+        self.assertTrue(Review.upsert_or_delete_from_api_data(new_sample, self.organisation.organisation_type))
         review = Review.objects.get(
             api_posting_id=self.sample_review['api_posting_id']
         )
@@ -263,7 +265,7 @@ class ReviewModelTests(TestCase):
         # upsert_or_delete with published as too old and check it is deleted
         outdated_sample = self.sample_review.copy()
         outdated_sample.update({"api_published": '2010-05-01T12:47:22+01:00'})
-        Review.upsert_or_delete_from_api_data(outdated_sample)
+        Review.upsert_or_delete_from_api_data(outdated_sample, self.organisation.organisation_type)
         self.assertEqual(
             Review.objects.filter(
                 api_posting_id=self.sample_review['api_posting_id']
@@ -272,14 +274,13 @@ class ReviewModelTests(TestCase):
         )
 
         # check running again on entry that is not there
-        Review.upsert_or_delete_from_api_data(outdated_sample)
+        Review.upsert_or_delete_from_api_data(outdated_sample, self.organisation.organisation_type)
 
     def test_upsert_or_deletes_ratings(self):
         self.maxDiff = None
 
         # insert entry and check it exists
-        self.assertTrue(Review.upsert_or_delete_from_api_data(
-            self.sample_review))
+        self.assertTrue(Review.upsert_or_delete_from_api_data(self.sample_review, self.organisation.organisation_type))
         review = Review.objects.get(
             api_posting_id=self.sample_review['api_posting_id']
         )
@@ -305,7 +306,7 @@ class ReviewModelTests(TestCase):
         new_sample = self.sample_review.copy()
         new_sample['ratings'] = ratings_copy
 
-        self.assertTrue(Review.upsert_or_delete_from_api_data(new_sample))
+        self.assertTrue(Review.upsert_or_delete_from_api_data(new_sample, self.organisation.organisation_type))
         review = Review.objects.get(
             api_posting_id=self.sample_review['api_posting_id']
         )
@@ -318,14 +319,65 @@ class ReviewModelTests(TestCase):
         ]
         self.assertEqual(ratings, ratings_copy)
 
+    def test_upserts_or_deletes_gp_review(self):
+        # Create a test gp surgery
+        gp_surgery = create_test_organisation_parent({'code': 'GP1', 'choices_id': 5678})
+        # Give it two branches
+        gp_branch1 = create_test_organisation({'ods_code': 'GP1B1', 'parent': gp_surgery})
+        gp_branch2 = create_test_organisation({'ods_code': 'GP1B2', 'parent': gp_surgery})
+        self.assertEqual(gp_surgery.organisations.all().count(), 2)
+
+        sample_gp_review = self.sample_review.copy()
+        sample_gp_review['organisation_choices_id'] = gp_surgery.choices_id
+
+        # insert entry and check it exists on both branches
+        self.assertTrue(Review.upsert_or_delete_from_api_data(sample_gp_review, 'gppractices'))
+        review = Review.objects.get(
+            api_posting_id=sample_gp_review['api_posting_id']
+        )
+        self.assertEqual(review.title, sample_gp_review['title'])
+        self.assertEqual(review.content, sample_gp_review['content'])
+        self.assertEqual(review.content_liked, sample_gp_review['content_liked'])
+        self.assertEqual(review.content_improved, sample_gp_review['content_improved'])
+        self.assertEqual(list(review.organisations.all()), [gp_branch1, gp_branch2])
+
+        # do it again (unchanged) and check it is still there
+        self.assertTrue(Review.upsert_or_delete_from_api_data(sample_gp_review, 'gppractices'))
+
+        # upsert_or_delete with a changed comment and check it is updated
+        new_title = "This is the changed title"
+        new_sample = sample_gp_review.copy()
+        new_sample.update({"title": new_title})
+        self.assertTrue(Review.upsert_or_delete_from_api_data(new_sample, 'gppractices'))
+        review = Review.objects.get(
+            api_posting_id=sample_gp_review['api_posting_id']
+        )
+        self.assertTrue(review)
+        self.assertEqual(review.title, new_title)
+        self.assertEqual(list(review.organisations.all()), [gp_branch1, gp_branch2])
+
+        # upsert_or_delete with published as too old and check it is deleted
+        outdated_sample = sample_gp_review.copy()
+        outdated_sample.update({"api_published": '2010-05-01T12:47:22+01:00'})
+        Review.upsert_or_delete_from_api_data(outdated_sample, 'gppractices')
+        self.assertEqual(
+            Review.objects.filter(
+                api_posting_id=self.sample_review['api_posting_id']
+            ).count(),
+            0
+        )
+
+        # check running again on entry that is not there
+        Review.upsert_or_delete_from_api_data(outdated_sample, 'gppractices')
+
     def test_takedowns(self):
         # insert entry
-        Review.upsert_or_delete_from_api_data(self.sample_review)
+        Review.upsert_or_delete_from_api_data(self.sample_review, self.organisation.organisation_type)
 
         # upsert_or_delete a takedown, check review is deleted
         sample_review = self.sample_review.copy()
         sample_review['api_category'] = 'deletion'
-        Review.upsert_or_delete_from_api_data(sample_review)
+        Review.upsert_or_delete_from_api_data(sample_review, self.organisation.organisation_type)
         self.assertEqual(
             Review.objects.filter(
                 api_posting_id=sample_review['api_posting_id']
@@ -334,7 +386,7 @@ class ReviewModelTests(TestCase):
         )
 
         # check that calling it without anything is db is ok too
-        Review.upsert_or_delete_from_api_data(sample_review)
+        Review.upsert_or_delete_from_api_data(sample_review, self.organisation.organisation_type)
 
     def test_reply(self):
         review = create_test_review({'organisation': self.organisation}, {})
@@ -344,7 +396,7 @@ class ReviewModelTests(TestCase):
         sample_review['in_reply_to_id'] = review.api_posting_id
         sample_review['in_reply_to_organisation_id'] = review.api_postingorganisationid
 
-        Review.upsert_or_delete_from_api_data(sample_review)
+        Review.upsert_or_delete_from_api_data(sample_review, self.organisation.organisation_type)
 
         reply = Review.objects.get(api_posting_id=sample_review['api_posting_id'])
 
@@ -360,7 +412,8 @@ class ReviewModelTests(TestCase):
         self.assertRaises(
             RepliedToReviewDoesNotExist,
             Review.upsert_or_delete_from_api_data,
-            sample_review
+            sample_review,
+            'hospitals'
         )
 
     def test_not_found_organisation(self):
@@ -369,7 +422,8 @@ class ReviewModelTests(TestCase):
         self.assertRaises(
             OrganisationFromApiDoesNotExist,
             Review.upsert_or_delete_from_api_data,
-            sample_review
+            sample_review,
+            'hospitals'
         )
 
     def test_delete_old_reviews(self):
