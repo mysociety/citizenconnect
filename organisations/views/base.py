@@ -1,5 +1,7 @@
 # Standard imports
 import json
+import re
+from ukpostcodeutils.validation import is_valid_postcode, is_valid_partial_postcode
 
 # Django imports
 from django.views.generic import TemplateView, ListView
@@ -260,6 +262,12 @@ class MapSearch(TemplateView):
 
         if len(term):
             to_serialize = []
+
+            # Check if the term is a postcode
+            postcode = re.sub('\s+', '', location.upper())
+            if is_valid_postcode(postcode) or is_valid_partial_postcode(postcode):
+                pass # TODO: return co-ordinates for this postcode from mapit
+
             organisations = Organisation.objects.filter(name__istartswith=term)
 
             for obj in organisations[:8]:
