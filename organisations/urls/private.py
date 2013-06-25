@@ -2,41 +2,41 @@ from django.conf.urls import patterns, url
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 
-from reviews_display.views import ReviewTrustList
+from reviews_display.views import OrganisationParentReviews
 
 from organisations.views.base import *
 from organisations.views.organisations import *
-from organisations.views.trusts import *
+from organisations.views.organisation_parents import *
 from organisations.views.ccgs import *
 from organisations.auth import StrongSetPasswordForm, StrongPasswordChangeForm
 
 urlpatterns = patterns(
     '',
 
-    # Trust urls
-    url(r'^trust/(?P<code>\w+)/dashboard$',
-        login_required(TrustDashboard.as_view()),
-        name='trust-dashboard',
+    # Organisation Parent urls
+    url(r'^org-parent/(?P<code>\w+)/dashboard$',
+        login_required(OrganisationParentDashboard.as_view()),
+        name='org-parent-dashboard',
         kwargs={'private': True}),
 
-    url(r'^trust/(?P<code>\w+)/summary$',
-        login_required(TrustSummary.as_view()),
-        name='trust-summary',
+    url(r'^org-parent/(?P<code>\w+)/summary$',
+        login_required(OrganisationParentSummary.as_view()),
+        name='org-parent-summary',
         kwargs={'private': True}),
 
-    url(r'^trust/(?P<code>\w+)/problems$',
-        login_required(TrustProblems.as_view()),
-        name='trust-problems',
+    url(r'^org-parent/(?P<code>\w+)/problems$',
+        login_required(OrganisationParentProblems.as_view()),
+        name='org-parent-problems',
         kwargs={'private': True}),
 
-    url(r'^trust/(?P<code>\w+)/reviews$',
-        login_required(ReviewTrustList.as_view()),
-        name='trust-reviews',
+    url(r'^org-parent/(?P<code>\w+)/reviews$',
+        login_required(OrganisationParentReviews.as_view()),
+        name='org-parent-reviews',
         kwargs={'private': True}),
 
-    url(r'^trust/(?P<code>\w+)/breaches$',
-        login_required(TrustBreaches.as_view()),
-        name='trust-breaches',
+    url(r'^org-parent/(?P<code>\w+)/breaches$',
+        login_required(OrganisationParentBreaches.as_view()),
+        name='org-parent-breaches',
         kwargs={'private': True}),
 
     # CCG urls

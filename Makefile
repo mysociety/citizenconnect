@@ -19,9 +19,9 @@ update:
 	./manage.py migrate
 
 
-dev-data:
+dev-data: update
 	./manage.py loaddata demo_ccg.json
-	./manage.py loaddata demo_trust.json
+	./manage.py loaddata demo_organisation_parent.json
 	./manage.py loaddata phase_2_organisations.json
 	./manage.py loaddata example_problems.json
 

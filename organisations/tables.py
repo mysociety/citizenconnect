@@ -217,9 +217,9 @@ class ExtendedProblemTable(ProblemTable):
                     'breach_and_escalation')
 
 
-class TrustProblemTable(ExtendedProblemTable):
+class OrganisationParentProblemTable(ExtendedProblemTable):
     """
-    Like ExtendedProblemTable but for trusts, so including a provider name column
+    Like ExtendedProblemTable but for Organisation Parents, so including a provider name column
     """
     provider_name = tables.Column(verbose_name='Provider name',
                                   accessor='organisation.name')

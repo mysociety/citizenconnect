@@ -16,16 +16,16 @@ There are several sample csv files in the [documentation/csv_samples folder](htt
 - `ODS Code`: The ODS code
 - `Name`
 - `Region`: A geographic region, eg "London"
-- `Email`
+- `Email`: The email alerts should be sent to. This is not used to create user accounts.
 
-## Trusts
+## Trusts and GP Surgeries
 
-- `ODS Code`: The ODS code of the trust
+- `ODS Code`: The ODS code of the trust/gpo surgery
 - `Name`
-- `Escalation CCG`: The ODS code of the escalation CCG. This CCG will also be added to the CCGs that this trust belongs to.
-- `Other CCGs`: The ODS codes (separated by a `|` if more than one) of CCGs that this trust belongs to, in addition to the `Escalation CCG`. May be blank.
-- `Email`
-- `Secondary Email`
+- `Escalation CCG`: The ODS code of the escalation CCG. This CCG will also be added to the CCGs that this trust/surgery belongs to.
+- `Other CCGs`: The ODS codes (separated by a `|` if more than one) of CCGs that this trust/surgery belongs to, in addition to the `Escalation CCG`. May be blank.
+- `Email`: The email alerts should be sent to. This is not used to create user accounts.
+- `Secondary Email`: Another email alerts should be sent to. This is not used to create user accounts.
 
 ## Organisations
 
@@ -47,15 +47,15 @@ There are several sample csv files in the [documentation/csv_samples folder](htt
 - `ServiceCode`
 - `ServiceName`
 
-## Trust and CCG users
+## Trust, Surgery and CCG users
 
-Users for the trusts and CCGs should be listed in separate CSV files (one for trusts, one for CCGs). If a user belongs to several trusts or CCGs there should be multiple entries in the CSV, one per organisation that they belong to.
+Users for the trusts/surgeries and CCGs should be listed in separate CSV files (one for trusts/surgeries, one for CCGs). If a user belongs to several trusts/surgeries or CCGs there should be multiple entries in the CSV, one per organisation that they belong to.
 
 If the users do not exist they are created and an intro email sent, if the do exist their membership is confirmed. Note that deleting a user from the CSV will **not** delete them from the organisation.
 
 - `Username`
 - `Email`
-- `Code`: The ODS code for the trust or CCG.
+- `Code`: The ODS code for the trust/surgery or CCG.
 
 ## Other Users
 

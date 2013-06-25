@@ -12,11 +12,11 @@ class ProblemPublicViewTests(AuthorizationTestCase):
 
     def setUp(self):
         super(ProblemPublicViewTests, self).setUp()
-        self.test_moderated_problem = create_test_problem({'organisation': self.test_organisation,
+        self.test_moderated_problem = create_test_problem({'organisation': self.test_hospital,
                                                            'publication_status': Problem.PUBLISHED,
                                                            'moderated_description': "A moderated description"})
-        self.test_unmoderated_problem = create_test_problem({'organisation': self.test_organisation})
-        self.test_private_problem = create_test_problem({'organisation': self.test_organisation,
+        self.test_unmoderated_problem = create_test_problem({'organisation': self.test_hospital})
+        self.test_private_problem = create_test_problem({'organisation': self.test_hospital,
                                                          'public': False,
                                                          'public_reporter_name': False,
                                                          'publication_status': Problem.PUBLISHED})
@@ -34,7 +34,7 @@ class ProblemPublicViewTests(AuthorizationTestCase):
 
     def test_public_problem_displays_organisation_name(self):
         resp = self.client.get(self.test_moderated_problem_url)
-        self.assertContains(resp, self.test_organisation.name, count=1, status_code=200)
+        self.assertContains(resp, self.test_hospital.name, count=1, status_code=200)
 
     def test_public_problem_displays_responses(self):
         response1 = ProblemResponse.objects.create(response="response 1", issue=self.test_moderated_problem)
@@ -59,7 +59,7 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         resp = self.client.get(self.test_moderated_problem_url)
         self.assertEqual(resp.status_code, 200)
 
-        self.login_as(self.other_trust_user)
+        self.login_as(self.gp_surgery_user)
         resp = self.client.get(self.test_moderated_problem_url)
         self.assertEqual(resp.status_code, 200)
 
@@ -95,7 +95,7 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         self.assertNotContains(resp, self.test_private_problem.moderated_description)
         self.assertNotContains(resp, self.test_private_problem.reporter_name)
 
-        for user in [self.other_trust_user, self.other_ccg_user]:
+        for user in [self.gp_surgery_user, self.other_ccg_user]:
             self.login_as(user)
             resp = self.client.get(self.test_private_problem_url)
             self.assertEqual(resp.status_code, 200)
@@ -114,7 +114,7 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         self.assertNotContains(resp, response1.response)
         self.assertNotContains(resp, response2.response)
 
-        for user in [self.other_trust_user, self.other_ccg_user]:
+        for user in [self.gp_surgery_user, self.other_ccg_user]:
             self.login_as(user)
             resp = self.client.get(self.test_private_problem_url)
             self.assertEqual(resp.status_code, 200)
@@ -140,7 +140,7 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         resp = self.client.get(self.test_unmoderated_problem_url)
         self.assertEqual(resp.status_code, 200)
 
-        self.login_as(self.other_trust_user)
+        self.login_as(self.gp_surgery_user)
         resp = self.client.get(self.test_unmoderated_problem_url)
         self.assertEqual(resp.status_code, 200)
 
@@ -171,7 +171,7 @@ class ProblemPublicViewTests(AuthorizationTestCase):
     #
     # def test_escalated_statuses_highlighted(self):
     #     for status in Problem.ESCALATION_STATUSES:
-    #         problem = create_test_problem({'organisation': self.test_organisation,
+    #         problem = create_test_problem({'organisation': self.test_hospital,
     #                                        'publication_status': Problem.PUBLISHED,
     #                                        'moderated_description': "A moderated description",
     #                                        'status': status,
@@ -189,7 +189,7 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         self.assertContains(resp, self.test_moderated_problem.get_status_display())
 
         # A closed problem
-        self.closed_problem = create_test_problem({'organisation': self.test_organisation,
+        self.closed_problem = create_test_problem({'organisation': self.test_hospital,
                                                    'publication_status': Problem.PUBLISHED,
                                                    'moderated_description': "A moderated description",
                                                    'status': Problem.RESOLVED})
@@ -205,7 +205,7 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         self.assertNotContains(resp, "Priority")
 
         # A high priority problem
-        self.high_priority_problem = create_test_problem({'organisation': self.test_organisation,
+        self.high_priority_problem = create_test_problem({'organisation': self.test_hospital,
                                                           'publication_status': Problem.PUBLISHED,
                                                           'moderated_description': "A moderated description",
                                                           'status': Problem.NEW,
@@ -217,7 +217,7 @@ class ProblemPublicViewTests(AuthorizationTestCase):
 
     def test_doesnt_show_breach_on_public_pages(self):
         # A breach problem
-        self.breach_problem = create_test_problem({'organisation': self.test_organisation,
+        self.breach_problem = create_test_problem({'organisation': self.test_hospital,
                                                    'publication_status': Problem.PUBLISHED,
                                                    'moderated_description': "A moderated description",
                                                    'status': Problem.NEW,
@@ -229,7 +229,7 @@ class ProblemPublicViewTests(AuthorizationTestCase):
 
     def test_doesnt_show_publication_status_on_public_pages(self):
         # A published problem
-        self.published_problem = create_test_problem({'organisation': self.test_organisation,
+        self.published_problem = create_test_problem({'organisation': self.test_hospital,
                                                       'publication_status': Problem.PUBLISHED,
                                                       'moderated_description': "A moderated description",
                                                       'status': Problem.NEW,
@@ -270,7 +270,7 @@ class ProblemSurveyTests(AuthorizationTestCase):
 
     def setUp(self):
         super(ProblemSurveyTests, self).setUp()
-        self.test_problem = create_test_problem({'organisation': self.test_organisation})
+        self.test_problem = create_test_problem({'organisation': self.test_hospital})
         self.form_page = reverse('survey-form', kwargs={'cobrand': 'choices',
                                                         'response': 'n',
                                                         'id': int_to_base32(self.test_problem.id),
@@ -280,7 +280,7 @@ class ProblemSurveyTests(AuthorizationTestCase):
         resp = self.client.get(self.form_page)
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, 'Thanks for your feedback', count=1, status_code=200)
-        self.assertContains(resp, self.test_organisation.name, count=1)
+        self.assertContains(resp, self.test_hospital.name, count=1)
 
     def test_form_page_returns_a_404_for_a_non_existent_problem(self):
         form_page = reverse('survey-form', kwargs={'cobrand': 'choices',
@@ -322,7 +322,7 @@ class ProblemSurveyTests(AuthorizationTestCase):
         resp = self.client.post(self.form_page, {})
         expected_review_url = reverse('review-form',
                                       kwargs={'cobrand': 'choices',
-                                              'ods_code': self.test_organisation.ods_code})
+                                              'ods_code': self.test_hospital.ods_code})
         self.assertContains(resp, 'share your experience')
         self.assertContains(resp, expected_review_url)
 

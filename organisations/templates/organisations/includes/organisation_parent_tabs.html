@@ -1,0 +1,13 @@
+{% load url from future %}
+<ul class="tab-nav">
+    <li><a {% if active_tab == 'dashboard' %}class="active"{% endif %} href="{% url 'org-parent-dashboard' code=organisation_parent.code %}">Inbox</a></li>
+
+    <li><a {% if active_tab == 'breaches' %}class="active"{% endif %} href="{% url 'org-parent-breaches' code=organisation_parent.code %}">Breaches</a></li>
+
+    <li><a {% if active_tab == 'problems' %}class="active"{% endif %} href="{% url 'org-parent-problems' code=organisation_parent.code %}">Problems</a></li>
+
+    <li><a {% if active_tab == 'reviews' %}class="active"{% endif %} href="{% url 'org-parent-reviews' code=organisation_parent.code %}">Reviews</a></li>
+
+    <li><a {% if active_tab == 'summary' %}class="active"{% endif %} href="{% url 'org-parent-summary' code=organisation_parent.code %}">Summary</a></li>
+
+ </ul>

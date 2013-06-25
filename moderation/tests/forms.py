@@ -9,9 +9,9 @@ class LookupFormTests(BaseModerationTestCase):
 
     def setUp(self):
         super(LookupFormTests, self).setUp()
-        self.closed_problem = create_test_problem({'organisation':self.test_organisation,
+        self.closed_problem = create_test_problem({'organisation':self.test_hospital,
                                                    'status': Problem.RESOLVED})
-        self.moderated_problem = create_test_problem({'organisation':self.test_organisation,
+        self.moderated_problem = create_test_problem({'organisation':self.test_hospital,
                                                       'publication_status': Problem.PUBLISHED})
         self.login_as(self.case_handler)
 

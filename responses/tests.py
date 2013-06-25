@@ -19,9 +19,9 @@ class LookupFormTests(BaseModerationTestCase):
 
     def setUp(self):
         super(LookupFormTests, self).setUp()
-        self.closed_problem = create_test_problem({'organisation': self.test_organisation,
+        self.closed_problem = create_test_problem({'organisation': self.test_hospital,
                                                    'status': Problem.RESOLVED})
-        self.moderated_problem = create_test_problem({'organisation': self.test_organisation,
+        self.moderated_problem = create_test_problem({'organisation': self.test_hospital,
                                                       'publication_status': Problem.PUBLISHED})
         self.login_as(self.case_handler)
 
@@ -61,7 +61,7 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
 
     def setUp(self):
         super(ResponseFormTests, self).setUp()
-        self.problem = create_test_problem({'organisation': self.test_organisation})
+        self.problem = create_test_problem({'organisation': self.test_hospital})
         self.response_form_url = reverse('response-form', kwargs={'pk': self.problem.id})
         self.login_as(self.trust_user)
         # The form assumes a session variable is set, because it is when you load the form
@@ -157,7 +157,7 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         resp = self.client.post(self.response_form_url, test_form_values)
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, "response has been published online")
-        self.assertContains(resp, reverse('trust-dashboard', kwargs={'code': self.test_organisation.trust.code}))
+        self.assertContains(resp, reverse('org-parent-dashboard', kwargs={'code': self.test_hospital.parent.code}))
 
     def test_form_shows_issue_confirmation_with_link(self):
         response_text = ''
@@ -169,7 +169,7 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         resp = self.client.post(self.response_form_url, test_form_values)
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, "the problem status has been updated")
-        self.assertContains(resp, reverse('trust-dashboard', kwargs={'code': self.test_organisation.trust.code}))
+        self.assertContains(resp, reverse('org-parent-dashboard', kwargs={'code': self.test_hospital.parent.code}))
 
     def test_form_shows_both_confirmations_with_link(self):
         response_text = 'new response'
@@ -182,7 +182,7 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, "response has been published online")
         self.assertContains(resp, "the problem status has been updated")
-        self.assertContains(resp, reverse('trust-dashboard', kwargs={'code': self.test_organisation.trust.code}))
+        self.assertContains(resp, reverse('org-parent-dashboard', kwargs={'code': self.test_hospital.parent.code}))
 
     def test_initial_version_set_when_form_loads(self):
         self.client.get(self.response_form_url)
@@ -239,7 +239,7 @@ class ResponseFormViewTests(AuthorizationTestCase):
 
     def setUp(self):
         super(ResponseFormViewTests, self).setUp()
-        self.problem = create_test_problem({'organisation': self.test_organisation})
+        self.problem = create_test_problem({'organisation': self.test_hospital})
         self.response_form_url = reverse('response-form', kwargs={'pk': self.problem.id})
         self.login_as(self.trust_user)
 
@@ -273,7 +273,7 @@ class ResponseFormViewTests(AuthorizationTestCase):
 
     def test_other_trusts_cant_respond(self):
         self.client.logout()
-        self.login_as(self.other_trust_user)
+        self.login_as(self.gp_surgery_user)
         resp = self.client.get(self.response_form_url)
         self.assertEqual(resp.status_code, 403)
 
@@ -315,14 +315,14 @@ class ResponseFormViewTests(AuthorizationTestCase):
 
         # Add a public published problem
         public_published_problem = create_test_problem({
-            'organisation': self.test_organisation,
+            'organisation': self.test_hospital,
             'public': True,
             'status': Problem.ACKNOWLEDGED,
             'publication_status': Problem.PUBLISHED,
         })
         form_which_should_403_for_other_trusts = reverse('response-form', kwargs={'pk': public_published_problem.id})
         self.client.logout()
-        self.login_as(self.other_trust_user)
+        self.login_as(self.gp_surgery_user)
         resp = self.client.get(form_which_should_403_for_other_trusts)
         self.assertEqual(resp.status_code, 403)  # This was a 200 with the bug
 
@@ -332,7 +332,7 @@ class ResponseFormViewTests(AuthorizationTestCase):
         # description.
         moderated_problem = create_test_problem(
             {
-                'organisation': self.test_organisation,
+                'organisation': self.test_hospital,
                 'public': True,
                 'status': Problem.ACKNOWLEDGED,
                 'publication_status': Problem.PUBLISHED,

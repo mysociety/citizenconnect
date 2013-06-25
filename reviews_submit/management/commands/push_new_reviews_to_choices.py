@@ -17,7 +17,7 @@ class Command(BaseCommand):
         organisations = Organisation.objects.annotate(num_reviews=Count('submitted_reviews')).filter(num_reviews__gt=0)
 
         for organisation in organisations:
-            url = self.choices_api_url(organisation.ods_code)
+            url = self.choices_api_url(organisation)
             reviews = organisation.submitted_reviews.filter(last_sent_to_api__isnull=True)
             if reviews is not None:
                 self.push_reviews(url, reviews)
@@ -47,7 +47,15 @@ class Command(BaseCommand):
             elif response.status_code == 500:
                 self.stderr.write("{0}: Server error\n".format(review.id, review.organisation.ods_code))
 
-    def choices_api_url(self, ods_code):
+    def choices_api_url(self, organisation):
+        """Return the choices api url for submitting a review about a specific organisation."""
+        # If the org is a gp, use its' parent's ods_code, because the Choices
+        # api doesn't know about gp branches (what we have) - only gp surgeries
+        # as a whole.
+        if organisation.organisation_type == "gppractices":
+            ods_code = organisation.parent.code
+        else:
+            ods_code = organisation.ods_code
         return ChoicesAPI().construct_url(['comment', ods_code])
 
     def xml_encode(self, review):

@@ -10,7 +10,7 @@ from django.utils.timezone import utc
 from django.conf import settings
 from django.test.utils import override_settings
 
-from organisations.tests.lib import (create_test_trust,
+from organisations.tests.lib import (create_test_organisation_parent,
                                      create_test_organisation,
                                      create_test_service,
                                      create_test_problem)
@@ -120,15 +120,15 @@ class EmailSurveysToReportersTests(EmailToReportersBase, TestCase):
         self.assertEqual(len(mail.outbox), 0)
 
 
-class EmailProblemsToTrustTests(TestCase):
+class EmailProblemsToOrganisationParentTests(TestCase):
 
     def setUp(self):
         # Add some test data
-        self.test_trust = create_test_trust({
+        self.test_trust = create_test_organisation_parent({
             "email": "recipient@example.com",
             "secondary_email": "recipient2@example.com",
         })
-        self.test_organisation = create_test_organisation({"trust": self.test_trust})
+        self.test_organisation = create_test_organisation({"parent": self.test_trust})
 
         self.test_service = create_test_service({'organisation': self.test_organisation})
         self.test_problem = create_test_problem({'organisation': self.test_organisation,
@@ -166,8 +166,8 @@ class EmailProblemsToTrustTests(TestCase):
         self.assertTrue(self.test_problem.reporter_email in first_mail.body)
         self.assertTrue(self.test_problem.category in first_mail.body)
         self.assertTrue(self.test_problem.description in first_mail.body)
-        dashboard_url = settings.SITE_BASE_URL + reverse('trust-dashboard',
-                                                         kwargs={'code': self.test_problem.organisation.trust.code})
+        dashboard_url = settings.SITE_BASE_URL + reverse('org-parent-dashboard',
+                                                         kwargs={'code': self.test_problem.organisation.parent.code})
         self.assertTrue(dashboard_url in first_mail.body)
 
         # Check that problems were marked as mailed

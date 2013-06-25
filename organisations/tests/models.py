@@ -8,29 +8,29 @@ from django.utils.timezone import utc
 
 from .lib import (create_test_organisation,
                   create_test_ccg,
-                  create_test_trust,
+                  create_test_organisation_parent,
                   create_test_problem,
                   AuthorizationTestCase)
 
-from ..models import Organisation, Trust
+from ..models import Organisation, OrganisationParent
 
 
-class TrustModelTests(TestCase):
+class OrganisationParentModelTests(TestCase):
 
     def setUp(self):
         # create a trust
-        self.test_trust = create_test_trust({'code': 'MYTRUST'})
+        self.test_trust = create_test_organisation_parent({'code': 'MYTRUST'})
 
         # create three orgs, two of which belong to the trust, and one that does not
-        self.test_trust_org_1 = create_test_organisation({"trust": self.test_trust, "ods_code": "test1"})
-        self.test_trust_org_2 = create_test_organisation({"trust": self.test_trust, "ods_code": "test2"})
+        self.test_trust_org_1 = create_test_organisation({"parent": self.test_trust, "ods_code": "test1"})
+        self.test_trust_org_2 = create_test_organisation({"parent": self.test_trust, "ods_code": "test2"})
         self.test_other_org = create_test_organisation({"ods_code": "other"})
 
         # create a problem in each org
         for org in Organisation.objects.all():
             create_test_problem({
                 'organisation': org,
-                'description': "Problem with '{0}'".format(org.trust.code),
+                'description': "Problem with '{0}'".format(org.parent.code),
             })
 
     def test_trust_problem_set(self):
@@ -38,18 +38,18 @@ class TrustModelTests(TestCase):
         problems = self.test_trust.problem_set.order_by('description')
         self.assertEqual(problems.count(), 2)
         for p in problems:
-            self.assertEqual(p.organisation.trust, self.test_trust)
+            self.assertEqual(p.organisation.parent, self.test_trust)
 
     def test_escalation_ccg_always_in_ccgs(self):
         ccg = create_test_ccg({})
-        trust = Trust(name="test_trust",
-                      code="ABC",
-                      email='test-trust@example.org',
-                      secondary_email='test-trust-secondary@example.org',
-                      escalation_ccg=ccg)
+        trust = OrganisationParent(name="test_trust",
+                                   code="ABC",
+                                   email='test-trust@example.org',
+                                   secondary_email='test-trust-secondary@example.org',
+                                   escalation_ccg=ccg)
 
         trust.save()
-        trust = Trust.objects.get(pk=trust.id)
+        trust = OrganisationParent.objects.get(pk=trust.id)
         self.assertTrue(trust.escalation_ccg in trust.ccgs.all())
 
 
@@ -60,18 +60,18 @@ class CCGModelTests(TestCase):
         self.test_ccg = create_test_ccg({'code': 'CCG1'})
 
         # create a trust
-        self.test_trust = create_test_trust({'code': 'MYTRUST', 'escalation_ccg': self.test_ccg})
+        self.test_trust = create_test_organisation_parent({'code': 'MYTRUST', 'escalation_ccg': self.test_ccg})
 
         # create three orgs, two of which belong to the ccg, and one that does not
-        self.test_trust_org_1 = create_test_organisation({"trust": self.test_trust, "ods_code": "test1"})
-        self.test_trust_org_2 = create_test_organisation({"trust": self.test_trust, "ods_code": "test2"})
+        self.test_trust_org_1 = create_test_organisation({"parent": self.test_trust, "ods_code": "test1"})
+        self.test_trust_org_2 = create_test_organisation({"parent": self.test_trust, "ods_code": "test2"})
         self.test_other_org = create_test_organisation({"ods_code": "other"})
 
         # create a problem in each org
         for org in Organisation.objects.all():
             create_test_problem({
                 'organisation': org,
-                'description': "Problem with '{0}'".format(org.trust.code),
+                'description': "Problem with '{0}'".format(org.parent.code),
             })
 
     def test_ccg_problem_set(self):
@@ -79,7 +79,7 @@ class CCGModelTests(TestCase):
         problems = self.test_ccg.problem_set.order_by('description')
         self.assertEqual(problems.count(), 2)
         for p in problems:
-            self.assertEqual(p.organisation.trust.ccgs.all()[0], self.test_ccg)
+            self.assertEqual(p.organisation.parent.ccgs.all()[0], self.test_ccg)
 
 
 class CCGModelAuthTests(AuthorizationTestCase):
@@ -95,7 +95,7 @@ class CCGModelAuthTests(AuthorizationTestCase):
     def test_disallowed_users_cannot_access_ccg(self):
         self.assertFalse(self.test_ccg.can_be_accessed_by(self.anonymous_user))
         self.assertFalse(self.test_ccg.can_be_accessed_by(self.trust_user))
-        self.assertFalse(self.test_ccg.can_be_accessed_by(self.other_trust_user))
+        self.assertFalse(self.test_ccg.can_be_accessed_by(self.gp_surgery_user))
         self.assertFalse(self.test_ccg.can_be_accessed_by(self.no_trust_user))
         self.assertFalse(self.test_ccg.can_be_accessed_by(self.other_ccg_user))
         self.assertFalse(self.other_test_ccg.can_be_accessed_by(self.ccg_user))
@@ -114,37 +114,37 @@ class OrganisationModelAuthTests(AuthorizationTestCase):
         super(OrganisationModelAuthTests, self).setUp()
 
     def test_user_can_access_provider_happy_path(self):
-        self.assertTrue(self.test_organisation.can_be_accessed_by(self.trust_user))
-        self.assertTrue(self.other_test_organisation.can_be_accessed_by(self.other_trust_user))
+        self.assertTrue(self.test_hospital.can_be_accessed_by(self.trust_user))
+        self.assertTrue(self.test_gp_branch.can_be_accessed_by(self.gp_surgery_user))
 
     def test_superusers_can_access_any_provider(self):
         for user in self.users_who_can_access_everything:
-            self.assertTrue(self.test_organisation.can_be_accessed_by(user))
-            self.assertTrue(self.other_test_organisation.can_be_accessed_by(user))
+            self.assertTrue(self.test_hospital.can_be_accessed_by(user))
+            self.assertTrue(self.test_gp_branch.can_be_accessed_by(user))
 
     def test_anon_user_cannot_access_any_provider(self):
-        self.assertFalse(self.test_organisation.can_be_accessed_by(self.anonymous_user))
-        self.assertFalse(self.other_test_organisation.can_be_accessed_by(self.anonymous_user))
+        self.assertFalse(self.test_hospital.can_be_accessed_by(self.anonymous_user))
+        self.assertFalse(self.test_gp_branch.can_be_accessed_by(self.anonymous_user))
 
     def test_user_with_no_orgs_cannot_access_organisation(self):
-        self.assertFalse(self.test_organisation.can_be_accessed_by(self.no_trust_user))
-        self.assertFalse(self.other_test_organisation.can_be_accessed_by(self.no_trust_user))
+        self.assertFalse(self.test_hospital.can_be_accessed_by(self.no_trust_user))
+        self.assertFalse(self.test_gp_branch.can_be_accessed_by(self.no_trust_user))
 
     def test_user_with_other_org_cannot_access_different_org(self):
-        self.assertFalse(self.test_organisation.can_be_accessed_by(self.other_trust_user))
-        self.assertFalse(self.other_test_organisation.can_be_accessed_by(self.trust_user))
+        self.assertFalse(self.test_hospital.can_be_accessed_by(self.gp_surgery_user))
+        self.assertFalse(self.test_gp_branch.can_be_accessed_by(self.trust_user))
 
     def test_user_with_no_ccgs_cannot_access_orgs(self):
-        self.assertFalse(self.test_organisation.can_be_accessed_by(self.no_ccg_user))
-        self.assertFalse(self.other_test_organisation.can_be_accessed_by(self.no_ccg_user))
+        self.assertFalse(self.test_hospital.can_be_accessed_by(self.no_ccg_user))
+        self.assertFalse(self.test_gp_branch.can_be_accessed_by(self.no_ccg_user))
 
     def test_user_with_other_ccg_cannot_access_org_with_no_ccg(self):
-        self.assertFalse(self.test_organisation.can_be_accessed_by(self.other_ccg_user))
-        self.assertFalse(self.other_test_organisation.can_be_accessed_by(self.ccg_user))
+        self.assertFalse(self.test_hospital.can_be_accessed_by(self.other_ccg_user))
+        self.assertFalse(self.test_gp_branch.can_be_accessed_by(self.ccg_user))
 
     def test_user_with_ccg_can_access_ccg_org(self):
-        self.assertTrue(self.test_organisation.can_be_accessed_by(self.ccg_user))
-        self.assertTrue(self.other_test_organisation.can_be_accessed_by(self.other_ccg_user))
+        self.assertTrue(self.test_hospital.can_be_accessed_by(self.ccg_user))
+        self.assertTrue(self.test_gp_branch.can_be_accessed_by(self.other_ccg_user))
 
 
 class OrganisationMetaphoneTests(TestCase):
@@ -152,13 +152,13 @@ class OrganisationMetaphoneTests(TestCase):
     def setUp(self):
         # Make an organisation without saving it
 
-        trust = create_test_trust()
+        trust = create_test_organisation_parent()
         self.organisation = Organisation(name=u'Test Organisation',
                                          organisation_type='gppractices',
                                          choices_id='12702',
                                          ods_code='F84021',
                                          point=Point(51.536, -0.06213),
-                                         trust=trust)
+                                         parent=trust)
 
     def test_name_metaphone_created_on_save(self):
         self.assertEqual(self.organisation.name_metaphone, '')
@@ -166,13 +166,13 @@ class OrganisationMetaphoneTests(TestCase):
         self.assertEqual(self.organisation.name_metaphone, 'TSTRKNSXN')
 
 
-class CreateTestTrustMixin(object):
+class CreateTestOrganisationParentMixin(object):
     ods_counter = 0
 
     def create_test_object(self, attributes={}):
         attributes['code'] = 'F{0}'.format(self.ods_counter)
         self.ods_counter += 1
-        return create_test_trust(attributes)
+        return create_test_organisation_parent(attributes)
 
 
 class CreateTestCCGMixin(object):
@@ -235,7 +235,7 @@ class SendMailTestsMixin(object):
 # This is a bit convoluted. We want to test the user creation and email sending
 # for the Organisations and the CCGs. Use this matrix of mixins to do all the
 # tests without any code repetition.
-class TrustModelUserCreationTests(CreateTestTrustMixin, UserCreationTestsMixin, TestCase):
+class OrganisationParentModelUserCreationTests(CreateTestOrganisationParentMixin, UserCreationTestsMixin, TestCase):
     pass
 
 
@@ -243,7 +243,7 @@ class CCGModelUserCreationTests(CreateTestCCGMixin, UserCreationTestsMixin, Test
     pass
 
 
-class TrustModelSendMailTests(CreateTestTrustMixin, SendMailTestsMixin, TestCase):
+class OrganisationParentModelSendMailTests(CreateTestOrganisationParentMixin, SendMailTestsMixin, TestCase):
     pass
 
 

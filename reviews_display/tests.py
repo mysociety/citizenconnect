@@ -15,7 +15,7 @@ from django.core.management import call_command
 from django.core.urlresolvers import reverse
 from django.utils.timezone import utc
 
-from organisations.tests.lib import create_test_organisation, create_test_trust, AuthorizationTestCase
+from organisations.tests.lib import create_test_organisation, create_test_organisation_parent, AuthorizationTestCase
 
 from .models import Review, OrganisationFromApiDoesNotExist, RepliedToReviewDoesNotExist
 from .reviews_api import ReviewsAPI
@@ -414,27 +414,24 @@ class ReviewOrganisationListTests(TestCase):
         self.assertEqual(resp.context['table'].rows[0].record, self.org_review)
 
 
-class ReviewTrustListTests(AuthorizationTestCase):
+class OrganisationParentReviewsTests(AuthorizationTestCase):
 
     def setUp(self):
-        super(ReviewTrustListTests, self).setUp()
+        super(OrganisationParentReviewsTests, self).setUp()
         self.org_review = create_test_review({
-            'organisation': self.test_organisation},
+            'organisation': self.test_hospital},
             {}
         )
-        self.other_org_review = create_test_review({
-            'organisation': self.other_test_organisation},
-            {}
-        )
+        self.other_org_review = create_test_review({'organisation': self.test_gp_branch}, {})
 
     def test_trust_reviews_page(self):
-        reviews_list_url = reverse('trust-reviews',
+        reviews_list_url = reverse('org-parent-reviews',
                                    kwargs={
                                        'code': self.test_trust.code,
                                    })
         self.login_as(self.trust_user)
         resp = self.client.get(reviews_list_url)
-        self.assertEqual(resp.context['trust'], self.test_trust)
+        self.assertEqual(resp.context['organisation_parent'], self.test_trust)
         self.assertEqual(len(resp.context['table'].rows), 1)
         self.assertEqual(resp.context['table'].rows[0].record, self.org_review)
 

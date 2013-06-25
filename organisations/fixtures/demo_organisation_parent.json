@@ -1,7 +1,7 @@
 [
 {
         "pk": 1,
-        "model": "organisations.trust",
+        "model": "organisations.organisationparent",
         "fields": {
             "name": "Demo Trust",
             "code": "YYYYYYY",

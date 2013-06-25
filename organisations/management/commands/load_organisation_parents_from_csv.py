@@ -1,37 +1,37 @@
 import csv
 from optparse import make_option
 
-from django.db import transaction, IntegrityError
-from django.core.management.base import BaseCommand, CommandError
-from django.contrib.gis.geos import Point
+from django.db import transaction
+from django.core.management.base import BaseCommand
 
-from ...models import Trust, Service, CCG
+from ...models import OrganisationParent, CCG
 
 
 class Command(BaseCommand):
-    help = 'Load trusts from a spreadsheet extracted from the NHS Choices database'
+    help = 'Load Organisation Parents from a spreadsheet extracted from the NHS Choices database'
 
     option_list = BaseCommand.option_list + (
-        make_option('--verbose',
+        make_option(
+            '--verbose',
             action='store_true',
             dest='verbose',
             default=False,
             help='Show verbose output'),
-        ) + (
-        make_option('--update',
+    ) + (
+        make_option(
+            '--update',
             action='store_true',
             dest='update',
             default=False,
-            help='Update existing trust and service attributes'),
-        )
+            help='Update existing organisation parent attributes'),
+    )
         # + (
         # make_option('--clean',
         #     action='store_true',
         #     dest='clean',
         #     default=False,
-        #     help='Delete existing trusts, and associated organisations etc'),
+        #     help='Delete existing organisation parents'),
         # )
-
 
     def clean_value(self, value):
         if value == 'NULL':
@@ -50,9 +50,9 @@ class Command(BaseCommand):
 
         # if clean:
         #     if verbose:
-        #         self.stdout.write("Deleting existing trusts and services")
+        #         self.stdout.write("Deleting existing organisation parents")
         #     Service.objects.all().delete()
-        #     Trust.objects.all().delete()
+        #     OrganisationParent.objects.all().delete()
 
         if verbose:
             processed = 0
@@ -67,10 +67,10 @@ class Command(BaseCommand):
             try:
                 # Remember to update the docs in documentation/csv_formats.md if you make changes here
                 ods_code = self.clean_value(row['ODS Code'])
-                name     = self.clean_value(row['Name']    )
-                email    = self.clean_value(row['Email']   )
+                name = self.clean_value(row['Name'])
+                email = self.clean_value(row['Email'])
                 secondary_email = self.clean_value(row['Secondary Email'])
-                escalation_ccg_code = self.clean_value(row['Escalation CCG'] )
+                escalation_ccg_code = self.clean_value(row['Escalation CCG'])
                 other_ccg_codes = self.clean_value(row['Other CCGs'] or '').split(r'|')
 
             except KeyError as message:
@@ -97,7 +97,8 @@ class Command(BaseCommand):
             all_ccgs = set()
             all_ccgs.add(escalation_ccg)
             for other_code in other_ccg_codes:
-                if other_code == '': continue
+                if other_code == '':
+                    continue
                 try:
                     all_ccgs.add(CCG.objects.get(code=other_code))
                 except CCG.DoesNotExist:
@@ -109,7 +110,7 @@ class Command(BaseCommand):
                 finally:
                     transaction.rollback()
 
-            trust_defaults = {
+            org_parent_defaults = {
                 'name': name,
                 'email': email,
                 'secondary_email': secondary_email,
@@ -117,24 +118,24 @@ class Command(BaseCommand):
             }
 
             try:
-                trust, trust_created = Trust.objects.get_or_create(
+                org_parent, org_parent_created = OrganisationParent.objects.get_or_create(
                     code=ods_code,
-                    defaults=trust_defaults
+                    defaults=org_parent_defaults
                 )
 
                 if update:
-                    Trust.objects.filter(id=trust.id).update(**trust_defaults)
+                    OrganisationParent.objects.filter(id=org_parent.id).update(**org_parent_defaults)
 
-                if trust_created or update:
+                if org_parent_created or update:
                     # Delete all current CCG links and set the one we expect
-                    trust.ccgs.clear()
+                    org_parent.ccgs.clear()
                     for ccg in all_ccgs:
-                        trust.ccgs.add(ccg)
+                        org_parent.ccgs.add(ccg)
 
-                if trust_created:
-                    self.stdout.write('Created trust %s\n' % trust.name)
+                if org_parent_created:
+                    self.stdout.write('Created organisation parent %s\n' % org_parent.name)
                 elif verbose:
-                    self.stdout.write('Trust %s exists\n' % ods_code)
+                    self.stdout.write('Organisation Parent %s exists\n' % ods_code)
                 if verbose:
                     processed += 1
                 transaction.commit()
