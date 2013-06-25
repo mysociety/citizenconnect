@@ -27,10 +27,10 @@
 
 {% include 'organisations/includes/filters.html' %}
 
-<ul class="tab-nav">
-    <li><a href="#" id="london" class="active">London</a></li>
-    <li><a href="#" id="northeast">North East England</a></li>
-</ul>
+<div class="map-search-controls">
+    <input type="text" id="map-search-org-name" value="{{ ods_code }}" data-search-url="{% url 'org-map-search' cobrand=cobrand.name %}" />
+    <input type="hidden" id="map-search-lon-lat" value="{{ lon }},{{ lat }}" />
+</div>
 
 <div class="map-container">
     <div id="map" class="map"></div>
@@ -104,5 +104,12 @@
     </div>
 </script>
 
+<script src="{% static 'js/select2.min.js' %}"></script>
+<script src="{% static 'js/map_search.js' %}"></script>
 <script src="{% static 'js/map.js' %}"></script>
 {% endblock extra_js %}
+
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/select2/select2.css' %}" />
+{% endblock extra_css %}
