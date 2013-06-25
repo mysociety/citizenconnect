@@ -120,6 +120,9 @@ $(document).ready(function () {
         }
     });
 
+    // When an organisation is chosen we want to open the popup for it, but
+    // we have to wait until `drawProviders` has been run, this variable is
+    // set to the odsCode for the org whos popup we want to open.
     var openPopupFor;
 
     $searchBox.on('change', function(e) {
