@@ -27,6 +27,7 @@ from . import (create_test_problem,
                create_test_review,
                AuthorizationTestCase)
 from organisations.forms import OrganisationFinderForm
+from geocoder.models import Place
 
 
 class OrganisationMapTests(AuthorizationTestCase):
@@ -182,6 +183,16 @@ class MapSearchTests(TestCase):
         org = create_test_organisation({'name': "Test Organisation"})
         resp = self.client.get(self.place_search_url + '?term=Tes')
         self.assertContains(resp, org.name)
+
+    def test_search_returns_places(self):
+        place = Place.objects.create(
+            name='Place Name',
+            context_name="Place Name, London",
+            centre=Point(50, 2),
+            source=Place.SOURCE_OS_LOCATOR,
+        )
+        resp = self.client.get(self.place_search_url + '?term=Pla')
+        self.assertContains(resp, place.context_name)
 
 
 class OrganisationMapBrowserTests(SeleniumTestCase):
