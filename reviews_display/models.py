@@ -52,8 +52,10 @@ class Review(AuditedModel):
 
     in_reply_to = models.ForeignKey('Review', related_name='replies', blank=True, null=True)
 
-    # The organisation that this review concerns
-    organisation = models.ForeignKey(Organisation, related_name='reviews')
+    # The organisations that this review concerns - for Hospitals this will just be one
+    # organisation, but for GP's the review comes in marked against the surgery and we need
+    # to associate it with all of the GP's branches.
+    organisations = models.ManyToManyField(Organisation, related_name='reviews')
 
     # The name to display for the author. May be 'Anonymous'
     author_display_name = models.TextField()
