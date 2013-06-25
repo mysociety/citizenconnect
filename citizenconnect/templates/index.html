@@ -123,13 +123,35 @@
 {% block extra_js %}
 {{ block.super }}
 <script src="{% static 'js/select2.min.js' %}"></script>
-<script src="{% static 'js/map_search.js' %}"></script>
 <script>
     jQuery(function($) {
+
         var $searchBox = $("#map-search-org-name");
+
+        $searchBox.select2({
+            minimumInputLength: 1,
+            placeholder: "Search the map",
+            ajax: {
+                url: $searchBox.data('search-url'),
+                dataType: 'json',
+                data: function(term, page) {
+                    return {
+                        term: term
+                    };
+                },
+                results: function(data, page) {
+                    return {results: data};
+                }
+            }
+        });
 
         $searchBox.on('change', function(e) {
             // Redirect to the map page
+            if (e.added.type === "organisation") {
+                window.location = $searchBox.data('map-url') + '?ods_code=' + e.added.id;
+            } else {
+                window.location = $searchBox.data('map-url') + '?lon=' + e.added.lon + '&lat=' + e.added.lat;
+            }
         });
     });
 </script>

@@ -28,7 +28,8 @@
 {% include 'organisations/includes/filters.html' %}
 
 <div class="map-search-controls">
-    <input type="text" id="map-search-org-name" data-search-url="{% url 'org-map-search' cobrand=cobrand.name %}" />
+    <input type="text" id="map-search-org-name" value="{{ ods_code }}" data-search-url="{% url 'org-map-search' cobrand=cobrand.name %}" />
+    <input type="hidden" id="map-search-lon-lat" value="{{ lon }},{{ lat }}" />
 </div>
 
 <div class="map-container">

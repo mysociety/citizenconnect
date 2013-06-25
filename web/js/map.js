@@ -48,7 +48,6 @@ $(document).ready(function () {
     var hoverBubbleTemplate = $("script[name=hover-bubble]").html();
     var londonCentre = new L.LatLng(51.505, -0.09);
     var northEastCentre = new L.LatLng(54.95, -1.62);
-    var selectedProvider = window.location.hash.slice(1);
     var londonZoomLevel = 10;
     var northEastZoomLevel = 10;
     var map = new L.Map('map', {
@@ -98,9 +97,46 @@ $(document).ready(function () {
     var zoomControl = map.zoomControl;
 
     /**
+     * Find a provider by a set of attributes.
+     *
+     * @param {Object} attrs The attributes to search by
+     * @param {Function} callback The function to call with the provider found (if any)
+     */
+    var findProvider = function(odsCode, callback) {
+        $.ajax({
+            url: window.location.pathname + '/' + odsCode,
+            success: function(provider) {
+                callback(provider);
+            }
+        });
+    };
+
+    /**
     * Enable select2 on the org name select.
     */
     var $searchBox = $("#map-search-org-name");
+
+    $searchBox.select2({
+        minimumInputLength: 1,
+        placeholder: "Search the map",
+        ajax: {
+            url: $searchBox.data('search-url'),
+            dataType: 'json',
+            data: function(term, page) {
+                return {
+                    term: term
+                };
+            },
+            results: function(data, page) {
+                return {results: data};
+            }
+        },
+        initSelection: function(element, callback) {
+            findProvider(element.val(), function(provider) {
+                callback(provider);
+            });
+        }
+    });
 
     // When an organisation is chosen we want to open the popup for it, but
     // we have to wait until `drawProviders` has been run, this variable is
@@ -113,11 +149,14 @@ $(document).ready(function () {
             var odsCode = selection.id;
             zoomToPoint(selection.lat, selection.lon);
             openPopupFor = odsCode;
-            window.location.hash = odsCode;
+            // window.location.hash = odsCode;
         } else {
             zoomToPoint(selection.lat, selection.lon);
         }
     });
+
+    var selectedProvider = $searchBox.val();
+    var selectedLonLat = $('#map-search-lon-lat').val();
 
     // Function to lock all the map controls so that you can't
     // interact with it (ie: during reloading of map pins)
@@ -345,21 +384,6 @@ $(document).ready(function () {
         });
     };
 
-    /**
-     * Find a provider by a set of attributes.
-     *
-     * @param {Object} attrs The attributes to search by
-     * @param {Function} callback The function to call with the provider found (if any)
-     */
-    var findProvider = function(odsCode, callback) {
-        $.ajax({
-            url: window.location.pathname + '/' + odsCode,
-            success: function(provider) {
-                callback(provider);
-            }
-        });
-    };
-
     wax.tilejson('https://dnv9my2eseobd.cloudfront.net/v3/jedidiah.map-3lyys17i.jsonp', function(tilejson) {
         var mapCentre = londonCentre;
         var mapZoomLevel = londonZoomLevel;
@@ -388,7 +412,11 @@ $(document).ready(function () {
                     openPopupFor = selectedProvider;
                 }
             });
+        } else if (selectedLonLat) {
+            var lonLat = selectedLonLat.split(','), lon = lonLat[0], lat = lonLat[1];
+            zoomToPoint(lat, lon);
         }
+
     });
 
     // Filters

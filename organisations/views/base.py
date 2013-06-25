@@ -210,6 +210,9 @@ class Map(FilterFormMixin,
 
         # Load all the organisations to use for the name select
         context['name_search_organisations'] = Organisation.objects.all().only('id', 'name').order_by('name')
+        context['ods_code'] = self.request.GET.get('ods_code', '')
+        context['lon'] = self.request.GET.get('lon', '')
+        context['lat'] = self.request.GET.get('lat', '')
 
         return context
 
@@ -245,7 +248,12 @@ class MapOrganisationCoords(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(MapOrganisationCoords, self).get_context_data(**kwargs)
         organisation = Organisation.objects.get(ods_code=kwargs['ods_code'])
-        org_data = {'lat': organisation.point.y, 'lon': organisation.point.x}
+        org_data = {
+            'id': organisation.id,
+            'text': organisation.name,
+            'lat': organisation.point.y,
+            'lon': organisation.point.x
+        }
         context['organisation'] = json.dumps(org_data)
         return context
 
