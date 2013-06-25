@@ -104,6 +104,8 @@ $(document).ready(function () {
 
     $searchBox.select2({
         minimumInputLength: 1,
+        placeholder: "Search for an organisation or area",
+        allowClear: true,
         ajax: {
             url: window.location.pathname + '/search',
             dataType: 'json',
@@ -115,9 +117,7 @@ $(document).ready(function () {
             results: function(data, page) {
                 return {results:data};
             }
-        },
-        placeholder: "Search for an organisation or area",
-        allowClear: true
+        }
     });
 
     var openPopupFor;
