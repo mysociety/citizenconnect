@@ -79,6 +79,7 @@ class CsvImportTests(TestCase):
             model_to_dict(org_parent, exclude=['ccgs']),
             {
                 'code': 'AN1',
+                'choices_id': 1234,
                 'email': 'an-trust@example.com',
                 'escalation_ccg': ccg.id,
                 'id': org_parent.id,

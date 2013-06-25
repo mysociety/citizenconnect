@@ -44,6 +44,7 @@ class OrganisationParentModelTests(TestCase):
         ccg = create_test_ccg({})
         trust = OrganisationParent(name="test_trust",
                                    code="ABC",
+                                   choices_id=12345,
                                    email='test-trust@example.org',
                                    secondary_email='test-trust-secondary@example.org',
                                    escalation_ccg=ccg)

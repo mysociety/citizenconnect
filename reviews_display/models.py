@@ -6,7 +6,7 @@ from django.conf import settings
 from django.db import models
 from django.forms.models import model_to_dict
 
-from organisations.models import Organisation
+from organisations.models import Organisation, OrganisationParent
 from citizenconnect.models import AuditedModel
 
 
@@ -52,8 +52,10 @@ class Review(AuditedModel):
 
     in_reply_to = models.ForeignKey('Review', related_name='replies', blank=True, null=True)
 
-    # The organisation that this review concerns
-    organisation = models.ForeignKey(Organisation, related_name='reviews')
+    # The organisations that this review concerns - for Hospitals this will just be one
+    # organisation, but for GP's the review comes in marked against the surgery and we need
+    # to associate it with all of the GP's branches.
+    organisations = models.ManyToManyField(Organisation, related_name='reviews')
 
     # The name to display for the author. May be 'Anonymous'
     author_display_name = models.TextField()
@@ -100,7 +102,7 @@ class Review(AuditedModel):
         cls.objects.filter(api_published__lte=oldest_permitted).delete()
 
     @classmethod
-    def upsert_or_delete_from_api_data(cls, api_review):
+    def upsert_or_delete_from_api_data(cls, api_review, organisation_type):
         """
 
         Given a review scraped from the API creates or updates an entry in the
@@ -135,9 +137,19 @@ class Review(AuditedModel):
 
         # Load the org. If not possible skip this review.
         try:
-            organisation = Organisation.objects.get(
-                choices_id=api_review['organisation_choices_id'])
-        except Organisation.DoesNotExist:
+            # For a hospital, this is the org given in the api data,
+            # for the GP, the data given is the id of the surgery, so we
+            # need to get that org and then get all its' branches
+            if organisation_type == "gppractices":
+                gp_surgery = OrganisationParent.objects.get(
+                    choices_id=api_review['organisation_choices_id']
+                )
+                organisations = list(gp_surgery.organisations.all())
+            else:
+                organisation = Organisation.objects.get(
+                    choices_id=api_review['organisation_choices_id'])
+                organisations = [organisation]
+        except (Organisation.DoesNotExist, OrganisationParent.DoesNotExist):
             raise OrganisationFromApiDoesNotExist(
                 "Could not find organisation with choices_id = '{0}'".format(
                     api_review['organisation_choices_id']
@@ -149,7 +161,8 @@ class Review(AuditedModel):
         # this might be quite common.
         if api_review['api_category'] == 'reply':
             try:
-                api_review['in_reply_to'] = cls.objects.get(api_posting_id=api_review['in_reply_to_id'])
+                api_review['in_reply_to'] = cls.objects.get(api_posting_id=api_review['in_reply_to_id'],
+                                                            api_postingorganisationid=api_review['in_reply_to_organisation_id'])
             except cls.DoesNotExist:
                 raise RepliedToReviewDoesNotExist(
                     "Could not find review with api_posting_id of {0} for reply {1}".format(
@@ -162,10 +175,15 @@ class Review(AuditedModel):
         del defaults['ratings']
         del defaults['organisation_choices_id']
         del defaults['in_reply_to_id']
-        defaults['organisation'] = organisation
+        del defaults['in_reply_to_organisation_id']
 
         review, created = cls.objects.get_or_create(
             defaults=defaults, **unique_args)
+
+        # Assign organisations
+        # Assigning like this clears any existing relationships so it doesn't
+        # matter if it was newly created or existed already
+        review.organisations = organisations
 
         if not created:
             for field in defaults.keys():

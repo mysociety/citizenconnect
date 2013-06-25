@@ -26,6 +26,9 @@ def create_test_review(attributes={}):
     global api_posting_id_counter
     api_posting_id_counter += 1
 
+    organisation = attributes.get('organisation')
+    del attributes['organisation']
+
     default_attributes = {'api_posting_id': str(api_posting_id_counter),
                           'api_postingorganisationid': '893470895',
                           'api_category': 'comment',
@@ -35,6 +38,7 @@ def create_test_review(attributes={}):
     default_attributes.update(attributes)
     instance = Review(**dict((k, v) for (k, v) in default_attributes.items() if '__' not in k))
     instance.save()
+    instance.organisations.add(organisation)
     return instance
 
 
@@ -66,6 +70,7 @@ def create_test_organisation_parent(attributes={}):
     default_attributes = {
         'name': 'Test Trust',
         'code': 'TRUST1',
+        'choices_id': 1234,
         'email': 'test-trust@example.org',
         'secondary_email': 'test-trust-secondary@example.org',
     }

@@ -20,7 +20,8 @@ There are several sample csv files in the [documentation/csv_samples folder](htt
 
 ## Trusts and GP Surgeries
 
-- `ODS Code`: The ODS code of the trust/gpo surgery
+- `ODS Code`: The ODS code of the trust/gp surgery
+- `Choices ID`: The NHS Choices ID of the trust/gp surgery
 - `Name`
 - `Escalation CCG`: The ODS code of the escalation CCG. This CCG will also be added to the CCGs that this trust/surgery belongs to.
 - `Other CCGs`: The ODS codes (separated by a `|` if more than one) of CCGs that this trust/surgery belongs to, in addition to the `Escalation CCG`. May be blank.
