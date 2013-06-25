@@ -324,7 +324,7 @@ $(document).ready(function () {
      * @param {Number} zoom The zoom level, defaults to 15
      */
     var zoomToPoint = function(lat, lon, zoom) {
-        zoom = zoom || 15;
+        zoom = zoom || 14;
         map.setView([lat, lon], zoom);
         if (map.getZoom() === zoom) {
             map.fire('zoomend');
