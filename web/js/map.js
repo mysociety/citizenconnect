@@ -102,24 +102,6 @@ $(document).ready(function () {
     */
     var $searchBox = $("#map-search-org-name");
 
-    $searchBox.select2({
-        minimumInputLength: 1,
-        placeholder: "Search for an organisation or area",
-        allowClear: true,
-        ajax: {
-            url: window.location.pathname + '/search',
-            dataType: 'json',
-            data: function(term, page) {
-                return {
-                    term: term
-                };
-            },
-            results: function(data, page) {
-                return {results:data};
-            }
-        }
-    });
-
     // When an organisation is chosen we want to open the popup for it, but
     // we have to wait until `drawProviders` has been run, this variable is
     // set to the odsCode for the org whos popup we want to open.
