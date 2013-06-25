@@ -8,7 +8,6 @@ jQuery(function($) {
     $searchBox.select2({
         minimumInputLength: 1,
         placeholder: "Search for an organisation or area",
-        allowClear: true,
         ajax: {
             url: $searchBox.data('search-url'),
             dataType: 'json',
