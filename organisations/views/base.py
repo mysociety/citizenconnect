@@ -264,7 +264,7 @@ class MapSearch(TemplateView):
             to_serialize = []
 
             # Check if the term is a postcode
-            postcode = re.sub('\s+', '', location.upper())
+            postcode = re.sub('\s+', '', term.upper())
             if is_valid_postcode(postcode) or is_valid_partial_postcode(postcode):
                 pass # TODO: return co-ordinates for this postcode from mapit
 
