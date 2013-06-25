@@ -174,6 +174,10 @@ class MapSearchTests(TestCase):
         resp = self.client.get(self.place_search_url)
         self.assertEqual(200, resp.status_code)
 
+    def test_no_search_term_returns_no_results(self):
+        resp = self.client.get(self.place_search_url + '?term=')
+        self.assertEqual('[]', resp.content)
+
     def test_search_returns_organisations(self):
         org = create_test_organisation({'name': "Test Organisation"})
         resp = self.client.get(self.place_search_url + '?term=Tes')
