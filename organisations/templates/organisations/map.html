@@ -28,7 +28,7 @@
 {% include 'organisations/includes/filters.html' %}
 
 <div class="map-search-controls">
-    <input type="text" id="map-search-org-name" data-search-url="{% url 'org-map-search' %}" />
+    <input type="text" id="map-search-org-name" data-search-url="{% url 'org-map-search' cobrand=cobrand.name %}" />
 </div>
 
 <div class="map-container">
