@@ -409,24 +409,6 @@ $(document).ready(function () {
         }
     });
 
-    // Tabs
-    $('a#northeast').on('click', function(e) {
-        // recenter the map to The north east
-        e.preventDefault();
-        map.setView(northEastCentre, northEastZoomLevel);
-        map.fire('dragend');
-        $('ul.tab-nav a').toggleClass('active');
-        window.location.hash = "#northeast";
-    });
-    $('a#london').on('click', function(e) {
-        // recenter the map to london
-        e.preventDefault();
-        map.setView(londonCentre, londonZoomLevel);
-        map.fire('dragend');
-        $('ul.tab-nav a').toggleClass('active');
-        window.location.hash = "#london";
-    });
-
     // Filters
     // Hide the submit button
     $(".filters input[type=submit]").hide();
