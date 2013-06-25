@@ -5,7 +5,7 @@
     <div class="feed-list__left">
         {% if score != None %}
         <p class="rating">
-            <a href="{% url 'review-detail' api_posting_id=review.api_posting_id ods_code=review.organisation.ods_code cobrand=cobrand.name %}">
+            <a href="{% url 'review-detail' api_posting_id=review.api_posting_id ods_code=review.organisations.all.0.ods_code cobrand=cobrand.name %}">
                 <span class="{{ score|star_class:1 }}" aria-hidden="true"></span>
                 <span class="{{ score|star_class:2 }}" aria-hidden="true"></span>
                 <span class="{{ score|star_class:3 }}" aria-hidden="true"></span>
@@ -15,7 +15,7 @@
         </p>
         {% else %}
         <p class="rating--grey">
-            <a href="{% url 'review-detail' api_posting_id=review.api_posting_id ods_code=review.organisation.ods_code cobrand=cobrand.name %}">
+            <a href="{% url 'review-detail' api_posting_id=review.api_posting_id ods_code=review.organisations.all.0.ods_code cobrand=cobrand.name %}">
                 <span class="icon-circle" aria-hidden="true"></span>
                 <span class="hide-text">—</span>
              </a>
