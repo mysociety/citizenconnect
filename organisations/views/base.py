@@ -295,7 +295,7 @@ class MapSearch(TemplateView):
                 "type": "organisation",
                 "lat":  obj.point.y,
                 "lon":  obj.point.x,
-            });
+            })
 
         places = Place.objects.filter(name__istartswith=term)
         places = places.order_by('name')
@@ -307,7 +307,7 @@ class MapSearch(TemplateView):
                 "type": "place",
                 "lat":  obj.centre.y,
                 "lon":  obj.centre.x,
-            });
+            })
 
         return context
 
