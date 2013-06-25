@@ -15,6 +15,7 @@ from django.contrib.gis.geos import Polygon
 # App imports
 from citizenconnect.shortcuts import render
 from issues.models import Problem
+from geocoder.models import Place
 
 from .. import auth
 from ..auth import (user_in_group,
@@ -30,7 +31,6 @@ from ..tables import (NationalSummaryTable,
                       ProblemDashboardTable,
                       BreachTable)
 from ..templatetags.organisation_extras import formatted_time_interval, percent
-from geocoder.models import Place
 
 
 class PrivateViewMixin(object):
