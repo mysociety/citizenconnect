@@ -213,6 +213,7 @@ class ReviewModelTests(TestCase):
             'content_improved': 'Things that could be improved',
             'content': 'What a marvellous service the NHS is!',
             'in_reply_to_id': None,
+            'in_reply_to_organisation_id': None,
             'organisation_choices_id': str(self.organisation.choices_id),
             'ratings': self.sample_ratings,
         }
