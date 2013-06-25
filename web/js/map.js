@@ -126,7 +126,6 @@ $(document).ready(function () {
         var odsCode = $searchBox.val();
         findProvider(odsCode, function(provider) {
             zoomToPoint(provider.lat, provider.lon);
-            map.fire('zoomend');
             openPopupFor = odsCode;
             window.location.hash = odsCode;
         });
@@ -324,6 +323,9 @@ $(document).ready(function () {
     var zoomToPoint = function(lat, lon, zoom) {
         zoom = zoom || 15;
         map.setView([lat, lon], zoom);
+        if (map.getZoom() === zoom) {
+            map.fire('zoomend');
+        }
     };
 
     /**
