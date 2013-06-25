@@ -166,8 +166,6 @@ class Map(FilterFormMixin,
         kwargs = super(Map, self).get_form_kwargs()
         # Turn off ccg filter
         kwargs['with_ccg'] = False
-        # Turn off department filter
-        kwargs['with_service_code'] = False
         # Turn off the various flag filters
         kwargs['with_flags'] = False
         return kwargs

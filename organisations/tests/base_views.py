@@ -95,6 +95,25 @@ class OrganisationMapTests(AuthorizationTestCase):
         self.assertEqual(response_json[0]['ods_code'], self.hospital.ods_code)
         self.assertEqual(response_json[0]['all_time_open'], 0)
 
+    def test_map_filters_by_service(self):
+        # Create some problems to filter
+        service = create_test_service({"organisation": self.hospital})
+        create_test_problem({'organisation': self.hospital,
+                             'publication_status': Problem.PUBLISHED,
+                             'service': service})
+        create_test_problem({'organisation': self.other_gp,
+                             'publication_status': Problem.PUBLISHED})
+
+        service_filtered_url = "{0}?service_code={1}".format(self.map_url, service.service_code)
+
+        resp = self.client.get(service_filtered_url)
+        response_json = json.loads(resp.context['organisations'])
+        self.assertEqual(len(response_json), 2)
+        self.assertEqual(response_json[0]['ods_code'], self.other_gp.ods_code)
+        self.assertEqual(response_json[0]['all_time_open'], 0)
+        self.assertEqual(response_json[1]['ods_code'], self.hospital.ods_code)
+        self.assertEqual(response_json[1]['all_time_open'], 1)
+
     def test_map_filters_by_category(self):
         # Create some problems to filter
         create_test_problem({'organisation': self.other_gp,
