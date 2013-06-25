@@ -58,9 +58,9 @@ class Feedback(FormView):
 
     def get_initial(self):
         initial = super(Feedback, self).get_initial()
-        problem_id = self.request.GET.get('problem_id')
-        if problem_id is not None:
-            initial['feedback_comments'] = "RE: Problem reference {0}\n\n".format(problem_id)
+        problem_ref = self.request.GET.get('problem_ref')
+        if problem_ref is not None:
+            initial['feedback_comments'] = "RE: Problem reference {0}\n\n".format(problem_ref)
         return initial
 
     def form_valid(self, form):
