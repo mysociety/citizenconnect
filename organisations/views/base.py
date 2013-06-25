@@ -275,11 +275,11 @@ class MapSearch(TemplateView):
             try:
                 point = MapitPostCodeLookup.postcode_to_point(possible_postcode, partial=is_partial_postcode)
                 to_serialize.append({
-                "id":   possible_postcode,
-                "text": term.upper() + ' (postcode)',
-                "type": "place",
-                "lat":  point.y,
-                "lon":  point.x,
+                    "id":   possible_postcode,
+                    "text": term.upper() + ' (postcode)',
+                    "type": "place",
+                    "lat":  point.y,
+                    "lon":  point.x,
                 })
                 return context
             except MapitError:
