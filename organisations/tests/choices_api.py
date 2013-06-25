@@ -28,11 +28,13 @@ class ExampleFileAPITest(TestCase):
     def setUp(self):
         # Reset the api in case we modify it inside tests
         self._api = ChoicesAPI()
+        self._original_urlopen = urllib.urlopen
         urllib.urlopen = MagicMock(return_value=self._example_data)
 
     # Reset the fixture file so that we can read it again
     def tearDown(self):
         self._example_data.seek(0)
+        urllib.urlopen = self._original_urlopen
 
     # Close the fixture file
     @classmethod
