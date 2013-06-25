@@ -174,6 +174,11 @@ class MapSearchTests(TestCase):
         resp = self.client.get(self.place_search_url)
         self.assertEqual(200, resp.status_code)
 
+    def test_search_returns_organisations(self):
+        org = create_test_organisation({'name': "Test Organisation"})
+        resp = self.client.get(self.place_search_url + '?term=Tes')
+        self.assertContains(resp, org.name)
+
 
 class OrganisationMapBrowserTests(SeleniumTestCase):
 
