@@ -123,12 +123,15 @@ $(document).ready(function () {
     var openPopupFor;
 
     $searchBox.on('change', function(e) {
-        var odsCode = $searchBox.val();
-        findProvider(odsCode, function(provider) {
-            zoomToPoint(provider.lat, provider.lon);
+        var selection = e.added;
+        if (selection.type === 'organisation') {
+            var odsCode = selection.id;
+            zoomToPoint(selection.lat, selection.lon);
             openPopupFor = odsCode;
             window.location.hash = odsCode;
-        });
+        } else {
+            zoomToPoint(selection.lat, selection.lon);
+        }
     });
 
     // Function to lock all the map controls so that you can't
