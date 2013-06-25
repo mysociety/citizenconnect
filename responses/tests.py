@@ -348,7 +348,7 @@ class ResponseFormViewTests(AuthorizationTestCase):
 
         # logout, login and get the form
         self.client.logout()
-        self.login_as(self.customer_contact_centre_user)
+        self.login_as(user_to_test_as)
         resp = self.client.get(self.response_form_url)
         self.assertEqual(resp.status_code, 200)
         
@@ -362,8 +362,14 @@ class ResponseFormViewTests(AuthorizationTestCase):
         # dashboard. This link should be appropriate to the type of user.
         # See #825 for details.
         
-        resp = self._change_user_and_submit(self.customer_contact_centre_user)
-        self.assertContains(resp, "Return to the '" + self.test_hospital.parent.name + "' dashboard") 
+        # only has one dashboard to return to
+        trust_resp = self._change_user_and_submit(self.trust_user)
+        self.assertContains(trust_resp, "Go to the '" + self.test_hospital.parent.name + "' dashboard") 
+
+        # also has the CCG dashboard
+        ccg_resp = self._change_user_and_submit(self.ccg_user)
+        self.assertContains(ccg_resp, "Go to the '" + self.test_hospital.parent.name + "' dashboard") 
+        self.assertContains(ccg_resp, "Go to the '" + self.test_ccg.name + "' dashboard") 
 
 
 class ResponseModelTests(TransactionTestCase, ConcurrencyTestMixin):
