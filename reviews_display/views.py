@@ -8,6 +8,7 @@ from django_tables2 import RequestConfig
 
 from organisations.views.organisations import OrganisationAwareViewMixin
 from organisations.views.organisation_parents import OrganisationParentAwareViewMixin
+from organisations.models import Organisation
 
 from .models import Review
 from .tables import ReviewTable, OrganisationParentReviewTable
@@ -44,7 +45,7 @@ class OrganisationParentReviews(OrganisationParentAwareViewMixin,
 
     def get_context_data(self, **kwargs):
         context = super(OrganisationParentReviews, self).get_context_data(**kwargs)
-        all_reviews = Review.objects.all().filter(organisation__parent=self.organisation_parent)
+        all_reviews = Review.objects.all().filter(organisations__parent=self.organisation_parent)
         table = OrganisationParentReviewTable(all_reviews)
         RequestConfig(self.request, paginate={'per_page': 8}).configure(table)
         context['table'] = table
