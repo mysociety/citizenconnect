@@ -194,6 +194,33 @@ class MapSearchTests(TestCase):
         resp = self.client.get(self.place_search_url + '?term=Pla')
         self.assertContains(resp, place.context_name)
 
+    def test_search_returns_postcode(self):
+        resp = self.client.get(self.place_search_url + '?term=SW1A+1AA')
+        data = json.loads(resp.content)
+        self.assertEqual(data, [{
+            'id': 'SW1A1AA',
+            'lat': 51.501009611553926,
+            'lon': -0.14158706711000901,
+            'text': 'SW1A 1AA (postcode)',
+            'type': 'place',
+        }])
+
+    def test_search_returns_partial_postcode(self):
+        resp = self.client.get(self.place_search_url + '?term=SW1A')
+        data = json.loads(resp.content)
+        self.assertEqual(data, [{
+            'id': 'SW1A',
+            'lat': 51.501434410230779,
+            'lon': -0.13294453160162145,
+            'text': 'SW1A (postcode)',
+            'type': 'place',
+        }])
+
+    def test_search_returns_bad_postcode(self):
+        resp = self.client.get(self.place_search_url + '?term=BA1D+1AB')
+        data = json.loads(resp.content)
+        self.assertEqual(data, [])
+
 
 class OrganisationMapBrowserTests(SeleniumTestCase):
 

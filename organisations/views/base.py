@@ -26,7 +26,7 @@ from ..auth import (user_in_group,
                     user_can_access_private_national_summary,
                     user_is_escalation_body)
 from ..models import Organisation, SuperuserLogEntry
-from ..forms import OrganisationFinderForm, FilterForm
+from ..forms import OrganisationFinderForm, FilterForm, MapitPostCodeLookup, MapitError
 from ..lib import interval_counts
 from ..tables import (NationalSummaryTable,
                       PrivateNationalSummaryTable,
@@ -260,41 +260,54 @@ class MapSearch(TemplateView):
 
         term = self.request.GET.get('term', '')
 
-        if len(term):
-            to_serialize = []
+        to_serialize = []
+        context['results'] = to_serialize
 
-            # Check if the term is a postcode
-            postcode = re.sub('\s+', '', term.upper())
-            if is_valid_postcode(postcode) or is_valid_partial_postcode(postcode):
-                pass # TODO: return co-ordinates for this postcode from mapit
+        # no search, no results
+        if not len(term):
+            return context
 
-            organisations = Organisation.objects.filter(name__icontains=term)
-
-            for obj in organisations[:8]:
+        # Check if the term is a postcode
+        possible_postcode = re.sub('\s+', '', term.upper())
+        is_postcode = is_valid_postcode(possible_postcode)
+        is_partial_postcode = is_valid_partial_postcode(possible_postcode)
+        if is_postcode or is_partial_postcode:
+            try:
+                point = MapitPostCodeLookup.postcode_to_point(possible_postcode, partial=is_partial_postcode)
                 to_serialize.append({
-                    "id":   obj.ods_code,
-                    "text": obj.name,
-                    "type": "organisation",
-                    "lat":  obj.point.y,
-                    "lon":  obj.point.x,
-                });
+                "id":   possible_postcode,
+                "text": term.upper() + ' (postcode)',
+                "type": "place",
+                "lat":  point.y,
+                "lon":  point.x,
+                })
+                return context
+            except MapitError:
+                # Not really much to be done about an error, pass through to the rest of the code.
+                pass
 
-            places = Place.objects.filter(name__istartswith=term)
-            places = places.order_by('name')
+        organisations = Organisation.objects.filter(name__icontains=term)
 
-            for obj in places[:8]:
-                to_serialize.append({
-                    "id":   obj.id,
-                    "text": obj.context_name,
-                    "type": "place",
-                    "lat":  obj.centre.y,
-                    "lon":  obj.centre.x,
-                });
+        for obj in organisations[:8]:
+            to_serialize.append({
+                "id":   obj.ods_code,
+                "text": obj.name,
+                "type": "organisation",
+                "lat":  obj.point.y,
+                "lon":  obj.point.x,
+            });
 
-            context['results'] = to_serialize
-        else:
-            context['results'] = []
+        places = Place.objects.filter(name__istartswith=term)
+        places = places.order_by('name')
 
+        for obj in places[:8]:
+            to_serialize.append({
+                "id":   obj.id,
+                "text": obj.context_name,
+                "type": "place",
+                "lat":  obj.centre.y,
+                "lon":  obj.centre.x,
+            });
 
         return context
 
