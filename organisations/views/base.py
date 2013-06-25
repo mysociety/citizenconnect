@@ -258,7 +258,6 @@ class MapSearch(TemplateView):
 
         term = self.request.GET.get('term', '')
 
-
         if len(term):
             to_serialize = []
             organisations = Organisation.objects.filter(name__istartswith=term)
