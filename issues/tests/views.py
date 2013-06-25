@@ -251,7 +251,7 @@ class ProblemPublicViewTests(AuthorizationTestCase):
 
     def test_shows_report_link(self):
         resp = self.client.get(self.test_moderated_problem_url)
-        expected_link = '<a href="/choices/feedback?problem_id={0}">Report as unsuitable</a>'.format(self.test_moderated_problem.id)
+        expected_link = '<a href="/choices/feedback?problem_ref={0}">Report as unsuitable</a>'.format(self.test_moderated_problem.reference_number)
         self.assertContains(resp, expected_link)
 
 
