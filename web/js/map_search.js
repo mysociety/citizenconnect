@@ -10,7 +10,7 @@ jQuery(function($) {
         placeholder: "Search for an organisation or area",
         allowClear: true,
         ajax: {
-            url: window.location.pathname + '/search',
+            url: $searchBox.data('search-url'),
             dataType: 'json',
             data: function(term, page) {
                 return {
