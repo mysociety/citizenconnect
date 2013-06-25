@@ -20,7 +20,7 @@ class GeocoderViewTests(TestCase):
             'Chelsea',
         ]
 
-        centre = Point(50, 2);
+        centre = Point(50, 2)
 
         for name in names:
             Place.objects.create(
