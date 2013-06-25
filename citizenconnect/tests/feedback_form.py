@@ -10,6 +10,7 @@ class FeedbackFormTest(TestCase):
     def setUp(self):
         self.feedback_form_url = reverse('feedback', kwargs={'cobrand': 'choices'})
         self.feedback_confirm_url = reverse('feedback-confirm', kwargs={'cobrand': 'choices'})
+        self.test_problem = create_test_problem({})
 
     def test_feedback_form_exists(self):
         resp = self.client.get(self.feedback_form_url)
@@ -32,8 +33,12 @@ class FeedbackFormTest(TestCase):
         self.assertEqual(len(mail.outbox), 0)
 
     def test_report_problem_as_unsuitable(self):
-        resp = self.client.get(self.feedback_form_url + '?problem_ref=P42')
-        self.assertContains(resp, 'RE: Problem reference P42')
+        resp = self.client.get(self.feedback_form_url + '?problem_ref=' + self.test_problem.reference_number)
+        self.assertContains(resp, 'RE: Problem reference ' + self.test_problem.reference_number)
+
+    def test_report_problem_as_unsuitable_where_problem_not_in_db(self):
+        resp = self.client.get(self.feedback_form_url + '?problem_ref=P9999')
+        self.assertNotContains(resp, "RE: Problem reference")
 
     def test_feedback_form_doesnt_reference_problem_by_default(self):
         resp = self.client.get(self.feedback_form_url)
