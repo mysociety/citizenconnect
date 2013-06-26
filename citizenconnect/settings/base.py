@@ -228,8 +228,9 @@ AUTHENTICATION_BACKENDS = (
 
 # Where should the geocoder load data for?
 GEOCODER_BOUNDING_BOXES=(
-    # xmin, ymin, xmax, ymax
-    ( -0.8, 51.1, 0.6,  51.8 ), # London
+    # xmin,  ymin,  xmax,  ymax
+    ( -0.75, 51.29, 0.57,  51.72 ), # London
+    ( -2.28, 54.75, -0.96, 55.15 ), # North East
     
 )
 
