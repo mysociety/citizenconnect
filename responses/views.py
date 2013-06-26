@@ -32,13 +32,6 @@ class ResponseLookup(FormView):
         # Persist this so that we can display it in the form if there is something wrong.
         context['reference_number'] = self.request.POST.get('reference_number', '')
 
-        # Determine if we should show the page as part of some tabbed navigation
-        if user_is_escalation_body(self.request.user):
-            context['show_escalation_tabs'] = True
-        elif user_in_group(self.request.user, auth.TRUSTS) and self.request.user.organisations.count() == 1:
-            print "showing organisation tabs"
-            context['show_organisation_tabs'] = True
-            context['organisation'] = self.request.user.organisations.all()[0]
         return context
 
 

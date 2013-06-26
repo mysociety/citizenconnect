@@ -141,11 +141,11 @@ def _apply_organisation_filters(organisation_filters,
         else:
             if type(ccg) != tuple:
                 ccg = (ccg,)
-            # Filtering by CCG requires joining to the Trust tables
-            # Because Trusts are connected to CCGs
-            tables.append('organisations_trust_ccgs')
-            organisation_filter_clauses.append("organisations_trust_ccgs.trust_id = organisations_organisation.trust_id")
-            organisation_filter_clauses.append("organisations_trust_ccgs.ccg_id in %s")
+            # Filtering by CCG requires joining to the Organisation Parent tables
+            # Because Organisation Parent are connected to CCGs
+            tables.append('organisations_organisationparent_ccgs')
+            organisation_filter_clauses.append("organisations_organisationparent_ccgs.organisationparent_id = organisations_organisation.parent_id")
+            organisation_filter_clauses.append("organisations_organisationparent_ccgs.ccg_id in %s")
             params.append(ccg)
 
 
@@ -228,7 +228,8 @@ def interval_counts(problem_filters={},
 
     elif data_type == 'reviews':
         _create_review_selects(intervals, data_intervals, select_clauses, params)
-        review_filter_clauses = ["""organisations_organisation.id = reviews_display_review.organisation_id"""]
+        # We'll manually add a join to reviews_display_review_organisations below
+        review_filter_clauses = ["""reviews_display_review_organisations.review_id = reviews_display_review.id"""]
 
     else:
         raise "Unknown data_type: %s" % data_type
@@ -276,8 +277,10 @@ def interval_counts(problem_filters={},
         from_text += """ LEFT JOIN issues_problem"""
         criteria_text = "ON %s" % " AND ".join(problem_filter_clauses)
     elif data_type == 'reviews':
+        # This is a bit hacky, but we need to join to reviews via an interim table
+        from_text += """ LEFT JOIN reviews_display_review_organisations ON organisations_organisation.id = reviews_display_review_organisations.organisation_id"""
         from_text += """ LEFT JOIN reviews_display_review"""
-        criteria_text = "ON %s" % " AND ".join(review_filter_clauses)
+        criteria_text += " ON %s" % " AND ".join(review_filter_clauses)
 
     if organisation_filter_clauses:
         criteria_text += " WHERE %s" % " AND ".join(organisation_filter_clauses)

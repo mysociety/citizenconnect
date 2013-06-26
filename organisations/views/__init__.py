@@ -1,1 +1,1 @@
-__all__ = ["base", "organisations", "trusts", "ccgs"]
+__all__ = ["base", "organisations", "organisation_parents", "ccgs"]

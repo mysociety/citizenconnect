@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load url from future %}
+{% load staticfiles %}
+{% load render_table from django_tables2 %}
+
+{% block title %}{{ organisation_parent.name }} :: Breach Problems{% endblock %}
+
+{% block bodyclasses %}org-parent-breaches{% endblock %}
+
+{% block content %}
+
+{% include "organisations/includes/page_header.html" with title="Breach Problems" organisation=organisation_parent %}
+
+{% include 'organisations/includes/organisation_parent_tabs.html' with active_tab='breaches' %}
+
+{% render_table table 'organisations/includes/problem-table.html' %}
+
+{% endblock %}

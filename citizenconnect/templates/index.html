@@ -102,14 +102,7 @@
                 <div class="gw">
 
                     <div class="g one-whole mb--s">
-                        <a href="{% url 'org-map' cobrand=cobrand.name %}#london">
-                            <span class="btn btn--med--flat btn--blue btn--no-border">London</span>
-                        </a>
-                    </div>
-                    <div class="g one-whole mb">
-                        <a href="{% url 'org-map' cobrand=cobrand.name %}#northeast">
-                            <span class="btn btn--med--flat btn--blue btn--no-border">North East England</span>
-                        </a>
+                        <input type="text" id="map-search-org-name" data-search-url="{% url 'org-map-search' cobrand=cobrand.name %}" data-map-url="{% url 'org-map' cobrand=cobrand.name %}" />
                     </div>
                 </div>
 
@@ -126,3 +119,44 @@
 {% include 'emergency_numbers.html' %}
 
 {% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script src="{% static 'js/select2.min.js' %}"></script>
+<script>
+    jQuery(function($) {
+
+        var $searchBox = $("#map-search-org-name");
+
+        $searchBox.select2({
+            minimumInputLength: 1,
+            placeholder: "Search the map",
+            ajax: {
+                url: $searchBox.data('search-url'),
+                dataType: 'json',
+                data: function(term, page) {
+                    return {
+                        term: term
+                    };
+                },
+                results: function(data, page) {
+                    return {results: data};
+                }
+            }
+        });
+
+        $searchBox.on('change', function(e) {
+            // Redirect to the map page
+            if (e.added.type === "organisation") {
+                window.location = $searchBox.data('map-url') + '?ods_code=' + e.added.id;
+            } else {
+                window.location = $searchBox.data('map-url') + '?lon=' + e.added.lon + '&lat=' + e.added.lat;
+            }
+        });
+    });
+</script>
+{% endblock extra_js %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/select2/select2.css' %}" />
+{% endblock extra_css %}

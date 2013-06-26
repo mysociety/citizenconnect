@@ -37,7 +37,7 @@ class ReviewTable(tables.Table):
     def render_content(self, record, value):
         """Truncate the review's content to 20 words, returns a string."""
         truncated_content = Truncator(value).words(20)
-        review_link = reverse('review-detail', kwargs={'ods_code': record.organisation.ods_code, 'cobrand': 'choices', 'api_posting_id': record.api_posting_id})
+        review_link = reverse('review-detail', kwargs={'ods_code': self.organisation.ods_code, 'cobrand': 'choices', 'api_posting_id': record.api_posting_id})
         return mark_safe(u'<a href="{0}">{1} <span class="icon-chevron-right  fr" aria-hidden="true"></span></a>'.format(review_link, conditional_escape(truncated_content)))
 
     def row_classes(self, record):
@@ -48,18 +48,32 @@ class ReviewTable(tables.Table):
             super_row_classes = ""
         return '{0} table-link__row'.format(super_row_classes)
 
+    def __init__(self, *args, **kwargs):
+        """Overriden __init__ to take an extra organisation parameter"""
+        self.organisation = kwargs.get('organisation')
+        if kwargs.get('organisation'):
+            del kwargs['organisation']
+        super(ReviewTable, self).__init__(*args, **kwargs)
+
     class Meta:
         order_by = ('-created',)
         attrs = {'class': 'problem-table problem-table--expanded'}
 
 
-class TrustReviewTable(ReviewTable):
+class OrganisationParentReviewTable(ReviewTable):
 
-    """Table for the reviews for all the organisations in a Trust."""
+    """Table for the reviews for all the organisations under an Organisation Parent."""
 
     organisation_name = tables.Column(verbose_name='Provider name',
-                                      accessor='organisation.name',
+                                      accessor='organisations.all.0.name',
                                       attrs={'th': {'class': 'two-twelfths'}})
+
+    def render_content(self, record, value):
+        """Overriden render_content to use the first organisation from the
+        record's organisations field instead of the table's organisation field"""
+        truncated_content = Truncator(value).words(20)
+        review_link = reverse('review-detail', kwargs={'ods_code': record.organisations.all()[0].ods_code, 'cobrand': 'choices', 'api_posting_id': record.api_posting_id})
+        return mark_safe(u'<a href="{0}">{1} <span class="icon-chevron-right  fr" aria-hidden="true"></span></a>'.format(review_link, conditional_escape(truncated_content)))
 
     class Meta:
         order_by = ('-created',)

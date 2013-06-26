@@ -1,5 +1,7 @@
 # Standard imports
 import json
+import re
+from ukpostcodeutils.validation import is_valid_postcode, is_valid_partial_postcode
 
 # Django imports
 from django.views.generic import TemplateView, ListView
@@ -15,6 +17,7 @@ from django.contrib.gis.geos import Polygon
 # App imports
 from citizenconnect.shortcuts import render
 from issues.models import Problem
+from geocoder.models import Place
 
 from .. import auth
 from ..auth import (user_in_group,
@@ -23,7 +26,7 @@ from ..auth import (user_in_group,
                     user_can_access_private_national_summary,
                     user_is_escalation_body)
 from ..models import Organisation, SuperuserLogEntry
-from ..forms import OrganisationFinderForm, FilterForm
+from ..forms import OrganisationFinderForm, FilterForm, MapitPostCodeLookup, MapitError
 from ..lib import interval_counts
 from ..tables import (NationalSummaryTable,
                       PrivateNationalSummaryTable,
@@ -112,7 +115,7 @@ class FilterFormMixin(FormMixin):
             if name == 'service_id':
                 filtered_queryset = filtered_queryset.filter(service__id=value)
             if name == 'ccg':
-                filtered_queryset = filtered_queryset.filter(organisation__trust__ccgs__id__exact=value)
+                filtered_queryset = filtered_queryset.filter(organisation__parent__ccgs__id__exact=value)
             if name == 'flags' and value in self.allowed_flag_filters:
                 args = {value: True}
                 filtered_queryset = filtered_queryset.filter(**args)
@@ -166,8 +169,6 @@ class Map(FilterFormMixin,
         kwargs = super(Map, self).get_form_kwargs()
         # Turn off ccg filter
         kwargs['with_ccg'] = False
-        # Turn off department filter
-        kwargs['with_service_code'] = False
         # Turn off the various flag filters
         kwargs['with_flags'] = False
         return kwargs
@@ -205,6 +206,12 @@ class Map(FilterFormMixin,
         # Make it into a JSON string
         context['organisations'] = json.dumps(organisations_list)
 
+        # Load all the organisations to use for the name select
+        context['name_search_organisations'] = Organisation.objects.all().only('id', 'name').order_by('name')
+        context['ods_code'] = self.request.GET.get('ods_code', '')
+        context['lon'] = self.request.GET.get('lon', '')
+        context['lat'] = self.request.GET.get('lat', '')
+
         return context
 
     def render_to_response(self, context, **response_kwargs):
@@ -232,6 +239,90 @@ class Map(FilterFormMixin,
             map_bounds = self.london_area
 
         return Organisation.objects.filter(point__within=map_bounds)
+
+
+class MapOrganisationCoords(TemplateView):
+
+    def get_context_data(self, **kwargs):
+        context = super(MapOrganisationCoords, self).get_context_data(**kwargs)
+        organisation = Organisation.objects.get(ods_code=kwargs['ods_code'])
+        org_data = {
+            'id': organisation.id,
+            'text': organisation.name,
+            'lat': organisation.point.y,
+            'lon': organisation.point.x
+        }
+        context['organisation'] = json.dumps(org_data)
+        return context
+
+    def render_to_response(self, context, **response_kwargs):
+        return HttpResponse(context['organisation'], content_type='application/json', **response_kwargs)
+
+
+class MapSearch(TemplateView):
+
+    def get_context_data(self, **kwargs):
+        context = super(MapSearch, self).get_context_data()
+
+        term = self.request.GET.get('term', '')
+
+        to_serialize = []
+        context['results'] = to_serialize
+
+        # no search, no results
+        if not len(term):
+            return context
+
+        # Check if the term is a postcode
+        possible_postcode = re.sub('\s+', '', term.upper())
+        is_postcode = is_valid_postcode(possible_postcode)
+        is_partial_postcode = is_valid_partial_postcode(possible_postcode)
+        if is_postcode or is_partial_postcode:
+            try:
+                point = MapitPostCodeLookup.postcode_to_point(possible_postcode, partial=is_partial_postcode)
+                to_serialize.append({
+                    "id":   possible_postcode,
+                    "text": term.upper() + ' (postcode)',
+                    "type": "place",
+                    "lat":  point.y,
+                    "lon":  point.x,
+                })
+                return context
+            except MapitError:
+                # Not really much to be done about an error, pass through to the rest of the code.
+                pass
+
+        organisations = Organisation.objects.filter(name__icontains=term)
+
+        for obj in organisations[:8]:
+            to_serialize.append({
+                "id":   obj.ods_code,
+                "text": obj.name,
+                "type": "organisation",
+                "lat":  obj.point.y,
+                "lon":  obj.point.x,
+            })
+
+        places = Place.objects.filter(name__istartswith=term)
+        places = places.order_by('name')
+
+        for obj in places[:8]:
+            to_serialize.append({
+                "id":   obj.id,
+                "text": obj.context_name,
+                "type": "place",
+                "lat":  obj.centre.y,
+                "lon":  obj.centre.x,
+            })
+
+        return context
+
+    def render_to_response(self, context, **kwargs):
+
+        json_string = json.dumps(context['results'], sort_keys=True, indent=4)
+
+        kwargs['content_type'] = 'application/json'
+        return HttpResponse(json_string, **kwargs)
 
 
 class PickProviderBase(ListView):
@@ -405,11 +496,11 @@ def login_redirect(request):
     elif user_in_group(user, auth.SECOND_TIER_MODERATORS):
         return HttpResponseRedirect(reverse('second-tier-moderate-home'))
 
-    # Trusts
-    elif user_in_group(user, auth.TRUSTS):
-        if user.trusts.count() == 1:
-            trust = user.trusts.all()[0]
-            return HttpResponseRedirect(reverse('trust-dashboard', kwargs={'code': trust.code}))
+    # Organisation Parents
+    elif user_in_group(user, auth.ORGANISATION_PARENTS):
+        if user.organisation_parents.count() == 1:
+            organisation_parent = user.organisation_parents.all()[0]
+            return HttpResponseRedirect(reverse('org-parent-dashboard', kwargs={'code': organisation_parent.code}))
 
     # Anyone else goes to the normal homepage
     return HttpResponseRedirect(reverse('home', kwargs={'cobrand': 'choices'}))

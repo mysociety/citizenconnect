@@ -2,7 +2,7 @@ from .choices_api import *
 from .lib import *
 from .base_views import *
 from .organisation_views import *
-from .trust_views import *
+from .organisation_parent_views import *
 from .ccg_views import *
 from .commands import *
 from .templatetags import *

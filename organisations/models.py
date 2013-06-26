@@ -58,34 +58,41 @@ class CCG(MailSendMixin, AuditedModel):
 
     @property
     def problem_set(self):
-        return Problem.objects.filter(organisation__trust__in=self.trusts.all())
+        return Problem.objects.filter(organisation__parent__in=self.organisation_parents.all())
 
     def __unicode__(self):
         return self.name
 
 
-class Trust(MailSendMixin, AuditedModel):
+class OrganisationParent(MailSendMixin, AuditedModel):
+    """
+    Something that is the parent body of an Organisation.
+
+    In the case of Hospitals or Clinics, this is an NHS Trust, in the
+    case of GP Branches, this is the main surgery
+    """
     name = models.TextField()
     code = models.CharField(max_length=8, db_index=True, unique=True)
-    users = models.ManyToManyField(User, related_name='trusts')
+    choices_id = models.IntegerField(db_index=True)
+    users = models.ManyToManyField(User, related_name='organisation_parents')
 
     # ISSUE-329: The `blank=True` should be removed when we are supplied with
-    # email addresses for all the trusts
+    # email addresses for all the organisation parents
     # max_length set manually to make it RFC compliant (default of 75 is too short)
     # email may not be unique
     email = models.EmailField(max_length=254, blank=True)
     secondary_email = models.EmailField(max_length=254, blank=True)
 
-    # Which CCG this Trust should escalate problems too
-    escalation_ccg = models.ForeignKey(CCG, blank=False, null=False, related_name='escalation_trusts')
+    # Which CCG this Parent should escalate problems too
+    escalation_ccg = models.ForeignKey(CCG, blank=False, null=False, related_name='escalation_organisation_parents')
 
-    # Which CCGs commission services from this Trust.
+    # Which CCGs commission services from this Parent.
     # This means that those CCGs will be able to see all the problems at
-    # this trust's organisations.
-    ccgs = models.ManyToManyField(CCG, related_name='trusts')
+    # this parent's organisations.
+    ccgs = models.ManyToManyField(CCG, related_name='organisation_parents')
 
     def can_be_accessed_by(self, user):
-        """ Can a user access this trust? """
+        """ Can a user access this Organisation Parent? """
 
         # Deactivated users - NO
         if not user.is_active:
@@ -101,12 +108,12 @@ class Trust(MailSendMixin, AuditedModel):
                                  auth.CUSTOMER_CONTACT_CENTRE]):
             return True
 
-        # Users in this trust - YES
+        # Users in this Parent - YES
         if user in self.users.all():
             return True
 
-        # CCG users for a CCG associated with this Trust - YES
-        if user in User.objects.filter(ccgs__trusts=self).all():
+        # CCG users for a CCG associated with this Parent - YES
+        if user in User.objects.filter(ccgs__organisation_parents=self).all():
             return True
 
         # Everyone else - NO
@@ -114,7 +121,7 @@ class Trust(MailSendMixin, AuditedModel):
 
     def default_user_group(self):
         """Group to ensure that users are members of"""
-        return Group.objects.get(pk=auth.TRUSTS)
+        return Group.objects.get(pk=auth.ORGANISATION_PARENTS)
 
     @property
     def problem_set(self):
@@ -124,12 +131,12 @@ class Trust(MailSendMixin, AuditedModel):
         return self.name
 
 
-@receiver(post_save, sender=Trust)
+@receiver(post_save, sender=OrganisationParent)
 def ensure_ccgs_contains_escalation_ccg(sender, **kwargs):
-    """ post_save signal handler to ensure that trust.escalation_ccg is always in trust.ccgs """
-    trust = kwargs['instance']
-    if trust.escalation_ccg and trust.escalation_ccg not in trust.ccgs.all():
-        trust.ccgs.add(trust.escalation_ccg)
+    """ post_save signal handler to ensure that organisation_parent.escalation_ccg is always in organisation_parent.ccgs """
+    organisation_parent = kwargs['instance']
+    if organisation_parent.escalation_ccg and organisation_parent.escalation_ccg not in organisation_parent.ccgs.all():
+        organisation_parent.ccgs.add(organisation_parent.escalation_ccg)
 
 
 class Organisation(AuditedModel, geomodels.Model):
@@ -137,7 +144,7 @@ class Organisation(AuditedModel, geomodels.Model):
     name = models.TextField()
     organisation_type = models.CharField(max_length=100, choices=settings.ORGANISATION_CHOICES)
     choices_id = models.IntegerField(db_index=True)
-    ods_code = models.CharField(max_length=8, db_index=True, unique=True)
+    ods_code = models.CharField(max_length=12, db_index=True, unique=True)
     address_line1 = models.CharField(max_length=255, blank=True)
     address_line2 = models.CharField(max_length=255, blank=True)
     address_line3 = models.CharField(max_length=255, blank=True)
@@ -148,8 +155,8 @@ class Organisation(AuditedModel, geomodels.Model):
     point = geomodels.PointField()
     objects = geomodels.GeoManager()
 
-    # Which Trust this is in
-    trust = models.ForeignKey(Trust, blank=False, null=False, related_name='organisations')
+    # The parent of this organisation
+    parent = models.ForeignKey(OrganisationParent, blank=False, null=False, related_name='organisations')
 
     # Calculated double_metaphone field, for search by provider name
     name_metaphone = models.TextField(editable=False)
@@ -184,8 +191,8 @@ class Organisation(AuditedModel, geomodels.Model):
 
     def can_be_accessed_by(self, user):
         """ Can a given user access this Organisation? """
-        # Access is controlled by the Trust
-        return self.trust.can_be_accessed_by(user)
+        # Access is controlled by the Parent
+        return self.parent.can_be_accessed_by(user)
 
     def save(self, *args, **kwargs):
         """

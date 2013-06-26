@@ -1,10 +1,11 @@
 [
 {
         "pk": 1,
-        "model": "organisations.trust",
+        "model": "organisations.organisationparent",
         "fields": {
             "name": "Demo Trust",
             "code": "YYYYYYY",
+            "choices_id": 12345
             "email": "demotrust@example.com",
             "escalation_ccg": 1,
             "ccgs": [1],

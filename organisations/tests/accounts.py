@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.core import mail
 
-from .lib import create_test_organisation, create_test_trust, get_reset_url_from_email, AuthorizationTestCase
+from .lib import create_test_organisation, create_test_organisation_parent, get_reset_url_from_email, AuthorizationTestCase
 
 
 class BasicAccountTests(TestCase):
@@ -13,8 +13,8 @@ class BasicAccountTests(TestCase):
 
     def setUp(self):
         # Create a dummy user and organisation
-        self.test_trust = create_test_trust()
-        self.test_organisation = create_test_organisation({'trust': self.test_trust})
+        self.test_trust = create_test_organisation_parent()
+        self.test_organisation = create_test_organisation({'parent': self.test_trust})
         self.test_user = User.objects.create_user('Test User', 'user@example.com', 'password')
         self.test_user.save()
 
@@ -39,7 +39,7 @@ class BasicAccountTests(TestCase):
         self.assertContains(resp, "Login")
 
     def test_user_can_login_and_gets_redirected_if_next_specified(self):
-        dashboard_url = reverse('trust-dashboard', kwargs={'code':self.test_organisation.trust.code})
+        dashboard_url = reverse('org-parent-dashboard', kwargs={'code':self.test_organisation.parent.code})
         test_values = {
             'username': self.test_user.username,
             'password': 'password',
@@ -181,7 +181,7 @@ class LoginRedirectTests(AuthorizationTestCase):
         self.assertRedirects(resp, second_tier_moderation_url)
 
     def test_provider_goes_to_provider_dashboard(self):
-        dashboard_url = reverse('trust-dashboard', kwargs={'code': self.test_organisation.trust.code})
+        dashboard_url = reverse('org-parent-dashboard', kwargs={'code': self.test_hospital.parent.code})
         self.login_as(self.trust_user)
         resp = self.client.get(self.login_redirect_url)
         self.assertRedirects(resp, dashboard_url)

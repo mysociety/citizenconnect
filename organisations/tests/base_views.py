@@ -27,14 +27,15 @@ from . import (create_test_problem,
                create_test_review,
                AuthorizationTestCase)
 from organisations.forms import OrganisationFinderForm
+from geocoder.models import Place
 
 
 class OrganisationMapTests(AuthorizationTestCase):
 
     def setUp(self):
         super(OrganisationMapTests, self).setUp()
-        self.hospital = self.test_organisation
-        self.other_gp = self.other_test_organisation
+        self.hospital = self.test_hospital
+        self.other_gp = self.test_gp_branch
         self.map_url = reverse('org-map', kwargs={'cobrand': 'choices'})
 
     def test_map_page_exists(self):
@@ -63,7 +64,7 @@ class OrganisationMapTests(AuthorizationTestCase):
         # A problem the moderator has rejected
         create_test_problem({'organisation': self.hospital,
                              'publication_status': Problem.REJECTED})
-        # A problem the moderator has accepted, but a trust user has said
+        # A problem the moderator has accepted, but a organisation parent user has said
         # is abusive/vexatious (possibly because it's a dupe)
         create_test_problem({'organisation': self.other_gp,
                              'publication_status': Problem.PUBLISHED,
@@ -94,6 +95,25 @@ class OrganisationMapTests(AuthorizationTestCase):
         self.assertEqual(len(response_json), 1)
         self.assertEqual(response_json[0]['ods_code'], self.hospital.ods_code)
         self.assertEqual(response_json[0]['all_time_open'], 0)
+
+    def test_map_filters_by_service(self):
+        # Create some problems to filter
+        service = create_test_service({"organisation": self.hospital})
+        create_test_problem({'organisation': self.hospital,
+                             'publication_status': Problem.PUBLISHED,
+                             'service': service})
+        create_test_problem({'organisation': self.other_gp,
+                             'publication_status': Problem.PUBLISHED})
+
+        service_filtered_url = "{0}?service_code={1}".format(self.map_url, service.service_code)
+
+        resp = self.client.get(service_filtered_url)
+        response_json = json.loads(resp.context['organisations'])
+        self.assertEqual(len(response_json), 2)
+        self.assertEqual(response_json[0]['ods_code'], self.other_gp.ods_code)
+        self.assertEqual(response_json[0]['all_time_open'], 0)
+        self.assertEqual(response_json[1]['ods_code'], self.hospital.ods_code)
+        self.assertEqual(response_json[1]['all_time_open'], 1)
 
     def test_map_filters_by_category(self):
         # Create some problems to filter
@@ -156,6 +176,71 @@ class OrganisationMapTests(AuthorizationTestCase):
         self.assertEqual(len(response_json), 1)
 
 
+class MapOrganisationCoordsTests(TestCase):
+    def setUp(self):
+        self.test_org = create_test_organisation()
+        self.map_org_url = reverse('org-coords-map', kwargs={'cobrand': 'choices', 'ods_code': self.test_org.ods_code})
+
+    def test_single_map_org_page_exists(self):
+        resp = self.client.get(self.map_org_url)
+        self.assertEqual(200, resp.status_code)
+
+
+class MapSearchTests(TestCase):
+    def setUp(self):
+        self.place_search_url = reverse('org-map-search', kwargs={'cobrand': 'choices'})
+
+    def test_search_page_exists(self):
+        resp = self.client.get(self.place_search_url)
+        self.assertEqual(200, resp.status_code)
+
+    def test_no_search_term_returns_no_results(self):
+        resp = self.client.get(self.place_search_url + '?term=')
+        self.assertEqual('[]', resp.content)
+
+    def test_search_returns_organisations(self):
+        org = create_test_organisation({'name': "Test Organisation"})
+        resp = self.client.get(self.place_search_url + '?term=Tes')
+        self.assertContains(resp, org.name)
+
+    def test_search_returns_places(self):
+        place = Place.objects.create(
+            name='Place Name',
+            context_name="Place Name, London",
+            centre=Point(50, 2),
+            source=Place.SOURCE_OS_LOCATOR,
+        )
+        resp = self.client.get(self.place_search_url + '?term=Pla')
+        self.assertContains(resp, place.context_name)
+
+    def test_search_returns_postcode(self):
+        resp = self.client.get(self.place_search_url + '?term=SW1A+1AA')
+        data = json.loads(resp.content)
+        self.assertEqual(data, [{
+            'id': 'SW1A1AA',
+            'lat': 51.501009611553926,
+            'lon': -0.14158706711000901,
+            'text': 'SW1A 1AA (postcode)',
+            'type': 'place',
+        }])
+
+    def test_search_returns_partial_postcode(self):
+        resp = self.client.get(self.place_search_url + '?term=SW1A')
+        data = json.loads(resp.content)
+        self.assertEqual(data, [{
+            'id': 'SW1A',
+            'lat': 51.501434410230779,
+            'lon': -0.13294453160162145,
+            'text': 'SW1A (postcode)',
+            'type': 'place',
+        }])
+
+    def test_search_returns_bad_postcode(self):
+        resp = self.client.get(self.place_search_url + '?term=BA1D+1AB')
+        data = json.loads(resp.content)
+        self.assertEqual(data, [])
+
+
 class OrganisationMapBrowserTests(SeleniumTestCase):
 
     def setUp(self):
@@ -190,12 +275,12 @@ class SummaryTests(AuthorizationTestCase):
     def setUp(self):
         super(SummaryTests, self).setUp()
         self.summary_url = reverse('org-all-summary', kwargs={'cobrand': 'choices'})
-        create_test_problem({'organisation': self.test_organisation, 'category': 'staff'})
-        create_test_problem({'organisation': self.other_test_organisation,
+        create_test_problem({'organisation': self.test_hospital, 'category': 'staff'})
+        create_test_problem({'organisation': self.test_gp_branch,
                              'publication_status': Problem.PUBLISHED,
                              'status': Problem.ABUSIVE,
                              'category': 'cleanliness'})
-        create_test_review({'organisation': self.test_organisation,
+        create_test_review({'organisation': self.test_hospital,
                             'api_published': datetime.utcnow().replace(tzinfo=utc),
                             'api_updated': datetime.utcnow().replace(tzinfo=utc)})
 
@@ -209,8 +294,8 @@ class SummaryTests(AuthorizationTestCase):
 
     def test_summary_doesnt_include_hidden_status_problems_in_default_view(self):
         resp = self.client.get(self.summary_url)
-        self.assertContains(resp, 'Test Organisation')
-        self.assertNotContains(resp, 'Other Test Organisation')
+        self.assertContains(resp, self.test_hospital.name)
+        self.assertNotContains(resp, self.test_gp_branch.name)
         self.assertContains(resp, '<td class="all_time">1</td>', count=1, status_code=200)
 
     def test_status_filter_only_shows_visible_statuses_in_filters(self):
@@ -220,62 +305,62 @@ class SummaryTests(AuthorizationTestCase):
 
     def test_summary_page_ignores_hidden_status_filter(self):
         resp = self.client.get(self.summary_url + '?status={0}'.format(Problem.ABUSIVE))
-        self.assertContains(resp, 'Test Organisation')
-        self.assertNotContains(resp, 'Other Test Organisation')
+        self.assertContains(resp, self.test_hospital.name)
+        self.assertNotContains(resp, self.test_gp_branch.name)
         self.assertContains(resp, '<td class="all_time">1</td>', count=1, status_code=200)
 
     def test_summary_page_applies_threshold_from_settings(self):
         with self.settings(SUMMARY_THRESHOLD=('six_months', 1)):
             resp = self.client.get(self.summary_url)
-            self.assertContains(resp, 'Test Organisation')
+            self.assertContains(resp, self.test_hospital.name)
 
         with self.settings(SUMMARY_THRESHOLD=('six_months', 2)):
             resp = self.client.get(self.summary_url)
-            self.assertNotContains(resp, 'Test Organisation')
+            self.assertNotContains(resp, self.test_hospital.name)
 
     def test_summary_page_filters_by_ccg(self):
         # Add an issue for other_test_organisation that won't be filtered because
         # of it's Hidden status, but will be by the other orgs ccg
-        create_test_problem({'organisation': self.other_test_organisation})
+        create_test_problem({'organisation': self.test_gp_branch})
 
         ccg_filtered_url = '{0}?ccg={1}'.format(self.summary_url, self.test_ccg.id)
         resp = self.client.get(ccg_filtered_url)
-        self.assertContains(resp, self.test_organisation.name)
-        self.assertNotContains(resp, self.other_test_organisation.name)
+        self.assertContains(resp, self.test_hospital.name)
+        self.assertNotContains(resp, self.test_gp_branch.name)
 
     def test_summary_page_filters_by_organisation_type(self):
         # Add an issue for other_test_organisation that won't be filtered because
         # of it's Hidden status but will be by the org_type filter
-        create_test_problem({'organisation': self.other_test_organisation})
+        create_test_problem({'organisation': self.test_gp_branch})
 
         org_type_filtered_url = '{0}?organisation_type=hospitals'.format(self.summary_url)
         resp = self.client.get(org_type_filtered_url)
-        self.assertContains(resp, self.test_organisation.name)
-        self.assertNotContains(resp, self.other_test_organisation.name)
+        self.assertContains(resp, self.test_hospital.name)
+        self.assertNotContains(resp, self.test_gp_branch.name)
 
     def test_summary_page_filters_by_category(self):
         # Add an issue for other_test_organisation that won't be filtered because
         # of it's Hidden status but will be filtered by our category
-        create_test_problem({'organisation': self.other_test_organisation,
+        create_test_problem({'organisation': self.test_gp_branch,
                              'category': 'cleanliness'})
 
         category_filtered_url = '{0}?category=staff'.format(self.summary_url)
         resp = self.client.get(category_filtered_url)
-        self.assertContains(resp, self.test_organisation.name)
+        self.assertContains(resp, self.test_hospital.name)
         # NOTE: we rely on the SUMMARY_THRESHOLD setting to make this org disappear
-        self.assertNotContains(resp, self.other_test_organisation.name)
+        self.assertNotContains(resp, self.test_gp_branch.name)
 
     def test_summary_page_filters_by_status(self):
         # Add an issue for other_test_organisation that won't be filtered because
         # of it's Hidden status, but should be filtered by our status filter
-        create_test_problem({'organisation': self.other_test_organisation,
+        create_test_problem({'organisation': self.test_gp_branch,
                              'status': Problem.ACKNOWLEDGED})
 
         status_filtered_url = '{0}?status={1}'.format(self.summary_url, Problem.NEW)
         resp = self.client.get(status_filtered_url)
-        self.assertContains(resp, self.test_organisation.name)
+        self.assertContains(resp, self.test_hospital.name)
         # NOTE: we rely on the SUMMARY_THRESHOLD setting to make this org disappear
-        self.assertNotContains(resp, self.other_test_organisation.name)
+        self.assertNotContains(resp, self.test_gp_branch.name)
 
     def test_public_summary_page_does_not_have_breach_filter(self):
         resp = self.client.get(self.summary_url)
@@ -297,12 +382,12 @@ class SummaryBrowserTests(SeleniumTestCase, AuthorizationTestCase):
     def setUp(self):
         super(SummaryBrowserTests, self).setUp()
         self.summary_url = reverse('org-all-summary', kwargs={'cobrand': 'choices'})
-        create_test_problem({'organisation': self.test_organisation, 'category': 'staff'})
-        create_test_problem({'organisation': self.other_test_organisation,
+        create_test_problem({'organisation': self.test_hospital, 'category': 'staff'})
+        create_test_problem({'organisation': self.test_gp_branch,
                              'publication_status': Problem.PUBLISHED,
                              'status': Problem.ABUSIVE,
                              'category': 'cleanliness'})
-        create_test_review({'organisation': self.test_organisation,
+        create_test_review({'organisation': self.test_hospital,
                             'api_published': datetime.utcnow().replace(tzinfo=utc),
                             'api_updated': datetime.utcnow().replace(tzinfo=utc)})
 
@@ -367,8 +452,8 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
     def setUp(self):
         super(PrivateNationalSummaryTests, self).setUp()
         self.summary_url = reverse('private-national-summary')
-        create_test_problem({'organisation': self.test_organisation})
-        create_test_problem({'organisation': self.other_test_organisation,
+        create_test_problem({'organisation': self.test_hospital})
+        create_test_problem({'organisation': self.test_gp_branch,
                              'publication_status': Problem.PUBLISHED,
                              'status': Problem.ABUSIVE})
         self.login_as(self.superuser)
@@ -415,22 +500,22 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
     def test_filters_by_ccg(self):
         # Check see both ccgs
         resp = self.client.get(self.summary_url)
-        for trust in self.test_ccg.trusts.all():
-            for org in trust.organisations.all():
+        for org_parent in self.test_ccg.organisation_parents.all():
+            for org in org_parent.organisations.all():
                 self.assertContains(resp, org.name)
-        for trust in self.other_test_ccg.trusts.all():
-            for org in trust.organisations.all():
+        for org_parent in self.other_test_ccg.organisation_parents.all():
+            for org in org_parent.organisations.all():
                 self.assertContains(resp, org.name)
 
         # Apply CCG filter
         resp = self.client.get("{0}?ccg={1}".format(self.summary_url, self.test_ccg.id))
 
         # Check filter applied
-        for trust in self.test_ccg.trusts.all():
-            for org in trust.organisations.all():
+        for org_parent in self.test_ccg.organisation_parents.all():
+            for org in org_parent.organisations.all():
                 self.assertContains(resp, org.name)
-        for trust in self.other_test_ccg.trusts.all():
-            for org in trust.organisations.all():
+        for org_parent in self.other_test_ccg.organisation_parents.all():
+            for org in org_parent.organisations.all():
                 self.assertNotContains(resp, org.name)
 
     def test_summary_page_applies_threshold_from_settings(self):
@@ -444,7 +529,7 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
 
     def test_summary_page_filters_by_breach(self):
         # Add a breach problem
-        create_test_problem({'organisation': self.test_organisation,
+        create_test_problem({'organisation': self.test_hospital,
                              'breach': True})
 
         breach_filtered_url = '{0}?flags=breach'.format(self.summary_url)
@@ -456,7 +541,7 @@ class PrivateNationalSummaryTests(AuthorizationTestCase):
 
     def test_summary_page_filters_by_formal_complaint(self):
         # Add a formal_complaint problem
-        create_test_problem({'organisation': self.test_organisation,
+        create_test_problem({'organisation': self.test_hospital,
                              'formal_complaint': True})
 
         formal_complaint_filtered_url = '{0}?flags=formal_complaint'.format(self.summary_url)
@@ -596,33 +681,33 @@ class EscalationDashboardTests(AuthorizationTestCase):
     def setUp(self):
         super(EscalationDashboardTests, self).setUp()
         self.escalation_dashboard_url = reverse('escalation-dashboard')
-        self.org_local_escalated_problem = create_test_problem({'organisation': self.test_organisation,
+        self.org_local_escalated_problem = create_test_problem({'organisation': self.test_hospital,
                                                                 'status': Problem.ESCALATED,
                                                                 'commissioned': Problem.LOCALLY_COMMISSIONED})
-        self.org_national_escalated_problem = create_test_problem({'organisation': self.test_organisation,
+        self.org_national_escalated_problem = create_test_problem({'organisation': self.test_hospital,
                                                                    'status': Problem.ESCALATED,
                                                                    'commissioned': Problem.NATIONALLY_COMMISSIONED})
-        self.other_org_local_escalated_problem = create_test_problem({'organisation': self.other_test_organisation,
+        self.other_org_local_escalated_problem = create_test_problem({'organisation': self.test_gp_branch,
                                                                       'status': Problem.ESCALATED,
                                                                       'commissioned': Problem.LOCALLY_COMMISSIONED})
-        self.other_org_national_escalated_problem = create_test_problem({'organisation': self.other_test_organisation,
+        self.other_org_national_escalated_problem = create_test_problem({'organisation': self.test_gp_branch,
                                                                          'status': Problem.ESCALATED,
                                                                          'commissioned': Problem.NATIONALLY_COMMISSIONED})
 
-        self.org_local_escalated_acknowledged_problem = create_test_problem({'organisation': self.test_organisation,
+        self.org_local_escalated_acknowledged_problem = create_test_problem({'organisation': self.test_hospital,
                                                                              'status': Problem.ESCALATED_ACKNOWLEDGED,
                                                                              'commissioned': Problem.LOCALLY_COMMISSIONED})
-        self.org_local_escalated_resolved_problem = create_test_problem({'organisation': self.test_organisation,
+        self.org_local_escalated_resolved_problem = create_test_problem({'organisation': self.test_hospital,
                                                                          'status': Problem.ESCALATED_RESOLVED,
                                                                          'commissioned': Problem.LOCALLY_COMMISSIONED})
         # Add two services to the test org
-        self.service_one = create_test_service({'organisation': self.test_organisation})
-        self.service_two = create_test_service({'organisation': self.test_organisation,
+        self.service_one = create_test_service({'organisation': self.test_hospital})
+        self.service_two = create_test_service({'organisation': self.test_hospital,
                                                 'name': 'service two',
                                                 'service_code': 'SRV222'})
-        self.test_organisation.services.add(self.service_one)
-        self.test_organisation.services.add(self.service_two)
-        self.test_organisation.save()
+        self.test_hospital.services.add(self.service_one)
+        self.test_hospital.services.add(self.service_two)
+        self.test_hospital.save()
 
     def test_dashboard_accessible_to_customer_contact_centre(self):
         self.login_as(self.customer_contact_centre_user)
@@ -639,7 +724,7 @@ class EscalationDashboardTests(AuthorizationTestCase):
         people_who_shouldnt_have_access = [
             self.trust_user,
             self.no_trust_user,
-            self.other_trust_user,
+            self.gp_surgery_user,
             self.second_tier_moderator,
             self.ccg_user,
             self.other_ccg_user,
@@ -706,7 +791,7 @@ class EscalationDashboardTests(AuthorizationTestCase):
         self.assertNotContains(resp, self.other_org_national_escalated_problem.reference_number)
 
     def test_filters_by_provider_type(self):
-        # self.test_organisation is a hospital, self.test_other_organisation is a GP
+        # self.test_hospital is a hospital, self.test_other_organisation is a GP
         # Need to login as superuser to be able to see both problems anyway
         self.login_as(self.nhs_superuser)
         problem_filtered_url = '{0}?organisation_type=hospitals'.format(self.escalation_dashboard_url)
@@ -719,11 +804,11 @@ class EscalationDashboardTests(AuthorizationTestCase):
 
     def test_filters_by_department(self):
         # Add some problems to the test org against specific services
-        service_one_problem = create_test_problem({'organisation': self.test_organisation,
+        service_one_problem = create_test_problem({'organisation': self.test_hospital,
                                                    'service': self.service_one,
                                                    'status': Problem.ESCALATED,
                                                    'commissioned': Problem.NATIONALLY_COMMISSIONED})
-        service_two_problem = create_test_problem({'organisation': self.test_organisation,
+        service_two_problem = create_test_problem({'organisation': self.test_hospital,
                                                    'service': self.service_two,
                                                    'status': Problem.ESCALATED,
                                                    'commissioned': Problem.NATIONALLY_COMMISSIONED})
@@ -738,12 +823,12 @@ class EscalationDashboardTests(AuthorizationTestCase):
         self.assertNotContains(resp, self.org_local_escalated_problem.reference_number)
 
     def test_filters_by_problem_category(self):
-        cleanliness_problem = create_test_problem({'organisation': self.test_organisation,
+        cleanliness_problem = create_test_problem({'organisation': self.test_hospital,
                                                    'service': self.service_one,
                                                    'status': Problem.ESCALATED,
                                                    'commissioned': Problem.NATIONALLY_COMMISSIONED,
                                                    'category': 'cleanliness'})
-        delays_problem = create_test_problem({'organisation': self.test_organisation,
+        delays_problem = create_test_problem({'organisation': self.test_hospital,
                                               'service': self.service_two,
                                               'status': Problem.ESCALATED,
                                               'commissioned': Problem.NATIONALLY_COMMISSIONED,
@@ -759,7 +844,7 @@ class EscalationDashboardTests(AuthorizationTestCase):
         self.assertNotContains(resp, self.org_local_escalated_problem.reference_number)
 
     def test_filters_by_breach(self):
-        breach_problem = create_test_problem({'organisation': self.test_organisation,
+        breach_problem = create_test_problem({'organisation': self.test_hospital,
                                               'service': self.service_two,
                                               'status': Problem.ESCALATED,
                                               'commissioned': Problem.NATIONALLY_COMMISSIONED,
@@ -775,7 +860,7 @@ class EscalationDashboardTests(AuthorizationTestCase):
 
     def test_dashboard_shows_breach_flag(self):
         # Add a breach problem that should show up
-        create_test_problem({'organisation': self.test_organisation,
+        create_test_problem({'organisation': self.test_hospital,
                              'service': self.service_two,
                              'status': Problem.ESCALATED,
                              'commissioned': Problem.NATIONALLY_COMMISSIONED,
@@ -803,11 +888,11 @@ class BreachDashboardTests(AuthorizationTestCase):
     def setUp(self):
         super(BreachDashboardTests, self).setUp()
         self.breach_dashboard_url = reverse('escalation-breaches')
-        self.org_breach_problem = create_test_problem({'organisation': self.test_organisation,
+        self.org_breach_problem = create_test_problem({'organisation': self.test_hospital,
                                                        'breach': True})
-        self.other_org_breach_problem = create_test_problem({'organisation': self.other_test_organisation,
+        self.other_org_breach_problem = create_test_problem({'organisation': self.test_gp_branch,
                                                              'breach': True})
-        self.org_problem = create_test_problem({'organisation': self.test_organisation})
+        self.org_problem = create_test_problem({'organisation': self.test_hospital})
 
     def test_dashboard_accessible_to_customer_contact_centre(self):
         self.login_as(self.customer_contact_centre_user)
@@ -824,7 +909,7 @@ class BreachDashboardTests(AuthorizationTestCase):
         people_who_shouldnt_have_access = [
             self.trust_user,
             self.no_trust_user,
-            self.other_trust_user,
+            self.gp_surgery_user,
             self.second_tier_moderator,
             self.ccg_user,
             self.other_ccg_user,

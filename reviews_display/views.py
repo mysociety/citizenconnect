@@ -7,10 +7,11 @@ from django.core.exceptions import ObjectDoesNotExist
 from django_tables2 import RequestConfig
 
 from organisations.views.organisations import OrganisationAwareViewMixin
-from organisations.views.trusts import TrustAwareViewMixin
+from organisations.views.organisation_parents import OrganisationParentAwareViewMixin
+from organisations.models import Organisation
 
 from .models import Review
-from .tables import ReviewTable, TrustReviewTable
+from .tables import ReviewTable, OrganisationParentReviewTable
 
 
 class ReviewLoadOrganisationBase(OrganisationAwareViewMixin):
@@ -28,7 +29,7 @@ class ReviewOrganisationList(OrganisationAwareViewMixin,
     def get_context_data(self, **kwargs):
         context = super(ReviewOrganisationList, self).get_context_data(**kwargs)
         all_reviews = self.organisation.reviews.all()
-        table = ReviewTable(all_reviews)
+        table = ReviewTable(data=all_reviews, organisation=self.organisation)
         RequestConfig(self.request, paginate={'per_page': 8}).configure(table)
         context['table'] = table
         context['page_obj'] = table.page
@@ -36,16 +37,19 @@ class ReviewOrganisationList(OrganisationAwareViewMixin,
         return context
 
 
-class ReviewTrustList(TrustAwareViewMixin,
-                      TemplateView):
-    """ All the reviews for a given trust """
+class OrganisationParentReviews(OrganisationParentAwareViewMixin,
+                                TemplateView):
+    """ All the reviews for a given organisation parent """
 
-    template_name = 'reviews_display/reviews_trust_list.html'
+    template_name = 'reviews_display/organisation_parent_reviews.html'
 
     def get_context_data(self, **kwargs):
-        context = super(ReviewTrustList, self).get_context_data(**kwargs)
-        all_reviews = Review.objects.all().filter(organisation__trust=self.trust)
-        table = TrustReviewTable(all_reviews)
+        context = super(OrganisationParentReviews, self).get_context_data(**kwargs)
+        # Note we distinct() the results here because we're getting the reviews
+        # via their associated organisations' parent, and for GP surgeries, this
+        # would otherwise mean that they saw the same review duplicated for every branch
+        all_reviews = Review.objects.all().filter(organisations__parent=self.organisation_parent).distinct()
+        table = OrganisationParentReviewTable(all_reviews)
         RequestConfig(self.request, paginate={'per_page': 8}).configure(table)
         context['table'] = table
         context['page_obj'] = table.page

@@ -17,14 +17,14 @@ Helpers to do with authorisation of users
 
 # User groups, so that we can have nice names for the groups
 # to use in access checking queries
-TRUSTS = 1
+ORGANISATION_PARENTS = 1
 NHS_SUPERUSERS = 2
 CASE_HANDLERS = 3
 CCG = 6
 SECOND_TIER_MODERATORS = 7
 CUSTOMER_CONTACT_CENTRE = 8
 
-ALL_GROUPS = [TRUSTS,
+ALL_GROUPS = [ORGANISATION_PARENTS,
               NHS_SUPERUSERS,
               CASE_HANDLERS,
               CCG,
@@ -62,8 +62,8 @@ def enforce_organisation_access_check(organisation, user):
         raise PermissionDenied()
 
 
-def enforce_trust_access_check(trust, user):
-    if not trust.can_be_accessed_by(user):
+def enforce_organisation_parent_access_check(organisation_parent, user):
+    if not organisation_parent.can_be_accessed_by(user):
         raise PermissionDenied()
 
 

@@ -14,7 +14,7 @@ from django.conf import settings
 from django.forms.models import model_to_dict
 
 from citizenconnect.browser_testing import SeleniumTestCase
-from organisations.tests.models import create_test_organisation
+from organisations.tests.models import create_test_organisation, create_test_organisation_parent
 from .models import Review, Question, Answer, Rating
 from .forms import ReviewForm
 from .management.commands.push_new_reviews_to_choices import Command as PushReviewsCommand
@@ -342,8 +342,19 @@ class PushNewReviewToChoicesCommandTest(TestCase):
 
     def test_posts_to_correct_url(self):
         command = PushReviewsCommand()
-        self.assertEquals(command.choices_api_url('A111'), "{0}comment/A111?apikey={1}".format(
+        self.assertEquals(command.choices_api_url(self.organisation), "{0}comment/{1}?apikey={2}".format(
             settings.NHS_CHOICES_BASE_URL,
+            self.organisation.ods_code,
+            settings.NHS_CHOICES_API_KEY
+        ))
+
+    def test_uses_parent_code_for_gps(self):
+        gp_surgery = create_test_organisation_parent({'code': 'GP1'})
+        gp = create_test_organisation({'ods_code': 'GPBRANCH1', 'parent': gp_surgery})
+        command = PushReviewsCommand()
+        self.assertEquals(command.choices_api_url(gp), "{0}comment/{1}?apikey={2}".format(
+            settings.NHS_CHOICES_BASE_URL,
+            gp.parent.code,
             settings.NHS_CHOICES_API_KEY
         ))
 

@@ -15,7 +15,7 @@ from issues.models import Problem
 from reviews_display.models import Review
 
 from ..lib import interval_counts
-from ..models import Organisation, Service, CCG, Trust
+from ..models import Organisation, Service, CCG, OrganisationParent
 
 api_posting_id_counter = 328409234
 
@@ -26,6 +26,9 @@ def create_test_review(attributes={}):
     global api_posting_id_counter
     api_posting_id_counter += 1
 
+    organisation = attributes.get('organisation')
+    del attributes['organisation']
+
     default_attributes = {'api_posting_id': str(api_posting_id_counter),
                           'api_postingorganisationid': '893470895',
                           'api_category': 'comment',
@@ -35,6 +38,7 @@ def create_test_review(attributes={}):
     default_attributes.update(attributes)
     instance = Review(**dict((k, v) for (k, v) in default_attributes.items() if '__' not in k))
     instance.save()
+    instance.organisations.add(organisation)
     return instance
 
 
@@ -61,18 +65,19 @@ def create_test_ccg(attributes={}):
     return instance
 
 
-def create_test_trust(attributes={}):
-    # Make a Trust
+def create_test_organisation_parent(attributes={}):
+    # Make an Organisation Parent
     default_attributes = {
         'name': 'Test Trust',
         'code': 'TRUST1',
+        'choices_id': 1234,
         'email': 'test-trust@example.org',
         'secondary_email': 'test-trust-secondary@example.org',
     }
     default_attributes.update(attributes)
     if 'escalation_ccg' not in attributes:
         default_attributes['escalation_ccg'] = create_test_ccg({"code": default_attributes['code']})
-    instance = Trust(**dict((k, v) for (k, v) in default_attributes.items() if '__' not in k))
+    instance = OrganisationParent(**dict((k, v) for (k, v) in default_attributes.items() if '__' not in k))
     instance.save()
     return instance
 
@@ -89,8 +94,8 @@ def create_test_organisation(attributes={}):
         'point': Point(coords['lon'], coords['lat'])
     }
     default_attributes.update(attributes)
-    if 'trust' not in attributes:
-        default_attributes['trust'] = create_test_trust({'code': default_attributes['ods_code']})
+    if 'parent' not in attributes:
+        default_attributes['parent'] = create_test_organisation_parent({'code': default_attributes['ods_code']})
     instance = Organisation(**dict((k, v) for (k, v) in default_attributes.items() if '__' not in k))
     instance.save()
     return instance
@@ -161,25 +166,25 @@ class IntervalCountsTest(TestCase):
         self.test_ccg = create_test_ccg()
         self.other_test_ccg = create_test_ccg({'name': 'Other test ccg', 'code': 'CCG2'})
 
-        self.test_trust = create_test_trust({'escalation_ccg': self.test_ccg})
+        self.test_trust = create_test_organisation_parent({'escalation_ccg': self.test_ccg})
         self.test_trust.ccgs.add(self.test_ccg)
         self.test_trust.save()
 
-        self.other_test_trust = create_test_trust({'escalation_ccg': self.other_test_ccg,
-                                                   'code': 'TRUST2'})
-        self.other_test_trust.ccgs.add(self.other_test_ccg)
-        self.other_test_trust.save()
+        self.test_gp_surgery = create_test_organisation_parent({'escalation_ccg': self.other_test_ccg,
+                                                  'code': 'TRUST2'})
+        self.test_gp_surgery.ccgs.add(self.other_test_ccg)
+        self.test_gp_surgery.save()
 
-        self.test_organisation = create_test_organisation({'ods_code': 'XXX999',
-                                                           'organisation_type': 'hospitals',
-                                                           'trust': self.test_trust})
-        self.other_test_organisation = create_test_organisation({'ods_code': 'ABC222',
-                                                                 'name': 'Other Test Organisation',
-                                                                 'organisation_type': 'gppractices',
-                                                                 'trust': self.other_test_trust})
+        self.test_hospital = create_test_organisation({'ods_code': 'XXX999',
+                                                       'organisation_type': 'hospitals',
+                                                       'parent': self.test_trust})
+        self.test_gp_branch = create_test_organisation({'ods_code': 'ABC222',
+                                                        'name': 'Test GP Branch',
+                                                        'organisation_type': 'gppractices',
+                                                        'parent': self.test_gp_surgery})
 
         self.test_org_injuries = create_test_service({"service_code": 'ABC123',
-                                                      "organisation_id": self.test_organisation.id})
+                                                      "organisation_id": self.test_hospital.id})
 
         # Create a spread of problems over time for two organisations
         problem_ages = {3: {'time_to_acknowledge': 24, 'time_to_address': 220},
@@ -190,30 +195,30 @@ class IntervalCountsTest(TestCase):
                         45: {'time_to_acknowledge': 12, 'time_to_address': 400}}
 
         for age, attributes in problem_ages.items():
-            create_problem_with_age(self.test_organisation, age, attributes)
+            create_problem_with_age(self.test_hospital, age, attributes)
         other_problem_ages = {1: {},
                               2: {},
                               20: {},
                               65: {},
                               70: {}}
         for age, attributes in other_problem_ages.items():
-            create_problem_with_age(self.other_test_organisation, age, attributes)
+            create_problem_with_age(self.test_gp_branch, age, attributes)
 
         # Create a similar spread of reviews
         review_ages = [6, 12, 13, 50, 55]
 
         for age in review_ages:
-            create_review_with_age(self.test_organisation, age)
+            create_review_with_age(self.test_hospital, age)
 
-        self.rejected_problem = create_problem_with_age(self.test_organisation, 1, {'publication_status': Problem.REJECTED})
+        self.rejected_problem = create_problem_with_age(self.test_hospital, 1, {'publication_status': Problem.REJECTED})
 
     def test_organisation_interval_counts(self):
-        organisation_filters = {'organisation_id': self.test_organisation.id}
+        organisation_filters = {'organisation_id': self.test_hospital.id}
         expected_counts = {'week': 3,
                            'four_weeks': 5,
-                           'id': self.test_organisation.id,
-                           'name': 'Test Organisation',
-                           'ods_code': 'XXX999',
+                           'id': self.test_hospital.id,
+                           'name': self.test_hospital.name,
+                           'ods_code': self.test_hospital.ods_code,
                            'six_months': 6,
                            'all_time': 6,
                            'happy_outcome': 0.5,
@@ -225,9 +230,9 @@ class IntervalCountsTest(TestCase):
     def test_overall_interval_counts(self):
         expected_counts = [{'week': 2,
                             'four_weeks': 3,
-                            'id': self.other_test_organisation.id,
-                            'name': 'Other Test Organisation',
-                            'ods_code': 'ABC222',
+                            'id': self.test_gp_branch.id,
+                            'name': self.test_gp_branch.name,
+                            'ods_code': self.test_gp_branch.ods_code,
                             'six_months': 5,
                             'all_time': 5,
                             'happy_outcome': None,
@@ -236,9 +241,9 @@ class IntervalCountsTest(TestCase):
                             'average_time_to_address': None},
                            {'week': 3,
                            'four_weeks': 5,
-                           'id': self.test_organisation.id,
-                           'name': 'Test Organisation',
-                           'ods_code': 'XXX999',
+                           'id': self.test_hospital.id,
+                           'name': self.test_hospital.name,
+                           'ods_code': self.test_hospital.ods_code,
                            'six_months': 6,
                            'all_time': 6,
                            'happy_outcome': 0.5,
@@ -251,9 +256,9 @@ class IntervalCountsTest(TestCase):
     def test_extra_organisation_data(self):
         expected_counts = [{'week': 2,
                             'four_weeks': 3,
-                            'id': self.other_test_organisation.id,
-                            'name': 'Other Test Organisation',
-                            'ods_code': 'ABC222',
+                            'id': self.test_gp_branch.id,
+                            'name': self.test_gp_branch.name,
+                            'ods_code': self.test_gp_branch.ods_code,
                             'lon': 51.536000000000001,
                             'lat': -0.062129999999999998,
                             'type': 'GP',
@@ -265,9 +270,9 @@ class IntervalCountsTest(TestCase):
                             'average_time_to_address': None},
                            {'week': 3,
                            'four_weeks': 5,
-                           'id': self.test_organisation.id,
-                           'name': 'Test Organisation',
-                           'ods_code': 'XXX999',
+                           'id': self.test_hospital.id,
+                           'name': self.test_hospital.name,
+                           'ods_code': self.test_hospital.ods_code,
                            'lon': 51.536000000000001,
                            'lat': -0.062129999999999998,
                            'type': 'Hospital',
@@ -281,9 +286,9 @@ class IntervalCountsTest(TestCase):
         self.assertEqual(expected_counts, actual)
 
     def test_problem_data_intervals(self):
-        expected_counts = [{'id': self.other_test_organisation.id,
-                            'name': 'Other Test Organisation',
-                            'ods_code': 'ABC222',
+        expected_counts = [{'id': self.test_gp_branch.id,
+                            'name': self.test_gp_branch.name,
+                            'ods_code': self.test_gp_branch.ods_code,
                             'all_time': 5,
                             'all_time_open': 5,
                             'all_time_closed': 0,
@@ -291,9 +296,9 @@ class IntervalCountsTest(TestCase):
                             'happy_service': None,
                             'average_time_to_acknowledge': None,
                             'average_time_to_address': None},
-                           {'id': self.test_organisation.id,
-                           'name': 'Test Organisation',
-                           'ods_code': 'XXX999',
+                           {'id': self.test_hospital.id,
+                           'name': self.test_hospital.name,
+                           'ods_code': self.test_hospital.ods_code,
                            'all_time': 6,
                            'all_time_open': 4,
                            'all_time_closed': 2,
@@ -305,16 +310,16 @@ class IntervalCountsTest(TestCase):
         self.assertEqual(expected_counts, actual)
 
     def test_review_data_intervals(self):
-        expected_counts = [{'id': self.other_test_organisation.id,
-                            'name': 'Other Test Organisation',
-                            'ods_code': 'ABC222',
+        expected_counts = [{'id': self.test_gp_branch.id,
+                            'name': self.test_gp_branch.name,
+                            'ods_code': self.test_gp_branch.ods_code,
                             'reviews_week': 0,
                             'reviews_four_weeks': 0,
                             'reviews_six_months': 0,
                             'reviews_all_time': 0},
-                           {'id': self.test_organisation.id,
-                           'name': 'Test Organisation',
-                           'ods_code': 'XXX999',
+                           {'id': self.test_hospital.id,
+                           'name': self.test_hospital.name,
+                           'ods_code': self.test_hospital.ods_code,
                            'reviews_week': 1,
                            'reviews_four_weeks': 3,
                            'reviews_six_months': 5,
@@ -328,9 +333,9 @@ class IntervalCountsTest(TestCase):
         threshold = ['six_months', 1]
         expected_counts = [{'week': 0,
                            'four_weeks': 1,
-                           'id': self.test_organisation.id,
-                           'name': 'Test Organisation',
-                           'ods_code': 'XXX999',
+                           'id': self.test_hospital.id,
+                           'name': self.test_hospital.name,
+                           'ods_code': self.test_hospital.ods_code,
                            'six_months': 1,
                            'all_time': 1,
                            'happy_outcome': None,
@@ -343,9 +348,9 @@ class IntervalCountsTest(TestCase):
         organisation_filters = {'organisation_type': 'gppractices'}
         expected_counts = [{'week': 2,
                             'four_weeks': 3,
-                            'id': self.other_test_organisation.id,
-                            'name': 'Other Test Organisation',
-                            'ods_code': 'ABC222',
+                            'id': self.test_gp_branch.id,
+                            'name': self.test_gp_branch.name,
+                            'ods_code': self.test_gp_branch.ods_code,
                             'six_months': 5,
                             'all_time': 5,
                             'happy_outcome': None,
@@ -358,9 +363,9 @@ class IntervalCountsTest(TestCase):
         problem_filters = {'status': (Problem.UNABLE_TO_RESOLVE, Problem.ABUSIVE,)}
         expected_counts = [{'week': 1,
                            'four_weeks': 2,
-                           'id': self.test_organisation.id,
-                           'name': 'Test Organisation',
-                           'ods_code': 'XXX999',
+                           'id': self.test_hospital.id,
+                           'name': self.test_hospital.name,
+                           'ods_code': self.test_hospital.ods_code,
                            'six_months': 2,
                            'all_time': 2,
                            'happy_outcome': 0.5,
@@ -377,9 +382,9 @@ class IntervalCountsTest(TestCase):
         # have to work all this out
         expected_counts = [{'week': 2,
                             'four_weeks': 3,
-                            'id': self.other_test_organisation.id,
-                            'name': 'Other Test Organisation',
-                            'ods_code': 'ABC222',
+                            'id': self.test_gp_branch.id,
+                            'name': self.test_gp_branch.name,
+                            'ods_code': self.test_gp_branch.ods_code,
                             'six_months': 5,
                             'all_time': 5,
                             'happy_outcome': None,
@@ -396,18 +401,18 @@ class IntervalCountsTest(TestCase):
         self._test_filter_by_bool_filters('formal_complaint')
 
     def _test_filter_by_bool_filters(self, filter):
-        # Add some specific breach problems in for self.test_organisation
-        create_problem_with_age(self.test_organisation, 1, {filter: True})
-        create_problem_with_age(self.test_organisation, 10, {filter: True})
-        create_problem_with_age(self.test_organisation, 100, {filter: True})
-        create_problem_with_age(self.test_organisation, 365, {filter: True})
+        # Add some specific breach problems in for self.test_hospital
+        create_problem_with_age(self.test_hospital, 1, {filter: True})
+        create_problem_with_age(self.test_hospital, 10, {filter: True})
+        create_problem_with_age(self.test_hospital, 100, {filter: True})
+        create_problem_with_age(self.test_hospital, 365, {filter: True})
         problem_filters = {filter: True}
         threshold = ['six_months', 1]
         expected_counts = [{'week': 1,
                             'four_weeks': 2,
-                            'id': self.test_organisation.id,
-                            'name': 'Test Organisation',
-                            'ods_code': 'XXX999',
+                            'id': self.test_hospital.id,
+                            'name': self.test_hospital.name,
+                            'ods_code': self.test_hospital.ods_code,
                             'six_months': 3,
                             'all_time': 4,
                             'happy_outcome': None,
@@ -416,13 +421,13 @@ class IntervalCountsTest(TestCase):
                             'average_time_to_address': None}]
         actual = interval_counts(problem_filters=problem_filters, threshold=threshold)
         self.assertEqual(expected_counts, actual)
-        
+
         problem_filters = {filter: False}
         expected_counts = [{'week': 2,
                             'four_weeks': 3,
-                            'id': self.other_test_organisation.id,
-                            'name': 'Other Test Organisation',
-                            'ods_code': 'ABC222',
+                            'id': self.test_gp_branch.id,
+                            'name': self.test_gp_branch.name,
+                            'ods_code': self.test_gp_branch.ods_code,
                             'six_months': 5,
                             'all_time': 5,
                             'happy_outcome': None,
@@ -431,9 +436,9 @@ class IntervalCountsTest(TestCase):
                             'average_time_to_address': None},
                            {'week': 3,
                            'four_weeks': 5,
-                           'id': self.test_organisation.id,
-                           'name': 'Test Organisation',
-                           'ods_code': 'XXX999',
+                           'id': self.test_hospital.id,
+                           'name': self.test_hospital.name,
+                           'ods_code': self.test_hospital.ods_code,
                            'six_months': 6,
                            'all_time': 6,
                            'happy_outcome': 0.5,
@@ -446,9 +451,9 @@ class IntervalCountsTest(TestCase):
     def test_applies_interval_count_threshold_to_overall_counts(self):
         expected_counts = [{'week': 3,
                            'four_weeks': 5,
-                           'id': self.test_organisation.id,
-                           'name': 'Test Organisation',
-                           'ods_code': 'XXX999',
+                           'id': self.test_hospital.id,
+                           'name': self.test_hospital.name,
+                           'ods_code': self.test_hospital.ods_code,
                            'six_months': 6,
                            'all_time': 6,
                            'happy_outcome': 0.5,
@@ -461,9 +466,9 @@ class IntervalCountsTest(TestCase):
     def test_applies_all_time_interval_count_threshold_to_overall_counts(self):
         expected_counts = [{'week': 3,
                            'four_weeks': 5,
-                           'id': self.test_organisation.id,
-                           'name': 'Test Organisation',
-                           'ods_code': 'XXX999',
+                           'id': self.test_hospital.id,
+                           'name': self.test_hospital.name,
+                           'ods_code': self.test_hospital.ods_code,
                            'six_months': 6,
                            'all_time': 6,
                            'happy_outcome': 0.5,
@@ -474,12 +479,12 @@ class IntervalCountsTest(TestCase):
         self.assertEqual(expected_counts, actual)
 
     def test_filtering_with_organisation_ids(self):
-        organisation_filters = {'organisation_ids': (self.other_test_organisation.id, self.test_organisation.id)}
+        organisation_filters = {'organisation_ids': (self.test_gp_branch.id, self.test_hospital.id)}
         expected_counts = [{'week': 2,
                             'four_weeks': 3,
-                            'id': self.other_test_organisation.id,
-                            'name': 'Other Test Organisation',
-                            'ods_code': 'ABC222',
+                            'id': self.test_gp_branch.id,
+                            'name': self.test_gp_branch.name,
+                            'ods_code': self.test_gp_branch.ods_code,
                             'six_months': 5,
                             'all_time': 5,
                             'happy_outcome': None,
@@ -488,9 +493,9 @@ class IntervalCountsTest(TestCase):
                             'average_time_to_address': None},
                            {'week': 3,
                            'four_weeks': 5,
-                           'id': self.test_organisation.id,
-                           'name': 'Test Organisation',
-                           'ods_code': 'XXX999',
+                           'id': self.test_hospital.id,
+                           'name': self.test_hospital.name,
+                           'ods_code': self.test_hospital.ods_code,
                            'six_months': 6,
                            'all_time': 6,
                            'happy_outcome': 0.5,
@@ -515,25 +520,25 @@ class AuthorizationTestCase(TestCase):
         self.test_ccg = create_test_ccg()
         self.other_test_ccg = create_test_ccg({'name': 'other test ccg', 'code': 'XYZ'})
 
-        # Trusts
-        self.test_trust = create_test_trust({'escalation_ccg': self.test_ccg})
-        self.other_test_trust = create_test_trust({'name': 'other test trust',
-                                                   'code': 'XYZ',
-                                                   'escalation_ccg': self.other_test_ccg})
+        # Organisation Parent
+        self.test_trust = create_test_organisation_parent({'escalation_ccg': self.test_ccg})
+        self.test_gp_surgery = create_test_organisation_parent({'name': 'other test trust',
+                                                                'code': 'XYZ',
+                                                                'escalation_ccg': self.other_test_ccg})
 
         self.test_trust.ccgs.add(self.test_ccg)
         self.test_trust.save()
-        self.other_test_trust.ccgs.add(self.other_test_ccg)
-        self.other_test_trust.save()
+        self.test_gp_surgery.ccgs.add(self.other_test_ccg)
+        self.test_gp_surgery.save()
 
         # Organisations
-        self.test_organisation = create_test_organisation({'organisation_type': 'hospitals',
-                                                           'trust': self.test_trust,
-                                                           'point': Point(-0.2, 51.5)})
-        self.other_test_organisation = create_test_organisation({'ods_code': '12345',
-                                                                 'name': 'Other Test Organisation',
-                                                                 'trust': self.other_test_trust,
-                                                                 'point': Point(-0.1, 51.5)})
+        self.test_hospital = create_test_organisation({'organisation_type': 'hospitals',
+                                                       'parent': self.test_trust,
+                                                       'point': Point(-0.2, 51.5)})
+        self.test_gp_branch = create_test_organisation({'ods_code': '12345',
+                                                        'name': 'Test GP Branch',
+                                                        'parent': self.test_gp_surgery,
+                                                        'point': Point(-0.1, 51.5)})
 
         # Users
         self.test_password = 'password'
@@ -553,11 +558,11 @@ class AuthorizationTestCase(TestCase):
         # A trust user linked to no trusts
         self.no_trust_user = User.objects.get(pk=8)
 
-        # A User linked to a different trust
-        self.other_trust_user = User.objects.get(pk=7)
+        # A User linked to the test gp surgery
+        self.gp_surgery_user = User.objects.get(pk=7)
         # add the relation to the other trust
-        self.other_test_trust.users.add(self.other_trust_user)
-        self.other_test_trust.save()
+        self.test_gp_surgery.users.add(self.gp_surgery_user)
+        self.test_gp_surgery.save()
 
         # An NHS Superuser
         self.nhs_superuser = User.objects.get(pk=4)
@@ -576,7 +581,7 @@ class AuthorizationTestCase(TestCase):
         self.test_ccg.users.add(self.ccg_user)
         self.test_ccg.save()
 
-        # A CCG user for the CCG that other test trust belongs to
+        # A CCG user for the CCG that gp surgery belongs to
         self.other_ccg_user = User.objects.get(pk=13)
         self.other_test_ccg.users.add(self.other_ccg_user)
         self.other_test_ccg.save()
