@@ -474,36 +474,13 @@ def login_redirect(request):
     """
 
     user = request.user
+    
+    links = auth.create_home_links_for_user(user)
 
-    # NHS Super users get a special map page
-    if user_in_group(user, auth.NHS_SUPERUSERS):
-        return HttpResponseRedirect(reverse('private-national-summary'))
-
-    # CCG users get their own problem dashboard
-    elif user_in_group(user, auth.CCG):
-        if user.ccgs.count() == 1:
-            ccg = user.ccgs.all()[0]
-            return HttpResponseRedirect(reverse('ccg-dashboard', kwargs={'code': ccg.code}))
-
-    # Customer contact centre users go to the escalation dashboard
-    elif user_in_group(user, auth.CUSTOMER_CONTACT_CENTRE):
-        return HttpResponseRedirect(reverse('escalation-dashboard'))
-
-    # Moderators go to the moderation queue
-    elif user_in_group(user, auth.CASE_HANDLERS):
-        return HttpResponseRedirect(reverse('moderate-home'))
-
-    elif user_in_group(user, auth.SECOND_TIER_MODERATORS):
-        return HttpResponseRedirect(reverse('second-tier-moderate-home'))
-
-    # Organisation Parents
-    elif user_in_group(user, auth.ORGANISATION_PARENTS):
-        if user.organisation_parents.count() == 1:
-            organisation_parent = user.organisation_parents.all()[0]
-            return HttpResponseRedirect(reverse('org-parent-dashboard', kwargs={'code': organisation_parent.code}))
-
-    # Anyone else goes to the normal homepage
-    return HttpResponseRedirect(reverse('home', kwargs={'cobrand': 'choices'}))
+    if len(links):
+        return HttpResponseRedirect(links[0]['url'])
+    else:
+        return HttpResponseRedirect(reverse('home', kwargs={'cobrand': 'choices'}))
 
 
 class SuperuserLogs(TemplateView):
