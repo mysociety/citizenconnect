@@ -22,22 +22,12 @@
         {% endif %}
       </ul>
 
-      {% if response %}
-        <p><a href="{% url 'org-parent-dashboard' code=response.issue.organisation.parent.code %}">
-          Go to the '{{ response.issue.organisation.parent.name }}' dashboard
-        </a></p>
-      {% elif issue %}
-        <p><a href="{% url 'org-parent-dashboard' code=issue.organisation.parent.code %}">
-          Go to the '{{ response.issue.organisation.parent.name }}' dashboard
-        </a></p>
-      {% endif %}
-
       {% if user|is_ccg %}
         {% for ccg in user.ccgs.all %}
         <p><a href="{% url 'ccg-dashboard' code=ccg.code %}">Go to the '{{ ccg.name }}' dashboard</a></p>
         {% endfor %}
       {% endif %}
-      
+
 
     </div>
 </div>
