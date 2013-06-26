@@ -489,26 +489,6 @@ class PrivateHome(TemplateView):
         # If there are no links, or more than one, present the private home page
         return super(PrivateHome, self).render_to_response(context, **kwargs)
 
-
-
-@login_required
-def login_redirect(request):
-    """
-    View function to redirect a logged in user to the right url after logging in.
-    Allows users to have an effective "homepage" which they go to automatically
-    after logging in. Uses their user group to determine what is the right page.
-    """
-
-    user = request.user
-
-    links = auth.create_home_links_for_user(user)
-
-    if len(links):
-        return HttpResponseRedirect(links[0]['url'])
-    else:
-        return HttpResponseRedirect(reverse('home', kwargs={'cobrand': 'choices'}))
-
-
 class SuperuserLogs(TemplateView):
 
     template_name = 'organisations/superuser_logs.html'
