@@ -144,6 +144,9 @@ $(document).ready(function () {
     var openPopupFor;
 
     $searchBox.on('change', function(e) {
+        $('#id_organisation_type').val('');
+        showSelectedFilters();
+
         var selection = e.added;
         if (selection.type === 'organisation') {
             var odsCode = selection.id;
