@@ -480,11 +480,13 @@ class PrivateHome(TemplateView):
 
     def render_to_response(self, context, **kwargs):
 
-        # if len(links):
-        #     return HttpResponseRedirect(links[0]['url'])
-        # else:
-        #     return HttpResponseRedirect(reverse('home', kwargs={'cobrand': 'choices'}))
+        links = context['links']
 
+        # If there is just one link then go there
+        if len(links) == 1:
+            return HttpResponseRedirect(links[0]['url'])
+
+        # If there are no links, or more than one, present the private home page
         return super(PrivateHome, self).render_to_response(context, **kwargs)
 
 
