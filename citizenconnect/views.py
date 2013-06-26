@@ -8,6 +8,8 @@ from django.template.loader import get_template
 from django.core import mail
 from django.template import Context
 
+from django.contrib.auth.models import User
+
 
 # App imports
 from issues.forms import PublicLookupForm, FeedbackForm
@@ -48,6 +50,12 @@ class DevHomepageSelector(TemplateView):
             return super(DevHomepageSelector, self).get(request, *args, **kwargs)
         else:
             return HttpResponsePermanentRedirect(self.redirect_url)
+
+    def get_context_data(self, **kwargs):
+        context = super(DevHomepageSelector, self).get_context_data(**kwargs)
+        context['users'] = User.objects.filter(last_name="Development User").order_by('username')
+        return context
+
 
 class About(TemplateView):
     template_name = 'about.html'
