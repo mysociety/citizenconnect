@@ -198,7 +198,7 @@ class PrivateHomeTests(AuthorizationTestCase):
             resp = self.client.get(self.private_home_url)
             self.assertRedirects(resp, pns_url)
 
-    def test_everyone_else_goes_to_home_page(self):
+    def test_everyone_else_goes_to_private_home_page(self):
         # Provider with no organisations
         self.login_as(self.no_trust_user)
         resp = self.client.get(self.private_home_url)
@@ -210,8 +210,16 @@ class PrivateHomeTests(AuthorizationTestCase):
         resp = self.client.get(self.private_home_url)
         self.assertRedirects(resp, ccg_dashboard_url)
 
+        # If the ccg user has several ccgs they should be shown a list
+        self.ccg_user.ccgs.add(self.other_test_ccg)
+        resp = self.client.get(self.private_home_url)
+        self.assertEqual(resp.status_code, 200)
+        for ccg in self.ccg_user.ccgs.all():
+            self.assertContains(resp, "CCG dashboard for {0}".format(ccg.name))
+
     def test_customer_contact_centre_user_goes_to_escalation_dashboard(self):
         escalation_dashboard_url = reverse('escalation-dashboard')
         self.login_as(self.customer_contact_centre_user)
         resp = self.client.get(self.private_home_url)
         self.assertRedirects(resp, escalation_dashboard_url)
+
