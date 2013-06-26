@@ -149,7 +149,6 @@ $(document).ready(function () {
             var odsCode = selection.id;
             zoomToPoint(selection.lat, selection.lon);
             openPopupFor = odsCode;
-            // window.location.hash = odsCode;
         } else {
             zoomToPoint(selection.lat, selection.lon);
         }
