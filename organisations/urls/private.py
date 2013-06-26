@@ -13,6 +13,10 @@ from organisations.auth import StrongSetPasswordForm, StrongPasswordChangeForm
 urlpatterns = patterns(
     '',
 
+    url(r'^$',
+        login_required(PrivateHome.as_view()),
+        name='private-home'),
+
     # Organisation Parent urls
     url(r'^org-parent/(?P<code>\w+)/dashboard$',
         login_required(OrganisationParentDashboard.as_view()),

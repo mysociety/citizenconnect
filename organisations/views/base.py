@@ -465,6 +465,30 @@ class PrivateNationalSummary(Summary):
         return context
 
 
+class PrivateHome(TemplateView):
+
+    template_name = 'organisations/private_home.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(PrivateHome, self).get_context_data(**kwargs)
+
+        # Load all the links that are relevant to this person.
+        context['links'] = auth.create_home_links_for_user(self.request.user)
+
+        return context
+
+
+    def render_to_response(self, context, **kwargs):
+
+        # if len(links):
+        #     return HttpResponseRedirect(links[0]['url'])
+        # else:
+        #     return HttpResponseRedirect(reverse('home', kwargs={'cobrand': 'choices'}))
+
+        return super(PrivateHome, self).render_to_response(context, **kwargs)
+
+
+
 @login_required
 def login_redirect(request):
     """
@@ -474,7 +498,7 @@ def login_redirect(request):
     """
 
     user = request.user
-    
+
     links = auth.create_home_links_for_user(user)
 
     if len(links):

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load url from future %}
+
+{% block title %}Home{% endblock %}
+
+{% block bodyclasses %}private-home{% endblock %}
+
+{% block content %}
+
+  {% include "organisations/includes/page_header.html" with title="Private Dashboard" %}
+
+
+
+  {% if links %}
+    <h2>Links</h2>
+
+    <ul>
+      {% for link in links %}
+        <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+
+
+{% endblock %}
