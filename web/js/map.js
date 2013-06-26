@@ -411,7 +411,7 @@ $(document).ready(function () {
                     openPopupFor = selectedProvider;
                 }
             });
-        } else if (selectedLonLat) {
+        } else if (selectedLonLat && selectedLonLat !== ',') {
             var lonLat = selectedLonLat.split(','), lon = lonLat[0], lat = lonLat[1];
             zoomToPoint(lat, lon);
         }
