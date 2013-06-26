@@ -253,7 +253,7 @@ def create_home_links_for_user(user):
     links = []
 
     # NHS Super users get a special map page
-    if user_in_group(user, NHS_SUPERUSERS):
+    if user_is_superuser(user):
         links.append({
             "title": "Private National Summary",
             "url": reverse('private-national-summary'),

@@ -140,7 +140,9 @@ class AuthTests(AuthorizationTestCase):
             ( self.trust_user, [
                 {'title': 'Dashboard for Test Trust', 'url': '/private/org-parent/TRUST1/dashboard'},
             ] ),
-            ( self.superuser, [] ),
+            ( self.superuser, [
+                {'title': 'Private National Summary', 'url': '/private/summary'},
+            ] ),
             ( self.anonymous_user, [] ),
             ( self.no_trust_user, [] ),
             ( self.gp_surgery_user, [
@@ -167,7 +169,7 @@ class AuthTests(AuthorizationTestCase):
         for user, expected_links in tests:
             links = create_home_links_for_user(user)
             self.assertEqual(
-                links,
                 expected_links,
+                links,
                 "Did not get expected links for '{0}' user".format(user)
             )
