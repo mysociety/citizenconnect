@@ -49,8 +49,10 @@ class GeocoderCsvImportTests(TestCase):
                 'source': Place.SOURCE_OS_LOCATOR,
             }
         )
-        self.assertEqual( place.centre.x, -0.11587620309898315 )
-        self.assertEqual( place.centre.y, 51.361488927177462   )
+        # We have to be _almost_ equal hee because different geo packages are more or
+        # less accurate in their conversion of eastings/northings to lat/lon
+        self.assertAlmostEqual(place.centre.x, -0.11587620309898315, places=3)
+        self.assertAlmostEqual(place.centre.y, 51.361488927177462, places=3)
 
     @override_settings(GEOCODER_BOUNDING_BOXES=(
         # xmin, ymin, xmax, ymax
@@ -70,6 +72,7 @@ class GeocoderCsvImportTests(TestCase):
                 'source': Place.SOURCE_OS_50K_GAZETEER,
             }
         )
-        self.assertEqual( place.centre.x, -0.1061755458136722 )
-        self.assertEqual( place.centre.y, 51.517070389322676   )
-
+        # We have to be _almost_ equal hee because different geo packages are more or
+        # less accurate in their conversion of eastings/northings to lat/lon
+        self.assertAlmostEqual(place.centre.x, -0.1061755458136722, places=3)
+        self.assertAlmostEqual(place.centre.y, 51.517070389322676, places=3)
