@@ -43,7 +43,7 @@
         "pk": 7,
         "model": "auth.user",
         "fields": {
-            "username": "other_trust",
+            "username": "gp_surgery_user",
             "first_name": "",
             "last_name": "",
             "is_active": true,
