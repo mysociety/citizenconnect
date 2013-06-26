@@ -72,6 +72,9 @@
             <img src="<%= icon.options.iconRetinaUrl %>" alt="Status icon" class="fr" />
             <h1 class="map-header"><%= nhsCentre.name %></h1>
         </div>
+        <div class="organisation-image  align-center">
+            <img src="{% static 'img/organisation-map-placeholder.png' %}" alt="Image of <%= nhsCentre.name %>" />
+        </div>
         <h2 class="map-header">Problem reports</h2>
         <% if (issueType !== '') { %>
             <h3>Issue Type - <%= issueType %></h3>
