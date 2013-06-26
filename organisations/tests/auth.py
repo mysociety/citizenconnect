@@ -11,7 +11,8 @@ from organisations.auth import (user_is_superuser,
                                 create_initial_password,
                                 user_is_escalation_body,
                                 user_can_access_national_escalation_dashboard,
-                                user_can_access_private_national_summary)
+                                user_can_access_private_national_summary,
+                                create_home_links_for_user)
 from organisations.tests.lib import AuthorizationTestCase
 
 
@@ -132,3 +133,41 @@ class AuthTests(AuthorizationTestCase):
             # check it is unique (ie has not been seen before)
             self.assertFalse(password in seen_passwords)
             seen_passwords.add(password)
+
+    def test_create_home_links_for_user(self):
+
+        tests = [
+            ( self.trust_user, [
+                {'title': 'Dashboard for Test Trust', 'url': '/private/org-parent/TRUST1/dashboard'},
+            ] ),
+            ( self.superuser, [] ),
+            ( self.anonymous_user, [] ),
+            ( self.no_trust_user, [] ),
+            ( self.gp_surgery_user, [
+                {'title': 'Dashboard for other test trust', 'url': '/private/org-parent/XYZ/dashboard'},
+            ] ),
+            ( self.nhs_superuser, [
+                {'title': 'Private National Summary', 'url': '/private/summary'},
+            ] ),
+            ( self.case_handler, [
+                {'title': 'Moderation home', 'url': '/private/moderate/'},
+            ] ),
+            ( self.second_tier_moderator, [
+                {'title': 'Second tier moderation home', 'url': '/private/moderate/tier_two'},
+            ] ),
+            ( self.no_ccg_user, [] ),
+            ( self.ccg_user, [
+                {'title': 'CCG dashboard for Test CCG', 'url': '/private/ccg/CCG1/dashboard'},
+            ] ),
+            ( self.customer_contact_centre_user, [
+                {'title': 'Escalation dashboard', 'url': '/private/escalation'},
+            ] ),
+        ]
+
+        for user, expected_links in tests:
+            links = create_home_links_for_user(user)
+            self.assertEqual(
+                links,
+                expected_links,
+                "Did not get expected links for '{0}' user".format(user)
+            )

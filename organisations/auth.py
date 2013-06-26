@@ -6,6 +6,7 @@ import random
 from django import forms
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
+from django.core.urlresolvers import reverse
 from django.contrib.auth.forms import SetPasswordForm, PasswordChangeForm
 from django.utils.translation import ugettext_lazy as _
 
@@ -239,3 +240,59 @@ class StrongPasswordChangeForm(PasswordChangeForm):
             self.user.username, password)
         validate_password_allowed_chars(password)
         return password
+
+
+
+def create_home_links_for_user(user):
+    """
+    Inspect the user and work out which links are appropriate for their home page.
+
+    Returns an array of dicts.
+    """
+
+    links = []
+
+    # NHS Super users get a special map page
+    if user_in_group(user, NHS_SUPERUSERS):
+        links.append({
+            "title": "Private National Summary",
+            "url": reverse('private-national-summary'),
+        })
+
+    # CCG users get their own problem dashboard
+    if user_in_group(user, CCG):
+        for ccg in user.ccgs.all():
+            links.append({
+                "title": "CCG dashboard for {0}".format(ccg.name),
+                "url": reverse('ccg-dashboard', kwargs={'code': ccg.code}),
+            })
+
+    # Customer contact centre users go to the escalation dashboard
+    if user_in_group(user, CUSTOMER_CONTACT_CENTRE):
+        links.append({
+            "title": "Escalation dashboard",
+            "url": reverse('escalation-dashboard'),
+        })
+    
+    # Moderators go to the moderation queue
+    if user_in_group(user, CASE_HANDLERS):
+        links.append({
+            "title": "Moderation home",
+            "url": reverse('moderate-home'),
+        })
+    
+    if user_in_group(user, SECOND_TIER_MODERATORS):
+        links.append({
+            "title": "Second tier moderation home",
+            "url": reverse('second-tier-moderate-home'),
+        })
+
+    # Organisation Parents
+    if user_in_group(user, ORGANISATION_PARENTS):
+        for org_parent in user.organisation_parents.all():
+            links.append({
+                "title": "Dashboard for {0}".format(org_parent.name),
+                "url": reverse('org-parent-dashboard', kwargs={'code': org_parent.code}),
+            })
+
+    return links
