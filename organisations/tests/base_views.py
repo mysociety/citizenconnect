@@ -27,6 +27,7 @@ from . import (create_test_problem,
                create_test_review,
                AuthorizationTestCase)
 from organisations.forms import OrganisationFinderForm
+from geocoder.models import Place
 
 
 class OrganisationMapTests(AuthorizationTestCase):
@@ -173,6 +174,71 @@ class OrganisationMapTests(AuthorizationTestCase):
         self.assertEqual(resp['Content-Type'], 'application/json')
         response_json = json.loads(resp.content)
         self.assertEqual(len(response_json), 1)
+
+
+class MapOrganisationCoordsTests(TestCase):
+    def setUp(self):
+        self.test_org = create_test_organisation()
+        self.map_org_url = reverse('org-coords-map', kwargs={'cobrand': 'choices', 'ods_code': self.test_org.ods_code})
+
+    def test_single_map_org_page_exists(self):
+        resp = self.client.get(self.map_org_url)
+        self.assertEqual(200, resp.status_code)
+
+
+class MapSearchTests(TestCase):
+    def setUp(self):
+        self.place_search_url = reverse('org-map-search', kwargs={'cobrand': 'choices'})
+
+    def test_search_page_exists(self):
+        resp = self.client.get(self.place_search_url)
+        self.assertEqual(200, resp.status_code)
+
+    def test_no_search_term_returns_no_results(self):
+        resp = self.client.get(self.place_search_url + '?term=')
+        self.assertEqual('[]', resp.content)
+
+    def test_search_returns_organisations(self):
+        org = create_test_organisation({'name': "Test Organisation"})
+        resp = self.client.get(self.place_search_url + '?term=Tes')
+        self.assertContains(resp, org.name)
+
+    def test_search_returns_places(self):
+        place = Place.objects.create(
+            name='Place Name',
+            context_name="Place Name, London",
+            centre=Point(50, 2),
+            source=Place.SOURCE_OS_LOCATOR,
+        )
+        resp = self.client.get(self.place_search_url + '?term=Pla')
+        self.assertContains(resp, place.context_name)
+
+    def test_search_returns_postcode(self):
+        resp = self.client.get(self.place_search_url + '?term=SW1A+1AA')
+        data = json.loads(resp.content)
+        self.assertEqual(data, [{
+            'id': 'SW1A1AA',
+            'lat': 51.501009611553926,
+            'lon': -0.14158706711000901,
+            'text': 'SW1A 1AA (postcode)',
+            'type': 'place',
+        }])
+
+    def test_search_returns_partial_postcode(self):
+        resp = self.client.get(self.place_search_url + '?term=SW1A')
+        data = json.loads(resp.content)
+        self.assertEqual(data, [{
+            'id': 'SW1A',
+            'lat': 51.501434410230779,
+            'lon': -0.13294453160162145,
+            'text': 'SW1A (postcode)',
+            'type': 'place',
+        }])
+
+    def test_search_returns_bad_postcode(self):
+        resp = self.client.get(self.place_search_url + '?term=BA1D+1AB')
+        data = json.loads(resp.content)
+        self.assertEqual(data, [])
 
 
 class OrganisationMapBrowserTests(SeleniumTestCase):

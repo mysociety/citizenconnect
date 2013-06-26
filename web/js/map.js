@@ -48,7 +48,6 @@ $(document).ready(function () {
     var hoverBubbleTemplate = $("script[name=hover-bubble]").html();
     var londonCentre = new L.LatLng(51.505, -0.09);
     var northEastCentre = new L.LatLng(54.95, -1.62);
-    var isNorthEast = (window.location.hash == "#northeast");
     var londonZoomLevel = 10;
     var northEastZoomLevel = 10;
     var map = new L.Map('map', {
@@ -97,6 +96,68 @@ $(document).ready(function () {
     // reference to the control around all the time.
     var zoomControl = map.zoomControl;
 
+    /**
+     * Find a provider by a set of attributes.
+     *
+     * @param {Object} attrs The attributes to search by
+     * @param {Function} callback The function to call with the provider found (if any)
+     */
+    var findProvider = function(odsCode, callback) {
+        $.ajax({
+            url: window.location.pathname + '/' + odsCode,
+            success: function(provider) {
+                callback(provider);
+            }
+        });
+    };
+
+    /**
+    * Enable select2 on the org name select.
+    */
+    var $searchBox = $("#map-search-org-name");
+
+    $searchBox.select2({
+        minimumInputLength: 1,
+        placeholder: "Search the map",
+        ajax: {
+            url: $searchBox.data('search-url'),
+            dataType: 'json',
+            data: function(term, page) {
+                return {
+                    term: term
+                };
+            },
+            results: function(data, page) {
+                return {results: data};
+            }
+        },
+        initSelection: function(element, callback) {
+            findProvider(element.val(), function(provider) {
+                callback(provider);
+            });
+        }
+    });
+
+    // When an organisation is chosen we want to open the popup for it, but
+    // we have to wait until `drawProviders` has been run, this variable is
+    // set to the odsCode for the org whos popup we want to open.
+    var openPopupFor;
+
+    $searchBox.on('change', function(e) {
+        var selection = e.added;
+        if (selection.type === 'organisation') {
+            var odsCode = selection.id;
+            zoomToPoint(selection.lat, selection.lon);
+            openPopupFor = odsCode;
+            // window.location.hash = odsCode;
+        } else {
+            zoomToPoint(selection.lat, selection.lon);
+        }
+    });
+
+    var selectedProvider = $searchBox.val();
+    var selectedLonLat = $('#map-search-lon-lat').val();
+
     // Function to lock all the map controls so that you can't
     // interact with it (ie: during reloading of map pins)
     var disableMapControls = function() {
@@ -144,46 +205,65 @@ $(document).ready(function () {
         }
     };
 
-    // Function to draw an array of providers onto the map
-    var drawProviders = function(providers) {
-        // current selected issue type, to pass into the popups
+    /**
+     * Current selected issue type, to pass into the popups
+     */
+    var currentIssueType = function() {
         var issueType = '';
         var $categoryFilter = $(".filters form select[name=category]");
         if ($categoryFilter.val() !== '') {
             issueType = $categoryFilter.children("option:selected").text();
         }
 
+        return issueType;
+    };
+
+    var iconClassForOpenIssues = function(allTimeOpen) {
+        var iconClass;
+        // Determine the icon colour based on issue count (crudely)
+        if(allTimeOpen <= 0) {
+            iconClass = nhsCentreIcon_5;
+        }
+        else if(allTimeOpen <= 3) {
+            iconClass = nhsCentreIcon_4;
+        }
+        else if(allTimeOpen <= 6) {
+            iconClass = nhsCentreIcon_3;
+        }
+        else if(allTimeOpen <= 12) {
+            iconClass = nhsCentreIcon_2;
+        }
+        else {
+            iconClass = nhsCentreIcon_1;
+        }
+        return iconClass;
+    };
+
+    var templateForProvider = function(nhsCentre) {
+        return _.template(hoverBubbleTemplate, {
+            nhsCentre: nhsCentre,
+            issueType: currentIssueType(),
+            icon: iconClassForOpenIssues(nhsCentre.all_time_open),
+            starClass: starClass
+        });
+    };
+
+    // Function to draw an array of providers onto the map
+    var drawProviders = function(providers) {
         // Wipe anything that's already on the map
         oms.clearMarkers();
         markersGroup.clearLayers();
 
         _.each(providers, function(nhsCentre) {
-            var marker, iconClass;
-
-            // Determine the icon colour based on issue count (crudely)
-            if(nhsCentre.all_time_open <= 0) {
-                iconClass = nhsCentreIcon_5;
-            }
-            else if(nhsCentre.all_time_open <= 3) {
-                iconClass = nhsCentreIcon_4;
-            }
-            else if(nhsCentre.all_time_open <= 6) {
-                iconClass = nhsCentreIcon_3;
-            }
-            else if(nhsCentre.all_time_open <= 12) {
-                iconClass = nhsCentreIcon_2;
-            }
-            else {
-                iconClass = nhsCentreIcon_1;
-            }
+            var marker;
 
             // Create the marker
             marker = L.marker([nhsCentre.lat, nhsCentre.lon], {
                 riseOnHover:true,
-                icon: iconClass
+                icon: iconClassForOpenIssues(nhsCentre.all_time_open)
             });
 
-            marker.popupContent = _.template(hoverBubbleTemplate, {nhsCentre: nhsCentre, issueType: issueType, icon: iconClass, starClass: starClass});
+            marker.popupContent = templateForProvider(nhsCentre);
 
             // Save some custom data in the marker
             marker.nhsCentre = nhsCentre;
@@ -192,6 +272,14 @@ $(document).ready(function () {
             markersGroup.addLayer(marker);
             // Tell oms about the marker too
             oms.addMarker(marker);
+
+            // When a provider is chosen from the dropdown, we mark it
+            // as needing to be opened, so we do it here, after the marker
+            // has been drawn.
+            if (openPopupFor === nhsCentre.ods_code) {
+                openMarkerPopup(marker, marker.popupContent);
+                openPopupFor = false;
+            }
         });
     };
 
@@ -252,58 +340,83 @@ $(document).ready(function () {
         });
     };
 
+    /**
+     * Zoom and pan to a specified point on the map.
+     *
+     * @param {Number} lat The latitude to pan to
+     * @param {Number} lon The londitude to zoom to
+     * @param {Number} zoom The zoom level, defaults to 15
+     */
+    var zoomToPoint = function(lat, lon, zoom) {
+        zoom = zoom || 14;
+        map.setView([lat, lon], zoom);
+        if (map.getZoom() === zoom) {
+            map.fire('zoomend');
+        }
+    };
+
+    /**
+     * Open a popup on a marker.
+     *
+     * @param {L.marker} marker The marker to bind the popup to
+     * @param {String} popupContent The contents of the popup
+     */
+    var openMarkerPopup = function(marker, popupContent) {
+        var popupOptions = {offset: new L.Point(2,-4)};
+        marker.bindPopup(popupContent, popupOptions).openPopup();
+    };
+
+    /**
+     * Request a list of providers within the current bounding box for
+     * the map.
+     *
+     * This is a separate function so that it can be bound and unbound
+     * when we're doing our own zooming (such as when we search for a
+     * provider).
+     */
+    var requestProvidersInBounds = function() {
+        getRequest(window.location.pathname, {bounds: getBoundingBoxFromMap(map), format: 'json'})
+        .done(function(providers) {
+            drawProviders(providers);
+        }).error(function(jqXHR) {
+            // TODO: Let the user know about the server error and/or retry request.
+            console.error(jqXHR);
+        });
+    };
+
     wax.tilejson('https://dnv9my2eseobd.cloudfront.net/v3/jedidiah.map-3lyys17i.jsonp', function(tilejson) {
-        var mapCentre = isNorthEast ? northEastCentre : londonCentre;
-        var mapZoomLevel = isNorthEast ? northEastZoomLevel : londonZoomLevel;
+        var mapCentre = londonCentre;
+        var mapZoomLevel = londonZoomLevel;
 
         map.addLayer(new wax.leaf.connector(httpstilejson)).setView(mapCentre, 1);
         map.setView(mapCentre, mapZoomLevel);
 
-        map.on('dragend zoomend', function(e) {
-
-            getRequest(window.location.pathname, {bounds: getBoundingBoxFromMap(map), format: 'json'}).done(function(providers) {
-                drawProviders(providers);
-            }).error(function(jqXHR) {
-                // TODO: Let the user know about the server error and/or retry request.
-                console.error(jqXHR);
-            });
-        });
+        map.on('dragend zoomend', requestProvidersInBounds);
 
         // OverlappingMarkerSpiderifier controls click events on markers
         // because it needs to know whether or not to spiderify them, so
         // we need to tell it what we want to do when someone clicks an already
         // spiderified link.
         oms.addListener('click', function(marker) {
-            var popupOptions = {offset: new L.Point(2,-4)};
-            marker.bindPopup(marker.popupContent, popupOptions).openPopup();
+            openMarkerPopup(marker, marker.popupContent);
         });
-
-        if (isNorthEast) {
-            map.fire('dragend');
-            $('ul.tab-nav a').toggleClass('active');
-        }
 
         // Add the markers
         drawProviders(defaultProviders);
         map.addLayer(markersGroup);
-    });
 
-    // Tabs
-    $('a#northeast').on('click', function(e) {
-        // recenter the map to The north east
-        e.preventDefault();
-        map.setView(northEastCentre, northEastZoomLevel);
-        map.fire('dragend');
-        $('ul.tab-nav a').toggleClass('active');
-        window.location.hash = "#northeast";
-    });
-    $('a#london').on('click', function(e) {
-        // recenter the map to london
-        e.preventDefault();
-        map.setView(londonCentre, londonZoomLevel);
-        map.fire('dragend');
-        $('ul.tab-nav a').toggleClass('active');
-        window.location.hash = "#london";
+        if (selectedProvider) {
+            findProvider(selectedProvider, function(provider) {
+                if (provider) {
+                    zoomToPoint(provider.lat, provider.lon);
+                    openPopupFor = selectedProvider;
+                }
+            });
+        } else if (selectedLonLat) {
+            var lonLat = selectedLonLat.split(','), lon = lonLat[0], lat = lonLat[1];
+            zoomToPoint(lat, lon);
+        }
+
     });
 
     // Filters

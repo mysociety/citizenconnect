@@ -33,6 +33,9 @@ urlpatterns = patterns(
     # api urls
     url(r'^api/v0.1/', include('api.urls')),
 
+    # geocoder
+    url(r'^geocoder/', include('geocoder.urls')),
+
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
 )

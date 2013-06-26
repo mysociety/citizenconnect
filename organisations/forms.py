@@ -19,38 +19,60 @@ from .models import Organisation, CCG, Service
 from .metaphone import dm
 
 
-class OrganisationFinderForm(forms.Form):
-    location = forms.CharField(required=True, error_messages={'required': 'Please enter a location'})
+class MapitError(Exception): pass
+class MapitUnavailableError(MapitError): pass
+class MapitPostcodeNotFoundError(MapitError): pass
+class MapitPostcodeNotValidError(MapitError): pass
 
-    PILOT_SEARCH_CAVEAT = 'The provider or postcode may not be covered by Care Connect.'
 
-    def organisations_from_postcode(self, postcode, partial=False):
+class MapitPostCodeLookup(object):
+    
+    @classmethod
+    def postcode_to_point(cls, postcode, partial=False):
+
         path_elements = ['postcode']
         if partial:
             path_elements.append('partial')
         path_elements.append(urllib.quote(postcode))
+
         query_path = '/'.join(path_elements)
         url = "%(base_url)s%(query_path)s" % {'base_url': settings.MAPIT_BASE_URL,
                                               'query_path': query_path}
         try:
             point_response = urllib.urlopen(url)
         except IOError:
-            validation_message = 'Sorry, our postcode lookup service is temporarily unavailable. Please try later or search by provider name'
-            raise forms.ValidationError(validation_message)
+            raise MapitUnavailableError()
+
         response_code = point_response.getcode()
         if response_code == 200:
             point_data = json.load(point_response)
             point = Point(point_data["wgs84_lon"], point_data["wgs84_lat"])
-            return Organisation.objects.filter(point__distance_lt=(point, Distance(mi=5))).distance(point).order_by('distance')
+            return point
         elif response_code == 404:
-            validation_message = 'Sorry, no postcode matches that query. Please try again, or try searching by provider name'
-            raise forms.ValidationError(validation_message)
+            raise MapitPostcodeNotFoundError()
         elif response_code == 400:
-            validation_message = 'Sorry, that doesn\'t seem to be a valid postcode. Please try again, or try searching by provider name'
-            raise forms.ValidationError(validation_message)
+            raise MapitPostcodeNotValidError()
         else:
+            raise MapitUnavailableError()
+
+
+
+class OrganisationFinderForm(forms.Form):
+    location = forms.CharField(required=True, error_messages={'required': 'Please enter a location'})
+
+    PILOT_SEARCH_CAVEAT = 'The provider or postcode may not be covered by Care Connect.'
+
+    def organisations_from_postcode(self, postcode, partial=False):
+        try:
+            point = MapitPostCodeLookup.postcode_to_point(postcode, partial)
+            return Organisation.objects.filter(point__distance_lt=(point, Distance(mi=5))).distance(point).order_by('distance')
+        except MapitPostcodeNotFoundError:
+            validation_message = 'Sorry, no postcode matches that query. Please try again, or try searching by provider name'
+        except MapitPostcodeNotValidError:
+            validation_message = 'Sorry, that doesn\'t seem to be a valid postcode. Please try again, or try searching by provider name'
+        except MapitUnavailableError:
             validation_message = 'Sorry, our postcode lookup service is temporarily unavailable. Please try later or search by provider name'
-            raise forms.ValidationError(validation_message)
+        raise forms.ValidationError(validation_message)
 
     def clean(self):
         cleaned_data = super(OrganisationFinderForm, self).clean()
