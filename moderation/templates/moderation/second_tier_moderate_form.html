@@ -25,24 +25,8 @@
                 {% for hidden in form.hidden_fields %}
                     {{ hidden }}
                 {% endfor %}
-                <div class="meta-data-wrap">
-                    <h3 class="meta-data-label">Moderated details</h3>
-                </div>
-                <fieldset class="island">
-                    <ul class="gw">
-                        {% if form.fields.moderated_description %}
-                        <li class="g  one-whole">
-                            {{ form.moderated_description }}
-                            <p class="info">Required when publishing public problems.</p>
-                            {% include "message_list.html" with messages=form.moderated_description.errors message_type='error' %}
-                        </li>
-                        {% else %}
-                            <li class="g  one-whole">
-                                This problem is not public so there is no need for a moderated description.
-                            </li>
-                        {% endif %}
-                    </ul>
-                </fieldset>
+
+                {% include "moderation/fields/moderated_description.html" %}
 
                 <fieldset>
 
