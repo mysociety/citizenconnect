@@ -407,7 +407,7 @@ $(document).ready(function () {
         map.addLayer(new wax.leaf.connector(httpstilejson)).setView(mapCentre, 1);
         map.setView(mapCentre, mapZoomLevel);
 
-        map.on('dragend zoomend', _.debounce(requestProvidersInBounds, 500));
+        map.on('moveend zoomend', _.debounce(requestProvidersInBounds, 500));
 
         // OverlappingMarkerSpiderifier controls click events on markers
         // because it needs to know whether or not to spiderify them, so
