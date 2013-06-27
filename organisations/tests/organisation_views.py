@@ -304,7 +304,7 @@ class OrganisationProblemsTests(AuthorizationTestCase):
     def test_shows_time_limits_for_hospitals(self):
         resp = self.client.get(self.public_hospital_problems_url)
         self.assertContains(resp, '<th class="time_to_acknowledge">Acknowledge</th>', count=1, status_code=200)
-        self.assertContains(resp, '<th class="time_to_address">Address</th>', count=1, status_code=200)
+        self.assertContains(resp, '<th class="time_to_address">Close</th>', count=1, status_code=200)
 
     def test_no_services_for_gps(self):
         resp = self.client.get(self.public_gp_problems_url)
@@ -313,7 +313,7 @@ class OrganisationProblemsTests(AuthorizationTestCase):
     def test_no_time_limits_for_gps(self):
         resp = self.client.get(self.public_gp_problems_url)
         self.assertNotContains(resp, '<th class="time_to_acknowledge">Acknowledge</th>')
-        self.assertNotContains(resp, '<th class="time_to_address">Address</th>')
+        self.assertNotContains(resp, '<th class="time_to_address">Close</th>')
 
     def test_public_page_exists_and_is_accessible_to_anyone(self):
         resp = self.client.get(self.public_hospital_problems_url)
