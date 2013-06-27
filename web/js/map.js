@@ -87,15 +87,6 @@ $(document).ready(function () {
     // A LayerGroup so that we can handle all the markers in one go
     var markersGroup = new L.LayerGroup();
 
-    // The map zoom controls.
-    // Urgh. Leaflet makes it really hard to enable/disable the default
-    // zoom control. You have to remove it completely and then add it back
-    // in. To further compound things, the first time you try, you can get
-    // the default one from map.zoomControl, but any subsequent controls
-    // you add are not stored in that property, so we need to keep a
-    // reference to the control around all the time.
-    // var zoomControl = map.zoomControl;
-
     /**
      * Find a provider by a set of attributes.
      *
@@ -170,9 +161,6 @@ $(document).ready(function () {
         map.scrollWheelZoom.disable();
         map.boxZoom.disable();
         map.keyboard.disable();
-        // Can't disable the zoomControl, so we have to remove it
-        // completely
-        // map.removeControl(zoomControl);
     };
 
     // Function to enable all the map controls again
@@ -183,16 +171,6 @@ $(document).ready(function () {
         map.scrollWheelZoom.enable();
         map.boxZoom.enable();
         map.keyboard.enable();
-        // Add a new zoomControl, see the note above about why this is needed
-        // zoomControl = new L.Control.Zoom();
-        // map.addControl(zoomControl);
-
-        // We have to unbind this and call it manually, otherwise the zoom
-        // control is removed from the map when new pins are requested,
-        // then it throws an error when it tries to run this method when
-        // there is no map associated with the controls.
-        // map.off('zoomend', zoomControl._updateDisabled, zoomControl);
-        // zoomControl._updateDisabled();
     };
 
     var starClass = function(rating, current) {
