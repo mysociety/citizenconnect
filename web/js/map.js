@@ -117,6 +117,7 @@ $(document).ready(function () {
     var $searchBox = $("#map-search-org-name");
 
     $searchBox.select2({
+        width: 'copy',
         minimumInputLength: 1,
         placeholder: "Search the map",
         ajax: {
