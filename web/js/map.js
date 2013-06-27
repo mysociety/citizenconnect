@@ -171,7 +171,7 @@ $(document).ready(function () {
         map.keyboard.disable();
         // Can't disable the zoomControl, so we have to remove it
         // completely
-        map.removeControl(zoomControl);
+        // map.removeControl(zoomControl);
     };
 
     // Function to enable all the map controls again
@@ -183,15 +183,15 @@ $(document).ready(function () {
         map.boxZoom.enable();
         map.keyboard.enable();
         // Add a new zoomControl, see the note above about why this is needed
-        zoomControl = new L.Control.Zoom();
-        map.addControl(zoomControl);
+        // zoomControl = new L.Control.Zoom();
+        // map.addControl(zoomControl);
 
         // We have to unbind this and call it manually, otherwise the zoom
         // control is removed from the map when new pins are requested,
         // then it throws an error when it tries to run this method when
         // there is no map associated with the controls.
-        map.off('zoomend', zoomControl._updateDisabled, zoomControl);
-        zoomControl._updateDisabled();
+        // map.off('zoomend', zoomControl._updateDisabled, zoomControl);
+        // zoomControl._updateDisabled();
     };
 
     var starClass = function(rating, current) {
