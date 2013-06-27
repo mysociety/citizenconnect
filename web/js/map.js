@@ -281,7 +281,7 @@ $(document).ready(function () {
             // as needing to be opened, so we do it here, after the marker
             // has been drawn.
             if (openPopupFor === nhsCentre.ods_code) {
-                console.log("opening popup for: " + openPopupFor);
+                console.log("Opening popup for provider: " + openPopupFor);
                 openMarkerPopup(marker, marker.popupContent);
                 openPopupFor = false;
             }
@@ -357,7 +357,7 @@ $(document).ready(function () {
         zoom = zoom || 14;
         map.setView([lat, lon], zoom);
         if (map.getZoom() === zoom) {
-            console.log("zoom is at zoom level, firing zoomend");
+            console.log("Zoom is at zoom level, firing zoomend manually");
             map.fire('zoomend');
         }
     };
@@ -381,8 +381,8 @@ $(document).ready(function () {
      * when we're doing our own zooming (such as when we search for a
      * provider).
      */
-    var requestProvidersInBounds = function() {
-        console.log("requesting providers within map bounds");
+    var requestProvidersInBounds = function(e) {
+        console.log("Requesting providers within map bounds after a " + e.type + " event");
         getRequest(window.location.pathname, {bounds: getBoundingBoxFromMap(map), format: 'json'})
         .done(function(providers) {
             drawProviders(providers);
