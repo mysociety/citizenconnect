@@ -173,7 +173,7 @@ class FilterForm(forms.Form):
             del self.fields['service_code']
         else:
             # We have to do this at runtime because otherwise we can't test this form
-            self.fields['service_code'].choices = [('', 'All services/depts')] + list(Service.service_codes())
+            self.fields['service_code'].choices = [('', 'All services/departments')] + list(Service.service_codes())
 
         if not with_category:
             del self.fields['category']
