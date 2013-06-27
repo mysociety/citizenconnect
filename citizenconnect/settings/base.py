@@ -201,7 +201,7 @@ LOGIN_URL = '/private/login'
 # We have to set this to something otherwise Django will redirect
 # to /accounts/profile (which doesn't exist) if next is not specified
 # on any login_required urls
-LOGIN_REDIRECT_URL = '/private/login-redirect'
+LOGIN_REDIRECT_URL = '/private/'
 # Makes sense to have this as a setting too
 LOGOUT_REDIRECT_URL = '/'
 
@@ -231,7 +231,7 @@ GEOCODER_BOUNDING_BOXES=(
     # xmin,  ymin,  xmax,  ymax
     ( -0.75, 51.29, 0.57,  51.72 ), # London
     ( -2.28, 54.75, -0.96, 55.15 ), # North East
-    
+
 )
 
 # Now get the mySociety configuration

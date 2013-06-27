@@ -46,6 +46,24 @@
 </div>
 
 <div>
+    <h2>Fast user switching</h2>
+
+    <form method="post" action="{% url 'django.contrib.auth.views.login' %}">
+      {% csrf_token %}
+      <input type="hidden" name="password" value="password" />
+      <select name="username" onchange="this.form.submit()">
+        {% for u in users %}
+          <option>{{ u.username }}</option>
+        {% empty %}
+          <option value=''>No users found, try "./manage.py loaddata development_users.json"</option>
+        {% endfor %}
+      </select>
+    </form>
+
+    </ul>
+</div>
+
+<div>
     <h2>Django Admin pages</h2>
     <ul>
         <li><a href="/admin">Admin</a></li>
