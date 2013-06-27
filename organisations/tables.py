@@ -25,7 +25,7 @@ class NationalSummaryTable(tables.Table):
     # We split these into sub-columns
     average_time_to_acknowledge = tables.TemplateColumn(verbose_name='Acknowledge',
                                                         template_name='organisations/includes/time_interval_column.html')
-    average_time_to_address = tables.TemplateColumn(verbose_name='Address',
+    average_time_to_address = tables.TemplateColumn(verbose_name='Close',
                                                     template_name='organisations/includes/time_interval_column.html',
                                                     attrs={'th': {'class': 'summary-table__cell-no-border'}})
 
@@ -195,7 +195,7 @@ class ExtendedProblemTable(ProblemTable):
     time_to_acknowledge = tables.TemplateColumn(verbose_name='Acknowledge',
                                                 template_name='organisations/includes/time_interval_column.html',
                                                 orderable=False)
-    time_to_address = tables.TemplateColumn(verbose_name='Address',
+    time_to_address = tables.TemplateColumn(verbose_name='Close',
                                             template_name='organisations/includes/time_interval_column.html',
                                             orderable=False)
     resolved = tables.DateTimeColumn(verbose_name="Resolved")
