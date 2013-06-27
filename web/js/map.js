@@ -256,8 +256,6 @@ $(document).ready(function () {
         oms.clearMarkers();
         markersGroup.clearLayers();
 
-        console.log("Drawing providers, openPopupFor is: " + openPopupFor);
-
         _.each(providers, function(nhsCentre) {
             var marker;
 
@@ -281,7 +279,6 @@ $(document).ready(function () {
             // as needing to be opened, so we do it here, after the marker
             // has been drawn.
             if (openPopupFor === nhsCentre.ods_code) {
-                console.log("Opening popup for provider: " + openPopupFor);
                 openMarkerPopup(marker, marker.popupContent);
                 openPopupFor = false;
             }
@@ -353,14 +350,12 @@ $(document).ready(function () {
      * @param {Number} zoom The zoom level, defaults to 15
      */
     var zoomToPoint = function(lat, lon, zoom) {
-        console.log("Zooming to a given point");
         // Don't bother zooming if we're already at exactly this point and zoom level
         // (unlikely, but possible!)
         zoom = zoom || 14;
         var mapCenter = map.getCenter();
         var mapZoom = map.getZoom();
         if (mapZoom === zoom && mapCenter.lat === lat && mapCenter.lon === lon) {
-            console.log("Map is already zoomed to point, firing zoomend manually");
             // We fire this so that our redraw method is still called
             // and thus the right popup is opened (if needed)
             map.fire('zoomend');
@@ -396,7 +391,6 @@ $(document).ready(function () {
      * provider).
      */
     var requestProvidersInBounds = function(e) {
-        console.log("Requesting providers within map bounds after a " + e.type + " event");
         getRequest(window.location.pathname, {bounds: getBoundingBoxFromMap(map), format: 'json'})
         .done(function(providers) {
             drawProviders(providers);
