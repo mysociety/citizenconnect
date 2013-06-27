@@ -465,46 +465,29 @@ class PrivateNationalSummary(Summary):
         return context
 
 
-@login_required
-def login_redirect(request):
-    """
-    View function to redirect a logged in user to the right url after logging in.
-    Allows users to have an effective "homepage" which they go to automatically
-    after logging in. Uses their user group to determine what is the right page.
-    """
+class PrivateHome(TemplateView):
 
-    user = request.user
+    template_name = 'organisations/private_home.html'
 
-    # NHS Super users get a special map page
-    if user_in_group(user, auth.NHS_SUPERUSERS):
-        return HttpResponseRedirect(reverse('private-national-summary'))
+    def get_context_data(self, **kwargs):
+        context = super(PrivateHome, self).get_context_data(**kwargs)
 
-    # CCG users get their own problem dashboard
-    elif user_in_group(user, auth.CCG):
-        if user.ccgs.count() == 1:
-            ccg = user.ccgs.all()[0]
-            return HttpResponseRedirect(reverse('ccg-dashboard', kwargs={'code': ccg.code}))
+        # Load all the links that are relevant to this person.
+        context['links'] = auth.create_home_links_for_user(self.request.user)
 
-    # Customer contact centre users go to the escalation dashboard
-    elif user_in_group(user, auth.CUSTOMER_CONTACT_CENTRE):
-        return HttpResponseRedirect(reverse('escalation-dashboard'))
+        return context
 
-    # Moderators go to the moderation queue
-    elif user_in_group(user, auth.CASE_HANDLERS):
-        return HttpResponseRedirect(reverse('moderate-home'))
 
-    elif user_in_group(user, auth.SECOND_TIER_MODERATORS):
-        return HttpResponseRedirect(reverse('second-tier-moderate-home'))
+    def render_to_response(self, context, **kwargs):
 
-    # Organisation Parents
-    elif user_in_group(user, auth.ORGANISATION_PARENTS):
-        if user.organisation_parents.count() == 1:
-            organisation_parent = user.organisation_parents.all()[0]
-            return HttpResponseRedirect(reverse('org-parent-dashboard', kwargs={'code': organisation_parent.code}))
+        links = context['links']
 
-    # Anyone else goes to the normal homepage
-    return HttpResponseRedirect(reverse('home', kwargs={'cobrand': 'choices'}))
+        # If there is just one link then go there
+        if len(links) == 1:
+            return HttpResponseRedirect(links[0]['url'])
 
+        # If there are no links, or more than one, present the private home page
+        return super(PrivateHome, self).render_to_response(context, **kwargs)
 
 class SuperuserLogs(TemplateView):
 

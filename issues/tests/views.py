@@ -342,6 +342,16 @@ class HomePageTests(TestCase):
         public_atts.update({'moderated_description': 'Sixth item'})
         create_problem_with_age(self.test_organisation, age=6, attributes=public_atts)
 
+        unmoderated_problem = create_problem_with_age(
+            self.test_organisation,
+            age=1,
+            attributes={'publication_status': Problem.NOT_MODERATED}
+        )
+        self.unmoderated_problem_url = reverse(
+            'problem-view',
+            kwargs={'cobrand': 'choices', 'pk': unmoderated_problem.pk}
+        )
+
     def test_homepage_exists(self):
         resp = self.client.get(self.homepage_url)
         self.assertEqual(resp.status_code, 200)
@@ -350,6 +360,11 @@ class HomePageTests(TestCase):
         resp = self.client.get(self.homepage_url)
         self.assertContains(resp, '<h3 class="feed-list__title">', count=5, status_code=200)
         self.assertNotContains(resp, 'Sixth item')
+
+    def test_does_not_display_unmoderated_problems(self):
+        resp = self.client.get(self.homepage_url)
+        self.assertNotContains(resp, self.unmoderated_problem_url)
+
 
 class PublicLookupFormTests(TestCase):
 

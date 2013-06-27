@@ -13,6 +13,10 @@ from organisations.auth import StrongSetPasswordForm, StrongPasswordChangeForm
 urlpatterns = patterns(
     '',
 
+    url(r'^$',
+        login_required(PrivateHome.as_view()),
+        name='private_home'),
+
     # Organisation Parent urls
     url(r'^org-parent/(?P<code>\w+)/dashboard$',
         login_required(OrganisationParentDashboard.as_view()),
@@ -140,8 +144,5 @@ urlpatterns = patterns(
         'django.contrib.auth.views.password_change_done',
         name='password_change_done',
         kwargs={'template_name': 'organisations/auth/password_change_done.html'}),
-
-    # Page which redirects a user to the right place after logging in
-    url(r'^login-redirect$', login_redirect, name='login_redirect'),
 
 )
