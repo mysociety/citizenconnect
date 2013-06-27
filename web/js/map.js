@@ -356,15 +356,22 @@ $(document).ready(function () {
         console.log("Zooming to a given point");
         // Don't bother zooming if we're already at exactly this point and zoom level
         // (unlikely, but possible!)
+        zoom = zoom || 14;
         var mapCenter = map.getCenter();
-        if (map.getZoom() === zoom && mapCenter.lat === lat && mapCenter.lon === lon) {
+        var mapZoom = map.getZoom();
+        if (mapZoom === zoom && mapCenter.lat === lat && mapCenter.lon === lon) {
             console.log("Map is already zoomed to point, firing zoomend manually");
             // We fire this so that our redraw method is still called
             // and thus the right popup is opened (if needed)
             map.fire('zoomend');
         }
+        else if (mapZoom === zoom) {
+            // Still move the map to the right place, and then
+            // fire an event to trigger our redraw event
+            map.setView([lat, lon], zoom);
+            map.fire('dragend');
+        }
         else {
-            zoom = zoom || 14;
             map.setView([lat, lon], zoom);
         }
     };
