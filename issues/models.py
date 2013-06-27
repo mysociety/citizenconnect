@@ -282,6 +282,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
                                 verbose_name='Please select the category that best describes your problem')
     public = models.BooleanField()
     public_reporter_name = models.BooleanField()
+    public_reporter_name_original = models.BooleanField(editable=False)
     status = models.IntegerField(default=NEW, choices=STATUS_CHOICES, db_index=True)
     priority = models.IntegerField(default=PRIORITY_NORMAL, choices=PRIORITY_CHOICES)
     organisation = models.ForeignKey('organisations.Organisation')
@@ -361,6 +362,8 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         super(Problem, self).clean()
         self.validate_preferred_contact_method_and_reporter_phone(self.preferred_contact_method, self.reporter_phone)
         self.validate_reporter_under_16_and_public_reporter_name(self.reporter_under_16, self.public_reporter_name)
+        if self.pk:
+            self.validate_public_reporter_name(self.public_reporter_name, self.public_reporter_name_original)
 
     @classmethod
     def validate_preferred_contact_method_and_reporter_phone(cls, preferred_contact_method, reporter_phone):
@@ -373,6 +376,12 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     def validate_reporter_under_16_and_public_reporter_name(cls, reporter_under_16, public_reporter_name ):
         if reporter_under_16 == True and public_reporter_name == True:
             raise ValidationError('The reporter name cannot public if the reporter is under 16.')
+
+    @classmethod
+    def validate_public_reporter_name(cls, public_reporter_name, public_reporter_name_original ):
+        # check that the same is not being made public when it should not be
+        if public_reporter_name_original == False and public_reporter_name == True:
+            raise ValidationError("May not change public_reporter_name to True when public_reporter_name_original is False")
 
 
     def summarise(self, field):
@@ -427,6 +436,15 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
 
         if self.created:
             self.set_time_to_values()
+
+        if self.pk:
+            # check that we are not trying to change public_reporter_name_original
+            if 'public_reporter_name_original' in self.get_dirty_fields():
+                raise Exception("Value of 'public_reporter_name_original' may not be changed after creation")
+            self.validate_public_reporter_name(self.public_reporter_name, self.public_reporter_name_original)
+        else:
+            # set the public_reporter_name_original to match public_reporter_name
+            self.public_reporter_name_original = self.public_reporter_name
 
         # capture the old state of the problem to use after the actual save has
         # run. If there is no value it has not been changed since the last save,

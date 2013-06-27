@@ -162,6 +162,23 @@ class ProblemModelTests(ProblemTestCase):
         problem.public_reporter_name = False
         problem.full_clean()
 
+    def test_public_reporter_name_original(self):
+        # test set to the same as public_reporter_name when creating
+        public_name_problem = create_test_problem({ "public_reporter_name": True, 'organisation': self.test_hospital })
+        self.assertTrue( public_name_problem.public_reporter_name_original )
+        private_name_problem = create_test_problem({ "public_reporter_name": False, 'organisation': self.test_hospital })
+        self.assertFalse( private_name_problem.public_reporter_name_original )
+
+        # test public_reporter_name_original cannot be changed
+        with self.assertRaises(Exception):
+            private_name_problem.public_reporter_name_original = True
+            private_name_problem.save()
+
+        # test that public_reporter_name cannot be true if public_reporter_name_original is false
+        private_name_problem = Problem.objects.get(pk=private_name_problem.pk)
+        with self.assertRaises(Exception):
+            private_name_problem.public_reporter_name = True
+            private_name_problem.save()
 
     def test_defaults_to_no_confirmation_sent(self):
         self.assertFalse(self.test_problem.confirmation_sent)
