@@ -94,7 +94,7 @@ $(document).ready(function () {
     // the default one from map.zoomControl, but any subsequent controls
     // you add are not stored in that property, so we need to keep a
     // reference to the control around all the time.
-    var zoomControl = map.zoomControl;
+    // var zoomControl = map.zoomControl;
 
     /**
      * Find a provider by a set of attributes.
@@ -150,8 +150,8 @@ $(document).ready(function () {
         var selection = e.added;
         if (selection.type === 'organisation') {
             var odsCode = selection.id;
-            zoomToPoint(selection.lat, selection.lon);
             openPopupFor = odsCode;
+            zoomToPoint(selection.lat, selection.lon);
         } else {
             zoomToPoint(selection.lat, selection.lon);
         }
@@ -279,6 +279,7 @@ $(document).ready(function () {
             // as needing to be opened, so we do it here, after the marker
             // has been drawn.
             if (openPopupFor === nhsCentre.ods_code) {
+                console.log("opening popup for: " + openPopupFor);
                 openMarkerPopup(marker, marker.popupContent);
                 openPopupFor = false;
             }
@@ -386,6 +387,7 @@ $(document).ready(function () {
         });
     };
 
+    // Actually start up the map
     wax.tilejson('https://dnv9my2eseobd.cloudfront.net/v3/jedidiah.map-3lyys17i.jsonp', function(tilejson) {
         var mapCentre = londonCentre;
         var mapZoomLevel = londonZoomLevel;
@@ -410,8 +412,8 @@ $(document).ready(function () {
         if (selectedProvider) {
             findProvider(selectedProvider, function(provider) {
                 if (provider) {
-                    zoomToPoint(provider.lat, provider.lon);
                     openPopupFor = selectedProvider;
+                    zoomToPoint(provider.lat, provider.lon);
                 }
             });
         } else if (selectedLonLat && selectedLonLat !== ',') {
