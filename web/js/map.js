@@ -354,11 +354,18 @@ $(document).ready(function () {
      */
     var zoomToPoint = function(lat, lon, zoom) {
         console.log("Zooming to a given point");
-        zoom = zoom || 14;
-        map.setView([lat, lon], zoom);
-        if (map.getZoom() === zoom) {
-            console.log("Zoom is at zoom level, firing zoomend manually");
+        // Don't bother zooming if we're already at exactly this point and zoom level
+        // (unlikely, but possible!)
+        var mapCenter = map.getCenter();
+        if (map.getZoom() === zoom && mapCenter.lat === lat && mapCenter.lon === lon) {
+            console.log("Map is already zoomed to point, firing zoomend manually");
+            // We fire this so that our redraw method is still called
+            // and thus the right popup is opened (if needed)
             map.fire('zoomend');
+        }
+        else {
+            zoom = zoom || 14;
+            map.setView([lat, lon], zoom);
         }
     };
 
@@ -400,7 +407,9 @@ $(document).ready(function () {
         map.addLayer(new wax.leaf.connector(httpstilejson)).setView(mapCentre, 1);
         map.setView(mapCentre, mapZoomLevel);
 
-        map.on('dragend zoomend', requestProvidersInBounds);
+        // Listen to all three of these because leaflet is a bit inconsistent
+        // about what it fires when, eg: not firing moveend always when dragged
+        map.on('moveend dragend zoomend', requestProvidersInBounds);
 
         // OverlappingMarkerSpiderifier controls click events on markers
         // because it needs to know whether or not to spiderify them, so
