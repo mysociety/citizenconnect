@@ -409,7 +409,7 @@ $(document).ready(function () {
 
         // Listen to all three of these because leaflet is a bit inconsistent
         // about what it fires when, eg: not firing moveend always when dragged
-        map.on('moveend dragend zoomend', requestProvidersInBounds);
+        map.on('dragend zoomend', _.debounce(requestProvidersInBounds, 300));
 
         // OverlappingMarkerSpiderifier controls click events on markers
         // because it needs to know whether or not to spiderify them, so
