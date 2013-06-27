@@ -611,27 +611,35 @@ class AuthorizationTestCase(TestCase):
         self.assertTrue(logged_in)
 
 
-class DumpOrgsToJSONTests(AuthorizationTestCase):
-    def test_json_file_is_up_to_date(self):
-        """
-        This is not actually a test, but this is the easiest way to ensure that
-        the development_orgs.json is kept up to date
-        """
+# Unfortunately the various database indices are not reset between test runs, so
+# the ids assigned to the entries in this test are not to be relied on. Hence it
+# is commented out. If you want to regenerated the development_orgs json
+# uncomment this class and then run:
+#
+# ./manage.py test organisations.DumpOrgsToJSONTests
+#
 
-        content = StringIO()
-        call_command("dumpdata", "organisations", indent=2, natural=True, stdout=content)
-        content.seek(0)
-
-        # parse the JSON to make it consistent. Notably this means normalising
-        # the timestamps
-        data = json.loads(content.read())
-        for entry in data:
-            timestamp = "2013-06-27T09:00:00Z"
-            entry['fields']['created'] = timestamp
-            entry['fields']['updated'] = timestamp
-            entry['fields']['modified'] = timestamp
-
-        json_file_path = "organisations/fixtures/development_orgs.json"
-        json_file = open(json_file_path, 'w')
-        json_file.write( json.dumps(data, sort_keys=True, indent=4) )
-
+# class DumpOrgsToJSONTests(AuthorizationTestCase):
+#     def test_json_file_is_up_to_date(self):
+#         """
+#         This is not actually a test, but this is the easiest way to ensure that
+#         the development_orgs.json is kept up to date
+#         """
+#
+#         content = StringIO()
+#         call_command("dumpdata", "organisations", indent=2, natural=True, stdout=content)
+#         content.seek(0)
+#
+#         # parse the JSON to make it consistent. Notably this means normalising
+#         # the timestamps
+#         data = json.loads(content.read())
+#         for entry in data:
+#             timestamp = "2013-06-27T09:00:00Z"
+#             entry['fields']['created'] = timestamp
+#             entry['fields']['updated'] = timestamp
+#             entry['fields']['modified'] = timestamp
+#
+#         json_file_path = "organisations/fixtures/development_orgs.json"
+#         json_file = open(json_file_path, 'w')
+#         json_file.write( json.dumps(data, sort_keys=True, indent=4) )
+#
