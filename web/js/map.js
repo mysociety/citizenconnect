@@ -108,7 +108,6 @@ $(document).ready(function () {
     var $searchBox = $("#map-search-org-name");
 
     $searchBox.select2({
-        width: 'copy',
         minimumInputLength: 1,
         placeholder: "Search the map",
         ajax: {
@@ -369,7 +368,7 @@ $(document).ready(function () {
      * when we're doing our own zooming (such as when we search for a
      * provider).
      */
-    var requestProvidersInBounds = function(e) {
+    var requestProvidersInBounds = function() {
         getRequest(window.location.pathname, {bounds: getBoundingBoxFromMap(map), format: 'json'})
         .done(function(providers) {
             drawProviders(providers);
