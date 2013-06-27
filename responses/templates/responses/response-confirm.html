@@ -22,11 +22,7 @@
         {% endif %}
       </ul>
 
-      {% if user|is_ccg %}
-        {% for ccg in user.ccgs.all %}
-        <p><a href="{% url 'ccg-dashboard' code=ccg.code %}">Go to the '{{ ccg.name }}' dashboard</a></p>
-        {% endfor %}
-      {% endif %}
+      <p><a href="{% url 'private_home' %}">Go to your home page</a></p>
 
 
     </div>
