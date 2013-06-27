@@ -256,6 +256,8 @@ $(document).ready(function () {
         oms.clearMarkers();
         markersGroup.clearLayers();
 
+        console.log("Drawing providers, openPopupFor is: " + openPopupFor);
+
         _.each(providers, function(nhsCentre) {
             var marker;
 
@@ -351,9 +353,11 @@ $(document).ready(function () {
      * @param {Number} zoom The zoom level, defaults to 15
      */
     var zoomToPoint = function(lat, lon, zoom) {
+        console.log("Zooming to a given point");
         zoom = zoom || 14;
         map.setView([lat, lon], zoom);
         if (map.getZoom() === zoom) {
+            console.log("zoom is at zoom level, firing zoomend");
             map.fire('zoomend');
         }
     };
@@ -378,6 +382,7 @@ $(document).ready(function () {
      * provider).
      */
     var requestProvidersInBounds = function() {
+        console.log("requesting providers within map bounds");
         getRequest(window.location.pathname, {bounds: getBoundingBoxFromMap(map), format: 'json'})
         .done(function(providers) {
             drawProviders(providers);
