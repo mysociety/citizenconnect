@@ -5,6 +5,8 @@ from responses.models import ProblemResponse
 
 from .lib import BaseModerationTestCase
 
+from django.core.urlresolvers import reverse
+
 class LookupFormTests(BaseModerationTestCase):
 
     def setUp(self):
@@ -43,7 +45,84 @@ class LookupFormTests(BaseModerationTestCase):
         resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.closed_problem.id)})
         self.assertRedirects(resp, '/private/moderate/{0}'.format(self.closed_problem.id))
 
-class ModerationFormTests(BaseModerationTestCase):
+
+class ModerationFormPublicReporterNameMixin(object):
+
+    def setUp(self):
+        super(ModerationFormPublicReporterNameMixin, self).setUp()
+
+        self.public_name_problem = create_test_problem({
+            'organisation':self.test_hospital,
+            'public_reporter_name': True,
+            'requires_second_tier_moderation': True,
+        })
+        
+        self.private_name_problem = create_test_problem({
+            'organisation':self.test_hospital,
+            'public_reporter_name': False,
+            'requires_second_tier_moderation': True,
+        })
+
+    def test_public_name_can_be_redacted(self):
+        problem = self.public_name_problem
+        form_url = reverse(self.form_url_name, kwargs={'pk':problem.id})
+        form_values = self.form_values
+
+        # check that the control is there
+        resp = self.client.get(form_url)
+        self.assertContains(resp, "Publish this name")
+        self.assertNotContains(resp, "name is not public, so no need to consider redacting")
+
+        # Leave form checked
+        form_values.update({'public_reporter_name': True})
+        self.client.get(form_url)
+        self.client.post(form_url, form_values)
+        problem = Problem.objects.get(pk=problem.id)
+        self.assertTrue(problem.public_reporter_name)
+
+        # update problem to requires_second_tier_moderation = True
+        problem.requires_second_tier_moderation=True
+        problem.save()
+
+        # uncheck the form
+        form_values.update({'public_reporter_name': False})
+        self.client.get(form_url)
+        self.client.post(form_url, form_values)
+        problem = Problem.objects.get(pk=problem.id)
+        self.assertFalse(problem.public_reporter_name)        
+
+    def test_private_name_can_not_be_redacted(self):
+        problem = self.private_name_problem
+        form_url = reverse(self.form_url_name, kwargs={'pk':problem.id})
+        form_values = self.form_values
+
+        # check that the control is not there
+        resp = self.client.get(form_url)
+        self.assertNotContains(resp, "Publish this name")
+        self.assertContains(resp, "name is not public, so no need to consider redacting")
+
+        # Leave form checked
+        form_values.update({'public_reporter_name': True})
+        self.client.get(form_url)
+        self.client.post(form_url, form_values)
+        problem = Problem.objects.get(pk=problem.id)
+        self.assertFalse(problem.public_reporter_name)
+
+        # update problem to requires_second_tier_moderation = True
+        problem.requires_second_tier_moderation=True
+        problem.save()
+
+        # uncheck the form
+        form_values.update({'public_reporter_name': False})
+        self.client.get(form_url)
+        self.client.post(form_url, form_values)
+        problem = Problem.objects.get(pk=problem.id)
+        self.assertFalse(problem.public_reporter_name)        
+
+
+class ModerationFormTests(ModerationFormPublicReporterNameMixin, BaseModerationTestCase):
+
+    form_url_name = 'moderate-form'
 
     def setUp(self):
         super(ModerationFormTests, self).setUp()
@@ -345,7 +424,9 @@ class ModerationFormConcurrencyTests(BaseModerationTestCase):
         self.assertEqual(session_version, self.test_problem.version)
 
 
-class SecondTierModerationFormTests(BaseModerationTestCase):
+class SecondTierModerationFormTests(ModerationFormPublicReporterNameMixin, BaseModerationTestCase):
+
+    form_url_name = 'second-tier-moderate-form'
 
     def setUp(self):
         super(SecondTierModerationFormTests, self).setUp()
