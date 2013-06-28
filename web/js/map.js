@@ -110,6 +110,7 @@ $(document).ready(function () {
     $searchBox.select2({
         minimumInputLength: 1,
         placeholder: "Search the map",
+        dropdownAutoWidth: true,
         ajax: {
             url: $searchBox.data('search-url'),
             dataType: 'json',
