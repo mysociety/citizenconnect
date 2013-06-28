@@ -22,7 +22,7 @@ class ModerationForm(ConcurrentFormMixin, forms.ModelForm):
             del self.fields['moderated_description']
         
         # If the name was not originally public then we don't need the public_reporter_name
-        if not self.instance.public_reporter_name_original:
+        if self.instance.public_reporter_name_original == False:
             del self.fields['public_reporter_name']
 
         if 'status' in self.fields:
