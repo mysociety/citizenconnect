@@ -234,11 +234,14 @@ GEOCODER_BOUNDING_BOXES=(
 
 )
 
+# Organisation choices
+ORGANISATION_CHOICES = [
+    ['gppractices', 'GP'],
+    ['hospitals', 'Hospital'],
+    ['clinics', 'Clinic'],
+]
+
+ORGANISATION_TYPES = [organisation_type for organisation_type, label in ORGANISATION_CHOICES]
+
 # Now get the mySociety configuration
 from .mysociety import *
-
-
-
-
-
-
