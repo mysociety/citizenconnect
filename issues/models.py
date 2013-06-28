@@ -437,6 +437,13 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         if self.created:
             self.set_time_to_values()
 
+        # It makes no sense to allow a problem reporter's name to be public when
+        # the whole report is private. Change if needed when saving for the
+        # first time.
+        if not self.pk:
+            if self.public == False:
+                self.public_reporter_name = False
+
         if self.pk:
             # check that we are not trying to change public_reporter_name_original
             if 'public_reporter_name_original' in self.get_dirty_fields():

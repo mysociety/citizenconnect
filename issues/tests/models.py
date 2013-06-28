@@ -180,6 +180,18 @@ class ProblemModelTests(ProblemTestCase):
             private_name_problem.public_reporter_name = True
             private_name_problem.save()
 
+    def test_public_false_means_public_reporter_name_false_too(self):
+
+        problem = create_test_problem({
+            "public": False,
+            "public_reporter_name": True,
+            "organisation": self.test_hospital,
+        })
+
+        self.assertFalse( problem.public )
+        self.assertFalse( problem.public_reporter_name )
+        self.assertFalse( problem.public_reporter_name_original )
+
     def test_defaults_to_no_confirmation_sent(self):
         self.assertFalse(self.test_problem.confirmation_sent)
 
