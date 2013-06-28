@@ -137,8 +137,9 @@ class Command(BaseCommand):
                 if update:
                     Organisation.objects.filter(id=organisation.id).update(**organisation_defaults)
                 service = None
+
                 # Only hospitals have services
-                if organisation_type == 'hospitals':
+                if organisation.has_services():
                     if service_name and service_name != 'NULL':
                         service_defaults = {'name': service_name}
                         service, service_created = Service.objects.get_or_create(organisation=organisation,
