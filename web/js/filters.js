@@ -5,7 +5,7 @@ $(document).ready(function () {
 
   // Departments are only relevant for hospitals
   $(organisation_type_selector).change(function() {
-    if ($(this).val() == 'gppractices'){
+    if ($(this).val() != 'hospitals'){
       $(service_selector).val('').prop('disabled', 'disabled');
     }else{
       $(service_selector).prop('disabled', false);
