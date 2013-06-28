@@ -373,16 +373,15 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
             raise ValidationError('You must provide a phone number if you prefer to be contacted by phone')
 
     @classmethod
-    def validate_reporter_under_16_and_public_reporter_name(cls, reporter_under_16, public_reporter_name ):
-        if reporter_under_16 == True and public_reporter_name == True:
+    def validate_reporter_under_16_and_public_reporter_name(cls, reporter_under_16, public_reporter_name):
+        if reporter_under_16 is True and public_reporter_name is True:
             raise ValidationError('The reporter name cannot public if the reporter is under 16.')
 
     @classmethod
-    def validate_public_reporter_name(cls, public_reporter_name, public_reporter_name_original ):
-        # check that the same is not being made public when it should not be
-        if public_reporter_name_original == False and public_reporter_name == True:
+    def validate_public_reporter_name(cls, public_reporter_name, public_reporter_name_original):
+        # check that the name is not being made public when it should not be
+        if public_reporter_name_original is False and public_reporter_name is True:
             raise ValidationError("May not change public_reporter_name to True when public_reporter_name_original is False")
-
 
     def summarise(self, field):
         summary_length = 30
@@ -441,7 +440,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         # the whole report is private. Change if needed when saving for the
         # first time.
         if not self.pk:
-            if self.public == False:
+            if self.public is False:
                 self.public_reporter_name = False
 
         if self.pk:
