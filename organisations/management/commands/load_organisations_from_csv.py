@@ -56,8 +56,11 @@ class Command(BaseCommand):
             processed = 0
             skipped = 0
 
-        type_mappings = {'HOS': 'hospitals',
-                         'GPB': 'gppractices'}
+        type_mappings = {
+            'HOS': 'hospitals',
+            'GPB': 'gppractices',
+            'CLI': 'clinics',
+        }
 
         for row in reader:
             rownum += 1
