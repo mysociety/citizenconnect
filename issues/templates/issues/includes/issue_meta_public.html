@@ -1,3 +1,5 @@
+{% load thumbnail %}
+
 <div class="meta-data-wrap">
     <div class="meta-data">
         <p class="meta-data__title">{{ object.organisation }}</p>
@@ -6,6 +8,37 @@
 </div>
 
 {% if object.publication_status != object.NOT_MODERATED and object.public %}
+
+  {% if False and object.images.count %}
+  <div class="meta-data-wrap">
+      <div class="meta-data">
+        {% with images=object.images.all %}
+
+            {% for image in object.images.all %}
+
+              {% thumbnail image.image "x150" as im_small %}
+                {% thumbnail image.image "600x600" as im_large %}
+                  <a
+                    class="fancybox-zoom"
+                    rel="problem-images"
+                    href="{{ im_large.url }}"
+                  ><img
+                    src="{{ im_small.url }}"
+                    height="{{ im_small.height }}"
+                    width="{{ im_small.width }}"
+                  /></a>
+                {% endthumbnail %}
+              {% endthumbnail %}
+
+            {% endfor %}
+
+        {% endwith %}
+      </div>
+
+  </div>
+  {% endif %}
+
+
     {# People can only see details of public problems - and moderated details at that #}
     <div class="meta-data-wrap">
         <h3 class="meta-data-label">Details</h3>
