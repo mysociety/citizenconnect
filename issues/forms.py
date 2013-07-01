@@ -1,11 +1,11 @@
 import re
 
-from ukpostcodeutils import validation
-
 from django import forms
 from django.forms.widgets import HiddenInput, RadioSelect, Textarea, TextInput
+from django.forms.models import inlineformset_factory
+from django.conf import settings
 
-from .models import Problem
+from .models import Problem, ProblemImage
 from .widgets import CategoryRadioFieldRenderer
 
 
@@ -24,30 +24,27 @@ class ProblemForm(forms.ModelForm):
     # Note that the text is not used in the current templates, so this is
     # just generic text to explain them.
     privacy = forms.ChoiceField(
-       choices=((PRIVACY_PRIVATE, "Keep all details private"),
+        choices=((PRIVACY_PRIVATE, "Keep all details private"),
                 (PRIVACY_PRIVATE_NAME, "Publish with response but not my name"),
                 (PRIVACY_PUBLIC, 'Publish with response and my name')),
-       initial=0,
-       widget=RadioSelect,
-       required=True
+        initial=0,
+        widget=RadioSelect,
+        required=True
     )
 
     # For some categories the reporter can elevate the priority of the report.
     # Javascript is used to disable this input if the category selected does not
     # permit this.
-    elevate_priority = forms.BooleanField(
-        required = False
-    )
+    elevate_priority = forms.BooleanField(required=False)
 
     # This is a honeypot field to catch spam bots. If there is any content in
     # it the form validation will fail and an appropriate error should be shown to
     # the user. This field is hidden by CSS in the form so should never be shown to
     # a user. Hopefully it will not be autofilled either.
     website = forms.CharField(
-        label = 'Leave this blank',
-        required = False,
+        label='Leave this blank',
+        required=False,
     )
-
 
     def save(self, commit=True):
         """
@@ -68,7 +65,6 @@ class ProblemForm(forms.ModelForm):
 
         return problem
 
-
     def clean(self):
         cleaned_data = self.cleaned_data
         # Set public and public_reporter_name based on what they chose in privacy
@@ -87,7 +83,6 @@ class ProblemForm(forms.ModelForm):
 
         return super(ProblemForm, self).clean()
 
-
     def clean_elevate_priority(self):
         # If true, and the category premits it, set priority to true, otherwise
         # use default.
@@ -100,7 +95,6 @@ class ProblemForm(forms.ModelForm):
             # default in the model
             self.cleaned_data['priority'] = None
 
-
     def clean_website(self):
         # The field 'website' is a honeypot - it should be hidden from real
         # users. Anything that fills it in is probably a bot so reject the
@@ -109,13 +103,11 @@ class ProblemForm(forms.ModelForm):
             raise forms.ValidationError("submission is probably spam")
         return ''
 
-
     def clean_reporter_phone(self):
         reporter_phone = self.cleaned_data.get('reporter_phone')
         if reporter_phone and re.search(r'[^\d\ \+]', reporter_phone):
             raise forms.ValidationError("Enter a valid phone number.")
         return reporter_phone
-
 
     def clean_preferred_contact_method(self):
         # Check that if they prefer to be contacted by phone, they actually provided a number
@@ -126,7 +118,6 @@ class ProblemForm(forms.ModelForm):
         Problem.validate_preferred_contact_method_and_reporter_phone(preferred_contact_method, reporter_phone)
 
         return preferred_contact_method
-
 
     class Meta:
         model = Problem
@@ -172,7 +163,6 @@ class ProblemSurveyForm(forms.ModelForm):
     class Meta:
         model = Problem
 
-
         SURVEY_CHOICES = (
             ('', "I prefer not to answer"),
             (True, "Yes"),
@@ -184,7 +174,7 @@ class ProblemSurveyForm(forms.ModelForm):
         ]
 
         widgets = {
-             'happy_outcome': RadioSelect(choices=SURVEY_CHOICES),
+            'happy_outcome': RadioSelect(choices=SURVEY_CHOICES),
         }
 
 
@@ -208,19 +198,20 @@ class LookupForm(forms.Form):
                 raise forms.ValidationError('Sorry, there are no problems with that reference number')
         return self.cleaned_data
 
+
 class PublicLookupForm(LookupForm):
 
-      def clean(self):
-            """
-            Overridden clean to allow a check on the problem's public visibility
-            """
-            cleaned_data = super(PublicLookupForm, self).clean()
-            if 'reference_number' in self.cleaned_data:
-                problem = Problem.objects.all().get(id=self.cleaned_data['model_id'])
-                if problem.is_publicly_visible():
-                    return cleaned_data
-                else:
-                    raise forms.ValidationError('Sorry, that reference number is not available')
+    def clean(self):
+        """
+        Overridden clean to allow a check on the problem's public visibility
+        """
+        cleaned_data = super(PublicLookupForm, self).clean()
+        if 'reference_number' in self.cleaned_data:
+            problem = Problem.objects.all().get(id=self.cleaned_data['model_id'])
+            if problem.is_publicly_visible():
+                return cleaned_data
+            else:
+                raise forms.ValidationError('Sorry, that reference number is not available')
 
 
 class FeedbackForm(forms.Form):
@@ -228,3 +219,11 @@ class FeedbackForm(forms.Form):
     name = forms.CharField(required=True, label="Your name")
     email = forms.EmailField(required=True,
                              help_text="Your email address won't be used as part of a mailing list or given to any third parties.")
+
+
+ProblemImageInlineFormSet = inlineformset_factory(
+    Problem,
+    ProblemImage,
+    max_num=settings.MAX_IMAGES_PER_PROBLEM,
+    fields=('image',)
+)
