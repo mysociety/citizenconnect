@@ -1,8 +1,26 @@
 {% load url from future %}
+{% load thumbnail %}
+
 <li>
     <h3 class="feed-list__title">{{ problem.get_category_display }}</h3>
     <div class="feed-list__left">
-        <p><a href="{% url 'problem-view' pk=problem.id cobrand=cobrand.name %}">{{ problem.summary|default:"More details" }}</a></p>
+        <p>
+
+          <a href="{% url 'problem-view' pk=problem.id cobrand=cobrand.name %}">
+
+            {% if problem.public %}
+              {% for image in problem.images.all %}
+                {% thumbnail image.image "x32" as im %}
+                  <img src="{{ im.url }}" height="{{ im.height}}" width="{{im.width}}" />
+                {% endthumbnail %}
+              {% endfor %}
+            {% endif %}
+
+            {{ problem.summary|default:"More details" }}
+
+          </a>
+
+        </p>
     </div>
     <div class="feed-list__right">
         <time>{{ problem.created|timesince }} ago</time>
