@@ -1,3 +1,4 @@
+{% load thumbnail %}
 
 <div class="meta-data-wrap">
     <h3 class="meta-data-label">Images</h3>
@@ -7,29 +8,35 @@
     <ul class="gw">
       <li class="g  one-whole">
 
-        {% for i in "123" %}
-          <a
-            class="fancybox-zoom"
-            rel="problem-images"
-            href="http://lorempixel.com/400/400/abstract/{{ i }}?{{ i }}.jpg"
-          ><img
-            src="http://lorempixel.com/150/150/abstract/{{ i }}"
-          /></a>
+        {% for image in object.images.all %}
+
+          {% thumbnail item.image "x150" as im_small %}
+            {% thumbnail item.image "400x400" as im_large %}
+              <a
+                class="fancybox-zoom"
+                rel="problem-images"
+                href="{{ im_large.url }}"
+              ><img
+                src="{{ im_small.url }}"
+                height="{{ im_small.height }}"
+                width="{{ im_small.width }}"
+              /></a>
+            {% endthumbnail %}
+          {% endthumbnail %}
+
+          <p class="info">
+            {% with image_count=object.images.count %}
+              There are <strong>{{ image_count }}</strong>
+              images{{ image_count|pluralize }} associated with this problem
+              report. If any are inappropriate you should not publish.
+            {% endwith %}
+          </p>
+
+        {% empty %}
+
+          There are no images attached to this report.
+
         {% endfor %}
-
-        <p class="info">
-          There are <strong>FIXME</strong> images associated with this problem
-          report. If any are inappropriate you should not publish.
-        </p>
-
-      </li>
-    </ul>
-</fieldset>
-<fieldset class="island">
-    <ul class="gw">
-      <li class="g  one-whole">
-
-        There are no images attached to this report.
 
       </li>
     </ul>
