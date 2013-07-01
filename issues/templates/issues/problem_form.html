@@ -16,7 +16,7 @@
 
 <p>All problems posted through this website are highlighted on our live maps. When you submit  your problem here it will be flagged on a marker representing the NHS service you have selected. If you wish you can publish the content of your issue online either anonymously, or with your name.</p>
 
-<form method="post" class="problem-form">
+<form method="post" enctype="multipart/form-data" class="problem-form">
     {% csrf_token %}
 
 
@@ -98,6 +98,24 @@
                 </ul>
             </li>
 
+        </ul>
+    </fieldset>
+
+    <fieldset class="island">
+        <label class="island-label">Images</label>
+        <p class="info">You can add up to 3 images of your problem.</p>
+        <ul class="gw">
+            {% if image_forms %}
+                {{ image_forms.management_form }}
+            {% endif %}
+            {% for image_form in image_forms %}
+                {{ image_form.id }}
+                <li class="g  one-third  palm-one-whole">
+                    <label for="id_images-{{forloop.counter0}}-image">Image {{forloop.counter}}</label>
+                    {{ image_form.image }}
+                    {% include "message_list.html" with messages=image_form.image.errors message_type='error' %}
+                </li>
+            {% endfor %}
         </ul>
     </fieldset>
 
