@@ -7,9 +7,15 @@
     <ul class="gw">
       <li class="g  one-whole">
 
-        <img src="http://lorempixel.com/150/150/abstract/1" />
-        <img src="http://lorempixel.com/150/150/abstract/2" />
-        <img src="http://lorempixel.com/150/150/abstract/3" />
+        {% for i in "123" %}
+          <a
+            class="fancybox-zoom"
+            rel="problem-images"
+            href="http://lorempixel.com/400/400/abstract/{{ i }}?{{ i }}.jpg"
+          ><img
+            src="http://lorempixel.com/150/150/abstract/{{ i }}"
+          /></a>
+        {% endfor %}
 
         <p class="info">
           There are <strong>FIXME</strong> images associated with this problem
