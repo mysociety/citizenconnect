@@ -1,10 +1,11 @@
 from django import forms
 from django.forms.widgets import HiddenInput, RadioSelect
-from django.forms.models import inlineformset_factory, BaseInlineFormSet
+from django.forms.models import inlineformset_factory
 
 from citizenconnect.forms import ConcurrentFormMixin
 from issues.models import Problem
 from responses.models import ProblemResponse
+
 
 class ModerationForm(ConcurrentFormMixin, forms.ModelForm):
 
@@ -20,9 +21,9 @@ class ModerationForm(ConcurrentFormMixin, forms.ModelForm):
         # Remove it from the form.
         if not self.instance.public:
             del self.fields['moderated_description']
-        
+
         # If the name was not originally public then we don't need the public_reporter_name
-        if self.instance.public_reporter_name_original == False:
+        if self.instance.public_reporter_name_original is False:
             del self.fields['public_reporter_name']
 
         if 'status' in self.fields:
