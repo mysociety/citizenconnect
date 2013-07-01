@@ -1,18 +1,25 @@
 import warnings
+import os
+import tempfile
+import shutil
+import re
 from datetime import datetime, timedelta
+from time import strftime, gmtime
 from mock import patch
 
 from django.test import TestCase, TransactionTestCase
+from django.test.utils import override_settings
 from django.conf import settings
 from django.core import mail
 from django.core.exceptions import ValidationError
+from django.core.files.images import ImageFile
 from django.utils.timezone import utc
 
 from concurrency.utils import ConcurrencyTestMixin
 
 from organisations.tests.lib import create_test_organisation, create_test_problem, AuthorizationTestCase
 
-from ..models import Problem
+from ..models import Problem, ProblemImage
 
 
 class ProblemTestCase(AuthorizationTestCase):
@@ -799,3 +806,54 @@ class ProblemManagerTests(ManagerTest):
     def test_escalated_problems_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.open_escalated_problems(),
                                self.open_escalated_problems)
+
+@override_settings(MEDIA_ROOT=tempfile.mkdtemp())
+class ProblemImageTests(TestCase):
+
+    def setUp(self):
+        # Create a test problem
+        self.test_organisation = create_test_organisation()
+        self.test_problem = create_test_problem({
+            'organisation': self.test_organisation,
+        })
+        fixtures_dir = os.path.join(settings.PROJECT_ROOT, 'issues', 'tests', 'fixtures')
+        self.jpg = ImageFile(open(os.path.join(fixtures_dir, 'test.jpg')))
+        self.png = ImageFile(open(os.path.join(fixtures_dir, 'test.png')))
+        self.bmp = ImageFile(open(os.path.join(fixtures_dir, 'test.bmp')))
+        self.gif = ImageFile(open(os.path.join(fixtures_dir, 'test.gif')))
+
+    def tearDown(self):
+        # Clear the images folder
+        images_folder = os.path.join(settings.MEDIA_ROOT, 'images')
+        if(os.path.exists(images_folder)):
+            shutil.rmtree(images_folder)
+
+    def test_can_create_image_for_problem(self):
+        problem_image = ProblemImage(problem=self.test_problem)
+        problem_image.image.save('test.jpg', self.jpg, save=True)
+
+    def test_image_types_supported(self):
+        problem_image = ProblemImage(problem=self.test_problem)
+        for image_file in (self.jpg, self.png, self.bmp, self.gif):
+            problem_image.image.save(image_file.name, image_file, save=True)
+
+    def test_obfuscated_filenames(self):
+        problem_image = ProblemImage(problem=self.test_problem)
+        problem_image.image.save('test.jpg', self.jpg, save=True)
+
+        # Note that django always divides FileField paths with unix separators
+        expected_folder = 'images/' + strftime('%d_%m_%Y', gmtime()) + '/'
+        expected_filename_regex = re.compile(expected_folder + '[0-9a-f]{32}.jpg', re.I)
+        self.assertRegexpMatches(problem_image.image.name, expected_filename_regex)
+
+    @override_settings(MAX_IMAGES_PER_PROBLEM=1)
+    def test_max_images(self):
+        problem_image = ProblemImage(problem=self.test_problem)
+        problem_image.image.save('test.jpg', self.jpg, save=True)
+
+        with self.assertRaises(ValidationError) as context_manager:
+            problem_image = ProblemImage(problem=self.test_problem)
+            problem_image.image.save('test.jpg', self.jpg, save=True)
+
+        self.assertEqual(len(context_manager.exception.messages), 1)
+        self.assertEqual(context_manager.exception.messages[0], "Problems can only have a maximum of 1 images.")
