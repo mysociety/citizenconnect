@@ -40,10 +40,6 @@ ALLOWED_COBRANDS:
   - choices
   - myhealthlondon
 
-# Organisation choices
-ORGANISATION_CHOICES:
-  - ['gppractices', 'GP']
-  - ['hospitals', 'Hospital']
 
 # Mapit base URL
 MAPIT_BASE_URL: 'http://mapit.mysociety.org/'

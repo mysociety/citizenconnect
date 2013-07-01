@@ -209,6 +209,8 @@ def interval_counts(problem_filters={},
                                   THEN 'GP'
                                   WHEN organisations_organisation.organisation_type = 'hospitals'
                                   THEN 'Hospital'
+                                  WHEN organisations_organisation.organisation_type = 'clinics'
+                                  THEN 'Clinic'
                                   ELSE 'Unknown' END) AS type""")
         group_by_clauses.append('type')
     if 'average_recommendation_rating' in extra_organisation_data:

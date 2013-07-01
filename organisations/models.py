@@ -184,11 +184,11 @@ class Organisation(AuditedModel, geomodels.Model):
             return False
 
     def has_services(self):
-        if self.organisation_type == 'hospitals':
+        if self.organisation_type in ['hospitals', 'clinics']:
             return True
         else:
             return False
-
+        
     def can_be_accessed_by(self, user):
         """ Can a given user access this Organisation? """
         # Access is controlled by the Parent
