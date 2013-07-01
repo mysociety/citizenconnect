@@ -13,7 +13,7 @@ from organisations.auth import enforce_problem_access_check
 from organisations.lib import interval_counts
 
 from .models import Problem
-from .forms import ProblemForm, ProblemSurveyForm
+from .forms import ProblemForm, ProblemSurveyForm, ProblemImageInlineFormSet
 from .lib import base32_to_int
 
 
@@ -28,9 +28,23 @@ class ProblemCreate(OrganisationAwareViewMixin, CreateView):
     confirm_template = 'issues/problem_confirm.html'
 
     def form_valid(self, form):
-        self.object = form.save()
-        context = RequestContext(self.request)
+        # If we have images too, we have to check them manually for validity
+        context = self.get_context_data()
+        if 'image_forms' in context:
+            image_forms = context['image_forms']
+            if image_forms.is_valid():
+                self.object = form.save()
+                image_forms.instance = self.object
+                image_forms.save()
+            else:
+                # An error
+                return self.render_to_response(self.get_context_data(form=form))
+        else:
+            # No images, just a problem
+            self.object = form.save()
+
         # Set the cobrand on the problem so we can use it for the survey later
+        context = RequestContext(self.request)
         self.object.cobrand = context['cobrand']['name']
         self.object.save()
         context['object'] = self.object
@@ -57,6 +71,15 @@ class ProblemCreate(OrganisationAwareViewMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super(ProblemCreate, self).get_context_data(**kwargs)
         context['CATEGORIES_PERMITTING_SETTING_OF_PRIORITY_AT_SUBMISSION'] = Problem.CATEGORIES_PERMITTING_SETTING_OF_PRIORITY_AT_SUBMISSION
+        if self.request.POST:
+            context['image_forms'] = ProblemImageInlineFormSet(
+                self.request.POST,
+                self.request.FILES,
+                instance=self.object
+            )
+        else:
+            context['image_forms'] = ProblemImageInlineFormSet(instance=self.object)
+
         return context
 
 
