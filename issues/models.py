@@ -544,7 +544,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
 def obfuscated_upload_path_and_name(instance, filename):
         """ Make an obfuscated image url """
         base_image_path = 'images'
-        date_based_directory = strftime('%d_%m_%Y', gmtime())
+        date_based_directory = strftime('%m_%Y', gmtime())
         random_filename = uuid4().hex
         extension = os.path.splitext(filename)[1]
         # Note that django always wants FileField paths divided with unix separators

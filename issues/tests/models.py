@@ -842,7 +842,7 @@ class ProblemImageTests(TestCase):
         problem_image.image.save('test.jpg', self.jpg, save=True)
 
         # Note that django always divides FileField paths with unix separators
-        expected_folder = 'images/' + strftime('%d_%m_%Y', gmtime()) + '/'
+        expected_folder = 'images/' + strftime('%m_%Y', gmtime()) + '/'
         expected_filename_regex = re.compile(expected_folder + '[0-9a-f]{32}.jpg', re.I)
         self.assertRegexpMatches(problem_image.image.name, expected_filename_regex)
 
