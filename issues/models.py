@@ -1,9 +1,12 @@
 import logging
 logger = logging.getLogger(__name__)
+import os
 
 from datetime import datetime
 import hmac
 import hashlib
+from uuid import uuid4
+from time import strftime, gmtime
 
 from django.db import models
 from django.conf import settings
@@ -536,3 +539,32 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
             )
         else:
             raise ValueError("commissioned must be set to select destination for escalation email for {0}".format(self))
+
+
+def obfuscated_upload_path_and_name(instance, filename):
+        """ Make an obfuscated image url """
+        base_image_path = 'images'
+        date_based_directory = strftime('%d_%m_%Y', gmtime())
+        random_filename = uuid4().hex
+        extension = os.path.splitext(filename)[1]
+        # Note that django always wants FileField paths divided with unix separators
+        return "/".join([base_image_path, date_based_directory, random_filename + extension])
+
+
+class ProblemImage(AuditedModel):
+
+    image = models.ImageField(upload_to=obfuscated_upload_path_and_name)
+    problem = models.ForeignKey('issues.Problem', related_name='images')
+
+    @classmethod
+    def validate_problem(cls, problem):
+        # check that the problem doesn't already have settings.MAX_IMAGES_PER_PROBLEM images
+        if problem.images.all().count() >= settings.MAX_IMAGES_PER_PROBLEM:
+            msg = "Problems can only have a maximum of {0} images.".format(settings.MAX_IMAGES_PER_PROBLEM)
+            raise ValidationError(msg)
+
+    def save(self, *args, **kwargs):
+        """Override save to check that there are no more than
+        settings.MAX_IMAGES_PER_PROBLEM images on the given problem"""
+        self.validate_problem(self.problem)
+        super(ProblemImage, self).save(*args, **kwargs)
