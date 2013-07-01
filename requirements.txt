@@ -13,6 +13,7 @@ python-dateutil
 pytz
 lxml==3.2.1
 progressbar
+PIL
 
 ### Django related
 Django==1.4.5
