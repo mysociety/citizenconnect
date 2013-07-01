@@ -1,3 +1,5 @@
+{% load thumbnail %}
+
 <div class="meta-data-wrap">
     <div class="meta-data">
         <p class="meta-data__title">{{ object.organisation }}</p>
@@ -18,6 +20,44 @@
         <p>{{ object.moderated_description|default:"No moderated details." }}</p>
     </div>
 </div>
+
+<div class="meta-data-wrap">
+    <h3 class="meta-data-label">Images</h3>
+    <div class="meta-data">
+        {% for image in object.images.all %}
+
+          {% thumbnail item.image "x150" as im_small %}
+            {% thumbnail item.image "400x400" as im_large %}
+              <a
+                class="fancybox-zoom"
+                rel="problem-images"
+                href="{{ im_large.url }}"
+              ><img
+                src="{{ im_small.url }}"
+                height="{{ im_small.height }}"
+                width="{{ im_small.width }}"
+              /></a>
+            {% endthumbnail %}
+          {% endthumbnail %}
+
+          <p class="info">
+            {% with image_count=object.images.count %}
+              There are <strong>{{ image_count }}</strong>
+              images{{ image_count|pluralize }} associated with this problem
+              report.
+            {% endwith %}
+          </p>
+
+        {% empty %}
+
+          There are no images attached to this report.
+
+        {% endfor %}
+    </div>
+
+</div>
+
+
 
 
 <div class="meta-data-wrap">

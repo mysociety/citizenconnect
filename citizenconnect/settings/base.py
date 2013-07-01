@@ -134,6 +134,7 @@ INSTALLED_APPS = (
     'django.contrib.gis',
     'django_tables2',
     'south',
+    'sorl.thumbnail',
     'citizenconnect',
     'pagination',
     'organisations',
