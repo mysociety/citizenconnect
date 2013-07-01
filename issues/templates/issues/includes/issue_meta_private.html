@@ -26,8 +26,8 @@
     <div class="meta-data">
         {% for image in object.images.all %}
 
-          {% thumbnail item.image "x150" as im_small %}
-            {% thumbnail item.image "400x400" as im_large %}
+          {% thumbnail image.image "x150" as im_small %}
+            {% thumbnail image.image "400x400" as im_large %}
               <a
                 class="fancybox-zoom"
                 rel="problem-images"
