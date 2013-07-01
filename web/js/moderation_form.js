@@ -8,7 +8,7 @@ jQuery(document).ready(function($) {
         if (moderatedDescription && moderatedDescription !== "") {
             $('.content', $content).html('<p>' + moderatedDescription + '</p>');
         }
-        
+
 
         var $nameMessage = $('.content-name', $content);
         var publishNameBool = $('#id_public_reporter_name').is(':checked') || false;
@@ -17,7 +17,7 @@ jQuery(document).ready(function($) {
         } else {
           $nameMessage.html('Name will <strong>not</strong> be published');
         }
-        
+
         $.fancybox({
             autoDimensions: false,
             width: 525,
@@ -35,4 +35,11 @@ jQuery(document).ready(function($) {
         $('button[name="publish"]').off('click').trigger('click');
         e.preventDefault();
     });
+
+
+    // Enable fancy box zoom on the images
+    $("a.fancybox-zoom").fancybox({
+      // Defaults seem fine for our purposes
+    });
+
 });

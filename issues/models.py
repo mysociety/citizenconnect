@@ -25,7 +25,7 @@ from concurrency.api import concurrency_check
 
 from citizenconnect.models import AuditedModel
 from .lib import base32_to_int, int_to_base32
-
+from sorl.thumbnail import ImageField as sorlImageField
 
 class ProblemQuerySet(models.query.QuerySet):
 
@@ -553,7 +553,7 @@ def obfuscated_upload_path_and_name(instance, filename):
 
 class ProblemImage(AuditedModel):
 
-    image = models.ImageField(upload_to=obfuscated_upload_path_and_name)
+    image = sorlImageField(upload_to=obfuscated_upload_path_and_name)
     problem = models.ForeignKey('issues.Problem', related_name='images')
 
     @classmethod
