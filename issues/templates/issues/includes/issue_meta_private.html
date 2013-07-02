@@ -26,11 +26,7 @@
     <div class="meta-data">
         {% with images=object.images.all %}
             {% if images %}
-                <p class="info">
-                  There are <strong>{{ images.count }}</strong>
-                  image{{ images.count|pluralize }} associated with this problem
-                  report.
-                </p>
+                <p class="info">There are <strong>{{ images.count }}</strong> image{{ images.count|pluralize }} associated with this problem report.</p>
                 {% for image in images %}
                     {% thumbnail image.image "150" as im_small %}
                     {% thumbnail image.image "600x600" as im_large %}
