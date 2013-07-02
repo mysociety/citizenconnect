@@ -1,8 +1,11 @@
 import os
+import tempfile
+import shutil
 
 from django.core.urlresolvers import reverse
 from django.core.files.images import ImageFile
 from django.conf import settings
+from django.test.utils import override_settings
 
 from sorl.thumbnail import get_thumbnail
 
@@ -195,6 +198,7 @@ class SecondTierModerationHomeViewTests(BaseModerationTestCase):
         self.assertContains(resp, expected)
 
 
+@override_settings(MEDIA_ROOT=tempfile.mkdtemp())
 class ModerateFormViewTests(BaseModerationTestCase):
 
     def setUp(self):
@@ -206,6 +210,12 @@ class ModerateFormViewTests(BaseModerationTestCase):
                                                       'publication_status': Problem.PUBLISHED})
 
         self.login_as(self.case_handler)
+
+    def tearDown(self):
+        # Clear the images folder
+        images_folder = os.path.join(settings.MEDIA_ROOT, 'images')
+        if(os.path.exists(images_folder)):
+            shutil.rmtree(images_folder)
 
     def test_problem_in_context(self):
         resp = self.client.get(self.problem_form_url)
@@ -248,11 +258,18 @@ class ModerateFormViewTests(BaseModerationTestCase):
         self.assertEqual(resp.status_code, 200)
 
 
+@override_settings(MEDIA_ROOT=tempfile.mkdtemp())
 class SecondTierModerateFormViewTests(BaseModerationTestCase):
 
     def setUp(self):
         super(SecondTierModerateFormViewTests, self).setUp()
         self.login_as(self.second_tier_moderator)
+
+    def tearDown(self):
+        # Clear the images folder
+        images_folder = os.path.join(settings.MEDIA_ROOT, 'images')
+        if(os.path.exists(images_folder)):
+            shutil.rmtree(images_folder)
 
     def test_problem_in_context(self):
         resp = self.client.get(self.second_tier_problem_form_url)
@@ -263,3 +280,18 @@ class SecondTierModerateFormViewTests(BaseModerationTestCase):
                                                   kwargs={'pk': self.test_problem.id})
         resp = self.client.get(second_tier_moderation_form_url)
         self.assertEqual(resp.status_code, 404)
+
+    def test_problem_images_displayed(self):
+        # Add some problem images
+        fixtures_dir = os.path.join(settings.PROJECT_ROOT, 'issues', 'tests', 'fixtures')
+        test_image = ImageFile(open(os.path.join(fixtures_dir, 'test.jpg')))
+        image1 = ProblemImage.objects.create(problem=self.test_second_tier_moderation_problem, image=test_image)
+        image2 = ProblemImage.objects.create(problem=self.test_second_tier_moderation_problem, image=test_image)
+        expected_thumbnail1 = get_thumbnail(image1.image, '150')
+        expected_thumbnail2 = get_thumbnail(image2.image, '150')
+        expected_image_tag = '<img src="{0}"'
+
+        resp = self.client.get(self.second_tier_problem_form_url)
+        self.assertContains(resp, '<p class="info">There are <strong>2</strong> images associated with this problem report.</p>')
+        self.assertContains(resp, expected_image_tag.format(expected_thumbnail1.url))
+        self.assertContains(resp, expected_image_tag.format(expected_thumbnail2.url))

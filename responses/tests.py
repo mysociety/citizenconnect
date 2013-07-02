@@ -1,7 +1,10 @@
 import os
+import tempfile
+import shutil
 
 # Django imports
 from django.test import TransactionTestCase
+from django.test.utils import override_settings
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.core.files.images import ImageFile
@@ -237,6 +240,7 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         self.assertFalse(self.problem.id in self.client.session['object_versions'])
 
 
+@override_settings(MEDIA_ROOT=tempfile.mkdtemp())
 class ResponseFormViewTests(AuthorizationTestCase):
 
     def setUp(self):
@@ -249,6 +253,12 @@ class ResponseFormViewTests(AuthorizationTestCase):
             'issue_status': Problem.RESOLVED,
         }
         self.login_as(self.trust_user)
+
+    def tearDown(self):
+        # Clear the images folder
+        images_folder = os.path.join(settings.MEDIA_ROOT, 'images')
+        if(os.path.exists(images_folder)):
+            shutil.rmtree(images_folder)
 
     def test_response_page_exists(self):
         resp = self.client.get(self.response_form_url)

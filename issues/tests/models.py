@@ -537,8 +537,6 @@ class ManagerTest(TestCase):
             self.assertTrue(instance in expected, "Missing {0} '{1}' from actual".format(instance, instance.description))
 
 
-
-
 class ProblemManagerTests(ManagerTest):
 
     def setUp(self):
