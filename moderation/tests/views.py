@@ -1,7 +1,13 @@
+import os
+
 from django.core.urlresolvers import reverse
+from django.core.files.images import ImageFile
+from django.conf import settings
+
+from sorl.thumbnail import get_thumbnail
 
 from organisations.tests.lib import create_test_problem
-from issues.models import Problem
+from issues.models import Problem, ProblemImage
 from responses.models import ProblemResponse
 
 from .lib import BaseModerationTestCase
@@ -217,6 +223,21 @@ class ModerateFormViewTests(BaseModerationTestCase):
         self.assertContains(resp, self.test_problem.organisation.name)
         self.assertContains(resp, response1.response)
         self.assertContains(resp, response2.response)
+
+    def test_problem_images_displayed(self):
+        # Add some problem images
+        fixtures_dir = os.path.join(settings.PROJECT_ROOT, 'issues', 'tests', 'fixtures')
+        test_image = ImageFile(open(os.path.join(fixtures_dir, 'test.jpg')))
+        image1 = ProblemImage.objects.create(problem=self.test_problem, image=test_image)
+        image2 = ProblemImage.objects.create(problem=self.test_problem, image=test_image)
+        expected_thumbnail1 = get_thumbnail(image1.image, '150')
+        expected_thumbnail2 = get_thumbnail(image2.image, '150')
+        expected_image_tag = '<img src="{0}"'
+
+        resp = self.client.get(self.problem_form_url)
+        self.assertContains(resp, '<p class="info">There are <strong>2</strong> images associated with this problem report.</p>')
+        self.assertContains(resp, expected_image_tag.format(expected_thumbnail1.url))
+        self.assertContains(resp, expected_image_tag.format(expected_thumbnail2.url))
 
     def test_moderated_issues_accepted(self):
         resp = self.client.get(reverse('moderate-form', kwargs={'pk': self.moderated_problem.id}))
