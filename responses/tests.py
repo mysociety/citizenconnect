@@ -1,11 +1,16 @@
+import os
+
 # Django imports
 from django.test import TransactionTestCase
+from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.core.files.images import ImageFile
 
 from concurrency.utils import ConcurrencyTestMixin
+from sorl.thumbnail import get_thumbnail
 
 # App imports
-from issues.models import Problem
+from issues.models import Problem, ProblemImage
 from .models import ProblemResponse
 
 from organisations.tests.lib import create_test_problem, AuthorizationTestCase
@@ -266,6 +271,21 @@ class ResponseFormViewTests(AuthorizationTestCase):
         resp = self.client.get(self.response_form_url)
         self.assertContains(resp, response1.response)
         self.assertContains(resp, response2.response)
+
+    def test_problem_images_displayed(self):
+        # Add some problem images
+        fixtures_dir = os.path.join(settings.PROJECT_ROOT, 'issues', 'tests', 'fixtures')
+        test_image = ImageFile(open(os.path.join(fixtures_dir, 'test.jpg')))
+        image1 = ProblemImage.objects.create(problem=self.problem, image=test_image)
+        image2 = ProblemImage.objects.create(problem=self.problem, image=test_image)
+        expected_thumbnail1 = get_thumbnail(image1.image, '150')
+        expected_thumbnail2 = get_thumbnail(image2.image, '150')
+        expected_image_tag = '<img src="{0}"'
+
+        resp = self.client.get(self.response_form_url)
+        self.assertContains(resp, '<p class="info">There are <strong>2</strong> images associated with this problem report.</p>')
+        self.assertContains(resp, expected_image_tag.format(expected_thumbnail1.url))
+        self.assertContains(resp, expected_image_tag.format(expected_thumbnail2.url))
 
     def test_response_form_requires_login(self):
         self.client.logout()
