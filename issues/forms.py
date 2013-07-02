@@ -2,10 +2,8 @@ import re
 
 from django import forms
 from django.forms.widgets import HiddenInput, RadioSelect, Textarea, TextInput
-from django.forms.models import inlineformset_factory
-from django.conf import settings
 
-from .models import Problem, ProblemImage
+from .models import Problem
 from .widgets import CategoryRadioFieldRenderer
 
 
@@ -219,11 +217,3 @@ class FeedbackForm(forms.Form):
     name = forms.CharField(required=True, label="Your name")
     email = forms.EmailField(required=True,
                              help_text="Your email address won't be used as part of a mailing list or given to any third parties.")
-
-
-ProblemImageInlineFormSet = inlineformset_factory(
-    Problem,
-    ProblemImage,
-    max_num=settings.MAX_IMAGES_PER_PROBLEM,
-    fields=('image',)
-)

@@ -1,8 +1,11 @@
-from django.views.generic import TemplateView, CreateView, DetailView, UpdateView
+from django.conf import settings
+from django.views.generic import TemplateView, DetailView, UpdateView
 from django.shortcuts import get_object_or_404
 from django.forms.widgets import HiddenInput
 from django.template import RequestContext
 from django.http import Http404
+
+from extra_views import CreateWithInlinesView, InlineFormSet, NamedFormsetsMixin
 
 # App imports
 from citizenconnect.shortcuts import render
@@ -12,8 +15,8 @@ from organisations.views.organisations import OrganisationAwareViewMixin
 from organisations.auth import enforce_problem_access_check
 from organisations.lib import interval_counts
 
-from .models import Problem
-from .forms import ProblemForm, ProblemSurveyForm, ProblemImageInlineFormSet
+from .models import Problem, ProblemImage
+from .forms import ProblemForm, ProblemSurveyForm
 from .lib import base32_to_int
 
 
@@ -22,31 +25,46 @@ class ProblemPickProvider(PickProviderBase):
     title_text = 'Report a Problem'
 
 
-class ProblemCreate(OrganisationAwareViewMixin, CreateView):
+class ProblemImageInline(InlineFormSet):
+    model = ProblemImage
+    can_delete = False
+
+    def get_factory_kwargs(self):
+        """
+        Overriden get_factory_kwargs to set `extra` and `max_num` from settings
+        at runtime rather than as class properties, to make testing with overriden
+        settings easier
+        """
+        kwargs = super(ProblemImageInline, self).get_factory_kwargs()
+        kwargs['extra'] = settings.MAX_IMAGES_PER_PROBLEM
+        kwargs['max_num'] = settings.MAX_IMAGES_PER_PROBLEM
+        return kwargs
+
+
+class ProblemCreate(OrganisationAwareViewMixin,
+                    NamedFormsetsMixin,
+                    CreateWithInlinesView):
     model = Problem
     form_class = ProblemForm
     confirm_template = 'issues/problem_confirm.html'
 
-    def form_valid(self, form):
-        # If we have images too, we have to check them manually for validity
-        context = self.get_context_data()
-        if 'image_forms' in context:
-            image_forms = context['image_forms']
-            if image_forms.is_valid():
-                self.object = form.save()
-                image_forms.instance = self.object
-                image_forms.save()
-            else:
-                # An error
-                return self.render_to_response(self.get_context_data(form=form))
-        else:
-            # No images, just a problem
-            self.object = form.save()
+    # Settings for the inline formsets
+    inlines = [ProblemImageInline]
+    inlines_names = ['image_forms']
+
+    def post(self, request, *args, **kwargs):
+        return super(ProblemCreate, self).post(request, *args, **kwargs)
+
+    def forms_valid(self, form, inlines):
+        self.object = form.save()
+        for formset in inlines:
+            formset.save()
 
         # Set the cobrand on the problem so we can use it for the survey later
         context = RequestContext(self.request)
         self.object.cobrand = context['cobrand']['name']
         self.object.save()
+
         context['object'] = self.object
         context['summary'] = interval_counts(organisation_filters={'organisation_id': self.object.organisation.id})
         return render(self.request, self.confirm_template, context)
@@ -71,15 +89,6 @@ class ProblemCreate(OrganisationAwareViewMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super(ProblemCreate, self).get_context_data(**kwargs)
         context['CATEGORIES_PERMITTING_SETTING_OF_PRIORITY_AT_SUBMISSION'] = Problem.CATEGORIES_PERMITTING_SETTING_OF_PRIORITY_AT_SUBMISSION
-        if self.request.POST:
-            context['image_forms'] = ProblemImageInlineFormSet(
-                self.request.POST,
-                self.request.FILES,
-                instance=self.object
-            )
-        else:
-            context['image_forms'] = ProblemImageInlineFormSet(instance=self.object)
-
         return context
 
 
