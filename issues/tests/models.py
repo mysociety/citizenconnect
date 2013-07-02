@@ -807,8 +807,9 @@ class ProblemManagerTests(ManagerTest):
         self.compare_querysets(Problem.objects.open_escalated_problems(),
                                self.open_escalated_problems)
 
+
 @override_settings(MEDIA_ROOT=tempfile.mkdtemp())
-class ProblemImageTests(TestCase):
+class ProblemImageModelTests(TestCase):
 
     def setUp(self):
         # Create a test problem

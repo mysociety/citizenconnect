@@ -79,3 +79,7 @@ CHOICES_GOOGLE_ANALYTICS_ACCOUNT: 'UA-12345-XXX'
 MHL_GOOGLE_ANALYTICS_ACCOUNT: 'UA-12345-XXX'
 
 MAX_IMAGES_PER_PROBLEM: 3
+# What image file extensions are allowed.
+# Keep this lower case only, we'll lowercase the submitted files
+# before checking them against it
+ALLOWED_IMAGE_EXTENSIONS: ['.jpg', '.jpeg', '.gif', '.bmp']
