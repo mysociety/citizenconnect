@@ -32,7 +32,7 @@
                   report.
                 </p>
                 {% for image in images %}
-                    {% thumbnail image.image "x150" as im_small %}
+                    {% thumbnail image.image "150" as im_small %}
                     {% thumbnail image.image "600x600" as im_large %}
                         <a class="fancybox-zoom" rel="problem-images" href="{{ im_large.url }}">
                             <img src="{{ im_small.url }}" height="{{ im_small.height }}" width="{{ im_small.width }}"/>
