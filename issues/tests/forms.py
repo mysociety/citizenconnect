@@ -1,7 +1,11 @@
 import uuid
+import os
+import tempfile
+import shutil
 
 from django.test import TestCase
 from django.test.utils import override_settings
+from django.test.testcases import to_list
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
@@ -39,6 +43,10 @@ class ProblemCreateFormBase(object):
             'agree_to_terms': True,
             'elevate_priority': False,
             'website': '',  # honeypot - should be blank
+            # Image formset fields
+            'images-TOTAL_FORMS': 0,
+            'images-INITIAL_FORMS': 0,
+            'images-MAX_NUM_FORMS': 0,
         }
 
 
@@ -200,7 +208,7 @@ class ProblemCreateFormBrowserTests(ProblemCreateFormBase, SeleniumTestCase):
         self.assertFalse(under_16_input.is_selected())
         self.assertTrue(keep_private_input.is_selected())
         self.assertTrue(publish_with_name_li.is_displayed())
-        publish_with_name_li.click() # click li because input is hidden
+        publish_with_name_li.click()  # click li because input is hidden
         self.assertFalse(keep_private_input.is_selected())
         self.assertTrue(publish_with_name_input.is_selected())
 
@@ -217,6 +225,163 @@ class ProblemCreateFormBrowserTests(ProblemCreateFormBase, SeleniumTestCase):
         self.assertTrue(keep_private_input.is_selected())
         self.assertTrue(publish_with_name_li.is_displayed())
 
+
+@override_settings(MEDIA_ROOT=tempfile.mkdtemp())
+class ProblemCreateFormImageTests(ProblemCreateFormBase, TestCase):
+    """ Test uploading of images on the problem form """
+
+    def setUp(self):
+        super(ProblemCreateFormImageTests, self).setUp()
+        fixtures_dir = os.path.join(settings.PROJECT_ROOT, 'issues', 'tests', 'fixtures')
+        self.jpg = open(os.path.join(fixtures_dir, 'test.jpg'))
+        self.png = open(os.path.join(fixtures_dir, 'test.png'))
+        self.bmp = open(os.path.join(fixtures_dir, 'test.bmp'))
+        self.gif = open(os.path.join(fixtures_dir, 'test.gif'))
+
+    def tearDown(self):
+        # Clear the images folder
+        images_folder = os.path.join(settings.MEDIA_ROOT, 'images')
+        if(os.path.exists(images_folder)):
+            shutil.rmtree(images_folder)
+
+    # Backported from Django 1.6 - https://github.com/django/django/commit/d194714c0a707773bd470bffb3d67a60e40bb787
+    def assertFormsetError(self, response, formset, form_index, field, errors,
+                           msg_prefix=''):
+        """
+        Asserts that a formset used to render the response has a specific error.
+
+        For field errors, specify the ``form_index`` and the ``field``.
+        For non-field errors, specify the ``form_index`` and the ``field`` as
+        None.
+        For non-form errors, specify ``form_index`` as None and the ``field``
+        as None.
+        """
+        # Add punctuation to msg_prefix
+        if msg_prefix:
+            msg_prefix += ": "
+
+        # Put context(s) into a list to simplify processing.
+        contexts = to_list(response.context)
+        if not contexts:
+            self.fail(msg_prefix + 'Response did not use any contexts to '
+                      'render the response')
+
+        # Put error(s) into a list to simplify processing.
+        errors = to_list(errors)
+
+        # Search all contexts for the error.
+        found_formset = False
+        for i, context in enumerate(contexts):
+            if formset not in context:
+                continue
+            found_formset = True
+            for err in errors:
+                if field is not None:
+                    if field in context[formset].forms[form_index].errors:
+                        field_errors = context[formset].forms[form_index].errors[field]
+                        self.assertTrue(err in field_errors,
+                                msg_prefix + "The field '%s' on formset '%s', "
+                                "form %d in context %d does not contain the "
+                                "error '%s' (actual errors: %s)" %
+                                        (field, formset, form_index, i, err,
+                                        repr(field_errors)))
+                    elif field in context[formset].forms[form_index].fields:
+                        self.fail(msg_prefix + "The field '%s' "
+                                  "on formset '%s', form %d in "
+                                  "context %d contains no errors" %
+                                        (field, formset, form_index, i))
+                    else:
+                        self.fail(msg_prefix + "The formset '%s', form %d in "
+                                 "context %d does not contain the field '%s'" %
+                                        (formset, form_index, i, field))
+                elif form_index is not None:
+                    non_field_errors = context[formset].forms[form_index].non_field_errors()
+                    self.assertFalse(len(non_field_errors) == 0,
+                                msg_prefix + "The formset '%s', form %d in "
+                                "context %d does not contain any non-field "
+                                "errors." % (formset, form_index, i))
+                    self.assertTrue(err in non_field_errors,
+                                    msg_prefix + "The formset '%s', form %d "
+                                    "in context %d does not contain the "
+                                    "non-field error '%s' "
+                                    "(actual errors: %s)" %
+                                        (formset, form_index, i, err,
+                                         repr(non_field_errors)))
+                else:
+                    non_form_errors = context[formset].non_form_errors()
+                    self.assertFalse(len(non_form_errors) == 0,
+                                     msg_prefix + "The formset '%s' in "
+                                     "context %d does not contain any "
+                                     "non-form errors." % (formset, i))
+                    self.assertTrue(err in non_form_errors,
+                                    msg_prefix + "The formset '%s' in context "
+                                    "%d does not contain the "
+                                    "non-form error '%s' (actual errors: %s)" %
+                                      (formset, i, err, repr(non_form_errors)))
+        if not found_formset:
+            self.fail(msg_prefix + "The formset '%s' was not used to render "
+                      "the response" % formset)
+
+    @override_settings(MAX_IMAGES_PER_PROBLEM=3)
+    def test_can_upload_images(self):
+        # Add image related form values
+        test_images = {
+            'images-TOTAL_FORMS': settings.MAX_IMAGES_PER_PROBLEM,
+            'images-MAX_NUM_FORMS': settings.MAX_IMAGES_PER_PROBLEM,
+            'images-0-id': '',
+            'images-0-image': self.jpg,
+            'images-0-problem': '',
+            'images-1-id': '',
+            'images-1-image': self.gif,
+            'images-1-problem': '',
+            'images-2-id': '',
+            'images-2-image': self.bmp,
+            'images-2-problem': ''
+        }
+        self.test_problem.update(test_images)
+        self.client.post(self.form_url, self.test_problem)
+        # Check in db
+        problem = Problem.objects.get(reporter_name=self.uuid)
+        self.assertEqual(problem.images.all().count(), 3)
+
+    @override_settings(MAX_IMAGES_PER_PROBLEM=2)
+    def test_user_told_of_file_count_limit(self):
+        resp = self.client.get(self.form_url)
+        self.assertContains(resp, 'You can add up to 2 images of your problem.', 1, 200)
+
+    @override_settings(ALLOWED_IMAGE_EXTENSIONS=['.jpg', '.gif', '.bmp'])
+    def test_user_told_of_file_type_limit(self):
+        resp = self.client.get(self.form_url)
+        self.assertContains(resp, 'Allowed image types are: .jpg, .gif, .bmp', 1, 200)
+
+    @override_settings(MAX_IMAGES_PER_PROBLEM=2)
+    def test_number_of_image_fields_matches_setting(self):
+        resp = self.client.get(self.form_url)
+        field_html_template = '<input type="file" name="images-{0}-image" id="id_images-{0}-image" />'
+        self.assertContains(resp, field_html_template.format(0))
+        self.assertContains(resp, field_html_template.format(1))
+        self.assertNotContains(resp, field_html_template.format(2))
+
+    @override_settings(ALLOWED_IMAGE_EXTENSIONS=['.jpg', '.gif', '.bmp'])
+    def test_image_types(self):
+        # Add image related form values
+        test_images = {
+            'images-TOTAL_FORMS': settings.MAX_IMAGES_PER_PROBLEM,
+            'images-MAX_NUM_FORMS': settings.MAX_IMAGES_PER_PROBLEM,
+            'images-0-id': '',
+            'images-0-image': self.jpg,
+            'images-0-problem': '',
+            'images-1-id': '',
+            'images-1-image': self.gif,
+            'images-1-problem': '',
+            'images-2-id': '',
+            'images-2-image': self.png,  # This should not be allowed
+            'images-2-problem': ''
+        }
+        self.test_problem.update(test_images)
+        resp = self.client.post(self.form_url, self.test_problem)
+        expected_error_msg = 'Sorry, that is not an allowed image type. Allowed image types are: .jpg, .gif, .bmp'
+        self.assertFormsetError(resp, 'image_forms', 2, 'image', expected_error_msg)
 
 
 class ProblemSurveyFormTests(TestCase):

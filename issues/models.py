@@ -551,9 +551,20 @@ def obfuscated_upload_path_and_name(instance, filename):
         return "/".join([base_image_path, date_based_directory, random_filename + extension])
 
 
+def validate_file_extension(image):
+        """ Check that the file extension is within one of the allowed file types """
+        extension = os.path.splitext(image.name)[1]
+        # settings.ALLOWED_IMAGE_EXTENSIONS should be all lower case variants
+        if extension.lower() not in settings.ALLOWED_IMAGE_EXTENSIONS:
+            raise ValidationError(
+                u'Sorry, that is not an allowed image type. Allowed image types are: {0}'
+                .format(", ".join(settings.ALLOWED_IMAGE_EXTENSIONS))
+            )
+
+
 class ProblemImage(AuditedModel):
 
-    image = sorlImageField(upload_to=obfuscated_upload_path_and_name)
+    image = sorlImageField(upload_to=obfuscated_upload_path_and_name, validators=[validate_file_extension])
     problem = models.ForeignKey('issues.Problem', related_name='images')
 
     @classmethod

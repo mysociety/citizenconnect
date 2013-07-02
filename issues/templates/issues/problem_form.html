@@ -16,9 +16,8 @@
 
 <p>All problems posted through this website are highlighted on our live maps. When you submit  your problem here it will be flagged on a marker representing the NHS service you have selected. If you wish you can publish the content of your issue online either anonymously, or with your name.</p>
 
-<form method="post" class="problem-form">
+<form method="post" enctype="multipart/form-data" class="problem-form">
     {% csrf_token %}
-
 
     {% if form.non_field_errors %}
         <fieldset class="island">
@@ -32,7 +31,7 @@
       is what the following block does, but only if there weren't some errors
       reported above (as that would be ugly).
     {% endcomment %}
-    {% if form.errors and not form.non_field_errors %}
+    {% if form.errors or image_forms.errors and not form.non_field_errors %}
       <fieldset class="island">
         <label class="island-label">There were some errors...</label>
 
@@ -98,6 +97,25 @@
                 </ul>
             </li>
 
+        </ul>
+    </fieldset>
+
+    <fieldset class="island">
+        <label class="island-label">Images</label>
+        <p class="info">You can add up to {{ settings.MAX_IMAGES_PER_PROBLEM }} images of your problem. Allowed image types are: {{ settings.ALLOWED_IMAGE_EXTENSIONS|join:", " }}</p>
+        <ul class="gw">
+            {% if image_forms %}
+                {{ image_forms.management_form }}
+            {% endif %}
+            {% for image_form in image_forms %}
+                {{ image_form.id }}
+                {{ image_form.problem }}
+                <li class="g  one-third  palm-one-whole">
+                    <label for="id_images-{{forloop.counter0}}-image">Image {{forloop.counter}}</label>
+                    {{ image_form.image }}
+                    {% include "message_list.html" with messages=image_form.image.errors message_type='error' %}
+                </li>
+            {% endfor %}
         </ul>
     </fieldset>
 

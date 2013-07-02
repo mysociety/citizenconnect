@@ -11,6 +11,8 @@ def add_settings(request):
             'FEEDBACK_EMAIL_ADDRESS': settings.FEEDBACK_EMAIL_ADDRESS,
             'ABUSE_EMAIL_ADDRESS': settings.ABUSE_EMAIL_ADDRESS,
             'SURVEY_INTERVAL_IN_DAYS': settings.SURVEY_INTERVAL_IN_DAYS,
+            'MAX_IMAGES_PER_PROBLEM': settings.MAX_IMAGES_PER_PROBLEM,
+            'ALLOWED_IMAGE_EXTENSIONS': settings.ALLOWED_IMAGE_EXTENSIONS,
         }
     }
 
@@ -56,7 +58,7 @@ def add_site_section(request):
         'respond':    'problem',
         'escalation': 'problem',
         'survey':     'problem',
-        
+
         'reviews': 'review',
         'common-questions': 'question',
     }
