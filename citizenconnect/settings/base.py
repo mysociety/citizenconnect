@@ -221,18 +221,17 @@ PASSWORD_COMPLEXITY = {
 
 # Failed login blocker configuration
 FLB_MAX_FAILURES = 3
-FLB_BLOCK_INTERVAL = 60 # minutes
+FLB_BLOCK_INTERVAL = 60  # minutes
 
 AUTHENTICATION_BACKENDS = (
     'failedloginblocker.backends.MonitoredModelBackend',
 )
 
 # Where should the geocoder load data for?
-GEOCODER_BOUNDING_BOXES=(
+GEOCODER_BOUNDING_BOXES = (
     # xmin,  ymin,  xmax,  ymax
-    ( -0.75, 51.29, 0.57,  51.72 ), # London
-    ( -2.28, 54.75, -0.96, 55.15 ), # North East
-
+    (-0.75, 51.29, 0.57,  51.72),  # London
+    (-2.28, 54.75, -0.96, 55.15),  # North East
 )
 
 # Organisation choices
