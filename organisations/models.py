@@ -178,13 +178,13 @@ class Organisation(AuditedModel, geomodels.Model):
         return list(self.problem_set.open_problems())
 
     def has_time_limits(self):
-        if self.organisation_type == 'hospitals':
+        if self.organisation_type in ['hospitals', 'clinics']:
             return True
         else:
             return False
 
     def has_services(self):
-        if self.organisation_type == 'hospitals':
+        if self.organisation_type in ['hospitals', 'clinics']:
             return True
         else:
             return False

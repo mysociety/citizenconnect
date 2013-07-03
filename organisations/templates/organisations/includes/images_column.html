@@ -1,0 +1,15 @@
+{% load thumbnail %}
+
+{% with images=value.all %}
+  {% for image in images %}
+    {% thumbnail image.image "x20" as im %}
+      <img
+        src="{{ im.url }}"
+        height="{{ im.height }}"
+        width="{{ im.width }}"
+      />
+    {% endthumbnail %}
+  {% empty %}
+    none
+  {% endfor %}
+{% endwith %}

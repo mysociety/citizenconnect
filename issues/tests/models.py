@@ -1,18 +1,24 @@
 import warnings
+import re
 from datetime import datetime, timedelta
+from time import strftime, gmtime
 from mock import patch
 
 from django.test import TestCase, TransactionTestCase
+from django.test.utils import override_settings
 from django.conf import settings
 from django.core import mail
 from django.core.exceptions import ValidationError
+from django.core.files.images import ImageFile
 from django.utils.timezone import utc
 
 from concurrency.utils import ConcurrencyTestMixin
 
 from organisations.tests.lib import create_test_organisation, create_test_problem, AuthorizationTestCase
 
-from ..models import Problem
+from ..models import Problem, ProblemImage
+
+from .lib import ProblemImageTestBase
 
 
 class ProblemTestCase(AuthorizationTestCase):
@@ -162,6 +168,35 @@ class ProblemModelTests(ProblemTestCase):
         problem.public_reporter_name = False
         problem.full_clean()
 
+    def test_public_reporter_name_original(self):
+        # test set to the same as public_reporter_name when creating
+        public_name_problem = create_test_problem({ "public_reporter_name": True, 'organisation': self.test_hospital })
+        self.assertTrue( public_name_problem.public_reporter_name_original )
+        private_name_problem = create_test_problem({ "public_reporter_name": False, 'organisation': self.test_hospital })
+        self.assertFalse( private_name_problem.public_reporter_name_original )
+
+        # test public_reporter_name_original cannot be changed
+        with self.assertRaises(Exception):
+            private_name_problem.public_reporter_name_original = True
+            private_name_problem.save()
+
+        # test that public_reporter_name cannot be true if public_reporter_name_original is false
+        private_name_problem = Problem.objects.get(pk=private_name_problem.pk)
+        with self.assertRaises(Exception):
+            private_name_problem.public_reporter_name = True
+            private_name_problem.save()
+
+    def test_public_false_means_public_reporter_name_false_too(self):
+
+        problem = create_test_problem({
+            "public": False,
+            "public_reporter_name": True,
+            "organisation": self.test_hospital,
+        })
+
+        self.assertFalse( problem.public )
+        self.assertFalse( problem.public_reporter_name )
+        self.assertFalse( problem.public_reporter_name_original )
 
     def test_defaults_to_no_confirmation_sent(self):
         self.assertFalse(self.test_problem.confirmation_sent)
@@ -501,8 +536,6 @@ class ManagerTest(TestCase):
             self.assertTrue(instance in expected, "Missing {0} '{1}' from actual".format(instance, instance.description))
 
 
-
-
 class ProblemManagerTests(ManagerTest):
 
     def setUp(self):
@@ -770,3 +803,49 @@ class ProblemManagerTests(ManagerTest):
     def test_escalated_problems_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.open_escalated_problems(),
                                self.open_escalated_problems)
+
+
+class ProblemImageModelTests(ProblemImageTestBase):
+
+    def setUp(self):
+        # Create a test problem
+        self.test_organisation = create_test_organisation()
+        self.test_problem = create_test_problem({
+            'organisation': self.test_organisation,
+        })
+        # The files are opened, but they need to be wrapped in Django's
+        # file classes for the model to like them
+        self.jpg = ImageFile(self.jpg)
+        self.png = ImageFile(self.png)
+        self.bmp = ImageFile(self.bmp)
+        self.gif = ImageFile(self.gif)
+
+    def test_can_create_image_for_problem(self):
+        problem_image = ProblemImage(problem=self.test_problem)
+        problem_image.image.save('test.jpg', self.jpg, save=True)
+
+    def test_image_types_supported(self):
+        problem_image = ProblemImage(problem=self.test_problem)
+        for image_file in (self.jpg, self.png, self.bmp, self.gif):
+            problem_image.image.save(image_file.name, image_file, save=True)
+
+    def test_obfuscated_filenames(self):
+        problem_image = ProblemImage(problem=self.test_problem)
+        problem_image.image.save('test.jpg', self.jpg, save=True)
+
+        # Note that django always divides FileField paths with unix separators
+        expected_folder = 'images/' + strftime('%m_%Y', gmtime()) + '/'
+        expected_filename_regex = re.compile(expected_folder + '[0-9a-f]{32}.jpg', re.I)
+        self.assertRegexpMatches(problem_image.image.name, expected_filename_regex)
+
+    @override_settings(MAX_IMAGES_PER_PROBLEM=1)
+    def test_max_images(self):
+        problem_image = ProblemImage(problem=self.test_problem)
+        problem_image.image.save('test.jpg', self.jpg, save=True)
+
+        with self.assertRaises(ValidationError) as context_manager:
+            problem_image = ProblemImage(problem=self.test_problem)
+            problem_image.image.save('test.jpg', self.jpg, save=True)
+
+        self.assertEqual(len(context_manager.exception.messages), 1)
+        self.assertEqual(context_manager.exception.messages[0], "Problems can only have a maximum of 1 images.")

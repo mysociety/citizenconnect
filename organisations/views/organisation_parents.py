@@ -52,47 +52,49 @@ class OrganisationParentSummary(OrganisationParentAwareViewMixin, FilterFormMixi
         organisation_parent = context['organisation_parent']
         organisation_ids = [org.id for org in organisation_parent.organisations.all()]
 
-        # Load the user-selected filters from the form
-        count_filters = context['selected_filters']
+        # Check that the trust has some organisations attached to it
+        if len(organisation_ids) > 0:
+            # Load the user-selected filters from the form
+            count_filters = context['selected_filters']
 
-        status_rows = Problem.STATUS_CHOICES
-        volume_statuses = Problem.ALL_STATUSES
+            status_rows = Problem.STATUS_CHOICES
+            volume_statuses = Problem.ALL_STATUSES
 
-        summary_stats_statuses = Problem.VISIBLE_STATUSES
-        count_filters['status'] = tuple(volume_statuses)
-        organisation_filters = {'organisation_ids': tuple(organisation_ids)}
-        context['problems_total'] = self.get_interval_counts(problem_filters=count_filters,
-                                                             organisation_filters=organisation_filters)
-        count_filters['status'] = tuple(summary_stats_statuses)
-        count_filters = self.translate_flag_filters(count_filters)
+            summary_stats_statuses = Problem.VISIBLE_STATUSES
+            count_filters['status'] = tuple(volume_statuses)
+            organisation_filters = {'organisation_ids': tuple(organisation_ids)}
+            context['problems_total'] = self.get_interval_counts(problem_filters=count_filters,
+                                                                 organisation_filters=organisation_filters)
+            count_filters['status'] = tuple(summary_stats_statuses)
+            count_filters = self.translate_flag_filters(count_filters)
 
-        context['problems_summary_stats'] = self.get_interval_counts(problem_filters=count_filters,
-                                                                     organisation_filters=organisation_filters)
-        status_list = []
-        for status, description in status_rows:
-            count_filters['status'] = (status,)
-            status_counts = self.get_interval_counts(problem_filters=count_filters,
-                                                     organisation_filters=organisation_filters)
-            del count_filters['status']
-            status_counts['description'] = description
-            status_counts['status'] = status
-            if status in Problem.VISIBLE_STATUSES:
-                status_counts['hidden'] = False
-            else:
-                status_counts['hidden'] = True
-            status_list.append(status_counts)
-        context['problems_by_status'] = status_list
+            context['problems_summary_stats'] = self.get_interval_counts(problem_filters=count_filters,
+                                                                         organisation_filters=organisation_filters)
+            status_list = []
+            for status, description in status_rows:
+                count_filters['status'] = (status,)
+                status_counts = self.get_interval_counts(problem_filters=count_filters,
+                                                         organisation_filters=organisation_filters)
+                del count_filters['status']
+                status_counts['description'] = description
+                status_counts['status'] = status
+                if status in Problem.VISIBLE_STATUSES:
+                    status_counts['hidden'] = False
+                else:
+                    status_counts['hidden'] = True
+                status_list.append(status_counts)
+            context['problems_by_status'] = status_list
 
-        # Generate a dictionary of overall issue boolean counts to use in the summary
-        # statistics
-        issues_total = {}
-        summary_attributes = ['happy_service',
-                              'happy_outcome',
-                              'average_time_to_acknowledge',
-                              'average_time_to_address']
-        for attribute in summary_attributes:
-            issues_total[attribute] = context['problems_summary_stats'][attribute]
-        context['issues_total'] = issues_total
+            # Generate a dictionary of overall issue boolean counts to use in the summary
+            # statistics
+            issues_total = {}
+            summary_attributes = ['happy_service',
+                                  'happy_outcome',
+                                  'average_time_to_acknowledge',
+                                  'average_time_to_address']
+            for attribute in summary_attributes:
+                issues_total[attribute] = context['problems_summary_stats'][attribute]
+            context['issues_total'] = issues_total
 
         return context
 

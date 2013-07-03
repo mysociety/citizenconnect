@@ -1,4 +1,10 @@
+import os
+import tempfile
+import shutil
+
+from django.conf import settings
 from django.test import TestCase
+from django.test.utils import override_settings
 
 import reversion
 
@@ -140,3 +146,27 @@ class LibTests(TestCase):
             base32_to_int('bcso')
         exception = context_manager.exception
         self.assertEqual(str(exception), '373536')
+
+
+@override_settings(MEDIA_ROOT=tempfile.mkdtemp())
+class ProblemImageTestBase(TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        # Make the image fixture files available
+        fixtures_dir = os.path.join(settings.PROJECT_ROOT, 'issues', 'tests', 'fixtures')
+        cls.jpg = open(os.path.join(fixtures_dir, 'test.jpg'))
+        cls.png = open(os.path.join(fixtures_dir, 'test.png'))
+        cls.bmp = open(os.path.join(fixtures_dir, 'test.bmp'))
+        cls.gif = open(os.path.join(fixtures_dir, 'test.gif'))
+
+    @classmethod
+    def tearDownClass(cls):
+        # Close the image fixture files and wipe the temporary directory
+        cls.jpg.close()
+        cls.png.close()
+        cls.gif.close()
+        cls.png.close()
+
+        if(os.path.exists(settings.MEDIA_ROOT)):
+            shutil.rmtree(settings.MEDIA_ROOT)

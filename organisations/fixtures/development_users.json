@@ -5,7 +5,7 @@
         "fields": {
             "username": "ccg",
             "first_name": "",
-            "last_name": "",
+            "last_name": "Development User",
             "is_active": true,
             "is_superuser": false,
             "is_staff": false,
@@ -25,7 +25,7 @@
         "fields": {
             "username": "no_trust",
             "first_name": "",
-            "last_name": "",
+            "last_name": "Development User",
             "is_active": true,
             "is_superuser": false,
             "is_staff": false,
@@ -43,9 +43,9 @@
         "pk": 7,
         "model": "auth.user",
         "fields": {
-            "username": "other_trust",
+            "username": "gp_surgery_user",
             "first_name": "",
-            "last_name": "",
+            "last_name": "Development User",
             "is_active": true,
             "is_superuser": false,
             "is_staff": false,
@@ -65,7 +65,7 @@
         "fields": {
             "username": "trust",
             "first_name": "",
-            "last_name": "",
+            "last_name": "Development User",
             "is_active": true,
             "is_superuser": false,
             "is_staff": false,
@@ -85,7 +85,7 @@
         "fields": {
             "username": "superuser",
             "first_name": "",
-            "last_name": "",
+            "last_name": "Development User",
             "is_active": true,
             "is_superuser": true,
             "is_staff": true,
@@ -103,7 +103,7 @@
         "fields": {
             "username": "case_handler",
             "first_name": "",
-            "last_name": "",
+            "last_name": "Development User",
             "is_active": true,
             "is_superuser": false,
             "is_staff": false,
@@ -123,7 +123,7 @@
         "fields": {
             "username": "nhs_superuser",
             "first_name": "",
-            "last_name": "",
+            "last_name": "Development User",
             "is_active": true,
             "is_superuser": false,
             "is_staff": false,
@@ -143,7 +143,7 @@
         "fields": {
             "username": "inactive_provider",
             "first_name": "",
-            "last_name": "",
+            "last_name": "Development User",
             "is_active": false,
             "is_superuser": false,
             "is_staff": false,
@@ -163,7 +163,7 @@
         "fields": {
             "username": "second_tier_moderator",
             "first_name": "",
-            "last_name": "",
+            "last_name": "Development User",
             "is_active": true,
             "is_superuser": false,
             "is_staff": false,
@@ -183,7 +183,7 @@
         "fields": {
             "username": "other_ccg",
             "first_name": "",
-            "last_name": "",
+            "last_name": "Development User",
             "is_active": true,
             "is_superuser": false,
             "is_staff": false,
@@ -203,7 +203,7 @@
         "fields": {
             "username": "no_ccg_user",
             "first_name": "",
-            "last_name": "",
+            "last_name": "Development User",
             "is_active": true,
             "is_superuser": false,
             "is_staff": false,
@@ -216,26 +216,26 @@
             "email": "no_ccg_user@example.com",
             "date_joined": "2013-03-19T11:28:50Z"
         }
-    }   ,
-        {
-            "pk": 15,
-            "model": "auth.user",
-            "fields": {
-                "username": "customer_contact_centre",
-                "first_name": "",
-                "last_name": "",
-                "is_active": true,
-                "is_superuser": false,
-                "is_staff": false,
-                "last_login": "2013-03-19T11:28:50Z",
-                "groups": [
-                    8
-                ],
-                "user_permissions": [],
-                "password": "pbkdf2_sha256$10000$jWJUa0RaX5zt$bnS2UDpLvK+rPjjrU5zaVymaUnr0Dr1GG4ELTIH4PNg=",
-                "email": "customer_contact_centre@example.com",
-                "date_joined": "2013-03-19T11:28:50Z"
-            }
+    },
+    {
+        "pk": 15,
+        "model": "auth.user",
+        "fields": {
+            "username": "customer_contact_centre",
+            "first_name": "",
+            "last_name": "Development User",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2013-03-19T11:28:50Z",
+            "groups": [
+                8
+            ],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$jWJUa0RaX5zt$bnS2UDpLvK+rPjjrU5zaVymaUnr0Dr1GG4ELTIH4PNg=",
+            "email": "customer_contact_centre@example.com",
+            "date_joined": "2013-03-19T11:28:50Z"
         }
+    }
 
 ]

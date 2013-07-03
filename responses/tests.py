@@ -1,18 +1,24 @@
+import os
+import tempfile
+import shutil
+
 # Django imports
 from django.test import TransactionTestCase
+from django.test.utils import override_settings
+from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.core.files.images import ImageFile
 
 from concurrency.utils import ConcurrencyTestMixin
+from sorl.thumbnail import get_thumbnail
 
 # App imports
-from issues.models import Problem
+from issues.models import Problem, ProblemImage
 from .models import ProblemResponse
 
 from organisations.tests.lib import create_test_problem, AuthorizationTestCase
 from moderation.tests.lib import BaseModerationTestCase
-
-
-# from organisations.models import Organisation
+from issues.tests.lib import ProblemImageTestBase
 
 
 class LookupFormTests(BaseModerationTestCase):
@@ -157,7 +163,6 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         resp = self.client.post(self.response_form_url, test_form_values)
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, "response has been published online")
-        self.assertContains(resp, reverse('org-parent-dashboard', kwargs={'code': self.test_hospital.parent.code}))
 
     def test_form_shows_issue_confirmation_with_link(self):
         response_text = ''
@@ -169,7 +174,6 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         resp = self.client.post(self.response_form_url, test_form_values)
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, "the problem status has been updated")
-        self.assertContains(resp, reverse('org-parent-dashboard', kwargs={'code': self.test_hospital.parent.code}))
 
     def test_form_shows_both_confirmations_with_link(self):
         response_text = 'new response'
@@ -182,7 +186,6 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, "response has been published online")
         self.assertContains(resp, "the problem status has been updated")
-        self.assertContains(resp, reverse('org-parent-dashboard', kwargs={'code': self.test_hospital.parent.code}))
 
     def test_initial_version_set_when_form_loads(self):
         self.client.get(self.response_form_url)
@@ -245,7 +248,7 @@ class ResponseFormViewTests(AuthorizationTestCase):
             'response': 'This is the response.',
             'issue': self.problem.id,
             'issue_status': Problem.RESOLVED,
-        }        
+        }
         self.login_as(self.trust_user)
 
     def test_response_page_exists(self):
@@ -343,7 +346,7 @@ class ResponseFormViewTests(AuthorizationTestCase):
         resp = self.client.get(response_form_url)
         self.assertContains(resp, moderated_problem.description)
         self.assertContains(resp, moderated_problem.moderated_description)
-    
+
     def _change_user_and_submit(self, user_to_test_as):
 
         # logout, login and get the form
@@ -351,25 +354,34 @@ class ResponseFormViewTests(AuthorizationTestCase):
         self.login_as(user_to_test_as)
         resp = self.client.get(self.response_form_url)
         self.assertEqual(resp.status_code, 200)
-        
-        # submit the form, 
+
+        # submit the form,
         resp = self.client.post(self.response_form_url, self.test_form_values)
         self.assertEqual(resp.status_code, 200)
         return resp
 
-    def test_response_form_post_submit_displays_correct_dashboard_link_for_user(self):
-        # After a submit the response form providers links back to the
-        # dashboard. This link should be appropriate to the type of user.
-        # See #825 for details.
-        
-        # only has one dashboard to return to
-        trust_resp = self._change_user_and_submit(self.trust_user)
-        self.assertContains(trust_resp, "Go to the '" + self.test_hospital.parent.name + "' dashboard") 
 
-        # also has the CCG dashboard
-        ccg_resp = self._change_user_and_submit(self.ccg_user)
-        self.assertContains(ccg_resp, "Go to the '" + self.test_hospital.parent.name + "' dashboard") 
-        self.assertContains(ccg_resp, "Go to the '" + self.test_ccg.name + "' dashboard") 
+class ResponseFormImageTests(AuthorizationTestCase, ProblemImageTestBase):
+
+    def setUp(self):
+        super(ResponseFormImageTests, self).setUp()
+        self.problem = create_test_problem({'organisation': self.test_hospital})
+        self.response_form_url = reverse('response-form', kwargs={'pk': self.problem.id})
+        self.login_as(self.trust_user)
+
+    def test_problem_images_displayed(self):
+        # Add some problem images
+        test_image = ImageFile(self.jpg)
+        image1 = ProblemImage.objects.create(problem=self.problem, image=test_image)
+        image2 = ProblemImage.objects.create(problem=self.problem, image=test_image)
+        expected_thumbnail1 = get_thumbnail(image1.image, '150')
+        expected_thumbnail2 = get_thumbnail(image2.image, '150')
+        expected_image_tag = '<img src="{0}"'
+
+        resp = self.client.get(self.response_form_url)
+        self.assertContains(resp, '<p class="info">There are <strong>2</strong> images associated with this problem report.</p>')
+        self.assertContains(resp, expected_image_tag.format(expected_thumbnail1.url))
+        self.assertContains(resp, expected_image_tag.format(expected_thumbnail2.url))
 
 
 class ResponseModelTests(TransactionTestCase, ConcurrencyTestMixin):

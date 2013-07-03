@@ -1,9 +1,12 @@
 import logging
 logger = logging.getLogger(__name__)
+import os
 
 from datetime import datetime
 import hmac
 import hashlib
+from uuid import uuid4
+from time import strftime, gmtime
 
 from django.db import models
 from django.conf import settings
@@ -22,7 +25,7 @@ from concurrency.api import concurrency_check
 
 from citizenconnect.models import AuditedModel
 from .lib import base32_to_int, int_to_base32
-
+from sorl.thumbnail import ImageField as sorlImageField
 
 class ProblemQuerySet(models.query.QuerySet):
 
@@ -282,6 +285,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
                                 verbose_name='Please select the category that best describes your problem')
     public = models.BooleanField()
     public_reporter_name = models.BooleanField()
+    public_reporter_name_original = models.BooleanField(editable=False)
     status = models.IntegerField(default=NEW, choices=STATUS_CHOICES, db_index=True)
     priority = models.IntegerField(default=PRIORITY_NORMAL, choices=PRIORITY_CHOICES)
     organisation = models.ForeignKey('organisations.Organisation')
@@ -361,6 +365,8 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         super(Problem, self).clean()
         self.validate_preferred_contact_method_and_reporter_phone(self.preferred_contact_method, self.reporter_phone)
         self.validate_reporter_under_16_and_public_reporter_name(self.reporter_under_16, self.public_reporter_name)
+        if self.pk:
+            self.validate_public_reporter_name(self.public_reporter_name, self.public_reporter_name_original)
 
     @classmethod
     def validate_preferred_contact_method_and_reporter_phone(cls, preferred_contact_method, reporter_phone):
@@ -370,10 +376,15 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
             raise ValidationError('You must provide a phone number if you prefer to be contacted by phone')
 
     @classmethod
-    def validate_reporter_under_16_and_public_reporter_name(cls, reporter_under_16, public_reporter_name ):
-        if reporter_under_16 == True and public_reporter_name == True:
+    def validate_reporter_under_16_and_public_reporter_name(cls, reporter_under_16, public_reporter_name):
+        if reporter_under_16 is True and public_reporter_name is True:
             raise ValidationError('The reporter name cannot public if the reporter is under 16.')
 
+    @classmethod
+    def validate_public_reporter_name(cls, public_reporter_name, public_reporter_name_original):
+        # check that the name is not being made public when it should not be
+        if public_reporter_name_original is False and public_reporter_name is True:
+            raise ValidationError("May not change public_reporter_name to True when public_reporter_name_original is False")
 
     def summarise(self, field):
         summary_length = 30
@@ -392,6 +403,12 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
             return False
         else:
             return True
+
+    def are_details_publicly_visible(self):
+        # details visible if published and public
+        return self.publication_status == Problem.PUBLISHED \
+            and self.public \
+            and int(self.status) not in Problem.HIDDEN_STATUSES
 
     def can_be_accessed_by(self, user):
         """
@@ -427,6 +444,22 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
 
         if self.created:
             self.set_time_to_values()
+
+        # It makes no sense to allow a problem reporter's name to be public when
+        # the whole report is private. Change if needed when saving for the
+        # first time.
+        if not self.pk:
+            if self.public is False:
+                self.public_reporter_name = False
+
+        if self.pk:
+            # check that we are not trying to change public_reporter_name_original
+            if 'public_reporter_name_original' in self.get_dirty_fields():
+                raise Exception("Value of 'public_reporter_name_original' may not be changed after creation")
+            self.validate_public_reporter_name(self.public_reporter_name, self.public_reporter_name_original)
+        else:
+            # set the public_reporter_name_original to match public_reporter_name
+            self.public_reporter_name_original = self.public_reporter_name
 
         # capture the old state of the problem to use after the actual save has
         # run. If there is no value it has not been changed since the last save,
@@ -512,3 +545,43 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
             )
         else:
             raise ValueError("commissioned must be set to select destination for escalation email for {0}".format(self))
+
+
+def obfuscated_upload_path_and_name(instance, filename):
+        """ Make an obfuscated image url """
+        base_image_path = 'images'
+        date_based_directory = strftime('%m_%Y', gmtime())
+        random_filename = uuid4().hex
+        extension = os.path.splitext(filename)[1]
+        # Note that django always wants FileField paths divided with unix separators
+        return "/".join([base_image_path, date_based_directory, random_filename + extension])
+
+
+def validate_file_extension(image):
+        """ Check that the file extension is within one of the allowed file types """
+        extension = os.path.splitext(image.name)[1]
+        # settings.ALLOWED_IMAGE_EXTENSIONS should be all lower case variants
+        if extension.lower() not in settings.ALLOWED_IMAGE_EXTENSIONS:
+            raise ValidationError(
+                u'Sorry, that is not an allowed image type. Allowed image types are: {0}'
+                .format(", ".join(settings.ALLOWED_IMAGE_EXTENSIONS))
+            )
+
+
+class ProblemImage(AuditedModel):
+
+    image = sorlImageField(upload_to=obfuscated_upload_path_and_name, validators=[validate_file_extension])
+    problem = models.ForeignKey('issues.Problem', related_name='images')
+
+    @classmethod
+    def validate_problem(cls, problem):
+        # check that the problem doesn't already have settings.MAX_IMAGES_PER_PROBLEM images
+        if problem.images.all().count() >= settings.MAX_IMAGES_PER_PROBLEM:
+            msg = "Problems can only have a maximum of {0} images.".format(settings.MAX_IMAGES_PER_PROBLEM)
+            raise ValidationError(msg)
+
+    def save(self, *args, **kwargs):
+        """Override save to check that there are no more than
+        settings.MAX_IMAGES_PER_PROBLEM images on the given problem"""
+        self.validate_problem(self.problem)
+        super(ProblemImage, self).save(*args, **kwargs)

@@ -1,3 +1,5 @@
+{% load thumbnail %}
+
 <div class="meta-data-wrap">
     <div class="meta-data">
         <p class="meta-data__title">{{ object.organisation }}</p>
@@ -5,7 +7,8 @@
     </div>
 </div>
 
-{% if object.publication_status != object.NOT_MODERATED and object.public %}
+{% if object.are_details_publicly_visible %}
+
     {# People can only see details of public problems - and moderated details at that #}
     <div class="meta-data-wrap">
         <h3 class="meta-data-label">Details</h3>

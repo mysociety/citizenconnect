@@ -134,6 +134,7 @@ INSTALLED_APPS = (
     'django.contrib.gis',
     'django_tables2',
     'south',
+    'sorl.thumbnail',
     'citizenconnect',
     'pagination',
     'organisations',
@@ -152,7 +153,7 @@ INSTALLED_APPS = (
 # Only test some of the apps by default. Anything in INSTALLED_APPS starting
 # 'django' is ignored and you can add additional apps to ignore to
 # IGNORE_APPS_FOR_TESTING
-IGNORE_APPS_FOR_TESTING = ('south', 'pagination', 'reversion')
+IGNORE_APPS_FOR_TESTING = ('south', 'pagination', 'reversion', 'sorl.thumbnail')
 TEST_RUNNER = 'citizenconnect.tests.runner.AppsTestSuiteRunner'
 
 
@@ -201,7 +202,7 @@ LOGIN_URL = '/private/login'
 # We have to set this to something otherwise Django will redirect
 # to /accounts/profile (which doesn't exist) if next is not specified
 # on any login_required urls
-LOGIN_REDIRECT_URL = '/private/login-redirect'
+LOGIN_REDIRECT_URL = '/private/'
 # Makes sense to have this as a setting too
 LOGOUT_REDIRECT_URL = '/'
 
@@ -220,25 +221,27 @@ PASSWORD_COMPLEXITY = {
 
 # Failed login blocker configuration
 FLB_MAX_FAILURES = 3
-FLB_BLOCK_INTERVAL = 60 # minutes
+FLB_BLOCK_INTERVAL = 60  # minutes
 
 AUTHENTICATION_BACKENDS = (
     'failedloginblocker.backends.MonitoredModelBackend',
 )
 
 # Where should the geocoder load data for?
-GEOCODER_BOUNDING_BOXES=(
+GEOCODER_BOUNDING_BOXES = (
     # xmin,  ymin,  xmax,  ymax
-    ( -0.75, 51.29, 0.57,  51.72 ), # London
-    ( -2.28, 54.75, -0.96, 55.15 ), # North East
-    
+    (-0.75, 51.29, 0.57,  51.72),  # London
+    (-2.28, 54.75, -0.96, 55.15),  # North East
 )
+
+# Organisation choices
+ORGANISATION_CHOICES = [
+    ['gppractices', 'GP'],
+    ['hospitals', 'Hospital'],
+    ['clinics', 'Clinic'],
+]
+
+ORGANISATION_TYPES = [organisation_type for organisation_type, label in ORGANISATION_CHOICES]
 
 # Now get the mySociety configuration
 from .mysociety import *
-
-
-
-
-
-

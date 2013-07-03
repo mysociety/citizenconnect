@@ -28,24 +28,9 @@
                     {{ hidden }}
                 {% endfor %}
 
-                <div class="meta-data-wrap">
-                    <h3 class="meta-data-label">Moderated details</h3>
-                </div>
-                <fieldset class="island">
-                    <ul class="gw">
-                    {% if form.fields.moderated_description %}
-                        <li class="g  one-whole">
-                            {{ form.moderated_description }}
-                            <p class="info">Required when publishing public problems.</p>
-                            {% include "message_list.html" with messages=form.moderated_description.errors message_type='error' %}
-                        </li>
-                    {% else %}
-                        <li class="g  one-whole">
-                            This problem is not public so there is no need for a moderated description.
-                        </li>
-                    {% endif %}
-                    </ul>
-                </fieldset>
+                {% include "moderation/fields/public_reporter_name.html" %}
+
+                {% include "moderation/fields/moderated_description.html" %}
 
                 <div class="meta-data-wrap">
                     <h3 class="meta-data-label">Manage problem</h3>
@@ -114,23 +99,19 @@
 {% endblock %}
 
 {% block extra_css %}
+  {% include "includes/fancybox_css.html" %}
 
-<link rel="stylesheet" href="{% static 'css/fancybox/jquery.fancybox-1.3.4.css' %}" />
-
-<style>
-/* Fancybox doesn't play nicely with `box-sizing: border-box;`. */
-#fancybox-wrap, #fancybox-wrap * {
-    box-sizing: initial;
-}
-#publish-confirm-modal {
-    display: none;
-}
-</style>
-
+  <style>
+    #publish-confirm-modal {
+        display: none;
+    }
+  </style>
+  
 {% endblock extra_css %}
 
 {% block extra_js %}
 <script src="{% static 'js/jquery.browser.js' %}"></script>
 <script src="{% static 'js/jquery.fancybox-1.3.4.js' %}"></script>
 <script src="{% static 'js/moderation_form.js' %}"></script>
+<script src="{% static 'js/fancybox-zoom.js' %}"></script>
 {% endblock extra_js %}

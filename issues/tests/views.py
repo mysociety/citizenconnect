@@ -1,14 +1,18 @@
 from django.test import TestCase
+from django.core.files.images import ImageFile
 from django.core.urlresolvers import reverse
 from django.conf import settings
+
+from sorl.thumbnail import get_thumbnail
 
 from organisations.tests import create_test_problem, create_test_organisation, create_review_with_age, create_problem_with_age, AuthorizationTestCase
 from responses.models import ProblemResponse
 
-from ..models import Problem
+from ..models import Problem, ProblemImage
+from .lib import ProblemImageTestBase
 from ..lib import int_to_base32
 
-class ProblemPublicViewTests(AuthorizationTestCase):
+class ProblemPublicViewTests(ProblemImageTestBase, AuthorizationTestCase):
 
     def setUp(self):
         super(ProblemPublicViewTests, self).setUp()
@@ -254,6 +258,36 @@ class ProblemPublicViewTests(AuthorizationTestCase):
         expected_link = '<a href="/choices/feedback?problem_ref={0}">Report as unsuitable</a>'.format(self.test_moderated_problem.reference_number)
         self.assertContains(resp, expected_link)
 
+    def test_images_shown(self):
+
+        tests = (
+            # problem, should_images_be_visible
+            (self.test_moderated_problem,   True),
+            (self.test_unmoderated_problem, False),
+            (self.test_private_problem,     False),
+        )
+
+        image_geometry = "x70"
+
+        for problem, should_images_be_visible in tests:
+
+            # Add images to the public and private problems
+            test_image = ImageFile(self.jpg)
+            image = ProblemImage.objects.create(problem=problem, image=test_image)
+
+            # setup
+            problem_url = reverse('problem-view', kwargs={'pk': problem.id, 'cobrand': 'choices'})
+            thumbnail_url = get_thumbnail(image.image, image_geometry).url
+            img_tag = 'src="{0}"'.format(thumbnail_url)
+
+            # Check that public problem has images on page
+            resp = self.client.get(problem_url)
+
+            if should_images_be_visible:
+                self.assertContains(resp, img_tag, msg_prefix=str(problem))
+            else:
+                self.assertNotContains(resp, img_tag, msg_prefix=str(problem))
+
 
 class ProblemProviderPickerTests(TestCase):
 
@@ -342,6 +376,16 @@ class HomePageTests(TestCase):
         public_atts.update({'moderated_description': 'Sixth item'})
         create_problem_with_age(self.test_organisation, age=6, attributes=public_atts)
 
+        unmoderated_problem = create_problem_with_age(
+            self.test_organisation,
+            age=1,
+            attributes={'publication_status': Problem.NOT_MODERATED}
+        )
+        self.unmoderated_problem_url = reverse(
+            'problem-view',
+            kwargs={'cobrand': 'choices', 'pk': unmoderated_problem.pk}
+        )
+
     def test_homepage_exists(self):
         resp = self.client.get(self.homepage_url)
         self.assertEqual(resp.status_code, 200)
@@ -350,6 +394,11 @@ class HomePageTests(TestCase):
         resp = self.client.get(self.homepage_url)
         self.assertContains(resp, '<h3 class="feed-list__title">', count=5, status_code=200)
         self.assertNotContains(resp, 'Sixth item')
+
+    def test_does_not_display_unmoderated_problems(self):
+        resp = self.client.get(self.homepage_url)
+        self.assertNotContains(resp, self.unmoderated_problem_url)
+
 
 class PublicLookupFormTests(TestCase):
 
