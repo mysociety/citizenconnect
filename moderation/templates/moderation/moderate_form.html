@@ -99,19 +99,14 @@
 {% endblock %}
 
 {% block extra_css %}
+  {% include "includes/fancybox_css.html" %}
 
-<link rel="stylesheet" href="{% static 'css/fancybox/jquery.fancybox-1.3.4.css' %}" />
-
-<style>
-/* Fancybox doesn't play nicely with `box-sizing: border-box;`. */
-#fancybox-wrap, #fancybox-wrap * {
-    box-sizing: initial;
-}
-#publish-confirm-modal {
-    display: none;
-}
-</style>
-
+  <style>
+    #publish-confirm-modal {
+        display: none;
+    }
+  </style>
+  
 {% endblock extra_css %}
 
 {% block extra_js %}
