@@ -48,7 +48,7 @@
     </div>
 </div>
 
-{% if object.public and object.images.count %}
+{% if object.publication_status == object.PUBLISHED and object.public and object.images.count %}
 <div class="meta-data-wrap">
     <h3 class="meta-data-label">Images</h3>
     <div class="meta-data">
