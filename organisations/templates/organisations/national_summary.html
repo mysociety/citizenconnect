@@ -3,13 +3,13 @@
 {% load staticfiles %}
 {% load render_table from django_tables2 %}
 {% load page_auth %}
-{% block title %}Overview of Participating Providers{% endblock %}
+{% block title %}{{ ccg.name }} :: Participating Providers Overview{% endblock %}
 
 {% block bodyclasses %}summary{% endblock %}
 
 {% block content %}
 
-    <h1>Overview of Participating Providers</h1>
+    <h1>{{ ccg.name }} :: Participating Providers Overview</h1>
 
     {% if show_tabs %}
         {% include tabs_template with active_tab='summary' ccg=ccg %}

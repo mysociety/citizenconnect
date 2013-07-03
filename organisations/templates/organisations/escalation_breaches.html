@@ -4,13 +4,13 @@
 {% load render_table from django_tables2 %}
 {% load page_auth %}
 
-{% block title %}Breach Problems{% endblock %}
+{% block title %}{{ ccg.name }} :: Breach Problems{% endblock %}
 
 {% block bodyclasses %}escalation-breaches{% endblock %}
 
 {% block content %}
 <div class="header">
-    <h1>Breach Problems</h1>
+    <h1>{{ ccg.name }} :: Breach Problems</h1>
 </div>
 
 {% include tabs_template with active_tab='breaches' ccg=ccg%}
