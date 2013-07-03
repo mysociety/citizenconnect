@@ -1,3 +1,5 @@
+{% load thumbnail %}
+
 <div class="split-box  split-box--alert  split-box--alert--lrg">
     <div class="split-box__inner">
         <p class="split-box__right">{{ object.reference_number }}</p>
@@ -45,6 +47,37 @@
         </ul>
     </div>
 </div>
+
+{% if object.are_details_publicly_visible and object.images.count %}
+<div class="meta-data-wrap">
+    <h3 class="meta-data-label">Images</h3>
+    <div class="meta-data">
+      {% with images=object.images.all %}
+
+          {% for image in object.images.all %}
+
+            {% thumbnail image.image "x70" as im_small %}
+              {% thumbnail image.image "600x600" as im_large %}
+                <a
+                  class="fancybox-zoom"
+                  rel="problem-images"
+                  href="{{ im_large.url }}"
+                ><img
+                  src="{{ im_small.url }}"
+                  height="{{ im_small.height }}"
+                  width="{{ im_small.width }}"
+                /></a>
+              {% endthumbnail %}
+            {% endthumbnail %}
+
+          {% endfor %}
+
+      {% endwith %}
+    </div>
+
+</div>
+{% endif %}
+
 
 <div class="meta-data-wrap">
     <h3 class="meta-data-label">Privacy</h3>
