@@ -1,7 +1,4 @@
 import warnings
-import os
-import tempfile
-import shutil
 import re
 from datetime import datetime, timedelta
 from time import strftime, gmtime
@@ -20,6 +17,8 @@ from concurrency.utils import ConcurrencyTestMixin
 from organisations.tests.lib import create_test_organisation, create_test_problem, AuthorizationTestCase
 
 from ..models import Problem, ProblemImage
+
+from .lib import ProblemImageTestBase
 
 
 class ProblemTestCase(AuthorizationTestCase):
@@ -806,8 +805,7 @@ class ProblemManagerTests(ManagerTest):
                                self.open_escalated_problems)
 
 
-@override_settings(MEDIA_ROOT=tempfile.mkdtemp())
-class ProblemImageModelTests(TestCase):
+class ProblemImageModelTests(ProblemImageTestBase):
 
     def setUp(self):
         # Create a test problem
@@ -815,17 +813,12 @@ class ProblemImageModelTests(TestCase):
         self.test_problem = create_test_problem({
             'organisation': self.test_organisation,
         })
-        fixtures_dir = os.path.join(settings.PROJECT_ROOT, 'issues', 'tests', 'fixtures')
-        self.jpg = ImageFile(open(os.path.join(fixtures_dir, 'test.jpg')))
-        self.png = ImageFile(open(os.path.join(fixtures_dir, 'test.png')))
-        self.bmp = ImageFile(open(os.path.join(fixtures_dir, 'test.bmp')))
-        self.gif = ImageFile(open(os.path.join(fixtures_dir, 'test.gif')))
-
-    def tearDown(self):
-        # Clear the images folder
-        images_folder = os.path.join(settings.MEDIA_ROOT, 'images')
-        if(os.path.exists(images_folder)):
-            shutil.rmtree(images_folder)
+        # The files are opened, but they need to be wrapped in Django's
+        # file classes for the model to like them
+        self.jpg = ImageFile(self.jpg)
+        self.png = ImageFile(self.png)
+        self.bmp = ImageFile(self.bmp)
+        self.gif = ImageFile(self.gif)
 
     def test_can_create_image_for_problem(self):
         problem_image = ProblemImage(problem=self.test_problem)

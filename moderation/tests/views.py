@@ -1,7 +1,3 @@
-import os
-import tempfile
-import shutil
-
 from django.core.urlresolvers import reverse
 from django.core.files.images import ImageFile
 from django.conf import settings
@@ -11,6 +7,7 @@ from sorl.thumbnail import get_thumbnail
 
 from organisations.tests.lib import create_test_problem
 from issues.models import Problem, ProblemImage
+from issues.tests.lib import ProblemImageTestBase
 from responses.models import ProblemResponse
 
 from .lib import BaseModerationTestCase
@@ -198,8 +195,7 @@ class SecondTierModerationHomeViewTests(BaseModerationTestCase):
         self.assertContains(resp, expected)
 
 
-@override_settings(MEDIA_ROOT=tempfile.mkdtemp())
-class ModerateFormViewTests(BaseModerationTestCase):
+class ModerateFormViewTests(BaseModerationTestCase, ProblemImageTestBase):
 
     def setUp(self):
         super(ModerateFormViewTests, self).setUp()
@@ -210,12 +206,6 @@ class ModerateFormViewTests(BaseModerationTestCase):
                                                       'publication_status': Problem.PUBLISHED})
 
         self.login_as(self.case_handler)
-
-    def tearDown(self):
-        # Clear the images folder
-        images_folder = os.path.join(settings.MEDIA_ROOT, 'images')
-        if(os.path.exists(images_folder)):
-            shutil.rmtree(images_folder)
 
     def test_problem_in_context(self):
         resp = self.client.get(self.problem_form_url)
@@ -236,8 +226,7 @@ class ModerateFormViewTests(BaseModerationTestCase):
 
     def test_problem_images_displayed(self):
         # Add some problem images
-        fixtures_dir = os.path.join(settings.PROJECT_ROOT, 'issues', 'tests', 'fixtures')
-        test_image = ImageFile(open(os.path.join(fixtures_dir, 'test.jpg')))
+        test_image = ImageFile(self.jpg)
         image1 = ProblemImage.objects.create(problem=self.test_problem, image=test_image)
         image2 = ProblemImage.objects.create(problem=self.test_problem, image=test_image)
         expected_thumbnail1 = get_thumbnail(image1.image, '150')
@@ -258,18 +247,11 @@ class ModerateFormViewTests(BaseModerationTestCase):
         self.assertEqual(resp.status_code, 200)
 
 
-@override_settings(MEDIA_ROOT=tempfile.mkdtemp())
-class SecondTierModerateFormViewTests(BaseModerationTestCase):
+class SecondTierModerateFormViewTests(BaseModerationTestCase, ProblemImageTestBase):
 
     def setUp(self):
         super(SecondTierModerateFormViewTests, self).setUp()
         self.login_as(self.second_tier_moderator)
-
-    def tearDown(self):
-        # Clear the images folder
-        images_folder = os.path.join(settings.MEDIA_ROOT, 'images')
-        if(os.path.exists(images_folder)):
-            shutil.rmtree(images_folder)
 
     def test_problem_in_context(self):
         resp = self.client.get(self.second_tier_problem_form_url)
@@ -283,8 +265,7 @@ class SecondTierModerateFormViewTests(BaseModerationTestCase):
 
     def test_problem_images_displayed(self):
         # Add some problem images
-        fixtures_dir = os.path.join(settings.PROJECT_ROOT, 'issues', 'tests', 'fixtures')
-        test_image = ImageFile(open(os.path.join(fixtures_dir, 'test.jpg')))
+        test_image = ImageFile(self.jpg)
         image1 = ProblemImage.objects.create(problem=self.test_second_tier_moderation_problem, image=test_image)
         image2 = ProblemImage.objects.create(problem=self.test_second_tier_moderation_problem, image=test_image)
         expected_thumbnail1 = get_thumbnail(image1.image, '150')

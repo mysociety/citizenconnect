@@ -1,7 +1,4 @@
 import uuid
-import os
-import tempfile
-import shutil
 
 from django.test import TestCase
 from django.test.utils import override_settings
@@ -10,12 +7,13 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 
 from organisations.tests.lib import create_test_organisation, create_test_service, create_test_problem
+from citizenconnect.browser_testing import SeleniumTestCase
 
 from ..models import Problem
 from ..forms import ProblemForm
 from ..lib import int_to_base32
 
-from citizenconnect.browser_testing import SeleniumTestCase
+from .lib import ProblemImageTestBase
 
 
 class ProblemCreateFormBase(object):
@@ -226,23 +224,8 @@ class ProblemCreateFormBrowserTests(ProblemCreateFormBase, SeleniumTestCase):
         self.assertTrue(publish_with_name_li.is_displayed())
 
 
-@override_settings(MEDIA_ROOT=tempfile.mkdtemp())
-class ProblemCreateFormImageTests(ProblemCreateFormBase, TestCase):
+class ProblemCreateFormImageTests(ProblemCreateFormBase, ProblemImageTestBase):
     """ Test uploading of images on the problem form """
-
-    def setUp(self):
-        super(ProblemCreateFormImageTests, self).setUp()
-        fixtures_dir = os.path.join(settings.PROJECT_ROOT, 'issues', 'tests', 'fixtures')
-        self.jpg = open(os.path.join(fixtures_dir, 'test.jpg'))
-        self.png = open(os.path.join(fixtures_dir, 'test.png'))
-        self.bmp = open(os.path.join(fixtures_dir, 'test.bmp'))
-        self.gif = open(os.path.join(fixtures_dir, 'test.gif'))
-
-    def tearDown(self):
-        # Clear the images folder
-        images_folder = os.path.join(settings.MEDIA_ROOT, 'images')
-        if(os.path.exists(images_folder)):
-            shutil.rmtree(images_folder)
 
     # Backported from Django 1.6 - https://github.com/django/django/commit/d194714c0a707773bd470bffb3d67a60e40bb787
     def assertFormsetError(self, response, formset, form_index, field, errors,
