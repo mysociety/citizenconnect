@@ -45,6 +45,7 @@ $(document).ready(function () {
         shadowRetinaUrl: "/static/img/shadow@2x.png",
         shadowSize: [24, 24]
     });
+    var $form = $(".filters");
     var hoverBubbleTemplate = $("script[name=hover-bubble]").html();
     var londonCentre = new L.LatLng(51.505, -0.09);
     var northEastCentre = new L.LatLng(54.95, -1.62);
@@ -280,6 +281,15 @@ $(document).ready(function () {
     };
 
     /**
+     * Get the parameters to send in an ajax request
+     * These consist of any currently selected map filters
+     * as well as the current bounding box of the map
+     */
+    var getAjaxRequestParameters = function($form, map) {
+        return [$form.serialize(), $.param({bounds: getBoundingBoxFromMap(map)})].join('&');
+    };
+
+    /**
      * Get a list of the map's bounds.
      *
      * @param {L.Map} map The map instance to use
@@ -370,7 +380,9 @@ $(document).ready(function () {
      * provider).
      */
     var requestProvidersInBounds = function() {
-        getRequest(window.location.pathname, {bounds: getBoundingBoxFromMap(map), format: 'json'})
+        data = getAjaxRequestParameters($form, map);
+        data['format'] = 'json';
+        getRequest(window.location.pathname, data)
         .done(function(providers) {
             drawProviders(providers);
         }).error(function(jqXHR) {
@@ -426,8 +438,7 @@ $(document).ready(function () {
     // Submit the form via ajax on any select change and
     // reload the map pins from the results
     $(".filters select").change(function(e) {
-        var $form = $(".filters");
-        var formData = [$form.serialize(), $.param({bounds: getBoundingBoxFromMap(map)})].join('&');
+        var formData = getAjaxRequestParameters($form, map);
 
         // Lock the form during the ajax request
         $form.find("select").prop("disabled", "disabled");
