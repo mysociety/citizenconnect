@@ -24,7 +24,7 @@ django-reversion==1.6.6  # compatible with Django 1.4.5
 django-concurrency
 django-dirtyfields==0.1  # see issues.models.Problems.save for reason it is pinned
 django-passwords
-django-extra-fields
+django-extra-views
 sorl-thumbnail
 
 ### Testing
