@@ -8,7 +8,7 @@
 
           <a href="{% url 'problem-view' pk=problem.id cobrand=cobrand.name %}">
 
-            {% if problem.public %}
+            {% if problem.are_details_publicly_visible %}
               {% for image in problem.images.all %}
                 {% thumbnail image.image "x32" as im %}
                   <img src="{{ im.url }}" height="{{ im.height}}" width="{{im.width}}" />
