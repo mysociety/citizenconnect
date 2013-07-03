@@ -404,6 +404,12 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         else:
             return True
 
+    def are_details_publicly_visible(self):
+        # details visible if published and public
+        return self.publication_status == Problem.PUBLISHED \
+            and self.public \
+            and int(self.status) not in Problem.HIDDEN_STATUSES
+
     def can_be_accessed_by(self, user):
         """
         Whether or not an issue is accessible to a given user.
