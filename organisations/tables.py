@@ -258,6 +258,12 @@ class ProblemDashboardTable(BaseProblemTable):
 
     service = tables.Column(verbose_name="Service", orderable=False)
 
+    images = tables.TemplateColumn(
+        template_name="organisations/includes/images_column.html",
+        accessor="images",
+        orderable=False
+    )
+
     def __init__(self, *args, **kwargs):
         # Private is always true for dashboards
         kwargs['private'] = True

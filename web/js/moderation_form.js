@@ -36,10 +36,4 @@ jQuery(document).ready(function($) {
         e.preventDefault();
     });
 
-
-    // Enable fancy box zoom on the images
-    $("a.fancybox-zoom").fancybox({
-      // Defaults seem fine for our purposes
-    });
-
 });
