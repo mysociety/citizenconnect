@@ -214,5 +214,5 @@ class OrganisationFilterForm(FilterForm):
             services = organisation.services.all().order_by('name')
             self.fields.insert(0, 'service_id', forms.ModelChoiceField(queryset=services,
                                                                        required=False,
-                                                                       empty_label="All services",
-                                                                       label="Service"))
+                                                                       empty_label="All services/departments",
+                                                                       label="Service/Department"))
