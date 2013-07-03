@@ -121,6 +121,8 @@ def _apply_organisation_filters(organisation_filters,
 
     organisation_ids = organisation_filters.get('organisation_ids')
     if organisation_ids is not None:
+        if len(organisation_ids) == 0:
+            raise ValueError("To filter by organisations, at least one organisation id must be supplied")
         organisation_filter_clauses.append("organisations_organisation.id in %s")
         params.append(organisation_ids)
 

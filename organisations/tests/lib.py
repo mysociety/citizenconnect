@@ -508,6 +508,14 @@ class IntervalCountsTest(TestCase):
         actual = interval_counts(organisation_filters=organisation_filters)
         self.assertEqual(expected_counts, actual)
 
+    def test_errors_on_empty_organisation_ids(self):
+        # Bug #897 - When passed an empty array of organisation_ids the code
+        # tried to use them, resulting in an SQL error, so now it should check
+        # and raise a more suitable error
+        organisation_filters = {'organisation_ids': ()}
+        with self.assertRaises(ValueError) as context_manager:
+            interval_counts(organisation_filters=organisation_filters)
+
 
 class AuthorizationTestCase(TestCase):
     """
