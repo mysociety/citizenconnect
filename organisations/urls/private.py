@@ -74,7 +74,7 @@ urlpatterns = patterns(
     # Superuser urls
     url(r'^superuser/dashboard$',
         login_required(SuperuserDashboard.as_view()),
-        name='superuser-logs'),
+        name='superuser-dashboard'),
 
     url(r'^superuser/access-logs$',
         login_required(SuperuserLogs.as_view()),
