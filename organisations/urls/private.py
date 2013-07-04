@@ -9,6 +9,7 @@ from organisations.views.organisations import *
 from organisations.views.organisation_parents import *
 from organisations.views.ccgs import *
 from organisations.views.superusers import *
+from organisations.views.escalation import *
 from organisations.auth import StrongSetPasswordForm, StrongPasswordChangeForm
 
 urlpatterns = patterns(

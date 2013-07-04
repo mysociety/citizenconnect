@@ -8,7 +8,8 @@ from ..auth import enforce_ccg_access_check
 from ..models import CCG, Problem
 from ..tables import ProblemDashboardTable, CCGSummaryTable
 
-from .base import PrivateViewMixin, EscalationDashboard, EscalationBreaches, Summary
+from .base import PrivateViewMixin, Summary
+from .escalation import EscalationDashboard, EscalationBreaches
 
 
 class CCGAwareViewMixin(PrivateViewMixin):
