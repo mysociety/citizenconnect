@@ -436,35 +436,6 @@ class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
         return organisation_data
 
 
-class PrivateNationalSummary(Summary):
-    template_name = 'organisations/national_summary.html'
-    permitted_statuses = Problem.ALL_STATUSES
-    summary_table_class = PrivateNationalSummaryTable
-
-    def dispatch(self, request, *args, **kwargs):
-        self.enforce_access(request.user)
-        return super(PrivateNationalSummary, self).dispatch(request, *args, **kwargs)
-
-    def enforce_access(self, user):
-        if not user_can_access_private_national_summary(user):
-            raise PermissionDenied()
-
-    def get_context_data(self, **kwargs):
-
-        # default the cobrand
-        if 'cobrand' not in kwargs:
-            kwargs['cobrand'] = None
-
-        context = super(PrivateNationalSummary, self).get_context_data(**kwargs)
-
-        # Determine if we should show the page as part of some tabbed navigation
-        if user_in_group(self.request.user, auth.CUSTOMER_CONTACT_CENTRE):
-            context['show_tabs'] = True
-            context['tabs_template'] = 'organisations/includes/escalation_tabs.html'
-
-        return context
-
-
 class PrivateHome(TemplateView):
 
     template_name = 'organisations/private_home.html'
@@ -477,7 +448,6 @@ class PrivateHome(TemplateView):
 
         return context
 
-
     def render_to_response(self, context, **kwargs):
 
         links = context['links']
@@ -488,19 +458,6 @@ class PrivateHome(TemplateView):
 
         # If there are no links, or more than one, present the private home page
         return super(PrivateHome, self).render_to_response(context, **kwargs)
-
-class SuperuserLogs(TemplateView):
-
-    template_name = 'organisations/superuser_logs.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(SuperuserLogs, self).get_context_data(**kwargs)
-        # Only NHS superusers can see this page
-        if not user_is_superuser(self.request.user):
-            raise PermissionDenied()
-        else:
-            context['logs'] = SuperuserLogEntry.objects.all()
-        return context
 
 
 class EscalationDashboard(FilterFormMixin, TemplateView):
