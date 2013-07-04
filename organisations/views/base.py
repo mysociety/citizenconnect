@@ -11,7 +11,6 @@ from django.core.exceptions import PermissionDenied
 from django_tables2 import RequestConfig
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect
-from django.contrib.auth.decorators import login_required
 from django.contrib.gis.geos import Polygon
 
 # App imports
@@ -21,15 +20,11 @@ from geocoder.models import Place
 
 from .. import auth
 from ..auth import (user_in_group,
-                    user_is_superuser,
-                    user_can_access_national_escalation_dashboard,
-                    user_can_access_private_national_summary,
-                    user_is_escalation_body)
-from ..models import Organisation, SuperuserLogEntry
+                    user_can_access_national_escalation_dashboard)
+from ..models import Organisation
 from ..forms import OrganisationFinderForm, FilterForm, MapitPostCodeLookup, MapitError
 from ..lib import interval_counts
 from ..tables import (NationalSummaryTable,
-                      PrivateNationalSummaryTable,
                       ProblemDashboardTable,
                       BreachTable)
 from ..templatetags.organisation_extras import formatted_time_interval, percent

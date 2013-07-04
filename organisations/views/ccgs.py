@@ -6,9 +6,9 @@ from django_tables2 import RequestConfig
 
 from ..auth import enforce_ccg_access_check
 from ..models import CCG, Problem
-from ..tables import ProblemDashboardTable
+from ..tables import ProblemDashboardTable, CCGSummaryTable
 
-from .base import PrivateViewMixin, EscalationDashboard, EscalationBreaches, PrivateNationalSummary
+from .base import PrivateViewMixin, EscalationDashboard, EscalationBreaches, Summary
 
 
 class CCGAwareViewMixin(PrivateViewMixin):
@@ -100,10 +100,14 @@ class CCGEscalationBreaches(CCGAwareViewMixin, EscalationBreaches):
         return context
 
 
-class CCGSummary(CCGAwareViewMixin, PrivateNationalSummary):
+class CCGSummary(CCGAwareViewMixin, Summary):
+    template_name = 'organisations/ccg_summary.html'
+    permitted_statuses = Problem.ALL_STATUSES
+    summary_table_class = CCGSummaryTable
 
-    def enforce_access(self, user):
-        enforce_ccg_access_check(self.ccg, user)
+    def dispatch(self, request, *args, **kwargs):
+        enforce_ccg_access_check(self.ccg, request.user)
+        return super(CCGSummary, self).dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super(CCGSummary, self).get_form_kwargs()
@@ -111,10 +115,10 @@ class CCGSummary(CCGAwareViewMixin, PrivateNationalSummary):
         return kwargs
 
     def get_context_data(self, **kwargs):
-        context = super(CCGSummary, self).get_context_data(**kwargs)
-        context['show_tabs'] = True
-        context['tabs_template'] = 'organisations/includes/ccg_tabs.html'
-        return context
+        # default the cobrand
+        if 'cobrand' not in kwargs:
+            kwargs['cobrand'] = None
+        return super(CCGSummary, self).get_context_data(**kwargs)
 
     def get_interval_counts(self, problem_filters, organisation_filters, threshold):
         # Filter to the selected CCG
