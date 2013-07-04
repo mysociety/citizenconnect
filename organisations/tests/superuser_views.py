@@ -68,3 +68,8 @@ class SuperuserDashboardTests(AuthorizationTestCase):
             expected_parent_link = reverse('org-parent-dashboard', kwargs={'code': parent.code})
             self.assertContains(resp, expected_parent_link)
             self.assertContains(resp, parent.name)
+
+    def test_dashboard_page_shows_link_to_logs(self):
+        resp = self.client.get(self.dashboard_url)
+        expected_logs_link = reverse('superuser-logs')
+        self.assertContains(resp, expected_logs_link)
