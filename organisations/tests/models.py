@@ -5,6 +5,7 @@ from django.core import mail
 from django.contrib.auth.models import User
 from django.contrib.gis.geos import Point
 from django.utils.timezone import utc
+from django.core.exceptions import ValidationError
 
 from .lib import (create_test_organisation,
                   create_test_ccg,
@@ -12,7 +13,7 @@ from .lib import (create_test_organisation,
                   create_test_problem,
                   AuthorizationTestCase)
 
-from ..models import Organisation, OrganisationParent
+from ..models import Organisation, OrganisationParent, CCG
 
 
 class OrganisationParentModelTests(TestCase):
@@ -81,6 +82,10 @@ class CCGModelTests(TestCase):
         self.assertEqual(problems.count(), 2)
         for p in problems:
             self.assertEqual(p.organisation.parent.ccgs.all()[0], self.test_ccg)
+    
+    def test_that_email_address_is_required(self):
+        self.assertRaises(ValidationError, CCG.objects.create, code="NOEMAIL")
+        self.assertRaises(ValidationError, CCG.objects.create, email="", code="NOEMAIL")
 
 
 class CCGModelAuthTests(AuthorizationTestCase):
@@ -102,6 +107,24 @@ class CCGModelAuthTests(AuthorizationTestCase):
         self.assertFalse(self.other_test_ccg.can_be_accessed_by(self.ccg_user))
         self.assertFalse(self.test_ccg.can_be_accessed_by(self.no_ccg_user))
 
+
+class OrganisationParentModelTests(TestCase):
+    def test_that_email_address_is_required(self):
+        self.assertRaises(
+            ValidationError,
+            OrganisationParent.objects.create,
+            escalation_ccg=create_test_ccg({}),
+            choices_id=123
+        )
+    def test_that_email_address_is_required(self):
+        self.assertRaises(
+            ValidationError,
+            OrganisationParent.objects.create,
+            escalation_ccg=create_test_ccg({}),
+            choices_id=123,
+            email=""
+        )
+    
 
 class OrganisationModelTests(TestCase):
     def test_organisation_type_name(self):
@@ -185,31 +208,10 @@ class CreateTestCCGMixin(object):
         return create_test_ccg(attributes)
 
 
-class UserCreationTestsMixin(object):
-
-    def setUp(self):
-        # create users needed for tests
-        self.user_foo = User.objects.create_user("foo", email="foo@example.com")
-
-        # create organisations needed for tests
-        self.test_object_no_email = self.create_test_object({'name': "No Email", 'email': ""})  # ISSUE-329
-        self.test_object_no_user = self.create_test_object({'name': "No User", 'email': "no-email@example.com"})
-        self.test_object_foo_with_user = self.create_test_object({'name': "Foo with User", 'email': "foo@example.com"})
-        self.test_object_foo_no_user = self.create_test_object({'name': "Foo without User", 'email': "foo@example.com"})
-
-        # add the user to test_object_foo_with_user
-        self.test_object_foo_with_user.users.add(self.user_foo)
-
-
 class SendMailTestsMixin(object):
 
     def setUp(self):
         self.test_object = self.create_test_object({"email": "foo@example.com"})
-
-    def test_send_mail_raises_if_no_email_on_test_object(self):
-        # Remove this test once ISSUE-329 resolved
-        test_object = self.create_test_object({"email": ""})
-        self.assertRaises(ValueError, test_object.send_mail, subject="Test Subject", message="Test message")
 
     def test_send_mail_raises_if_recipient_list_provided(self):
         test_object = self.test_object
@@ -233,16 +235,9 @@ class SendMailTestsMixin(object):
         self.assertEqual(trigger_mail.body, 'foo')
 
 
-# This is a bit convoluted. We want to test the user creation and email sending
-# for the Organisations and the CCGs. Use this matrix of mixins to do all the
-# tests without any code repetition.
-class OrganisationParentModelUserCreationTests(CreateTestOrganisationParentMixin, UserCreationTestsMixin, TestCase):
-    pass
-
-
-class CCGModelUserCreationTests(CreateTestCCGMixin, UserCreationTestsMixin, TestCase):
-    pass
-
+# This is a bit convoluted. We want to test the email sending for the
+# Organisations and the CCGs. Use this matrix of mixins to do all the tests
+# without any code repetition.
 
 class OrganisationParentModelSendMailTests(CreateTestOrganisationParentMixin, SendMailTestsMixin, TestCase):
     pass

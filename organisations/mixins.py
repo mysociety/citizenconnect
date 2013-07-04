@@ -37,17 +37,12 @@ class MailSendMixin(models.Model):
 
         In addition it will:
 
-          * raise an exception if there are no email addresses for the org - ISSUE-329
           * will create a user account linked to the provider if required
           * will send out an intro email if one has not already been sent
           * will send the email
         """
 
         class_name = self.__class__.__name__
-
-        # We can't send email if we don't have an email address
-        if not self.email:  # ISSUE-329
-            raise ValueError("{0} {1} needs an email in order to send an email".format(class_name, self.id))
 
         # Organisations send emails to two email addresses
         recipient_list = [self.email]
