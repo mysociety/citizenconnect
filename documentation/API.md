@@ -63,6 +63,18 @@ Required. The source of the original report, ie: whether they phoned, emailed, t
 ### escalated
 Optional. Whether or not this problem has been escalated. Send `0` or `1` for true or false. Defaults to false.
 
+### images-0
+
+Optional. An image to attach to this problem report. If images are attached to the report, then the POST request must use a `Content-Type: multipart/form-data`.
+
+### images-1
+
+Optional. Same as images-0.
+
+### images-2
+
+Optional. Same as images-0.
+
 ## Return value
 The api returns a json string, containing an object with one parameter, reference_number which gives the unique reference number for the problem or question created (if successful). Example:
 
