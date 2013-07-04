@@ -24,11 +24,9 @@ class CCG(MailSendMixin, AuditedModel):
     code = models.CharField(max_length=8, db_index=True, unique=True)
     users = models.ManyToManyField(User, related_name='ccgs')
 
-    # ISSUE-329: The `blank=True` should be removed when we are supplied with
-    # email addresses for all the orgs
     # max_length set manually to make it RFC compliant (default of 75 is too short)
-    # email may not be unique
-    email = models.EmailField(max_length=254, blank=True)
+    # email may not be unique - for example a catch-all address may be used
+    email = models.EmailField(max_length=254)
 
     def default_user_group(self):
         """Group to ensure that users are members of"""
@@ -76,11 +74,9 @@ class OrganisationParent(MailSendMixin, AuditedModel):
     choices_id = models.IntegerField(db_index=True)
     users = models.ManyToManyField(User, related_name='organisation_parents')
 
-    # ISSUE-329: The `blank=True` should be removed when we are supplied with
-    # email addresses for all the organisation parents
     # max_length set manually to make it RFC compliant (default of 75 is too short)
-    # email may not be unique
-    email = models.EmailField(max_length=254, blank=True)
+    # email may not be unique - for example a catch-all address may be used
+    email = models.EmailField(max_length=254)
     secondary_email = models.EmailField(max_length=254, blank=True)
 
     # Which CCG this Parent should escalate problems too
