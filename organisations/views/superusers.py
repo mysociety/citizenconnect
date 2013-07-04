@@ -1,14 +1,21 @@
+# Django imports
+from django.views.generic import TemplateView
+from django.core.exceptions import PermissionDenied
 
-class SuperuserDashboard(TemplateView):
-    template_name = 'organisations/superuser_dashboard.html'
+from ..auth import user_is_superuser
+from ..models import SuperuserLogEntry, CCG, OrganisationParent
+
+
+class SuperuserOnlyMixin(object):
 
     def dispatch(self, request, *args, **kwargs):
-        self.enforce_access(request.user)
-        return super(SuperuserDashboard, self).dispatch(request, *args, **kwargs)
-
-    def enforce_access(self, user):
-        if not user_can_access_superuser_dashboard(user):
+        if not user_is_superuser(self.request.user):
             raise PermissionDenied()
+        return super(SuperuserOnlyMixin, self).dispatch(request, *args, **kwargs)
+
+
+class SuperuserDashboard(TemplateView, SuperuserOnlyMixin):
+    template_name = 'organisations/superuser_dashboard.html'
 
     def get_context_data(self, **kwargs):
 
@@ -19,15 +26,11 @@ class SuperuserDashboard(TemplateView):
         return context
 
 
-class SuperuserLogs(TemplateView):
+class SuperuserLogs(TemplateView, SuperuserOnlyMixin):
 
     template_name = 'organisations/superuser_logs.html'
 
     def get_context_data(self, **kwargs):
         context = super(SuperuserLogs, self).get_context_data(**kwargs)
-        # Only NHS superusers can see this page
-        if not user_is_superuser(self.request.user):
-            raise PermissionDenied()
-        else:
-            context['logs'] = SuperuserLogEntry.objects.all()
+        context['logs'] = SuperuserLogEntry.objects.all()
         return context
