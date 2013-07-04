@@ -9,7 +9,7 @@ from django_tables2 import RequestConfig
 from issues.models import Problem
 
 from .. import auth
-from ..auth import enforce_organisation_access_check, user_can_access_private_national_summary, user_in_group
+from ..auth import enforce_organisation_access_check, user_in_group
 from ..models import Organisation
 from ..forms import OrganisationFilterForm
 from ..lib import interval_counts
@@ -118,9 +118,7 @@ class OrganisationSummary(OrganisationAwareViewMixin,
         context['issues_total'] = issues_total
 
         if context['private']:
-            if user_can_access_private_national_summary(self.request.user):
-                context['back_to_summaries_link'] = reverse('private-national-summary')
-            elif user_in_group(self.request.user, auth.CCG):
+            if user_in_group(self.request.user, auth.CCG):
                 context['back_to_summaries_link'] = reverse('ccg-summary', kwargs={'code': self.request.user.ccgs.all()[0].code})
             elif user_in_group(self.request.user, auth.ORGANISATION_PARENTS):
                 context['back_to_summaries_link'] = reverse('org-parent-summary', kwargs={'code': self.request.user.organisation_parents.all()[0].code})

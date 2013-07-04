@@ -8,6 +8,7 @@ from organisations.views.base import *
 from organisations.views.organisations import *
 from organisations.views.organisation_parents import *
 from organisations.views.ccgs import *
+from organisations.views.superusers import *
 from organisations.auth import StrongSetPasswordForm, StrongPasswordChangeForm
 
 urlpatterns = patterns(
@@ -70,16 +71,16 @@ urlpatterns = patterns(
         name='private-org-summary',
         kwargs={'private': True}),
 
-    # Body-independent urls
-    url(r'^summary$',
-        login_required(PrivateNationalSummary.as_view()),
-        name='private-national-summary',
-        kwargs={'private': True}),
+    # Superuser urls
+    url(r'^superuser/dashboard$',
+        login_required(SuperuserDashboard.as_view()),
+        name='superuser-dashboard'),
 
-    url(r'^access-logs$',
+    url(r'^superuser/access-logs$',
         login_required(SuperuserLogs.as_view()),
         name='superuser-logs'),
 
+    # Body-independent urls
     url(r'^escalation$',
         login_required(EscalationDashboard.as_view()),
         name='escalation-dashboard',

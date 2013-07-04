@@ -69,7 +69,7 @@ class NationalSummaryTable(tables.Table):
         order_by = ('name',)
 
 
-class PrivateNationalSummaryTable(NationalSummaryTable):
+class CCGSummaryTable(NationalSummaryTable):
 
     def reverse_to_org_summary(self, ods_code):
         return reverse(
