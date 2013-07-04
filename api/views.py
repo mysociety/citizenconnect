@@ -2,6 +2,7 @@ from django.views.generic import CreateView
 from django.http import HttpResponse
 from django.utils import simplejson as json
 from django.core.files.images import ImageFile
+from django.conf import settings
 
 from issues.models import Problem
 
@@ -25,14 +26,9 @@ class APIProblemCreate(CreateView):
         self.object = form.save()
 
         # Attach images to problem if provided.
-        if form.cleaned_data['images_0']:
-            self.object.images.create(image=ImageFile(form.cleaned_data['images_0']))
-
-        if form.cleaned_data['images_1']:
-            self.object.images.create(image=ImageFile(form.cleaned_data['images_1']))
-
-        if form.cleaned_data['images_2']:
-            self.object.images.create(image=ImageFile(form.cleaned_data['images_2']))
+        for i in range(0, settings.MAX_IMAGES_PER_PROBLEM):
+            if form.cleaned_data['images_' + str(i)]:
+                self.object.images.create(image=ImageFile(form.cleaned_data['images_' + str(i)]))
 
         # Return a 201 with JSON
 
