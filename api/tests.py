@@ -2,6 +2,7 @@ import uuid
 import base64
 import os
 
+from django.test import TestCase
 from django.utils import simplejson as json
 from django.core.urlresolvers import reverse
 from django.conf import settings
@@ -10,10 +11,9 @@ from django.test.utils import override_settings
 
 from organisations.tests.lib import create_test_organisation, create_test_service
 from issues.models import Problem
-from issues.tests.lib import ProblemImageTestBase
 
 
-class ProblemAPITests(ProblemImageTestBase):
+class ProblemAPITests(TestCase):
 
     def setUp(self):
         super(ProblemAPITests, self).setUp()
@@ -45,6 +45,16 @@ class ProblemAPITests(ProblemImageTestBase):
         }
 
         self.problem_api_url = reverse('api-problem-create')
+
+        fixtures_dir = os.path.join(settings.PROJECT_ROOT, 'issues', 'tests', 'fixtures')
+        self.jpg = open(os.path.join(fixtures_dir, 'test.jpg'))
+        self.bmp = open(os.path.join(fixtures_dir, 'test.bmp'))
+        self.gif = open(os.path.join(fixtures_dir, 'test.gif'))
+
+    def tearDown(self):
+        self.jpg.close()
+        self.gif.close()
+        self.bmp.close()
 
     def test_problem_api_happy_path(self):
         resp = self.client.post(self.problem_api_url, self.test_problem_defaults)
@@ -303,8 +313,7 @@ class ProblemAPITests(ProblemImageTestBase):
 
     @override_settings(MAX_IMAGES_PER_PROBLEM=3)
     def test_api_accepts_images(self):
-        jpg = ImageFile(self.jpg)
-        self.test_problem_defaults['images_0'] = jpg
+        self.test_problem_defaults['images_0'] = self.jpg
         resp = self.client.post(self.problem_api_url, self.test_problem_defaults)
         self.assertEquals(resp.status_code, 201)
 
@@ -313,13 +322,9 @@ class ProblemAPITests(ProblemImageTestBase):
 
     @override_settings(MAX_IMAGES_PER_PROBLEM=3)
     def test_api_accepts_multiple_images(self):
-        fixtures_dir = os.path.join(settings.PROJECT_ROOT, 'issues', 'tests', 'fixtures')
-        jpg = open(os.path.join(fixtures_dir, 'test.jpg'))
-        bmp = open(os.path.join(fixtures_dir, 'test.bmp'))
-        gif = open(os.path.join(fixtures_dir, 'test.gif'))
-        self.test_problem_defaults['images_0'] = jpg
-        self.test_problem_defaults['images_1'] = bmp
-        self.test_problem_defaults['images_2'] = gif
+        self.test_problem_defaults['images_0'] = self.jpg
+        self.test_problem_defaults['images_1'] = self.bmp
+        self.test_problem_defaults['images_2'] = self.gif
         resp = self.client.post(self.problem_api_url, self.test_problem_defaults)
         self.assertEquals(resp.status_code, 201)
 
