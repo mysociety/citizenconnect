@@ -37,9 +37,9 @@ class Command(BaseCommand):
                 answer_id = answer.get('id')
 
                 try:
-                    answer_model = question.answer_set.get(api_answer_id=answer_id)
+                    answer_model = question.answers.get(api_answer_id=answer_id)
                 except Answer.DoesNotExist:
                     answer_model = Answer(api_answer_id=answer_id)
 
                 answer_model.text = answer.text
-                question.answer_set.add(answer_model)
+                question.answers.add(answer_model)
