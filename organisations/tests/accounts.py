@@ -192,11 +192,11 @@ class PrivateHomeTests(AuthorizationTestCase):
         self.assertRedirects(resp, dashboard_url)
 
     def test_superusers_go_to_superuser_page(self):
-        pns_url = reverse('private-national-summary')
+        dashboard_url = reverse('superuser-dashboard')
         for user in self.nhs_superuser, self.superuser:
             self.login_as(user)
             resp = self.client.get(self.private_home_url)
-            self.assertRedirects(resp, pns_url)
+            self.assertRedirects(resp, dashboard_url)
 
     def test_everyone_else_goes_to_private_home_page(self):
         # Provider with no organisations

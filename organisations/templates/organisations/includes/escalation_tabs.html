@@ -3,7 +3,4 @@
 <ul class="tab-nav">
     <li><a {% if active_tab == 'escalation-dashboard' %}class="active"{% endif %} href="{% url 'escalation-dashboard' %}">Inbox</a></li>
     <li><a {% if active_tab == 'breaches' %}class="active"{% endif %} href="{% url 'escalation-breaches' %}">Breaches</a></li>
-    {% if user|can_access:"private-national-summary" %}
-        <li><a {% if active_tab == 'summary' %}class="active"{% endif %} href="{% url 'private-national-summary' %}">Summary</a></li>
-    {% endif %}
 </ul>
