@@ -301,7 +301,7 @@ class ProblemAPITests(ProblemImageTestBase):
 
     def test_api_accepts_images(self):
         jpg = ImageFile(self.jpg)
-        self.test_problem_defaults['image-0'] = jpg
+        self.test_problem_defaults['images-0'] = jpg
         resp = self.client.post(self.problem_api_url, self.test_problem_defaults)
 
         problem = Problem.objects.get(reporter_name=self.problem_uuid)
