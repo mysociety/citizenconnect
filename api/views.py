@@ -6,6 +6,7 @@ from issues.models import Problem
 
 from .forms import ProblemAPIForm
 
+
 class APIProblemCreate(CreateView):
     model = Problem
     form_class = ProblemAPIForm
