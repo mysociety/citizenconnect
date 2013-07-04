@@ -1,6 +1,7 @@
 from django.views.generic import CreateView
 from django.http import HttpResponse
 from django.utils import simplejson as json
+from django.core.files.images import ImageFile
 
 from issues.models import Problem
 
@@ -23,6 +24,16 @@ class APIProblemCreate(CreateView):
         # Save the form
         self.object = form.save()
         # Return a 201 with JSON
+
+        # Attach images to problem if provided.
+        if form.cleaned_data['images_0']:
+            self.object.images.create(image=ImageFile(form.cleaned_data['images_0']))
+
+        if form.cleaned_data['images_1']:
+            self.object.images.create(image=ImageFile(form.cleaned_data['images_1']))
+
+        if form.cleaned_data['images_2']:
+            self.object.images.create(image=ImageFile(form.cleaned_data['images_2']))
 
         # Make custom json because we need to return the reference_number
         # which is a computed property that django's serializers don't
