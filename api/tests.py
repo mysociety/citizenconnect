@@ -303,6 +303,7 @@ class ProblemAPITests(ProblemImageTestBase):
         jpg = ImageFile(self.jpg)
         self.test_problem_defaults['images_0'] = jpg
         resp = self.client.post(self.problem_api_url, self.test_problem_defaults)
+        self.assertEquals(resp.status_code, 201)
 
         problem = Problem.objects.get(reporter_name=self.problem_uuid)
         self.assertEqual(1, problem.images.count())
