@@ -28,6 +28,11 @@ class ProblemAPIForm(forms.ModelForm):
     # Make preferred_contact_method optional (we will set a default)
     preferred_contact_method = forms.CharField(required=False)
 
+    # Add fields for the images for the problem
+    images_0 = forms.ImageField(required=False)
+    images_1 = forms.ImageField(required=False)
+    images_2 = forms.ImageField(required=False)
+
     # Pull out the organisation ods_code and turn it into a real organisation
     def clean_organisation(self):
         cleaned_data = self.cleaned_data
