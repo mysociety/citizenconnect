@@ -9,12 +9,12 @@ from ..models import SuperuserLogEntry, CCG, OrganisationParent
 class SuperuserOnlyMixin(object):
 
     def dispatch(self, request, *args, **kwargs):
-        if not user_is_superuser(self.request.user):
+        if not user_is_superuser(request.user):
             raise PermissionDenied()
         return super(SuperuserOnlyMixin, self).dispatch(request, *args, **kwargs)
 
 
-class SuperuserDashboard(TemplateView, SuperuserOnlyMixin):
+class SuperuserDashboard(SuperuserOnlyMixin, TemplateView):
     template_name = 'organisations/superuser_dashboard.html'
 
     def get_context_data(self, **kwargs):
@@ -26,7 +26,7 @@ class SuperuserDashboard(TemplateView, SuperuserOnlyMixin):
         return context
 
 
-class SuperuserLogs(TemplateView, SuperuserOnlyMixin):
+class SuperuserLogs(SuperuserOnlyMixin, TemplateView):
 
     template_name = 'organisations/superuser_logs.html'
 
