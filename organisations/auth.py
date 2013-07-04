@@ -235,7 +235,6 @@ class StrongPasswordChangeForm(PasswordChangeForm):
         return password
 
 
-
 def create_home_links_for_user(user):
     """
     Inspect the user and work out which links are appropriate for their home page.
@@ -248,8 +247,8 @@ def create_home_links_for_user(user):
     # NHS Super users get a special map page
     if user_is_superuser(user):
         links.append({
-            "title": "Private National Summary",
-            "url": reverse('private-national-summary'),
+            "title": "Superuser Dashboard",
+            "url": reverse('superuser-dashboard'),
         })
 
     # CCG users get their own problem dashboard
@@ -266,14 +265,14 @@ def create_home_links_for_user(user):
             "title": "Escalation dashboard",
             "url": reverse('escalation-dashboard'),
         })
-    
+
     # Moderators go to the moderation queue
     if user_in_group(user, CASE_HANDLERS):
         links.append({
             "title": "Moderation home",
             "url": reverse('moderate-home'),
         })
-    
+
     if user_in_group(user, SECOND_TIER_MODERATORS):
         links.append({
             "title": "Second tier moderation home",

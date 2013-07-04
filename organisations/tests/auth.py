@@ -120,7 +120,7 @@ class AuthTests(AuthorizationTestCase):
                 {'title': 'Dashboard for Test Trust', 'url': '/private/org-parent/TRUST1/dashboard'},
             ] ),
             ( self.superuser, [
-                {'title': 'Private National Summary', 'url': '/private/summary'},
+                {'title': 'Superuser Dashboard', 'url': '/private/superuser/dashboard'},
             ] ),
             ( self.anonymous_user, [] ),
             ( self.no_trust_user, [] ),
@@ -128,7 +128,7 @@ class AuthTests(AuthorizationTestCase):
                 {'title': 'Dashboard for other test trust', 'url': '/private/org-parent/XYZ/dashboard'},
             ] ),
             ( self.nhs_superuser, [
-                {'title': 'Private National Summary', 'url': '/private/summary'},
+                {'title': 'Superuser Dashboard', 'url': '/private/superuser/dashboard'},
             ] ),
             ( self.case_handler, [
                 {'title': 'Moderation home', 'url': '/private/moderate/'},
@@ -150,5 +150,5 @@ class AuthTests(AuthorizationTestCase):
             self.assertEqual(
                 expected_links,
                 links,
-                "Did not get expected links for '{0}' user".format(user)
+                "Did not get expected links for '{0}' user, got: {1}, expected: {2}".format(user, links, expected_links)
             )
