@@ -185,22 +185,6 @@ class CreateTestCCGMixin(object):
         return create_test_ccg(attributes)
 
 
-class UserCreationTestsMixin(object):
-
-    def setUp(self):
-        # create users needed for tests
-        self.user_foo = User.objects.create_user("foo", email="foo@example.com")
-
-        # create organisations needed for tests
-        self.test_object_no_email = self.create_test_object({'name': "No Email", 'email': ""})  # ISSUE-329
-        self.test_object_no_user = self.create_test_object({'name': "No User", 'email': "no-email@example.com"})
-        self.test_object_foo_with_user = self.create_test_object({'name': "Foo with User", 'email': "foo@example.com"})
-        self.test_object_foo_no_user = self.create_test_object({'name': "Foo without User", 'email': "foo@example.com"})
-
-        # add the user to test_object_foo_with_user
-        self.test_object_foo_with_user.users.add(self.user_foo)
-
-
 class SendMailTestsMixin(object):
 
     def setUp(self):
@@ -233,16 +217,9 @@ class SendMailTestsMixin(object):
         self.assertEqual(trigger_mail.body, 'foo')
 
 
-# This is a bit convoluted. We want to test the user creation and email sending
-# for the Organisations and the CCGs. Use this matrix of mixins to do all the
-# tests without any code repetition.
-class OrganisationParentModelUserCreationTests(CreateTestOrganisationParentMixin, UserCreationTestsMixin, TestCase):
-    pass
-
-
-class CCGModelUserCreationTests(CreateTestCCGMixin, UserCreationTestsMixin, TestCase):
-    pass
-
+# This is a bit convoluted. We want to test the email sending for the
+# Organisations and the CCGs. Use this matrix of mixins to do all the tests
+# without any code repetition.
 
 class OrganisationParentModelSendMailTests(CreateTestOrganisationParentMixin, SendMailTestsMixin, TestCase):
     pass
