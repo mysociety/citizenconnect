@@ -1,5 +1,6 @@
 import uuid
 import base64
+import os
 
 from django.utils import simplejson as json
 from django.core.urlresolvers import reverse
@@ -307,3 +308,17 @@ class ProblemAPITests(ProblemImageTestBase):
 
         problem = Problem.objects.get(reporter_name=self.problem_uuid)
         self.assertEqual(1, problem.images.count())
+
+    def test_api_accepts_multiple_images(self):
+        fixtures_dir = os.path.join(settings.PROJECT_ROOT, 'issues', 'tests', 'fixtures')
+        jpg = open(os.path.join(fixtures_dir, 'test.jpg'))
+        bmp = open(os.path.join(fixtures_dir, 'test.bmp'))
+        gif = open(os.path.join(fixtures_dir, 'test.gif'))
+        self.test_problem_defaults['images_0'] = jpg
+        self.test_problem_defaults['images_1'] = bmp
+        self.test_problem_defaults['images_2'] = gif
+        resp = self.client.post(self.problem_api_url, self.test_problem_defaults)
+        self.assertEquals(resp.status_code, 201)
+
+        problem = Problem.objects.get(reporter_name=self.problem_uuid)
+        self.assertEqual(3, problem.images.count())
