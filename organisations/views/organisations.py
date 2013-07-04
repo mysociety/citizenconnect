@@ -1,7 +1,9 @@
 # Django imports
+from django.http import Http404
 from django.views.generic import TemplateView
-from django_tables2 import RequestConfig
 from django.core.urlresolvers import reverse
+
+from django_tables2 import RequestConfig
 
 # App imports
 from issues.models import Problem
@@ -23,7 +25,10 @@ class OrganisationAwareViewMixin(PrivateViewMixin):
     def dispatch(self, request, *args, **kwargs):
         # Set organisation here so that we can use it anywhere in the class
         # without worrying about whether it has been set yet
-        self.organisation = Organisation.objects.get(ods_code=kwargs['ods_code'])
+        try:
+            self.organisation = Organisation.objects.get(ods_code=kwargs['ods_code'])
+        except Organisation.DoesNotExist:
+            raise Http404
         return super(OrganisationAwareViewMixin, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):

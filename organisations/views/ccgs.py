@@ -1,5 +1,7 @@
 # Django imports
 from django.views.generic import TemplateView
+from django.http import Http404
+
 from django_tables2 import RequestConfig
 
 from ..auth import enforce_ccg_access_check
@@ -16,7 +18,10 @@ class CCGAwareViewMixin(PrivateViewMixin):
     def dispatch(self, request, *args, **kwargs):
         # Lookup and set ccg here so that we can use it anywhere in the class
         # without worrying about whether it has been set yet
-        self.ccg = CCG.objects.get(code=kwargs['code'])
+        try:
+            self.ccg = CCG.objects.get(code=kwargs['code'])
+        except CCG.DoesNotExist:
+            raise Http404
         return super(CCGAwareViewMixin, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
