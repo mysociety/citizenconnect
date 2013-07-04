@@ -6,7 +6,6 @@ from django.test import TestCase
 from django.utils import simplejson as json
 from django.core.urlresolvers import reverse
 from django.conf import settings
-from django.core.files.images import ImageFile
 from django.test.utils import override_settings
 
 from organisations.tests.lib import create_test_organisation, create_test_service
