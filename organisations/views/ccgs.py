@@ -105,16 +105,13 @@ class CCGSummary(CCGAwareViewMixin, Summary):
     permitted_statuses = Problem.ALL_STATUSES
     summary_table_class = CCGSummaryTable
 
-    def dispatch(self, request, *args, **kwargs):
-        enforce_ccg_access_check(self.ccg, request.user)
-        return super(CCGSummary, self).dispatch(request, *args, **kwargs)
-
     def get_form_kwargs(self):
         kwargs = super(CCGSummary, self).get_form_kwargs()
         kwargs['with_ccg'] = False
         return kwargs
 
     def get_context_data(self, **kwargs):
+        enforce_ccg_access_check(self.ccg, self.request.user)
         # default the cobrand
         if 'cobrand' not in kwargs:
             kwargs['cobrand'] = None
