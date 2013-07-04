@@ -5,6 +5,7 @@ from django.core import mail
 from django.contrib.auth.models import User
 from django.contrib.gis.geos import Point
 from django.utils.timezone import utc
+from django.core.exceptions import ValidationError
 
 from .lib import (create_test_organisation,
                   create_test_ccg,
@@ -12,7 +13,7 @@ from .lib import (create_test_organisation,
                   create_test_problem,
                   AuthorizationTestCase)
 
-from ..models import Organisation, OrganisationParent
+from ..models import Organisation, OrganisationParent, CCG
 
 
 class OrganisationParentModelTests(TestCase):
@@ -81,6 +82,10 @@ class CCGModelTests(TestCase):
         self.assertEqual(problems.count(), 2)
         for p in problems:
             self.assertEqual(p.organisation.parent.ccgs.all()[0], self.test_ccg)
+    
+    def test_that_email_address_is_required(self):
+        self.assertRaises(ValidationError, CCG.objects.create, code="NOEMAIL")
+        self.assertRaises(ValidationError, CCG.objects.create, email="", code="NOEMAIL")
 
 
 class CCGModelAuthTests(AuthorizationTestCase):
@@ -102,6 +107,24 @@ class CCGModelAuthTests(AuthorizationTestCase):
         self.assertFalse(self.other_test_ccg.can_be_accessed_by(self.ccg_user))
         self.assertFalse(self.test_ccg.can_be_accessed_by(self.no_ccg_user))
 
+
+class OrganisationParentModelTests(TestCase):
+    def test_that_email_address_is_required(self):
+        self.assertRaises(
+            ValidationError,
+            OrganisationParent.objects.create,
+            escalation_ccg=create_test_ccg({}),
+            choices_id=123
+        )
+    def test_that_email_address_is_required(self):
+        self.assertRaises(
+            ValidationError,
+            OrganisationParent.objects.create,
+            escalation_ccg=create_test_ccg({}),
+            choices_id=123,
+            email=""
+        )
+    
 
 class OrganisationModelTests(TestCase):
     def test_organisation_type_name(self):
@@ -189,11 +212,6 @@ class SendMailTestsMixin(object):
 
     def setUp(self):
         self.test_object = self.create_test_object({"email": "foo@example.com"})
-
-    def test_send_mail_raises_if_no_email_on_test_object(self):
-        # Remove this test once ISSUE-329 resolved
-        test_object = self.create_test_object({"email": ""})
-        self.assertRaises(ValueError, test_object.send_mail, subject="Test Subject", message="Test message")
 
     def test_send_mail_raises_if_recipient_list_provided(self):
         test_object = self.test_object
