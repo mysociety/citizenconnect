@@ -6,6 +6,7 @@ from django.utils import simplejson as json
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.core.files.images import ImageFile
+from django.test.utils import override_settings
 
 from organisations.tests.lib import create_test_organisation, create_test_service
 from issues.models import Problem
@@ -300,6 +301,7 @@ class ProblemAPITests(ProblemImageTestBase):
         resp = self.client.post(self.problem_api_url, self.test_problem_defaults)
         self.assertEquals(resp.status_code, 401)
 
+    @override_settings(MAX_IMAGES_PER_PROBLEM=3)
     def test_api_accepts_images(self):
         jpg = ImageFile(self.jpg)
         self.test_problem_defaults['images_0'] = jpg
@@ -309,6 +311,7 @@ class ProblemAPITests(ProblemImageTestBase):
         problem = Problem.objects.get(reporter_name=self.problem_uuid)
         self.assertEqual(1, problem.images.count())
 
+    @override_settings(MAX_IMAGES_PER_PROBLEM=3)
     def test_api_accepts_multiple_images(self):
         fixtures_dir = os.path.join(settings.PROJECT_ROOT, 'issues', 'tests', 'fixtures')
         jpg = open(os.path.join(fixtures_dir, 'test.jpg'))
