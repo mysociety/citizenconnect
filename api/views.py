@@ -1,10 +1,13 @@
 from django.views.generic import CreateView
 from django.http import HttpResponse
 from django.utils import simplejson as json
+from django.core.files.images import ImageFile
+from django.conf import settings
 
 from issues.models import Problem
 
 from .forms import ProblemAPIForm
+
 
 class APIProblemCreate(CreateView):
     model = Problem
@@ -21,6 +24,12 @@ class APIProblemCreate(CreateView):
     def form_valid(self, form):
         # Save the form
         self.object = form.save()
+
+        # Attach images to problem if provided.
+        for i in range(0, settings.MAX_IMAGES_PER_PROBLEM):
+            if form.cleaned_data['images_' + str(i)]:
+                self.object.images.create(image=ImageFile(form.cleaned_data['images_' + str(i)]))
+
         # Return a 201 with JSON
 
         # Make custom json because we need to return the reference_number

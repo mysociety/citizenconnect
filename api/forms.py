@@ -1,5 +1,6 @@
 from django import forms
 from django.forms.widgets import HiddenInput
+from django.conf import settings
 
 from organisations.models import Organisation, Service
 from issues.models import Problem
@@ -27,6 +28,12 @@ class ProblemAPIForm(forms.ModelForm):
 
     # Make preferred_contact_method optional (we will set a default)
     preferred_contact_method = forms.CharField(required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(ProblemAPIForm, self).__init__(*args, **kwargs)
+        # Add fields for the images for the problem
+        for i in range(0, settings.MAX_IMAGES_PER_PROBLEM):
+            self.fields['images_' + str(i)] = forms.ImageField(required=False)
 
     # Pull out the organisation ods_code and turn it into a real organisation
     def clean_organisation(self):
