@@ -23,7 +23,6 @@ class APIProblemCreate(CreateView):
     def form_valid(self, form):
         # Save the form
         self.object = form.save()
-        # Return a 201 with JSON
 
         # Attach images to problem if provided.
         if form.cleaned_data['images_0']:
@@ -34,6 +33,8 @@ class APIProblemCreate(CreateView):
 
         if form.cleaned_data['images_2']:
             self.object.images.create(image=ImageFile(form.cleaned_data['images_2']))
+
+        # Return a 201 with JSON
 
         # Make custom json because we need to return the reference_number
         # which is a computed property that django's serializers don't
