@@ -10,6 +10,7 @@ from issues.models import Problem
 from . import (create_test_problem,
                create_test_organisation,
                create_test_service,
+               create_test_organisation_parent,
                AuthorizationTestCase)
 
 
@@ -56,6 +57,15 @@ class OrganisationParentSummaryTests(AuthorizationTestCase):
         self.login_as(self.trust_user)
         resp = self.client.get(self.trust_summary_url)
         self.assertEqual(resp.status_code, 200)
+
+    def test_raises_404_not_500(self):
+        # Issue #878 - views inheriting from OrganisationParentAwareViewMixin
+        # didn't catch OrganisationParent.DoesNotExist and raise an Http404
+        # so we got a 500 instead
+        missing_url = reverse('org-parent-summary', kwargs={'code': 'missing'})
+        self.login_as(self.nhs_superuser)  # Superuser to avoid being redirected to login first
+        resp = self.client.get(missing_url)
+        self.assertEqual(resp.status_code, 404)
 
     def test_summary_page_shows_trust_name(self):
         self.login_as(self.trust_user)
@@ -221,6 +231,25 @@ class OrganisationParentSummaryTests(AuthorizationTestCase):
         self.login_as(self.other_ccg_user)
         resp = self.client.get(self.trust_summary_url)
         self.assertEqual(resp.status_code, 403)
+
+    def test_summary_page_doesnt_error_when_org_parent_has_no_orgs(self):
+        # Bug #897 - when an org parent had no orgs, this view caused an
+        # SQL error in interval_counts by sending it an empty list of
+        # organisation_ids to filter by, it should have checked first
+        # and not bothered trying to get any counts
+        trust_with_no_orgs = create_test_organisation_parent(
+            {
+                'name': 'Trust with no orgs',
+                'code': 'hagq123',
+                'choices_id': 98086,
+                'escalation_ccg': self.test_ccg  # So that we can use the ccg user to login
+            }
+        )
+        trust_with_no_orgs_summary_url = reverse('org-parent-summary', kwargs={'code': trust_with_no_orgs.code})
+        self.login_as(self.ccg_user)
+        # This would error before we fixed the bug, failing the test
+        resp = self.client.get(trust_with_no_orgs_summary_url)
+        self.assertEqual(resp.status_code, 200)
 
 
 class OrganisationParentProblemsTests(AuthorizationTestCase):
