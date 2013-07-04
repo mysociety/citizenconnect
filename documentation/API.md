@@ -7,6 +7,9 @@ https://citizenconnect.staging.mysociety.org/api/v0.1/problem
 ```
 
 ## Posting to the API
+
+If you are posting images to the API ensure that you set the `Content-Type` header to `multipart/form-data`. If you are not including any images then use a regular POST with `Content-Type: application/x-www-form-urlencoded`.
+
 The api accepts the following fields and values:
 
 ### organisation
