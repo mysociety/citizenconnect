@@ -100,13 +100,6 @@ def user_can_access_national_escalation_dashboard(user):
     return (user_is_superuser(user) or user_in_groups(user, [CUSTOMER_CONTACT_CENTRE]))
 
 
-def user_can_access_private_national_summary(user):
-    if user_is_superuser(user) or user_in_group(user, CUSTOMER_CONTACT_CENTRE):
-        return True
-
-    return False
-
-
 def create_initial_password():
     """
     Returns a random string that can be used as a password. We need this because
