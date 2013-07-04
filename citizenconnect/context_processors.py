@@ -13,6 +13,8 @@ def add_settings(request):
             'SURVEY_INTERVAL_IN_DAYS': settings.SURVEY_INTERVAL_IN_DAYS,
             'MAX_IMAGES_PER_PROBLEM': settings.MAX_IMAGES_PER_PROBLEM,
             'ALLOWED_IMAGE_EXTENSIONS': settings.ALLOWED_IMAGE_EXTENSIONS,
+            'TWITTER_USERNAME': settings.TWITTER_USERNAME,
+            'TWITTER_WIDGET_ID': settings.TWITTER_WIDGET_ID,
         }
     }
 
