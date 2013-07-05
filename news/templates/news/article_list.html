@@ -39,10 +39,22 @@
     <div class="g  one-third  palm-one-whole">
         {# TODO - article.image #}
         {% include 'news/includes/recent_articles_sidebar.html' with articles=recent_articles %}
-        {# TODO - latest tweet - https://dev.twitter.com/docs/embedded-timelines #}
-        {# include 'citizenconnect/includes/latest_tweet.html' #}
+
+        {# Tweets - activated by js in the extra_js block #}
+        <a class="twitter-timeline"
+          data-dnt="true"
+          href="https://twitter.com/{{ settings.TWITTER_USERNAME }}"
+          data-widget-id="{{ settings.TWITTER_WIDGET_ID }}"
+        >Tweets by @{{ settings.TWITTER_USERNAME }}</a>
+
     </div>
 
 </div>
 
 {% endblock content %}
+
+
+{% block extra_js %}
+  {{ block.super }}
+  {% include "includes/twitter-widget-script.html" %}
+{% endblock extra_js %}
