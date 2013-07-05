@@ -25,7 +25,7 @@ class ProblemForm(forms.ModelForm):
         choices=((PRIVACY_PRIVATE, "Keep all details private"),
                 (PRIVACY_PRIVATE_NAME, "Publish with response but not my name"),
                 (PRIVACY_PUBLIC, 'Publish with response and my name')),
-        initial=0,
+        initial='0',
         widget=RadioSelect,
         required=True
     )
