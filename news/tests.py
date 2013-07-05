@@ -35,11 +35,11 @@ class PullArticlesFromRssFeedTests(TestCase):
 
     def test_pulls_entries_from_rss_feed(self):
         self.assertEqual(0, Article.objects.count())
-        self.call_command('pull_artcles_from_rss_feed', self.rss_feed)
+        self.call_command('pull_articles_from_rss_feed', self.rss_feed)
         self.assertEqual(1, Article.objects.count())
 
     def test_doesnt_create_entries_twice(self):
         self.assertEqual(0, Article.objects.count())
-        self.call_command('pull_artcles_from_rss_feed', self.rss_feed)
-        self.call_command('pull_artcles_from_rss_feed', self.rss_feed)
+        self.call_command('pull_articles_from_rss_feed', self.rss_feed)
+        self.call_command('pull_articles_from_rss_feed', self.rss_feed)
         self.assertEqual(1, Article.objects.count())
