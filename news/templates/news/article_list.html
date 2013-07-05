@@ -22,7 +22,7 @@
           <h2>{{ article.title }}</h2>
           <h3 title="{{ article.published }}">{{ article.published|timesince }} ago</h3>
           <div class="article-description">
-              {{ article.description }}
+              {{ article.description|safe }}
           </div>
         </li>
         {% endfor %}
