@@ -16,8 +16,9 @@ from issues.forms import PublicLookupForm, FeedbackForm
 from issues.models import Problem
 from reviews_display.models import Review
 
+
 class Home(FormView):
-    template_name = 'index.html'
+    template_name = 'citizenconnect/index.html'
     form_class = PublicLookupForm
 
     def form_valid(self, form):
@@ -41,8 +42,9 @@ class Home(FormView):
 
         return context
 
+
 class DevHomepageSelector(TemplateView):
-    template_name = 'dev-homepage.html'
+    template_name = 'citizenconnect/dev-homepage.html'
     redirect_url = reverse_lazy('home', kwargs={'cobrand': settings.ALLOWED_COBRANDS[0]})
 
     def get(self, request, *args, **kwargs):
@@ -58,10 +60,11 @@ class DevHomepageSelector(TemplateView):
 
 
 class About(TemplateView):
-    template_name = 'about.html'
+    template_name = 'citizenconnect/about.html'
+
 
 class Feedback(FormView):
-    template_name = 'feedback_form.html'
+    template_name = 'citizenconnect/feedback_form.html'
     form_class = FeedbackForm
 
     def get_initial(self):
@@ -78,7 +81,7 @@ class Feedback(FormView):
         return initial
 
     def form_valid(self, form):
-        feedback_template = get_template('feedback_email.txt')
+        feedback_template = get_template('citizenconnect/feedback_email.txt')
 
         context = Context({
             'feedback_comments': form.cleaned_data['feedback_comments'],
@@ -95,4 +98,4 @@ class Feedback(FormView):
 
 
 class FeedbackConfirm(TemplateView):
-    template_name = 'feedback_confirm.html'
+    template_name = 'citizenconnect/feedback_confirm.html'

@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "citizenconnect/base.html" %}
 {% load url from future %}
 {% load staticfiles %}
 {% load utils %}
@@ -19,7 +19,7 @@
              <div class="islet problem-search">
 
                 {% if form.non_field_errors %}
-                    {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
+                    {% include "citizenconnect/includes/message_list.html" with messages=form.non_field_errors message_type='error' %}
                 {% endif %}
 
 
@@ -84,9 +84,9 @@
 
                 {% for issue in issues %}
                     {% if issue|classname == 'Problem' %}
-                        {% include 'includes/feed_problem.html' with problem=issue %}
+                        {% include 'citizenconnect/includes/feed_problem.html' with problem=issue %}
                     {% elif issue|classname == 'Review' %}
-                        {% include 'includes/feed_review.html' with review=issue score=issue.main_rating_score %}
+                        {% include 'citizenconnect/includes/feed_review.html' with review=issue score=issue.main_rating_score %}
                     {% endif %}
                 {% endfor %}
             </ul>
@@ -129,7 +129,7 @@
 </div>
 
 
-{% include 'emergency_numbers.html' %}
+{% include 'citizenconnect/includes/emergency_numbers.html' %}
 
 {% endblock %}
 

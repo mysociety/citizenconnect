@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "citizenconnect/base.html" %}
 {% load url from future %}
 {% load staticfiles %}
 
@@ -30,5 +30,7 @@
     </div>
 
 </div>
+
+{% include 'citizenconnect/includes/emergency_numbers.html' %}
 
 {% endblock content %}
