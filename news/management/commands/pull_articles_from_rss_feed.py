@@ -12,9 +12,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         feed = feedparser.parse(args[0])
         for entry in feed.entries:
-            try:
-                Article.objects.get(guid=entry.id)
-            except Article.DoesNotExist:
+            if not Article.objects.filter(guid=entry.id).exists():
                 Article.objects.create(
                     guid=entry.id,
                     title=entry.title,
