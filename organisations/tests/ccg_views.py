@@ -489,13 +489,9 @@ class CCGTabsTests(AuthorizationTestCase):
     def setUp(self):
         super(CCGTabsTests, self).setUp()
         self.dashboard_url = reverse('ccg-dashboard', kwargs={'code': self.test_ccg.code})
-        self.escalation_dashboard_url = reverse('ccg-escalation-dashboard', kwargs={'code': self.test_ccg.code})
-        self.breaches_url = reverse('ccg-escalation-breaches', kwargs={'code': self.test_ccg.code})
         self.summary_url = reverse('ccg-summary', kwargs={'code': self.test_ccg.code})
         self.tab_urls = [
             self.dashboard_url,
-            self.escalation_dashboard_url,
-            self.breaches_url,
             self.summary_url
         ]
         self.login_as(self.trust_user)
