@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load url from future %}
+{% load staticfiles %}
+
+{% block title %}News{% endblock %}
+
+{% block bodyclasses %}news-article-list{% endblock %}
+
+{% block content %}
+
+<div class="header">
+  <h1>Latest News</h1>
+</div>
+
+<div class="gw">
+
+    <div class="g  two-thirds  palm-one-whole">
+      <ul>
+        {% for article in object_list %}
+        <li>
+          <img src="http://lorempixel.com/150/150/abstract/?foo.jpg" />
+          <h2>{{ article.title }}</h2>
+          <h3 title="{{ article.published }}">{{ article.published|timesince }} ago</h3>
+          <div class="article-description">
+              {{ article.description }}
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+
+    </div>
+
+    <div class="g  one-third  palm-one-whole">
+        {# TODO - article.image #}
+        {% include 'news/includes/recent_articles_sidebar.html' with articles=recent_articles %}
+        {# TODO - latest tweet - https://dev.twitter.com/docs/embedded-timelines #}
+        {# include 'citizenconnect/includes/latest_tweet.html' #}
+    </div>
+
+</div>
+
+{% endblock content %}
