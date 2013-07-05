@@ -11,11 +11,14 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         feed = feedparser.parse(args[0])
         for entry in feed.entries:
-            Article.objects.create(
-                guid=entry.id,
-                title=entry.title,
-                description=entry.summary,
-                content=entry.content,
-                author=entry.author,
-                published=datetime.fromtimestamp(mktime(entry.published_parsed))
-            )
+            try:
+                article = Article.objects.get(guid=entry.id)
+            except Article.DoesNotExist:
+                Article.objects.create(
+                    guid=entry.id,
+                    title=entry.title,
+                    description=entry.summary,
+                    content=entry.content,
+                    author=entry.author,
+                    published=datetime.fromtimestamp(mktime(entry.published_parsed))
+                )
