@@ -7,6 +7,8 @@ from ...models import Article
 
 
 class Command(BaseCommand):
+    args = "<file|url>"
+    help = "Import articles from the given file or url"
     def handle(self, *args, **options):
         feed = feedparser.parse(args[0])
         for entry in feed.entries:
