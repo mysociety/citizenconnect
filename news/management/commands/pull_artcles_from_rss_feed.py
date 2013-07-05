@@ -12,7 +12,7 @@ class Command(BaseCommand):
         feed = feedparser.parse(args[0])
         for entry in feed.entries:
             try:
-                article = Article.objects.get(guid=entry.id)
+                Article.objects.get(guid=entry.id)
             except Article.DoesNotExist:
                 Article.objects.create(
                     guid=entry.id,
