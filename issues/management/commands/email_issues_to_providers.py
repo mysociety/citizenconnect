@@ -27,6 +27,8 @@ class Command(BaseCommand):
             for problem in new_problems:
                 try:
                     self.send_problem(problem_template, problem)
+                    # reload the problem from db to be sure that the version is fresh
+                    problem = Problem.objects.get(pk=problem.id)
                     problem.mailed = True
                     problem.save()
                     transaction.commit()
