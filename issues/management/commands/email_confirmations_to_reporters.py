@@ -30,6 +30,8 @@ class Command(BaseCommand):
             for problem in problems:
                 try:
                     self.send_confirmation(problem)
+                    # reload the problem from db to be sure that the version is fresh
+                    problem = Problem.objects.get(pk=problem.id)
                     problem.confirmation_sent = datetime.utcnow().replace(tzinfo=utc)
                     problem.save()
                     transaction.commit()

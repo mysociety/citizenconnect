@@ -39,6 +39,8 @@ class Command(BaseCommand):
             for problem in surveyable_problems:
                 try:
                     self.send_survey(survey_template, problem)
+                    # reload the problem from db to be sure that the version is fresh
+                    problem = Problem.objects.get(pk=problem.id)
                     problem.survey_sent = datetime.utcnow().replace(tzinfo=utc)
                     problem.save()
                     transaction.commit()
