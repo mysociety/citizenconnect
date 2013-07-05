@@ -1,5 +1,4 @@
-from datetime import datetime
-from time import mktime
+from dateutil import parser
 import feedparser
 
 from django.core.management.base import BaseCommand
@@ -20,5 +19,5 @@ class Command(BaseCommand):
                     description=entry.summary,
                     content=entry.content,
                     author=entry.author,
-                    published=datetime.fromtimestamp(mktime(entry.published_parsed))
+                    published=parser.parse(entry.published)
                 )
