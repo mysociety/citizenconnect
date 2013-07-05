@@ -24,7 +24,12 @@ class PullArticlesFromRssFeedTests(TestCase):
         self.stdout = StringIO()
         self.stderr = StringIO()
 
+    def call_command(self, *args, **options):
+        options['stdout'] = self.stdout
+        options['stderr'] = self.stderr
+        call_command(*args, **options)
+
     def test_pulls_entries_from_rss_feed(self):
         self.assertEqual(0, Article.objects.count())
-        call_command('pull_artcles_from_rss_feed', stdout=self.stdout, stderr=self.stderr)
+        self.call_command('pull_artcles_from_rss_feed')
         self.assertEqual(1, Article.objects.count())
