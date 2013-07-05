@@ -23,7 +23,7 @@
         {% for article in object_list %}
         <li>
           <img src="http://lorempixel.com/150/150/abstract/?foo.jpg" />
-          <h2>{{ article.title }}</h2>
+          <h2><a href="{% url 'article-view' pk=article.id cobrand=cobrand.name %}">{{ article.title }}</a></h2>
           <h3 title="{{ article.published }}">{{ article.published|timesince }} ago</h3>
           <div class="article-description">
               {{ article.description|safe }}
