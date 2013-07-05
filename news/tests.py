@@ -43,3 +43,12 @@ class PullArticlesFromRssFeedTests(TestCase):
         self.call_command('pull_articles_from_rss_feed', self.rss_feed)
         self.call_command('pull_articles_from_rss_feed', self.rss_feed)
         self.assertEqual(1, Article.objects.count())
+
+    def test_creates_entries_correctly(self):
+        self.call_command('pull_articles_from_rss_feed', self.rss_feed)
+        article = Article.objects.all()[0]
+        self.assertEqual("http://blogs.mysociety.org/careconnect/?p=1", article.guid)
+        self.assertEqual("Hello world!", article.title)
+        self.assertEqual("Welcome to mySociety Blog Network. This is your first post. Edit or delete it, then start blogging!", article.description)
+        self.assertEqual("""<p>Welcome to <a href="http://blogs.mysociety.org/">mySociety Blog Network</a>. This is your first post. Edit or delete it, then start blogging!</p>""", article.content)
+        self.assertEqual("steve", article.author)

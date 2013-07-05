@@ -19,7 +19,7 @@ class Command(BaseCommand):
                     guid=entry.id,
                     title=entry.title,
                     description=entry.summary,
-                    content=entry.content,
+                    content=entry.content[0].value,
                     author=entry.author,
                     published=parser.parse(entry.published)
                 )
