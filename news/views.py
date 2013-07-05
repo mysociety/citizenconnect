@@ -14,8 +14,8 @@ class ArticleDetail(DetailView):
 
 
 class ArticleList(ListView):
-    model = Article
 
+    model = Article
 
     def get_queryset(self):
         """Order so that it is most recent first"""

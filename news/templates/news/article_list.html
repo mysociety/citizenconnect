@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load url from future %}
 {% load staticfiles %}
+{% load pagination_tags %}
 
 {% block title %}News{% endblock %}
 
@@ -15,6 +16,9 @@
 <div class="gw">
 
     <div class="g  two-thirds  palm-one-whole">
+
+      {% autopaginate object_list %}
+
       <ul>
         {% for article in object_list %}
         <li>
@@ -27,6 +31,8 @@
         </li>
         {% endfor %}
       </ul>
+
+      {% paginate %}
 
     </div>
 
