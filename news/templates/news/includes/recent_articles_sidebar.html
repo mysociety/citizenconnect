@@ -1,0 +1,12 @@
+{% load url from future %}
+
+{% if articles %}
+    <div class="recent-articles">
+        <h2>Other Stories</h2>
+        <ul class="article-list">
+            {% for article in articles %}
+                <li><h2><a href="{% url 'article-view' cobrand=cobrand.name pk=article.id %}">{{ article.title}}</a></h2></li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}

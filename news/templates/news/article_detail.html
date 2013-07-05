@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load url from future %}
+{% load staticfiles %}
+
+{% block title %}News :: {{ article.title }}{% endblock %}
+
+{% block bodyclasses %}news-article{% endblock %}
+
+{% block content %}
+
+<div class="header">
+  <h1>Latest News</h1>
+</div>
+
+<div class="gw">
+
+    <div class="g  two-thirds  palm-one-whole">
+        <h1>{{ article.title }}</h1>
+        <div class="article-content">
+            {{ article.content|safe }}
+        </div>
+    </div>
+
+    <div class="g  one-third  palm-one-whole">
+        {# TODO - article.image #}
+        {% include 'news/includes/recent_articles_sidebar.html' with articles=recent_articles %}
+        {# TODO - latest tweet - https://dev.twitter.com/docs/embedded-timelines #}
+        {# include 'citizenconnect/includes/latest_tweet.html' #}
+    </div>
+
+</div>
+
+{% endblock content %}
