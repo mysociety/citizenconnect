@@ -12,6 +12,7 @@ class Command(BaseCommand):
         feed = feedparser.parse(args[0])
         for entry in feed.entries:
             Article.objects.create(
+                guid=entry.id,
                 title=entry.title,
                 description=entry.summary,
                 content=entry.content,
