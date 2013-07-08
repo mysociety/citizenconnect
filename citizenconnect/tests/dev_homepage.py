@@ -21,11 +21,10 @@ class DevHomepageTests(TestCase):
     def test_with_staging_true(self):
         resp = self.client.get(self.homepage_url)
         self.assertEqual(resp.status_code, 200)
-        self.assertTemplateUsed(resp, 'dev-homepage.html')
+        self.assertTemplateUsed(resp, 'citizenconnect/dev-homepage.html')
 
     @override_settings(STAGING=False)
     def test_with_staging_false(self):
         resp = self.client.get(self.homepage_url, follow=True)
         primary_cobrand = settings.ALLOWED_COBRANDS[0]
-        self.assertEqual(resp.redirect_chain, [('http://testserver/'+primary_cobrand,301)])
-
+        self.assertEqual(resp.redirect_chain, [('http://testserver/'+primary_cobrand, 301)])

@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "citizenconnect/base.html" %}
 {% load url from future %}
 {% load staticfiles %}
 
@@ -20,7 +20,7 @@
 
                 {% if form.non_field_errors %}
                     <fieldset class="island">
-                        {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
+                        {% include "citizenconnect/includes/message_list.html" with messages=form.non_field_errors message_type='error' %}
                     </fieldset>
                 {% endif %}
 
@@ -39,7 +39,7 @@
                 <ul class="gw">
                     <li class="g  one-half  palm-one-whole">
                         {{ form.status }}
-                        {% include "message_list.html" with messages=form.status.errors message_type='error' %}
+                        {% include "citizenconnect/includes/message_list.html" with messages=form.status.errors message_type='error' %}
                     </li>
                     <li class="g one-half  palm-one-whole">
                         <label for="id_breach" class="label-checkbox">{{ form.breach }} Does this problem describe a breach of the NHS' fundamental standards? </label>
@@ -52,7 +52,7 @@
                         <div class="input-radio">
                             {{ form.commissioned }}
                         </div>
-                        {% include "message_list.html" with messages=form.commissioned.errors message_type='error' %}
+                        {% include "citizenconnect/includes/message_list.html" with messages=form.commissioned.errors message_type='error' %}
                     </li>
                 </ul>
 
@@ -66,7 +66,7 @@
                             <li class="g  three-quarters">
                                 <label for="id_responses-{{forloop.counter0}}-response">Moderated response</label>
                                 {{ response_form.response }}
-                                {% include "message_list.html" with messages=response_form.response.errors message_type='error' %}
+                                {% include "citizenconnect/includes/message_list.html" with messages=response_form.response.errors message_type='error' %}
                             </li>
                             <li class="g one-quarter  mt">
                                 {{ response_form.DELETE }} Delete
@@ -99,14 +99,14 @@
 {% endblock %}
 
 {% block extra_css %}
-  {% include "includes/fancybox_css.html" %}
+  {% include "citizenconnect/includes/fancybox_css.html" %}
 
   <style>
     #publish-confirm-modal {
         display: none;
     }
   </style>
-  
+
 {% endblock extra_css %}
 
 {% block extra_js %}

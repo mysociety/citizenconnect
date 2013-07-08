@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "citizenconnect/base.html" %}
 {% load url from future %}
 {% load static %}
 
@@ -24,7 +24,7 @@
 
                 {% if form.non_field_errors %}
                     <fieldset class="island">
-                        {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
+                        {% include "citizenconnect/includes/message_list.html" with messages=form.non_field_errors message_type='error' %}
                     </fieldset>
                 {% endif %}
 
@@ -37,7 +37,7 @@
                         <li class="g  one-whole">
                             <label class="hide-text" for="id_response">Add Response</label>
                             {{ form.response }}
-                            {% include "message_list.html" with messages=form.response.errors message_type='error' %}
+                            {% include "citizenconnect/includes/message_list.html" with messages=form.response.errors message_type='error' %}
                         </li>
                     </ul>
                 </fieldset>
@@ -48,7 +48,7 @@
                         <li class="g  one-whole">
                             <label class="hide-text" for="id_issue_status">Status</label>
                             {{ form.issue_status }}
-                            {% include "message_list.html" with messages=form.issue_status.errors message_type='error' %}
+                            {% include "citizenconnect/includes/message_list.html" with messages=form.issue_status.errors message_type='error' %}
                         </li>
                     </ul>
                 </fieldset>
@@ -56,7 +56,7 @@
                 <h3 class="meta-data-label">Formal Complaint</h3>
                 <fieldset>
                     <label for="id_issue_formal_complaint">{{ form.issue_formal_complaint }} &nbsp;This problem has been raised as a formal complaint.</label>
-                    {% include "message_list.html" with messages=form.issue_formal_complaint.errors message_type='error' %}
+                    {% include "citizenconnect/includes/message_list.html" with messages=form.issue_formal_complaint.errors message_type='error' %}
                 </fieldset>
 
                 <fieldset>
@@ -74,7 +74,7 @@
 
 {% block extra_css %}
 
-  {% include "includes/fancybox_css.html" %}
+  {% include "citizenconnect/includes/fancybox_css.html" %}
 
   <style>
     #publish-confirm-modal {

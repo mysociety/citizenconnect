@@ -39,12 +39,12 @@
         {% endif %}
         <div id="container" class="{% block containerclasses %}container{% endblock %}">
 
-            {% include 'nav.html' %}
+            {% include 'citizenconnect/includes/nav.html' %}
 
             {% block content %}
             {% endblock %}
 
-            {% include 'footer.html' %}
+            {% include 'citizenconnect/includes/footer.html' %}
 
         </div>
         {% if cobrand %}

@@ -107,7 +107,7 @@ def provider_paginator(context, adjacent_pages=2):
     return pagination_context
 
 
-register.inclusion_tag('provider_paginator.html', takes_context=True)(provider_paginator)
+register.inclusion_tag('citizenconnect/includes/provider_paginator.html', takes_context=True)(provider_paginator)
 
 
 def table_paginator(context, adjacent_pages=2):

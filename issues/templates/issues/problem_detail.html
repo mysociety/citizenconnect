@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "citizenconnect/base.html" %}
 {% load url from future %}
 {% load staticfiles %}
 
@@ -35,7 +35,7 @@
 {% endblock %}
 
 {% block extra_css %}
-  {% include "includes/fancybox_css.html" %}
+  {% include "citizenconnect/includes/fancybox_css.html" %}
 {% endblock extra_css %}
 
 {% block extra_js %}

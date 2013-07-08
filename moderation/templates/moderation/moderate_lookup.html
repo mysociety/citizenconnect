@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "citizenconnect/base.html" %}
 
 {% block title %}Lookup issue{% endblock %}
 
@@ -18,7 +18,7 @@
  <div class="island">
 
     {% if form.non_field_errors %}
-        {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
+        {% include "citizenconnect/includes/message_list.html" with messages=form.non_field_errors message_type='error' %}
     {% endif %}
 
     <form method="post" class="gw inline-form">

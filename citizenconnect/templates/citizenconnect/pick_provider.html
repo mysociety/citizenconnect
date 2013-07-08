@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "citizenconnect/base.html" %}
 {% load url from future %}
 
 
@@ -28,11 +28,11 @@
     hear them. Its easy to do in just 5 simple steps and will only take about 5
     minutes.
   </p>
-  
+
   <h2>What will happen?</h2>
 
   <p>
-    We will publish it on this site - please see our 
+    We will publish it on this site - please see our
     <a href="{% url 'about' cobrand=cobrand.name %}#comments-policy">comments policy</a>
     for more information. We will notify the people in the NHS provider that
     your experience relates to so that they can reply to you.
@@ -59,10 +59,10 @@
     {% if form.non_field_errors or form.errors.location %}
         {% if form.errors.location %}
             {% with messages=form.non_field_errors|add:form.errors.location %}
-                {% include "message_list.html" with messages=messages message_type='error' %}
+                {% include "citizenconnect/includes/message_list.html" with messages=messages message_type='error' %}
             {% endwith %}
         {% else %}
-            {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
+            {% include "citizenconnect/includes/message_list.html" with messages=form.non_field_errors message_type='error' %}
         {% endif %}
     {% endif %}
 
