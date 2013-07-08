@@ -4,7 +4,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.generic import RedirectView
 
-from .views import Home, MHLIframeHome, DevHomepageSelector, About, Feedback, FeedbackConfirm
+from .views import Home, MHLIframe, DevHomepageSelector, About, Feedback, FeedbackConfirm
 # Admin section
 from django.contrib import admin
 admin.autodiscover()
@@ -18,9 +18,9 @@ urlpatterns = patterns(
     url(r'^' + cobrand_pattern + r'/?$', Home.as_view(), name='home'),
     # This page is only for myhealthlondon
     url(
-        r'^myhealthlondon/mhl-iframe?$',
-        MHLIframeHome.as_view(),
-        name='mhl-iframe-home',
+        r'^myhealthlondon/iframe?$',
+        MHLIframe.as_view(),
+        name='mhl-iframe',
         kwargs={'cobrand': 'myhealthlondon'}
     ),
 
