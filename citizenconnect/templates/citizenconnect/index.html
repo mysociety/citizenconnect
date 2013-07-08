@@ -108,8 +108,7 @@
             </div>
             {% endfor %}
             <div class="align-center">
-                {# TODO: Add link to news listings #}
-                <a href="" class="coloured-link">View all news <span class="icon-chevron-right" aria-hidden="true"></span> </a>
+                <a href="{% url 'article-list' cobrand=cobrand.name %}" class="coloured-link">View all news <span class="icon-chevron-right" aria-hidden="true"></span> </a>
             </div>
         </div>
 
