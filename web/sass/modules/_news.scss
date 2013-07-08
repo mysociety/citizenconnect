@@ -1,5 +1,12 @@
 .title--news {
     text-transform: uppercase;
+    a {
+        @extend .title;
+        text-decoration: none;
+        &:hover {
+            text-decoration: underline;
+        }
+    }
 }
 
 .news-article__title {
