@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "citizenconnect/base.html" %}
 {% load url from future %}
 {% load staticfiles %}
 {% load utils %}
@@ -19,7 +19,7 @@
              <div class="islet problem-search">
 
                 {% if form.non_field_errors %}
-                    {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
+                    {% include "citizenconnect/includes/message_list.html" with messages=form.non_field_errors message_type='error' %}
                 {% endif %}
 
 
@@ -84,9 +84,9 @@
 
                 {% for issue in issues %}
                     {% if issue|classname == 'Problem' %}
-                        {% include 'includes/feed_problem.html' with problem=issue %}
+                        {% include 'citizenconnect/includes/feed_problem.html' with problem=issue %}
                     {% elif issue|classname == 'Review' %}
-                        {% include 'includes/feed_review.html' with review=issue score=issue.main_rating_score %}
+                        {% include 'citizenconnect/includes/feed_review.html' with review=issue score=issue.main_rating_score %}
                     {% endif %}
                 {% endfor %}
             </ul>
@@ -94,14 +94,23 @@
 
         <br />
 
-        {# Tweets - activated by js in the extra_js block #}
-        <div class="bordered-box" style="text-align: center">
-          <a class="twitter-timeline"
-            data-chrome="noborders"
-            data-dnt="true"
-            href="https://twitter.com/{{ settings.TWITTER_USERNAME }}"
-            data-widget-id="{{ settings.TWITTER_WIDGET_ID }}"
-          >Tweets by @{{ settings.TWITTER_USERNAME }}</a>
+        <div class="news-articles">
+            <div class="header">
+                <h2 class="title  title--news  mb--s">Latest News</h2>
+            </div>
+            {% for article in recent_articles %}
+            <div class="news-article--preview">
+                <h1 class="news-article__title"><a href="{% url 'article-view' cobrand=cobrand.name pk=article.pk %}">{{ article.title }}</a></h1>
+                <h3 class="news-article__author">{{ article.author }}</h3>
+                <div class="news-article__content">
+                    {{ article.description|safe }}
+                </div>
+            </div>
+            {% endfor %}
+            <div class="align-center">
+                {# TODO: Add link to news listings #}
+                <a href="" class="coloured-link">View all news <span class="icon-chevron-right" aria-hidden="true"></span> </a>
+            </div>
         </div>
 
     </div>
@@ -126,10 +135,14 @@
         <div class="mt">
         </div>
     </div>
+
+    <div class="g  one-third  palm-one-whole">
+        {% include "citizenconnect/includes/twitter_timeline.html" %}
+    </div>
 </div>
 
 
-{% include 'emergency_numbers.html' %}
+{% include 'citizenconnect/includes/emergency_numbers.html' %}
 
 {% endblock %}
 
@@ -170,7 +183,8 @@
     });
 </script>
 
-{% include "includes/twitter-widget-script.html" %}
+{# Twitter embedded timeline activation js - place last on page to prevent blocking #}
+<script src="{% static 'js/twitter-embed.js' %}"></script>
 
 {% endblock extra_js %}
 

@@ -30,6 +30,8 @@
 /** _home-page.scss */
 /** _footer.scss */
 /** _about.scss */
+/** _news.scss */
+/** _twitter.scss */
 /** From: http://jakearchibald.github.com/sass-ie/ Mixins to help responsive design in browsers that don't do media queries and produce versions specific to ie browser version */
 /** Sortcut method for making something an inline block */
 /** From inuit.css (https://github.com/csswizardry/inuit.css/)  Create vendor-prefixed CSS in one go, e.g.  `@include vendor(border-radius, 4px);`  */
@@ -296,7 +298,7 @@ body { font-size: 16px; line-height: 1.5; }
 h1, h2 { font-weight: normal; }
 
 /** A grey title */
-.title { font-size: 1.125em; font-weight: normal; color: #aaaaaa; }
+.title, .news-article__sidebar__title { font-size: 1.125em; font-weight: normal; color: #aaaaaa; }
 
 .title--suck-up { margin-bottom: -1.25em; }
 
@@ -588,7 +590,7 @@ table .icon-warning { font-size: 1.375em; color: #d81e05; line-height: 0; }
 .summary-table td:first-child, .summary-table--organisation td:first-child { border-left: 0; }
 .summary-table tr:last-child td, .summary-table--organisation tr:last-child td { border-bottom: 0; }
 .summary-table .summary-table__cell-no-border, .summary-table--organisation .summary-table__cell-no-border { border-left: 0; }
-.summary-table td.average_time_to_address, .summary-table--organisation td.average_time_to_address, .summary-table td.happy_outcome, .summary-table--organisation td.happy_outcome, .summary-table td.problems-received, .summary-table--organisation td.problems-received, .summary-table td.reviews-recieved, .summary-table--organisation td.reviews-recieved { border-left-width: 1px; }
+.summary-table td.average_time_to_address, .summary-table--organisation td.average_time_to_address, .summary-table td.happy_outcome, .summary-table--organisation td.happy_outcome, .summary-table td.problems-received, .summary-table--organisation td.problems-received, .summary-table td.reviews-received, .summary-table--organisation td.reviews-received { border-left-width: 1px; }
 .summary-table tbody tr:nth-of-type(even) td, .summary-table--organisation tbody tr:nth-of-type(even) td { background: #f2f2f2; }
 .summary-table tbody tr.summary-table__highlight td, .summary-table--organisation tbody tr.summary-table__highlight td { background-color: #d81e05; color: white; font-weight: bold; border-color: #d81e05; border-top: 2px solid #d81e05; border-bottom: 2px solid #d81e05; }
 .summary-table .filters__dropdown, .summary-table--organisation .filters__dropdown { margin: -0.5em 0; }
@@ -1038,6 +1040,8 @@ th .filters__dropdown select { font-size: 1em; }
 .filters__button { padding: 0.7em 0.8em; margin: 1.1em 0 0.5em 1em; }
 @media only screen and (max-width: 480px) { .filters__button { margin-left: 0; } }
 
+.ie8 .filters select:focus, .ie7 .filters select:focus { width: auto; }
+
 .pagination { list-style: none; padding: 0; width: 100%; text-align: center; }
 .pagination li { display: inline-block; *display: inline; *zoom: 1; margin: 0 0.125em; }
 .pagination li a, .pagination li > span { font-size: 1.375em; display: block; padding: 0.125em 0.5em; color: white; text-transform: uppercase; }
@@ -1337,6 +1341,30 @@ div.review-form__rating-answer div.rateit-selected { background: url("/static/cs
 
 /** Cobrand heading */
 .heading { float: left; }
+
+.title--news { text-transform: uppercase; }
+
+.news-article__title, .news-article__title a { color: #2f9aa8; margin-bottom: 0; }
+
+.news-article__title a { text-decoration: none; }
+.news-article__title a:hover { text-decoration: underline; }
+
+.news-article__author { font-size: 0.75em; border-bottom: 2px solid #dddddd; padding-bottom: 1.25em; margin-top: 0; }
+
+.news-article__content { color: #888888; }
+
+.news-article__sidebar__title { text-transform: uppercase; }
+
+.news-article--preview .news-article__title, .news-article--preview .news-article__title a, .news-article__title .news-article--preview a { font-size: 1.125em; }
+.news-article--preview .news-article__author { font-size: 0.875em; border-bottom: none; padding-bottom: inherit; margin: 0.5em 0; }
+.news-article--preview .news-article__content { margin-bottom: 2em; font-size: 0.875em; }
+
+.recent-articles__article-list { list-style: none; padding-left: 0; }
+
+.recent-articles__article-title { font-size: 1.125em; border-bottom: 2px solid #dddddd; }
+.recent-articles__article-title a { color: #2f9aa8; text-decoration: none; }
+
+.latest-tweet__tweet { border: 1px solid #dddddd; padding-left: 0.625em; padding-right: 0.625em; }
 
 /* ========================================================================== Print styles. Inlined to avoid required HTTP connection: h5bp.com/r ========================================================================== */
 @media print { * { background: transparent !important; color: #000 !important; /* Black prints faster: h5bp.com/s */ box-shadow: none !important; text-shadow: none !important; }

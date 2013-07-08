@@ -222,6 +222,28 @@ class ProblemCreateFormBrowserTests(ProblemCreateFormBase, SeleniumTestCase):
         self.assertFalse(under_16_input.is_selected())
         self.assertTrue(keep_private_input.is_selected())
         self.assertTrue(publish_with_name_li.is_displayed())
+    
+    def test_privacy_status_preserved(self):
+
+        d = self.driver
+        d.get(self.full_url(self.form_url))
+
+        keep_private_input = d.find_element_by_id('id_privacy_0')
+        publish_with_name_input = d.find_element_by_id('id_privacy_2')
+
+        # get the li using jQuery, because selenium has poor tools for traversing the DOM tree.
+        publish_with_name_li = d.execute_script('return $("#id_privacy_2").parents("li").get(0)')
+
+        # click the publish with name
+        publish_with_name_li.click()  # click li because input is hidden
+        self.assertFalse(keep_private_input.is_selected())
+        self.assertTrue(publish_with_name_input.is_selected())
+
+        # submit form
+        d.find_element_by_css_selector('button[type="submit"]').click()
+
+        # check correct privacy option still selected
+        self.assertTrue(d.find_element_by_id('id_privacy_2').is_selected())
 
 
 class ProblemCreateFormImageTests(ProblemCreateFormBase, ProblemImageTestBase):

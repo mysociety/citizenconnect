@@ -8,7 +8,7 @@
         <li class="g  one-whole">
             {{ form.moderated_description }}
             <p class="info">Required when publishing public problems.</p>
-            {% include "message_list.html" with messages=form.moderated_description.errors message_type='error' %}
+            {% include "citizenconnect/includes/message_list.html" with messages=form.moderated_description.errors message_type='error' %}
         </li>
       {% else %}
         <li class="g  one-whole">

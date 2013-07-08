@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "citizenconnect/base.html" %}
 {% load url from future %}
 {% load staticfiles %}
 
@@ -9,25 +9,34 @@
 {% block content %}
 
 <div class="header">
-  <h1>Latest News</h1>
+  <h2 class="title  title--news  mb--s">Latest News</h2>
 </div>
 
 <div class="gw">
 
-    <div class="g  two-thirds  palm-one-whole">
-        <h1>{{ article.title }}</h1>
-        <div class="article-content">
+    <div class="g  two-thirds  palm-one-whole  news-article__main">
+        <h1 class="news-article__title">{{ article.title }}</h1>
+        <h3 class="news-article__author">{{ article.author }}</h3>
+        <div class="news-article__content">
             {{ article.content|safe }}
         </div>
     </div>
 
-    <div class="g  one-third  palm-one-whole">
+    <div class="g  one-third  palm-one-whole  news-article__sidebar">
         {# TODO - article.image #}
         {% include 'news/includes/recent_articles_sidebar.html' with articles=recent_articles %}
-        {# TODO - latest tweet - https://dev.twitter.com/docs/embedded-timelines #}
-        {# include 'citizenconnect/includes/latest_tweet.html' #}
+        <div class="latest-tweet">
+            <h2 class="news-article__sidebar__title">TWITTER</h2>
+            {% include 'citizenconnect/includes/twitter_latest_tweet.html' %}
+        </div>
     </div>
 
 </div>
 
+{% include 'citizenconnect/includes/emergency_numbers.html' %}
+
 {% endblock content %}
+
+{% block extra_js %}
+<script src="{% static 'js/twitter-embed.js' %}"></script>
+{% endblock extra_js %}

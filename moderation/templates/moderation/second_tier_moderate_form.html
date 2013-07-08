@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "citizenconnect/base.html" %}
 {% load url from future %}
 {% load staticfiles %}
 {% block title %}Moderate problem{% endblock %}
@@ -18,7 +18,7 @@
 
                 {% if form.non_field_errors %}
                     <fieldset class="island">
-                        {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
+                        {% include "citizenconnect/includes/message_list.html" with messages=form.non_field_errors message_type='error' %}
                     </fieldset>
                 {% endif %}
 
@@ -55,7 +55,7 @@
 
 {% block extra_css %}
 
-  {% include "includes/fancybox_css.html" %}
+  {% include "citizenconnect/includes/fancybox_css.html" %}
   <style>
     #publish-confirm-modal {
         display: none;
