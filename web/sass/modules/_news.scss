@@ -31,6 +31,25 @@
     text-transform: uppercase;
 }
 
+// Custom news-article for the homepage feed.
+.news-article--preview {
+    .news-article__title {
+        font-size: (18px / $font-size-base) + em;
+    }
+
+    .news-article__author {
+        font-size: (14px / $font-size-base) + em;
+        border-bottom: none;
+        padding-bottom: inherit;
+        margin: 0.6em 0;
+    }
+
+    .news-article__content {
+        margin-bottom: 2em;
+        font-size: (14px / $font-size-base) + em;
+    }
+}
+
 .recent-articles__article-list {
     list-style: none;
     padding-left: 0;
