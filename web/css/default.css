@@ -1354,7 +1354,7 @@ div.review-form__rating-answer div.rateit-selected { background: url("/static/cs
 .news-article__sidebar__title { text-transform: uppercase; }
 
 .news-article--preview .news-article__title, .news-article--preview .news-article__title a, .news-article__title .news-article--preview a { font-size: 1.125em; }
-.news-article--preview .news-article__author { font-size: 0.875em; border-bottom: none; padding-bottom: inherit; margin: 0.6em 0; }
+.news-article--preview .news-article__author { font-size: 0.875em; border-bottom: none; padding-bottom: inherit; margin: 0.5em 0; }
 .news-article--preview .news-article__content { margin-bottom: 2em; font-size: 0.875em; }
 
 .recent-articles__article-list { list-style: none; padding-left: 0; }
