@@ -10,7 +10,13 @@ class Command(BaseCommand):
     args = "<file|url>"
     help = "Import articles from the given file or url"
     def handle(self, *args, **options):
-        feed = feedparser.parse(args[0])
+        if len(args) > 0:
+            feed_url = args[0]
+        else:
+            feed_url = settings.NHS_RSS_FEED_URL
+
+        feed = feedparser.parse(feed_url)
+
         for entry in feed.entries:
             if not Article.objects.filter(guid=entry.id).exists():
                 Article.objects.create(
