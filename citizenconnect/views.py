@@ -49,7 +49,7 @@ class MHLIframe(Home):
 
     Used by the MyHealthLondon site.
     """
-    template_name = 'mhl-iframe.html'
+    template_name = 'mhl_iframe.html'
 
 
 class DevHomepageSelector(TemplateView):
