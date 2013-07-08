@@ -15,6 +15,7 @@ from django.contrib.auth.models import User
 from issues.forms import PublicLookupForm, FeedbackForm
 from issues.models import Problem
 from reviews_display.models import Review
+from news.models import Article
 
 
 class Home(FormView):
@@ -39,6 +40,8 @@ class Home(FormView):
         date_created = lambda issue: issue.api_published if hasattr(issue,'api_published') else issue.created
         issues.sort(key=date_created, reverse=True)
         context['issues'] = issues[:num_issues]
+
+        context['articles'] = Article.objects.all()[0:5]
 
         return context
 
