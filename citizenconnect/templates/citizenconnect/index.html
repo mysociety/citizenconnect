@@ -96,15 +96,15 @@
 
         <div class="bordered-box">
             <div class="header">
-                <h1>News</h1>
-                {% for article in articles %}
-                <h2><a href="{% url 'article-view' cobrand=cobrand.name pk=article.pk %}">{{ article.title }}</a></h2>
-                <p>{{ article.author }}</p>
-                <div>
-                    {{ article.description|safe }}
-                </div>
-                {% endfor %}
+                <h2 class="title  title--news  mb--s">Latest News</h2>
             </div>
+            {% for article in articles %}
+            <h1 class="news-article__title"><a href="{% url 'article-view' cobrand=cobrand.name pk=article.pk %}">{{ article.title }}</a></h1>
+            <h3 class="news-article__author">{{ article.author }}</h3>
+            <div class="news-article__content">
+                {{ article.description|safe }}
+            </div>
+            {% endfor %}
         </div>
 
     </div>
