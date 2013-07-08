@@ -1038,6 +1038,8 @@ th .filters__dropdown select { font-size: 1em; }
 .filters__button { padding: 0.7em 0.8em; margin: 1.1em 0 0.5em 1em; }
 @media only screen and (max-width: 480px) { .filters__button { margin-left: 0; } }
 
+.ie8 .filters select:focus, .ie7 .filters select:focus { width: auto; }
+
 .pagination { list-style: none; padding: 0; width: 100%; text-align: center; }
 .pagination li { display: inline-block; *display: inline; *zoom: 1; margin: 0 0.125em; }
 .pagination li a, .pagination li > span { font-size: 1.375em; display: block; padding: 0.125em 0.5em; color: white; text-transform: uppercase; }
