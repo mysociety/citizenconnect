@@ -298,7 +298,7 @@ body { font-size: 16px; line-height: 1.5; }
 h1, h2 { font-weight: normal; }
 
 /** A grey title */
-.title, .news-article__sidebar__title { font-size: 1.125em; font-weight: normal; color: #aaaaaa; }
+.title, .title--news a, .news-article__sidebar__title { font-size: 1.125em; font-weight: normal; color: #aaaaaa; }
 
 .title--suck-up { margin-bottom: -1.25em; }
 
@@ -1343,6 +1343,8 @@ div.review-form__rating-answer div.rateit-selected { background: url("/static/cs
 .heading { float: left; }
 
 .title--news { text-transform: uppercase; }
+.title--news a { text-decoration: none; }
+.title--news a:hover { text-decoration: underline; }
 
 .news-article__title, .news-article__title a { color: #2f9aa8; margin-bottom: 0; }
 
