@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "citizenconnect/base.html" %}
 {% load url from future %}
 {% load staticfiles %}
 
@@ -18,7 +18,7 @@
 
         {% if form.non_field_errors %}
             <fieldset class="island">
-                {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
+                {% include "citizenconnect/includes/message_list.html" with messages=form.non_field_errors message_type='error' %}
             </fieldset>
         {% endif %}
 
@@ -32,13 +32,13 @@
                 <li class="g  one-whole">
                     <label for="{{ form.title.auto_id }}">Title <em>(required)</em></label>
                     {{ form.title }}
-                    {% include "message_list.html" with messages=form.title.errors message_type='error' %}
+                    {% include "citizenconnect/includes/message_list.html" with messages=form.title.errors message_type='error' %}
                 </li>
 
                 <li class="g  one-whole">
                     <label for="{{ form.comment.auto_id }}">Your review <em>(required)</em></label>
                     {{ form.comment }}
-                    {% include "message_list.html" with messages=form.comment.errors message_type='error' %}
+                    {% include "citizenconnect/includes/message_list.html" with messages=form.comment.errors message_type='error' %}
                 </li>
 
             </ul>
@@ -52,7 +52,7 @@
 
             {% for rating_form in required_rating_forms %}
                 {% include "reviews/rating-form.html" %}
-                {% include "message_list.html" with messages=rating_form.answer.errors message_type='error' %}
+                {% include "citizenconnect/includes/message_list.html" with messages=rating_form.answer.errors message_type='error' %}
             {% endfor %}
         </fieldset>
         {% endif %}
@@ -63,7 +63,7 @@
 
             {% for rating_form in optional_rating_forms %}
                 {% include "reviews/rating-form.html" %}
-                {% include "message_list.html" with messages=rating_form.answer.errors message_type='error' %}
+                {% include "citizenconnect/includes/message_list.html" with messages=rating_form.answer.errors message_type='error' %}
             {% endfor %}
         </fieldset>
         {% endif %}
@@ -77,7 +77,7 @@
                 <li class="g  one-whole  review-form__month_year_of_visit">
                     {{ form.month_year_of_visit.label_tag }}
                     {{ form.month_year_of_visit }}
-                    {% include "message_list.html" with messages=form.month_year_of_visit.errors message_type='error' %}
+                    {% include "citizenconnect/includes/message_list.html" with messages=form.month_year_of_visit.errors message_type='error' %}
                 </li>
             </ul>
         </fieldset>
@@ -92,19 +92,19 @@
                     <label for="{{ form.display_name.auto_id }}">Your name</label>
                     <p class="info">You must enter a name.</p>
                     {{ form.display_name }}
-                    {% include "message_list.html" with messages=form.display_name.errors message_type='error' %}
+                    {% include "citizenconnect/includes/message_list.html" with messages=form.display_name.errors message_type='error' %}
                 </li>
 
                 <li class="g  two-thirds">
                     <label for="{{ form.email.auto_id }}">Your email address</label>
                     <p class="info">We only use your email address to communicate with you about your feedback.</p>
                     {{ form.email }}
-                    {% include "message_list.html" with messages=form.email.errors message_type='error' %}
+                    {% include "citizenconnect/includes/message_list.html" with messages=form.email.errors message_type='error' %}
                 </li>
 
                 <li class="g  one-whole">
                     <label for="id_is_anonymous">{{ form.is_anonymous }} Tick to remain anonymous</label>
-                    {% include "message_list.html" with messages=form.is_anonymous.errors message_type='error' %}
+                    {% include "citizenconnect/includes/message_list.html" with messages=form.is_anonymous.errors message_type='error' %}
                 </li>
 
             </ul>
@@ -115,7 +115,7 @@
             <ul class="gw">
                 <li class="g  two-thirds">
                     <label for="id_agree_to_terms" class="label-checkbox">{{ form.agree_to_terms }} By submitting I accept the <a href="http://www.nhs.uk/aboutNHSChoices/aboutnhschoices/termsandconditions/Pages/commentspolicy.aspx">comments policy</a> and <a href="{% url 'about' cobrand=cobrand.name %}">terms and conditions</a>.</label>
-                    {% include "message_list.html" with messages=form.agree_to_terms.errors message_type='error' %}
+                    {% include "citizenconnect/includes/message_list.html" with messages=form.agree_to_terms.errors message_type='error' %}
                 </li>
                 <li class="g  one-third">
                     <button class="btn  fr" type="submit">Submit</button>

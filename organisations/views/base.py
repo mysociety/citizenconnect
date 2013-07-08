@@ -316,8 +316,8 @@ class MapSearch(TemplateView):
 
 
 class PickProviderBase(ListView):
-    template_name = 'provider_results.html'
-    form_template_name = 'pick_provider.html'
+    template_name = 'citizenconnect/provider_results.html'
+    form_template_name = 'citizenconnect/pick_provider.html'
     result_link_url_name = 'public-org-summary'
     paginate_by = 10
     model = Organisation

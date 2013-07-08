@@ -10,9 +10,9 @@
                 {% for column in table.columns %}
                     {# This is a bit hacky, but we steal the sort link and attributes from the currently selected column for each set of intervals, hiding the others #}
                     {% if column.accessor == 'all_time' %}
-                        <th {{ problems_sort_column.attrs.th.as_html }} colspan="4" id="problems-intervals-header"><a href="{% querystring table.prefixed_order_by_field=problems_sort_column.order_by_alias.next %}">Problems recieved:</a></th>
+                        <th {{ problems_sort_column.attrs.th.as_html }} colspan="4" id="problems-intervals-header"><a href="{% querystring table.prefixed_order_by_field=problems_sort_column.order_by_alias.next %}">Problems received:</a></th>
                     {% elif column.accessor == 'reviews_all_time' %}
-                        <th {{ reviews_sort_column.attrs.th.as_html }} colspan="4" id="reviews-intervals-header"><a href="{% querystring table.prefixed_order_by_field=reviews_sort_column.order_by_alias.next %}">Reviews recieved:</a></th>
+                        <th {{ reviews_sort_column.attrs.th.as_html }} colspan="4" id="reviews-intervals-header"><a href="{% querystring table.prefixed_order_by_field=reviews_sort_column.order_by_alias.next %}">Reviews received:</a></th>
                     {% elif column.accessor == 'six_months' or column.accessor == 'four_weeks' or column.accessor == 'week' or column.accessor == 'reviews_six_months' or column.accessor == 'reviews_four_weeks' or column.accessor == 'reviews_week' %}
                         {# The all_time or reviews_all_time columns cover these for headings #}
                     {% elif column.accessor == "average_time_to_acknowledge" %}

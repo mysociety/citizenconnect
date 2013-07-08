@@ -20,7 +20,7 @@
               Untick this box if you want to hide the reporter's name from the public - effectively make the report "Public with hidden name".
             </p>
 
-            {% include "message_list.html" with messages=form.public_reporter_name.errors message_type='error' %}
+            {% include "citizenconnect/includes/message_list.html" with messages=form.public_reporter_name.errors message_type='error' %}
 
         </li>
     {% else %}
