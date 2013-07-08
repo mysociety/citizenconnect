@@ -41,7 +41,7 @@ class Home(FormView):
         issues.sort(key=date_created, reverse=True)
         context['issues'] = issues[:num_issues]
 
-        context['articles'] = Article.objects.all()[0:5]
+        context['recent_articles'] = Article.objects.order_by('-published')[:3]
 
         return context
 
