@@ -41,6 +41,16 @@ class Home(FormView):
 
         return context
 
+
+class MHLIframeHome(Home):
+    """
+    A version of the homepage with limited things on it for inclusion as an iframe.
+
+    Used by the MyHealthLondon site.
+    """
+    template_name = 'mhl-iframe-index.html'
+
+
 class DevHomepageSelector(TemplateView):
     template_name = 'dev-homepage.html'
     redirect_url = reverse_lazy('home', kwargs={'cobrand': settings.ALLOWED_COBRANDS[0]})
