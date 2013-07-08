@@ -72,6 +72,24 @@
 </div>
 
 <div class="meta-data-wrap">
+    <h3 class="meta-data-label">Contact Details</h3>
+    <div class="meta-data">
+        <ul class="meta-data-list">
+            <li>
+              Please contact by <strong>{{ object.preferred_contact_method }}</strong>.
+            </li>
+            <li>
+                Email: <a href="mailto:{{ object.reporter_email }}">{{ object.reporter_email }}</a>
+            </li>
+            <li>
+                Phone:
+                {% firstof object.reporter_phone "n/a" %}
+          </li>
+        </ul>
+    </div>
+</div>
+
+<div class="meta-data-wrap">
     <h3 class="meta-data-label">Details</h3>
     <div class="meta-data">
         <ul class="meta-data-list">
