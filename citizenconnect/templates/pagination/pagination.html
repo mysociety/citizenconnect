@@ -1,6 +1,9 @@
 {% if is_paginated %}
 {% load i18n %}
 <ul class="pagination">
+    <li class="pagination__first">
+        <a href="?page=1"><span class="icon-double-chevron-left" aria-hidden="true"></span></a>
+    </li>
       {% if page_obj.has_previous %}
           <li class="pagination__previous">
               <a href="?page={{ page_obj.previous_page_number }}{{ getvars }}{{ hashtag }}" class="prev"><span class="icon-chevron-left" aria-hidden="true"></span></a>
@@ -28,5 +31,9 @@
             <a href="?page={{ page_obj.next_page_number }}{{ getvars }}{{ hashtag }}" class="next"><span class="icon-chevron-right" aria-hidden="true"></span></a>
         </li>
     {% endif %}
+
+    <li class="pagination__last">
+        <a href="?page={{ page_obj.paginator.num_pages }}"><span class="icon-double-chevron-right" aria-hidden="true"></span></a>
+    </li>
 </ul>
 {% endif %}
