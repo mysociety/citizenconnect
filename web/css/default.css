@@ -1342,7 +1342,10 @@ div.review-form__rating-answer div.rateit-selected { background: url("/static/cs
 
 .title--news { text-transform: uppercase; }
 
-.news-article__title { color: #2f9aa8; margin-bottom: 0; }
+.news-article__title, .news-article__title a { color: #2f9aa8; margin-bottom: 0; }
+
+.news-article__title a { text-decoration: none; }
+.news-article__title a:hover { text-decoration: underline; }
 
 .news-article__author { font-size: 0.75em; border-bottom: 2px solid #dddddd; padding-bottom: 1.25em; margin-top: 0; }
 

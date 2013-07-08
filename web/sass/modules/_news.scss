@@ -7,6 +7,14 @@
     margin-bottom: 0;
 }
 
+.news-article__title a {
+    @extend .news-article__title;
+    text-decoration: none;
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
 .news-article__author {
     font-size: (12px / $font-size-base) + em;
     border-bottom: 2px solid $c-article-author-border;
