@@ -1,0 +1,30 @@
+{% load url from future %}
+{% load staticfiles %}
+<div class="gw main-options">
+    <div class="g  one-third  palm-one-whole">
+        <div class="islet  islet--white  mt  mb">
+            <a {% if iframe %}target="_blank"{% endif %} href="{% url 'reviews-pick-provider' cobrand=cobrand.name %}" class="btn__with-caption">
+                <span class="btn  btn--big  btn--light-green  btn--no-border">Share Your Experience</span>
+                <span class="btn__caption">Click here</span>
+            </a>
+        </div>
+    </div>
+    <div class="g  one-third  palm-one-whole  align-center">
+        <div class="islet  islet--white  mt  mb">
+            <a {% if iframe %}target="_blank"{% endif %} href="https://www.nhsdirect.nhs.uk/CheckSymptoms/HealthEnquiry.aspx" class="btn__with-caption">
+                <span class="btn  btn--big  btn--big--fix  btn--dark-orange  btn--no-border">Ask a question</span>
+                <span class="btn__caption">Click here</span>
+            </a>
+        </div>
+        <a {% if iframe %}target="_blank"{% endif %} href="{% url 'common-questions' cobrand=cobrand.name %}" class="coloured-link--dark-orange">See common questions <span class="icon-chevron-right" aria-hidden="true"></span> </a>
+    </div>
+    <div class="g  one-third  palm-one-whole  align-center">
+        <div class="islet  islet--white  mt  mb">
+            <a {% if iframe %}target="_blank"{% endif %} href="{% url 'problems-pick-provider' cobrand=cobrand.name %}" class="btn__with-caption">
+                <span class="btn  btn--big  btn--blue btn--big--fix  btn--no-border">Report a problem</span>
+                <span class="btn__caption">Click here</span>
+            </a>
+        </div>
+
+    </div>
+</div>

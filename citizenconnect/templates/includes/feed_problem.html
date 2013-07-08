@@ -6,7 +6,7 @@
     <div class="feed-list__left">
         <p>
 
-          <a href="{% url 'problem-view' pk=problem.id cobrand=cobrand.name %}">
+          <a {% if iframe %}target="_blank"{% endif %} href="{% url 'problem-view' pk=problem.id cobrand=cobrand.name %}">
 
             {% if problem.are_details_publicly_visible %}
               {% for image in problem.images.all %}
