@@ -41,6 +41,14 @@
                 $(this).addClass('big-radio-group--active');
             });
         });
+        
+        // Find the checked radio button and trigger the click
+        $('.big-radio-group input[type=radio]').each(function(){
+            if($(this).is(':checked')){
+                $(this).parents('li').click();
+            }
+        });
+        
 
         // Category fields
         $('input[name="category"]').change(function () {
@@ -87,15 +95,6 @@
         });
     });
 
-    // bind the onload event so we can trigger the click on
-    // whichever big radio button is already selected
-    $(window).load(function(){
-        $('.big-radio-group input[type=radio]').each(function(){
-            if($(this).is(':checked')){
-                $(this).parents('li').click();
-            }
-        });
-    });
 
 })(window.jQuery, window.CitizenConnect.priorityCategories);
 
