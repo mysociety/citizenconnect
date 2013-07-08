@@ -1,7 +1,7 @@
 <form class="filters  gw  gw--no-gutters" action="{{ request.path }}">
 
     {% for field in form.visible_fields %}
-        <div class="filters__dropdown-wrap  g  {% if field.name == "ccg" %}one-twelfth{% elif field.name == "service_code" %}three-twelfths{% else %}two-twelfths{% endif %}  palm-one-half">
+        <div class="filters__dropdown-wrap  g  {% if field.name == "service_code" %}three-twelfths{% else %}two-twelfths{% endif %}  palm-one-half">
             <label for="filter-org_type">{{ field.label }}:</label>
             <div class="filters__dropdown  {% if not field.value %}filters__dropdown--default{% endif %}">
                 {{ field }}

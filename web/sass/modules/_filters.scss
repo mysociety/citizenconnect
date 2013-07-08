@@ -65,3 +65,10 @@
     // Remove the left margin when displayed in a grid with filter elements
     @include media-query(palm){ margin-left: 0; }
   }
+
+.ie8 .filters select:focus,
+.ie7 .filters select:focus {
+  // IE7 and IE8 have issues with fixed width select elements
+  // that contain really big options
+  width:auto;
+}
