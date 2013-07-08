@@ -35,7 +35,7 @@
 
             {% block content %}
 
-            {% include 'includes/homepage-main-options.html' with iframe=1 %}
+            {% include 'citizenconnect/includes/homepage-main-options.html' with iframe=1 %}
 
             <hr class="hr--big  mt--b  mb--b">
 
@@ -47,9 +47,9 @@
 
                             {% for issue in issues %}
                                 {% if issue|classname == 'Problem' %}
-                                    {% include 'includes/feed_problem.html' with problem=issue iframe=1%}
+                                    {% include 'citizenconnect/includes/feed_problem.html' with problem=issue iframe=1%}
                                 {% elif issue|classname == 'Review' %}
-                                    {% include 'includes/feed_review.html' with review=issue score=issue.main_rating_score iframe=1%}
+                                    {% include 'citizenconnect/includes/feed_review.html' with review=issue score=issue.main_rating_score iframe=1%}
                                 {% endif %}
                             {% endfor %}
                         </ul>
