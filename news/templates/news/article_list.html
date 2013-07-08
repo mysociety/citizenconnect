@@ -1,0 +1,52 @@
+{% extends 'citizenconnect/base.html' %}
+{% load url from future %}
+{% load staticfiles %}
+{% load pagination_tags %}
+
+{% block title %}News{% endblock %}
+
+{% block bodyclasses %}news-article-list{% endblock %}
+
+{% block content %}
+
+<div class="header">
+    <h1 class="title  title--news  mb--s">Latest News</h1>
+</div>
+
+<div class="gw">
+
+    <div class="g  two-thirds  palm-one-whole">
+
+      {% autopaginate object_list 6 %}
+
+        {% for article in object_list %}
+        <div class="news-article--preview">
+            <h1 class="news-article__title"><a href="{% url 'article-view' cobrand=cobrand.name pk=article.pk %}">{{ article.title }}</a></h1>
+            <h3 class="news-article__author">{{ article.author }}</h3>
+            <div class="news-article__content">
+                {{ article.description|safe }}
+            </div>
+        </div>
+        {% endfor %}
+
+      {% paginate %}
+
+    </div>
+
+    <div class="g  one-third  palm-one-whole">
+        {# TODO - article.image #}
+        {% include 'news/includes/recent_articles_sidebar.html' with articles=recent_articles %}
+
+        {% include "citizenconnect/includes/twitter_timeline.html" %}
+
+    </div>
+
+</div>
+
+{% endblock content %}
+
+
+{% block extra_js %}
+  {{ block.super }}
+  <script src="{% static 'js/twitter-embed.js' %}"></script>
+{% endblock extra_js %}
