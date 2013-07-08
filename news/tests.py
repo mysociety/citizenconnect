@@ -63,6 +63,7 @@ class ArticleDetailViewTests(TestCase):
         for i in range(5):
             article_number = i + 1
             self.articles.append(Article.objects.create(
+                guid="article{0}".format(article_number),
                 title="test article {0}".format(article_number),
                 description="Short description {0}".format(article_number),
                 content="<p>Short description {0}</p>".format(article_number),
