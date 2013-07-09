@@ -1,6 +1,5 @@
 from django.http import HttpResponse
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.utils.decorators import decorator_from_middleware
 
 
@@ -13,8 +12,12 @@ class BasicAuthMiddleware(object):
         return response
 
     def process_request(self, request):
-        if not 'HTTP_AUTHORIZATION' in request.META:
-
+        # REMOTE_USER might be set by Apache or other proxies that have already
+        # authenticated, if they did it via basic auth for our username, we
+        # assume that's ok
+        if request.META.get('AUTH_TYPE') == 'Basic' and request.META.get('REMOTE_USER') == settings.API_BASICAUTH_USERNAME:
+            return None
+        elif not 'HTTP_AUTHORIZATION' in request.META:
             return self.unauthed()
         else:
             authentication = request.META['HTTP_AUTHORIZATION']

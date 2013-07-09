@@ -15,15 +15,18 @@ from django.contrib.auth.models import User
 from issues.forms import PublicLookupForm, FeedbackForm
 from issues.models import Problem
 from reviews_display.models import Review
+from news.models import Article
+
+
 
 class Home(FormView):
-    template_name = 'index.html'
+    template_name = 'citizenconnect/index.html'
     form_class = PublicLookupForm
 
     def form_valid(self, form):
         # Calculate the url
         problem_url = reverse("problem-view", kwargs={'pk': form.cleaned_data['model_id'],
-                                                       'cobrand': self.kwargs['cobrand']})
+                                                      'cobrand': self.kwargs['cobrand']})
         # Redirect to the url we calculated
         return HttpResponseRedirect(problem_url)
 
@@ -35,14 +38,26 @@ class Home(FormView):
 
         # Merge and reverse date sort, getting most recent from merged list
         issues = (list(problems) + list(reviews))
-        date_created = lambda issue: issue.api_published if hasattr(issue,'api_published') else issue.created
+        date_created = lambda issue: issue.api_published if hasattr(issue, 'api_published') else issue.created
         issues.sort(key=date_created, reverse=True)
         context['issues'] = issues[:num_issues]
 
+        context['recent_articles'] = Article.objects.order_by('-published')[:3]
+
         return context
 
+
+class MHLIframe(Home):
+    """
+    A version of the homepage with limited things on it for inclusion as an iframe.
+
+    Used by the MyHealthLondon site.
+    """
+    template_name = 'citizenconnect/mhl_iframe.html'
+
+
 class DevHomepageSelector(TemplateView):
-    template_name = 'dev-homepage.html'
+    template_name = 'citizenconnect/dev-homepage.html'
     redirect_url = reverse_lazy('home', kwargs={'cobrand': settings.ALLOWED_COBRANDS[0]})
 
     def get(self, request, *args, **kwargs):
@@ -58,10 +73,11 @@ class DevHomepageSelector(TemplateView):
 
 
 class About(TemplateView):
-    template_name = 'about.html'
+    template_name = 'citizenconnect/about.html'
+
 
 class Feedback(FormView):
-    template_name = 'feedback_form.html'
+    template_name = 'citizenconnect/feedback_form.html'
     form_class = FeedbackForm
 
     def get_initial(self):
@@ -78,7 +94,7 @@ class Feedback(FormView):
         return initial
 
     def form_valid(self, form):
-        feedback_template = get_template('feedback_email.txt')
+        feedback_template = get_template('citizenconnect/feedback_email.txt')
 
         context = Context({
             'feedback_comments': form.cleaned_data['feedback_comments'],
@@ -95,4 +111,4 @@ class Feedback(FormView):
 
 
 class FeedbackConfirm(TemplateView):
-    template_name = 'feedback_confirm.html'
+    template_name = 'citizenconnect/feedback_confirm.html'

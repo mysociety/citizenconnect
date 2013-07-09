@@ -15,15 +15,23 @@ MAILTO=cron-!!(*= $site *)!!@mysociety.org
 VIRTUAL_ENV="/data/vhost/!!(*= $vhost *)!!/virtualenv-citizenconnect"
 PATH=/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/:/data/vhost/!!(*= $vhost *)!!/virtualenv-citizenconnect/bin:/usr/local/bin:/usr/bin:/bin
 
+# Note on timings: Ideally the various scripts that send emails should be
+# slightly staggered, as they update the Problem record after sending. If they
+# all run at the same time there may be collisions writing back to the db that
+# the concurrency app does not like, giving errors like "Record has been modified".
+#
+# See https://github.com/mysociety/citizenconnect/issues/833
+
+
 !!(* if ($vhost eq 'citizenconnect-uat.staging.mysociety.org') { *)!!
 */5 * * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/email_surveys_to_reporters.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash email_surveys_to_reporters" || echo "stalled?"
 !!(* } else { *)!!
 3 6 * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/email_surveys_to_reporters.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash email_surveys_to_reporters" || echo "stalled?"
 !!(* } *)!!
 
-*/5 * * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/email_confirmations_to_reporters.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash email_confirmations_to_reporters" || echo "stalled?"
+2,7,12,17,22,27,32,37,42,47,52,57 * * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/email_confirmations_to_reporters.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash email_confirmations_to_reporters" || echo "stalled?"
 
-*/5 * * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/email_issues_to_providers.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash email_issues_to_providers" || echo "stalled?"
+4,9,14,19,24,29,34,39,44,49,54,59 * * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/email_issues_to_providers.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash email_issues_to_providers" || echo "stalled?"
 
 0 0 * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/get_organisation_ratings_from_choices_api.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash get_organisation_ratings_from_choices_api" || echo "stalled?"
 
@@ -34,3 +42,5 @@ PATH=/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/:/data/vhost/!!(*= $vhost 
 0 * * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/fetch_reviews_from_choices_api.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash fetch_reviews_from_choices_api" || echo "stalled?"
 
 5 7 * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/delete_old_reviews.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash delete_old_reviews" || echo "stalled?"
+
+10 * * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/pull_articles_from_rss_feed.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash pull_articles_from_rss_feed" || echo "stalled?"

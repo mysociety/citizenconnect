@@ -7,11 +7,9 @@ from ukpostcodeutils.validation import is_valid_postcode, is_valid_partial_postc
 from django.views.generic import TemplateView, ListView
 from django.views.generic.edit import FormMixin
 from django.core.urlresolvers import reverse, resolve
-from django.core.exceptions import PermissionDenied
 from django_tables2 import RequestConfig
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect
-from django.contrib.auth.decorators import login_required
 from django.contrib.gis.geos import Polygon
 
 # App imports
@@ -20,18 +18,10 @@ from issues.models import Problem
 from geocoder.models import Place
 
 from .. import auth
-from ..auth import (user_in_group,
-                    user_is_superuser,
-                    user_can_access_national_escalation_dashboard,
-                    user_can_access_private_national_summary,
-                    user_is_escalation_body)
-from ..models import Organisation, SuperuserLogEntry
+from ..models import Organisation
 from ..forms import OrganisationFinderForm, FilterForm, MapitPostCodeLookup, MapitError
 from ..lib import interval_counts
-from ..tables import (NationalSummaryTable,
-                      PrivateNationalSummaryTable,
-                      ProblemDashboardTable,
-                      BreachTable)
+from ..tables import NationalSummaryTable
 from ..templatetags.organisation_extras import formatted_time_interval, percent
 
 
@@ -326,8 +316,8 @@ class MapSearch(TemplateView):
 
 
 class PickProviderBase(ListView):
-    template_name = 'provider_results.html'
-    form_template_name = 'pick_provider.html'
+    template_name = 'citizenconnect/provider_results.html'
+    form_template_name = 'citizenconnect/pick_provider.html'
     result_link_url_name = 'public-org-summary'
     paginate_by = 10
     model = Organisation
@@ -436,35 +426,6 @@ class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
         return organisation_data
 
 
-class PrivateNationalSummary(Summary):
-    template_name = 'organisations/national_summary.html'
-    permitted_statuses = Problem.ALL_STATUSES
-    summary_table_class = PrivateNationalSummaryTable
-
-    def dispatch(self, request, *args, **kwargs):
-        self.enforce_access(request.user)
-        return super(PrivateNationalSummary, self).dispatch(request, *args, **kwargs)
-
-    def enforce_access(self, user):
-        if not user_can_access_private_national_summary(user):
-            raise PermissionDenied()
-
-    def get_context_data(self, **kwargs):
-
-        # default the cobrand
-        if 'cobrand' not in kwargs:
-            kwargs['cobrand'] = None
-
-        context = super(PrivateNationalSummary, self).get_context_data(**kwargs)
-
-        # Determine if we should show the page as part of some tabbed navigation
-        if user_in_group(self.request.user, auth.CUSTOMER_CONTACT_CENTRE):
-            context['show_tabs'] = True
-            context['tabs_template'] = 'organisations/includes/escalation_tabs.html'
-
-        return context
-
-
 class PrivateHome(TemplateView):
 
     template_name = 'organisations/private_home.html'
@@ -477,7 +438,6 @@ class PrivateHome(TemplateView):
 
         return context
 
-
     def render_to_response(self, context, **kwargs):
 
         links = context['links']
@@ -488,106 +448,3 @@ class PrivateHome(TemplateView):
 
         # If there are no links, or more than one, present the private home page
         return super(PrivateHome, self).render_to_response(context, **kwargs)
-
-class SuperuserLogs(TemplateView):
-
-    template_name = 'organisations/superuser_logs.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(SuperuserLogs, self).get_context_data(**kwargs)
-        # Only NHS superusers can see this page
-        if not user_is_superuser(self.request.user):
-            raise PermissionDenied()
-        else:
-            context['logs'] = SuperuserLogEntry.objects.all()
-        return context
-
-
-class EscalationDashboard(FilterFormMixin, TemplateView):
-
-    template_name = 'organisations/escalation_dashboard.html'
-
-    def dispatch(self, request, *args, **kwargs):
-        self.enforce_access(request.user)
-        return super(EscalationDashboard, self).dispatch(request, *args, **kwargs)
-
-    def enforce_access(self, user):
-        if not user_can_access_national_escalation_dashboard(user):
-            raise PermissionDenied()
-
-    def get_form_kwargs(self):
-        kwargs = super(EscalationDashboard, self).get_form_kwargs()
-        kwargs['organisations'] = self.get_organisations()
-        # Turn off status because all problems on this dashboard have
-        # a status of Escalated
-        kwargs['with_status'] = False
-
-        return kwargs
-
-    def get_organisations(self):
-        return Organisation.objects.all()
-
-    def get_problems(self):
-        problems = Problem.objects.open_escalated_problems()
-        user = self.request.user
-
-        # Restrict problem queryset for Customer Contact Centre users
-        if user_in_group(user, auth.CUSTOMER_CONTACT_CENTRE):
-            problems = problems.filter(commissioned=Problem.NATIONALLY_COMMISSIONED)
-
-        return problems
-
-    def get_context_data(self, **kwargs):
-        context = super(EscalationDashboard, self).get_context_data(**kwargs)
-
-        problems = self.get_problems()
-
-        # Apply form filters on top of this
-        filtered_problems = self.filter_problems(context['selected_filters'], problems)
-
-        # Setup a table for the problems
-        problem_table = ProblemDashboardTable(filtered_problems)
-        RequestConfig(self.request, paginate={'per_page': 25}).configure(problem_table)
-        context['table'] = problem_table
-        context['page_obj'] = problem_table.page
-
-        # These tables are always in the private context
-        context['private'] = True
-
-        context['tabs_template'] = 'organisations/includes/escalation_tabs.html'
-
-        return context
-
-
-class EscalationBreaches(TemplateView):
-
-    template_name = 'organisations/escalation_breaches.html'
-
-    def dispatch(self, request, *args, **kwargs):
-        self.enforce_access(request.user)
-        return super(EscalationBreaches, self).dispatch(request, *args, **kwargs)
-
-    def enforce_access(self, user):
-        if not user_can_access_national_escalation_dashboard(user):
-            raise PermissionDenied()
-
-    def get_problems(self):
-        return Problem.objects.open_problems().filter(breach=True)
-
-    def get_context_data(self, **kwargs):
-        context = super(EscalationBreaches, self).get_context_data(**kwargs)
-
-        problems = self.get_problems()
-
-        # Setup a table for the problems
-        problem_table = BreachTable(problems, private=True)
-        RequestConfig(self.request, paginate={'per_page': 25}).configure(problem_table)
-        context['table'] = problem_table
-        context['page_obj'] = problem_table.page
-
-        # These tables are always in the private context
-        context['private'] = True
-
-        context['tabs_template'] = 'organisations/includes/escalation_tabs.html'
-
-        return context

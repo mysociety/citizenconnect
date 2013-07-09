@@ -2,19 +2,9 @@ from django import template
 register = template.Library()
 
 from .. import auth
-from ..auth import (user_can_access_private_national_summary,
-                    user_is_escalation_body,
-                    user_in_group)
-
-
-@register.filter(is_safe=True)
-def can_access(user, page):
-    """
-    Returns a boolean indicating whether the user can access the page named
-    """
-    if page == 'private-national-summary':
-        return user_can_access_private_national_summary(user)
-    return False
+from ..auth import (user_is_escalation_body,
+                    user_in_group,
+                    user_is_superuser)
 
 
 @register.filter(is_safe=True)
@@ -33,3 +23,13 @@ def is_escalation_body(user):
     EG: a CCG or the CCC, and hence needs some links to their escalation
     """
     return user_is_escalation_body(user)
+
+
+@register.filter()
+def may_see_reporter_contact_details(user):
+    """
+    Returns true if the user may see the contact details of the reporter.
+    """
+
+    # currently limit to superusers until exact perms decided - see #873
+    return user_is_superuser(user)

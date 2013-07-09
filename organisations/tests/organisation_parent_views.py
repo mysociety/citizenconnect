@@ -58,6 +58,15 @@ class OrganisationParentSummaryTests(AuthorizationTestCase):
         resp = self.client.get(self.trust_summary_url)
         self.assertEqual(resp.status_code, 200)
 
+    def test_raises_404_not_500(self):
+        # Issue #878 - views inheriting from OrganisationParentAwareViewMixin
+        # didn't catch OrganisationParent.DoesNotExist and raise an Http404
+        # so we got a 500 instead
+        missing_url = reverse('org-parent-summary', kwargs={'code': 'missing'})
+        self.login_as(self.nhs_superuser)  # Superuser to avoid being redirected to login first
+        resp = self.client.get(missing_url)
+        self.assertEqual(resp.status_code, 404)
+
     def test_summary_page_shows_trust_name(self):
         self.login_as(self.trust_user)
         resp = self.client.get(self.trust_summary_url)

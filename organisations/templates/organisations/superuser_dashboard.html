@@ -1,0 +1,39 @@
+{% extends "citizenconnect/base.html" %}
+{% load url from future %}
+
+{% block title %}Superuser Dashboard{% endblock %}
+
+{% block bodyclasses %}superuser-dashboard{% endblock %}
+
+{% block content %}
+
+{% include "organisations/includes/page_header.html" with title=organisation_parent.name|add:" Dashboard" %}
+
+<div class="feature">
+    <h2>CCGs</h2>
+    <ul>
+        {% for ccg in ccgs %}
+            <li><a href="{% url 'ccg-dashboard' code=ccg.code %}">{{ ccg.name }}</a></li>
+        {% empty %}
+            <li>There are no ccgs to display</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div class="feature">
+    <h2>Organisation Parents</h2>
+    <ul>
+        {% for parent in organisation_parents %}
+            <li><a href="{% url 'org-parent-dashboard' code=parent.code %}">{{ parent.name }}</a></li>
+        {% empty %}
+            <li>There are no organisation parents to display</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div class="feature">
+    <h2>Logs</h2>
+    <p><a href="{% url 'superuser-logs' %}">Superuser access logs</a></p>
+</div>
+
+{% endblock %}

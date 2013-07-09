@@ -61,6 +61,15 @@ class OrganisationSummaryTests(AuthorizationTestCase):
             resp = self.client.get(url)
             self.assertEqual(resp.status_code, 200)
 
+    def test_raises_404_not_500(self):
+        # Issue #878 - views inheriting from OrganisationAwareViewMixin
+        # didn't catch Organisation.DoesNotExist and raise an Http404
+        # so we got a 500 instead
+        missing_url = reverse('public-org-summary', kwargs={'ods_code': 'missing',
+                                                            'cobrand': 'choices'})
+        resp = self.client.get(missing_url)
+        self.assertEqual(resp.status_code, 404)
+
     def test_summary_page_shows_organisation_name(self):
         for url in self.urls:
             self.login_as(self.trust_user)

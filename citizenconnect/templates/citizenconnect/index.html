@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "citizenconnect/base.html" %}
 {% load url from future %}
 {% load staticfiles %}
 {% load utils %}
@@ -19,7 +19,7 @@
              <div class="islet problem-search">
 
                 {% if form.non_field_errors %}
-                    {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
+                    {% include "citizenconnect/includes/message_list.html" with messages=form.non_field_errors message_type='error' %}
                 {% endif %}
 
 
@@ -44,35 +44,7 @@
     </div>
 </div>
 
-
-<div class="gw main-options">
-    <div class="g  one-third  palm-one-whole">
-        <div class="islet  islet--white  mt  mb">
-            <a href="{% url 'reviews-pick-provider' cobrand=cobrand.name %}" class="btn__with-caption">
-                <span class="btn  btn--big  btn--light-green  btn--no-border">Share Your Experience</span>
-                <span class="btn__caption">Click here</span>
-            </a>
-        </div>
-    </div>
-    <div class="g  one-third  palm-one-whole  align-center">
-        <div class="islet  islet--white  mt  mb">
-            <a href="https://www.nhsdirect.nhs.uk/CheckSymptoms/HealthEnquiry.aspx" class="btn__with-caption">
-                <span class="btn  btn--big  btn--big--fix  btn--dark-orange  btn--no-border">Ask a question</span>
-                <span class="btn__caption">Click here</span>
-            </a>
-        </div>
-        <a href="{% url 'common-questions' cobrand=cobrand.name %}" class="coloured-link--dark-orange">See common questions <span class="icon-chevron-right" aria-hidden="true"></span> </a>
-    </div>
-    <div class="g  one-third  palm-one-whole  align-center">
-        <div class="islet  islet--white  mt  mb">
-            <a href="{% url 'problems-pick-provider' cobrand=cobrand.name %}" class="btn__with-caption">
-                <span class="btn  btn--big  btn--blue btn--big--fix  btn--no-border">Report a problem</span>
-                <span class="btn__caption">Click here</span>
-            </a>
-        </div>
-
-    </div>
-</div>
+{% include 'citizenconnect/includes/homepage-main-options.html' %}
 
 <hr class="hr--big  mt--b  mb--b">
 
@@ -84,13 +56,34 @@
 
                 {% for issue in issues %}
                     {% if issue|classname == 'Problem' %}
-                        {% include 'includes/feed_problem.html' with problem=issue %}
+                        {% include 'citizenconnect/includes/feed_problem.html' with problem=issue %}
                     {% elif issue|classname == 'Review' %}
-                        {% include 'includes/feed_review.html' with review=issue score=issue.main_rating_score %}
+                        {% include 'citizenconnect/includes/feed_review.html' with review=issue score=issue.main_rating_score %}
                     {% endif %}
                 {% endfor %}
             </ul>
         </div>
+
+        <br />
+
+        <div class="news-articles">
+            <div class="header">
+                <h2 class="title  title--news  mb--s">Latest News</h2>
+            </div>
+            {% for article in recent_articles %}
+            <div class="news-article--preview">
+                <h1 class="news-article__title"><a href="{% url 'article-view' cobrand=cobrand.name pk=article.pk %}">{{ article.title }}</a></h1>
+                <h3 class="news-article__author">{{ article.author }}</h3>
+                <div class="news-article__content">
+                    {{ article.description|safe }}
+                </div>
+            </div>
+            {% endfor %}
+            <div class="align-center">
+                <a href="{% url 'article-list' cobrand=cobrand.name %}" class="coloured-link">View all news <span class="icon-chevron-right" aria-hidden="true"></span> </a>
+            </div>
+        </div>
+
     </div>
     <div class="g  one-third  palm-one-whole">
         <div class="bordered-box  homepage-map-box">
@@ -113,10 +106,14 @@
         <div class="mt">
         </div>
     </div>
+
+    <div class="g  one-third  palm-one-whole">
+        {% include "citizenconnect/includes/twitter_timeline.html" %}
+    </div>
 </div>
 
 
-{% include 'emergency_numbers.html' %}
+{% include 'citizenconnect/includes/emergency_numbers.html' %}
 
 {% endblock %}
 
@@ -156,6 +153,10 @@
         });
     });
 </script>
+
+{# Twitter embedded timeline activation js - place last on page to prevent blocking #}
+<script src="{% static 'js/twitter-embed.js' %}"></script>
+
 {% endblock extra_js %}
 
 {% block extra_css %}

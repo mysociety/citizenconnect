@@ -1,5 +1,7 @@
 # Django imports
 from django.views.generic import TemplateView
+from django.http import Http404
+
 from django_tables2 import RequestConfig
 
 # App imports
@@ -22,7 +24,10 @@ class OrganisationParentAwareViewMixin(PrivateViewMixin):
     def dispatch(self, request, *args, **kwargs):
         # Set organisation_parent here so that we can use it anywhere in the class
         # without worrying about whether it has been set yet
-        self.organisation_parent = OrganisationParent.objects.get(code=kwargs['code'])
+        try:
+            self.organisation_parent = OrganisationParent.objects.get(code=kwargs['code'])
+        except OrganisationParent.DoesNotExist:
+            raise Http404
         return super(OrganisationParentAwareViewMixin, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):

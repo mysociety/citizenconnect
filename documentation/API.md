@@ -1,11 +1,15 @@
 # Care Connect API Preliminary Documentation
 
 ## API url
+
 ```
 https://citizenconnect.staging.mysociety.org/api/v0.1/problem
-````
+```
 
 ## Posting to the API
+
+If you are posting images to the API ensure that you set the `Content-Type` header to `multipart/form-data`. If you are not including any images then use a regular POST with `Content-Type: application/x-www-form-urlencoded`.
+
 The api accepts the following fields and values:
 
 ### organisation
@@ -62,16 +66,31 @@ Required. The source of the original report, ie: whether they phoned, emailed, t
 ### escalated
 Optional. Whether or not this problem has been escalated. Send `0` or `1` for true or false. Defaults to false.
 
+### images_0
+
+Optional. An image to attach to this problem report. If images are attached to the report, then the POST request must use a `Content-Type: multipart/form-data`.
+
+### images_1
+
+Optional. Same as images_0.
+
+### images_2
+
+Optional. Same as images_0.
+
 ## Return value
 The api returns a json string, containing an object with one parameter, reference_number which gives the unique reference number for the problem or question created (if successful). Example:
-```` JSON
+
+``` JSON
     {
         "reference_number":"P3"
     }
-````
+```
+
 ## Errors
 The api returns a json string for errors too, with all errors being contained inside a parameter `errors`. Inside `errors`, the errors are arrays of string error messages, keyed by the field name to which the error pertains, or `__all__` if it's not specific to a field. Example (from sending an empty body):
-```` JSON
+
+``` JSON
     {
         "errors":
         {
@@ -83,7 +102,8 @@ The api returns a json string for errors too, with all errors being contained in
                 "preferred_contact_method": ["This field is required."]
         }
     }
-````
+```
+
 **Note:** The above example shows only one error for each field, and one for `__all__`, there could be more.
 
 ## Testing that it worked

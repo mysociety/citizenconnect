@@ -1,0 +1,79 @@
+{% load url from future %}
+{% load staticfiles %}
+{% load utils %}
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js ie6 oldie"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie"> <![endif]-->
+<!--[if IE 9]>    <html class="no-js ie9 oldie"> <![endif]-->
+<!--[if gt IE 9]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <title>{% block fulltitle %}{% block title %}Home{% endblock %}{% endblock %}</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width initial-scale=1.0">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        {% block extra_headers %}{% endblock %}
+
+        {% block extra_initial_css %}{% endblock extra_initial_css %}
+
+        <link rel="stylesheet" href="{% static 'css/default.css' %}">
+        {% if cobrand %}
+          {% include cobrand.styles_template %}
+        {% endif %}
+        {% block extra_css %}{% endblock %}
+
+        <!--[if lte IE 7]>
+            <script type="text/javascript" src="{% static "js/fonts-lte-ie7.js" %}"></script>
+        <![endif]-->
+    </head>
+
+    <body class="{% block bodyclasses %}home{% endblock %}{% if site_section %}  site-section-{{ site_section }}{% endif %}">
+
+        <div id="container" class="{% block containerclasses %}container{% endblock %}">
+
+            {% block content %}
+
+            {% include 'citizenconnect/includes/homepage-main-options.html' with iframe=1 %}
+
+            <hr class="hr--big  mt--b  mb--b">
+
+            <div class="gw">
+                <div class="g  one-whole">
+                    <div class="bordered-box">
+                        <h2 class="feed-list__heading">Live Feed</h2>
+                        <ul class="feed-list">
+
+                            {% for issue in issues %}
+                                {% if issue|classname == 'Problem' %}
+                                    {% include 'citizenconnect/includes/feed_problem.html' with problem=issue iframe=1%}
+                                {% elif issue|classname == 'Review' %}
+                                    {% include 'citizenconnect/includes/feed_review.html' with review=issue score=issue.main_rating_score iframe=1%}
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            {% endblock content %}
+
+        </div>
+        <!-- Scripts at the bottom, as per html5bp -->
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="{% static "js/jquery-1.9.0.min.js" %}"><\/script>')</script>
+        <script>
+            var docEl = document.documentElement;
+            docEl.className = docEl.className.replace(/\bno-js\b/,'') + ' js';
+        </script>
+
+        {% if cobrand %}
+            {% include cobrand.scripts_template %}
+        {% endif %}
+
+        {% block extra_js %}{% endblock %}
+
+    </body>
+</html>
+
