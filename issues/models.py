@@ -363,6 +363,17 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         Custom model validation
         """
         super(Problem, self).clean()
+
+        # Check that one of phone or email is provided
+        if not self.reporter_phone and not self.reporter_email:
+            raise ValidationError('You must provide either a phone number or an email address')
+
+        # Check that whichever prefered_contact_method is chosen, they actually provided it
+        if self.preferred_contact_method == self.CONTACT_EMAIL and not self.reporter_email:
+            raise ValidationError('You must provide an email address if you prefer to be contacted by email')
+        elif self.preferred_contact_method == self.CONTACT_PHONE and not self.reporter_phone:
+            raise ValidationError('You must provide a phone number if you prefer to be contacted by phone')
+
         self.validate_preferred_contact_method_and_reporter_phone(self.preferred_contact_method, self.reporter_phone)
         self.validate_reporter_under_16_and_public_reporter_name(self.reporter_under_16, self.public_reporter_name)
         if self.pk:
