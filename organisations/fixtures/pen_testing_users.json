@@ -20,26 +20,6 @@
         }
     },
     {
-        "pk": 22,
-        "model": "auth.user",
-        "fields": {
-            "username": "pentest_ccc_1",
-            "first_name": "",
-            "last_name": "",
-            "is_active": true,
-            "is_superuser": false,
-            "is_staff": false,
-            "last_login": "2013-04-22T15:38:03Z",
-            "groups": [
-                8
-            ],
-            "user_permissions": [],
-            "password": "pbkdf2_sha256$10000$SPDzSEed3PfU$5xgrwrczoMGMUqeJrOe95ZFQqKAq6ecSoj7Zfh09qK4=",
-            "email": "",
-            "date_joined": "2013-04-22T15:38:03Z"
-        }
-    },
-    {
         "pk": 20,
         "model": "auth.user",
         "fields": {
@@ -83,7 +63,7 @@
         "pk": 16,
         "model": "auth.user",
         "fields": {
-            "username": "pentest_provider_1",
+            "username": "pentest_org_parent_1",
             "first_name": "",
             "last_name": "",
             "is_active": true,
@@ -140,26 +120,6 @@
         }
     },
     {
-        "pk": 24,
-        "model": "auth.user",
-        "fields": {
-            "username": "pentest_ccc_2",
-            "first_name": "",
-            "last_name": "",
-            "is_active": true,
-            "is_superuser": false,
-            "is_staff": false,
-            "last_login": "2013-04-22T20:21:49Z",
-            "groups": [
-                8
-            ],
-            "user_permissions": [],
-            "password": "pbkdf2_sha256$10000$hSjzE5gQHmwU$BVWJ1mes2bPKBcve1i8ZElTnRdGIucy9UwgJIcjRc64=",
-            "email": "",
-            "date_joined": "2013-04-22T20:21:49Z"
-        }
-    },
-    {
         "pk": 25,
         "model": "auth.user",
         "fields": {
@@ -203,7 +163,7 @@
         "pk": 27,
         "model": "auth.user",
         "fields": {
-            "username": "pentest_provider_2",
+            "username": "pentest_org_parent_2",
             "first_name": "",
             "last_name": "",
             "is_active": true,
