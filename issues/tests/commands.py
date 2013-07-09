@@ -162,10 +162,15 @@ class EmailProblemsToOrganisationParentTests(TestCase):
             self.test_trust.secondary_email
         ]
         self.assertEqual(first_mail.to, expected_recipients)
-        self.assertTrue(self.test_problem.reporter_name in first_mail.body)
-        self.assertTrue(self.test_problem.reporter_email in first_mail.body)
-        self.assertTrue(self.test_problem.category in first_mail.body)
-        self.assertTrue(self.test_problem.description in first_mail.body)
+
+        self.assertTrue(self.test_problem.reference_number in first_mail.body)
+
+        # problem mail shouldn't contain patient information. See issue #919
+        self.assertTrue(self.test_problem.reporter_name not in first_mail.body)
+        self.assertTrue(self.test_problem.reporter_email not in first_mail.body)
+        self.assertTrue(self.test_problem.category not in first_mail.body)
+        self.assertTrue(self.test_problem.description not in first_mail.body)
+
         dashboard_url = settings.SITE_BASE_URL + reverse('org-parent-dashboard',
                                                          kwargs={'code': self.test_problem.organisation.parent.code})
         self.assertTrue(dashboard_url in first_mail.body)
@@ -188,7 +193,7 @@ class EmailProblemsToOrganisationParentTests(TestCase):
 
         self.assertEqual(len(mail.outbox), 0)
 
-    def test_displays_correct_contact_method(self):
+    def test_doesnt_display_contact_method(self):
 
         # Just use one problem for this test
         self.other_test_problem.mailed = True
@@ -201,7 +206,7 @@ class EmailProblemsToOrganisationParentTests(TestCase):
 
         first_mail = mail.outbox[0]
 
-        self.assertTrue(self.test_problem.reporter_phone in first_mail.body)
+        self.assertTrue(self.test_problem.reporter_phone not in first_mail.body)
         self.assertTrue(self.test_problem.reporter_email not in first_mail.body)
 
     def test_handles_errors_in_sending_mails(self):
