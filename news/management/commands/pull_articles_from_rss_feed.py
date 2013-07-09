@@ -2,6 +2,7 @@ from dateutil import parser
 import feedparser
 
 from django.core.management.base import BaseCommand
+from django.conf import settings
 
 from ...models import Article
 
@@ -9,6 +10,7 @@ from ...models import Article
 class Command(BaseCommand):
     args = "<file|url>"
     help = "Import articles from the given file or url"
+    
     def handle(self, *args, **options):
         if len(args) > 0:
             feed_url = args[0]
