@@ -157,27 +157,17 @@ class ProblemAPITests(TestCase):
         problem = Problem.objects.get(reporter_name=self.problem_uuid)
         self.assertIsNone(problem.service)
 
-    def test_email_is_required(self):
-        problem_with_no_email = self.test_problem_defaults
-        del problem_with_no_email['reporter_email']
+    def test_reporter_name_or_phone_is_required(self):
+        problem_with_no_contact_details = self.test_problem_defaults
+        del problem_with_no_contact_details['reporter_phone']
+        del problem_with_no_contact_details['reporter_email']
 
-        resp = self.client.post(self.problem_api_url, problem_with_no_email)
+        resp = self.client.post(self.problem_api_url, problem_with_no_contact_details)
         self.assertEquals(resp.status_code, 400)
 
         content_json = json.loads(resp.content)
         errors = json.loads(content_json['errors'])
-        self.assertEqual(errors['reporter_email'][0], 'This field is required.')
-
-    def test_phone_is_required_if_phone_is_preferred(self):
-        problem_with_no_phone = self.test_problem_defaults
-        del problem_with_no_phone['reporter_phone']
-
-        resp = self.client.post(self.problem_api_url, problem_with_no_phone)
-        self.assertEquals(resp.status_code, 400)
-
-        content_json = json.loads(resp.content)
-        errors = json.loads(content_json['errors'])
-        self.assertEqual(errors['__all__'][0], 'You must provide a phone number if you prefer to be contacted by phone')
+        self.assertEqual(errors['__all__'][0], 'You must provide either a phone number or an email address')
 
     def test_moderated_description_is_required_when_publishing_public_problems(self):
         public_problem_with_no_moderated_description = self.test_problem_defaults
