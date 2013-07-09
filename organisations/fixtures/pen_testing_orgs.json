@@ -63,8 +63,7 @@
             "intro_email_sent": null, 
             "modified": "2013-06-27T09:00:00Z", 
             "name": "other test trust", 
-            "secondary_email": "test-trust-secondary@example.org", 
-            "updated": "2013-06-27T09:00:00Z", 
+            "secondary_email": "test-trust-secondary@example.org",  
             "users": [
                 27
             ]
