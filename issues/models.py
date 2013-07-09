@@ -274,7 +274,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
 
     reporter_name = models.CharField(max_length=200, blank=False, verbose_name='')
     reporter_phone = models.CharField(max_length=50, blank=True, verbose_name='')
-    reporter_email = models.EmailField(max_length=254, blank=False, verbose_name='')
+    reporter_email = models.EmailField(max_length=254, blank=True, verbose_name='')
     reporter_under_16 = models.BooleanField(default=False)
 
     preferred_contact_method = models.CharField(max_length=100, choices=CONTACT_CHOICES, default=CONTACT_EMAIL)
