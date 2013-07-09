@@ -1,10 +1,11 @@
 from django import forms
 from django.forms.widgets import HiddenInput, RadioSelect
-from django.forms.models import inlineformset_factory, BaseInlineFormSet
+from django.forms.models import inlineformset_factory
 
 from citizenconnect.forms import ConcurrentFormMixin
 from issues.models import Problem
 from responses.models import ProblemResponse
+
 
 class ModerationForm(ConcurrentFormMixin, forms.ModelForm):
 
@@ -16,10 +17,14 @@ class ModerationForm(ConcurrentFormMixin, forms.ModelForm):
         if self.request.META['REQUEST_METHOD'] == 'GET':
             self.set_version_in_session()
 
-        # We don't require the moderated_description field if the proble is not public.
+        # We don't require the moderated_description field if the problem is not public.
         # Remove it from the form.
         if not self.instance.public:
             del self.fields['moderated_description']
+
+        # If the name was not originally public then we don't need the public_reporter_name
+        if self.instance.public_reporter_name_original is False:
+            del self.fields['public_reporter_name']
 
         if 'status' in self.fields:
             # For now, restrict the statuses allowable to non-escalation statuses
@@ -80,7 +85,8 @@ class ProblemModerationForm(ModerationForm):
             'status',
             'requires_second_tier_moderation',
             'breach',
-            'commissioned'
+            'commissioned',
+            'public_reporter_name',
         ]
 
         widgets = {
@@ -107,7 +113,8 @@ class ProblemSecondTierModerationForm(ModerationForm):
         fields = [
             'publication_status',
             'moderated_description',
-            'requires_second_tier_moderation'
+            'requires_second_tier_moderation',
+            'public_reporter_name',
         ]
 
         widgets = {

@@ -121,6 +121,8 @@ def _apply_organisation_filters(organisation_filters,
 
     organisation_ids = organisation_filters.get('organisation_ids')
     if organisation_ids is not None:
+        if len(organisation_ids) == 0:
+            raise ValueError("To filter by organisations, at least one organisation id must be supplied")
         organisation_filter_clauses.append("organisations_organisation.id in %s")
         params.append(organisation_ids)
 
@@ -209,6 +211,8 @@ def interval_counts(problem_filters={},
                                   THEN 'GP'
                                   WHEN organisations_organisation.organisation_type = 'hospitals'
                                   THEN 'Hospital'
+                                  WHEN organisations_organisation.organisation_type = 'clinics'
+                                  THEN 'Clinic'
                                   ELSE 'Unknown' END) AS type""")
         group_by_clauses.append('type')
     if 'average_recommendation_rating' in extra_organisation_data:

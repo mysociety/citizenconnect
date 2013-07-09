@@ -132,6 +132,72 @@
         }
     },
     {
+        "pk": 15,
+        "model": "reviews_submit.question",
+        "fields": {
+            "org_type": "clinics",
+            "updated": "2013-07-04T08:59:56.769Z",
+            "is_required": false,
+            "api_question_id": 2,
+            "title": "The environment where I was treated was?"
+        }
+    },
+    {
+        "pk": 16,
+        "model": "reviews_submit.question",
+        "fields": {
+            "org_type": "clinics",
+            "updated": "2013-07-04T09:03:37.928Z",
+            "is_required": false,
+            "api_question_id": 3,
+            "title": "The Clinic staff worked well together?"
+        }
+    },
+    {
+        "pk": 17,
+        "model": "reviews_submit.question",
+        "fields": {
+            "org_type": "clinics",
+            "updated": "2013-07-04T09:03:37.942Z",
+            "is_required": false,
+            "api_question_id": 4,
+            "title": "I was treated with dignity and respect by the Clinic staff?"
+        }
+    },
+    {
+        "pk": 18,
+        "model": "reviews_submit.question",
+        "fields": {
+            "org_type": "clinics",
+            "updated": "2013-07-04T09:03:37.955Z",
+            "is_required": false,
+            "api_question_id": 5,
+            "title": "I was involved with decisions about my care?"
+        }
+    },
+    {
+        "pk": 19,
+        "model": "reviews_submit.question",
+        "fields": {
+            "org_type": "clinics",
+            "updated": "2013-07-04T09:03:37.968Z",
+            "is_required": false,
+            "api_question_id": 6,
+            "title": "NHS Clinics must provide same-sex accommodation. How satisfied were you that this Clinic did so?"
+        }
+    },
+    {
+        "pk": 20,
+        "model": "reviews_submit.question",
+        "fields": {
+            "org_type": "clinics",
+            "updated": "2013-07-04T09:03:37.981Z",
+            "is_required": true,
+            "api_question_id": 7,
+            "title": "Friends and Family"
+        }
+    },
+    {
         "pk": 3,
         "model": "reviews_submit.answer",
         "fields": {
@@ -729,6 +795,306 @@
             "star_rating": 5,
             "api_answer_id": 5,
             "question": 14
+        }
+    },
+    {
+        "pk": 65,
+        "model": "reviews_submit.answer",
+        "fields": {
+            "text": "dirty",
+            "api_answer_id": 1,
+            "star_rating": null,
+            "question": 15
+        }
+    },
+    {
+        "pk": 66,
+        "model": "reviews_submit.answer",
+        "fields": {
+            "text": "not very clean",
+            "api_answer_id": 2,
+            "star_rating": null,
+            "question": 15
+        }
+    },
+    {
+        "pk": 67,
+        "model": "reviews_submit.answer",
+        "fields": {
+            "text": "clean",
+            "api_answer_id": 3,
+            "star_rating": null,
+            "question": 15
+        }
+    },
+    {
+        "pk": 68,
+        "model": "reviews_submit.answer",
+        "fields": {
+            "text": "very clean",
+            "api_answer_id": 4,
+            "star_rating": null,
+            "question": 15
+        }
+    },
+    {
+        "pk": 69,
+        "model": "reviews_submit.answer",
+        "fields": {
+            "text": "exceptionally clean",
+            "api_answer_id": 5,
+            "star_rating": null,
+            "question": 15
+        }
+    },
+    {
+        "pk": 70,
+        "model": "reviews_submit.answer",
+        "fields": {
+            "text": "never",
+            "api_answer_id": 1,
+            "star_rating": null,
+            "question": 16
+        }
+    },
+    {
+        "pk": 71,
+        "model": "reviews_submit.answer",
+        "fields": {
+            "text": "hardly at all",
+            "api_answer_id": 2,
+            "star_rating": null,
+            "question": 16
+        }
+    },
+    {
+        "pk": 72,
+        "model": "reviews_submit.answer",
+        "fields": {
+            "text": "some of the time",
+            "api_answer_id": 3,
+            "star_rating": null,
+            "question": 16
+        }
+    },
+    {
+        "pk": 73,
+        "model": "reviews_submit.answer",
+        "fields": {
+            "text": "most of the time",
+            "api_answer_id": 4,
+            "star_rating": null,
+            "question": 16
+        }
+    },
+    {
+        "pk": 74,
+        "model": "reviews_submit.answer",
+        "fields": {
+            "text": "all of the time",
+            "api_answer_id": 5,
+            "star_rating": null,
+            "question": 16
+        }
+    },
+    {
+        "pk": 75,
+        "model": "reviews_submit.answer",
+        "fields": {
+            "text": "not at all",
+            "api_answer_id": 1,
+            "star_rating": null,
+            "question": 17
+        }
+    },
+    {
+        "pk": 76,
+        "model": "reviews_submit.answer",
+        "fields": {
+            "text": "rarely",
+            "api_answer_id": 2,
+            "star_rating": null,
+            "question": 17
+        }
+    },
+    {
+        "pk": 77,
+        "model": "reviews_submit.answer",
+        "fields": {
+            "text": "some of the time",
+            "api_answer_id": 3,
+            "star_rating": null,
+            "question": 17
+        }
+    },
+    {
+        "pk": 78,
+        "model": "reviews_submit.answer",
+        "fields": {
+            "text": "most of the time",
+            "api_answer_id": 4,
+            "star_rating": null,
+            "question": 17
+        }
+    },
+    {
+        "pk": 79,
+        "model": "reviews_submit.answer",
+        "fields": {
+            "text": "all of the time",
+            "api_answer_id": 5,
+            "star_rating": null,
+            "question": 17
+        }
+    },
+    {
+        "pk": 80,
+        "model": "reviews_submit.answer",
+        "fields": {
+            "text": "never",
+            "api_answer_id": 1,
+            "star_rating": null,
+            "question": 18
+        }
+    },
+    {
+        "pk": 81,
+        "model": "reviews_submit.answer",
+        "fields": {
+            "text": "hardly at all",
+            "api_answer_id": 2,
+            "star_rating": null,
+            "question": 18
+        }
+    },
+    {
+        "pk": 82,
+        "model": "reviews_submit.answer",
+        "fields": {
+            "text": "some of the time",
+            "api_answer_id": 3,
+            "star_rating": null,
+            "question": 18
+        }
+    },
+    {
+        "pk": 83,
+        "model": "reviews_submit.answer",
+        "fields": {
+            "text": "most of the time",
+            "api_answer_id": 4,
+            "star_rating": null,
+            "question": 18
+        }
+    },
+    {
+        "pk": 84,
+        "model": "reviews_submit.answer",
+        "fields": {
+            "text": "all of the time",
+            "api_answer_id": 5,
+            "star_rating": null,
+            "question": 18
+        }
+    },
+    {
+        "pk": 85,
+        "model": "reviews_submit.answer",
+        "fields": {
+            "text": "very dissatisfied",
+            "api_answer_id": 1,
+            "star_rating": null,
+            "question": 19
+        }
+    },
+    {
+        "pk": 86,
+        "model": "reviews_submit.answer",
+        "fields": {
+            "text": "dissatisfied",
+            "api_answer_id": 2,
+            "star_rating": null,
+            "question": 19
+        }
+    },
+    {
+        "pk": 87,
+        "model": "reviews_submit.answer",
+        "fields": {
+            "text": "neither satisfied nor dissatisfied",
+            "api_answer_id": 3,
+            "star_rating": null,
+            "question": 19
+        }
+    },
+    {
+        "pk": 88,
+        "model": "reviews_submit.answer",
+        "fields": {
+            "text": "satisfied",
+            "api_answer_id": 4,
+            "star_rating": null,
+            "question": 19
+        }
+    },
+    {
+        "pk": 89,
+        "model": "reviews_submit.answer",
+        "fields": {
+            "text": "very satisfied",
+            "api_answer_id": 5,
+            "star_rating": null,
+            "question": 19
+        }
+    },
+    {
+        "pk": 90,
+        "model": "reviews_submit.answer",
+        "fields": {
+            "text": "Extremely unlikely",
+            "api_answer_id": 1,
+            "star_rating": null,
+            "question": 20
+        }
+    },
+    {
+        "pk": 91,
+        "model": "reviews_submit.answer",
+        "fields": {
+            "text": "Unlikely",
+            "api_answer_id": 2,
+            "star_rating": null,
+            "question": 20
+        }
+    },
+    {
+        "pk": 92,
+        "model": "reviews_submit.answer",
+        "fields": {
+            "text": "Neither likely or unlikely",
+            "api_answer_id": 3,
+            "star_rating": null,
+            "question": 20
+        }
+    },
+    {
+        "pk": 93,
+        "model": "reviews_submit.answer",
+        "fields": {
+            "text": "Likely",
+            "api_answer_id": 4,
+            "star_rating": null,
+            "question": 20
+        }
+    },
+    {
+        "pk": 94,
+        "model": "reviews_submit.answer",
+        "fields": {
+            "text": "Extremely likely",
+            "api_answer_id": 5,
+            "star_rating": null,
+            "question": 20
         }
     }
 ]

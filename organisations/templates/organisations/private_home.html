@@ -1,0 +1,30 @@
+{% extends "citizenconnect/base.html" %}
+{% load url from future %}
+
+{% block title %}Home{% endblock %}
+
+{% block bodyclasses %}private-home{% endblock %}
+
+{% block content %}
+
+  {% include "organisations/includes/page_header.html" with title="Private Dashboard" %}
+
+  {% if links %}
+    <h2>Links for you</h2>
+
+    <ul>
+      {% for link in links %}
+        <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="info">
+      You do not appear to have any dashboards to view. This most likely means
+      that your account has not been correctly configured - please seek help from
+      an administrator.
+    </p>
+  {% endif %}
+
+
+
+{% endblock %}

@@ -8,6 +8,7 @@ from django.db import connection
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User, Group
 from django.dispatch import receiver
+from django.core.exceptions import ValidationError
 
 from citizenconnect.models import AuditedModel
 from .mixins import MailSendMixin
@@ -24,11 +25,18 @@ class CCG(MailSendMixin, AuditedModel):
     code = models.CharField(max_length=8, db_index=True, unique=True)
     users = models.ManyToManyField(User, related_name='ccgs')
 
-    # ISSUE-329: The `blank=True` should be removed when we are supplied with
-    # email addresses for all the orgs
     # max_length set manually to make it RFC compliant (default of 75 is too short)
-    # email may not be unique
-    email = models.EmailField(max_length=254, blank=True)
+    # email may not be unique - for example a catch-all address may be used
+    email = models.EmailField(max_length=254)
+
+    def save(self, *args, **kwargs):
+        """
+        Overriden save to ensure email address is set
+        """
+        if not self.email:
+            raise ValidationError("email is required")
+
+        super(CCG, self).save(*args, **kwargs)
 
     def default_user_group(self):
         """Group to ensure that users are members of"""
@@ -76,11 +84,9 @@ class OrganisationParent(MailSendMixin, AuditedModel):
     choices_id = models.IntegerField(db_index=True)
     users = models.ManyToManyField(User, related_name='organisation_parents')
 
-    # ISSUE-329: The `blank=True` should be removed when we are supplied with
-    # email addresses for all the organisation parents
     # max_length set manually to make it RFC compliant (default of 75 is too short)
-    # email may not be unique
-    email = models.EmailField(max_length=254, blank=True)
+    # email may not be unique - for example a catch-all address may be used
+    email = models.EmailField(max_length=254)
     secondary_email = models.EmailField(max_length=254, blank=True)
 
     # Which CCG this Parent should escalate problems too
@@ -90,6 +96,15 @@ class OrganisationParent(MailSendMixin, AuditedModel):
     # This means that those CCGs will be able to see all the problems at
     # this parent's organisations.
     ccgs = models.ManyToManyField(CCG, related_name='organisation_parents')
+
+    def save(self, *args, **kwargs):
+        """
+        Overriden save to ensure email address is set
+        """
+        if not self.email:
+            raise ValidationError("email is required")
+
+        super(OrganisationParent, self).save(*args, **kwargs)
 
     def can_be_accessed_by(self, user):
         """ Can a user access this Organisation Parent? """
@@ -178,13 +193,13 @@ class Organisation(AuditedModel, geomodels.Model):
         return list(self.problem_set.open_problems())
 
     def has_time_limits(self):
-        if self.organisation_type == 'hospitals':
+        if self.organisation_type in ['hospitals', 'clinics']:
             return True
         else:
             return False
 
     def has_services(self):
-        if self.organisation_type == 'hospitals':
+        if self.organisation_type in ['hospitals', 'clinics']:
             return True
         else:
             return False

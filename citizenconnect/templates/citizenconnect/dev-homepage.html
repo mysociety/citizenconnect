@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "citizenconnect/base.html" %}
 {% load url from future %}
 
 
@@ -20,6 +20,7 @@
     <h2>Public Pages</h2>
     <a href="/choices">Public Choices frontpage</a> or
     <a href="/myhealthlondon">Public MyHealth London frontpage</a>
+    and (<a href="/static/mhl_iframe_wrapper.html">MHL iframe</a>)
     <ul>
         <li><a href="/choices/summary/H85111">Example GP Outcomes Summary</a></li>
         <li><a href="/choices/problems/H85111">Example GP Public Problems</a></li>
@@ -33,15 +34,36 @@
 <div>
     <h2>Private Pages</h2>
     <ul>
+        <li><a href="{% url 'superuser-dashboard' %}">Superuser dashboard (lists all ccgs and trusts)</a></li>
         <li><a href="/private/moderate">Moderation queue</a></li>
         <li><a href="/private/moderate/lookup">Moderation lookup</a></li>
         <li><a href="/private/moderate/tier_two">Second tier moderation queue</a></li>
-        <li><a href="/private/escalation">Escalation dashboard</a></li>
-        <li><a href="/private/summary">National Summary (private - shows all statuses)</a></li>
         <li><a href="{% url 'org-parent-dashboard' code='YYYYYYY' %}">Example Trust dashboard</a></li>
         <li><a href="{% url 'ccg-dashboard' code='XXXXXXX' %}">Example CCG dashboard</a></li>
         <li><a href="{% url 'private-org-summary' ods_code='H85111' %}">Example GP private summary</a></li>
         <li><a href="{% url 'private-org-summary' ods_code='RJ701' %}">Example hospital private summary</a></li>
+    </ul>
+    <h2>Not currently used</h2>
+    <ul>
+        <li><a href="/private/escalation">Escalation dashboard</a></li>
+    </ul>
+</div>
+
+<div>
+    <h2>Fast user switching</h2>
+
+    <form method="post" action="{% url 'django.contrib.auth.views.login' %}">
+      {% csrf_token %}
+      <input type="hidden" name="password" value="password" />
+      <select name="username" onchange="this.form.submit()">
+        {% for u in users %}
+          <option>{{ u.username }}</option>
+        {% empty %}
+          <option value=''>No users found, try "./manage.py loaddata development_users.json"</option>
+        {% endfor %}
+      </select>
+    </form>
+
     </ul>
 </div>
 

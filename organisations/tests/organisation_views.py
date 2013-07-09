@@ -61,6 +61,15 @@ class OrganisationSummaryTests(AuthorizationTestCase):
             resp = self.client.get(url)
             self.assertEqual(resp.status_code, 200)
 
+    def test_raises_404_not_500(self):
+        # Issue #878 - views inheriting from OrganisationAwareViewMixin
+        # didn't catch Organisation.DoesNotExist and raise an Http404
+        # so we got a 500 instead
+        missing_url = reverse('public-org-summary', kwargs={'ods_code': 'missing',
+                                                            'cobrand': 'choices'})
+        resp = self.client.get(missing_url)
+        self.assertEqual(resp.status_code, 404)
+
     def test_summary_page_shows_organisation_name(self):
         for url in self.urls:
             self.login_as(self.trust_user)
@@ -275,6 +284,9 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         self.hospital = create_test_organisation({'organisation_type': 'hospitals',
                                                   'ods_code': 'ABC123',
                                                   'parent': self.test_trust})
+        self.clinic = create_test_organisation({'organisation_type': 'clinics',
+                                                'ods_code': 'GHI123',
+                                                'parent': self.test_trust})
         self.gp = create_test_organisation({'organisation_type': 'gppractices',
                                             'ods_code': 'DEF456',
                                             'parent': self.test_gp_surgery})
@@ -283,6 +295,9 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         self.public_hospital_problems_url = reverse('public-org-problems',
                                                     kwargs={'ods_code': self.hospital.ods_code,
                                                             'cobrand': 'choices'})
+        self.public_clinic_problems_url = reverse('public-org-problems',
+                                                  kwargs={'ods_code': self.clinic.ods_code,
+                                                          'cobrand': 'choices'})
         self.public_gp_problems_url = reverse('public-org-problems',
                                               kwargs={'ods_code': self.gp.ods_code,
                                                       'cobrand': 'choices'})
@@ -304,7 +319,16 @@ class OrganisationProblemsTests(AuthorizationTestCase):
     def test_shows_time_limits_for_hospitals(self):
         resp = self.client.get(self.public_hospital_problems_url)
         self.assertContains(resp, '<th class="time_to_acknowledge">Acknowledge</th>', count=1, status_code=200)
-        self.assertContains(resp, '<th class="time_to_address">Address</th>', count=1, status_code=200)
+        self.assertContains(resp, '<th class="time_to_address">Close</th>', count=1, status_code=200)
+
+    def test_shows_services_for_clinics(self):
+        resp = self.client.get(self.public_clinic_problems_url)
+        self.assertContains(resp, '<th class="service">Department</th>', count=1, status_code=200)
+
+    def test_shows_time_limits_for_clinics(self):
+        resp = self.client.get(self.public_clinic_problems_url)
+        self.assertContains(resp, '<th class="time_to_acknowledge">Acknowledge</th>', count=1, status_code=200)
+        self.assertContains(resp, '<th class="time_to_address">Close</th>', count=1, status_code=200)
 
     def test_no_services_for_gps(self):
         resp = self.client.get(self.public_gp_problems_url)
@@ -313,7 +337,7 @@ class OrganisationProblemsTests(AuthorizationTestCase):
     def test_no_time_limits_for_gps(self):
         resp = self.client.get(self.public_gp_problems_url)
         self.assertNotContains(resp, '<th class="time_to_acknowledge">Acknowledge</th>')
-        self.assertNotContains(resp, '<th class="time_to_address">Address</th>')
+        self.assertNotContains(resp, '<th class="time_to_address">Close</th>')
 
     def test_public_page_exists_and_is_accessible_to_anyone(self):
         resp = self.client.get(self.public_hospital_problems_url)

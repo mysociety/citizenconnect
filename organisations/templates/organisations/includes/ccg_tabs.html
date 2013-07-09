@@ -1,8 +1,6 @@
 {% load url from future %}
 {% load page_auth %}
 <ul class="tab-nav">
-    <li><a {% if active_tab == 'ccg-dashboard' %}class="active"{% endif %} href="{% url 'ccg-dashboard' code=ccg.code %}">Inbox</a></li>
-    <li><a {% if active_tab == 'escalation-dashboard' %}class="active"{% endif %} href="{% url 'ccg-escalation-dashboard' code=ccg.code %}">Escalations</a></li>
-    <li><a {% if active_tab == 'breaches' %}class="active"{% endif %} href="{% url 'ccg-escalation-breaches' code=ccg.code %}">Breaches</a></li>
+    <li><a {% if active_tab == 'ccg-dashboard' %}class="active"{% endif %} href="{% url 'ccg-dashboard' code=ccg.code %}">All Problems</a></li>
     <li><a {% if active_tab == 'summary' %}class="active"{% endif %} href="{% url 'ccg-summary' code=ccg.code %}">Summary</a></li>
 </ul>

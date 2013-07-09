@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "citizenconnect/base.html" %}
 {% load url from future %}
 {% load staticfiles %}
 
@@ -17,7 +17,7 @@
 
     {% if form.non_field_errors %}
         <fieldset class="island">
-            {% include "message_list.html" with messages=form.non_field_errors message_type='error' %}
+            {% include "citizenconnect/includes/message_list.html" with messages=form.non_field_errors message_type='error' %}
         </fieldset>
     {% endif %}
 
@@ -52,7 +52,7 @@
             </div>
         </li>
     </ul>
-    {% include "message_list.html" with messages=form.happy_outcome.errors message_type='error' %}
+    {% include "citizenconnect/includes/message_list.html" with messages=form.happy_outcome.errors message_type='error' %}
 
     <button class="btn  btn--black  fr" type="submit">Submit</button>
 </form>

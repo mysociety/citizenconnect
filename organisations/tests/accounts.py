@@ -150,14 +150,19 @@ class BasicAccountTests(TestCase):
         self.assertTrue(self.test_user.check_password(self.strong_password))
 
 
-class LoginRedirectTests(AuthorizationTestCase):
+class PrivateHomeTests(AuthorizationTestCase):
 
     def setUp(self):
-        super(LoginRedirectTests, self).setUp()
+        super(PrivateHomeTests, self).setUp()
         self.login_url = reverse('login')
-        self.login_redirect_url = reverse('login_redirect')
+        self.private_home_url = reverse('private_home')
 
-    def test_login_redirect_view_used(self):
+    def test_login_required_for_private_home_page(self):
+        expected_login_url = '{0}?next={1}'.format(self.login_url, self.private_home_url)
+        resp = self.client.get(self.private_home_url)
+        self.assertRedirects(resp, expected_login_url)
+
+    def test_private_home_view_used(self):
         test_values = {
             'username': self.trust_user.username,
             'password': self.test_password,
@@ -165,57 +170,56 @@ class LoginRedirectTests(AuthorizationTestCase):
         resp = self.client.post(self.login_url, test_values)
         # Can't use assertRedirects to test because the page it should redirect to
         # also redirects on again (as we test later)
-        self.assertEqual(resp._headers['location'], ('Location', 'http://testserver' + self.login_redirect_url))
+        self.assertEqual(resp._headers['location'], ('Location', 'http://testserver' + self.private_home_url))
         self.assertEqual(resp.status_code, 302)
 
     def test_moderator_goes_to_moderation_homepage(self):
         moderation_url = reverse('moderate-home')
         self.login_as(self.case_handler)
-        resp = self.client.get(self.login_redirect_url)
+        resp = self.client.get(self.private_home_url)
         self.assertRedirects(resp, moderation_url)
 
     def test_second_tier_moderator_goes_to_second_tier_moderation_homepage(self):
         second_tier_moderation_url = reverse('second-tier-moderate-home')
         self.login_as(self.second_tier_moderator)
-        resp = self.client.get(self.login_redirect_url)
+        resp = self.client.get(self.private_home_url)
         self.assertRedirects(resp, second_tier_moderation_url)
 
     def test_provider_goes_to_provider_dashboard(self):
         dashboard_url = reverse('org-parent-dashboard', kwargs={'code': self.test_hospital.parent.code})
         self.login_as(self.trust_user)
-        resp = self.client.get(self.login_redirect_url)
+        resp = self.client.get(self.private_home_url)
         self.assertRedirects(resp, dashboard_url)
 
-    def test_nhs_superuser_goes_to_superuser_page(self):
-        map_url = reverse('private-national-summary')
-        self.login_as(self.nhs_superuser)
-        resp = self.client.get(self.login_redirect_url)
-        self.assertRedirects(resp, map_url)
+    def test_superusers_go_to_superuser_page(self):
+        dashboard_url = reverse('superuser-dashboard')
+        for user in self.nhs_superuser, self.superuser:
+            self.login_as(user)
+            resp = self.client.get(self.private_home_url)
+            self.assertRedirects(resp, dashboard_url)
 
-    def test_everyone_else_goes_to_home_page(self):
-        home_url = reverse('home', kwargs={'cobrand': 'choices'})
-        # Django superuser
-        self.login_as(self.superuser)
-        resp = self.client.get(self.login_redirect_url)
-        self.assertRedirects(resp, home_url)
+    def test_everyone_else_goes_to_private_home_page(self):
         # Provider with no organisations
         self.login_as(self.no_trust_user)
-        resp = self.client.get(self.login_redirect_url)
-        self.assertRedirects(resp, home_url)
-
-    def test_login_required_for_redirect_page(self):
-        expected_login_url = '{0}?next={1}'.format(self.login_url, self.login_redirect_url)
-        resp = self.client.get(self.login_redirect_url)
-        self.assertRedirects(resp, expected_login_url)
+        resp = self.client.get(self.private_home_url)
+        self.assertEqual(resp.status_code, 200)
 
     def test_ccg_user_goes_to_ccg_dashboard(self):
         ccg_dashboard_url = reverse('ccg-dashboard', kwargs={'code': self.test_ccg.code})
         self.login_as(self.ccg_user)
-        resp = self.client.get(self.login_redirect_url)
+        resp = self.client.get(self.private_home_url)
         self.assertRedirects(resp, ccg_dashboard_url)
+
+        # If the ccg user has several ccgs they should be shown a list
+        self.ccg_user.ccgs.add(self.other_test_ccg)
+        resp = self.client.get(self.private_home_url)
+        self.assertEqual(resp.status_code, 200)
+        for ccg in self.ccg_user.ccgs.all():
+            self.assertContains(resp, "CCG dashboard for {0}".format(ccg.name))
 
     def test_customer_contact_centre_user_goes_to_escalation_dashboard(self):
         escalation_dashboard_url = reverse('escalation-dashboard')
         self.login_as(self.customer_contact_centre_user)
-        resp = self.client.get(self.login_redirect_url)
+        resp = self.client.get(self.private_home_url)
         self.assertRedirects(resp, escalation_dashboard_url)
+

@@ -40,7 +40,7 @@ def create_test_rating(attributes, review):
 api_posting_id_counter = 185684
 
 
-def create_test_review(attributes, ratings_attributes):
+def create_test_review(attributes, ratings_attributes=None):
     """Create a test review instance, with optional attributes"""
 
     # Create a test org to assign the rating to if one's not supplied

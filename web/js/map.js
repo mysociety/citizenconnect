@@ -45,6 +45,7 @@ $(document).ready(function () {
         shadowRetinaUrl: "/static/img/shadow@2x.png",
         shadowSize: [24, 24]
     });
+    var $form = $(".filters");
     var hoverBubbleTemplate = $("script[name=hover-bubble]").html();
     var londonCentre = new L.LatLng(51.505, -0.09);
     var northEastCentre = new L.LatLng(54.95, -1.62);
@@ -87,15 +88,6 @@ $(document).ready(function () {
     // A LayerGroup so that we can handle all the markers in one go
     var markersGroup = new L.LayerGroup();
 
-    // The map zoom controls.
-    // Urgh. Leaflet makes it really hard to enable/disable the default
-    // zoom control. You have to remove it completely and then add it back
-    // in. To further compound things, the first time you try, you can get
-    // the default one from map.zoomControl, but any subsequent controls
-    // you add are not stored in that property, so we need to keep a
-    // reference to the control around all the time.
-    var zoomControl = map.zoomControl;
-
     /**
      * Find a provider by a set of attributes.
      *
@@ -119,6 +111,7 @@ $(document).ready(function () {
     $searchBox.select2({
         minimumInputLength: 1,
         placeholder: "Search the map",
+        dropdownAutoWidth: true,
         ajax: {
             url: $searchBox.data('search-url'),
             dataType: 'json',
@@ -150,8 +143,8 @@ $(document).ready(function () {
         var selection = e.added;
         if (selection.type === 'organisation') {
             var odsCode = selection.id;
-            zoomToPoint(selection.lat, selection.lon);
             openPopupFor = odsCode;
+            zoomToPoint(selection.lat, selection.lon);
         } else {
             zoomToPoint(selection.lat, selection.lon);
         }
@@ -169,9 +162,6 @@ $(document).ready(function () {
         map.scrollWheelZoom.disable();
         map.boxZoom.disable();
         map.keyboard.disable();
-        // Can't disable the zoomControl, so we have to remove it
-        // completely
-        map.removeControl(zoomControl);
     };
 
     // Function to enable all the map controls again
@@ -182,16 +172,6 @@ $(document).ready(function () {
         map.scrollWheelZoom.enable();
         map.boxZoom.enable();
         map.keyboard.enable();
-        // Add a new zoomControl, see the note above about why this is needed
-        zoomControl = new L.Control.Zoom();
-        map.addControl(zoomControl);
-
-        // We have to unbind this and call it manually, otherwise the zoom
-        // control is removed from the map when new pins are requested,
-        // then it throws an error when it tries to run this method when
-        // there is no map associated with the controls.
-        map.off('zoomend', zoomControl._updateDisabled, zoomControl);
-        zoomControl._updateDisabled();
     };
 
     var starClass = function(rating, current) {
@@ -301,6 +281,15 @@ $(document).ready(function () {
     };
 
     /**
+     * Get the parameters to send in an ajax request
+     * These consist of any currently selected map filters
+     * as well as the current bounding box of the map
+     */
+    var getAjaxRequestParameters = function($form, map) {
+        return [$form.serialize(), $.param({bounds: getBoundingBoxFromMap(map)})].join('&');
+    };
+
+    /**
      * Get a list of the map's bounds.
      *
      * @param {L.Map} map The map instance to use
@@ -350,10 +339,24 @@ $(document).ready(function () {
      * @param {Number} zoom The zoom level, defaults to 15
      */
     var zoomToPoint = function(lat, lon, zoom) {
+        // Don't bother zooming if we're already at exactly this point and zoom level
+        // (unlikely, but possible!)
         zoom = zoom || 14;
-        map.setView([lat, lon], zoom);
-        if (map.getZoom() === zoom) {
+        var mapCenter = map.getCenter();
+        var mapZoom = map.getZoom();
+        if (mapZoom === zoom && mapCenter.lat === lat && mapCenter.lon === lon) {
+            // We fire this so that our redraw method is still called
+            // and thus the right popup is opened (if needed)
             map.fire('zoomend');
+        }
+        else if (mapZoom === zoom) {
+            // Still move the map to the right place, and then
+            // fire an event to trigger our redraw event
+            map.setView([lat, lon], zoom);
+            map.fire('dragend');
+        }
+        else {
+            map.setView([lat, lon], zoom);
         }
     };
 
@@ -377,7 +380,9 @@ $(document).ready(function () {
      * provider).
      */
     var requestProvidersInBounds = function() {
-        getRequest(window.location.pathname, {bounds: getBoundingBoxFromMap(map), format: 'json'})
+        data = getAjaxRequestParameters($form, map);
+        data['format'] = 'json';
+        getRequest(window.location.pathname, data)
         .done(function(providers) {
             drawProviders(providers);
         }).error(function(jqXHR) {
@@ -386,6 +391,7 @@ $(document).ready(function () {
         });
     };
 
+    // Actually start up the map
     wax.tilejson('https://dnv9my2eseobd.cloudfront.net/v3/jedidiah.map-3lyys17i.jsonp', function(tilejson) {
         var mapCentre = londonCentre;
         var mapZoomLevel = londonZoomLevel;
@@ -393,7 +399,8 @@ $(document).ready(function () {
         map.addLayer(new wax.leaf.connector(httpstilejson)).setView(mapCentre, 1);
         map.setView(mapCentre, mapZoomLevel);
 
-        map.on('dragend zoomend', requestProvidersInBounds);
+        debouncedRequestProvidersInBounds = _.debounce(requestProvidersInBounds, 1000, true);
+        map.on('dragend zoomend', debouncedRequestProvidersInBounds);
 
         // OverlappingMarkerSpiderifier controls click events on markers
         // because it needs to know whether or not to spiderify them, so
@@ -410,8 +417,8 @@ $(document).ready(function () {
         if (selectedProvider) {
             findProvider(selectedProvider, function(provider) {
                 if (provider) {
-                    zoomToPoint(provider.lat, provider.lon);
                     openPopupFor = selectedProvider;
+                    zoomToPoint(provider.lat, provider.lon);
                 }
             });
         } else if (selectedLonLat && selectedLonLat !== ',') {
@@ -431,8 +438,7 @@ $(document).ready(function () {
     // Submit the form via ajax on any select change and
     // reload the map pins from the results
     $(".filters select").change(function(e) {
-        var $form = $(".filters");
-        var formData = [$form.serialize(), $.param({bounds: getBoundingBoxFromMap(map)})].join('&');
+        var formData = getAjaxRequestParameters($form, map);
 
         // Lock the form during the ajax request
         $form.find("select").prop("disabled", "disabled");

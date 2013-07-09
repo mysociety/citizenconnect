@@ -1,0 +1,32 @@
+
+<div class="meta-data-wrap">
+    <h3 class="meta-data-label">Redact Name</h3>
+</div>
+<fieldset class="island">
+    <ul class="gw">
+    {% if form.fields.public_reporter_name %}
+        <li class="g  one-whole">
+
+            <p>
+              "<strong>{{ object.reporter_name }}</strong>" is the reporter's name and they would like it shown publicly.
+            </p>
+
+            <label for="id_public_reporter_name">
+              {{ form.public_reporter_name }}
+              Publish this name.
+            </label>
+
+            <p class="info">
+              Untick this box if you want to hide the reporter's name from the public - effectively make the report "Public with hidden name".
+            </p>
+
+            {% include "citizenconnect/includes/message_list.html" with messages=form.public_reporter_name.errors message_type='error' %}
+
+        </li>
+    {% else %}
+        <li class="g  one-whole">
+            The reporter's name is not public, so no need to consider redacting it.
+        </li>
+    {% endif %}
+    </ul>
+</fieldset>

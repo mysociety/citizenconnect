@@ -23,6 +23,15 @@ class CCGDashboardTests(AuthorizationTestCase):
         resp = self.client.get(self.dashboard_url)
         self.assertEqual(resp.status_code, 200)
 
+    def test_raises_404_not_500(self):
+        # Issue #878 - views inheriting from CCGAwareViewMixin
+        # didn't catch CCG.DoesNotExist and raise an Http404
+        # so we got a 500 instead
+        missing_url = reverse('ccg-dashboard', kwargs={'code': 'missing'})
+        self.login_as(self.nhs_superuser)  # Superuser to avoid being redirected to login first
+        resp = self.client.get(missing_url)
+        self.assertEqual(resp.status_code, 404)
+
     def test_dashboard_page_shows_ccg_name(self):
         self.login_as(self.ccg_user)
         resp = self.client.get(self.dashboard_url)
@@ -480,13 +489,9 @@ class CCGTabsTests(AuthorizationTestCase):
     def setUp(self):
         super(CCGTabsTests, self).setUp()
         self.dashboard_url = reverse('ccg-dashboard', kwargs={'code': self.test_ccg.code})
-        self.escalation_dashboard_url = reverse('ccg-escalation-dashboard', kwargs={'code': self.test_ccg.code})
-        self.breaches_url = reverse('ccg-escalation-breaches', kwargs={'code': self.test_ccg.code})
         self.summary_url = reverse('ccg-summary', kwargs={'code': self.test_ccg.code})
         self.tab_urls = [
             self.dashboard_url,
-            self.escalation_dashboard_url,
-            self.breaches_url,
             self.summary_url
         ]
         self.login_as(self.trust_user)

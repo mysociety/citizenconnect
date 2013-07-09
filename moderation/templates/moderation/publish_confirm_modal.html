@@ -1,5 +1,9 @@
 <div id="publish-confirm-modal">
     <div class="island"></div>
+
+    <div class="content-name" data-reporter-name="{{ issue.reporter_name }}">
+    </div>
+
     <div class="content">
         {% if issue.moderated_description %}
             {{ issue.moderated_description|linebreaks }}
