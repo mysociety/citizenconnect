@@ -310,6 +310,14 @@ class ProblemAPITests(TestCase):
         resp = self.client.post(self.problem_api_url, self.test_problem_defaults)
         self.assertEquals(resp.status_code, 401)
 
+    def test_returns_authorized_with_proxied_auth(self):
+        # Test the auth passes when a proxy authenticates for us
+        del self.client.defaults['HTTP_AUTHORIZATION']
+        self.client.defaults['AUTH_TYPE'] = 'Basic'
+        self.client.defaults['REMOTE_USER'] = settings.API_BASICAUTH_USERNAME
+        resp = self.client.post(self.problem_api_url, self.test_problem_defaults)
+        self.assertEquals(resp.status_code, 201)
+
     @override_settings(MAX_IMAGES_PER_PROBLEM=3)
     def test_api_accepts_images(self):
         self.test_problem_defaults['images_0'] = self.jpg

@@ -12,22 +12,23 @@ class BasicAuthMiddleware(object):
         return response
 
     def process_request(self, request):
-        print request.META
-        if not 'HTTP_AUTHORIZATION' in request.META:
-            print "HTTP_AUTHORIZATION not in request.META"
+        # REMOTE_USER might be set by Apache or other proxies that have already
+        # authenticated, if they did it via basic auth for our username, we
+        # assume that's ok
+        if request.META.get('AUTH_TYPE') == 'Basic' and request.META.get('REMOTE_USER') == settings.API_BASICAUTH_USERNAME:
+            return None
+        elif not 'HTTP_AUTHORIZATION' in request.META:
             return self.unauthed()
         else:
             authentication = request.META['HTTP_AUTHORIZATION']
             (authmeth, auth) = authentication.split(' ', 1)
             if 'basic' != authmeth.lower():
-                print "Auth method is not 'basic'"
                 return self.unauthed()
             auth = auth.strip().decode('base64')
             username, password = auth.split(':', 1)
             if username == settings.API_BASICAUTH_USERNAME and password == settings.API_BASICAUTH_PASSWORD:
                 return None
 
-            print "Username and password didn't match settings"
             return self.unauthed()
 
 
