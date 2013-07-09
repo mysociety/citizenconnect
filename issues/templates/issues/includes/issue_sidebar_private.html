@@ -82,7 +82,12 @@
               Please contact by <strong>{{ object.preferred_contact_method }}</strong>.
             </li>
             <li>
-                Email: <a href="mailto:{{ object.reporter_email }}">{{ object.reporter_email }}</a>
+                Email:
+                {% if object.reporter_email %}
+                  <a href="mailto:{{ object.reporter_email }}">{{ object.reporter_email }}</a>
+                {% else %}
+                  n/a
+                {% endif %}
             </li>
             <li>
                 Phone:

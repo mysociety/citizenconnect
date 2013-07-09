@@ -46,10 +46,10 @@ If true then the `publication_status` of the problem will be set to `NOT_MODERAT
 Required. The reporter of the problem/question's name.
 
 ### reporter_email
-Mandatory. The reporter's email address.
+Mandatory, or optional if `reporter_phone` provided. The reporter's email address.
 
 ### reporter_phone
-Optional. The reporter's phone number.
+Mandatory, or optional if `reporter_email` provided. The reporter's phone number.
 
 ### public
 Optional. Whether or not the reporter wanted the problem/question made public, send `0` or `1` for false or true. Defaults to false. Note: if the problem is to be made public, a `moderated_description` must be supplied.
