@@ -89,7 +89,7 @@
             "organisation_type": "hospitals", 
             "parent": 1, 
             "point": "POINT (-0.2000000000000000 51.5000000000000000)", 
-            "postcode": "", 
+            "postcode": ""
         }, 
         "model": "organisations.organisation", 
         "pk": 1
@@ -111,7 +111,7 @@
             "organisation_type": "gppractices", 
             "parent": 2, 
             "point": "POINT (-0.1000000000000000 51.5000000000000000)", 
-            "postcode": "", 
+            "postcode": ""
         }, 
         "model": "organisations.organisation", 
         "pk": 2
