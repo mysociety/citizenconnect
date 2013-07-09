@@ -126,15 +126,36 @@ class ProblemModelTests(ProblemTestCase):
     def test_has_reference_number_property(self):
         self.assertEqual(self.test_problem.reference_number, 'P{0}'.format(self.test_problem.id))
 
-    def test_validates_email_present(self):
-        # Remove reporter email, should error
+    def test_validates_phone_or_email_present(self):
+        # Remove reporter email, should be fine as phone is set
         self.test_problem.reporter_email = None
+        # Set the preferred contact method to phone, else the validation will fail
+        self.test_problem.preferred_contact_method = Problem.CONTACT_PHONE
+        self.test_problem.clean()
 
+        # Add email back in and remove phone, should also be fine
+        self.test_problem.reporter_email = 'reporter@example.com'
+        # Set the preferred contact method to email, else the validation will fail
+        self.test_problem.preferred_contact_method = Problem.CONTACT_EMAIL
+        self.test_problem.reporter_phone = None
+        self.test_problem.clean()
+
+        # Remove both, it should error
+        self.test_problem.reporter_phone = None
+        self.test_problem.reporter_email = None
         with self.assertRaises(ValidationError) as context_manager:
-            # We need to call full_clean to check required fields
-            self.test_problem.full_clean()
+            self.test_problem.clean()
 
-        self.assertEqual(context_manager.exception.messages[0], 'This field cannot be null.')
+        self.assertEqual(context_manager.exception.messages[0], 'You must provide either a phone number or an email address')
+
+    def test_validates_contact_method_given(self):
+        # Remove email and set preferred contact method to email
+        self.test_problem.reporter_email = None
+        self.test_problem.preferred_contact_method = Problem.CONTACT_EMAIL
+        with self.assertRaises(ValidationError) as context_manager:
+            self.test_problem.clean()
+
+        self.assertEqual(context_manager.exception.messages[0], 'You must provide an email address if you prefer to be contacted by email')
 
     def test_validates_phone_number_if_phone_preferred(self):
         # Remove phone and set preferred contact method to phone

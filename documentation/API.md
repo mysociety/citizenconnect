@@ -25,7 +25,7 @@ Required. Whether the service is commissioned locally or nationally. Use `0` or 
 Required. The original text of the problem or question. Limited to a maximum of 2000 characters.
 
 ### moderated_description
-Required for public problems that are to be published (see `public` and `publication_status` below). A moderated description of the problem or question, suitable for publication. No character limit applied.
+Required for public problems that are to be published (see `public` below). A moderated description of the problem or question, suitable for publication. No character limit applied.
 
 ### category
 Required. The problem or question category, currently we have:
@@ -46,13 +46,13 @@ If true then the `publication_status` of the problem will be set to `NOT_MODERAT
 Required. The reporter of the problem/question's name.
 
 ### reporter_email
-Mandatory. The reporter's email address.
+Mandatory, or optional if `reporter_phone` provided. The reporter's email address.
 
 ### reporter_phone
-Optional. The reporter's phone number.
+Mandatory, or optional if `reporter_email` provided. The reporter's phone number.
 
 ### public
-Optional. Whether or not the reporter wanted the problem/question made public, send `0` or `1` for false or true. Defaults to false.
+Optional. Whether or not the reporter wanted the problem/question made public, send `0` or `1` for false or true. Defaults to false. Note: if the problem is to be made public, a `moderated_description` must be supplied.
 
 ### public_reporter_name
 Optional. Whether or not the reporter wanted their name made public, send `0` or `1` for false or true. Defaults to false
@@ -64,7 +64,7 @@ Optional. The reporter's preferred contact method, the available options are: `p
 Required. The source of the original report, ie: whether they phoned, emailed, texted etc. Available options: [`email`, `phone`, `sms`, `twitter`, `facebook`, `mms`]
 
 ### escalated
-Optional. Whether or not this problem has been escalated. Send `0` or `1` for true or false. Defaults to false.
+Optional. Whether or not this problem has been escalated. Send `0` or `1` for false or true. Defaults to false.
 
 ### images_0
 
