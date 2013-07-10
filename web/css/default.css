@@ -953,8 +953,8 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .btn--black:hover { background: #2e2e2e; }
 
 /** Disabled button */
-.btn--disabled { border-color: #8d8d8d; color: white; background: #dddddd; }
-.btn--disabled:hover { background: #dddddd; }
+.btn--disabled, .btn[disabled] { border-color: #8d8d8d; color: white; background: #dddddd; }
+.btn--disabled:hover, .btn[disabled]:hover { background: #dddddd; }
 
 /** Typically used within the .header div, markup something like this: 
 <a href="/back/a/page/innit" class="back-btn  fr"> <span class="icon-chevron-left" aria-hidden="true"></span> Back to search results
