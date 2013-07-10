@@ -1,48 +1,48 @@
 $(document).ready(function () {
     var defaultProviders = window.CitizenConnect.providers;
     var nhsCentreIcon_1 = L.icon({
-        iconUrl: CitizenConnect.HTTP_HOST + "/static/img/marker1.png",
-        iconRetinaUrl: CitizenConnect.HTTP_HOST + "/static/img/marker1@2x.png",
+        iconUrl: CitizenConnect.STATIC_URL + "img/marker1.png",
+        iconRetinaUrl: CitizenConnect.STATIC_URL + "img/marker1@2x.png",
         iconSize: [16, 16],
         popupAnchor: [-3, -76],
-        shadowUrl: CitizenConnect.HTTP_HOST + "/static/img/shadow.png",
-        shadowRetinaUrl: CitizenConnect.HTTP_HOST + "/static/img/shadow@2x.png",
+        shadowUrl: CitizenConnect.STATIC_URL + "img/shadow.png",
+        shadowRetinaUrl: CitizenConnect.STATIC_URL + "img/shadow@2x.png",
         shadowSize: [24, 24]
     });
     var nhsCentreIcon_2 = L.icon({
-        iconUrl: CitizenConnect.HTTP_HOST + "/static/img/marker2.png",
-        iconRetinaUrl: CitizenConnect.HTTP_HOST + "/static/img/marker2@2x.png",
+        iconUrl: CitizenConnect.STATIC_URL + "img/marker2.png",
+        iconRetinaUrl: CitizenConnect.STATIC_URL + "img/marker2@2x.png",
         iconSize: [16, 16],
         popupAnchor: [-3, -76],
-        shadowUrl: CitizenConnect.HTTP_HOST + "/static/img/shadow.png",
-        shadowRetinaUrl: CitizenConnect.HTTP_HOST + "/static/img/shadow@2x.png",
+        shadowUrl: CitizenConnect.STATIC_URL + "img/shadow.png",
+        shadowRetinaUrl: CitizenConnect.STATIC_URL + "img/shadow@2x.png",
         shadowSize: [24, 24]
     });
     var nhsCentreIcon_3 = L.icon({
-        iconUrl: CitizenConnect.HTTP_HOST + "/static/img/marker3.png",
-        iconRetinaUrl: CitizenConnect.HTTP_HOST + "/static/img/marker3@2x.png",
+        iconUrl: CitizenConnect.STATIC_URL + "img/marker3.png",
+        iconRetinaUrl: CitizenConnect.STATIC_URL + "img/marker3@2x.png",
         iconSize: [16, 16],
         popupAnchor: [-3, -76],
-        shadowUrl: CitizenConnect.HTTP_HOST + "/static/img/shadow.png",
-        shadowRetinaUrl: CitizenConnect.HTTP_HOST + "/static/img/shadow@2x.png",
+        shadowUrl: CitizenConnect.STATIC_URL + "img/shadow.png",
+        shadowRetinaUrl: CitizenConnect.STATIC_URL + "img/shadow@2x.png",
         shadowSize: [24, 24]
     });
     var nhsCentreIcon_4 = L.icon({
-        iconUrl: CitizenConnect.HTTP_HOST + "/static/img/marker4.png",
-        iconRetinaUrl: CitizenConnect.HTTP_HOST + "/static/img/marker4@2x.png",
+        iconUrl: CitizenConnect.STATIC_URL + "img/marker4.png",
+        iconRetinaUrl: CitizenConnect.STATIC_URL + "img/marker4@2x.png",
         iconSize: [16, 16],
         popupAnchor: [-3, -76],
-        shadowUrl: CitizenConnect.HTTP_HOST + "/static/img/shadow.png",
-        shadowRetinaUrl: CitizenConnect.HTTP_HOST + "/static/img/shadow@2x.png",
+        shadowUrl: CitizenConnect.STATIC_URL + "img/shadow.png",
+        shadowRetinaUrl: CitizenConnect.STATIC_URL + "img/shadow@2x.png",
         shadowSize: [24, 24]
     });
     var nhsCentreIcon_5 = L.icon({
-        iconUrl: CitizenConnect.HTTP_HOST + "/static/img/marker5.png",
-        iconRetinaUrl: CitizenConnect.HTTP_HOST + "/static/img/marker5@2x.png",
+        iconUrl: CitizenConnect.STATIC_URL + "img/marker5.png",
+        iconRetinaUrl: CitizenConnect.STATIC_URL + "img/marker5@2x.png",
         iconSize: [16, 16],
         popupAnchor: [-3, -76],
-        shadowUrl: CitizenConnect.HTTP_HOST + "/static/img/shadow.png",
-        shadowRetinaUrl: CitizenConnect.HTTP_HOST + "/static/img/shadow@2x.png",
+        shadowUrl: CitizenConnect.STATIC_URL + "img/shadow.png",
+        shadowRetinaUrl: CitizenConnect.STATIC_URL + "img/shadow@2x.png",
         shadowSize: [24, 24]
     });
     var $form = $(".filters");
