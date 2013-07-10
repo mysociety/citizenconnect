@@ -116,8 +116,10 @@ class ProblemManager(models.Manager):
             .filter(
                 survey_sent__isnull=True,
                 created__lte=survey_cutoff,
-                reporter_email__isnull=False, # FIXME - this is bug causing trouble in #945
                 status__in=Problem.VISIBLE_STATUSES
+            )  \
+            .exclude(
+                reporter_email='',                
             )
         return surveyable_problems
         
