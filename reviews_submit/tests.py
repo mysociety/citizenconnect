@@ -92,6 +92,7 @@ class ReviewFormViewBase(object):
                                  'month_year_of_visit_year': 2013,
                                  'organisation': self.organisation.id,
                                  'agree_to_terms': True,
+                                 'website': '',  # honeypot - should be blank
                                  }
 
         questions = Question.objects.filter(org_type=self.organisation.organisation_type).order_by('id')
@@ -240,6 +241,20 @@ class ReviewFormViewTest(ReviewFormViewBase, TestCase):
 
         # check that we've not been redirected
         self.assertEqual(resp.status_code, 200) # not a redirect
+
+    def test_form_fails_if_website_given(self):
+
+        # get the form, check the website field is shown
+        resp = self.client.get(self.review_form_url)
+        self.assertContains(resp, '<input type="text" name="website"')
+
+        # post spammy data, check it is not accepted
+        spam_review = self.review_post_data.copy()
+        spam_review['website'] = 'http://cheap-drugs.com/'
+        resp = self.client.post(self.review_form_url, spam_review)
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue('has been rejected' in resp.content)
+        self.assertEqual(self.organisation.submitted_reviews.count(), 0)    
 
 
 class ReviewFormViewBrowserTest(ReviewFormViewBase, SeleniumTestCase):

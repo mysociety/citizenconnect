@@ -7,8 +7,10 @@ from django.conf import settings
 from .models import Review, Rating
 from .widgets import MonthYearWidget
 
+from citizenconnect.forms import HoneypotModelForm
 
-class ReviewForm(forms.ModelForm):
+
+class ReviewForm(HoneypotModelForm):
 
     # A check to make sure that people have read the T's & C's
     agree_to_terms = forms.BooleanField(required=True,
