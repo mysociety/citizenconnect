@@ -33,6 +33,11 @@
     </head>
 
     <body class="{% block bodyclasses %}{% endblock %}{% if site_section %}  site-section-{{ site_section }}{% endif %}">
+        <!-- Dirty dirty dirty! Qe need this to extract the base url from
+        via javascript so that we can build decent urls for ajax requests
+        when behind the NHS proxy. Their proxy will rewrite this from / to
+        something else, and we need to know what that is. -->
+        <a class="hide-text" id="base-url" href="/">Home</a>
 
         {% if cobrand %}
             {% include cobrand.header_template %}
@@ -60,6 +65,15 @@
     <script src="{% static 'js/placeholder_polyfill.jquery.min.combo.js' %}"></script>
     <script src="{% static 'js/tables.js' %}"></script>
     <script src="{% static 'js/filters.js' %}"></script>
+    <script type="text/javascript">
+        window.CitizenConnect = window.CitizenConnect || {};
+        $(function(){
+            // Dirty! See the comment by the link we get this from for why
+            // we slice off the last char because it'll be a /, and the relative urls
+            // we'll append to this already start with /
+            window.CitizenConnect.base_url = $("#base-url").attr('href').slice(0, -1);
+        });
+    </script>
 
     {% if cobrand %}
         {% include cobrand.scripts_template %}
