@@ -15,7 +15,7 @@ def add_settings(request):
             'ALLOWED_IMAGE_EXTENSIONS': settings.ALLOWED_IMAGE_EXTENSIONS,
             'TWITTER_USERNAME': settings.TWITTER_USERNAME,
             'TWITTER_WIDGET_ID': settings.TWITTER_WIDGET_ID,
-            'HTTP_HOST': 'https://{0}'.format(request.get_host()) if request.is_secure() else 'http://{0}'.format(request.get_host()),
+            'STATIC_URL': settings.STATIC_URL
         }
     }
 
