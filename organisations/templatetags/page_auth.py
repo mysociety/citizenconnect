@@ -33,4 +33,4 @@ def may_see_reporter_contact_details(user):
     """
 
     # currently limit to superusers until exact perms decided - see #873
-    return user_is_superuser(user) or user_in_groups(user, [auth.CASE_HANDLERS])
+    return user_is_superuser(user) or user_in_groups(user, [auth.CASE_HANDLERS, auth.ORGANISATION_PARENTS])

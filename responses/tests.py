@@ -359,6 +359,12 @@ class ResponseFormViewTests(AuthorizationTestCase):
         self.assertContains(resp, "Please contact by <strong>{0}</strong>".format(self.problem.preferred_contact_method))
         self.assertContains(resp, self.problem.reporter_email)
 
+    def test_contact_details_visible_to_trust_user(self):
+        self.login_as(self.trust_user)
+        resp = self.client.get(self.response_form_url)
+        self.assertContains(resp, "Please contact by <strong>{0}</strong>".format(self.problem.preferred_contact_method))
+        self.assertContains(resp, self.problem.reporter_email)
+
     def _change_user_and_submit(self, user_to_test_as):
 
         # logout, login and get the form
