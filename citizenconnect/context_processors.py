@@ -15,8 +15,7 @@ def add_settings(request):
             'ALLOWED_IMAGE_EXTENSIONS': settings.ALLOWED_IMAGE_EXTENSIONS,
             'TWITTER_USERNAME': settings.TWITTER_USERNAME,
             'TWITTER_WIDGET_ID': settings.TWITTER_WIDGET_ID,
-            'STATIC_URL': settings.STATIC_URL,
-            'SITE_BASE_URL': settings.SITE_BASE_URL
+            'STATIC_URL': settings.STATIC_URL
         }
     }
 

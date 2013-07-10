@@ -28,7 +28,7 @@
 {% include 'organisations/includes/filters.html' %}
 
 <div class="map-search-controls mb">
-    <input type="text" id="map-search-org-name" value="{{ ods_code }}" data-search-url="{{ settings.SITE_BASE_URL }}{% url 'org-map-search' cobrand=cobrand.name %}" />
+    <input type="text" id="map-search-org-name" value="{{ ods_code }}" data-search-url="{% url 'org-map-search' cobrand=cobrand.name %}" />
     <input type="hidden" id="map-search-lon-lat" value="{{ lon }},{{ lat }}" />
 </div>
 
@@ -62,9 +62,8 @@
 <script src="{% static 'js/spin.min.js' %}"></script>
 <script src="{% static 'js/jquery.spin.js' %}"></script>
 <script type="text/javascript">
-    window.CitizenConnect = window.CitizenConnect || {};
-    CitizenConnect.providers = {{ organisations|safe }};
-    CitizenConnect.STATIC_URL = "{{ settings.STATIC_URL }}";
+    window.CitizenConnect.providers = {{ organisations|safe }};
+    window.CitizenConnect.STATIC_URL = "{{ settings.STATIC_URL }}";
 </script>
 
 <script type="text/x-underscore-template" name="hover-bubble">
