@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
 import random
 
 from django.core import mail
@@ -27,13 +27,7 @@ class Command(BaseCommand):
         return datetime.utcnow().replace(tzinfo=utc)
         
     def handle(self, *args, **options):
-        now = datetime.utcnow().replace(tzinfo=utc)
-        survey_interval = timedelta(days=settings.SURVEY_INTERVAL_IN_DAYS)
-        survey_cutoff = now - survey_interval
-        surveyable_problems = Problem.objects.filter(Q(survey_sent__isnull=True) &
-                                                     Q(created__lte=survey_cutoff) &
-                                                     Q(reporter_email__isnull=False) &
-                                                     Q(status__in=Problem.VISIBLE_STATUSES))
+        surveyable_problems = Problem.objects.requiring_survey_to_be_sent()
 
         logger.info('{0} surveys to email'.format(len(surveyable_problems)))
         if len(surveyable_problems) > 0:
