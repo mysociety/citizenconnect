@@ -62,9 +62,8 @@
 <script src="{% static 'js/spin.min.js' %}"></script>
 <script src="{% static 'js/jquery.spin.js' %}"></script>
 <script type="text/javascript">
-    window.CitizenConnect = window.CitizenConnect || {};
-    CitizenConnect.providers = {{ organisations|safe }};
-    CitizenConnect.HTTP_HOST = "{{ settings.HTTP_HOST }}";
+    window.CitizenConnect.providers = {{ organisations|safe }};
+    window.CitizenConnect.STATIC_URL = "{{ settings.STATIC_URL }}";
 </script>
 
 <script type="text/x-underscore-template" name="hover-bubble">
