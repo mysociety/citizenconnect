@@ -22,6 +22,10 @@ logger = logging.getLogger(__name__)
 class Command(BaseCommand):
     help = 'Email surveys to problem reporters'
 
+    @classmethod
+    def now_utc(cls):
+        return datetime.utcnow().replace(tzinfo=utc)
+        
     def handle(self, *args, **options):
         now = datetime.utcnow().replace(tzinfo=utc)
         survey_interval = timedelta(days=settings.SURVEY_INTERVAL_IN_DAYS)
@@ -42,7 +46,7 @@ class Command(BaseCommand):
                     self.send_survey(survey_template, problem)
                     # reload the problem from db to be sure that the version is fresh
                     problem = Problem.objects.get(pk=problem.id)
-                    problem.survey_sent = datetime.utcnow().replace(tzinfo=utc)
+                    problem.survey_sent = self.now_utc()
                     problem.save()
                     transaction.commit()
                 except Exception as e:
@@ -51,7 +55,7 @@ class Command(BaseCommand):
                     transaction.rollback()
 
     def send_survey(self, template, problem):
-        interval = (datetime.utcnow().replace(tzinfo=utc) - problem.created).days
+        interval = (self.now_utc() - problem.created).days
         survey_params = {'cobrand': problem.cobrand,
                          'token': problem.make_token(random.randint(0,32767)),
                          'id': int_to_base32(problem.id) }
