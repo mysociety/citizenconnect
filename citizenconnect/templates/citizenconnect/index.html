@@ -67,9 +67,7 @@
         <br />
 
         <div class="news-articles">
-            <div class="header">
-                <h2 class="title  title--news  mb--s">Latest News</h2>
-            </div>
+            <h2 class="title  title--news  mb--s">Latest News</h2>
             {% for article in recent_articles %}
             <div class="news-article--preview">
                 <h1 class="news-article__title"><a href="{% url 'article-view' cobrand=cobrand.name pk=article.pk %}">{{ article.title }}</a></h1>
@@ -108,6 +106,7 @@
     </div>
 
     <div class="g  one-third  palm-one-whole">
+        <h2 class="title  title--news  mb--s">Twitter</h2>
         {% include "citizenconnect/includes/twitter_timeline.html" %}
     </div>
 </div>
