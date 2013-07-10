@@ -64,10 +64,7 @@ STATIC_ROOT = os.path.join(PARENT_DIR, 'collected_static')
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-# We hardcode a full path to citizenconnect.mysociety.org here because
-# the NHS proxy to us, and this is the only way of making sure static assets
-# actually work in some cases, like giving custom icon urls to leaflet
-STATIC_URL = '/static/' if DEBUG else 'https://citizenconnect.mysociety.org/static/'
+STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (

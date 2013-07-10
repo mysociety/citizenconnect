@@ -40,6 +40,11 @@ WGS_84 = 4326
 
 SITE_BASE_URL = config.get('SITE_BASE_URL')
 
+# We hardcode a full path here because the NHS proxy us,
+# and this is the only way of making sure static assets
+# actually work in some cases, like giving custom icon urls to leaflet
+STATIC_URL = '/static/' if STAGING else SITE_BASE_URL + '/static/'
+
 DEFAULT_FROM_EMAIL = config.get('DEFAULT_FROM_EMAIL')
 
 SURVEY_INTERVAL_IN_DAYS = config.get('SURVEY_INTERVAL_IN_DAYS')
