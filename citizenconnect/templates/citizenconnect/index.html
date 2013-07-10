@@ -93,7 +93,7 @@
                 <div class="gw">
 
                     <div class="g one-whole mb--s">
-                        <input type="text" id="map-search-org-name" data-search-url="{{ settings.SITE_BASE_URL }}{% url 'org-map-search' cobrand=cobrand.name %}" data-map-url="{{ settings.SITE_BASE_URL }}{% url 'org-map' cobrand=cobrand.name %}" />
+                        <input type="text" id="map-search-org-name" data-search-url="{% url 'org-map-search' cobrand=cobrand.name %}" data-map-url="{% url 'org-map' cobrand=cobrand.name %}" />
                     </div>
                 </div>
 
