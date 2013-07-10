@@ -70,6 +70,8 @@ Optional. Whether or not this problem has been escalated. Send `0` or `1` for fa
 
 Optional. An image to attach to this problem report. If images are attached to the report, then the POST request must use a `Content-Type: multipart/form-data`.
 
+The currently allowed image types are JPEG, GIF and BMP.
+
 ### images_1
 
 Optional. Same as images_0.
