@@ -4,6 +4,7 @@ register = template.Library()
 from .. import auth
 from ..auth import (user_is_escalation_body,
                     user_in_group,
+                    user_in_groups,
                     user_is_superuser)
 
 
@@ -32,4 +33,4 @@ def may_see_reporter_contact_details(user):
     """
 
     # currently limit to superusers until exact perms decided - see #873
-    return user_is_superuser(user)
+    return user_is_superuser(user) or user_in_groups(user, [auth.CASE_HANDLERS])
