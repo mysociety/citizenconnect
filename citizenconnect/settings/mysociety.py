@@ -47,6 +47,8 @@ STATIC_URL = '/static/' if STAGING else SITE_BASE_URL + '/static/'
 
 DEFAULT_FROM_EMAIL = config.get('DEFAULT_FROM_EMAIL')
 
+SERVER_EMAIL = config.get('SERVER_EMAIL')
+
 SURVEY_INTERVAL_IN_DAYS = config.get('SURVEY_INTERVAL_IN_DAYS')
 
 EMAIL_HOST = config.get('EMAIL_HOST')
