@@ -34,3 +34,6 @@ WSGIDaemonProcess example.com \
 WSGIProcessGroup example.com
 
 WSGIScriptAlias / /data/vhost/example.com/citizenconnect/citizenconnect/wsgi.py
+
+# Needed to tell mod_wsgi to pass auth headers onto the app
+WSGIPassAuthorization On
