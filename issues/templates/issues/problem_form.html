@@ -74,15 +74,15 @@
         </ul>
 
         <ul class="gw">
-              {% if not form.service.is_hidden %}
-                <li class="g  five-eighths  palm-one-whole  mb">
-                    <div class="gw">
-                        <div class="g  six-tenths  palm-one-whole"><span class="info">If your problem relates to a particular service</span></div>
-                        <div class="g  four-tenths  palm-one-whole">{{ form.service }}</div>
-                        {% include "citizenconnect/includes/message_list.html" with messages=form.service.errors message_type='error' %}
-                    </div>
-                </li>
-              {% endif %}
+          {% if not form.service.is_hidden %}
+            <li class="g  five-eighths  palm-one-whole  mb">
+                <div class="gw">
+                    <div class="g  six-tenths  palm-one-whole"><span class="info">If your problem relates to a particular service</span></div>
+                    <div class="g  four-tenths  palm-one-whole">{{ form.service }}</div>
+                    {% include "citizenconnect/includes/message_list.html" with messages=form.service.errors message_type='error' %}
+                </div>
+            </li>
+          {% endif %}
             <li class="g  one-whole">
                 <label for="id_reporter_under_16" class="label-checkbox">
                     {{ form.reporter_under_16 }}

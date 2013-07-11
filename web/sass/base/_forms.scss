@@ -177,13 +177,21 @@ textarea {
 
 .big-radio-group--horizontal {
     display: table;
-    ul { display: table-row; }
+    @include media-query(palm){ display: block; }
+    ul { 
+      display: table-row; 
+      @include media-query(palm){ 
+        display: table; 
+        margin-left: 1.25em
+      }
+    }
     li {
         padding: 1.25em 0.5em;
         vertical-align: top;
         background: none;
         display: table-cell;
         width: 33%;
+        @include media-query(palm){ display: table-row; }
         p {
           padding-left: 3.5em;
         }

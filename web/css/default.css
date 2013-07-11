@@ -378,8 +378,11 @@ input[type=text]:focus, .text-input:focus, textarea:focus { -webkit-box-shadow: 
 .big-radio-group li.big-radio-group--active.big-radio-group--green .big-radio-group__radio { background: #009e49; }
 
 .big-radio-group--horizontal { display: table; }
+@media only screen and (max-width: 480px) { .big-radio-group--horizontal { display: block; } }
 .big-radio-group--horizontal ul { display: table-row; }
+@media only screen and (max-width: 480px) { .big-radio-group--horizontal ul { display: table; margin-left: 1.25em; } }
 .big-radio-group--horizontal li { padding: 1.25em 0.5em; vertical-align: top; background: none; display: table-cell; width: 33%; }
+@media only screen and (max-width: 480px) { .big-radio-group--horizontal li { display: table-row; } }
 .big-radio-group--horizontal li p { padding-left: 3.5em; }
 
 .ie6 .big-radio-group, .ie7 .big-radio-group { display: block; }
