@@ -61,7 +61,8 @@ def changes_for_model(model):
                     change_string = changes_as_string(changed, model.TRANSITIONS)
                     if change_string:
                         changes.append({"user": version.revision.user,
-                                        "description": change_string})
+                                        "description": change_string,
+                                        "when": version.revision.date_created})
             except DeserializationError:
                 # Django's deserialisation framework gets upset if it tries to get
                 # a model instance from some json or xml and the instance has fields

@@ -64,13 +64,14 @@
 
 <div class="meta-data-wrap">
     <h3 class="meta-data-label">History</h3>
-    {% for change in history reversed %}
-        <div class="meta-data  meta-data--response">
-            <p>{{ change.description }}{% if change.user %} by {{ change.user.username }}{% endif %}</p>
-        </div>
-    {% empty %}
-        <div class="meta-data  meta-data--response">
+    <div class="meta-data  meta-data--response">
+        {% for change in history reversed %}
+            <p>
+              {{ change.description }}{% if change.user %} by {{ change.user.username }}{% endif %}
+              (<span title="{{ change.when }}">{{ change.when|timesince }} ago</span>)
+            </p>
+        {% empty %}
             <p>No history.</p>
-        </div>
-    {% endfor %}
+        {% endfor %}
+    </div>
 </div>
