@@ -83,7 +83,7 @@
                 </div>
             </li>
           {% endif %}
-            <li class="g  one-whole">
+            <li class="g  one-whole  mb">
                 <label for="id_reporter_under_16" class="label-checkbox">
                     {{ form.reporter_under_16 }}
                     <abbr title="If you are under 16, you must seek your parent's or guardian's consent before you submit a posting.">Are you under 16?</abbr>
@@ -91,9 +91,7 @@
                 {% include "citizenconnect/includes/message_list.html" with messages=form.reporter_under_16.errors message_type='error' %}
             </li>
         </ul>
-    </fieldset>
 
-    <fieldset class="island">
         <label class="island-label">Images</label>
         <p class="info">You can add up to {{ settings.MAX_IMAGES_PER_PROBLEM }} images of your problem. Allowed image types are: {{ settings.ALLOWED_IMAGE_EXTENSIONS|join:", " }}</p>
         <ul class="gw">
