@@ -1,0 +1,12 @@
+{% if form.website.errors %}
+  <fieldset class="island">
+    {# If this error is set then the submission triggered the spam detection. #}
+    <ul class="message-list">
+      <li class="message-list__error">
+        Your submission appears to be auto-generated and has been rejected.
+        If you have used a program that automatically fills in some details
+        please try again without using it.
+      </li>
+    </ul>
+  </fieldset>
+{% endif %}

@@ -1,3 +1,6 @@
+from django import forms
+
+
 class ConcurrentFormMixin(object):
     """
     A Mixin for forms which need to check concurrent access to some model.
@@ -57,4 +60,24 @@ class ConcurrentFormMixin(object):
         saved_object = super(ConcurrentFormMixin, self).save()
         self.unset_version_in_session()
         return saved_object
+
+
+class HoneypotModelForm(forms.ModelForm):
+
+    # This is a honeypot field to catch spam bots. If there is any content in
+    # it the form validation will fail and an appropriate error should be shown to
+    # the user. This field is hidden by CSS in the form so should never be shown to
+    # a user. Hopefully it will not be autofilled either.
+    website = forms.CharField(
+        label='Leave this blank',
+        required=False,
+    )
+
+    def clean_website(self):
+        # The field 'website' is a honeypot - it should be hidden from real
+        # users. Anything that fills it in is probably a bot so reject the
+        # submission.
+        if self.cleaned_data.get('website'):
+            raise forms.ValidationError("submission is probably spam")
+        return ''
 
