@@ -7,11 +7,13 @@
 
 {% block content %}
 
-<div class="cf">
-    {% if back_to_summaries_link %}
-        <a href="{{ back_to_summaries_link }}" class="back-btn  fr  mt--b"><span class="icon-chevron-left" aria-hidden="true"></span> Back to summaries</a>
-    {% endif %}
-</div>
+{% if private_back_to_summaries_link %}
+  <div class="cf">
+    <a href="{{ private_back_to_summaries_link }}" class="back-btn  fr  mt--b"><span class="icon-chevron-left" aria-hidden="true"></span> Back to summaries</a>
+  </div>
+{% else %}
+  {% include "organisations/includes/provider_summary_link.html" %}
+{% endif %}
 
 {% include "organisations/includes/page_header.html" with title="Outcomes" %}
 
