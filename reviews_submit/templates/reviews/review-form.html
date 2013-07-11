@@ -26,6 +26,8 @@
             {{ hidden }}
         {% endfor %}
 
+        {% include "citizenconnect/includes/honeypot_errors.html" %}
+
         <fieldset class="island">
             <ul class="gw">
 
@@ -106,6 +108,8 @@
                     <label for="id_is_anonymous">{{ form.is_anonymous }} Tick to remain anonymous</label>
                     {% include "citizenconnect/includes/message_list.html" with messages=form.is_anonymous.errors message_type='error' %}
                 </li>
+                
+                {% include "citizenconnect/includes/honeypot_field.html" %}
 
             </ul>
         </fieldset>
