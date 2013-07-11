@@ -36,4 +36,11 @@ jQuery(document).ready(function($) {
         e.preventDefault();
     });
 
+    var mightDisablePublishButton = function(e) {
+        if ($(this).val() == 7) {
+            $('button[name="publish"]').attr('disabled', 'disabled');
+        }
+    };
+
+    $('#id_status').on('change', mightDisablePublishButton);
 });

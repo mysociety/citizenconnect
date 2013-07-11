@@ -218,7 +218,7 @@
     /**
      * Disabled button
      */
-    .btn--disabled {
+    .btn--disabled, .btn[disabled] {
         border-color: $c-btn-disabled-border;
         color: $c-btn-disabled-color;
         background: $c-btn-disabled-bg;
