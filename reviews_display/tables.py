@@ -75,6 +75,9 @@ class OrganisationParentReviewTable(ReviewTable):
         review_link = reverse('review-detail', kwargs={'ods_code': record.organisations.all()[0].ods_code, 'cobrand': 'choices', 'api_posting_id': record.api_posting_id})
         return mark_safe(u'<a href="{0}">{1} <span class="icon-chevron-right  fr" aria-hidden="true"></span></a>'.format(review_link, conditional_escape(truncated_content)))
 
+    def row_href(self, record):
+        return reverse('review-detail', kwargs={'ods_code': record.organisations.all()[0].ods_code, 'cobrand': 'choices', 'api_posting_id': record.api_posting_id})
+
     class Meta:
         order_by = ('-created',)
         attrs = {'class': 'problem-table problem-table--expanded'}
