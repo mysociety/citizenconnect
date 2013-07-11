@@ -15,7 +15,6 @@ class BasicAuthMiddleware(object):
         # REMOTE_USER might be set by Apache or other proxies that have already
         # authenticated, if they did it via basic auth for our username, we
         # assume that's ok
-        print request.META
         if request.META.get('AUTH_TYPE') == 'Basic' and request.META.get('REMOTE_USER') == settings.API_BASICAUTH_USERNAME:
             return None
         elif not 'HTTP_AUTHORIZATION' in request.META:
