@@ -13,6 +13,12 @@ class BaseModerationTable(tables.Table):
     created = tables.DateTimeColumn(verbose_name="Received")
     private_summary = tables.Column(verbose_name='Text snippet', orderable=False)
 
+    images = tables.TemplateColumn(
+        template_name="organisations/includes/images_column.html",
+        accessor="images",
+        orderable=False
+    )
+
     class Meta:
         attrs = {'class': 'problem-table  problem-table--expanded'}
         order_by = 'reference_number'
