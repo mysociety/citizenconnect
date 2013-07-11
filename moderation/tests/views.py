@@ -238,6 +238,11 @@ class ModerateFormViewTests(BaseModerationTestCase, ProblemImageTestBase):
         self.assertContains(resp, expected_image_tag.format(expected_thumbnail1.url))
         self.assertContains(resp, expected_image_tag.format(expected_thumbnail2.url))
 
+    def test_contact_details_visible(self):
+        resp = self.client.get(self.problem_form_url)
+        self.assertContains(resp, "Please contact by <strong>{0}</strong>".format(self.test_problem.preferred_contact_method))
+        self.assertContains(resp, self.test_problem.reporter_email)
+
     def test_moderated_issues_accepted(self):
         resp = self.client.get(reverse('moderate-form', kwargs={'pk': self.moderated_problem.id}))
         self.assertEqual(resp.status_code, 200)
@@ -276,3 +281,8 @@ class SecondTierModerateFormViewTests(BaseModerationTestCase, ProblemImageTestBa
         self.assertContains(resp, '<p class="info">There are <strong>2</strong> images associated with this problem report.</p>')
         self.assertContains(resp, expected_image_tag.format(expected_thumbnail1.url))
         self.assertContains(resp, expected_image_tag.format(expected_thumbnail2.url))
+
+    def test_contact_details_not_visible(self):
+        resp = self.client.get(self.second_tier_problem_form_url)
+        self.assertNotContains(resp, "Please contact by <strong>{0}</strong>".format(self.test_second_tier_moderation_problem.preferred_contact_method))
+        self.assertNotContains(resp, self.test_second_tier_moderation_problem.reporter_email)
