@@ -8,6 +8,8 @@
 
 {% block content %}
 
+{% include "organisations/includes/provider_summary_link.html" %}
+
 {# Not the finest hour for Django templates. The "add" filter is idiotic with regards to not coercing values #}
 {% with total_reviews|stringformat:"s" as total_reviews_string %}
   {% with "Reviews ("|add:total_reviews_string|add:")" as title %}
