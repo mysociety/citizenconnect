@@ -9,7 +9,7 @@
 
 {% block content %}
 
-<p><span class="icon-chevron-left" aria-hidden="true"></span> <a href="{% url 'org-parent-dashboard' code=issue.organisation.parent.code %}">Return to your dashboard</a></p>
+<p><span class="icon-chevron-left" aria-hidden="true"></span> <a href="{% url 'private_home' %}">Return to your homepage</a></p>
 
 {% include "issues/includes/issue_header.html" with object=issue title="Respond to a problem" %}
 
