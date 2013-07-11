@@ -55,8 +55,10 @@ class ProblemForm(forms.ModelForm):
         if self.cleaned_data['priority']:
             problem.priority = self.cleaned_data['priority']
 
-        # Problems created using this should have a confirmation email sent
-        problem.confirmation_required = True
+        # Problems created using this should have a confirmation email sent,
+        # if we have an email address.
+        if problem.reporter_email:
+            problem.confirmation_required = True
 
         if commit:
             problem.save()

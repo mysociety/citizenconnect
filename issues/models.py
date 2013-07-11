@@ -2,7 +2,7 @@ import logging
 logger = logging.getLogger(__name__)
 import os
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import hmac
 import hashlib
 from uuid import uuid4
@@ -107,6 +107,22 @@ class ProblemManager(models.Manager):
             confirmation_sent__isnull=True,
             confirmation_required=True
         )
+    
+    def requiring_survey_to_be_sent(self):
+        now = datetime.utcnow().replace(tzinfo=utc)
+        survey_interval = timedelta(days=settings.SURVEY_INTERVAL_IN_DAYS)
+        survey_cutoff = now - survey_interval
+        surveyable_problems = Problem.objects  \
+            .filter(
+                survey_sent__isnull=True,
+                created__lte=survey_cutoff,
+                status__in=Problem.VISIBLE_STATUSES
+            )  \
+            .exclude(
+                reporter_email='',                
+            )
+        return surveyable_problems
+        
 
 
 class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
