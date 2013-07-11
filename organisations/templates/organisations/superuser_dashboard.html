@@ -10,6 +10,14 @@
 {% include "organisations/includes/page_header.html" with title=organisation_parent.name|add:" Dashboard" %}
 
 <div class="feature">
+    <h2>Moderation</h2>
+    <ul>
+        <li><a href="{% url 'moderate-home' %}">Moderation Dashboard</a></li>
+        <li><a href="{% url 'second-tier-moderate-home' %}">Second Tier Moderation Dashboard</a></li>
+    </ul>
+</div>
+
+<div class="feature">
     <h2>CCGs</h2>
     <ul>
         {% for ccg in ccgs %}
