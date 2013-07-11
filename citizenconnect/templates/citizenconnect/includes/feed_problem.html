@@ -2,27 +2,19 @@
 {% load thumbnail %}
 
 <li>
-    <h3 class="feed-list__title">{{ problem.get_category_display }}</h3>
-    <div class="feed-list__left">
-        <p>
+    <span class="feed-list__title">{{ problem.get_category_display }}:</span>
 
-          <a {% if iframe %}target="_blank"{% endif %} href="{% url 'problem-view' pk=problem.id cobrand=cobrand.name %}">
-
-            {% if problem.are_details_publicly_visible %}
-              {% for image in problem.images.all %}
-                {% thumbnail image.image "x32" as im %}
-                  <img src="{{ im.url }}" height="{{ im.height}}" width="{{im.width}}" />
-                {% endthumbnail %}
-              {% endfor %}
-            {% endif %}
-
-            {{ problem.summary|default:"More details" }}
-
-          </a>
-
-        </p>
-    </div>
-    <div class="feed-list__right">
-        <time>{{ problem.created|timesince }} ago</time>
-    </div>
+    <a {% if iframe %}target="_blank"{% endif %} href="{% url 'problem-view' pk=problem.id cobrand=cobrand.name %}">
+    
+      {% if problem.are_details_publicly_visible %}
+        {% for image in problem.images.all %}
+          {% thumbnail image.image "x32" as im %}
+            <img src="{{ im.url }}" height="{{ im.height}}" width="{{im.width}}" />
+          {% endthumbnail %}
+        {% endfor %}
+      {% endif %}
+    
+      {{ problem.summary|default:"More details" }}
+    
+    </a>
 </li>
