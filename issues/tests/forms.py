@@ -124,6 +124,7 @@ class ProblemCreateFormTests(ProblemCreateFormBase, TestCase):
         del self.test_problem['reporter_email']
         resp = self.client.post(self.form_url, self.test_problem)
         problem = Problem.objects.get(reporter_name=self.uuid)
+        self.assertFalse(problem.confirmation_required)
         self.assertIsNotNone(problem)
 
     def test_problem_form_accepts_email_only(self):
