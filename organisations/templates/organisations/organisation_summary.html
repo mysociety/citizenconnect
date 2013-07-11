@@ -8,8 +8,10 @@
 {% block content %}
 
 <div class="cf">
-    {% if back_to_summaries_link %}
-        <a href="{{ back_to_summaries_link }}" class="back-btn  fr  mt--b"><span class="icon-chevron-left" aria-hidden="true"></span> Back to summaries</a>
+    {% if private_back_to_summaries_link %}
+        <a href="{{ private_back_to_summaries_link }}" class="back-btn  fr  mt--b"><span class="icon-chevron-left" aria-hidden="true"></span> Back to summaries</a>
+    {% else %}
+        <a href="{% url 'org-all-summary' cobrand=cobrand.name %}" class="back-btn  fr  mt--b"><span class="icon-chevron-left" aria-hidden="true"></span> Back to summaries</a>
     {% endif %}
 </div>
 
