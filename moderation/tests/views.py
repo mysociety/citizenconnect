@@ -119,6 +119,10 @@ class HomeViewTests(BaseModerationTestCase):
         resp = self.client.get(self.home_url)
         self.assertContains(resp, expected)
 
+    def test_images_column_displayed(self):
+        resp = self.client.get(self.home_url)
+        self.assertContains(resp, '<th class="images">Images</th>')
+
 
 class SecondTierModerationHomeViewTests(BaseModerationTestCase):
 
