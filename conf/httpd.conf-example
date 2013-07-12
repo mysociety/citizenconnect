@@ -15,6 +15,12 @@
 #     Satisfy any
 # </Location>
 
+# Limit the max request we'll accept. This is fairly brutal as the user may not
+# see a nice error, but is the only really effective way to do it. We can't do
+# it in the Django app as it won't be given the request until it has been fully
+# received, which is too late.
+LimitRequestBody 5242880 # 5 MB
+
 # Replace the following below:
 #   'example.com', 'exampleuser', 'examplegroup'
 
