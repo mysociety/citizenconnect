@@ -56,6 +56,7 @@
       {% csrf_token %}
       <input type="hidden" name="password" value="password" />
       <select name="username" onchange="this.form.submit()">
+          <option value="">Pick one, currently {% firstof user.username 'not logged in' %}</option>
         {% for u in users %}
           <option>{{ u.username }}</option>
         {% empty %}
