@@ -280,7 +280,9 @@ class ProblemDashboardTable(BaseProblemTable):
                     'created',
                     'category',
                     'service',
-                    'summary')
+                    'summary',
+                    'images',
+                    'breach_and_escalation')
 
 
 class BreachTable(ProblemTable):
