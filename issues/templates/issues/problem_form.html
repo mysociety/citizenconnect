@@ -52,31 +52,17 @@
     {% include "citizenconnect/includes/honeypot_errors.html" %}
 
     <fieldset class="island">
-        <label for="id_service" class="island-label">Your problem</label>
+        <label for="id_description" class="island-label">Your problem</label>
 
         <ul class="gw">
-            <li class="g  five-eighths">
+            <li class="g  five-eighths  palm-one-whole">
                 {{ form.description }}
                 <p class="info align-right description-count"></a>
                 <div class="description-errors">
                     {% include "citizenconnect/includes/message_list.html" with messages=form.description.errors message_type='error' %}
                 </div>
-
-                {% if not form.service.is_hidden %}
-                <p class="info">If your problem relates to a particular service <span class="slim-select">{{ form.service }}</span></p>
-                {% include "citizenconnect/includes/message_list.html" with messages=form.service.errors message_type='error' %}
-                {% endif %}
-
-                <div>
-                    <label for="id_reporter_under_16" class="label-checkbox">
-                        {{ form.reporter_under_16 }}
-                        <abbr title="If you are under 16, you must seek your parent's or guardian's consent before you submit a posting.">Are you under 16?</abbr>
-                    </label>
-                    {% include "citizenconnect/includes/message_list.html" with messages=form.reporter_under_16.errors message_type='error' %}
-                </div>
             </li>
-
-            <li class="g  three-eighths  description-info">
+            <li class="g  three-eighths  palm-one-whole  description-info">
                 <p class="info">In order to enable us to resolve your problem as quickly and as effectively as possible, please provide as much detail as you can. For example:</p>
                 <ul>
                     <li><span class="info">Date the problem occurred</span></li>
@@ -85,7 +71,25 @@
                     <li><span class="info">Name of patient (if not yourself, you must ensure you have gained their consent before logging this problem)</span></li>
                 </ul>
             </li>
+        </ul>
 
+        <ul class="gw">
+          {% if not form.service.is_hidden %}
+            <li class="g  five-eighths  palm-one-whole  mb">
+                <div class="gw">
+                    <div class="g  six-tenths  palm-one-whole"><span class="info">If your problem relates to a particular service</span></div>
+                    <div class="g  four-tenths  palm-one-whole">{{ form.service }}</div>
+                    {% include "citizenconnect/includes/message_list.html" with messages=form.service.errors message_type='error' %}
+                </div>
+            </li>
+          {% endif %}
+            <li class="g  one-whole">
+                <label for="id_reporter_under_16" class="label-checkbox">
+                    {{ form.reporter_under_16 }}
+                    <abbr title="If you are under 16, you must seek your parent's or guardian's consent before you submit a posting.">Are you under 16?</abbr>
+                </label>
+                {% include "citizenconnect/includes/message_list.html" with messages=form.reporter_under_16.errors message_type='error' %}
+            </li>
         </ul>
     </fieldset>
 
