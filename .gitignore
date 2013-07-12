@@ -4,3 +4,4 @@ conf/httpd.conf
 .DS_Store
 .sass-cache
 chromedriver.log
+libpeerconnection.log
