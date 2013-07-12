@@ -211,14 +211,33 @@ class ProblemAPITests(TestCase):
         problem = Problem.objects.get(reporter_name=self.problem_uuid)
         self.assertEqual(problem.publication_status, Problem.NOT_MODERATED)
 
-    def test_preferred_contact_method_is_optional_and_defaults_to_email(self):
-        problem_without_preferred_contact_method = self.test_problem_defaults
-        del problem_without_preferred_contact_method['preferred_contact_method']
-        resp = self.client.post(self.problem_api_url, problem_without_preferred_contact_method)
-        self.assertEquals(resp.status_code, 201)
+    def test_preferred_contact_method_defaults_correctly(self):
+        test_problem_data = self.test_problem_defaults
+        del test_problem_data['preferred_contact_method']
 
-        problem = Problem.objects.get(reporter_name=self.problem_uuid)
-        self.assertEqual(problem.preferred_contact_method, problem.CONTACT_EMAIL)
+        # Try with both
+        test_problem_data['reporter_name'] = 'both'
+        resp = self.client.post(self.problem_api_url, test_problem_data)
+        self.assertEquals(resp.status_code, 201, resp.content)
+        problem = Problem.objects.get(reporter_name=test_problem_data['reporter_name'])
+        self.assertEqual(problem.preferred_contact_method, Problem.CONTACT_EMAIL)
+
+        # Try with just email
+        test_problem_data['reporter_name'] = 'just email'
+        del test_problem_data['reporter_phone']
+        resp = self.client.post(self.problem_api_url, test_problem_data)
+        self.assertEquals(resp.status_code, 201, resp.content)
+        problem = Problem.objects.get(reporter_name=test_problem_data['reporter_name'])
+        self.assertEqual(problem.preferred_contact_method, Problem.CONTACT_EMAIL)
+
+        # Try with just phone
+        test_problem_data['reporter_name'] = 'just phone'
+        del test_problem_data['reporter_email']
+        test_problem_data['reporter_phone'] = '01234 567 890'
+        resp = self.client.post(self.problem_api_url, test_problem_data)
+        self.assertEquals(resp.status_code, 201, resp.content)
+        problem = Problem.objects.get(reporter_name=test_problem_data['reporter_name'])
+        self.assertEqual(problem.preferred_contact_method, Problem.CONTACT_PHONE)
 
     def test_commissioned_is_required(self):
         problem_without_commissioned = self.test_problem_defaults
