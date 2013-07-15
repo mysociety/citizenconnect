@@ -72,24 +72,14 @@
             <img src="{% static 'img/organisation-map-placeholder.png' %}" alt="Image of <%= nhsCentre.name %>" class="fr" />
             <h1 class="map-header"><%= nhsCentre.name %></h1>
         </div>
-        <h2 class="map-header">Problem reports</h2>
-        <% if (issueType !== '') { %>
-            <h3>Issue Type - <%= issueType %></h3>
-        <% } %>
-        <ul class="unstyled">
-            <li><em><%= nhsCentre.all_time_open %></em> Open/In progress issues</li>
-            <li><em><%= nhsCentre.all_time_closed %></em> Closed issues</li>
-            <% if (nhsCentre.average_time_to_address) { %>
-                <li><em><%= nhsCentre.average_time_to_address %></em> days average time to close</li>
-            <% } %>
-            <% if (nhsCentre.happy_outcome) { %>
-                <li><em><%= nhsCentre.happy_outcome %></em> users satisfied with resolution</li>
-            <% } %>
-        </ul>
-        <h2 class="map-header">Ratings and Reviews</h2>
+
+        <p>
+          <strong>Problem reports</strong>: <%= nhsCentre.all_time_open %> open, <%= nhsCentre.all_time_closed %> closed.
+        </p>
+
         <% if (nhsCentre.average_recommendation_rating) { %>
         <p>
-            Average Rating
+            <strong>Average Rating</strong>:
             <span class="rating">
                 <span class="<%= starClass(nhsCentre.average_recommendation_rating, 1) %>" aria-hidden="true"></span>
                 <span class="<%= starClass(nhsCentre.average_recommendation_rating, 2) %>" aria-hidden="true"></span>
@@ -99,7 +89,9 @@
             </span>
         </p>
         <% } %>
-        <p><%= nhsCentre.reviews_all_time %> Review<%= nhsCentre.reviews_all_time !== 1 ? 's' : '' %> received</p>
+        <p>
+          <strong>Reviews</strong>: <%= nhsCentre.reviews_all_time %> received.
+        </p>
         <span class="fr"><a href="<%= nhsCentre.url %>">View all details <span class="icon-chevron-right" aria-hidden="true"></span></a></span>
     </div>
 </script>
