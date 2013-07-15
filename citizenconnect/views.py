@@ -112,3 +112,7 @@ class Feedback(FormView):
 
 class FeedbackConfirm(TemplateView):
     template_name = 'citizenconnect/feedback_confirm.html'
+
+
+class HelpYourNHS(TemplateView):
+    template_name = 'citizenconnect/help_your_nhs.html'

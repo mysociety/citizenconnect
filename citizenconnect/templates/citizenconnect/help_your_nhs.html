@@ -1,0 +1,67 @@
+{% extends "citizenconnect/base.html" %}
+{% load url from future %}
+{% load staticfiles %}
+
+{% block title %}Help Your NHS{% endblock %}
+
+{% block bodyclasses %}help-your-nhs{% endblock %}
+
+{% block content %}
+
+<div class="header">
+    <h1>Help your NHS</h1>
+</div>
+
+<p class="lead">There are lots of ways you can support the NHS. To find out more and get involved, click on the links below.</p>
+
+<div class="gw  mb">
+    <div class="g  one-third  palm-one-whole">
+        <div class="help-feature  help-feature--volunteer">
+            <h2><a href="http://www.nhscareers.nhs.uk/working-in-the-nhs/joining-the-nhs/volunteering-in-the-nhs/">Become a volunteer in the NHS</a></h2>
+            <p><a href="http://www.nhscareers.nhs.uk/working-in-the-nhs/joining-the-nhs/volunteering-in-the-nhs/">With over 100 roles open to volunteers, find out how you can make a difference.</a></p>
+        </div>
+    </div>
+    <div class="g  one-third  palm-one-whole">
+        <div class="help-feature  help-feature--clinical-trials">
+            <h2><a href="http://www.nhs.uk/Conditions/Clinical-trials/Pages/Introduction.aspx">Participate in a Clinical Trial</a></h2>
+            <p><a href="http://www.nhs.uk/Conditions/Clinical-trials/Pages/Introduction.aspx">Find out more about clinical trials and medical research within the NHS.</a></p>
+        </div>
+    </div>
+    <div class="g  one-third  palm-one-whole">
+        <div class="help-feature  help-feature--healthwatch">
+            <h2><a href="http://www.healthwatch.co.uk/find-local-heathwatch"><img src="{% static 'img/healthwatch-logo.png' %}" alt="Healthwatch"/></a></h2>
+            <p><a href="http://www.healthwatch.co.uk/find-local-heathwatch">Join your local HealthWatch here and share your views and concerns.</a></p>
+        </div>
+    </div>
+</div>
+
+<div class="gw  mb">
+    <div class="g  one-half  palm-one-whole">
+        <div class="help-feature  help-feature--big  help-feature--whistleblower">
+            <h2>Whistleblower: Speak out on care concern</h2>
+            <p>Anyone with patient safety or care concerns can contact the national whistleblowing helpline for NHS and social care.</p>
+            <p class="whistleblower__phone">call 08000 724725</p>
+            <p class="whistleblower__email">email <a href="mailto:enquiries@wbhelpline.org.uk">enquiries@wbhelpline.org.uk</a></p>
+        </div>
+    </div>
+
+    <div class="g  one-half  palm-one-whole">
+        <div class="help-feature  help-feature--big  help-feature--organ-donor">
+            <h2>NHS Organ Donor Register</h2>
+            <p>Add your name to the NHS Organ Donor Register and one day you may be able to save lives</p>
+            <p class="organ-donor__cta"><a href="https://www.organdonation.nhs.uk/how_to_become_a_donor/registration/registration_form.asp">Sign up now >></a></p>
+        </div>
+    </div>
+</div>
+
+<div class="gw">
+    <div class="g  one-whole  align-center">
+        <div class="help-feature  help-feature--give-blood">
+            <p>
+                <a href="http://www.blood.co.uk"><img src="{% static 'img/give-blood.jpg' %}" alt="Save a life, give blood" /></a>
+            </p>
+            <p><a href="http://www.blood.co.uk">Find out more about donating blood.</a></p>
+        </div>
+    </div>
+</div>
+{% endblock content %}
