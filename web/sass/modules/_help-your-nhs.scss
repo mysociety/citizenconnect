@@ -1,0 +1,86 @@
+.help-feature {
+    border: 1px solid $c-help-feature-border-color;
+    border-radius: 5px;
+    background-color: $c-help-feature-background-color;
+    padding: 1em;
+    min-height: 172px;
+
+    a {
+        color: $c-help-feature-link-color;
+        text-decoration: none;
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    h2, p {
+        text-align: center;
+    }
+
+    h2 {
+        font-size: 16px;
+        font-weight: bold;
+    }
+}
+
+.help-feature--big {
+    min-height: 300px;
+}
+
+.help-feature--volunteer {
+    h2 a {
+        color: $c-volunteer-title-color;
+    }
+}
+
+.help-feature--clinical-trials {
+    h2 a {
+        color: $c-clinical-trials-title-color;
+    }
+}
+
+.help-feature--whistleblower {
+    h2 {
+        color: $c-whistleblower-title-color;
+    }
+
+    .whistleblower__phone {
+        font-weight:bold;
+    }
+
+    .whistleblower__email,
+    .whistleblower__email a {
+        color: $c-whistleblower-email-color;
+        font-weight:bold;
+    }
+}
+
+.help-feature--organ-donor {
+    background: transparent url(../img/organ-donor-background.jpg) no-repeat right center;
+    border: 3px solid $c-organ-donor-border-color;
+
+    h2, p {
+        text-align: left;
+        margin-right: 200px;
+        color: $c-organ-donor-text-color;
+    }
+
+    h2 {
+        font-size: 18px;
+        margin-bottom: 3em;
+    }
+
+    p {
+        font-size: 14px;
+    }
+
+    .organ-donor__cta {
+        margin-top: 3em;
+    }
+
+    .organ-donor__cta a {
+        color: $c-organ-donor-cta-color;
+        font-size: 18px;
+        font-weight:bold;
+    }
+}
