@@ -566,7 +566,7 @@ table .icon-warning { font-size: 1.375em; color: #d81e05; line-height: 0; }
 .problem-table .problem-table__highlight { background: #d81e05; border-color: #d81e05 !important; color: white; }
 .problem-table a { color: #2f9aa8; }
 .problem-table a:hover { color: #27808c; }
-.problem-table .problem-table__flag { padding: 0 0 0 10px; position: relative; overflow: hidden; width: 25px; }
+.problem-table .problem-table__flag { display: block; padding: 0 0 0 10px; position: relative; overflow: hidden; width: 25px; }
 .problem-table .problem-table__flag__breach, .problem-table .problem-table__flag__escalate { position: absolute; width: 100%; right: 0; text-transform: uppercase; color: white; text-align: center; padding-top: 5px; height: 28px; }
 .problem-table .rating, .problem-table .rating--grey, .problem-table .rating--review_details, .problem-table .rating--organisation-summary { position: relative; }
 .problem-table .problem-table__flag__breach { background: #ff8b00; top: 0; }
