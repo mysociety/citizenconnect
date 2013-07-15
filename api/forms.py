@@ -61,9 +61,15 @@ class ProblemAPIForm(forms.ModelForm):
         return self.cleaned_data['priority']
 
     def clean_preferred_contact_method(self):
-        if not self.cleaned_data.get('preferred_contact_method'):
-            self.cleaned_data['preferred_contact_method'] = Problem.CONTACT_EMAIL
-        return self.cleaned_data['preferred_contact_method']
+        preferred = self.cleaned_data.get('preferred_contact_method')
+
+        if not preferred:
+            if self.cleaned_data.get('reporter_email'):
+                preferred = Problem.CONTACT_EMAIL
+            else:
+                preferred = Problem.CONTACT_PHONE
+
+        return preferred
 
     def clean(self):
         # Run super class clean method
