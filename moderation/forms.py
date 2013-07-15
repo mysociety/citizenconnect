@@ -31,14 +31,19 @@ class ModerationForm(ConcurrentFormMixin, forms.ModelForm):
             self.fields["status"].choices = Problem.NON_ESCALATION_STATUS_CHOICES
 
     def clean_publication_status(self):
-        # Status is hidden, but if people click the "Publish" button, we should
-        # publish it, and vice versa if they click "Keep Private", we default
-        # to REJECTED regardless for security
+
         publication_status = self.cleaned_data['publication_status']
+
+        # Status is hidden, but if people click the "Publish" button, we should
+        # publish it, and vice versa if they click "Refer" we mark it as
+        # not-moderated. We default to REJECTED regardless for security.
+        publication_status = Problem.REJECTED
+
         if 'publish' in self.data:
             publication_status = Problem.PUBLISHED
-        else:
-            publication_status = Problem.REJECTED
+        elif 'now_requires_second_tier_moderation' in self.data:
+            publication_status = Problem.NOT_MODERATED
+
         return publication_status
 
     def clean(self):

@@ -32,6 +32,9 @@ class BaseModerationTestCase(AuthorizationTestCase, TransactionTestCase):
 
     def assert_expected_publication_status(self, expected_status, form_values, url, problem):
         resp = self.client.post(url, form_values)
+
+        # Form should be correctly submitted, so should redirect
+        self.assertEqual(resp.status_code, 302)
         problem = Problem.objects.get(pk=problem.id)
         self.assertEqual(problem.publication_status, expected_status)
 
