@@ -6,7 +6,7 @@ $sites->{citizenconnectproxy} = {
     private_git_repository => 'citizenconnect',
     private_git_ref => 'origin/proxy',
     git_user => 'anon',
-    private_conf_dir => 'conf',
+    private_conf_dir => 'proxyconf',
 };
 
 
