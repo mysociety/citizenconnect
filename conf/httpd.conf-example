@@ -19,7 +19,9 @@
 # see a nice error, but is the only really effective way to do it. We can't do
 # it in the Django app as it won't be given the request until it has been fully
 # received, which is too late.
-LimitRequestBody 5242880 # 5 MB
+
+# 5 MB
+LimitRequestBody 5242880
 
 # Replace the following below:
 #   'example.com', 'exampleuser', 'examplegroup'
