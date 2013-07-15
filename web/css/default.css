@@ -1392,6 +1392,8 @@ div.review-form__rating-answer div.rateit-selected { background: url("rateit/rev
 .help-feature--organ-donor .organ-donor__cta { margin-top: 3em; }
 .help-feature--organ-donor .organ-donor__cta a { color: #d81e05; font-size: 18px; font-weight: bold; }
 
+.help-feature--give-blood { background-color: transparent; border: none; padding: 0; margin: 0; min-height: 0; }
+
 /* ========================================================================== Print styles. Inlined to avoid required HTTP connection: h5bp.com/r ========================================================================== */
 @media print { * { background: transparent !important; color: #000 !important; /* Black prints faster: h5bp.com/s */ box-shadow: none !important; text-shadow: none !important; }
   a, a:visited { text-decoration: underline; }
