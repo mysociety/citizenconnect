@@ -1386,9 +1386,9 @@ div.review-form__rating-answer div.rateit-selected { background: url("rateit/rev
 .help-feature--whistleblower .whistleblower__email, .help-feature--whistleblower .whistleblower__email a { color: #2f9aa8; font-weight: bold; }
 
 .help-feature--organ-donor { background: transparent url(../img/organ-donor-background.jpg) no-repeat right center; border: 3px solid #0072c6; }
-.help-feature--organ-donor h2, .help-feature--organ-donor p { text-align: left; margin-right: 200px; color: #0072c6; }
-.help-feature--organ-donor h2 { font-size: 18px; margin-bottom: 3em; }
-.help-feature--organ-donor p { font-size: 14px; }
+.help-feature--organ-donor h2, .help-feature--organ-donor p { text-align: left; color: #0072c6; }
+.help-feature--organ-donor h2 { font-size: 18px; margin-bottom: 3em; margin-right: 175px; }
+.help-feature--organ-donor p { margin-right: 200px; font-size: 14px; }
 .help-feature--organ-donor .organ-donor__cta { margin-top: 3em; }
 .help-feature--organ-donor .organ-donor__cta a { color: #d81e05; font-size: 18px; font-weight: bold; }
 
