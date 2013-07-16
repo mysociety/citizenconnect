@@ -4,10 +4,6 @@
 #
 # vhost: !!(*= $vhost *)!!
 
-# Switch on html rewriting of links
-# LoadFile      /usr/lib/libxml2.so
-# LoadModule    proxy_html_module       modules/mod_proxy_html.so
-ProxyHTMLEnable On
 
 # Needed for proxying from a https domain
 SSLProxyEngine On
@@ -17,4 +13,20 @@ CacheDisable *
 ProxyPass        /nhs.uk https://citizenconnect.mysociety.org/choices
 ProxyPassReverse /nhs.uk https://citizenconnect.mysociety.org/choices
 
+#<Location /nhs.uk>
+  
+  # Switch on html rewriting of links
+  # Note that debian ships the old version:
+  #  package: http://packages.debian.org/squeeze/libapache2-mod-proxy-html
+  #  docs:    http://apache.webthing.com/mod_proxy_html30/
 
+  SetOutputFilter  proxy-html
+  ProxyHTMLDoctype HTML
+
+  # I suspect this is what the NHS have set up, which explains the
+  # /careconnect/choices oddness
+  ProxyHTMLURLMap  /choices /nhs.uk
+  ProxyHTMLURLMap  /        /nhs.uk/
+
+  
+# </Location>
