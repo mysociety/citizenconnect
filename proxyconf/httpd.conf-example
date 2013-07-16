@@ -4,6 +4,10 @@
 #
 # vhost: !!(*= $vhost *)!!
 
+# Switch on html rewriting of links
+# LoadFile      /usr/lib/libxml2.so
+# LoadModule    proxy_html_module       modules/mod_proxy_html.so
+ProxyHTMLEnable On
 
 # Needed for proxying from a https domain
 SSLProxyEngine On
