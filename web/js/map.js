@@ -140,7 +140,6 @@ $(document).ready(function () {
 
     // Subscribe to popup events so we can keep track of what is currently open.
     map.on('popupopen', function(e) {
-        reopenPopup = false;
         currentPopup = e.popup;
     });
 
@@ -277,7 +276,14 @@ $(document).ready(function () {
         });
 
         if (reopenPopup) {
-            reopenPopup.openOn(map);
+            var odsCodes = _.pluck(providers, 'ods_code')
+            var reopenCode = reopenPopup._source.nhsCentre.ods_code;
+            if (_.contains(odsCodes, reopenCode)) {
+                reopenPopup.openOn(map);
+            } else {
+                map.closePopup(reopenPopup);
+            }
+            reopenPopup = false;
         }
     };
 
