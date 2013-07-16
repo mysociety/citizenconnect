@@ -122,7 +122,7 @@ table {
     &.align-center { text-align: center; }
   }
   td {
-    height: 56px;
+    height: 62px;
   }
 
   // headings
@@ -180,12 +180,17 @@ table {
 
   // flags
   .problem-table__flag {
-    padding: 0 0 0 10px;
+    padding: 0;
     position: relative;
     overflow: hidden;
     width: 25px;
   }
-    div {
+  .problem-table__flag-wrapper {
+    position: relative;
+    padding: 0 0 0 10px;
+    height: 100%;
+  }
+    .problem-table__flag__breach, .problem-table__flag__escalate {
       position: absolute;
       width: 100%;
       right: 0;
