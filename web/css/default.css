@@ -1170,7 +1170,8 @@ th .filters__dropdown select { font-size: 1em; }
 
 .leaflet-popup-content { font-size: 14px; line-height: 1.4; }
 .leaflet-popup-content .map-header { color: #2f9aa8; font-weight: bold; }
-.leaflet-popup-content .unstyled { list-style: none; padding: 0; }
+.leaflet-popup-content .hover-bubble ul { margin: 0; }
+.leaflet-popup-content .hover-bubble ul li { list-style: none; }
 
 /** A horizontal nav, used inside `.site-top-bar` */
 .nav { list-style: none; padding: 0; margin: 0; }
