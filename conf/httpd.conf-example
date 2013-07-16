@@ -31,6 +31,14 @@ Alias /static /data/vhost/example.com/collected_static
 Alias /robots.txt /data/vhost/example.com/citizenconnect/web/robots.txt
 Alias /favicon.ico /data/vhost/example.com/citizenconnect/web/favicon.ico
 
+# Turn off file directory listings for uploads and static files dirs
+<Directory "/data/vhost/!!(*= $vhost *)!!/uploads">
+  Options -Indexes
+</Directory>
+<Directory "/data/vhost/!!(*= $vhost *)!!/collected_static">
+  Options -Indexes
+</Directory>
+
 WSGIDaemonProcess example.com \
     user=exampleuser \
     group=examplegroup \
