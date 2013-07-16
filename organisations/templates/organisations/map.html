@@ -69,41 +69,56 @@
 <script type="text/x-underscore-template" name="hover-bubble">
     <div class="hover-bubble  cf">
         <div class="header">
-            <img src="<%= icon.options.iconRetinaUrl %>" alt="Status icon" class="fr" />
-            <h1 class="map-header"><%= nhsCentre.name %></h1>
+            {% comment %}
+              // Once we have real images for the orgs their urls should be used here instead of the placeholder
+              <img src="{% static 'img/organisation-map-placeholder.png' %}" alt="Image of <%= nhsCentre.name %>" class="fr" />
+            {% endcomment %}
+            <h2 class="map-header"><%= nhsCentre.name %></h2>
         </div>
-        <div class="organisation-image  align-center">
-            <img src="{% static 'img/organisation-map-placeholder.png' %}" alt="Image of <%= nhsCentre.name %>" />
-        </div>
-        <h2 class="map-header">Problem reports</h2>
-        <% if (issueType !== '') { %>
-            <h3>Issue Type - <%= issueType %></h3>
-        <% } %>
-        <ul class="unstyled">
-            <li><em><%= nhsCentre.all_time_open %></em> Open/In progress issues</li>
-            <li><em><%= nhsCentre.all_time_closed %></em> Closed issues</li>
-            <% if (nhsCentre.average_time_to_address) { %>
-                <li><em><%= nhsCentre.average_time_to_address %></em> days average time to close</li>
-            <% } %>
-            <% if (nhsCentre.happy_outcome) { %>
-                <li><em><%= nhsCentre.happy_outcome %></em> users satisfied with resolution</li>
-            <% } %>
+
+        <strong>Problem reports</strong>:
+
+        <ul>
+          <li><%= nhsCentre.all_time_open %> open/in progress, <%= nhsCentre.all_time_closed %> closed.</li>
+
+          <% if (nhsCentre.average_time_to_address) { %>
+              <li><%= nhsCentre.average_time_to_address %> average time to close.</li>
+          <% } %>
+          <% if (nhsCentre.happy_outcome && /\d+/.test(nhsCentre.happy_outcome)) { %>
+              <li><%= nhsCentre.happy_outcome %> users satisfied with resolution.</li>
+          <% } %>
         </ul>
-        <h2 class="map-header">Ratings and Reviews</h2>
+
+
         <% if (nhsCentre.average_recommendation_rating) { %>
-        <p>
-            Average Rating
-            <span class="rating">
+
+          <strong>Average Rating</strong>:
+
+          <ul>
+            <li>
+              <span class="rating">
                 <span class="<%= starClass(nhsCentre.average_recommendation_rating, 1) %>" aria-hidden="true"></span>
                 <span class="<%= starClass(nhsCentre.average_recommendation_rating, 2) %>" aria-hidden="true"></span>
                 <span class="<%= starClass(nhsCentre.average_recommendation_rating, 3) %>" aria-hidden="true"></span>
                 <span class="<%= starClass(nhsCentre.average_recommendation_rating, 4) %>" aria-hidden="true"></span>
                 <span class="<%= starClass(nhsCentre.average_recommendation_rating, 5) %>" aria-hidden="true"></span>
-            </span>
-        </p>
+              </span>
+            </li>
+          </ul>
         <% } %>
-        <p><%= nhsCentre.reviews_all_time %> Review<%= nhsCentre.reviews_all_time !== 1 ? 's' : '' %> received</p>
+
+
+        <strong>Reviews</strong>:
+
+        <ul>
+          <li>
+            <%= nhsCentre.reviews_all_time %> received.
+          </li>
+        </ul>
+
+
         <span class="fr"><a href="<%= nhsCentre.url %>">View all details <span class="icon-chevron-right" aria-hidden="true"></span></a></span>
+
     </div>
 </script>
 
