@@ -73,34 +73,49 @@
             <h1 class="map-header"><%= nhsCentre.name %></h1>
         </div>
 
-        <p>
-          <strong>Problem reports</strong>: <%= nhsCentre.all_time_open %> open/in progress, <%= nhsCentre.all_time_closed %> closed.
+        <strong>Problem reports</strong>:
+
+        <ul>
+          <li><%= nhsCentre.all_time_open %> open/in progress, <%= nhsCentre.all_time_closed %> closed.</li>
 
           <% if (nhsCentre.average_time_to_address) { %>
-              <%= nhsCentre.average_time_to_address %> average time to close
+              <li><%= nhsCentre.average_time_to_address %> average time to close.</li>
           <% } %>
           <% if (nhsCentre.happy_outcome && /\d+/.test(nhsCentre.happy_outcome)) { %>
-              <%= nhsCentre.happy_outcome %> users satisfied with resolution
+              <li><%= nhsCentre.happy_outcome %> users satisfied with resolution.</li>
           <% } %>
+        </ul>
 
-        </p>
 
         <% if (nhsCentre.average_recommendation_rating) { %>
-        <p>
-            <strong>Average Rating</strong>:
-            <span class="rating">
+
+          <strong>Average Rating</strong>:
+
+          <ul>
+            <li>
+              <span class="rating">
                 <span class="<%= starClass(nhsCentre.average_recommendation_rating, 1) %>" aria-hidden="true"></span>
                 <span class="<%= starClass(nhsCentre.average_recommendation_rating, 2) %>" aria-hidden="true"></span>
                 <span class="<%= starClass(nhsCentre.average_recommendation_rating, 3) %>" aria-hidden="true"></span>
                 <span class="<%= starClass(nhsCentre.average_recommendation_rating, 4) %>" aria-hidden="true"></span>
                 <span class="<%= starClass(nhsCentre.average_recommendation_rating, 5) %>" aria-hidden="true"></span>
-            </span>
-        </p>
+              </span>
+            </li>
+          </ul>
         <% } %>
-        <p>
-          <strong>Reviews</strong>: <%= nhsCentre.reviews_all_time %> received.
-        </p>
+
+
+        <strong>Reviews</strong>:
+
+        <ul>
+          <li>
+            <%= nhsCentre.reviews_all_time %> received.
+          </li>
+        </ul>
+
+
         <span class="fr"><a href="<%= nhsCentre.url %>">View all details <span class="icon-chevron-right" aria-hidden="true"></span></a></span>
+
     </div>
 </script>
 
@@ -111,4 +126,14 @@
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/select2/select2.css' %}" />
+    
+    <style type="text/css" media="screen">
+      .hover-bubble ul {
+        margin: 0;
+      }
+      .hover-bubble ul li {
+        list-style: none;
+      }
+    </style>
+    
 {% endblock extra_css %}
