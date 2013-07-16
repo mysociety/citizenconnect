@@ -135,6 +135,17 @@ $(document).ready(function () {
     // we have to wait until `drawProviders` has been run, this variable is
     // set to the odsCode for the org whos popup we want to open.
     var openPopupFor;
+    var currentPopup;
+    var reopenPopup;
+
+    // Subscribe to popup events so we can keep track of what is currently open.
+    map.on('popupopen', function(e) {
+        currentPopup = e.popup;
+    });
+
+    map.on('popupclose', function(e) {
+        currentPopup = false;
+    });
 
     $searchBox.on('change', function(e) {
         $('#id_organisation_type').val('');
@@ -263,6 +274,19 @@ $(document).ready(function () {
                 openPopupFor = false;
             }
         });
+
+        // If there was already a popup open when the filtering occurred,
+        // check if the marker is still visible, if it is we reopen the popup.
+        if (reopenPopup) {
+            var odsCodes = _.pluck(providers, 'ods_code')
+            var reopenCode = reopenPopup._source.nhsCentre.ods_code;
+            if (_.contains(odsCodes, reopenCode)) {
+                reopenPopup.openOn(map);
+            } else {
+                map.closePopup(reopenPopup);
+            }
+            reopenPopup = false;
+        }
     };
 
 
@@ -438,6 +462,11 @@ $(document).ready(function () {
     // Submit the form via ajax on any select change and
     // reload the map pins from the results
     $(".filters select").change(function(e) {
+        if (currentPopup) {
+            // Save the current popup to reopen after filtering.
+            reopenPopup = currentPopup;
+        }
+
         var formData = getAjaxRequestParameters($form, map);
 
         // Lock the form during the ajax request
