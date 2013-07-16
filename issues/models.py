@@ -75,7 +75,10 @@ class ProblemManager(models.Manager):
         return self.all().filter(Q(status__in=Problem.CLOSED_STATUSES))
 
     def unmoderated_problems(self):
-        return self.all().filter(publication_status=Problem.NOT_MODERATED)
+        return self.all().filter(
+            publication_status=Problem.NOT_MODERATED,
+            requires_second_tier_moderation=False
+        )
 
     def open_published_visible_problems(self):
         return self.open_problems().filter(publication_status=Problem.PUBLISHED,
@@ -93,7 +96,8 @@ class ProblemManager(models.Manager):
         return self  \
             .all()  \
             .filter(status__in=Problem.VISIBLE_STATUSES)  \
-            .exclude(publication_status=Problem.REJECTED)
+            .exclude(publication_status=Problem.REJECTED) \
+            .exclude(requires_second_tier_moderation=True)
 
     def problems_requiring_second_tier_moderation(self):
         return self.all().filter(requires_second_tier_moderation=True)
@@ -107,7 +111,7 @@ class ProblemManager(models.Manager):
             confirmation_sent__isnull=True,
             confirmation_required=True
         )
-    
+
     def requiring_survey_to_be_sent(self):
         now = datetime.utcnow().replace(tzinfo=utc)
         survey_interval = timedelta(days=settings.SURVEY_INTERVAL_IN_DAYS)
@@ -119,10 +123,10 @@ class ProblemManager(models.Manager):
                 status__in=Problem.VISIBLE_STATUSES
             )  \
             .exclude(
-                reporter_email='',                
+                reporter_email='',
             )
         return surveyable_problems
-        
+
 
 
 class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
