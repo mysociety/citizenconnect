@@ -65,7 +65,9 @@ a precreated one in a minute.
 ### Add some users which are useful for development
     ./manage.py loaddata organisations/fixtures/development_users.json
 
-### Load the organisations we deal with
+### Load demo CCGs, Organisation Parents and Organisations
+    ./manage.py loaddata organisations/fixtures/demo_ccg.json
+    ./manage.py loaddata organisations/fixtures/demo_organisation_parent.json
     ./manage.py loaddata organisations/fixtures/phase_2_organisations.json
 
 ### If you ever need to reload the data, you can run
