@@ -548,7 +548,7 @@ table .icon-warning { font-size: 1.375em; color: #d81e05; line-height: 0; }
 .problem-table { border-collapse: separate; border-spacing: 0; }
 .problem-table td, .problem-table th { text-align: left; padding: 10px; }
 .problem-table td.align-center, .problem-table th.align-center { text-align: center; }
-.problem-table td { height: 56px; }
+.problem-table td { height: 62px; }
 .problem-table th { border: 0; }
 .problem-table .problem-table__head th { font-weight: bold; padding: 0 10px; }
 .problem-table .problem-table__head--bordered th { border-bottom: 3px solid #dddddd; }
@@ -567,8 +567,9 @@ table .icon-warning { font-size: 1.375em; color: #d81e05; line-height: 0; }
 .problem-table .problem-table__highlight { background: #d81e05; border-color: #d81e05 !important; color: white; }
 .problem-table a { color: #2f9aa8; }
 .problem-table a:hover { color: #27808c; }
-.problem-table .problem-table__flag { padding: 0 0 0 10px; position: relative; overflow: hidden; width: 25px; }
-.problem-table div { position: absolute; width: 100%; right: 0; text-transform: uppercase; color: white; text-align: center; padding-top: 5px; height: 28px; }
+.problem-table .problem-table__flag { padding: 0; position: relative; overflow: hidden; width: 25px; }
+.problem-table .problem-table__flag-wrapper { position: relative; padding: 0 0 0 10px; height: 100%; }
+.problem-table .problem-table__flag__breach, .problem-table .problem-table__flag__escalate { position: absolute; width: 100%; right: 0; text-transform: uppercase; color: white; text-align: center; padding-top: 5px; height: 28px; }
 .problem-table .rating, .problem-table .rating--grey, .problem-table .rating--review_details, .problem-table .rating--organisation-summary { position: relative; }
 .problem-table .problem-table__flag__breach { background: #ff8b00; top: 0; }
 .problem-table .problem-table__flag__escalate { background: #333333; bottom: 0; }
