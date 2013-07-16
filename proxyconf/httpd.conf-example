@@ -20,7 +20,7 @@ ProxyPassReverse /nhs.uk https://citizenconnect.mysociety.org/choices
   #  package: http://packages.debian.org/squeeze/libapache2-mod-proxy-html
   #  docs:    http://apache.webthing.com/mod_proxy_html30/
 
-  SetOutputFilter  proxy-html
+  SetOutputFilter  INFLATE;proxy-html;DEFLATE
   ProxyHTMLDoctype HTML
 
   # I suspect this is what the NHS have set up, which explains the
