@@ -74,7 +74,15 @@
         </div>
 
         <p>
-          <strong>Problem reports</strong>: <%= nhsCentre.all_time_open %> open, <%= nhsCentre.all_time_closed %> closed.
+          <strong>Problem reports</strong>: <%= nhsCentre.all_time_open %> open/in progress, <%= nhsCentre.all_time_closed %> closed.
+
+          <% if (nhsCentre.average_time_to_address) { %>
+              <%= nhsCentre.average_time_to_address %> average time to close
+          <% } %>
+          <% if (nhsCentre.happy_outcome && /\d+/.test(nhsCentre.happy_outcome)) { %>
+              <%= nhsCentre.happy_outcome %> users satisfied with resolution
+          <% } %>
+
         </p>
 
         <% if (nhsCentre.average_recommendation_rating) { %>
