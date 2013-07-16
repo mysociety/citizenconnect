@@ -192,6 +192,12 @@ LOGGING = {
     }
 }
 
+SESSION_COOKIE_AGE = 7200  # Two hours max
+SESSION_COOKIE_HTTPONLY = True  # This is the default, but just to make it explicit
+SESSION_COOKIE_SECURE = not DEBUG
+
+CSRF_COOKIE_SECURE = not DEBUG
+
 # pagination related settings
 PAGINATION_DEFAULT_PAGINATION = 10
 PAGINATION_DEFAULT_WINDOW = 2

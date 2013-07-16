@@ -118,7 +118,7 @@
         <fieldset class="island">
             <ul class="gw">
                 <li class="g  two-thirds">
-                    <label for="id_agree_to_terms" class="label-checkbox">{{ form.agree_to_terms }} By submitting I accept the <a href="http://www.nhs.uk/aboutNHSChoices/aboutnhschoices/termsandconditions/Pages/commentspolicy.aspx">comments policy</a> and <a href="{% url 'about' cobrand=cobrand.name %}">terms and conditions</a>.</label>
+                    <label for="id_agree_to_terms" class="label-checkbox">{{ form.agree_to_terms }} By submitting I accept the <a href="http://www.nhs.uk/aboutNHSChoices/aboutnhschoices/termsandconditions/Pages/commentspolicy.aspx">comments policy</a> and <a target="_blank" href="{% url 'about' cobrand=cobrand.name %}#terms-and-conditions">terms and conditions</a>.</label>
                     {% include "citizenconnect/includes/message_list.html" with messages=form.agree_to_terms.errors message_type='error' %}
                 </li>
                 <li class="g  one-third">
