@@ -3,3 +3,14 @@
 # Copyright (c) 2013 UK Citizens Online Democracy. All rights reserved.
 #
 # vhost: !!(*= $vhost *)!!
+
+
+# Needed for proxying from a https domain
+SSLProxyEngine On
+CacheDisable *
+
+# Send traffic to the right place, rewrite headers
+ProxyPass        /nhs.uk https://citizenconnect.mysociety.org/choices
+ProxyPassReverse /nhs.uk https://citizenconnect.mysociety.org/choices
+
+
