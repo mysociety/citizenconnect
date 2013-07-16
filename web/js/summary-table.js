@@ -150,5 +150,30 @@
             toggleColumns(reviewsColumns, selected, reviewsHeaderID);
             updateSortLinks('reviews_interval', selected, reviewsHeaderID);
         });
+
+        /**
+         * Enable select2 on the org name select.
+         */
+        var $searchBox = $("#search-org-name");
+
+        $searchBox.select2({
+            minimumInputLength: 1,
+            placeholder: "Search for provider",
+            dropdownAutoWidth: true,
+            ajax: {
+                url: CitizenConnect.base_url + $searchBox.data('search-url'),
+                dataType: 'json',
+                data: function(term, page) {
+                    return {
+                        term: term
+                    };
+                },
+                results: function(data, page) {
+                    return {results: data};
+                }
+            }
+        });
+
+
     });
 })(window.jQuery);
