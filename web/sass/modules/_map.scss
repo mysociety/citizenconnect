@@ -70,8 +70,13 @@
         font-weight: bold;
     }
 
-    .unstyled {
-        list-style: none;
-        padding: 0;
+    .hover-bubble {
+      ul {
+        margin: 0;
+        li {
+            list-style: none;
+          }
+      }
     }
+
 }
