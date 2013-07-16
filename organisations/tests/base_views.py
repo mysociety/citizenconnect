@@ -583,3 +583,21 @@ class NotFoundTest(TestCase):
     def test_page_not_found_returns_404_status(self):
         resp = self.client.get('/somthing-that-doesnt-exist')
         self.assertEquals(404, resp.status_code)
+
+
+class OrganisationSearchTests(TestCase):
+    def setUp(self):
+        self.search_url = reverse('org-search', kwargs={'cobrand': 'choices'})
+
+    def test_search_page_exists(self):
+        resp = self.client.get(self.search_url)
+        self.assertEqual(200, resp.status_code)
+
+    def test_no_search_term_returns_no_results(self):
+        resp = self.client.get(self.search_url + '?term=')
+        self.assertEqual('[]', resp.content)
+
+    def test_search_returns_organisations(self):
+        org = create_test_organisation({'name': "Test Organisation"})
+        resp = self.client.get(self.search_url + '?term=Tes')
+        self.assertContains(resp, org.name)
