@@ -17,7 +17,7 @@
 
     <div class="search-controls mb">
         {# TODO: Is this data- attriute going to cause issues with the proxy? #}
-        <input type="text" id="search-org-name" data-search-url="{% url 'org-map-search' cobrand=cobrand.name %}" />
+        <input type="text" id="search-org-name" data-search-url="{% url 'org-search' cobrand=cobrand.name %}" />
     </div>
 
   {% render_table table 'organisations/includes/national_table.html' %}
