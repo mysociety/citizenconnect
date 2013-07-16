@@ -143,15 +143,19 @@ class CCGEscalationDashboardTests(AuthorizationTestCase):
         resp = self.client.get(self.escalation_dashboard_url)
         self.assertEqual(resp.status_code, 200)
 
-    def test_dashboard_accessible_to_superusers(self):
-        for user in self.users_who_can_access_everything:
+    def test_dashboard_accessible_to_expected_groups(self):
+        users = []
+        users.extend(self.users_who_can_access_everything)
+        users.append(self.case_handler)
+        users.append(self.customer_contact_centre_user)
+
+        for user in users:
             self.login_as(user)
             resp = self.client.get(self.escalation_dashboard_url)
             self.assertEqual(resp.status_code, 200)
 
     def test_dashboard_is_inacessible_to_anyone_else(self):
         people_who_shouldnt_have_access = [
-            self.customer_contact_centre_user,
             self.trust_user,
             self.no_trust_user,
             self.gp_surgery_user,
@@ -318,15 +322,19 @@ class CCGBreachDashboardTests(AuthorizationTestCase):
         resp = self.client.get(self.breach_dashboard_url)
         self.assertEqual(resp.status_code, 200)
 
-    def test_dashboard_accessible_to_superusers(self):
-        for user in self.users_who_can_access_everything:
+    def test_dashboard_accessible_to_expected_groups(self):
+        users = []
+        users.extend(self.users_who_can_access_everything)
+        users.append(self.case_handler)
+        users.append(self.customer_contact_centre_user)
+
+        for user in users:
             self.login_as(user)
             resp = self.client.get(self.breach_dashboard_url)
             self.assertEqual(resp.status_code, 200)
 
     def test_dashboard_is_inacessible_to_anyone_else(self):
         people_who_shouldnt_have_access = [
-            self.customer_contact_centre_user,
             self.trust_user,
             self.no_trust_user,
             self.gp_surgery_user,
@@ -394,14 +402,14 @@ class CCGSummaryTests(AuthorizationTestCase):
             # (user, permitted? )
             (None,                               False),
             (self.trust_user,                    False),
-            (self.case_handler,                  False),
             (self.second_tier_moderator,         False),
             (self.other_ccg_user,                False),
-            (self.customer_contact_centre_user,  False),
             (self.no_ccg_user,                   False),
 
             (self.superuser,                     True),
             (self.nhs_superuser,                 True),
+            (self.case_handler,                  True),
+            (self.customer_contact_centre_user,  True),
             (self.ccg_user,                      True),
         )
 

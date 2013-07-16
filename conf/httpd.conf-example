@@ -15,6 +15,14 @@
 #     Satisfy any
 # </Location>
 
+# Limit the max request we'll accept. This is fairly brutal as the user may not
+# see a nice error, but is the only really effective way to do it. We can't do
+# it in the Django app as it won't be given the request until it has been fully
+# received, which is too late.
+
+# 5 MB
+LimitRequestBody 5242880
+
 # Replace the following below:
 #   'example.com', 'exampleuser', 'examplegroup'
 
@@ -34,3 +42,17 @@ WSGIDaemonProcess example.com \
 WSGIProcessGroup example.com
 
 WSGIScriptAlias / /data/vhost/example.com/citizenconnect/citizenconnect/wsgi.py
+
+# Needed to tell mod_wsgi to pass auth headers onto the app
+WSGIPassAuthorization On
+
+# Force IE to render pages in the highest available mode in the various
+# cases when it may not: http://hsivonen.iki.fi/doctype/ie-mode.pdf.
+<IfModule mod_headers.c>
+    Header set X-UA-Compatible "IE=edge"
+    # `mod_headers` can't match based on the content-type, however, we only
+    # want to send this header for HTML pages and not for the other resources
+    <FilesMatch "\.(appcache|crx|css|eot|gif|htc|ico|jpe?g|js|m4a|m4v|manifest|mp4|oex|oga|ogg|ogv|otf|pdf|png|safariextz|svg|svgz|ttf|vcf|webapp|webm|webp|woff|xml|xpi)$">
+        Header unset X-UA-Compatible
+    </FilesMatch>
+</IfModule>

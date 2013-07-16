@@ -53,8 +53,8 @@ class CCG(MailSendMixin, AuditedModel):
         if user.is_superuser:
             return True
 
-        # NHS Superusers - YES
-        if user_in_group(user, auth.NHS_SUPERUSERS):
+        # NHS Superusers, Case Handlers and Customer Contact Centre users - YES
+        if user_in_groups(user, [auth.NHS_SUPERUSERS, auth.CASE_HANDLERS, auth.CUSTOMER_CONTACT_CENTRE]):
             return True
 
         # Users in this ccg - YES

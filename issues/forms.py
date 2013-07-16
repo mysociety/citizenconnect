@@ -6,8 +6,10 @@ from django.forms.widgets import HiddenInput, RadioSelect, Textarea, TextInput
 from .models import Problem
 from .widgets import CategoryRadioFieldRenderer
 
+from citizenconnect.forms import HoneypotModelForm
 
-class ProblemForm(forms.ModelForm):
+
+class ProblemForm(HoneypotModelForm):
 
     # A check to make sure that people have read the T's & C's
     agree_to_terms = forms.BooleanField(required=True,
@@ -35,15 +37,6 @@ class ProblemForm(forms.ModelForm):
     # permit this.
     elevate_priority = forms.BooleanField(required=False)
 
-    # This is a honeypot field to catch spam bots. If there is any content in
-    # it the form validation will fail and an appropriate error should be shown to
-    # the user. This field is hidden by CSS in the form so should never be shown to
-    # a user. Hopefully it will not be autofilled either.
-    website = forms.CharField(
-        label='Leave this blank',
-        required=False,
-    )
-
     def save(self, commit=True):
         """
         Handle the save ourselves so we can set the priority (which is not a
@@ -55,8 +48,10 @@ class ProblemForm(forms.ModelForm):
         if self.cleaned_data['priority']:
             problem.priority = self.cleaned_data['priority']
 
-        # Problems created using this should have a confirmation email sent
-        problem.confirmation_required = True
+        # Problems created using this should have a confirmation email sent,
+        # if we have an email address.
+        if problem.reporter_email:
+            problem.confirmation_required = True
 
         if commit:
             problem.save()
@@ -92,14 +87,6 @@ class ProblemForm(forms.ModelForm):
             # None means the priority will fall through to whatever is the
             # default in the model
             self.cleaned_data['priority'] = None
-
-    def clean_website(self):
-        # The field 'website' is a honeypot - it should be hidden from real
-        # users. Anything that fills it in is probably a bot so reject the
-        # submission.
-        if self.cleaned_data.get('website'):
-            raise forms.ValidationError("submission is probably spam")
-        return ''
 
     def clean_reporter_phone(self):
         reporter_phone = self.cleaned_data.get('reporter_phone')

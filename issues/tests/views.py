@@ -392,7 +392,7 @@ class HomePageTests(TestCase):
 
     def test_displays_last_five_problems_or_reviews(self):
         resp = self.client.get(self.homepage_url)
-        self.assertContains(resp, '<h3 class="feed-list__title">', count=5, status_code=200)
+        self.assertContains(resp, '<span class="feed-list__title">', count=5, status_code=200)
         self.assertNotContains(resp, 'Sixth item')
 
     def test_does_not_display_unmoderated_problems(self):

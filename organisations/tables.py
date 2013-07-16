@@ -66,7 +66,10 @@ class NationalSummaryTable(tables.Table):
         )
 
     class Meta:
-        order_by = ('name',)
+        # Show organisations with the most problems first. This is so that when
+        # the results are filtered the top of the list (after it updates) is 
+        # more relevant. See issue #843 for rationale.
+        order_by = ('-all_time',) 
 
 
 class CCGSummaryTable(NationalSummaryTable):
@@ -280,7 +283,9 @@ class ProblemDashboardTable(BaseProblemTable):
                     'created',
                     'category',
                     'service',
-                    'summary')
+                    'summary',
+                    'images',
+                    'breach_and_escalation')
 
 
 class BreachTable(ProblemTable):

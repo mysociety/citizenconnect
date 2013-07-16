@@ -89,7 +89,7 @@ class ModerationFormPublicReporterNameMixin(object):
         self.client.get(form_url)
         self.client.post(form_url, form_values)
         problem = Problem.objects.get(pk=problem.id)
-        self.assertFalse(problem.public_reporter_name)        
+        self.assertFalse(problem.public_reporter_name)
 
     def test_private_name_can_not_be_redacted(self):
         problem = self.private_name_problem
@@ -117,7 +117,7 @@ class ModerationFormPublicReporterNameMixin(object):
         self.client.get(form_url)
         self.client.post(form_url, form_values)
         problem = Problem.objects.get(pk=problem.id)
-        self.assertFalse(problem.public_reporter_name)        
+        self.assertFalse(problem.public_reporter_name)
 
 
 class ModerationFormTests(ModerationFormPublicReporterNameMixin, BaseModerationTestCase):
@@ -194,13 +194,18 @@ class ModerationFormTests(ModerationFormPublicReporterNameMixin, BaseModerationT
                                                 self.problem_form_url,
                                                 self.test_problem)
 
-    def test_moderation_form_sets_publication_status_to_private_when_requires_second_tier_moderation_clicked(self):
-        test_form_values = {
-            'now_requires_second_tier_moderation': ''
-        }
-        self.form_values.update(test_form_values)
+    def test_moderation_form_sets_publication_status_to_not_moderated_when_requires_second_tier_moderation_clicked(self):
+
+        # Change the problem to PUBLISHED so we can test that a change occurs.
+        self.test_problem.publication_status = Problem.PUBLISHED
+        self.test_problem.save()
+        self.client.get(self.problem_form_url) # deal with versioning
+
+        # change the submit button that'll be used
+        self.form_values['now_requires_second_tier_moderation'] = ''
         del self.form_values['publish']
-        self.assert_expected_publication_status(Problem.REJECTED,
+
+        self.assert_expected_publication_status(Problem.NOT_MODERATED,
                                                 self.form_values,
                                                 self.problem_form_url,
                                                 self.test_problem)

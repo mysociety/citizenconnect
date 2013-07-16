@@ -1,6 +1,8 @@
 import os
 import tempfile
 import shutil
+import datetime
+import pytz
 
 from django.conf import settings
 from django.test import TestCase
@@ -102,6 +104,8 @@ class LibTests(TestCase):
 
     def test_changes_for_model(self):
 
+        start_timestamp = datetime.datetime.now(pytz.utc)
+
         # Call the hompage to force the reversion.middleware to be loaded. This
         # is required for this test to pass in isolation. Not sure why.
         self.client.get('/')
@@ -126,6 +130,8 @@ class LibTests(TestCase):
         with reversion.create_revision():
             problem.save()
 
+        end_timestamp = datetime.datetime.now(pytz.utc)
+
         expected_changes = [
             {'user': None, 'description': 'Acknowledged'},
             {'user': None, 'description': 'Resolved'},
@@ -135,7 +141,11 @@ class LibTests(TestCase):
 
         self.assertEqual(len(expected_changes), len(actual_changes))
         for index, change in enumerate(actual_changes):
+            when = change['when']
+            del change['when']
             self.assertEqual(change, expected_changes[index])
+            self.assertGreaterEqual(when, start_timestamp)
+            self.assertLessEqual(when, end_timestamp)
 
     def test_base32_roundtrip_conversion(self):
         self.assertEqual(829384, base32_to_int(int_to_base32(829384)))
