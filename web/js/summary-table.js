@@ -174,6 +174,10 @@
             }
         });
 
+        // When a provider is selected, navigate to their detail view.
+        $searchBox.on('change', function(e) {
+            window.location = window.location.toString() + '/' + $searchBox.val();
+        });
 
     });
 })(window.jQuery);
