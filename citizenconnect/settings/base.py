@@ -100,6 +100,7 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'organisations.middleware.SuperuserLogEntryMiddleware',
     'failedloginblocker.middleware.FailedLoginBlockerMiddleware',
+    'djangomiddleware.redirect_middleware.FullyQualifiedRedirectMiddleware',
 )
 
 ROOT_URLCONF = 'citizenconnect.urls'
