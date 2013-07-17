@@ -1,8 +1,14 @@
 # Django settings for citizenconnect project.
 
 import os
+import sys
+
 from django.conf import global_settings
+
 from .paths import *
+
+# Add pylib from commonlib into sys.path
+sys.path.append(os.path.join(PROJECT_ROOT, 'commonlib', 'pylib'))
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -88,6 +94,7 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'djangomiddleware.redirect_middleware.FullyQualifiedRedirectMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -197,6 +204,8 @@ SESSION_COOKIE_HTTPONLY = True  # This is the default, but just to make it expli
 SESSION_COOKIE_SECURE = not DEBUG
 
 CSRF_COOKIE_SECURE = not DEBUG
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # pagination related settings
 PAGINATION_DEFAULT_PAGINATION = 10

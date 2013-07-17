@@ -10,7 +10,10 @@ up:
 ### Clone the repo
     mkdir citizenconnect
     cd citizenconnect
-    git clone https://github.com/mysociety/citizenconnect.git
+    git clone --recursive https://github.com/mysociety/citizenconnect.git
+
+### Get the submodules if your git doesn't understand --recursive
+    git submodule update --init
 
 ### Install the required software packages
 Assuming you're on a debian/ubuntu server, you can look in `conf/packages` for a list, for other OSes, google to see what they're called on your system.
