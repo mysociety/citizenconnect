@@ -42,7 +42,7 @@
     </head>
 
     <body class="{% block bodyclasses %}{% endblock %}{% if site_section %}  site-section-{{ site_section }}{% endif %}">
-        <!-- Dirty dirty dirty! Qe need this to extract the base url from
+        <!-- Dirty dirty dirty! We need this to extract the base url from
         via javascript so that we can build decent urls for ajax requests
         when behind the NHS proxy. Their proxy will rewrite this from / to
         something else, and we need to know what that is. -->
