@@ -40,6 +40,10 @@ TIME_ZONE = 'Europe/London'
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en-gb'
 
+# Note: the site referenced here will be set to use the domain of SITE_BASE_URL
+# for it's domain, so that the admin site can work correctly
+# this happens in the create_default_site management command, and is run by
+# post_deploy_actions.bash
 SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not
