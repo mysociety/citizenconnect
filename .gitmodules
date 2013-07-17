@@ -1,3 +1,3 @@
 [submodule "commonlib"]
 	path = commonlib
-	url = ssh://steve@git.mysociety.org/data/git/public/commonlib.git
+	url = git://git.mysociety.org/commonlib
