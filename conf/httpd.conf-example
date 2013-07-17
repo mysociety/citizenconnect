@@ -20,8 +20,8 @@
 # it in the Django app as it won't be given the request until it has been fully
 # received, which is too late.
 
-# 5 MB
-LimitRequestBody 5242880
+# 3 Images at 5MB each = 15 MB
+LimitRequestBody 15728640
 
 # Replace the following below:
 #   'example.com', 'exampleuser', 'examplegroup'
