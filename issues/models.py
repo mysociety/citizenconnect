@@ -325,7 +325,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     breach = models.BooleanField(default=False, blank=False)
     requires_second_tier_moderation = models.BooleanField(default=False, blank=False)
     commissioned = models.IntegerField(blank=True, null=True, choices=COMMISSIONED_CHOICES)
-    cobrand = models.CharField(max_length=30, blank=False, choices=COBRAND_CHOICES)
+    cobrand = models.CharField(max_length=30, blank=False, choices=COBRAND_CHOICES, default=settings.ALLOWED_COBRANDS[0])
     formal_complaint = models.BooleanField(default=False, blank=False)
 
     # Fields relating to emails that get sent

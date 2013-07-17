@@ -83,6 +83,7 @@ class ProblemAPITests(TestCase):
         self.assertEqual(problem.status, Problem.NEW)
         self.assertEqual(problem.confirmation_sent, None)
         self.assertEqual(problem.confirmation_required, False)
+        self.assertEqual(problem.cobrand, settings.ALLOWED_COBRANDS[0])
 
     def test_source_is_required(self):
         problem_without_source = self.test_problem_defaults
@@ -197,7 +198,7 @@ class ProblemAPITests(TestCase):
         self.test_problem_defaults['publication_status'] = Problem.REJECTED
         resp = self.client.post(self.problem_api_url, self.test_problem_defaults)
         self.assertEquals(resp.status_code, 201)
-    
+
         problem = Problem.objects.get(reporter_name=self.problem_uuid)
         self.assertEqual(problem.publication_status, problem.PUBLISHED)
 
