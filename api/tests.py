@@ -92,7 +92,7 @@ class ProblemAPITests(TestCase):
         self.assertEquals(resp.status_code, 400)
 
         content_json = json.loads(resp.content)
-        errors = json.loads(content_json['errors'])
+        errors = content_json['errors']
         self.assertEqual(errors['source'][0], 'This field is required.')
 
     def test_service_code_is_optional(self):
@@ -115,7 +115,7 @@ class ProblemAPITests(TestCase):
         self.assertEquals(resp.status_code, 400)
 
         content_json = json.loads(resp.content)
-        errors = json.loads(content_json['errors'])
+        errors = content_json['errors']
         self.assertEqual(errors['service_code'][0], 'Sorry, that service is not recognised.')
 
     def test_organisation_required(self):
@@ -125,7 +125,7 @@ class ProblemAPITests(TestCase):
         self.assertEquals(resp.status_code, 400)
 
         content_json = json.loads(resp.content)
-        errors = json.loads(content_json['errors'])
+        errors = content_json['errors']
         self.assertEqual(errors['organisation'][0], 'This field is required.')
 
     def test_unknown_organisation_rejected(self):
@@ -135,7 +135,7 @@ class ProblemAPITests(TestCase):
         self.assertEquals(resp.status_code, 400)
 
         content_json = json.loads(resp.content)
-        errors = json.loads(content_json['errors'])
+        errors = content_json['errors']
         self.assertEqual(errors['organisation'][0], 'Sorry, that organisation is not recognised.')
 
     def test_service_id_ignored(self):
@@ -167,7 +167,7 @@ class ProblemAPITests(TestCase):
         resp = self.client.post(self.problem_api_url, test_problem_data)
         self.assertEquals(resp.status_code, 400)
         content_json = json.loads(resp.content)
-        errors = json.loads(content_json['errors'])
+        errors = content_json['errors']
         self.assertEqual(errors['__all__'][0], 'You must provide either a phone number or an email address')
 
         # Try with just email
@@ -191,7 +191,7 @@ class ProblemAPITests(TestCase):
         self.assertEquals(resp.status_code, 400)
 
         content_json = json.loads(resp.content)
-        errors = json.loads(content_json['errors'])
+        errors = content_json['errors']
         self.assertEqual(errors['moderated_description'][0],  'You must moderate a version of the problem details when publishing public problems.')
 
     def test_publication_status_is_always_set_to_to_published(self):
@@ -247,7 +247,7 @@ class ProblemAPITests(TestCase):
         self.assertEquals(resp.status_code, 400)
 
         content_json = json.loads(resp.content)
-        errors = json.loads(content_json['errors'])
+        errors = content_json['errors']
         self.assertEqual(errors['commissioned'][0],  'This field is required.')
 
     def test_commissioned_does_not_accept_non_choice_value(self):
@@ -257,7 +257,7 @@ class ProblemAPITests(TestCase):
         self.assertEquals(resp.status_code, 400)
         content_json = json.loads(resp.content)
 
-        errors = json.loads(content_json['errors'])
+        errors = content_json['errors']
         self.assertEqual(errors['commissioned'][0],  'Select a valid choice. 99 is not one of the available choices.')
 
     def test_source_does_not_accept_non_choice_value(self):
@@ -267,7 +267,7 @@ class ProblemAPITests(TestCase):
         self.assertEquals(resp.status_code, 400)
         content_json = json.loads(resp.content)
 
-        errors = json.loads(content_json['errors'])
+        errors = content_json['errors']
         self.assertEqual(errors['source'][0],  u"Value u'telepathy' is not a valid choice.")
 
     def test_priority_is_optional(self):
@@ -283,7 +283,7 @@ class ProblemAPITests(TestCase):
         self.assertEquals(resp.status_code, 400)
         content_json = json.loads(resp.content)
 
-        errors = json.loads(content_json['errors'])
+        errors = content_json['errors']
         self.assertEqual(errors['priority'][0],  u"The problem is not in a category which permits setting of a high priority.")
 
     def test_escalated_is_optional(self):
@@ -306,7 +306,7 @@ class ProblemAPITests(TestCase):
         self.assertEquals(resp.status_code, 400)
         content_json = json.loads(resp.content)
 
-        errors = json.loads(content_json['errors'])
+        errors = content_json['errors']
         self.assertEqual(errors['escalated'][0],  u"Escalation is not currently enabled.")
 
     def test_status_is_ignored(self):
