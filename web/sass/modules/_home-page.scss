@@ -6,26 +6,33 @@
     text-transform: uppercase;
 }
 .problem-search {
-    label {
-        color: $c-introtext-color;
-        margin: 0.5em 0 1em 0;
-        font-weight: normal;
-}
-    .text-input {
-    border: 1px solid $c-problem-search-text-input-border;
-      width: 85%;
-      float: left;
-      margin-bottom: 0;
-      @include vendor(border-radius, 0);
-      @include vendor(box-shadow, 0px 0px 0px 0px $c-homepage-map-box-text-input-shadow);
-      @include media-query(lap){ width: 70%; }
-    }
-    button {
-      @include vendor(border-radius, ($grid-gutter/4) + em);
-      padding: ($grid-gutter / 2.5) + em;
-    }
 
+  form {
+    white-space: nowrap;
+  }
+
+  label {
+    color: $c-introtext-color;
+    margin: 0.5em 0 1em 0;
+    font-weight: normal;
+  }
+
+  .text-input {
+    border: 1px solid $c-problem-search-text-input-border;
+    width: 85%;
+    float: left;
+    margin-bottom: 0;
+    @include vendor(border-radius, 0);
+    @include vendor(box-shadow, 0px 0px 0px 0px $c-homepage-map-box-text-input-shadow);
+    @include media-query(lap){ width: 70%; }
+  }
+
+  button {
+    @include vendor(border-radius, ($grid-gutter/4) + em);
+    padding: ($grid-gutter / 2.5) + em;
+  }
 }
+
 .homepage-map-box {
   position: relative;
   .map-links {
