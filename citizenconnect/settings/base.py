@@ -1,8 +1,14 @@
 # Django settings for citizenconnect project.
 
 import os
+import sys
+
 from django.conf import global_settings
+
 from .paths import *
+
+# Add pylib from commonlib into sys.path
+sys.path.append(os.path.join(PROJECT_ROOT, 'commonlib', 'pylib'))
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -88,6 +94,7 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'djangomiddleware.redirect_middleware.FullyQualifiedRedirectMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -100,7 +107,6 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'organisations.middleware.SuperuserLogEntryMiddleware',
     'failedloginblocker.middleware.FailedLoginBlockerMiddleware',
-    'djangomiddleware.redirect_middleware.FullyQualifiedRedirectMiddleware',
 )
 
 ROOT_URLCONF = 'citizenconnect.urls'
