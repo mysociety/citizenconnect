@@ -89,6 +89,7 @@
         var $serviceSelect = $('#id_service');
         var $servicePlaceholder = $serviceSelect.find('option:first').remove();
         $serviceSelect.prepend('<option></option>');
+        $serviceSelect.val(''); // select the empty value, so placeholder text shown.
         $serviceSelect.select2({
             placeholder: $servicePlaceholder.text(),
             allowClear: true
