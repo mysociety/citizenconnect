@@ -38,8 +38,7 @@ class ProblemTestCase(AuthorizationTestCase):
                                     preferred_contact_method=Problem.CONTACT_EMAIL,
                                     status=Problem.NEW,
                                     time_to_acknowledge=None,
-                                    time_to_address=None,
-                                    cobrand='choices')
+                                    time_to_address=None)
 
         # A brand new, moderated problem, all public
         self.test_moderated_problem = Problem(organisation=self.test_hospital,
@@ -329,6 +328,9 @@ class ProblemModelTests(ProblemTestCase):
 
     def test_formal_complaint_defaults_to_false(self):
         self.assertEqual(self.test_problem.formal_complaint, False)
+
+    def test_defaults_to_primary_cobrand(self):
+        self.assertEqual(self.test_problem.cobrand, 'choices')
 
 
 class ProblemModelTimeToTests(ProblemTestCase):
