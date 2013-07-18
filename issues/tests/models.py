@@ -701,14 +701,14 @@ class ProblemManagerTests(ManagerTest):
             'organisation': self.test_organisation,
             'public': True,
             'requires_second_tier_moderation': True,
-            'publication_status': Problem.REJECTED
+            'publication_status': Problem.NOT_MODERATED
         })
         self.private_problem_requiring_second_tier_moderation = create_test_problem({
             'description': 'private_problem_requiring_second_tier_moderation',
             'organisation': self.test_organisation,
             'public': False,
             'requires_second_tier_moderation': True,
-            'publication_status': Problem.REJECTED
+            'publication_status': Problem.NOT_MODERATED
         })
 
         # Problems in hidden statuses
