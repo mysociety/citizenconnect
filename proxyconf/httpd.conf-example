@@ -18,6 +18,8 @@ RewriteRule    ^/nhs.uk/$  /nhs.uk/choices  [R=301]
 RewriteRule    ^/nhs.uk$  /nhs.uk/choices  [R=301]
 ProxyPass        /nhs.uk https://citizenconnect.mysociety.org
 ProxyPassReverse /nhs.uk https://citizenconnect.mysociety.org
+ProxyPassReverseCookieDomain citizenconnect.mysociety.org citizenconnect-proxy.dev.mysociety.org
+ProxyPassReverseCookiePath / /nhs.uk/
 
 #<Location /nhs.uk>
 
