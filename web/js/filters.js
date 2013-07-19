@@ -32,5 +32,6 @@ $(document).ready(function () {
   });
 
 
+  // Makes styling select elements work cross-browser.
   $('.filters__dropdown select').customSelect();
 });
