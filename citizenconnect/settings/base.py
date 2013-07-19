@@ -98,7 +98,7 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
-    'djangomiddleware.redirect_middleware.FullyQualifiedRedirectMiddleware',
+    #'djangomiddleware.redirect_middleware.FullyQualifiedRedirectMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
