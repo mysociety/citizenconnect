@@ -43,6 +43,6 @@ class APIProblemCreate(CreateView):
 
     # On error, return the errors
     def form_invalid(self, form):
-        response = self.render_to_json_response(json.dumps({ 'errors': json.dumps(form.errors) }))
+        response = self.render_to_json_response(json.dumps({ 'errors': form.errors }))
         response.status_code = 400
         return response
