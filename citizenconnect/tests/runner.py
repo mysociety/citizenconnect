@@ -5,6 +5,8 @@
 
 from django.test.simple import DjangoTestSuiteRunner
 from django.conf import settings
+from django.contrib.sites.models import Site
+
 
 class AppsTestSuiteRunner(DjangoTestSuiteRunner):
     """ Override the default django 'test' command, include only
@@ -26,3 +28,12 @@ class AppsTestSuiteRunner(DjangoTestSuiteRunner):
         return super(AppsTestSuiteRunner, self).run_tests(
             test_labels, extra_tests, **kwargs
         )
+
+    def run_suite(self, *args, **kwargs):
+
+        # Change the site url to be 'testserver', so that the tests continue to
+        # work as FullyQualifiedRedirectMiddleware will rewrite the urls to what
+        # is expected by the default test client.
+        Site.objects.update(name="testserver", domain="testserver")
+
+        return super(AppsTestSuiteRunner, self).run_suite(*args, **kwargs)
