@@ -61,7 +61,6 @@
             .html(filters)
             .addClass('filters__dropdown-wrap');
 
-        $('.summary-table__subhead .filters__dropdown select').customSelect();
 
     };
 
@@ -138,6 +137,9 @@
                           reviewFiltersTemplate,
                           selectedReviewInterval,
                           reviewsHeaderID);
+
+        // Makes styling select elements work cross-browser.
+        $('.summary-table__subhead .filters__dropdown select').customSelect();
 
         // Things to do when the selects change
         $("#problems-interval-filters").change(function(e){
