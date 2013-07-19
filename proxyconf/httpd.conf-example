@@ -21,7 +21,6 @@ ProxyPassReverse /nhs.uk https://citizenconnect.mysociety.org
   #  docs:    http://apache.webthing.com/mod_proxy_html30/
 
   SetOutputFilter  INFLATE;proxy-html;DEFLATE
-  ProxyHTMLDoctype HTML
 
   # I suspect this is what the NHS have set up, which explains the
   # /careconnect/choices oddness
