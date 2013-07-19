@@ -10,6 +10,12 @@ SSLProxyEngine On
 CacheDisable *
 
 # Send traffic to the right place, rewrite headers
+RewriteEngine  on
+
+# Choices
+# Don't allow trailing slashes, and redirect the homepage to the choices cobrand
+RewriteRule    ^/nhs.uk/$  /nhs.uk/choices  [R=301]
+RewriteRule    ^/nhs.uk$  /nhs.uk/choices  [R=301]
 ProxyPass        /nhs.uk https://citizenconnect.mysociety.org
 ProxyPassReverse /nhs.uk https://citizenconnect.mysociety.org
 
