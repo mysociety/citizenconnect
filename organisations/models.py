@@ -22,6 +22,8 @@ import auth
 from .auth import user_in_group, user_in_groups
 from .metaphone import dm
 
+from sorl.thumbnail import ImageField as sorlImageField
+
 
 class CCG(MailSendMixin, AuditedModel):
     name = models.TextField()
@@ -191,6 +193,11 @@ class Organisation(AuditedModel, geomodels.Model):
 
     # Average review rating from "Would you recommend this provider to your friends and family?"
     average_recommendation_rating = models.FloatField(blank=True, null=True)
+
+    # image of the organisation
+    image = sorlImageField(upload_to=image_upload_to_partition_dir, blank=True)
+
+
 
     @property
     def organisation_type_name(self):
