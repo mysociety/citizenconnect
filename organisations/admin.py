@@ -1,10 +1,12 @@
+from sorl.thumbnail.admin import AdminImageMixin
+
 from django.contrib import admin
 from organisations import models
 
 import reversion
 
 
-class OrganisationAdmin(reversion.VersionAdmin):
+class OrganisationAdmin(AdminImageMixin, reversion.VersionAdmin):
     list_display = ('id', 'name', 'organisation_type', 'parent')
 
 

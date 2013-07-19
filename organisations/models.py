@@ -1,3 +1,6 @@
+import random
+import string
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -18,6 +21,8 @@ from issues.models import Problem
 import auth
 from .auth import user_in_group, user_in_groups
 from .metaphone import dm
+
+from sorl.thumbnail import ImageField as sorlImageField
 
 
 class CCG(MailSendMixin, AuditedModel):
@@ -154,6 +159,16 @@ def ensure_ccgs_contains_escalation_ccg(sender, **kwargs):
         organisation_parent.ccgs.add(organisation_parent.escalation_ccg)
 
 
+def image_upload_to_partition_dir(*args_that_are_ignored):
+    # organisation_images/\w{2}/\w{2}
+    letters = 'abcdefghijklmnopqrstuvwxyz'
+    return "/".join([
+        "organisation_images",
+        "".join(random.sample(letters, 2)),
+        "".join(random.sample(letters, 2))
+    ])
+
+
 class Organisation(AuditedModel, geomodels.Model):
 
     name = models.TextField()
@@ -178,6 +193,11 @@ class Organisation(AuditedModel, geomodels.Model):
 
     # Average review rating from "Would you recommend this provider to your friends and family?"
     average_recommendation_rating = models.FloatField(blank=True, null=True)
+
+    # image of the organisation
+    image = sorlImageField(upload_to=image_upload_to_partition_dir, blank=True)
+
+
 
     @property
     def organisation_type_name(self):

@@ -24,6 +24,8 @@ from ..lib import interval_counts
 from ..tables import NationalSummaryTable
 from ..templatetags.organisation_extras import formatted_time_interval, percent
 
+from sorl.thumbnail import get_thumbnail
+
 
 class PrivateViewMixin(object):
     """
@@ -227,6 +229,10 @@ class Map(FilterFormMixin,
                                               'cobrand': self.kwargs['cobrand']})
             org_data['average_time_to_address'] = formatted_time_interval(org_data['average_time_to_address'])
             org_data['happy_outcome'] = percent(org_data['happy_outcome'])
+            org = Organisation.objects.get(ods_code=org_data['ods_code'])
+            if org.image:
+                org_data['thumbnail_url'] = get_thumbnail(org.image, '60x60').url
+                
         # Make it into a JSON string
         context['organisations'] = json.dumps(organisations_list)
 

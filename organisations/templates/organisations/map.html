@@ -69,10 +69,9 @@
 <script type="text/x-underscore-template" name="hover-bubble">
     <div class="hover-bubble  cf">
         <div class="header">
-            {% comment %}
-              // Once we have real images for the orgs their urls should be used here instead of the placeholder
-              <img src="{% static 'img/organisation-map-placeholder.png' %}" alt="Image of <%= nhsCentre.name %>" class="fr" />
-            {% endcomment %}
+            <% if (nhsCentre.thumbnail_url) { %>
+              <img src="<%= CitizenConnect.base_url + nhsCentre.thumbnail_url %>" alt="Image of <%= nhsCentre.name %>" class="fr" />
+            <% } %>
             <h2 class="map-header"><%= nhsCentre.name %></h2>
         </div>
 

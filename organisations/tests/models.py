@@ -1,4 +1,5 @@
 import datetime
+import re
 
 from django.test import TestCase
 from django.core import mail
@@ -13,7 +14,7 @@ from .lib import (create_test_organisation,
                   create_test_problem,
                   AuthorizationTestCase)
 
-from ..models import Organisation, OrganisationParent, CCG
+from ..models import Organisation, OrganisationParent, CCG, image_upload_to_partition_dir
 
 
 class OrganisationParentModelTests(TestCase):
@@ -82,7 +83,7 @@ class CCGModelTests(TestCase):
         self.assertEqual(problems.count(), 2)
         for p in problems:
             self.assertEqual(p.organisation.parent.ccgs.all()[0], self.test_ccg)
-    
+
     def test_that_email_address_is_required(self):
         self.assertRaises(ValidationError, CCG.objects.create, code="NOEMAIL")
         self.assertRaises(ValidationError, CCG.objects.create, email="", code="NOEMAIL")
@@ -124,7 +125,7 @@ class OrganisationParentModelTests(TestCase):
             choices_id=123,
             email=""
         )
-    
+
 
 class OrganisationModelTests(TestCase):
     def test_organisation_type_name(self):
@@ -245,3 +246,21 @@ class OrganisationParentModelSendMailTests(CreateTestOrganisationParentMixin, Se
 
 class CCGModelSendMailTests(CreateTestCCGMixin, SendMailTestsMixin, TestCase):
     pass
+
+
+class OrganisationMiscTests(TestCase):
+    def test_image_upload_to_partition_dir(self):
+
+        seen = set()
+
+        for i in range(10):
+            partition = image_upload_to_partition_dir()
+            seen.add(partition)
+
+            regex = r'organisation_images/\w{2}/\w{2}'
+            self.assertTrue(
+                re.match(regex, partition),
+                "'{0}' does not match '{1}'".format(partition, regex)
+            )
+
+        self.assertTrue(len(seen) > 1)
