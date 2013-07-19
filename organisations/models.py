@@ -1,3 +1,6 @@
+import random
+import string
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -152,6 +155,16 @@ def ensure_ccgs_contains_escalation_ccg(sender, **kwargs):
     organisation_parent = kwargs['instance']
     if organisation_parent.escalation_ccg and organisation_parent.escalation_ccg not in organisation_parent.ccgs.all():
         organisation_parent.ccgs.add(organisation_parent.escalation_ccg)
+
+
+def image_upload_to_partition_dir(*args_that_are_ignored):
+    # organisation_images/\w{2}/\w{2}
+    letters = 'abcdefghijklmnopqrstuvwxyz'
+    return "/".join([
+        "organisation_images",
+        "".join(random.sample(letters, 2)),
+        "".join(random.sample(letters, 2))
+    ])
 
 
 class Organisation(AuditedModel, geomodels.Model):
