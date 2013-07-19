@@ -12,6 +12,7 @@
   }
 }
 
+  th .filters__dropdown .customSelect,
   th .filters__dropdown select {
      font-size: 1em;
     }
@@ -39,12 +40,12 @@
       background-color: #e6e6e6;
       background-image: url(../img/select_arrow-default.png);
       font-weight: normal;
-      select {
+      select, .customSelect {
         color: #333;
         &:focus { color: #333; }
       }
     }
-      .customSelect {
+      select, .customSelect {
         background-color: transparent;
         -webkit-appearance: none;
         -moz-appearance: window;
@@ -55,6 +56,8 @@
         padding: 1em 2.5em 1em 0.5em;
         margin: 0;
         font-size: (13px / $font-size-base) + em;
+        font-weight: normal;
+        text-align: left;
         @include vendor(border-radius, 0);
       }
   }
