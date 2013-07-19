@@ -10,11 +10,11 @@ SSLProxyEngine On
 CacheDisable *
 
 # Send traffic to the right place, rewrite headers
-ProxyPass        /nhs.uk https://citizenconnect.mysociety.org/choices
-ProxyPassReverse /nhs.uk https://citizenconnect.mysociety.org/choices
+ProxyPass        /nhs.uk https://citizenconnect.mysociety.org
+ProxyPassReverse /nhs.uk https://citizenconnect.mysociety.org
 
 #<Location /nhs.uk>
-  
+
   # Switch on html rewriting of links
   # Note that debian ships the old version:
   #  package: http://packages.debian.org/squeeze/libapache2-mod-proxy-html
@@ -25,8 +25,7 @@ ProxyPassReverse /nhs.uk https://citizenconnect.mysociety.org/choices
 
   # I suspect this is what the NHS have set up, which explains the
   # /careconnect/choices oddness
-  ProxyHTMLURLMap  /choices /nhs.uk
   ProxyHTMLURLMap  /        /nhs.uk/
 
-  
+
 # </Location>
