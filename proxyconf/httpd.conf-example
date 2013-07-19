@@ -21,7 +21,15 @@ ProxyPassReverse /nhs.uk https://citizenconnect.mysociety.org
 ProxyPassReverseCookieDomain citizenconnect.mysociety.org citizenconnect-proxy.dev.mysociety.org
 ProxyPassReverseCookiePath / /nhs.uk/
 
-#<Location /nhs.uk>
+# MyHealthLondon versions of the above
+RewriteRule    ^/mhl/$  /mhl/myhealthlondon  [R=301]
+RewriteRule    ^/mhl$  /mhl/myhealthlondon  [R=301]
+ProxyPass        /mhl https://citizenconnect.mysociety.org
+ProxyPassReverse /mhl https://citizenconnect.mysociety.org
+ProxyPassReverseCookieDomain citizenconnect.mysociety.org citizenconnect-proxy.dev.mysociety.org
+ProxyPassReverseCookiePath / /mhl/
+
+<Location /nhs.uk>
 
   # Switch on html rewriting of links
   # Note that debian ships the old version:
@@ -30,9 +38,19 @@ ProxyPassReverseCookiePath / /nhs.uk/
 
   SetOutputFilter  INFLATE;proxy-html;DEFLATE
 
-  # I suspect this is what the NHS have set up, which explains the
-  # /careconnect/choices oddness
   ProxyHTMLURLMap  /        /nhs.uk/
 
+</Location>
 
-# </Location>
+<Location /mhl>
+
+  # Switch on html rewriting of links
+  # Note that debian ships the old version:
+  #  package: http://packages.debian.org/squeeze/libapache2-mod-proxy-html
+  #  docs:    http://apache.webthing.com/mod_proxy_html30/
+
+  SetOutputFilter  INFLATE;proxy-html;DEFLATE
+
+  ProxyHTMLURLMap  /        /mhl/
+
+</Location>
