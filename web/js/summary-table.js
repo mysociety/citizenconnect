@@ -60,6 +60,9 @@
         $(".summary-table__subhead th." + selectedColumn)
             .html(filters)
             .addClass('filters__dropdown-wrap');
+
+        $('.summary-table__subhead .filters__dropdown select').customSelect();
+
     };
 
     // Update all the header links which provide sorts to correctly

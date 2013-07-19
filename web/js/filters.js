@@ -31,4 +31,6 @@ $(document).ready(function () {
     $(this).find('select').removeAttr('disabled');
   });
 
+
+  $('.filters__dropdown select').customSelect();
 });
