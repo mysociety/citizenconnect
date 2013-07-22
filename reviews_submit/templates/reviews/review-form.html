@@ -92,14 +92,14 @@
             <ul class="gw">
                 <li class="g  one-third">
                     <label for="{{ form.display_name.auto_id }}">Your name</label>
-                    <p class="info">You must enter a name.</p>
+                    <p class="info">You must enter a name.<br><br></p>
                     {{ form.display_name }}
                     {% include "citizenconnect/includes/message_list.html" with messages=form.display_name.errors message_type='error' %}
                 </li>
 
                 <li class="g  two-thirds">
                     <label for="{{ form.email.auto_id }}">Your email address</label>
-                    <p class="info">We only use your email address to communicate with you about your feedback.</p>
+                    <p class="info">We only use your email address to communicate with you about your feedback. This includes telling you when it is published or has a reply.</p>
                     {{ form.email }}
                     {% include "citizenconnect/includes/message_list.html" with messages=form.email.errors message_type='error' %}
                 </li>
