@@ -33,5 +33,7 @@ $(document).ready(function () {
 
 
   // Makes styling select elements work cross-browser.
-  $('.filters__dropdown select').customSelect();
+  if (!$('html').hasClass('ie7')) {
+    $('.filters__dropdown select').customSelect();
+  }
 });
