@@ -203,12 +203,6 @@ LOGGING = {
     }
 }
 
-SESSION_COOKIE_AGE = 7200  # Two hours max
-SESSION_COOKIE_HTTPONLY = True  # This is the default, but just to make it explicit
-SESSION_COOKIE_SECURE = not DEBUG
-
-CSRF_COOKIE_SECURE = not DEBUG
-
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # pagination related settings
