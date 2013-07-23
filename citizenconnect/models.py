@@ -1,11 +1,8 @@
-
 from django.db import models
-from django.conf import settings
 
-from organisations import choices_api
 
 class AuditedModel(models.Model):
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(auto_now_add=True, db_index=True)
     modified = models.DateTimeField(auto_now=True)
 
     class Meta:

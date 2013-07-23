@@ -1,5 +1,4 @@
 import random
-import string
 
 import logging
 logger = logging.getLogger(__name__)
@@ -19,7 +18,7 @@ from .mixins import MailSendMixin
 from issues.models import Problem
 
 import auth
-from .auth import user_in_group, user_in_groups
+from .auth import user_in_groups
 from .metaphone import dm
 
 from sorl.thumbnail import ImageField as sorlImageField
@@ -171,7 +170,7 @@ def image_upload_to_partition_dir(*args_that_are_ignored):
 
 class Organisation(AuditedModel, geomodels.Model):
 
-    name = models.TextField()
+    name = models.TextField(db_index=True)
     organisation_type = models.CharField(max_length=100, choices=settings.ORGANISATION_CHOICES)
     choices_id = models.IntegerField(db_index=True)
     ods_code = models.CharField(max_length=12, db_index=True, unique=True)
@@ -196,8 +195,6 @@ class Organisation(AuditedModel, geomodels.Model):
 
     # image of the organisation
     image = sorlImageField(upload_to=image_upload_to_partition_dir, blank=True)
-
-
 
     @property
     def organisation_type_name(self):
@@ -247,7 +244,7 @@ class Organisation(AuditedModel, geomodels.Model):
 
 
 class Service(AuditedModel):
-    name = models.TextField()
+    name = models.TextField(db_index=True)
     service_code = models.TextField(db_index=True)
     organisation = models.ForeignKey(Organisation, related_name='services')
 
