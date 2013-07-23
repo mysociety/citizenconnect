@@ -60,7 +60,7 @@ class MapitPostCodeLookup(object):
 class OrganisationFinderForm(forms.Form):
     location = forms.CharField(required=True, error_messages={'required': 'Please enter a location'})
 
-    PILOT_SEARCH_CAVEAT = 'The provider or postcode may not be covered by Care Connect.'
+    PILOT_SEARCH_CAVEAT = 'The provider or postcode may not be covered by this service.'
 
     def organisations_from_postcode(self, postcode, partial=False):
         try:
