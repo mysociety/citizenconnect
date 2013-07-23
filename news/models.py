@@ -9,4 +9,4 @@ class Article(AuditedModel):
     description = models.TextField()
     content = models.TextField()
     author = models.CharField(max_length=50, blank=True)
-    published = models.DateTimeField()
+    published = models.DateTimeField(db_index=True)
