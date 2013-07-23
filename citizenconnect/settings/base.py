@@ -1,8 +1,14 @@
 # Django settings for citizenconnect project.
 
 import os
+import sys
+
 from django.conf import global_settings
+
 from .paths import *
+
+# Add pylib from commonlib into sys.path
+sys.path.append(os.path.join(PROJECT_ROOT, 'commonlib', 'pylib'))
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -34,6 +40,10 @@ TIME_ZONE = 'Europe/London'
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en-gb'
 
+# Note: the site referenced here will be set to use the domain of SITE_BASE_URL
+# for it's domain, so that the admin site can work correctly
+# this happens in the create_default_site management command, and is run by
+# post_deploy_actions.bash
 SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not
@@ -88,6 +98,7 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'djangomiddleware.redirect_middleware.FullyQualifiedRedirectMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -192,11 +203,7 @@ LOGGING = {
     }
 }
 
-SESSION_COOKIE_AGE = 7200  # Two hours max
-SESSION_COOKIE_HTTPONLY = True  # This is the default, but just to make it explicit
-SESSION_COOKIE_SECURE = not DEBUG
-
-CSRF_COOKIE_SECURE = not DEBUG
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # pagination related settings
 PAGINATION_DEFAULT_PAGINATION = 10

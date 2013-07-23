@@ -24,6 +24,8 @@ from ..lib import interval_counts
 from ..tables import NationalSummaryTable
 from ..templatetags.organisation_extras import formatted_time_interval, percent
 
+from sorl.thumbnail import get_thumbnail
+
 
 class PrivateViewMixin(object):
     """
@@ -149,6 +151,40 @@ class FilterFormMixin(FormMixin):
         return problem_filters
 
 
+class OrganisationSearch(TemplateView):
+    def get_context_data(self, **kwargs):
+        context = super(OrganisationSearch, self).get_context_data()
+
+        term = self.request.GET.get('term', '')
+
+        context['results'] = []
+        to_serialize = context['results']
+
+        # no search, no results
+        if not len(term):
+            return context
+
+        organisations = Organisation.objects.filter(name__icontains=term)
+
+        for obj in organisations[:8]:
+            to_serialize.append({
+                "id":   obj.ods_code,
+                "text": obj.name,
+                "type": "organisation",
+                "lat":  obj.point.y,
+                "lon":  obj.point.x,
+            })
+
+        return context
+
+    def render_to_response(self, context, **kwargs):
+
+        json_string = json.dumps(context['results'], sort_keys=True, indent=4)
+
+        kwargs['content_type'] = 'application/json'
+        return HttpResponse(json_string, **kwargs)
+
+
 class Map(FilterFormMixin,
           TemplateView):
     template_name = 'organisations/map.html'
@@ -193,6 +229,10 @@ class Map(FilterFormMixin,
                                               'cobrand': self.kwargs['cobrand']})
             org_data['average_time_to_address'] = formatted_time_interval(org_data['average_time_to_address'])
             org_data['happy_outcome'] = percent(org_data['happy_outcome'])
+            org = Organisation.objects.get(ods_code=org_data['ods_code'])
+            if org.image:
+                org_data['thumbnail_url'] = get_thumbnail(org.image, '60x60').url
+                
         # Make it into a JSON string
         context['organisations'] = json.dumps(organisations_list)
 
@@ -249,19 +289,18 @@ class MapOrganisationCoords(TemplateView):
         return HttpResponse(context['organisation'], content_type='application/json', **response_kwargs)
 
 
-class MapSearch(TemplateView):
+class MapSearch(OrganisationSearch):
 
     def get_context_data(self, **kwargs):
         context = super(MapSearch, self).get_context_data()
 
         term = self.request.GET.get('term', '')
 
-        to_serialize = []
-        context['results'] = to_serialize
-
         # no search, no results
         if not len(term):
             return context
+
+        to_serialize = context['results']
 
         # Check if the term is a postcode
         possible_postcode = re.sub('\s+', '', term.upper())
@@ -281,18 +320,6 @@ class MapSearch(TemplateView):
             except MapitError:
                 # Not really much to be done about an error, pass through to the rest of the code.
                 pass
-
-        organisations = Organisation.objects.filter(name__icontains=term)
-
-        for obj in organisations[:8]:
-            to_serialize.append({
-                "id":   obj.ods_code,
-                "text": obj.name,
-                "type": "organisation",
-                "lat":  obj.point.y,
-                "lon":  obj.point.x,
-            })
-
         places = Place.objects.filter(name__istartswith=term)
         places = places.order_by('name')
 
@@ -306,13 +333,6 @@ class MapSearch(TemplateView):
             })
 
         return context
-
-    def render_to_response(self, context, **kwargs):
-
-        json_string = json.dumps(context['results'], sort_keys=True, indent=4)
-
-        kwargs['content_type'] = 'application/json'
-        return HttpResponse(json_string, **kwargs)
 
 
 class PickProviderBase(ListView):

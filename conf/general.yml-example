@@ -46,6 +46,8 @@ MAPIT_BASE_URL: 'http://mapit.mysociety.org/'
 
 # Site base url - so that we can generate fully qualified links outside of requests
 # eg: in cron scripts that need to generate links for emails
+# The default site (id=1) in the Django sites framework is also
+# set to this value, so that full qualified redirects work
 SITE_BASE_URL: 'http://localhost:8000'
 
 # The default email address which emails sent by the site will appear to come from
@@ -95,3 +97,5 @@ ALLOWED_IMAGE_EXTENSIONS: ['.jpg', '.jpeg', '.gif', '.bmp']
 # TWITTER_WIDGET_ID: '355653879704207362'
 
 NHS_RSS_FEED_URL: http://news.careconnect.mysociety.org/feed/
+
+USE_X_FORWARDED_HOST: False

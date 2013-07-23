@@ -35,7 +35,7 @@ For both questions and  problems: [`staff`, `access`, `delays`, `treatment`, `co
 Optional. Whether the problem constitutes a breach of standards. Send `0` or `1` for false or true. Defaults to false.
 
 ### priority
-Optional. Whether the problem is a priority (user is asked 'is this happening right now'). Invalid for the following categories [equipment, parking, lostproperty, other]. Send `20` for normal priority, `50` for high priority, defaults to normal priority.
+Optional. Whether the problem is a priority (user is asked 'is this happening right now'). Invalid for the following categories [equipment, parking, lostproperty, other]. Send `50` for normal priority, `20` for high priority, defaults to normal priority.
 
 ### requires_second_tier_moderation
 Optional. Whether the problem requires second tier moderation. Send `0` or `1` for false or true. Defaults to false.

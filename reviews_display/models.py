@@ -13,11 +13,14 @@ from citizenconnect.models import AuditedModel
 class OrganisationFromApiDoesNotExist(Exception):
     pass
 
+
 class RepliedToReviewDoesNotExist(Exception):
     def __init__(self, message):
         self.message = message
+
     def __str__(self):
         return self.message
+
 
 class Review(AuditedModel):
 
@@ -36,7 +39,7 @@ class Review(AuditedModel):
     api_postingorganisationid = models.CharField(max_length=20)
 
     # published and updated timestamps.
-    api_published = models.DateTimeField()
+    api_published = models.DateTimeField(db_index=True)
     api_updated = models.DateTimeField()
 
     # This is provided in the api and is meant to identify what the review is.
@@ -81,9 +84,9 @@ class Review(AuditedModel):
     def main_rating_score(self):
         # TODO: There must be a better way to get the Friends and Family rating.
         try:
-             score = self.ratings.get(question='Friends and Family').score
+            score = self.ratings.get(question='Friends and Family').score
         except Rating.DoesNotExist:
-             score = None
+            score = None
         return score
 
     @classmethod
@@ -226,7 +229,7 @@ class Rating(AuditedModel):
     """
 
     review = models.ForeignKey(Review, related_name='ratings')
-    question = models.CharField(max_length=1000)  # e.g. "Was the area clean?"
+    question = models.CharField(max_length=1000, db_index=True)  # e.g. "Was the area clean?"
     answer = models.CharField(max_length=100)     # e.g. "Very clean"
     score = models.IntegerField()                 # e.g. 5
 

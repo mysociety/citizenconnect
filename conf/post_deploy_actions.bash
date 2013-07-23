@@ -24,3 +24,5 @@ find . -name '*.pyc' -delete
 # gather all the static files in one place
 ./manage.py collectstatic --noinput
 
+# make a default site in the db if there's not one
+./manage.py create_default_site

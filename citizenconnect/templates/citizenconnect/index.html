@@ -10,8 +10,10 @@
 {% block content %}
 <div class="gw  mb  mt--b">
     <div class="g  two-thirds  palm-one-whole">
-        <p class="intro-text mt">We want you as a user of NHS services to act as our &lsquo;eyes and ears&rsquo;; to tell us when things are going well and to tell us when things are not going well so that we can do something about it. We want to ensure your voice is heard, listened to and acted upon.</p>
-        <p>You can do this online here or via text us on 61114.</p>
+        <p class="intro-text mt">Tell us when things are going well and when they're not, so we can do something about it.
+            You can do this online here, or contact us using the channels at the bottom of the page.</p>
+        <p class="intro-text mt">This is a 24 hours 7 days a week service, however currently it is only live for parts of London and the North East of England - other areas will be added soon.</p>
+        <p class="intro-text mt">Please be aware that this service cannot provide medical support or advice.</p>
     </div>
     <div class="g  one-third  palm-one-whole">
         <div class="islet  islet--white">
@@ -63,25 +65,6 @@
                 {% endfor %}
             </ul>
         </div>
-
-        <br />
-
-        <div class="news-articles">
-            <h2 class="title  title--news  mb--s">Latest News</h2>
-            {% for article in recent_articles %}
-            <div class="news-article--preview">
-                <h1 class="news-article__title"><a href="{% url 'article-view' cobrand=cobrand.name pk=article.pk %}">{{ article.title }}</a></h1>
-                <h3 class="news-article__author">{{ article.author }}</h3>
-                <div class="news-article__content">
-                    {{ article.description|safe }}
-                </div>
-            </div>
-            {% endfor %}
-            <div class="align-center">
-                <a href="{% url 'article-list' cobrand=cobrand.name %}" class="coloured-link">View all news <span class="icon-chevron-right" aria-hidden="true"></span> </a>
-            </div>
-        </div>
-
     </div>
     <div class="g  one-third  palm-one-whole">
         <div class="bordered-box  homepage-map-box">
@@ -102,6 +85,28 @@
 
         <div class="mt">
         </div>
+    </div>
+</div>
+
+
+<div class="gw">
+    <div class="g  two-thirds  palm-one-whole">
+        <div class="news-articles">
+            <h2 class="title  title--news  mb--s">Latest News</h2>
+            {% for article in recent_articles %}
+            <div class="news-article--preview">
+                <h1 class="news-article__title"><a href="{% url 'article-view' cobrand=cobrand.name pk=article.pk %}">{{ article.title }}</a></h1>
+                <h3 class="news-article__author">{{ article.author }}</h3>
+                <div class="news-article__content">
+                    {{ article.description|safe }}
+                </div>
+            </div>
+            {% endfor %}
+            <div class="align-center">
+                <a href="{% url 'article-list' cobrand=cobrand.name %}" class="coloured-link">View all news <span class="icon-chevron-right" aria-hidden="true"></span> </a>
+            </div>
+        </div>
+
     </div>
 
     <div class="g  one-third  palm-one-whole">

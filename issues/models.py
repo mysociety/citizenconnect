@@ -27,6 +27,7 @@ from citizenconnect.models import AuditedModel
 from .lib import base32_to_int, int_to_base32
 from sorl.thumbnail import ImageField as sorlImageField
 
+
 class ProblemQuerySet(models.query.QuerySet):
 
     # The fields to sort by. Used in the tables code.
@@ -75,7 +76,10 @@ class ProblemManager(models.Manager):
         return self.all().filter(Q(status__in=Problem.CLOSED_STATUSES))
 
     def unmoderated_problems(self):
-        return self.all().filter(publication_status=Problem.NOT_MODERATED)
+        return self.all().filter(
+            publication_status=Problem.NOT_MODERATED,
+            requires_second_tier_moderation=False
+        )
 
     def open_published_visible_problems(self):
         return self.open_problems().filter(publication_status=Problem.PUBLISHED,
@@ -93,7 +97,8 @@ class ProblemManager(models.Manager):
         return self  \
             .all()  \
             .filter(status__in=Problem.VISIBLE_STATUSES)  \
-            .exclude(publication_status=Problem.REJECTED)
+            .exclude(publication_status=Problem.REJECTED) \
+            .exclude(requires_second_tier_moderation=True)
 
     def problems_requiring_second_tier_moderation(self):
         return self.all().filter(requires_second_tier_moderation=True)
@@ -107,7 +112,7 @@ class ProblemManager(models.Manager):
             confirmation_sent__isnull=True,
             confirmation_required=True
         )
-    
+
     def requiring_survey_to_be_sent(self):
         now = datetime.utcnow().replace(tzinfo=utc)
         survey_interval = timedelta(days=settings.SURVEY_INTERVAL_IN_DAYS)
@@ -119,10 +124,9 @@ class ProblemManager(models.Manager):
                 status__in=Problem.VISIBLE_STATUSES
             )  \
             .exclude(
-                reporter_email='',                
+                reporter_email='',
             )
         return surveyable_problems
-        
 
 
 class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
@@ -303,7 +307,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     public_reporter_name = models.BooleanField()
     public_reporter_name_original = models.BooleanField(editable=False)
     status = models.IntegerField(default=NEW, choices=STATUS_CHOICES, db_index=True)
-    priority = models.IntegerField(default=PRIORITY_NORMAL, choices=PRIORITY_CHOICES)
+    priority = models.IntegerField(default=PRIORITY_NORMAL, choices=PRIORITY_CHOICES, db_index=True)
     organisation = models.ForeignKey('organisations.Organisation')
     service = models.ForeignKey('organisations.Service',
                                 null=True,
@@ -320,16 +324,17 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
 
     publication_status = models.IntegerField(default=NOT_MODERATED,
                                              blank=False,
-                                             choices=PUBLICATION_STATUS_CHOICES)
+                                             choices=PUBLICATION_STATUS_CHOICES,
+                                             db_index=True)
     moderated_description = models.TextField(blank=True)
     breach = models.BooleanField(default=False, blank=False)
     requires_second_tier_moderation = models.BooleanField(default=False, blank=False)
     commissioned = models.IntegerField(blank=True, null=True, choices=COMMISSIONED_CHOICES)
-    cobrand = models.CharField(max_length=30, blank=False, choices=COBRAND_CHOICES)
+    cobrand = models.CharField(max_length=30, blank=False, choices=COBRAND_CHOICES, default=settings.ALLOWED_COBRANDS[0])
     formal_complaint = models.BooleanField(default=False, blank=False)
 
     # Fields relating to emails that get sent
-    mailed = models.BooleanField(default=False, blank=False)
+    mailed = models.BooleanField(default=False, blank=False, db_index=True)
     survey_sent = models.DateTimeField(null=True, blank=True)
     confirmation_required = models.BooleanField(default=False)
     confirmation_sent = models.DateTimeField(null=True, blank=True)
