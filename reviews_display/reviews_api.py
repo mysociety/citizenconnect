@@ -177,9 +177,13 @@ class ReviewsAPI(object):
             return None
 
         root = ET.fromstring(xml)
-        next_page_url = root.find('link[@rel="next"]').get('href')
-        last_page_url = root.find('link[@rel="last"]').get('href')
+        next_page_link = root.find('link[@rel="next"]')
+        last_page_link = root.find('link[@rel="last"]')
+        if next_page_link is None or last_page_link is None:
+            return None
 
+        next_page_url = next_page_link.get('href')
+        last_page_url = last_page_link.get('href')
         if next_page_url == last_page_url:
             return None
 
