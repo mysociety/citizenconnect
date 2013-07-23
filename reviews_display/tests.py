@@ -131,7 +131,9 @@ class ReviewParseApiXmlTests(SampleDirMixin, TestCase):
         super(ReviewParseApiXmlTests, self).setUp()
         self.sample_xml_filename = os.path.join(self.sample_dir, 'sample.xml')
         self.sample_json_filename = os.path.join(
-            self.sample_dir, 'sample.json')
+            self.sample_dir,
+            'sample.json'
+        )
 
         self.xml = open(self.sample_xml_filename).read()
         self.json = json.loads(open(self.sample_json_filename).read())
@@ -154,6 +156,25 @@ class ReviewParseApiXmlTests(SampleDirMixin, TestCase):
 
         self.maxDiff = None
         self.assertEqual(actual, expected)
+
+    def test_parse_xml_with_no_next_link(self):
+        # Issue #1042 - the api code didn't allow for the fact that
+        # there might only be one page of reviews coming back, and so
+        # the xml wouldn't contain a "next" link at all.
+        self.no_next_link_xml_filename = os.path.join(
+            self.sample_dir,
+            'sample_no_next_link.xml'
+        )
+
+        self.no_next_link_xml = open(self.no_next_link_xml_filename).read()
+
+        api = ReviewsAPI(organisation_type="hospitals")
+        xml = api.cleanup_xml(self.no_next_link_xml)
+
+        # This threw an error before
+        next_page_url = api.extract_next_page_url(xml)
+
+        self.assertIsNone(next_page_url)
 
 
 class ReviewParseEmptyApiXmlTests(SampleDirMixin, TestCase):

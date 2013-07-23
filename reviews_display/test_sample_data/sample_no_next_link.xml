@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title type="text">NHS Choices - Comments Since 16 July 2013 - Page 1 of 1</title>
+    <id>uuid:0fd88d7f-b1d1-4a14-88c6-ec1e6800cdad;id=1777</id>
+    <rights type="text">© Crown Copyright 2009</rights>
+    <updated>2013-07-22T21:18:03+01:00</updated>
+    <category term="CommentsAndRatings"/>
+    <logo>http://www.nhs.uk/nhscwebservices/documents/logo1.jpg</logo>
+    <author>
+        <name>NHS Choices</name>
+        <uri>http://www.nhs.uk</uri>
+        <email>webservices@nhschoices.nhs.uk</email>
+    </author>
+    <link href="http://v1.syndication.nhschoices.nhs.uk/organisations/clinics/commentssince/2013/7/16?apikey=UUARBGPJ" rel="self" title="NHS Choices - Comments Since 16 July 2013 - Page 1 of 1" type="application/atom+xml"/>
+    <tracking xmlns="http://syndication.nhschoices.nhs.uk/services">&lt;img style=&quot;border: 0; width: 1px; height: 1px;&quot; alt=&quot;&quot; src=&quot;http://statse.webtrendslive.com/dcss9yzisf9xjyg74mgbihg8p_8d2u/njs.gif?dcsuri=/organisations%2fclinics%2fcommentssince%2f2013%2f7%2f16&amp;amp;wt.js=no&amp;amp;wt.cg_n=syndication&quot;/&gt;</tracking>
+    <complete xmlns="http://purl.org/syndication/history/1.0"/>
+    <entry>
+        <id>210744</id>
+        <title type="text">Always late</title>
+        <published>2013-07-22T21:18:03+01:00</published>
+        <updated>2013-07-23T08:22:46+01:00</updated>
+        <author>
+            <name>Anonymous</name>
+        </author>
+        <link href="http://v1.syndication.nhschoices.nhs.uk/organisations/clinics/750908?apikey=UUARBGPJ" length="1000" rel="related" title="Organisation commented on" type="application/xhtml+xml"/>
+        <link href="http://v1.syndication.nhschoices.nhs.uk/organisations/clinics/750908/comments/210744?apikey=UUARBGPJ" length="1000" rel="self" title="Always late" type="application/xhtml+xml"/>
+        <link href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RYX17" length="1000" rel="alternate" title="Original comment on NHS Choices website" type="text/html"/>
+        <link href="http://www.nhs.uk/Pages/comments.aspx?contentId=210744&amp;AreaId=6&amp;type=p" length="1000" rel="report" title="Report this comment as offensive or unsuitable" type="text/html"/>
+        <category label="Whether this is a comment, reply or deletion" scheme="commentType" term="comment"/>
+        <content type="xhtml">
+            <div id="anythingElse">I've been going to this practice for at least four years, every ten weeks. I can count on one hand the number of times I've been seen on time. The doctors and nurses are always running late, sometimes by as much as an hour, and even when you get the first appointment for a session they don't seem to bother turning up on time anyway. Today was the final straw, having booked my follow up ten weeks ago on leaving my last appointment (as always) I arrived today to find that my appointment wasn't in the system. No apology was forthcoming for what was clearly their mistake. I was sat down and told that the nurse was running late (!) surprise surprise, it was 6:25pm and the clinic had started at 6pm. No one had been seen yet - who knows how long it was going to be before they could squeeze me into their already late running schedule. I rebooked my appointment for Wednesday but only because I need something at short notice. I also had the worst smear I've ever had the misfortune of suffering here a few months ago, carried out by an intolerant, ham-fisted nurse. It was extremely 'uncomfortable' and the situation was not helped by them spending the entire time shouting at me to relax. Very relaxing, being shouted at. Quite apart from it being a nasty experience, I've since been told that badly done smears can show inaccurate results. If you value your time and your dignity, don't go here. After this week, I won't be going back again.</div>
+            <div id="commentTags">
+                <ul>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RYX17&amp;tag=Administrative Processes">Administrative Processes</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RYX17&amp;tag=Appointments">Appointments</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RYX17&amp;tag=Follow up">Follow up</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RYX17&amp;tag=Waiting times">Waiting times</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RYX17&amp;tag=Doctors">Doctors</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RYX17&amp;tag=Nursing staff">Nursing staff</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RYX17&amp;tag=Dignity">Dignity</a>
+                    </li>
+                </ul>
+            </div>
+        </content>
+        <ratings xmlns="http://syndication.nhschoices.nhs.uk/schemas/ratingsandcomments">
+            <rating>
+                <questionText>The environment where I was treated was?</questionText>
+                <answerText>exceptionally clean</answerText>
+                <answerMetric maxValue="5" minValue="1" type="Scale" value="5"/>
+            </rating>
+            <rating>
+                <questionText>The Clinic  staff worked well together?</questionText>
+                <answerText>hardly at all</answerText>
+                <answerMetric maxValue="5" minValue="1" type="Scale" value="2"/>
+            </rating>
+            <rating>
+                <questionText>I was treated with dignity and respect by the Clinic  staff?</questionText>
+                <answerText>not at all</answerText>
+                <answerMetric maxValue="5" minValue="1" type="Scale" value="1"/>
+            </rating>
+            <rating>
+                <questionText>I was involved with decisions about my care?</questionText>
+                <answerText>some of the time</answerText>
+                <answerMetric maxValue="5" minValue="1" type="Scale" value="3"/>
+            </rating>
+            <rating>
+                <questionText>Friends and Family</questionText>
+                <answerText>Extremely unlikely</answerText>
+                <answerMetric type="Option" value="1"/>
+            </rating>
+        </ratings>
+        <postingid xmlns="http://syndication.nhschoices.nhs.uk/schemas/comments">210744</postingid>
+        <postingorganisationid xmlns="http://syndication.nhschoices.nhs.uk/schemas/comments">0</postingorganisationid>
+        <commentattribution xmlns="http://syndication.nhschoices.nhs.uk/schemas/comments">Visited in July 2013. Posted on 22 July 2013 using NHSChoices</commentattribution>
+    </entry>
+    <entry>
+        <id>210602</id>
+        <title type="text">Rating without comment</title>
+        <published>2013-07-22T15:18:22+01:00</published>
+        <updated>2013-07-22T15:18:22+01:00</updated>
+        <author>
+            <name>johnboy</name>
+        </author>
+        <link href="http://v1.syndication.nhschoices.nhs.uk/organisations/clinics/43684?apikey=UUARBGPJ" length="1000" rel="related" title="Organisation commented on" type="application/xhtml+xml"/>
+        <link href="http://v1.syndication.nhschoices.nhs.uk/organisations/clinics/43684/comments/210602?apikey=UUARBGPJ" length="1000" rel="self" title="Rating without comment" type="application/xhtml+xml"/>
+        <link href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RY8RK" length="1000" rel="alternate" title="Original comment on NHS Choices website" type="text/html"/>
+        <link href="http://www.nhs.uk/Pages/comments.aspx?contentId=210602&amp;AreaId=6&amp;type=p" length="1000" rel="report" title="Report this comment as offensive or unsuitable" type="text/html"/>
+        <category label="Whether this is a comment, reply or deletion" scheme="commentType" term="comment"/>
+        <content type="xhtml"/>
+        <ratings xmlns="http://syndication.nhschoices.nhs.uk/schemas/ratingsandcomments">
+            <rating>
+                <questionText>The environment where I was treated was?</questionText>
+                <answerText>exceptionally clean</answerText>
+                <answerMetric maxValue="5" minValue="1" type="Scale" value="5"/>
+            </rating>
+            <rating>
+                <questionText>The Clinic  staff worked well together?</questionText>
+                <answerText>all of the time</answerText>
+                <answerMetric maxValue="5" minValue="1" type="Scale" value="5"/>
+            </rating>
+            <rating>
+                <questionText>I was treated with dignity and respect by the Clinic  staff?</questionText>
+                <answerText>all of the time</answerText>
+                <answerMetric maxValue="5" minValue="1" type="Scale" value="5"/>
+            </rating>
+            <rating>
+                <questionText>I was involved with decisions about my care?</questionText>
+                <answerText>all of the time</answerText>
+                <answerMetric maxValue="5" minValue="1" type="Scale" value="5"/>
+            </rating>
+            <rating>
+                <questionText>NHS Clinic s must provide same-sex accommodation. How satisfied were you that this Clinic  did so?</questionText>
+                <answerText>very satisfied</answerText>
+                <answerMetric maxValue="5" minValue="1" type="Scale" value="5"/>
+            </rating>
+            <rating>
+                <questionText>Friends and Family</questionText>
+                <answerText>Extremely likely</answerText>
+                <answerMetric type="Option" value="5"/>
+            </rating>
+        </ratings>
+        <postingid xmlns="http://syndication.nhschoices.nhs.uk/schemas/comments">210602</postingid>
+        <postingorganisationid xmlns="http://syndication.nhschoices.nhs.uk/schemas/comments">0</postingorganisationid>
+        <commentattribution xmlns="http://syndication.nhschoices.nhs.uk/schemas/comments">Visited in . Posted on 22 July 2013 using NHSChoices</commentattribution>
+    </entry>
+    <entry>
+        <id>207989R</id>
+        <title type="text">East Sussex Healthcare NHS Trust replies:</title>
+        <published>2013-07-19T09:27:42+01:00</published>
+        <updated>2013-07-19T09:27:42+01:00</updated>
+        <author>
+            <name>Crowborough Birthing Centre</name>
+        </author>
+        <link href="http://v1.syndication.nhschoices.nhs.uk/organisations/clinics/43035?apikey=UUARBGPJ" length="1000" rel="related" title="Organisation commented on" type="application/xhtml+xml"/>
+        <link href="http://v1.syndication.nhschoices.nhs.uk/organisations/clinics/43035/comments/207989R?apikey=UUARBGPJ" length="1000" rel="self" title="East Sussex Healthcare NHS Trust replies:" type="application/xhtml+xml"/>
+        <link href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RXC14" length="1000" rel="alternate" title="Original comment on NHS Choices website" type="text/html"/>
+        <link href="http://www.nhs.uk/Pages/comments.aspx?contentId=207989&amp;AreaId=5&amp;type=t" length="1000" rel="report" title="Report this comment as offensive or unsuitable" type="text/html"/>
+        <category label="Whether this is a comment, reply or deletion" scheme="commentType" term="reply"/>
+        <content type="text">Thank you very much for letting us know about your positive experiences with Crowborough Birthing Centre. It’s always encouraging for staff to receive positive feedback about the care and service they provide. As a Trust we are committed to giving the highest quality of care, and we value all comments from patients and their families.    It was extremely kind of you to take the time to provide feedback. I will ensure that your comments are shared with all the staff concerned.  </content>
+        <in-reply-to href="http://v1.syndication.nhschoices.nhs.uk/organisations/clinics/43035/comments/207989?apikey=UUARBGPJ" postingid="207989" postingorganisationid="0" ref="207989" type="xhtml" xmlns="http://purl.org/syndication/thread/1.0"/>
+        <postingid xmlns="http://syndication.nhschoices.nhs.uk/schemas/comments"/>
+        <postingorganisationid xmlns="http://syndication.nhschoices.nhs.uk/schemas/comments">0</postingorganisationid>
+        <commentattribution xmlns="http://syndication.nhschoices.nhs.uk/schemas/comments">Posted on 19 July 2013 using NHSChoices</commentattribution>
+    </entry>
+    <entry>
+        <id>209429</id>
+        <title type="text">Item 209429 deleted</title>
+        <published>2013-07-18T11:03:00+01:00</published>
+        <updated>2013-07-18T11:03:00+01:00</updated>
+        <author>
+            <name>NHS Choices</name>
+            <uri>http://www.nhs.uk</uri>
+            <email>webservices@nhschoices.nhs.uk</email>
+        </author>
+        <link href="http://v1.syndication.nhschoices.nhs.uk/organisations/clinics/77475?apikey=UUARBGPJ" length="1000" rel="related" title="Organisation commented on" type="application/xhtml+xml"/>
+        <category label="Whether this is a comment, reply or deletion" scheme="commentType" term="deletion"/>
+        <content type="text">Item  has been deleted and should be removed from your cache</content>
+        <postingid xmlns="http://syndication.nhschoices.nhs.uk/schemas/comments">209429</postingid>
+        <postingorganisationid xmlns="http://syndication.nhschoices.nhs.uk/schemas/comments">0</postingorganisationid>
+    </entry>
+    <entry>
+        <id>209384</id>
+        <title type="text">Examination for possible skin cancer</title>
+        <published>2013-07-18T00:22:19+01:00</published>
+        <updated>2013-07-18T08:51:35+01:00</updated>
+        <author>
+            <name>DB</name>
+        </author>
+        <link href="http://v1.syndication.nhschoices.nhs.uk/organisations/clinics/43266?apikey=UUARBGPJ" length="1000" rel="related" title="Organisation commented on" type="application/xhtml+xml"/>
+        <link href="http://v1.syndication.nhschoices.nhs.uk/organisations/clinics/43266/comments/209384?apikey=UUARBGPJ" length="1000" rel="self" title="Examination for possible skin cancer" type="application/xhtml+xml"/>
+        <link href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RXRE9" length="1000" rel="alternate" title="Original comment on NHS Choices website" type="text/html"/>
+        <link href="http://www.nhs.uk/Pages/comments.aspx?contentId=209384&amp;AreaId=6&amp;type=p" length="1000" rel="report" title="Report this comment as offensive or unsuitable" type="text/html"/>
+        <category label="Whether this is a comment, reply or deletion" scheme="commentType" term="comment"/>
+        <content type="xhtml">
+            <div id="anythingElse">Friendly people, and was seen before the appointment time.    The Consultant dermatologist had been initially reassuring, but did not (or was unable to) establish with any certainty as to whether I have skin cancer or not.    I had felt more confident that I was ok before my visit - now left with alot of uncertainty.    My GP had arranged the appointment.</div>
+            <div id="commentTags">
+                <ul>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RXRE9&amp;tag=Skin tumours">Skin tumours</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RXRE9&amp;tag=Reassuring">Reassuring</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RXRE9&amp;tag=Appointments">Appointments</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RXRE9&amp;tag=Consultants">Consultants</a>
+                    </li>
+                </ul>
+            </div>
+        </content>
+        <ratings xmlns="http://syndication.nhschoices.nhs.uk/schemas/ratingsandcomments">
+            <rating>
+                <questionText>The environment where I was treated was?</questionText>
+                <answerText>exceptionally clean</answerText>
+                <answerMetric maxValue="5" minValue="1" type="Scale" value="5"/>
+            </rating>
+            <rating>
+                <questionText>The Clinic  staff worked well together?</questionText>
+                <answerText>all of the time</answerText>
+                <answerMetric maxValue="5" minValue="1" type="Scale" value="5"/>
+            </rating>
+            <rating>
+                <questionText>I was treated with dignity and respect by the Clinic  staff?</questionText>
+                <answerText>all of the time</answerText>
+                <answerMetric maxValue="5" minValue="1" type="Scale" value="5"/>
+            </rating>
+            <rating>
+                <questionText>Friends and Family</questionText>
+                <answerText>Neither likely or unlikely</answerText>
+                <answerMetric type="Option" value="3"/>
+            </rating>
+        </ratings>
+        <postingid xmlns="http://syndication.nhschoices.nhs.uk/schemas/comments">209384</postingid>
+        <postingorganisationid xmlns="http://syndication.nhschoices.nhs.uk/schemas/comments">0</postingorganisationid>
+        <commentattribution xmlns="http://syndication.nhschoices.nhs.uk/schemas/comments">Visited in July 2013. Posted on 18 July 2013 using NHSChoices</commentattribution>
+    </entry>
+    <entry>
+        <id>209322</id>
+        <title type="text">BRILLIANT</title>
+        <published>2013-07-17T19:13:37+01:00</published>
+        <updated>2013-07-18T10:53:16+01:00</updated>
+        <author>
+            <name>Anonymous</name>
+        </author>
+        <link href="http://v1.syndication.nhschoices.nhs.uk/organisations/clinics/43229?apikey=UUARBGPJ" length="1000" rel="related" title="Organisation commented on" type="application/xhtml+xml"/>
+        <link href="http://v1.syndication.nhschoices.nhs.uk/organisations/clinics/43229/comments/209322?apikey=UUARBGPJ" length="1000" rel="self" title="BRILLIANT" type="application/xhtml+xml"/>
+        <link href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RXR78" length="1000" rel="alternate" title="Original comment on NHS Choices website" type="text/html"/>
+        <link href="http://www.nhs.uk/Pages/comments.aspx?contentId=209322&amp;AreaId=6&amp;type=p" length="1000" rel="report" title="Report this comment as offensive or unsuitable" type="text/html"/>
+        <category label="Whether this is a comment, reply or deletion" scheme="commentType" term="comment"/>
+        <content type="xhtml">
+            <div id="anythingElse">Well what can I say. This centre is superb.  staff are so friendly. Good facilities.   One of the midwifes collected me from the front door and takes you in to delivery suite. While me husband  parked the car. Now you don't get that in hospital.    I went to burnley early morning they sent me home I didn't wana go back to burnley   as the weather went bad with the snow.     I rang Blackburn birth centre if I could go there they took me in and I am sooooo glad I went here..      At first I wasnt so sure abt this place as I got alot of negative response from friends and family.      The midwife are fast and do a suberb job I also had a student  nurse with me al  the time. They give you excellent care    I stayed one night and they make you feel at home    Its very handy especially if you got other children.  The kids came up after school as we are 5 mins away from home and they said mum this place so nice better than Burnley.    After having baby had 2  nurses with me one looked after baby the other cleaned up whilst I went in shower which was nice.    The after care was nice.    Keep up the good work.</div>
+            <div id="commentTags">
+                <ul>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RXR78&amp;tag=Patient care">Patient care</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RXR78&amp;tag=Babies">Babies</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RXR78&amp;tag=Children">Children</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RXR78&amp;tag=Midwife">Midwife</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RXR78&amp;tag=Nursing staff">Nursing staff</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RXR78&amp;tag=308">308</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RXR78&amp;tag=National Institute for Health and Clinical Excellence">National Institute for Health and Clinical Excellence</a>
+                    </li>
+                </ul>
+            </div>
+        </content>
+        <ratings xmlns="http://syndication.nhschoices.nhs.uk/schemas/ratingsandcomments">
+            <rating>
+                <questionText>The environment where I was treated was?</questionText>
+                <answerText>exceptionally clean</answerText>
+                <answerMetric maxValue="5" minValue="1" type="Scale" value="5"/>
+            </rating>
+            <rating>
+                <questionText>The Clinic  staff worked well together?</questionText>
+                <answerText>all of the time</answerText>
+                <answerMetric maxValue="5" minValue="1" type="Scale" value="5"/>
+            </rating>
+            <rating>
+                <questionText>I was treated with dignity and respect by the Clinic  staff?</questionText>
+                <answerText>all of the time</answerText>
+                <answerMetric maxValue="5" minValue="1" type="Scale" value="5"/>
+            </rating>
+            <rating>
+                <questionText>I was involved with decisions about my care?</questionText>
+                <answerText>all of the time</answerText>
+                <answerMetric maxValue="5" minValue="1" type="Scale" value="5"/>
+            </rating>
+            <rating>
+                <questionText>NHS Clinic s must provide same-sex accommodation. How satisfied were you that this Clinic  did so?</questionText>
+                <answerText>very satisfied</answerText>
+                <answerMetric maxValue="5" minValue="1" type="Scale" value="5"/>
+            </rating>
+            <rating>
+                <questionText>Friends and Family</questionText>
+                <answerText>Extremely likely</answerText>
+                <answerMetric type="Option" value="5"/>
+            </rating>
+        </ratings>
+        <postingid xmlns="http://syndication.nhschoices.nhs.uk/schemas/comments">209322</postingid>
+        <postingorganisationid xmlns="http://syndication.nhschoices.nhs.uk/schemas/comments">0</postingorganisationid>
+        <commentattribution xmlns="http://syndication.nhschoices.nhs.uk/schemas/comments">Visited in January 2013. Posted on 17 July 2013 using NHSChoices</commentattribution>
+    </entry>
+    <entry>
+        <id>208687</id>
+        <title type="text">friendly caring  village health centre</title>
+        <published>2013-07-16T09:25:55+01:00</published>
+        <updated>2013-07-16T09:38:46+01:00</updated>
+        <author>
+            <name>Anonymous</name>
+        </author>
+        <link href="http://v1.syndication.nhschoices.nhs.uk/organisations/clinics/41205?apikey=UUARBGPJ" length="1000" rel="related" title="Organisation commented on" type="application/xhtml+xml"/>
+        <link href="http://v1.syndication.nhschoices.nhs.uk/organisations/clinics/41205/comments/208687?apikey=UUARBGPJ" length="1000" rel="self" title="friendly caring  village health centre" type="application/xhtml+xml"/>
+        <link href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RMC29" length="1000" rel="alternate" title="Original comment on NHS Choices website" type="text/html"/>
+        <link href="http://www.nhs.uk/Pages/comments.aspx?contentId=208687&amp;AreaId=6&amp;type=p" length="1000" rel="report" title="Report this comment as offensive or unsuitable" type="text/html"/>
+        <category label="Whether this is a comment, reply or deletion" scheme="commentType" term="comment"/>
+        <content type="xhtml">
+            <div id="anythingElse">Outstanding staff, friendly surgery.  What I liked  The reception staff are outstanding, very polite and motivated to give patients excellent service.  The doctors and nurses are very caring.  Disabled access good.</div>
+            <div id="commentTags">
+                <ul>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RMC29&amp;tag=Surgery">Surgery</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RMC29&amp;tag=Friendliness">Friendliness</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RMC29&amp;tag=Patient Experience">Patient Experience</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RMC29&amp;tag=Politeness">Politeness</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RMC29&amp;tag=Service">Service</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RMC29&amp;tag=Accessibility">Accessibility</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RMC29&amp;tag=Disabled Access">Disabled Access</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RMC29&amp;tag=Services">Services</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RMC29&amp;tag=Doctors">Doctors</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RMC29&amp;tag=Nursing staff">Nursing staff</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RMC29&amp;tag=Reception staff">Reception staff</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=RMC29&amp;tag=Staff members">Staff members</a>
+                    </li>
+                </ul>
+            </div>
+        </content>
+        <ratings xmlns="http://syndication.nhschoices.nhs.uk/schemas/ratingsandcomments">
+            <rating>
+                <questionText>The environment where I was treated was?</questionText>
+                <answerText>exceptionally clean</answerText>
+                <answerMetric maxValue="5" minValue="1" type="Scale" value="5"/>
+            </rating>
+            <rating>
+                <questionText>The Clinic  staff worked well together?</questionText>
+                <answerText>all of the time</answerText>
+                <answerMetric maxValue="5" minValue="1" type="Scale" value="5"/>
+            </rating>
+            <rating>
+                <questionText>I was treated with dignity and respect by the Clinic  staff?</questionText>
+                <answerText>all of the time</answerText>
+                <answerMetric maxValue="5" minValue="1" type="Scale" value="5"/>
+            </rating>
+            <rating>
+                <questionText>I was involved with decisions about my care?</questionText>
+                <answerText>all of the time</answerText>
+                <answerMetric maxValue="5" minValue="1" type="Scale" value="5"/>
+            </rating>
+            <rating>
+                <questionText>NHS Clinic s must provide same-sex accommodation. How satisfied were you that this Clinic  did so?</questionText>
+                <answerText>very satisfied</answerText>
+                <answerMetric maxValue="5" minValue="1" type="Scale" value="5"/>
+            </rating>
+            <rating>
+                <questionText>Friends and Family</questionText>
+                <answerText>Extremely likely</answerText>
+                <answerMetric type="Option" value="5"/>
+            </rating>
+        </ratings>
+        <postingid xmlns="http://syndication.nhschoices.nhs.uk/schemas/comments">208687</postingid>
+        <postingorganisationid xmlns="http://syndication.nhschoices.nhs.uk/schemas/comments">0</postingorganisationid>
+        <commentattribution xmlns="http://syndication.nhschoices.nhs.uk/schemas/comments">Visited in July 2013. Posted on 16 July 2013 using NHSChoices</commentattribution>
+    </entry>
+    <entry>
+        <id>208127</id>
+        <title type="text">what to expect</title>
+        <published>2013-07-13T20:30:11+01:00</published>
+        <updated>2013-07-18T18:13:43+01:00</updated>
+        <author>
+            <name>Anonymous</name>
+        </author>
+        <link href="http://v1.syndication.nhschoices.nhs.uk/organisations/clinics/18646?apikey=UUARBGPJ" length="1000" rel="related" title="Organisation commented on" type="application/xhtml+xml"/>
+        <link href="http://v1.syndication.nhschoices.nhs.uk/organisations/clinics/18646/comments/208127?apikey=UUARBGPJ" length="1000" rel="self" title="what to expect" type="application/xhtml+xml"/>
+        <link href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=NTN30478" length="1000" rel="alternate" title="Original comment on NHS Choices website" type="text/html"/>
+        <link href="http://www.nhs.uk/Pages/comments.aspx?contentId=208127&amp;AreaId=6&amp;type=p" length="1000" rel="report" title="Report this comment as offensive or unsuitable" type="text/html"/>
+        <category label="Whether this is a comment, reply or deletion" scheme="commentType" term="comment"/>
+        <content type="xhtml">
+            <div id="anythingElse">Having done detox (excess alcohol) twice before in NHS hospital wards I had a vague idea as to what to expect when I entered the priory for two weeks (one week detox and 1 week therapy), I was very wrong. Before I go on let me please state that all the staff,doctors,nurses and patients treated me with respect and courtesy at all times and the care was second to none with spotlessly clean facilities, grounds and bedrooms that were changed and cleaned daily and well appointed. The two weeks I was supposed to be there consisted of a weeks detox and a weeks therapy, it was the therapy side of things I wasn't expecting.  From a detox view I really cant fault the priory way of doing things, it was controlled and monitored at all times with staff and nurses on hand at all times 24/7 with your medication administered to you in a excellent controlled manner also, aiding the detox process which in itself is not a nice thing to go through.  From a therapy view its this side of things I found hard to deal with, (you only commence the therapy side of things when you have done your detox) now the only reason I had an issue with this is because I found it very spiritualistic bordering on the religious of which I am neither as I like to think I have my own beliefs and don't like other connotations imposed on me. The other thing is that regardless of what problem you enter the clinic with you will find yourself in therapy groups with people whom have a wide range other issues which may have no relevance to your condition and these will be openly discussed in groups in which personal and private information will be shared (all confidentially) which I found a bit disconcerting. Also I found from a therapy point of view that it was either the priory way or the highway and that any constructive criticism was instantly met with disdain and not really tolerated which made the whole therapy side of the priory seem a bit cultish and business like, please bare in mind these views are my own and having trawled the internet for reviews can find none to make comparison to which I find strange to say the least.  (all comments above are personal and whilst I say the therapy side of things wasn't for me I am in no way dismissing it, its just a personal opinion)  My overall view is that if you have a problem that you think has underlying issues and you think therapy will help this might be the place for you if you baring in mind the spiritualist side of things.  If like me you go in for excess and feel you have no underlying issues then the therapy might not be for you and other avenues may be more beneficial, again just a personal opinion.    Thanks for reading</div>
+            <div id="commentTags">
+                <ul>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=NTN30478&amp;tag=Cognitive behavioural therapy">Cognitive behavioural therapy</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=NTN30478&amp;tag=Cleanliness">Cleanliness</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=NTN30478&amp;tag=Patient care">Patient care</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=NTN30478&amp;tag=Appointments">Appointments</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=NTN30478&amp;tag=Doctors">Doctors</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=NTN30478&amp;tag=Nursing staff">Nursing staff</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=NTN30478&amp;tag=Communication">Communication</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=NTN30478&amp;tag=Confidentiality">Confidentiality</a>
+                    </li>
+                    <li class="commentTag">
+                        <a href="http://www.nhs.uk/Services/clinics/ReviewsAndRatings/DefaultView.aspx?id=NTN30478&amp;tag=Privacy">Privacy</a>
+                    </li>
+                </ul>
+            </div>
+        </content>
+        <ratings xmlns="http://syndication.nhschoices.nhs.uk/schemas/ratingsandcomments">
+            <rating>
+                <questionText>The environment where I was treated was?</questionText>
+                <answerText>exceptionally clean</answerText>
+                <answerMetric maxValue="5" minValue="1" type="Scale" value="5"/>
+            </rating>
+            <rating>
+                <questionText>The Clinic  staff worked well together?</questionText>
+                <answerText>all of the time</answerText>
+                <answerMetric maxValue="5" minValue="1" type="Scale" value="5"/>
+            </rating>
+            <rating>
+                <questionText>I was treated with dignity and respect by the Clinic  staff?</questionText>
+                <answerText>all of the time</answerText>
+                <answerMetric maxValue="5" minValue="1" type="Scale" value="5"/>
+            </rating>
+            <rating>
+                <questionText>I was involved with decisions about my care?</questionText>
+                <answerText>most of the time</answerText>
+                <answerMetric maxValue="5" minValue="1" type="Scale" value="4"/>
+            </rating>
+            <rating>
+                <questionText>NHS Clinic s must provide same-sex accommodation. How satisfied were you that this Clinic  did so?</questionText>
+                <answerText>very satisfied</answerText>
+                <answerMetric maxValue="5" minValue="1" type="Scale" value="5"/>
+            </rating>
+            <rating>
+                <questionText>Friends and Family</questionText>
+                <answerText>Neither likely or unlikely</answerText>
+                <answerMetric type="Option" value="3"/>
+            </rating>
+        </ratings>
+        <postingid xmlns="http://syndication.nhschoices.nhs.uk/schemas/comments">208127</postingid>
+        <postingorganisationid xmlns="http://syndication.nhschoices.nhs.uk/schemas/comments">0</postingorganisationid>
+        <commentattribution xmlns="http://syndication.nhschoices.nhs.uk/schemas/comments">Visited in June 2013. Posted on 13 July 2013 using NHSChoices</commentattribution>
+    </entry>
+</feed>
