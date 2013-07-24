@@ -200,3 +200,19 @@ class CsvImportTests(TestCase):
         first_email = mail.outbox[0]
         expected_text = "You're receiving this e-mail because an account has been created"
         self.assertTrue(expected_text in first_email.body)
+
+    def test_image_retrieval_errors(self):
+        # Mock urlretrieve to throw an error
+        urllib.urlretrieve.side_effect = Exception("Boom!")
+
+        # Load the data in
+        call_command('load_ccgs_from_csv', self.ccgs_csv)
+        call_command('load_organisation_parents_from_csv', self.trusts_csv)
+        call_command('load_organisations_from_csv', self.organisations_csv)
+
+        # Check it worked, but we have no image
+        self.assertEqual(Organisation.objects.count(), 3)
+        org = Organisation.objects.get(name="Ascot North Hospital 1")
+        self.assertFalse(bool(org.image))
+
+        urllib.urlretrieve.side_effect = None
