@@ -50,6 +50,12 @@ urlpatterns = patterns(
     url(r'^admin/', include(admin.site.urls)),
 )
 
+# Append /careconnect to everything above, to fix proxy relative link issues
+urlpatterns = patterns(
+    '',
+    url(r'careconnect/', include(urlpatterns)),
+)
+
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
