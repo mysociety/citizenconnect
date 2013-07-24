@@ -1,5 +1,6 @@
+import os
+from uuid import uuid4
 import random
-
 import logging
 logger = logging.getLogger(__name__)
 
@@ -158,13 +159,20 @@ def ensure_ccgs_contains_escalation_ccg(sender, **kwargs):
         organisation_parent.ccgs.add(organisation_parent.escalation_ccg)
 
 
-def image_upload_to_partition_dir(*args_that_are_ignored):
+def partitioned_upload_path_and_obfuscated_name(instance, filename):
+    """
+    Generate a path and filename which is partitioned between some
+    random directories and has an obfuscated name.
+    """
     # organisation_images/\w{2}/\w{2}
     letters = 'abcdefghijklmnopqrstuvwxyz'
+    random_filename = uuid4().hex
+    extension = os.path.splitext(filename)[1]
     return "/".join([
         "organisation_images",
         "".join(random.sample(letters, 2)),
-        "".join(random.sample(letters, 2))
+        "".join(random.sample(letters, 2)),
+        random_filename + extension
     ])
 
 
