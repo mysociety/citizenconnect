@@ -1,5 +1,3 @@
-import logging
-import os
 import sys
 import re
 import os
@@ -12,7 +10,6 @@ from mock import MagicMock
 from django.test import TestCase
 from django.core import mail
 from django.core.management import call_command
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
 
@@ -20,7 +17,6 @@ from ..models import Organisation, OrganisationParent, CCG
 
 import organisations
 from organisations import auth
-from issues.models import Problem
 
 
 class DevNull(object):
@@ -84,7 +80,6 @@ class CsvImportTests(TestCase):
         self.assertEqual(CCG.objects.get(name="Banbridge CCG").organisation_parents.count(), 2)
         self.assertEqual(CCG.objects.get(name="Chucklemere CCG").organisation_parents.count(), 1)
 
-
         call_command('load_organisations_from_csv', self.organisations_csv)
         self.assertEqual(Organisation.objects.count(), 3)
         self.assertEqual(OrganisationParent.objects.get(name="Ascot North Trust").organisations.count(), 2)
@@ -96,7 +91,8 @@ class CsvImportTests(TestCase):
         ccg = CCG.objects.get(name="Ascot CCG")
         self.assertEqual(
             model_to_dict(ccg),
-            {   'code': '07A',
+            {
+                'code': '07A',
                 'email': 'ascot@example.com',
                 'id': ccg.id,
                 'name': 'Ascot CCG',
@@ -180,7 +176,6 @@ class CsvImportTests(TestCase):
 
         self.assertEqual(last_mail.subject, 'Welcome to Care Connect')
         self.assertIn("You're receiving this e-mail because an account has been created for you on the  Care Connect website.", last_mail.body)
-
 
     def expect_groups(self, email, expected_groups):
         user = User.objects.get(email=email)
