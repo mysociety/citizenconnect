@@ -3,7 +3,6 @@ import re
 
 from django.test import TestCase
 from django.core import mail
-from django.contrib.auth.models import User
 from django.contrib.gis.geos import Point
 from django.utils.timezone import utc
 from django.core.exceptions import ValidationError
@@ -14,7 +13,10 @@ from .lib import (create_test_organisation,
                   create_test_problem,
                   AuthorizationTestCase)
 
-from ..models import Organisation, OrganisationParent, CCG, image_upload_to_partition_dir
+from ..models import (Organisation,
+                      OrganisationParent,
+                      CCG,
+                      partitioned_upload_path_and_obfuscated_name)
 
 
 class OrganisationParentModelTests(TestCase):
@@ -254,13 +256,11 @@ class OrganisationMiscTests(TestCase):
         seen = set()
 
         for i in range(10):
-            partition = image_upload_to_partition_dir()
+            partition = partitioned_upload_path_and_obfuscated_name(None, "some-file.jpg")
             seen.add(partition)
 
-            regex = r'organisation_images/\w{2}/\w{2}'
-            self.assertTrue(
-                re.match(regex, partition),
-                "'{0}' does not match '{1}'".format(partition, regex)
-            )
+            # Note that django always divides FileField paths with unix separators
+            regex = re.compile('organisation_images/\w{2}/\w{2}/[0-9a-f]{32}.jpg', re.I)
+            self.assertRegexpMatches(partition, regex)
 
         self.assertTrue(len(seen) > 1)

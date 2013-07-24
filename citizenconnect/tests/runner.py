@@ -2,6 +2,9 @@
 # ones.
 #
 # based on http://stackoverflow.com/a/8194302/5349
+import os
+import tempfile
+import shutil
 
 from django.test.simple import DjangoTestSuiteRunner
 from django.conf import settings
@@ -37,3 +40,13 @@ class AppsTestSuiteRunner(DjangoTestSuiteRunner):
         Site.objects.update(name="testserver", domain="testserver")
 
         return super(AppsTestSuiteRunner, self).run_suite(*args, **kwargs)
+
+    def setup_test_environment(self):
+        super(AppsTestSuiteRunner, self).setup_test_environment()
+        # Change media root to be a temp directory
+        settings.MEDIA_ROOT = tempfile.mkdtemp()
+
+    def teardown_test_environment(self):
+        super(AppsTestSuiteRunner, self).teardown_test_environment
+        if(os.path.exists(settings.MEDIA_ROOT)):
+            shutil.rmtree(settings.MEDIA_ROOT)

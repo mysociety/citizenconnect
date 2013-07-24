@@ -1,7 +1,6 @@
 from django.test import TestCase
 from django.core.files.images import ImageFile
 from django.core.urlresolvers import reverse
-from django.conf import settings
 
 from sorl.thumbnail import get_thumbnail
 
@@ -11,6 +10,7 @@ from responses.models import ProblemResponse
 from ..models import Problem, ProblemImage
 from .lib import ProblemImageTestBase
 from ..lib import int_to_base32
+
 
 class ProblemPublicViewTests(ProblemImageTestBase, AuthorizationTestCase):
 

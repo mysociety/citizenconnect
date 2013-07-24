@@ -23,7 +23,7 @@ import dirtyfields
 from concurrency.fields import IntegerVersionField
 from concurrency.api import concurrency_check
 
-from citizenconnect.models import AuditedModel
+from citizenconnect.models import AuditedModel, validate_file_extension
 from .lib import base32_to_int, int_to_base32
 from sorl.thumbnail import ImageField as sorlImageField
 
@@ -587,17 +587,6 @@ def obfuscated_upload_path_and_name(instance, filename):
         extension = os.path.splitext(filename)[1]
         # Note that django always wants FileField paths divided with unix separators
         return "/".join([base_image_path, date_based_directory, random_filename + extension])
-
-
-def validate_file_extension(image):
-        """ Check that the file extension is within one of the allowed file types """
-        extension = os.path.splitext(image.name)[1]
-        # settings.ALLOWED_IMAGE_EXTENSIONS should be all lower case variants
-        if extension.lower() not in settings.ALLOWED_IMAGE_EXTENSIONS:
-            raise ValidationError(
-                u'Sorry, that is not an allowed image type. Allowed image types are: {0}'
-                .format(", ".join(settings.ALLOWED_IMAGE_EXTENSIONS))
-            )
 
 
 class ProblemImage(AuditedModel):

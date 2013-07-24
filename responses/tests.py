@@ -1,11 +1,5 @@
-import os
-import tempfile
-import shutil
-
 # Django imports
 from django.test import TransactionTestCase
-from django.test.utils import override_settings
-from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.core.files.images import ImageFile
 
