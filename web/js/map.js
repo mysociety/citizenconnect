@@ -113,7 +113,7 @@ $(document).ready(function () {
         placeholder: "Search the map",
         dropdownAutoWidth: true,
         ajax: {
-            url: CitizenConnect.base_url + $searchBox.data('search-url'),
+            url: $searchBox.data('search-url'),
             dataType: 'json',
             data: function(term, page) {
                 return {

@@ -70,7 +70,7 @@
     <div class="hover-bubble  cf">
         <div class="header">
             <% if (nhsCentre.thumbnail_url) { %>
-              <img src="<%= CitizenConnect.base_url + nhsCentre.thumbnail_url %>" alt="Image of <%= nhsCentre.name %>" class="fr" />
+              <img src="<%= nhsCentre.thumbnail_url %>" alt="Image of <%= nhsCentre.name %>" class="fr" />
             <% } %>
             <h2 class="map-header"><%= nhsCentre.name %></h2>
         </div>
@@ -116,7 +116,7 @@
         </ul>
 
 
-        <span class="fr"><a href="<%= CitizenConnect.base_url %><%= nhsCentre.url %>">View all details <span class="icon-chevron-right" aria-hidden="true"></span></a></span>
+        <span class="fr"><a href="<%= nhsCentre.url %>">View all details <span class="icon-chevron-right" aria-hidden="true"></span></a></span>
 
     </div>
 </script>

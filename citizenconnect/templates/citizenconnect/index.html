@@ -134,7 +134,7 @@
             placeholder: "Search the map",
             dropdownAutoWidth: true,
             ajax: {
-                url: CitizenConnect.base_url + $searchBox.data('search-url'),
+                url: $searchBox.data('search-url'),
                 dataType: 'json',
                 data: function(term, page) {
                     return {
@@ -150,9 +150,9 @@
         $searchBox.on('change', function(e) {
             // Redirect to the map page
             if (e.added.type === "organisation") {
-                window.location = CitizenConnect.base_url + $searchBox.data('map-url') + '?ods_code=' + e.added.id;
+                window.location = $searchBox.data('map-url') + '?ods_code=' + e.added.id;
             } else {
-                window.location = CitizenConnect.base_url + $searchBox.data('map-url') + '?lon=' + e.added.lon + '&lat=' + e.added.lat;
+                window.location = $searchBox.data('map-url') + '?lon=' + e.added.lon + '&lat=' + e.added.lat;
             }
         });
     });
