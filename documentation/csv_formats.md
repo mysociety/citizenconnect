@@ -47,6 +47,7 @@ There are several sample csv files in the [documentation/csv_samples folder](htt
 - `Postcode`
 - `ServiceCode`
 - `ServiceName`
+- `Image`: The full URL of a publicly accessible image file (jpeg, gif or bmp) that can be freely downloaded and stored with this organisation. The image should be in the 1:1 aspect ratio and at least 200 pixels in each dimension.
 
 ## Trust, Surgery and CCG users
 

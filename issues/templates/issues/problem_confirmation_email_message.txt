@@ -1,4 +1,5 @@
 {# Note that this text should match that in 'problem_confirm.html' #}
+{% autoescape off %}
 
 Dear {{ object.reporter_name }},
 
@@ -18,3 +19,4 @@ You can track the progress of your problem by entering your reference into the h
 When the problem is resolved the NHS provider will mark it as 'closed' which means it will no longer appear on the live map but will still be visible on the provider summary.
 
 {{ survey_interval_in_days }} days after posting your problem you will receive an email asking you to complete a short survey asking if you feel the problem was resolved satisfactorily.
+{% endautoescape %}

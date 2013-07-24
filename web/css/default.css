@@ -1307,7 +1307,7 @@ th .filters__dropdown select { font-size: 1em; }
 .homepage-map-box .map-links .map-text { display: block; font-size: 0.75em; font-weight: bold; }
 
 /** 999/111 links at bottom of page */
-.link-999, .link-111 { color: #888888; font-size: 1.4375em; font-weight: bold; text-decoration: none; }
+.link-999, .link-111, .link-other { color: #888888; font-size: 1.4375em; font-weight: bold; text-decoration: none; }
 
 .link-999 { padding-top: 0.56522em; }
 
