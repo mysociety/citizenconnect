@@ -1,19 +1,22 @@
-import logging
-import os
 import sys
-from StringIO import StringIO
+import re
+import os
+import urllib
+import shutil
+import tempfile
+
+from mock import MagicMock
 
 from django.test import TestCase
 from django.core import mail
 from django.core.management import call_command
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
 
 from ..models import Organisation, OrganisationParent, CCG
 
+import organisations
 from organisations import auth
-from issues.models import Problem
 
 
 class DevNull(object):
@@ -39,9 +42,32 @@ class CsvImportTests(TestCase):
         self.ccg_users_csv     = csv_dir + 'ccg_users.csv'
         self.trust_users_csv   = csv_dir + 'organisation_parent_users.csv'
 
+        # Sample image file
+        sample_hospital_image = os.path.join(
+            os.path.abspath(organisations.__path__[0]),
+            'tests',
+            'fixtures',
+            'sample-hospital-image.jpg'
+        )
+        # Copy it to tempfile because the import expects a tempfile to delete
+        (handle, filename) = tempfile.mkstemp(".jpg")
+        self.temp_hospital_image = filename
+        shutil.copyfile(sample_hospital_image, self.temp_hospital_image)
+
+        # Mock urllib.urlretrieve so that our command can call it
+        self._original_urlretrieve = urllib.urlopen
+        # urlretrieve returns a tuple of a file and some headers
+        urllib.urlretrieve = MagicMock(return_value=(self.temp_hospital_image, None))
+
     def tearDown(self):
+        # Undo the mocking of urlretrieve
+        urllib.urlretrieve = self._original_urlretrieve
         sys.stdout = self.old_stdout
         sys.stderr = self.old_stderr
+
+        # Wipe the temporary files
+        if(os.path.exists(self.temp_hospital_image)):
+            os.remove(self.temp_hospital_image)
 
     def test_organisations(self):
 
@@ -54,7 +80,6 @@ class CsvImportTests(TestCase):
         self.assertEqual(CCG.objects.get(name="Banbridge CCG").organisation_parents.count(), 2)
         self.assertEqual(CCG.objects.get(name="Chucklemere CCG").organisation_parents.count(), 1)
 
-
         call_command('load_organisations_from_csv', self.organisations_csv)
         self.assertEqual(Organisation.objects.count(), 3)
         self.assertEqual(OrganisationParent.objects.get(name="Ascot North Trust").organisations.count(), 2)
@@ -66,7 +91,8 @@ class CsvImportTests(TestCase):
         ccg = CCG.objects.get(name="Ascot CCG")
         self.assertEqual(
             model_to_dict(ccg),
-            {   'code': '07A',
+            {
+                'code': '07A',
                 'email': 'ascot@example.com',
                 'id': ccg.id,
                 'name': 'Ascot CCG',
@@ -89,13 +115,20 @@ class CsvImportTests(TestCase):
             }
         )
         self.assertEqual(
-            [ ccg.code for ccg in org_parent.ccgs.order_by('code') ],
-            [ '07A', '07B', '07C' ],
+            [result.code for result in org_parent.ccgs.order_by('code')],
+            ['07A', '07B', '07C'],
         )
 
         organisation = Organisation.objects.get(name="Ascot North Hospital 1")
         org_dict = model_to_dict(organisation)
-        del org_dict['point'] # Tedious to test
+        del org_dict['point']  # Tedious to test
+
+        # Test the image was added
+        image_filename = org_dict.get('image').url
+        image_filename_regex = re.compile('organisation_images/\w{2}/\w{2}/[0-9a-f]{32}.jpg', re.I)
+        self.assertRegexpMatches(image_filename, image_filename_regex)
+        del org_dict['image']
+
         self.assertEqual(
             org_dict,
             {
@@ -112,7 +145,6 @@ class CsvImportTests(TestCase):
                 'organisation_type': 'hospitals',
                 'postcode': 'NW8 7BT ',
                 'parent': org_parent.id,
-                'image': '',
             }
         )
 
@@ -145,7 +177,6 @@ class CsvImportTests(TestCase):
         self.assertEqual(last_mail.subject, 'Welcome to Care Connect')
         self.assertIn("You're receiving this e-mail because an account has been created for you on the  Care Connect website.", last_mail.body)
 
-
     def expect_groups(self, email, expected_groups):
         user = User.objects.get(email=email)
         self.assertTrue(auth.user_in_groups(user, expected_groups))
@@ -169,3 +200,19 @@ class CsvImportTests(TestCase):
         first_email = mail.outbox[0]
         expected_text = "You're receiving this e-mail because an account has been created"
         self.assertTrue(expected_text in first_email.body)
+
+    def test_image_retrieval_errors(self):
+        # Mock urlretrieve to throw an error
+        urllib.urlretrieve.side_effect = Exception("Boom!")
+
+        # Load the data in
+        call_command('load_ccgs_from_csv', self.ccgs_csv)
+        call_command('load_organisation_parents_from_csv', self.trusts_csv)
+        call_command('load_organisations_from_csv', self.organisations_csv)
+
+        # Check it worked, but we have no image
+        self.assertEqual(Organisation.objects.count(), 3)
+        org = Organisation.objects.get(name="Ascot North Hospital 1")
+        self.assertFalse(bool(org.image))
+
+        urllib.urlretrieve.side_effect = None

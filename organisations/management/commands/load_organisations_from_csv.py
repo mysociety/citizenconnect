@@ -1,8 +1,11 @@
 import csv
 from optparse import make_option
+import urllib
+import os
 
-from django.db import transaction, IntegrityError
-from django.core.management.base import BaseCommand, CommandError
+from django.db import transaction
+from django.core.management.base import BaseCommand
+from django.core.files import File
 from django.contrib.gis.geos import Point
 
 from ...models import Organisation, Service, OrganisationParent
@@ -93,6 +96,8 @@ class Command(BaseCommand):
                 service_code = row['ServiceCode']
                 service_name = row['ServiceName']
 
+                image = row['Image']
+
             except KeyError as message:
                 raise Exception("Missing column with the heading '{0}'".format(message))
             finally:
@@ -119,18 +124,19 @@ class Command(BaseCommand):
                     print "Unknown organisation type %s, skipping" % organisation_type_text
                 continue
             organisation_type = type_mappings[organisation_type_text]
-            organisation_defaults = {'choices_id': choices_id,
-                                     'name': name,
-                                     'organisation_type': organisation_type,
-                                     'point': Point(float(lon), float(lat)),
-                                     'address_line1': address_line1,
-                                     'address_line2': address_line2,
-                                     'address_line3': address_line3,
-                                     'city': city,
-                                     'county': county,
-                                     'postcode': postcode,
-                                     'parent': organisation_parent,
-                                    }
+            organisation_defaults = {
+                'choices_id': choices_id,
+                'name': name,
+                'organisation_type': organisation_type,
+                'point': Point(float(lon), float(lat)),
+                'address_line1': address_line1,
+                'address_line2': address_line2,
+                'address_line3': address_line3,
+                'city': city,
+                'county': county,
+                'postcode': postcode,
+                'parent': organisation_parent,
+            }
             try:
                 organisation, organisation_created = Organisation.objects.get_or_create(ods_code=ods_code,
                                                                                         defaults=organisation_defaults)
@@ -148,6 +154,23 @@ class Command(BaseCommand):
 
                         if update:
                             Service.objects.filter(id=service.id).update(**service_defaults)
+
+                # Try to load the organisation image, if there is one
+                # We do this now so that we can skip it if the url doesn't respond
+                # or 404's and we'll still have the Organisation created
+                if image:
+                    try:
+                        (temp_image_file, headers) = urllib.urlretrieve(image)
+                        image_filename = os.path.basename(image)
+                        organisation.image.save(
+                            image_filename,
+                            File(open(temp_image_file))
+                        )
+                        organisation.save()
+                        os.remove(temp_image_file)
+                    except Exception as e:
+                        # On any exception, just ignore the image
+                        self.stderr.write("Skipping image for %s (%s): %s\n" % (name, ods_code, e))
 
                 if organisation_created:
                     self.stdout.write('Created organisation %s\n' % organisation.name)
