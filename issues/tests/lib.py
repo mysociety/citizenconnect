@@ -1,12 +1,9 @@
 import os
-import tempfile
-import shutil
 import datetime
 import pytz
 
 from django.conf import settings
 from django.test import TestCase
-from django.test.utils import override_settings
 
 import reversion
 
@@ -158,8 +155,12 @@ class LibTests(TestCase):
         self.assertEqual(str(exception), '373536')
 
 
-@override_settings(MEDIA_ROOT=tempfile.mkdtemp())
 class ProblemImageTestBase(TestCase):
+    """
+    Base class for testing things related to images on problems.
+    Use where you need access to dummy image files, and override_settings
+    MEDIA_ROOT to put them in a temporary folder.
+    """
 
     @classmethod
     def setUpClass(cls):
@@ -177,6 +178,3 @@ class ProblemImageTestBase(TestCase):
         cls.png.close()
         cls.gif.close()
         cls.png.close()
-
-        if(os.path.exists(settings.MEDIA_ROOT)):
-            shutil.rmtree(settings.MEDIA_ROOT)
