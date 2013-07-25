@@ -35,7 +35,7 @@ Alias /favicon.ico /data/vhost/example.com/citizenconnect/web/favicon.ico
 # to make sure people get to the right place
 RewriteEngine On
 RewriteRule   ^/private/(.+)  /careconnect/private/$1  [R=301]
-RewriteRule   ^/private(/?)$  /careconnect/private$1  [R=301]
+RewriteRule   ^/private$  /careconnect/private  [R=301]
 
 # Turn off file directory listings for uploads and static files dirs
 <Directory "/data/vhost/!!(*= $vhost *)!!/uploads">
