@@ -136,6 +136,11 @@
                           selectedReviewInterval,
                           reviewsHeaderID);
 
+        if (!$('html').hasClass('ie7')) {
+            // Makes styling select elements work cross-browser.
+            $('.summary-table__subhead .filters__dropdown select').customSelect();
+        }
+
         // Things to do when the selects change
         $("#problems-interval-filters").change(function(e){
             var selected = $(this).val();

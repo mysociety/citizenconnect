@@ -31,4 +31,9 @@ $(document).ready(function () {
     $(this).find('select').removeAttr('disabled');
   });
 
+
+  // Makes styling select elements work cross-browser.
+  if (!$('html').hasClass('ie7')) {
+    $('.filters__dropdown select').customSelect();
+  }
 });
