@@ -212,13 +212,13 @@ PAGINATION_DEFAULT_ORPHANS = 2
 PAGINATION_INVALID_PAGE_RAISES_404 = True
 
 # Authentication related settings
-LOGIN_URL = '/private/login'
+LOGIN_URL = '/careconnect/private/login'
 # We have to set this to something otherwise Django will redirect
 # to /accounts/profile (which doesn't exist) if next is not specified
 # on any login_required urls
-LOGIN_REDIRECT_URL = '/private/'
+LOGIN_REDIRECT_URL = '/careconnect/private/'
 # Makes sense to have this as a setting too
-LOGOUT_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/careconnect'
 
 # Password related settings - see https://github.com/dstufft/django-passwords
 # and our derived PasswordField implementation for details. Note that
