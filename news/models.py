@@ -10,3 +10,4 @@ class Article(AuditedModel):
     content = models.TextField()
     author = models.CharField(max_length=50, blank=True)
     published = models.DateTimeField(db_index=True)
+    image = models.TextField(blank=True)
