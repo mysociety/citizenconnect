@@ -85,5 +85,7 @@ USE_X_FORWARDED_HOST = config.get('USE_X_FORWARDED_HOST', False)
 SESSION_COOKIE_AGE = 7200  # Two hours max
 SESSION_COOKIE_HTTPONLY = True  # This is the default, but just to make it explicit
 # SESSION_COOKIE_SECURE = not STAGING
+SESSION_COOKIE_PATH = '/careconnect'
 
 # CSRF_COOKIE_SECURE = not STAGING
+CSRF_COOKIE_PATH = '/careconnect'
