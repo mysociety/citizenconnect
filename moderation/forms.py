@@ -39,12 +39,21 @@ class ModerationForm(ConcurrentFormMixin, forms.ModelForm):
         # not-moderated. We default to REJECTED regardless for security.
         publication_status = Problem.REJECTED
 
-        if 'publish' in self.data:
+        if 'publish' in self.data or 'keep_private' in self.data:
             publication_status = Problem.PUBLISHED
         elif 'now_requires_second_tier_moderation' in self.data:
             publication_status = Problem.NOT_MODERATED
 
         return publication_status
+
+    def clean_public(self):
+        # If we are "keeping it private", we have to update the problem status
+        # to private if it wasn't before
+        if 'keep_private' in self.data:
+            return False
+        else:
+            # We shouldn't be changing the public field
+            return self.instance.public
 
     def clean(self):
         cleaned_data = super(ModerationForm, self).clean()
@@ -58,7 +67,7 @@ class ModerationForm(ConcurrentFormMixin, forms.ModelForm):
         # If we are publishing the problem and the reporter wants it public,
         # it must have a moderated_description so that we have something to show for it
         # on public pages
-        if self.instance.public and cleaned_data['publication_status'] == Problem.PUBLISHED:
+        if cleaned_data['public'] and cleaned_data['publication_status'] == Problem.PUBLISHED:
             if not 'moderated_description' in cleaned_data or not cleaned_data['moderated_description']:
                 self._errors['moderated_description'] = self.error_class(['You must moderate a version of the problem details when publishing public problems.'])
                 del cleaned_data['moderated_description']
@@ -92,11 +101,13 @@ class ProblemModerationForm(ModerationForm):
             'breach',
             'commissioned',
             'public_reporter_name',
+            'public',
         ]
 
         widgets = {
             'publication_status': HiddenInput,
-            'requires_second_tier_moderation': HiddenInput
+            'requires_second_tier_moderation': HiddenInput,
+            'public': HiddenInput
         }
 
 
@@ -107,6 +118,8 @@ ProblemResponseInlineFormSet = inlineformset_factory(Problem,
 
 
 class ProblemSecondTierModerationForm(ModerationForm):
+
+    public = forms.HiddenInput()
 
     def clean_requires_second_tier_moderation(self):
         # If you are submitting the form, you have second tier moderated it, so always return False
@@ -120,9 +133,11 @@ class ProblemSecondTierModerationForm(ModerationForm):
             'moderated_description',
             'requires_second_tier_moderation',
             'public_reporter_name',
+            'public',
         ]
 
         widgets = {
             'publication_status': HiddenInput,
-            'requires_second_tier_moderation': HiddenInput
+            'requires_second_tier_moderation': HiddenInput,
+            'public': HiddenInput
         }
