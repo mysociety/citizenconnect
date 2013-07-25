@@ -1,6 +1,3 @@
-import os
-from uuid import uuid4
-import random
 import logging
 logger = logging.getLogger(__name__)
 
@@ -13,7 +10,11 @@ from django.contrib.auth.models import User, Group
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 
-from citizenconnect.models import AuditedModel, validate_file_extension
+from citizenconnect.models import (
+    AuditedModel,
+    validate_file_extension,
+    partitioned_upload_path_and_obfuscated_name
+)
 from .mixins import MailSendMixin
 
 from issues.models import Problem
@@ -159,21 +160,13 @@ def ensure_ccgs_contains_escalation_ccg(sender, **kwargs):
         organisation_parent.ccgs.add(organisation_parent.escalation_ccg)
 
 
-def partitioned_upload_path_and_obfuscated_name(instance, filename):
-    """
-    Generate a path and filename which is partitioned between some
-    random directories and has an obfuscated name.
-    """
-    # organisation_images/\w{2}/\w{2}
-    letters = 'abcdefghijklmnopqrstuvwxyz'
-    random_filename = uuid4().hex
-    extension = os.path.splitext(filename)[1]
-    return "/".join([
-        "organisation_images",
-        "".join(random.sample(letters, 2)),
-        "".join(random.sample(letters, 2)),
-        random_filename + extension
-    ])
+def organisation_image_upload_path(instance, filename):
+    return "/".join(
+        [
+            'organisation_images',
+            partitioned_upload_path_and_obfuscated_name(instance, filename)
+        ]
+    )
 
 
 class Organisation(AuditedModel, geomodels.Model):
@@ -202,7 +195,7 @@ class Organisation(AuditedModel, geomodels.Model):
     average_recommendation_rating = models.FloatField(blank=True, null=True)
 
     # image of the organisation
-    image = sorlImageField(upload_to=partitioned_upload_path_and_obfuscated_name, validators=[validate_file_extension], blank=True)
+    image = sorlImageField(upload_to=organisation_image_upload_path, validators=[validate_file_extension], blank=True)
 
     @property
     def organisation_type_name(self):
