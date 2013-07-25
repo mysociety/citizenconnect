@@ -27,6 +27,22 @@
         <!--[if lte IE 7]>
             <script type="text/javascript" src="{% static "js/fonts-lte-ie7.js" %}"></script>
         <![endif]-->
+
+        <!-- We don't need body padding here -->
+        <style type="text/css">
+            body {
+                padding:0;
+            }
+        </style>
+
+        <!-- Special container width for the iframe -->
+        <!--[if lte IE 8]>
+        <style type="text/css">
+            .container {
+                width: 573px;
+            }
+        </style>
+        <![endif]-->
     </head>
 
     <body class="{% block bodyclasses %}home{% endblock %}{% if site_section %}  site-section-{{ site_section }}{% endif %}">
