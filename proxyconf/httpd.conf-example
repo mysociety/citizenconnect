@@ -14,43 +14,43 @@ RewriteEngine  on
 
 # Choices
 # Don't allow trailing slashes, and redirect the homepage to the choices cobrand
-RewriteRule    ^/nhs.uk/$  /nhs.uk/choices  [R=301]
-RewriteRule    ^/nhs.uk$  /nhs.uk/choices  [R=301]
-ProxyPass        /nhs.uk https://citizenconnect.mysociety.org
-ProxyPassReverse /nhs.uk https://citizenconnect.mysociety.org
-ProxyPassReverseCookieDomain citizenconnect.mysociety.org citizenconnect-proxy.dev.mysociety.org
-ProxyPassReverseCookiePath / /nhs.uk/
+RewriteRule    ^/careconnect/$  /careconnect/choices  [R=301]
+RewriteRule    ^/careconnect$  /careconnect/choices  [R=301]
+ProxyPass        /careconnect https://citizenconnect.mysociety.org/careconnect
+ProxyPassReverse /careconnect https://citizenconnect.mysociety.org/careconnect
+ProxyPassReverseCookieDomain steve.citizenconnect.dev.mysociety.org citizenconnect-proxy.dev.mysociety.org
+# ProxyPassReverseCookiePath / /nhs.uk/
 
 # MyHealthLondon versions of the above
-RewriteRule    ^/mhl/$  /mhl/myhealthlondon  [R=301]
-RewriteRule    ^/mhl$  /mhl/myhealthlondon  [R=301]
-ProxyPass        /mhl https://citizenconnect.mysociety.org
-ProxyPassReverse /mhl https://citizenconnect.mysociety.org
-ProxyPassReverseCookieDomain citizenconnect.mysociety.org citizenconnect-proxy.dev.mysociety.org
-ProxyPassReverseCookiePath / /mhl/
+# RewriteRule    ^/mhl/$  /mhl/myhealthlondon  [R=301]
+# RewriteRule    ^/mhl$  /mhl/myhealthlondon  [R=301]
+# ProxyPass        /mhl https://citizenconnect.mysociety.org
+# ProxyPassReverse /mhl https://citizenconnect.mysociety.org
+# ProxyPassReverseCookieDomain citizenconnect.mysociety.org citizenconnect-proxy.dev.mysociety.org
+# ProxyPassReverseCookiePath / /mhl/
 
-<Location /nhs.uk>
-
-  # Switch on html rewriting of links
-  # Note that debian ships the old version:
-  #  package: http://packages.debian.org/squeeze/libapache2-mod-proxy-html
-  #  docs:    http://apache.webthing.com/mod_proxy_html30/
-
-  SetOutputFilter  INFLATE;proxy-html;DEFLATE
-
-  ProxyHTMLURLMap  /        /nhs.uk/
-
-</Location>
-
-<Location /mhl>
+# <Location /nhs.uk>
 
   # Switch on html rewriting of links
   # Note that debian ships the old version:
   #  package: http://packages.debian.org/squeeze/libapache2-mod-proxy-html
   #  docs:    http://apache.webthing.com/mod_proxy_html30/
 
-  SetOutputFilter  INFLATE;proxy-html;DEFLATE
+  # SetOutputFilter  INFLATE;proxy-html;DEFLATE
 
-  ProxyHTMLURLMap  /        /mhl/
+  # ProxyHTMLURLMap  /        /nhs.uk/
 
-</Location>
+# </Location>
+
+# <Location /mhl>
+
+  # Switch on html rewriting of links
+  # Note that debian ships the old version:
+  #  package: http://packages.debian.org/squeeze/libapache2-mod-proxy-html
+  #  docs:    http://apache.webthing.com/mod_proxy_html30/
+
+  # SetOutputFilter  INFLATE;proxy-html;DEFLATE
+
+  # ProxyHTMLURLMap  /        /mhl/
+
+# </Location>
