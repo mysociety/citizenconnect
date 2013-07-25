@@ -80,8 +80,7 @@ ABUSE_EMAIL_ADDRESS: abuse@example.com
 # Where should error reports from the server be sent? Leave blank to disable
 SERVER_EMAIL: server-error@example.com
 
-CHOICES_GOOGLE_ANALYTICS_ACCOUNT: 'UA-12345-XXX'
-MHL_GOOGLE_ANALYTICS_ACCOUNT: 'UA-12345-XXX'
+GOOGLE_ANALYTICS_ACCOUNT: 'UA-12345-XXX'
 
 MAX_IMAGES_PER_PROBLEM: 3
 # What image file extensions are allowed.

@@ -6,8 +6,7 @@ def add_settings(request):
     """Add some selected settings values to the context"""
     return {
         'settings': {
-            'CHOICES_GOOGLE_ANALYTICS_ACCOUNT': settings.CHOICES_GOOGLE_ANALYTICS_ACCOUNT,
-            'MHL_GOOGLE_ANALYTICS_ACCOUNT': settings.MHL_GOOGLE_ANALYTICS_ACCOUNT,
+            'GOOGLE_ANALYTICS_ACCOUNT': settings.GOOGLE_ANALYTICS_ACCOUNT,
             'FEEDBACK_EMAIL_ADDRESS': settings.FEEDBACK_EMAIL_ADDRESS,
             'ABUSE_EMAIL_ADDRESS': settings.ABUSE_EMAIL_ADDRESS,
             'SURVEY_INTERVAL_IN_DAYS': settings.SURVEY_INTERVAL_IN_DAYS,
