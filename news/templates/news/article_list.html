@@ -2,6 +2,7 @@
 {% load url from future %}
 {% load staticfiles %}
 {% load pagination_tags %}
+{% load thumbnail %}
 
 {% block title %}News{% endblock %}
 
@@ -20,13 +21,7 @@
       {% autopaginate object_list 6 %}
 
         {% for article in object_list %}
-        <div class="news-article--preview">
-            <h1 class="news-article__title"><a href="{% url 'article-view' cobrand=cobrand.name pk=article.pk %}">{{ article.title }}</a></h1>
-            <h3 class="news-article__author">{{ article.author }}</h3>
-            <div class="news-article__content">
-                {{ article.description|safe }}
-            </div>
-        </div>
+            {% include 'news/includes/article_in_list.html' with article=article %}
         {% endfor %}
 
       {% paginate %}
@@ -34,7 +29,6 @@
     </div>
 
     <div class="g  one-third  palm-one-whole">
-        {# TODO - article.image #}
         {% include 'news/includes/recent_articles_sidebar.html' with articles=recent_articles %}
 
         <h2 class="title  title--news  mb--s">Twitter</h2>

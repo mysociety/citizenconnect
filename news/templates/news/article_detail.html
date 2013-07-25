@@ -1,6 +1,7 @@
 {% extends "citizenconnect/base.html" %}
 {% load url from future %}
 {% load staticfiles %}
+{% load thumbnail %}
 
 {% block title %}News :: {{ article.title }}{% endblock %}
 
@@ -23,7 +24,9 @@
     </div>
 
     <div class="g  one-third  palm-one-whole  news-article__sidebar">
-        {# TODO - article.image #}
+        {% thumbnail article.image "x307" as im %}
+            <img src="{{ im.url }}" style="max-width: 100%;" />
+        {% endthumbnail %}
         {% include 'news/includes/recent_articles_sidebar.html' with articles=recent_articles %}
         <div class="latest-tweet">
             <h2 class="news-article__sidebar__title">TWITTER</h2>
