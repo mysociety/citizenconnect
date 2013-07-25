@@ -24,5 +24,5 @@ class Command(BaseCommand):
                     transaction.commit()
             except Exception as e:
                 self.stderr.write("Error updating rating for %s" % (organisation.name))
-                self.stderr.write(e)
+                self.stderr.write(str(e))
                 transaction.rollback()
