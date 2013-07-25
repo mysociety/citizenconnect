@@ -37,13 +37,13 @@ class PullArticlesFromRssFeedTests(TestCase):
     def test_pulls_entries_from_rss_feed(self):
         self.assertEqual(0, Article.objects.count())
         self.call_command('pull_articles_from_rss_feed', self.rss_feed)
-        self.assertEqual(1, Article.objects.count())
+        self.assertEqual(2, Article.objects.count())
 
     def test_doesnt_create_entries_twice(self):
         self.assertEqual(0, Article.objects.count())
         self.call_command('pull_articles_from_rss_feed', self.rss_feed)
         self.call_command('pull_articles_from_rss_feed', self.rss_feed)
-        self.assertEqual(1, Article.objects.count())
+        self.assertEqual(2, Article.objects.count())
 
     def test_creates_entries_correctly(self):
         self.call_command('pull_articles_from_rss_feed', self.rss_feed)
@@ -53,6 +53,12 @@ class PullArticlesFromRssFeedTests(TestCase):
         self.assertEqual("Welcome to mySociety Blog Network. This is your first post. Edit or delete it, then start blogging!", article.description)
         self.assertEqual("""<p>Welcome to <a href="http://blogs.mysociety.org/">mySociety Blog Network</a>. This is your first post. Edit or delete it, then start blogging!</p>""", article.content)
         self.assertEqual("steve", article.author)
+        self.assertEqual("http://news.careconnect.mysociety.org/files/2013/07/MelonHatCat.jpg", article.image)
+
+    def test_image_optional(self):
+        self.call_command('pull_articles_from_rss_feed', self.rss_feed)
+        article = Article.objects.all()[1]  # This one has no image
+        self.assertEqual("", article.image)
 
 
 class ArticleDetailViewTests(TestCase):
