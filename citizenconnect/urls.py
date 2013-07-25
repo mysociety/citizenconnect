@@ -14,7 +14,6 @@ allowed_cobrands = settings.ALLOWED_COBRANDS
 cobrand_pattern = '(?P<cobrand>%s)' % '|'.join(allowed_cobrands)
 urlpatterns = patterns(
     '',
-    url(r'^$', DevHomepageSelector.as_view(), name='dev-homepage'),
     url(r'^' + cobrand_pattern + r'/?$', Home.as_view(), name='home'),
     # This page is only for myhealthlondon
     url(
@@ -54,6 +53,12 @@ urlpatterns = patterns(
 urlpatterns = patterns(
     '',
     url(r'careconnect/', include(urlpatterns)),
+)
+
+# Dev homepage lives at the real root though
+urlpatterns += patterns(
+    '',
+    url(r'^$', DevHomepageSelector.as_view(), name='dev-homepage'),
 )
 
 urlpatterns += staticfiles_urlpatterns()

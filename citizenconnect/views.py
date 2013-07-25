@@ -1,5 +1,5 @@
 # Django imports
-from django.views.generic import TemplateView, View, RedirectView
+from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.conf import settings
@@ -16,7 +16,6 @@ from issues.forms import PublicLookupForm, FeedbackForm
 from issues.models import Problem
 from reviews_display.models import Review
 from news.models import Article
-
 
 
 class Home(FormView):
