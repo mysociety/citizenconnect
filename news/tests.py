@@ -1,5 +1,11 @@
 import os
+import re
+import urllib
+import shutil
+import tempfile
 from StringIO import StringIO
+
+from mock import MagicMock
 
 from django.test import TestCase
 from django.utils import timezone
@@ -29,6 +35,26 @@ class PullArticlesFromRssFeedTests(TestCase):
         self.fixtures_dir = os.path.join(settings.PROJECT_ROOT, 'news', 'tests', 'fixtures')
         self.rss_feed = os.path.join(self.fixtures_dir, 'news_feed.xml')
 
+        # Sample image file
+        sample_article_image = os.path.join(self.fixtures_dir, 'sample-article-image.jpg')
+        # Copy it to tempfile because the import expects a tempfile to delete
+        (handle, filename) = tempfile.mkstemp(".jpg")
+        self.temp_article_image = filename
+        shutil.copyfile(sample_article_image, self.temp_article_image)
+
+        # Mock urllib.urlretrieve so that our command can call it
+        self._original_urlretrieve = urllib.urlopen
+        # urlretrieve returns a tuple of a file and some headers
+        urllib.urlretrieve = MagicMock(return_value=(self.temp_article_image, None))
+
+    def tearDown(self):
+        # Undo the mocking of urlretrieve
+        urllib.urlretrieve = self._original_urlretrieve
+
+        # Wipe the temporary files
+        if(os.path.exists(self.temp_article_image)):
+            os.remove(self.temp_article_image)
+
     def call_command(self, *args, **options):
         options['stdout'] = self.stdout
         options['stderr'] = self.stderr
@@ -47,18 +73,35 @@ class PullArticlesFromRssFeedTests(TestCase):
 
     def test_creates_entries_correctly(self):
         self.call_command('pull_articles_from_rss_feed', self.rss_feed)
-        article = Article.objects.all()[0]
-        self.assertEqual("http://blogs.mysociety.org/careconnect/?p=1", article.guid)
+        article = Article.objects.get(guid='http://blogs.mysociety.org/careconnect/?p=1')
         self.assertEqual("Hello world!", article.title)
         self.assertEqual("Welcome to mySociety Blog Network. This is your first post. Edit or delete it, then start blogging!", article.description)
         self.assertEqual("""<p>Welcome to <a href="http://blogs.mysociety.org/">mySociety Blog Network</a>. This is your first post. Edit or delete it, then start blogging!</p>""", article.content)
         self.assertEqual("steve", article.author)
-        self.assertEqual("http://news.careconnect.mysociety.org/files/2013/07/MelonHatCat.jpg", article.image)
+
+        # Test the image was added
+        image_filename = article.image.url
+        image_filename_regex = re.compile('article_images/\w{2}/\w{2}/[0-9a-f]{32}.jpg', re.I)
+        self.assertRegexpMatches(image_filename, image_filename_regex)
 
     def test_image_optional(self):
         self.call_command('pull_articles_from_rss_feed', self.rss_feed)
-        article = Article.objects.all()[1]  # This one has no image
-        self.assertEqual("", article.image)
+        article = Article.objects.get(guid='http://blogs.mysociety.org/careconnect/?p=2')  # This one has no image
+        self.assertFalse(bool(article.image))
+
+    def test_deals_with_image_errors(self):
+        # Mock urlretrieve to throw an error
+        urllib.urlretrieve.side_effect = Exception("Boom!")
+
+        # Load the data in
+        self.call_command('pull_articles_from_rss_feed', self.rss_feed)
+
+        # Check it worked, but we have no image
+        self.assertEqual(Article.objects.count(), 2)
+        article = Article.objects.get(guid='http://blogs.mysociety.org/careconnect/?p=2')
+        self.assertFalse(bool(article.image))
+
+        urllib.urlretrieve.side_effect = None
 
 
 class ArticleDetailViewTests(TestCase):
