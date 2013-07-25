@@ -62,6 +62,14 @@ a precreated one in a minute.
 
     ./manage.py migrate
 
+### Create/Update the default site to be something useful
+
+This is needed because we emit fully qualified redirects, amongst other reasons.
+
+Make sure you have set the `SITE_BASE_URL` setting to something accurate (probably `localhost:8000`) before running this.
+
+    ./manage.py create_default_site
+
 ### Gather all the static files in one place
     ./manage.py collectstatic --noinput
 
