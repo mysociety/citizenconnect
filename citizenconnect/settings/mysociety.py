@@ -91,3 +91,5 @@ SESSION_COOKIE_HTTPONLY = True  # This is the default, but just to make it expli
 SESSION_COOKIE_SECURE = not STAGING
 
 CSRF_COOKIE_SECURE = not STAGING
+
+ALLOWED_HOSTS = [] if STAGING else config.get('ALLOWED_HOSTS', [])
