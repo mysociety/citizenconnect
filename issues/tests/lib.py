@@ -21,14 +21,14 @@ from ..models import Problem
 class LibTests(TestCase):
 
     def setUp(self):
-        self.old = {'status': Problem.NEW, 'publication_status': Problem.NOT_MODERATED}
-        self.new = {'status': Problem.ACKNOWLEDGED, 'publication_status': Problem.PUBLISHED}
+        self.old = {'status': Problem.NEW, 'publication_status': Problem.NOT_MODERATED, 'requires_second_tier_moderation': False}
+        self.new = {'status': Problem.ACKNOWLEDGED, 'publication_status': Problem.PUBLISHED, 'requires_second_tier_moderation': False}
 
         self.old_missing = {'publication_status': Problem.NOT_MODERATED}
-        self.new_missing = {'status': Problem.ACKNOWLEDGED, 'publication_status': Problem.PUBLISHED}
+        self.new_missing = {'status': Problem.ACKNOWLEDGED, 'publication_status': Problem.PUBLISHED, 'requires_second_tier_moderation': False}
 
-        self.old_unchanged = {'status': Problem.NEW, 'publication_status': Problem.NOT_MODERATED}
-        self.new_unchanged = {'status': Problem.ACKNOWLEDGED, 'publication_status': Problem.REJECTED}
+        self.old_unchanged = {'status': Problem.NEW, 'publication_status': Problem.NOT_MODERATED, 'requires_second_tier_moderation': False}
+        self.new_unchanged = {'status': Problem.ACKNOWLEDGED, 'publication_status': Problem.REJECTED, 'requires_second_tier_moderation': False}
 
     def test_changed_attrs_happy_path(self):
         expected_changed = {
@@ -42,6 +42,7 @@ class LibTests(TestCase):
         expected_changed = {
             'status': [None, Problem.ACKNOWLEDGED],
             'publication_status': [Problem.NOT_MODERATED, Problem.PUBLISHED],
+            'requires_second_tier_moderation': [None, False],
         }
         actual_changed = changed_attrs(self.old_missing, self.new_missing, Problem.REVISION_ATTRS)
         self.assertEqual(actual_changed, expected_changed)
@@ -68,7 +69,7 @@ class LibTests(TestCase):
 
     def test_changes_as_string_escalated(self):
         new_escalated = {'status': Problem.ESCALATED,
-                         'publication_status': Problem.REJECTED,}
+                         'publication_status': Problem.REJECTED}
 
         expected = "Rejected and Escalated"
         changes = changed_attrs(self.old, new_escalated, Problem.REVISION_ATTRS)
@@ -77,10 +78,12 @@ class LibTests(TestCase):
 
     def test_changes_as_string_escalated_acknowledged(self):
         old_escalated = {'status': Problem.ESCALATED,
-                         'publication_status': Problem.REJECTED}
+                         'publication_status': Problem.REJECTED,
+                         'requires_second_tier_moderation': False}
 
         new_escalated_acknowledged = {'status': Problem.ESCALATED_ACKNOWLEDGED,
-                                      'publication_status': Problem.REJECTED}
+                                      'publication_status': Problem.REJECTED,
+                                      'requires_second_tier_moderation': False}
 
         expected = "Acknowledged"
         changes = changed_attrs(old_escalated, new_escalated_acknowledged, Problem.REVISION_ATTRS)
@@ -89,13 +92,31 @@ class LibTests(TestCase):
 
     def test_changes_as_string_escalated_resolved(self):
         old_escalated_acknowledged = {'status': Problem.ESCALATED_ACKNOWLEDGED,
-                                      'publication_status': Problem.REJECTED}
+                                      'publication_status': Problem.REJECTED,
+                                      'requires_second_tier_moderation': False}
 
         new_escalated_resolved = {'status': Problem.ESCALATED_RESOLVED,
-                                  'publication_status': Problem.REJECTED}
+                                  'publication_status': Problem.REJECTED,
+                                  'requires_second_tier_moderation': False}
 
         expected = "Resolved"
         changes = changed_attrs(old_escalated_acknowledged, new_escalated_resolved, Problem.REVISION_ATTRS)
+        actual = changes_as_string(changes, Problem.TRANSITIONS)
+        self.assertEqual(actual, expected)
+
+    def changes_as_string_requires_second_tier_moderation(self):
+        old = {
+            'status': Problem.NOT_MODERATED,
+            'requires_second_tier_moderation': False
+        }
+
+        new = {
+            'status': Problem.NOT_MODERATED,
+            'requires_second_tier_moderation': True
+        }
+
+        expected = "Referred"
+        changes = changed_attrs(old, new, Problem.REVISION_ATTRS)
         actual = changes_as_string(changes, Problem.TRANSITIONS)
         self.assertEqual(actual, expected)
 
@@ -118,6 +139,11 @@ class LibTests(TestCase):
             problem.save()
 
         problem = Problem.objects.get(pk=problem.id)
+        problem.requires_second_tier_moderation = True
+        with reversion.create_revision():
+            problem.save()
+
+        problem = Problem.objects.get(pk=problem.id)
         problem.status = Problem.RESOLVED
         with reversion.create_revision():
             problem.save()
@@ -131,6 +157,7 @@ class LibTests(TestCase):
 
         expected_changes = [
             {'user': None, 'description': 'Acknowledged'},
+            {'user': None, 'description': 'Referred'},
             {'user': None, 'description': 'Resolved'},
             {'user': None, 'description': 'Published'},
         ]
