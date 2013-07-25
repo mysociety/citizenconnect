@@ -1182,6 +1182,10 @@ th .filters__dropdown .customSelect, th .filters__dropdown select { font-size: 1
 .leaflet-popup-content .hover-bubble ul { margin: 0; }
 .leaflet-popup-content .hover-bubble ul li { list-style: none; }
 
+/** Increase the size of select2 elements. */
+.map-search-controls .select2-container--large .select2-choice { font-size: 1.5em; height: 1.875em; line-height: 1.875em; }
+.map-search-controls .select2-container--large .select2-choice div b { background-position: 0 9px; }
+
 /** A horizontal nav, used inside `.site-top-bar` */
 .nav { list-style: none; padding: 0; margin: 0; }
 .nav li { display: block; float: left; }

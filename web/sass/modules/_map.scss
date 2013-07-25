@@ -80,3 +80,18 @@
     }
 
 }
+
+/**
+ * Increase the size of select2 elements.
+ */
+.map-search-controls .select2-container--large {
+  .select2-choice {
+    font-size: (24px / $font-size-base) + em;
+    height: (30px / $font-size-base) + em;
+    line-height: (30px / $font-size-base) + em;
+
+    div b {
+      background-position: 0 9px;
+    }
+  }
+}
