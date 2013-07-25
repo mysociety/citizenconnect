@@ -59,6 +59,19 @@
         font-weight: normal;
         text-align: left;
         @include vendor(border-radius, 0);
+
+        // IE8/9 have a bug with padding on select elements - http://www.sitepoint.com/forums/showthread.php?593031-Padding-on-select-element
+        // This fix works around that by removing the padding and making the
+        // whole <select> taller, then adjusts the line-height to
+        // centrally align the text.
+        .ie8 &, .ie9 & {
+          padding: 0;
+          height: 4em;
+          .customSelectInner {
+            line-height: 4em;
+            height: 100%;
+          }
+        }
       }
   }
 
