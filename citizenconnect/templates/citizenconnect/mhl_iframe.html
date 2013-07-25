@@ -30,8 +30,31 @@
 
         <!-- We don't need body padding here -->
         <style type="text/css">
+            html {
+                background: none;
+                background-color: #FFF;
+            }
             body {
                 padding:0;
+            }
+            .iframe-header {
+                font-size: 22px;
+                font-weight: bold;
+                margin-bottom: 12px;
+            }
+                .iframe-header a {
+                    color: #bf3000;
+                    text-decoration: none;
+                }
+                    .iframe-header a:visited {
+                        color: #872200;
+                    }
+                    .iframe-header a:hover {
+                        text-decoration: underline;
+                    }
+
+            p {
+                font-size: 12px;
             }
         </style>
 
@@ -51,27 +74,11 @@
 
             {% block content %}
 
+            <h2 class="iframe-header mt--n"><a target="_blank" href="{% url 'home' cobrand=cobrand.name %}">Care Connect</a></h2>
+
+            <p>Care Connect is a new way for you to share your experiences of the NHS, ask a question or report a problem. We will listen and act. Please be aware that this service is currently only available in parts of London. For more information, please visit the <a target="_blank" href="{% url 'home' cobrand=cobrand.name %}">Care Connect home page</a> or click on the links below.
+
             {% include 'citizenconnect/includes/homepage-main-options.html' with iframe=1 %}
-
-            <hr class="hr--big  mt--b  mb--b">
-
-            <div class="gw">
-                <div class="g  one-whole">
-                    <div class="bordered-box">
-                        <h2 class="feed-list__heading">Live Feed</h2>
-                        <ul class="feed-list">
-
-                            {% for issue in issues %}
-                                {% if issue|classname == 'Problem' %}
-                                    {% include 'citizenconnect/includes/feed_problem.html' with problem=issue iframe=1%}
-                                {% elif issue|classname == 'Review' %}
-                                    {% include 'citizenconnect/includes/feed_review.html' with review=issue score=issue.main_rating_score iframe=1%}
-                                {% endif %}
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-            </div>
 
             {% endblock content %}
 
