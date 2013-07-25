@@ -26,8 +26,8 @@ LimitRequestBody 15728640
 # Replace the following below:
 #   'example.com', 'exampleuser', 'examplegroup'
 
-Alias /media /data/vhost/example.com/uploads
-Alias /static /data/vhost/example.com/collected_static
+Alias /careconnect/media /data/vhost/example.com/uploads
+Alias /careconnect/static /data/vhost/example.com/collected_static
 Alias /robots.txt /data/vhost/example.com/citizenconnect/web/robots.txt
 Alias /favicon.ico /data/vhost/example.com/citizenconnect/web/favicon.ico
 
