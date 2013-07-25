@@ -21,9 +21,9 @@
                 customClass: 'customSelect',
                 mapClass:    true,
                 mapStyle:    true
-            },
-            options = $.extend(defaults, options),
-            prefix = options.customClass,
+            };
+            options = $.extend(defaults, options);
+            var prefix = options.customClass,
             changed = function ($select,customSelectSpan) {
                 var currentSelected = $select.find(':selected'),
                 customSelectSpanInner = customSelectSpan.children(':first'),
