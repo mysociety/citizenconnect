@@ -31,6 +31,11 @@ Alias /careconnect/static /data/vhost/example.com/collected_static
 Alias /robots.txt /data/vhost/example.com/citizenconnect/web/robots.txt
 Alias /favicon.ico /data/vhost/example.com/citizenconnect/web/favicon.ico
 
+# Emails went out with old urls in already, so put a redirect in place
+# to make sure people get to the right place
+RewriteEngine On
+RewriteRule   ^/private/(.+)  /careconnect/private/$1  [R=301]
+
 # Turn off file directory listings for uploads and static files dirs
 <Directory "/data/vhost/!!(*= $vhost *)!!/uploads">
   Options -Indexes
