@@ -159,6 +159,7 @@ INSTALLED_APPS = (
     'failedloginblocker',
     'geocoder',
     'news',
+    'pipeline',
 )
 
 
