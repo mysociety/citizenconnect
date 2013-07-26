@@ -1,4 +1,4 @@
-{% load staticfiles %}{% load url from future %}
+{% load staticfiles %}{% load url from future %}{% load compressed %}
 <!DOCTYPE html>
 <!--[if lt IE 7]> <html class="no-js ie6 oldie"> <![endif]-->
 <!--[if IE 7]>    <html class="no-js ie7 oldie"> <![endif]-->
@@ -15,12 +15,12 @@
 
         {% block extra_initial_css %}{% endblock extra_initial_css %}
 
-        <link rel="stylesheet" href="{% static 'css/leaflet.css' %}" />
+        {% compressed_css 'default' %}
+
         <!--[if lte IE 8]>
             <link rel="stylesheet" href="{% static 'css/leaflet.ie.css' %}" />
         <![endif]-->
-        <link rel="stylesheet" href="{% static 'css/placeholder_polyfill.min.css' %}" />
-        <link rel="stylesheet" href="{% static 'css/default.css' %}">
+
         <!-- Another hack to work under the NHS proxy. We need to specify an absolute path
         to the boxsizing.htc behaviour file for it to work, so we need to inline the css
         here to get that absolute url from Django -->
@@ -31,6 +31,7 @@
             }
         </style>
         <![endif]-->
+
         {% if cobrand %}
           {% include cobrand.styles_template %}
         {% endif %}
@@ -60,16 +61,17 @@
             {% include cobrand.footer_template %}
         {% endif %}
     <!-- Scripts at the bottom, as per html5bp -->
+
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="{% static "js/jquery-1.9.0.min.js" %}"><\/script>')</script>
     <script>
         var docEl = document.documentElement;
         docEl.className = docEl.className.replace(/\bno-js\b/,'') + ' js';
     </script>
-    <script src="{% static 'js/placeholder_polyfill.jquery.min.combo.js' %}"></script>
-    <script src="{% static 'js/tables.js' %}"></script>
-    <script src="{% static 'js/jquery.customSelect.js' %}"></script>
-    <script src="{% static 'js/filters.js' %}"></script>
+
+    {% compressed_js 'frameworks' %}
+    {% compressed_js 'careconnect' %}
 
     {% if settings.GOOGLE_ANALYTICS_ACCOUNT %}
         <script type="text/javascript">

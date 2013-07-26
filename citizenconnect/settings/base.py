@@ -91,8 +91,6 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
-STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
-
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
@@ -262,3 +260,6 @@ ORGANISATION_TYPES = [organisation_type for organisation_type, label in ORGANISA
 
 # Now get the mySociety configuration
 from .mysociety import *
+
+# django-pipeline configuration
+from .pipeline import *
