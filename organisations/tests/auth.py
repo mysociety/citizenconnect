@@ -1,6 +1,7 @@
 import string
 
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 
 from organisations import auth
 from organisations.auth import (user_is_superuser,
@@ -116,33 +117,90 @@ class AuthTests(AuthorizationTestCase):
     def test_create_home_links_for_user(self):
 
         tests = [
-            ( self.trust_user, [
-                {'title': 'Dashboard for Test Trust', 'url': '/private/org-parent/TRUST1/dashboard'},
-            ] ),
-            ( self.superuser, [
-                {'title': 'Superuser Dashboard', 'url': '/private/superuser/dashboard'},
-            ] ),
-            ( self.anonymous_user, [] ),
-            ( self.no_trust_user, [] ),
-            ( self.gp_surgery_user, [
-                {'title': 'Dashboard for other test trust', 'url': '/private/org-parent/XYZ/dashboard'},
-            ] ),
-            ( self.nhs_superuser, [
-                {'title': 'Superuser Dashboard', 'url': '/private/superuser/dashboard'},
-            ] ),
-            ( self.case_handler, [
-                {'title': 'Moderation home', 'url': '/private/moderate/'},
-            ] ),
-            ( self.second_tier_moderator, [
-                {'title': 'Second tier moderation home', 'url': '/private/moderate/tier_two'},
-            ] ),
-            ( self.no_ccg_user, [] ),
-            ( self.ccg_user, [
-                {'title': 'CCG dashboard for Test CCG', 'url': '/private/ccg/CCG1/dashboard'},
-            ] ),
-            ( self.customer_contact_centre_user, [
-                {'title': 'Escalation dashboard', 'url': '/private/escalation'},
-            ] ),
+            (
+                self.trust_user,
+                [
+                    {
+                        'title': 'Dashboard for Test Trust',
+                        'url': reverse('org-parent-dashboard', kwargs={'code': 'TRUST1'})
+                    },
+                ]
+            ),
+            (
+                self.superuser,
+                [
+                    {
+                        'title': 'Superuser Dashboard',
+                        'url': reverse('superuser-dashboard')
+                    },
+                ]
+            ),
+            (
+                self.anonymous_user,
+                []
+            ),
+            (
+                self.no_trust_user,
+                []
+            ),
+            (
+                self.gp_surgery_user,
+                [
+                    {
+                        'title': 'Dashboard for other test trust',
+                        'url': reverse('org-parent-dashboard', kwargs={'code': 'XYZ'})
+                    },
+                ]
+            ),
+            (
+                self.nhs_superuser,
+                [
+                    {
+                        'title': 'Superuser Dashboard',
+                        'url': reverse('superuser-dashboard')
+                    },
+                ]
+            ),
+            (
+                self.case_handler,
+                [
+                    {
+                        'title': 'Moderation home',
+                        'url': reverse('moderate-home')
+                    },
+                ]
+            ),
+            (
+                self.second_tier_moderator,
+                [
+                    {
+                        'title': 'Second tier moderation home',
+                        'url': reverse('second-tier-moderate-home')
+                    },
+                ]
+            ),
+            (
+                self.no_ccg_user,
+                []
+            ),
+            (
+                self.ccg_user,
+                [
+                    {
+                        'title': 'CCG dashboard for Test CCG',
+                        'url': reverse('ccg-dashboard', kwargs={'code': 'CCG1'})
+                    },
+                ]
+            ),
+            (
+                self.customer_contact_centre_user,
+                [
+                    {
+                        'title': 'Escalation dashboard',
+                        'url': reverse('escalation-dashboard')
+                    },
+                ]
+            ),
         ]
 
         for user, expected_links in tests:

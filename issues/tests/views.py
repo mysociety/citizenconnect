@@ -255,7 +255,8 @@ class ProblemPublicViewTests(ProblemImageTestBase, AuthorizationTestCase):
 
     def test_shows_report_link(self):
         resp = self.client.get(self.test_moderated_problem_url)
-        expected_link = '<a href="/choices/feedback?problem_ref={0}">Report as unsuitable</a>'.format(self.test_moderated_problem.reference_number)
+        report_url = reverse('feedback', kwargs={'cobrand': 'choices'})
+        expected_link = '<a href="{0}?problem_ref={1}">Report as unsuitable</a>'.format(report_url, self.test_moderated_problem.reference_number)
         self.assertContains(resp, expected_link)
 
     def test_images_shown(self):

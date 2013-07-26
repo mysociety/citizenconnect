@@ -14,7 +14,6 @@ allowed_cobrands = settings.ALLOWED_COBRANDS
 cobrand_pattern = '(?P<cobrand>%s)' % '|'.join(allowed_cobrands)
 urlpatterns = patterns(
     '',
-    url(r'^$', DevHomepageSelector.as_view(), name='dev-homepage'),
     url(r'^' + cobrand_pattern + r'/?$', Home.as_view(), name='home'),
     # This page is only for myhealthlondon
     url(
@@ -48,6 +47,18 @@ urlpatterns = patterns(
 
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
+)
+
+# Append /careconnect to everything above, to fix proxy relative link issues
+urlpatterns = patterns(
+    '',
+    url(r'careconnect/', include(urlpatterns)),
+)
+
+# Dev homepage lives at the real root though
+urlpatterns += patterns(
+    '',
+    url(r'^$', DevHomepageSelector.as_view(), name='dev-homepage'),
 )
 
 urlpatterns += staticfiles_urlpatterns()

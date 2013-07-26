@@ -50,11 +50,13 @@ class LookupFormTests(BaseModerationTestCase):
 
     def test_form_allows_moderated_problems(self):
         resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.moderated_problem.id)})
-        self.assertRedirects(resp, '/private/response/{0}'.format(self.moderated_problem.id))
+        moderated_response_url = reverse('response-form', kwargs={'pk': self.moderated_problem.id})
+        self.assertRedirects(resp, moderated_response_url)
 
     def test_form_allows_closed_problems(self):
         resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.closed_problem.id)})
-        self.assertRedirects(resp, '/private/response/{0}'.format(self.closed_problem.id))
+        closed_response_url = reverse('response-form', kwargs={'pk': self.closed_problem.id})
+        self.assertRedirects(resp, closed_response_url)
 
 
 class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):

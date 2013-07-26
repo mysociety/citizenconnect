@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 from django.test import TestCase
+from django.core.urlresolvers import reverse
 
 from issues.models import Problem
 from ..tables import ProblemTable
@@ -19,13 +20,15 @@ class ProblemTableTest(TestCase):
     def test_escaping_private_summary(self):
         table = ProblemTable([], private=True)
         link = table.render_summary_as_response_link(self.problem)
-        expected = '<a href="/private/response/{0}">&lt;script&gt;alert(&#39;xss&#39;)&lt;/script&gt; <span class="icon-chevron-right" aria-hidden="true"></span></a>'.format(self.problem.id)
+        response_url = reverse('response-form', kwargs={'pk': self.problem.id})
+        expected = '<a href="{0}">&lt;script&gt;alert(&#39;xss&#39;)&lt;/script&gt; <span class="icon-chevron-right" aria-hidden="true"></span></a>'.format(response_url)
         self.assertEqual(link, expected)
 
     def test_escaping_public_record_summary(self):
         table = ProblemTable([], private=False, cobrand='choices')
         link = table.render_summary_as_public_link(self.problem)
-        expected = '<a href="/choices/problem/{0}">&lt;script&gt;alert(&#39;xss&#39;)&lt;/script&gt; <span class="icon-chevron-right" aria-hidden="true"></span></a>'.format(self.problem.id)
+        problem_url = reverse('problem-view', kwargs={'pk': self.problem.id, 'cobrand': 'choices'})
+        expected = '<a href="{0}">&lt;script&gt;alert(&#39;xss&#39;)&lt;/script&gt; <span class="icon-chevron-right" aria-hidden="true"></span></a>'.format(problem_url)
         self.assertEqual(link, expected)
 
     def test_escaping_summary(self):

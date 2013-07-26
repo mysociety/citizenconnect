@@ -27,4 +27,8 @@ class DevHomepageTests(TestCase):
     def test_with_staging_false(self):
         resp = self.client.get(self.homepage_url, follow=True)
         primary_cobrand = settings.ALLOWED_COBRANDS[0]
-        self.assertEqual(resp.redirect_chain, [('http://testserver/'+primary_cobrand, 301)])
+        non_dev_homepage = reverse('home', kwargs={'cobrand': primary_cobrand})
+        self.assertEqual(
+            resp.redirect_chain,
+            [('http://testserver' + non_dev_homepage, 301)]
+        )
