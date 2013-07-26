@@ -40,11 +40,6 @@ WGS_84 = 4326
 
 SITE_BASE_URL = config.get('SITE_BASE_URL')
 
-# We hardcode a full path here because the NHS proxy us,
-# and this is the only way of making sure static assets
-# actually work in some cases, like giving custom icon urls to leaflet
-STATIC_URL = '/static/' if STAGING else SITE_BASE_URL + '/static/'
-
 DEFAULT_FROM_EMAIL = config.get('DEFAULT_FROM_EMAIL')
 
 SERVER_EMAIL = config.get('SERVER_EMAIL')
@@ -69,8 +64,7 @@ FEEDBACK_EMAIL_ADDRESS = config.get("FEEDBACK_EMAIL_ADDRESS")
 
 ABUSE_EMAIL_ADDRESS = config.get("ABUSE_EMAIL_ADDRESS")
 
-CHOICES_GOOGLE_ANALYTICS_ACCOUNT = config.get('CHOICES_GOOGLE_ANALYTICS_ACCOUNT')
-MHL_GOOGLE_ANALYTICS_ACCOUNT = config.get('MHL_GOOGLE_ANALYTICS_ACCOUNT')
+GOOGLE_ANALYTICS_ACCOUNT = config.get('GOOGLE_ANALYTICS_ACCOUNT')
 
 MAX_IMAGES_PER_PROBLEM = config.get('MAX_IMAGES_PER_PROBLEM')
 ALLOWED_IMAGE_EXTENSIONS = config.get('ALLOWED_IMAGE_EXTENSIONS')
@@ -90,5 +84,9 @@ USE_X_FORWARDED_HOST = config.get('USE_X_FORWARDED_HOST', False)
 SESSION_COOKIE_AGE = 7200  # Two hours max
 SESSION_COOKIE_HTTPONLY = True  # This is the default, but just to make it explicit
 SESSION_COOKIE_SECURE = not STAGING
+SESSION_COOKIE_PATH = '/careconnect'
 
 CSRF_COOKIE_SECURE = not STAGING
+CSRF_COOKIE_PATH = '/careconnect'
+
+ALLOWED_HOSTS = [] if STAGING else config.get('ALLOWED_HOSTS', [])

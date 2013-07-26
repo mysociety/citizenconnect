@@ -9,6 +9,7 @@ from django.test.utils import override_settings
 from django.conf import settings
 from django.core import mail
 from django.core.exceptions import ValidationError
+from django.core.urlresolvers import reverse
 from django.core.files.images import ImageFile
 from django.utils.timezone import utc
 
@@ -113,9 +114,10 @@ class ProblemModelTests(ProblemTestCase):
 
     def test_get_absolute_url(self):
         self.test_problem.save()
+        problem_url = reverse('problem-view', kwargs={'pk': self.test_problem.id, 'cobrand': 'choices'})
         self.assertEqual(
             self.test_problem.get_absolute_url(),
-            '/choices/problem/' + str(self.test_problem.id)
+            problem_url
         )
 
     def test_has_prefix_property(self):
@@ -831,12 +833,12 @@ class ProblemManagerTests(ManagerTest):
         now = datetime.utcnow().replace(tzinfo=utc)
         survey_interval = timedelta(days=settings.SURVEY_INTERVAL_IN_DAYS)
         after_survey_cutoff = now - survey_interval + timedelta(days=1)
-        
+
         old_problem = create_test_problem({
             'organisation': self.test_organisation,
             'created': after_survey_cutoff,
         })
-        
+
         self.assertEqual(old_problem.created, after_survey_cutoff)
 
         # test that this problem does not need to be sent a survey
@@ -846,12 +848,12 @@ class ProblemManagerTests(ManagerTest):
         old_problem.created = after_survey_cutoff - timedelta(days=2)
         old_problem.save()
         self.assertEqual(Problem.objects.requiring_survey_to_be_sent()[0].id, old_problem.id)
-        
+
         # remove email address and check it does not need to be sent
         old_problem.reporter_email = ''
         old_problem.save()
         self.assertEqual(Problem.objects.requiring_survey_to_be_sent().count(), 0)
-        
+
         # restore email address, mark as sent, check it does not need to be sent
         old_problem.email = 'foo@example.com'
         old_problem.survey_sent = now

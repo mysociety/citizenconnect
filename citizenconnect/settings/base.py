@@ -64,7 +64,7 @@ MEDIA_ROOT = os.path.join(PARENT_DIR, 'uploads')
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = '/media/'
+MEDIA_URL = '/careconnect/media/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
@@ -74,7 +74,7 @@ STATIC_ROOT = os.path.join(PARENT_DIR, 'collected_static')
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = '/static/'
+STATIC_URL = '/careconnect/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -212,11 +212,11 @@ PAGINATION_DEFAULT_ORPHANS = 2
 PAGINATION_INVALID_PAGE_RAISES_404 = True
 
 # Authentication related settings
-LOGIN_URL = '/private/login'
+LOGIN_URL = '/careconnect/private/login'
 # We have to set this to something otherwise Django will redirect
 # to /accounts/profile (which doesn't exist) if next is not specified
 # on any login_required urls
-LOGIN_REDIRECT_URL = '/private/'
+LOGIN_REDIRECT_URL = '/careconnect/private/'
 # Makes sense to have this as a setting too
 LOGOUT_REDIRECT_URL = '/'
 
@@ -245,7 +245,7 @@ AUTHENTICATION_BACKENDS = (
 GEOCODER_BOUNDING_BOXES = (
     # xmin,  ymin,  xmax,  ymax
     (-0.75, 51.29, 0.57,  51.72),  # London
-    (-2.28, 54.75, -0.96, 55.15),  # North East
+    (-2.28, 54.75, -0.96, 55.15),  # North East of England
 )
 
 # Organisation choices

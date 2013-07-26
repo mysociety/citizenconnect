@@ -1,5 +1,5 @@
 from organisations.models import Organisation
-from organisations.tests.lib import create_test_problem, create_test_organisation
+from organisations.tests.lib import create_test_problem
 from issues.models import Problem
 from responses.models import ProblemResponse
 
@@ -7,14 +7,23 @@ from .lib import BaseModerationTestCase
 
 from django.core.urlresolvers import reverse
 
+
 class LookupFormTests(BaseModerationTestCase):
 
     def setUp(self):
         super(LookupFormTests, self).setUp()
-        self.closed_problem = create_test_problem({'organisation':self.test_hospital,
-                                                   'status': Problem.RESOLVED})
-        self.moderated_problem = create_test_problem({'organisation':self.test_hospital,
-                                                      'publication_status': Problem.PUBLISHED})
+        self.closed_problem = create_test_problem(
+            {
+                'organisation': self.test_hospital,
+                'status': Problem.RESOLVED
+            }
+        )
+        self.moderated_problem = create_test_problem(
+            {
+                'organisation': self.test_hospital,
+                'publication_status': Problem.PUBLISHED
+            }
+        )
         self.login_as(self.case_handler)
 
     def test_happy_path(self):
@@ -39,11 +48,13 @@ class LookupFormTests(BaseModerationTestCase):
 
     def test_form_allows_moderated_problems(self):
         resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.moderated_problem.id)})
-        self.assertRedirects(resp, '/private/moderate/{0}'.format(self.moderated_problem.id))
+        moderation_url = reverse('moderate-form', kwargs={'pk': self.moderated_problem.id})
+        self.assertRedirects(resp, moderation_url)
 
     def test_form_allows_closed_problems(self):
         resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.closed_problem.id)})
-        self.assertRedirects(resp, '/private/moderate/{0}'.format(self.closed_problem.id))
+        moderation_url = reverse('moderate-form', kwargs={'pk': self.closed_problem.id})
+        self.assertRedirects(resp, moderation_url)
 
 
 class ModerationFormPublicReporterNameMixin(object):
@@ -56,7 +67,7 @@ class ModerationFormPublicReporterNameMixin(object):
             'public_reporter_name': True,
             'requires_second_tier_moderation': True,
         })
-        
+
         self.private_name_problem = create_test_problem({
             'organisation':self.test_hospital,
             'public_reporter_name': False,
@@ -146,7 +157,7 @@ class ModerationFormTests(ModerationFormPublicReporterNameMixin, BaseModerationT
             'moderated_description': moderated_description
         }
         self.form_values.update(test_form_values)
-        resp = self.client.post(self.problem_form_url, self.form_values)
+        self.client.post(self.problem_form_url, self.form_values)
         problem = Problem.objects.get(pk=self.test_problem.id)
         self.assertEqual(problem.moderated_description, moderated_description)
 
@@ -155,7 +166,7 @@ class ModerationFormTests(ModerationFormPublicReporterNameMixin, BaseModerationT
             'breach': 1
         }
         self.form_values.update(test_form_values)
-        resp = self.client.post(self.problem_form_url, self.form_values)
+        self.client.post(self.problem_form_url, self.form_values)
         problem = Problem.objects.get(pk=self.test_problem.id)
         self.assertEqual(problem.breach, True)
 
@@ -164,7 +175,7 @@ class ModerationFormTests(ModerationFormPublicReporterNameMixin, BaseModerationT
             'status': Problem.ESCALATED
         }
         self.form_values.update(test_form_values)
-        resp = self.client.post(self.problem_form_url, self.form_values)
+        self.client.post(self.problem_form_url, self.form_values)
         problem = Problem.objects.get(pk=self.test_problem.id)
         self.assertEqual(problem.status, Problem.NEW)
 
@@ -173,7 +184,7 @@ class ModerationFormTests(ModerationFormPublicReporterNameMixin, BaseModerationT
             'status': Problem.REFERRED_TO_OTHER_PROVIDER
         }
         self.form_values.update(test_form_values)
-        resp = self.client.post(self.problem_form_url, self.form_values)
+        self.client.post(self.problem_form_url, self.form_values)
         problem = Problem.objects.get(pk=self.test_problem.id)
         self.assertEqual(problem.status, Problem.REFERRED_TO_OTHER_PROVIDER)
 
@@ -183,23 +194,12 @@ class ModerationFormTests(ModerationFormPublicReporterNameMixin, BaseModerationT
                                                 self.problem_form_url,
                                                 self.test_problem)
 
-    def test_moderation_form_sets_publication_status_to_private_when_keep_private_clicked(self):
-        test_form_values = {
-            'keep_private': ''
-        }
-        self.form_values.update(test_form_values)
-        del self.form_values['publish']
-        self.assert_expected_publication_status(Problem.REJECTED,
-                                                self.form_values,
-                                                self.problem_form_url,
-                                                self.test_problem)
-
     def test_moderation_form_sets_publication_status_to_not_moderated_when_requires_second_tier_moderation_clicked(self):
 
         # Change the problem to PUBLISHED so we can test that a change occurs.
         self.test_problem.publication_status = Problem.PUBLISHED
         self.test_problem.save()
-        self.client.get(self.problem_form_url) # deal with versioning
+        self.client.get(self.problem_form_url)  # deal with versioning
 
         # change the submit button that'll be used
         self.form_values['now_requires_second_tier_moderation'] = ''
@@ -209,6 +209,52 @@ class ModerationFormTests(ModerationFormPublicReporterNameMixin, BaseModerationT
                                                 self.form_values,
                                                 self.problem_form_url,
                                                 self.test_problem)
+
+    def test_moderation_form_sets_publication_status_to_published_when_keep_private_clicked(self):
+        # change the submit button that'll be used
+        test_form_values = {
+            'keep_private': ''
+        }
+        self.form_values.update(test_form_values)
+        del self.form_values['publish']
+
+        self.assert_expected_publication_status(Problem.PUBLISHED,
+                                                self.form_values,
+                                                self.problem_form_url,
+                                                self.test_problem)
+
+    def test_moderation_form_sets_public_to_false_when_keep_private_clicked(self):
+        # Make sure the problem is public
+        self.test_problem.public = True
+        self.test_problem.save()
+        self.client.get(self.problem_form_url)  # deal with versioning
+
+        test_form_values = {
+            'keep_private': ''
+        }
+        self.form_values.update(test_form_values)
+        del self.form_values['publish']
+
+        self.client.post(self.problem_form_url, self.form_values)
+
+        problem = Problem.objects.get(pk=self.test_problem.id)
+        self.assertFalse(problem.public)
+
+    def test_moderation_form_doesnt_allow_setting_of_public_otherwise(self):
+        # Make sure the problem is not public
+        self.test_problem.public = False
+        self.test_problem.save()
+        self.client.get(self.problem_form_url)  # deal with versioning
+
+        test_form_values = {
+            'public': True
+        }
+        self.form_values.update(test_form_values)
+
+        self.client.post(self.problem_form_url, self.form_values)
+
+        problem = Problem.objects.get(pk=self.test_problem.id)
+        self.assertFalse(problem.public)
 
     def assert_expected_requires_second_tier_moderation(self, expected_value, form_values):
         resp = self.client.post(self.problem_form_url, form_values)
@@ -258,8 +304,7 @@ class ModerationFormTests(ModerationFormPublicReporterNameMixin, BaseModerationT
         resp = self.client.post(self.problem_form_url, self.form_values)
         self.assertFormError(resp, 'form', 'moderated_description', 'You must moderate a version of the problem details when publishing public problems.')
 
-
-    def test_moderation_form_doesnt_requires_moderated_description_for_private_problems(self):
+    def test_moderation_form_doesnt_require_moderated_description_for_private_problems(self):
         # make the problem private
         self.test_problem.public = False
         self.test_problem.save()
@@ -285,18 +330,18 @@ class ModerationFormTests(ModerationFormPublicReporterNameMixin, BaseModerationT
         self.assertEqual(problem.moderated_description, '')
         self.assertEqual(problem.publication_status, Problem.PUBLISHED)
 
-
     def test_moderation_form_doesnt_require_moderated_description_when_hiding_problems(self):
-        expected_status = Problem.REJECTED
         test_form_values = {
             'keep_private': ''
         }
         self.form_values.update(test_form_values)
         del self.form_values['publish']
         del self.form_values['moderated_description']
-        resp = self.client.post(self.problem_form_url, self.form_values)
+
+        self.client.post(self.problem_form_url, self.form_values)
+
         problem = Problem.objects.get(pk=self.test_problem.id)
-        self.assertEqual(problem.publication_status, expected_status)
+        self.assertFalse(problem.public)
 
     def test_moderation_form_can_moderate_responses(self):
         # Add some responses to the test problem
@@ -451,7 +496,7 @@ class SecondTierModerationFormTests(ModerationFormPublicReporterNameMixin, BaseM
         self.assertContains(resp, self.second_tier_home_url)
 
     def test_second_tier_moderation_form_sets_requires_second_tier_moderation_to_false(self):
-        resp = self.client.post(self.second_tier_problem_form_url, self.form_values)
+        self.client.post(self.second_tier_problem_form_url, self.form_values)
         problem = Problem.objects.get(pk=self.test_second_tier_moderation_problem.id)
         self.assertEqual(problem.requires_second_tier_moderation, False)
 
@@ -484,16 +529,15 @@ class SecondTierModerationFormTests(ModerationFormPublicReporterNameMixin, BaseM
         self.assertEqual(problem.publication_status, expected_status)
 
     def test_second_tier_moderation_form_doesnt_require_moderated_description_when_hiding_problems(self):
-        expected_status = Problem.REJECTED
         test_form_values = {
             'keep_private': ''
         }
         self.form_values.update(test_form_values)
         del self.form_values['publish']
         del self.form_values['moderated_description']
-        resp = self.client.post(self.second_tier_problem_form_url, self.form_values)
+        self.client.post(self.second_tier_problem_form_url, self.form_values)
         problem = Problem.objects.get(pk=self.test_second_tier_moderation_problem.id)
-        self.assertEqual(problem.publication_status, expected_status)
+        self.assertFalse(problem.public)
 
     def test_second_tier_moderation_form_sets_publication_status_to_published_when_publish_clicked(self):
         self.assert_expected_publication_status(Problem.PUBLISHED,
@@ -501,16 +545,39 @@ class SecondTierModerationFormTests(ModerationFormPublicReporterNameMixin, BaseM
                                                 self.second_tier_problem_form_url,
                                                 self.test_second_tier_moderation_problem)
 
-    def test_second_tier_moderation_form_sets_publication_status_to_private_when_keep_private_clicked(self):
+    def test_second_tier_moderation_form_sets_public_to_false_when_keep_private_clicked(self):
+        # Make sure the problem is public
+        self.test_second_tier_moderation_problem.public = True
+        self.test_second_tier_moderation_problem.save()
+        self.client.get(self.second_tier_problem_form_url)
+
         test_form_values = {
             'keep_private': ''
         }
         self.form_values.update(test_form_values)
         del self.form_values['publish']
-        self.assert_expected_publication_status(Problem.REJECTED,
-                                                self.form_values,
-                                                self.second_tier_problem_form_url,
-                                                self.test_second_tier_moderation_problem)
+
+        self.client.post(self.second_tier_problem_form_url, self.form_values)
+
+        problem = Problem.objects.get(pk=self.test_second_tier_moderation_problem.id)
+        self.assertFalse(problem.public)
+
+    def test_second_tier_moderation_form_doesnt_allow_setting_of_public_otherwise(self):
+        # Make sure the problem is not public
+        self.test_second_tier_moderation_problem.public = False
+        self.test_second_tier_moderation_problem.save()
+        self.client.get(self.second_tier_problem_form_url)  # deal with versioning
+
+        test_form_values = {
+            'public': True
+        }
+        self.form_values.update(test_form_values)
+
+        self.client.post(self.second_tier_problem_form_url, self.form_values)
+
+        problem = Problem.objects.get(pk=self.test_second_tier_moderation_problem.id)
+        self.assertFalse(problem.public)
+
 
 class SecondTierModerationFormConcurrencyTests(BaseModerationTestCase):
 

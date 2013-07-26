@@ -12,6 +12,7 @@
   }
 }
 
+  th .filters__dropdown .customSelect,
   th .filters__dropdown select {
      font-size: 1em;
     }
@@ -39,12 +40,12 @@
       background-color: #e6e6e6;
       background-image: url(../img/select_arrow-default.png);
       font-weight: normal;
-      select {
+      select, .customSelect {
         color: #333;
         &:focus { color: #333; }
       }
     }
-      select {
+      select, .customSelect {
         background-color: transparent;
         -webkit-appearance: none;
         -moz-appearance: window;
@@ -55,8 +56,31 @@
         padding: 1em 2.5em 1em 0.5em;
         margin: 0;
         font-size: (13px / $font-size-base) + em;
+        font-weight: normal;
+        text-align: left;
         @include vendor(border-radius, 0);
+
+        // IE8/9 have a bug with padding on select elements - http://www.sitepoint.com/forums/showthread.php?593031-Padding-on-select-element
+        // This fix works around that by removing the padding and making the
+        // whole <select> taller, then adjusts the line-height to
+        // centrally align the text.
+        .ie8 &, .ie9 & {
+          padding: 0;
+          height: 4em;
+          .customSelectInner {
+            line-height: 4em;
+            height: 100%;
+          }
+        }
       }
+  }
+
+  .ie7 .filters__dropdown-wrap .filters__dropdown,
+  .ie7 .filters__dropdown-wrap .filters__dropdown--default {
+    background: none;
+    select {
+      color: inherit;
+    }
   }
 
   .filters__button {

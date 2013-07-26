@@ -112,8 +112,9 @@ $(document).ready(function () {
         minimumInputLength: 1,
         placeholder: "Search the map",
         dropdownAutoWidth: true,
+        containerCssClass: 'select2-container--large',
         ajax: {
-            url: CitizenConnect.base_url + $searchBox.data('search-url'),
+            url: $searchBox.data('search-url'),
             dataType: 'json',
             data: function(term, page) {
                 return {

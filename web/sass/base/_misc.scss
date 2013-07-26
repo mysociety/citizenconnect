@@ -27,3 +27,8 @@ img {
 * {
     @include vendor(box-sizing, border-box);
 }
+
+// Add a question mark to abbr[title] elements on hover
+abbr[title] {
+  cursor: help;
+}

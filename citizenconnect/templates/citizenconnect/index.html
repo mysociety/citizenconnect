@@ -94,13 +94,7 @@
         <div class="news-articles">
             <h2 class="title  title--news  mb--s">Latest News</h2>
             {% for article in recent_articles %}
-            <div class="news-article--preview">
-                <h1 class="news-article__title"><a href="{% url 'article-view' cobrand=cobrand.name pk=article.pk %}">{{ article.title }}</a></h1>
-                <h3 class="news-article__author">{{ article.author }}</h3>
-                <div class="news-article__content">
-                    {{ article.description|safe }}
-                </div>
-            </div>
+                {% include 'news/includes/article_in_list.html' with article=article %}
             {% endfor %}
             <div class="align-center">
                 <a href="{% url 'article-list' cobrand=cobrand.name %}" class="coloured-link">View all news <span class="icon-chevron-right" aria-hidden="true"></span> </a>
@@ -134,7 +128,7 @@
             placeholder: "Search the map",
             dropdownAutoWidth: true,
             ajax: {
-                url: CitizenConnect.base_url + $searchBox.data('search-url'),
+                url: $searchBox.data('search-url'),
                 dataType: 'json',
                 data: function(term, page) {
                     return {
@@ -150,9 +144,9 @@
         $searchBox.on('change', function(e) {
             // Redirect to the map page
             if (e.added.type === "organisation") {
-                window.location = CitizenConnect.base_url + $searchBox.data('map-url') + '?ods_code=' + e.added.id;
+                window.location = $searchBox.data('map-url') + '?ods_code=' + e.added.id;
             } else {
-                window.location = CitizenConnect.base_url + $searchBox.data('map-url') + '?lon=' + e.added.lon + '&lat=' + e.added.lat;
+                window.location = $searchBox.data('map-url') + '?lon=' + e.added.lon + '&lat=' + e.added.lat;
             }
         });
     });

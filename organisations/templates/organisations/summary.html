@@ -16,7 +16,6 @@
   {% include 'organisations/includes/filters.html' %}
 
     <div class="search-controls mb">
-        {# data-search-url will not be rewritten by proxies so 'CitizenConnect.base_url' will need to be prepended in JS. #}
         <input type="text" id="search-org-name" data-search-url="{% url 'org-search' cobrand=cobrand.name %}" />
     </div>
 
