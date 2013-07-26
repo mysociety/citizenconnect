@@ -21,6 +21,7 @@ PIPELINE_CSS = {
 PIPELINE_JS = {
     'frameworks': {
         'source_filenames': (
+            'js/jquery-1.10.2.js',
             'js/placeholder_polyfill.jquery.min.combo.js',
             'js/jquery.customSelect.js',
         ),
