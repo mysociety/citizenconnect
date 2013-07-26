@@ -1410,6 +1410,8 @@ div.review-form__rating-answer div.rateit-selected { background: url("rateit/rev
 
 .help-feature--give-blood { background-color: transparent; border: none; padding: 0; margin: 0; min-height: 0; }
 
+.nhs-logo { margin: 25px 0 37px 37px; background: url(../img/myhealthlondon/nhslogo.png) no-repeat top left; display: block; height: 35px; width: 88px; color: transparent; font: 0/0 a; text-shadow: none; }
+
 /* ========================================================================== Print styles. Inlined to avoid required HTTP connection: h5bp.com/r ========================================================================== */
 @media print { * { background: transparent !important; color: #000 !important; /* Black prints faster: h5bp.com/s */ box-shadow: none !important; text-shadow: none !important; }
   a, a:visited { text-decoration: underline; }
