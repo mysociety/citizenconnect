@@ -218,7 +218,7 @@ LOGIN_URL = '/careconnect/private/login'
 # on any login_required urls
 LOGIN_REDIRECT_URL = '/careconnect/private/'
 # Makes sense to have this as a setting too
-LOGOUT_REDIRECT_URL = '/careconnect'
+LOGOUT_REDIRECT_URL = '/'
 
 # Password related settings - see https://github.com/dstufft/django-passwords
 # and our derived PasswordField implementation for details. Note that
