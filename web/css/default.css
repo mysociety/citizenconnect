@@ -1182,6 +1182,10 @@ th .filters__dropdown .customSelect, th .filters__dropdown select { font-size: 1
 .leaflet-popup-content .hover-bubble ul { margin: 0; }
 .leaflet-popup-content .hover-bubble ul li { list-style: none; }
 
+/** Increase the size of select2 elements. */
+.map-search-controls .select2-container--large .select2-choice { font-size: 1.5em; height: 1.875em; line-height: 1.875em; }
+.map-search-controls .select2-container--large .select2-choice div b { background-position: 0 9px; }
+
 /** A horizontal nav, used inside `.site-top-bar` */
 .nav { list-style: none; padding: 0; margin: 0; }
 .nav li { display: block; float: left; }
@@ -1235,6 +1239,8 @@ th .filters__dropdown .customSelect, th .filters__dropdown select { font-size: 1
 .step_title--orange, .step_wording--orange, .about_section_heading--orange { color: #e28c05; }
 
 .step_title--blue, .step_wording--blue, .about_section_heading--blue { color: #0072c6; }
+
+#faqs p { margin: 2em 0; }
 
 /** Literally creates a circle out of an element which gives us the ability to have borders */
 .bordered-circle { display: inline-block; *display: inline; *zoom: 1; vertical-align: top; width: 20px; height: 20px; -webkit-border-radius: 20px; -moz-border-radius: 20px; -ms-border-radius: 20px; -o-border-radius: 20px; border-radius: 20px; background: #333; border: 3px solid #fff; }
@@ -1403,6 +1409,8 @@ div.review-form__rating-answer div.rateit-selected { background: url("rateit/rev
 .help-feature--organ-donor .organ-donor__cta a { color: #d81e05; font-size: 18px; font-weight: bold; }
 
 .help-feature--give-blood { background-color: transparent; border: none; padding: 0; margin: 0; min-height: 0; }
+
+.nhs-logo { margin: 25px 0 37px 37px; background: url(../img/myhealthlondon/nhslogo.png) no-repeat top left; display: block; height: 35px; width: 88px; color: transparent; font: 0/0 a; text-shadow: none; }
 
 /* ========================================================================== Print styles. Inlined to avoid required HTTP connection: h5bp.com/r ========================================================================== */
 @media print { * { background: transparent !important; color: #000 !important; /* Black prints faster: h5bp.com/s */ box-shadow: none !important; text-shadow: none !important; }

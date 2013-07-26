@@ -112,6 +112,7 @@ $(document).ready(function () {
         minimumInputLength: 1,
         placeholder: "Search the map",
         dropdownAutoWidth: true,
+        containerCssClass: 'select2-container--large',
         ajax: {
             url: $searchBox.data('search-url'),
             dataType: 'json',

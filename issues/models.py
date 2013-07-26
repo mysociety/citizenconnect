@@ -264,11 +264,14 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
             'Rejected': [[NOT_MODERATED, REJECTED], [PUBLISHED, REJECTED]],
             'Unmoderated': [[REJECTED, NOT_MODERATED], [PUBLISHED, NOT_MODERATED]],
         },
+        'requires_second_tier_moderation': {
+            'Referred': [[False, True]]
+        },
     }
 
     # Which attrs are interesting to compare for revisions
     # The order of these determines the order they are output as a string
-    REVISION_ATTRS = ['publication_status', 'status']
+    REVISION_ATTRS = ['publication_status', 'status', 'requires_second_tier_moderation']
 
     SOURCE_PHONE = 'phone'
     SOURCE_EMAIL = 'email'

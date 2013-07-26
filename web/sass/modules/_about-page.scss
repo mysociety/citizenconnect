@@ -25,3 +25,9 @@
 .step_title--blue, .step_wording--blue, .about_section_heading--blue  {
   color: $c-step-title-blue;
 }
+
+#faqs {
+    p {
+        margin: 2em 0;
+    }
+}
