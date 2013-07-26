@@ -39,9 +39,6 @@ urlpatterns = patterns(
     url(r'^private/moderate/', include('moderation.urls')),
     url(r'^private/response/', include('responses.urls')),
 
-    # api urls
-    url(r'^api/v0.1/', include('api.urls')),
-
     # geocoder
     url(r'^geocoder/', include('geocoder.urls')),
 
@@ -53,6 +50,12 @@ urlpatterns = patterns(
 urlpatterns = patterns(
     '',
     url(r'careconnect/', include(urlpatterns)),
+)
+
+# API links
+urlpatterns += patterns(
+    '',
+    url(r'^api/v0.1/', include('api.urls')),
 )
 
 # Dev homepage lives at the real root though
