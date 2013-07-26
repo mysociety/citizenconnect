@@ -1,5 +1,5 @@
 from organisations.models import Organisation
-from organisations.tests.lib import create_test_problem, create_test_organisation
+from organisations.tests.lib import create_test_problem
 from issues.models import Problem
 from responses.models import ProblemResponse
 
@@ -7,14 +7,23 @@ from .lib import BaseModerationTestCase
 
 from django.core.urlresolvers import reverse
 
+
 class LookupFormTests(BaseModerationTestCase):
 
     def setUp(self):
         super(LookupFormTests, self).setUp()
-        self.closed_problem = create_test_problem({'organisation':self.test_hospital,
-                                                   'status': Problem.RESOLVED})
-        self.moderated_problem = create_test_problem({'organisation':self.test_hospital,
-                                                      'publication_status': Problem.PUBLISHED})
+        self.closed_problem = create_test_problem(
+            {
+                'organisation': self.test_hospital,
+                'status': Problem.RESOLVED
+            }
+        )
+        self.moderated_problem = create_test_problem(
+            {
+                'organisation': self.test_hospital,
+                'publication_status': Problem.PUBLISHED
+            }
+        )
         self.login_as(self.case_handler)
 
     def test_happy_path(self):
@@ -39,11 +48,13 @@ class LookupFormTests(BaseModerationTestCase):
 
     def test_form_allows_moderated_problems(self):
         resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.moderated_problem.id)})
-        self.assertRedirects(resp, '/private/moderate/{0}'.format(self.moderated_problem.id))
+        moderation_url = reverse('moderate-form', kwargs={'pk': self.moderated_problem.id})
+        self.assertRedirects(resp, moderation_url)
 
     def test_form_allows_closed_problems(self):
         resp = self.client.post(self.lookup_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.closed_problem.id)})
-        self.assertRedirects(resp, '/private/moderate/{0}'.format(self.closed_problem.id))
+        moderation_url = reverse('moderate-form', kwargs={'pk': self.closed_problem.id})
+        self.assertRedirects(resp, moderation_url)
 
 
 class ModerationFormPublicReporterNameMixin(object):
