@@ -2,15 +2,6 @@ from django.test import TestCase
 
 from django.core.urlresolvers import reverse
 
-from organisations.tests.lib import (
-    create_test_organisation,
-    create_test_problem
-)
-
-from issues.models import Problem
-
-from reviews_display.tests import create_test_review
-
 
 class MHLIframeTests(TestCase):
 
@@ -53,30 +44,3 @@ class MHLIframeTests(TestCase):
         expected_questions_link = '<a target="_blank" href="{0}"'.format(common_questions_url)
         resp = self.client.get(self.iframe_url)
         self.assertContains(resp, expected_questions_link)
-
-    def test_includes_latest_feed_with_target_blank(self):
-        # Add a problem and a review
-        organisation = create_test_organisation({})
-        problem = create_test_problem({
-            'organisation': organisation,
-            'publication_status': Problem.PUBLISHED
-        })
-        review = create_test_review({'organisation': organisation})
-
-        problem_url = reverse('problem-view', kwargs={'pk': problem.id, 'cobrand': 'myhealthlondon'})
-        expected_problem_link = '<a target="_blank" href="{0}"'.format(problem_url)
-
-        review_url = reverse(
-            'review-detail',
-            kwargs={
-                'api_posting_id': review.api_posting_id,
-                'ods_code': organisation.ods_code,
-                'cobrand': 'myhealthlondon'
-            }
-        )
-        expected_review_link = '<a target="_blank" href="{0}">'.format(review_url)
-
-        resp = self.client.get(self.iframe_url)
-
-        self.assertContains(resp, expected_review_link)
-        self.assertContains(resp, expected_problem_link)
