@@ -108,7 +108,7 @@
                     <label for="id_is_anonymous">{{ form.is_anonymous }} Tick to remain anonymous</label>
                     {% include "citizenconnect/includes/message_list.html" with messages=form.is_anonymous.errors message_type='error' %}
                 </li>
-                
+
                 {% include "citizenconnect/includes/honeypot_field.html" %}
 
             </ul>
@@ -130,7 +130,7 @@
     </form>
 </div>
 
-<p>Powered by &nbsp;<img src="http://citizenconnect.dev/static/img/choices/choices-logo.gif" width="100"/></p>
+<p>Powered by &nbsp;<img src="{% static "img/choices/choices-logo.gif" %}" alt="NHS Choices" width="212" height="35" /></p>
 {% endblock %}
 
 {% block extra_js %}
