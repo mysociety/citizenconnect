@@ -1,0 +1,78 @@
+/**
+ * Contact details box
+ */
+.title--contact-details {
+  @extend .title;
+  text-transform: uppercase;
+}
+
+.contact-details {
+    padding: 5px;
+
+    .contact-method__header,
+    .contact-method__body {
+        @extend .cf;
+        padding: $grid-gutter + em;
+
+    }
+
+    .contact-method__header {
+        background: $c-lightgrey;
+        color: $c-darkergrey;
+        img {
+            @extend .fl;
+            margin-right: $grid-gutter + em;
+            margin-top: 0.75em;
+        }
+        h3 {
+            @extend .fl;
+            line-height: 1em;
+            font-size: 1.4em;
+            margin: 0;
+            .small {
+                font-size: $font-size-base;
+                font-weight: normal;
+            }
+        }
+    }
+
+    .contact-method__body {
+        p {
+            color: $c-nhs-aquablue;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 0.5em 0;
+
+            a {
+                color: $c-nhs-aquablue;
+                text-decoration: none;
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+
+        .contact-method__text--small {
+            font-weight: normal;
+            font-size: $font-size-base;
+            color: $c-black;
+            sup {
+                color: $c-nhs-aquablue;
+            }
+        }
+    }
+
+    .contact-method--internet {
+         p {
+            font-size: 1.25em;
+            a {
+                @extend .cf;
+                img {
+                    @extend .fl;
+                    margin-top:10px;
+                    margin-right: 10px;
+                }
+            }
+        }
+    }
+}

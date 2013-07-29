@@ -57,20 +57,20 @@
 
 /* Contain floats: h5bp.com/q */
 /* mySociety change: rename to cf */
-.cf:before, .feedback-form:before, .feedback-form .big-radio-group:before, .gw:before, .radio-list:before, .grid-wrapper:before, .island:before, .islet:before, .meta-data-sidebar .meta-data-wrap:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .site-nav:before, .feed-list:before, .feed-list li:before, .bordered-box:before, .footer:before, .cf:after, .feedback-form:after, .feedback-form .big-radio-group:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after, .site-nav:after, .feed-list:after, .feed-list li:after, .bordered-box:after, .footer:after { content: ""; display: table; }
+.cf:before, .feedback-form:before, .feedback-form .big-radio-group:before, .gw:before, .radio-list:before, .grid-wrapper:before, .island:before, .islet:before, .meta-data-sidebar .meta-data-wrap:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .site-nav:before, .feed-list:before, .feed-list li:before, .bordered-box:before, .footer:before, .contact-details .contact-method__header:before, .contact-details .contact-method__body:before, .contact-details .contact-method--internet p a:before, .cf:after, .feedback-form:after, .feedback-form .big-radio-group:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after, .site-nav:after, .feed-list:after, .feed-list li:after, .bordered-box:after, .footer:after, .contact-details .contact-method__header:after, .contact-details .contact-method__body:after, .contact-details .contact-method--internet p a:after { content: ""; display: table; }
 
-.cf:after, .feedback-form:after, .feedback-form .big-radio-group:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after, .site-nav:after, .feed-list:after, .feed-list li:after, .bordered-box:after, .footer:after { clear: both; }
+.cf:after, .feedback-form:after, .feedback-form .big-radio-group:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after, .site-nav:after, .feed-list:after, .feed-list li:after, .bordered-box:after, .footer:after, .contact-details .contact-method__header:after, .contact-details .contact-method__body:after, .contact-details .contact-method--internet p a:after { clear: both; }
 
-.cf, .feedback-form, .feedback-form .big-radio-group, .gw, .radio-list, .grid-wrapper, .island, .islet, .meta-data-sidebar .meta-data-wrap, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar, .site-nav, .feed-list, .feed-list li, .bordered-box, .footer { *zoom: 1; }
+.cf, .feedback-form, .feedback-form .big-radio-group, .gw, .radio-list, .grid-wrapper, .island, .islet, .meta-data-sidebar .meta-data-wrap, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar, .site-nav, .feed-list, .feed-list li, .bordered-box, .footer, .contact-details .contact-method__header, .contact-details .contact-method__body, .contact-details .contact-method--internet p a { *zoom: 1; }
 
 /** From inuit.css (https://github.com/csswizardry/inuit.css/)  Micro clearfix, as per: nicolasgallagher.com/micro-clearfix-hack Extend the clearfix class with Sass to avoid the `.cf` class appearing over and over in your markup. */
-.cf, .feedback-form, .feedback-form .big-radio-group, .gw, .radio-list, .grid-wrapper, .island, .islet, .meta-data-sidebar .meta-data-wrap, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar, .site-nav, .feed-list, .feed-list li, .bordered-box, .footer { zoom: 1; }
-.cf:before, .feedback-form:before, .feedback-form .big-radio-group:before, .gw:before, .radio-list:before, .grid-wrapper:before, .island:before, .islet:before, .meta-data-sidebar .meta-data-wrap:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .site-nav:before, .feed-list:before, .feed-list li:before, .bordered-box:before, .footer:before, .cf:after, .feedback-form:after, .feedback-form .big-radio-group:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after, .site-nav:after, .feed-list:after, .feed-list li:after, .bordered-box:after, .footer:after { content: " "; display: table; }
-.cf:after, .feedback-form:after, .feedback-form .big-radio-group:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after, .site-nav:after, .feed-list:after, .feed-list li:after, .bordered-box:after, .footer:after { clear: both; }
+.cf, .feedback-form, .feedback-form .big-radio-group, .gw, .radio-list, .grid-wrapper, .island, .islet, .meta-data-sidebar .meta-data-wrap, .tab-nav, .pagination, .break-bar, .map-container, .nav, .site-top-bar, .site-nav, .feed-list, .feed-list li, .bordered-box, .footer, .contact-details .contact-method__header, .contact-details .contact-method__body, .contact-details .contact-method--internet p a { zoom: 1; }
+.cf:before, .feedback-form:before, .feedback-form .big-radio-group:before, .gw:before, .radio-list:before, .grid-wrapper:before, .island:before, .islet:before, .meta-data-sidebar .meta-data-wrap:before, .tab-nav:before, .pagination:before, .break-bar:before, .map-container:before, .nav:before, .site-top-bar:before, .site-nav:before, .feed-list:before, .feed-list li:before, .bordered-box:before, .footer:before, .contact-details .contact-method__header:before, .contact-details .contact-method__body:before, .contact-details .contact-method--internet p a:before, .cf:after, .feedback-form:after, .feedback-form .big-radio-group:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after, .site-nav:after, .feed-list:after, .feed-list li:after, .bordered-box:after, .footer:after, .contact-details .contact-method__header:after, .contact-details .contact-method__body:after, .contact-details .contact-method--internet p a:after { content: " "; display: table; }
+.cf:after, .feedback-form:after, .feedback-form .big-radio-group:after, .gw:after, .radio-list:after, .grid-wrapper:after, .island:after, .islet:after, .meta-data-sidebar .meta-data-wrap:after, .tab-nav:after, .pagination:after, .break-bar:after, .map-container:after, .nav:after, .site-top-bar:after, .site-nav:after, .feed-list:after, .feed-list li:after, .bordered-box:after, .footer:after, .contact-details .contact-method__header:after, .contact-details .contact-method__body:after, .contact-details .contact-method--internet p a:after { clear: both; }
 
 .fr, .rating--review_details, div.review-form__rating-answer div.rateit, .footer__links { float: right; }
 
-.fl { float: left; }
+.fl, .contact-details .contact-method__header img, .contact-details .contact-method__header h3, .contact-details .contact-method--internet p a img { float: left; }
 
 .cr { clear: right; }
 
@@ -299,7 +299,7 @@ body { font-size: 16px; line-height: 1.5; }
 h1, h2 { font-weight: normal; }
 
 /** A grey title */
-.title, .title--news a, .news-article__sidebar__title { font-size: 1.125em; font-weight: normal; color: #aaaaaa; }
+.title, .title--news a, .news-article__sidebar__title, .title--contact-details { font-size: 1.125em; font-weight: normal; color: #aaaaaa; }
 
 .title--suck-up { margin-bottom: -1.25em; }
 
@@ -1411,6 +1411,23 @@ div.review-form__rating-answer div.rateit-selected { background: url("rateit/rev
 .help-feature--give-blood { background-color: transparent; border: none; padding: 0; margin: 0; min-height: 0; }
 
 .nhs-logo { margin: 25px 0 37px 37px; background: url(../img/myhealthlondon/nhslogo.png) no-repeat top left; display: block; height: 35px; width: 88px; color: transparent; font: 0/0 a; text-shadow: none; }
+
+/** Contact details box */
+.title--contact-details { text-transform: uppercase; }
+
+.contact-details { padding: 5px; }
+.contact-details .contact-method__header, .contact-details .contact-method__body { padding: 1.25em; }
+.contact-details .contact-method__header { background: #f2f2f2; color: #888888; }
+.contact-details .contact-method__header img { margin-right: 1.25em; margin-top: 0.75em; }
+.contact-details .contact-method__header h3 { line-height: 1em; font-size: 1.4em; margin: 0; }
+.contact-details .contact-method__header h3 .small { font-size: 16px; font-weight: normal; }
+.contact-details .contact-method__body p { color: #00adc6; font-size: 1.5em; font-weight: bold; margin: 0.5em 0; }
+.contact-details .contact-method__body p a { color: #00adc6; text-decoration: none; }
+.contact-details .contact-method__body p a:hover { text-decoration: underline; }
+.contact-details .contact-method__body .contact-method__text--small { font-weight: normal; font-size: 16px; color: #333333; }
+.contact-details .contact-method__body .contact-method__text--small sup { color: #00adc6; }
+.contact-details .contact-method--internet p { font-size: 1.25em; }
+.contact-details .contact-method--internet p a img { margin-top: 10px; margin-right: 10px; }
 
 /* ========================================================================== Print styles. Inlined to avoid required HTTP connection: h5bp.com/r ========================================================================== */
 @media print { * { background: transparent !important; color: #000 !important; /* Black prints faster: h5bp.com/s */ box-shadow: none !important; text-shadow: none !important; }
