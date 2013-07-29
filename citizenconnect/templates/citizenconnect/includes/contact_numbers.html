@@ -1,18 +1,48 @@
 {% load staticfiles %}
 
 <hr class="hr--big">
-<div class="gw align-center link-other">
-    <h3 class="align-center  mt--n  mb--s">Contact us</h3>
-    <div class="g one-third palm-one-whole mb--n">
-      <span style="white-space: nowrap">0800 151 0023</span>
-      or
-      <span style="white-space: nowrap">0300 200 0023</span>
+<h2 class="title--contact-details">Contact Care Connect</h2>
+<div class="bordered-box  contact-details">
+  <div class="gw">
+    <div class="g  one-third  lap-one-half  palm-one-whole  contact-method">
+      <div class="contact-method__header">
+        <img src="{% static 'img/landline.png' %}" />
+        <h3 class="contact-method__title">
+          <span class="small">From a</span><br/>
+          Landline
+        </h3>
+      </div>
+      <div class="contact-method__body">
+        <p class="contact-method__text">0800 151 0023<sup>*</sup></p>
+        <p class="contact-method__text--small"><sup>*</sup>Calls are free from UK landlines</p>
+      </div>
     </div>
-    <div class="g one-third palm-one-whole mb--n">
-      SMS:
-      61114
+    <div class="g  one-third  lap-one-half  palm-one-whole  contact-method">
+      <div class="contact-method__header">
+        <img src="{% static 'img/mobile.png' %}" />
+        <h3 class="sub-title">
+          <span class="small">From a</span><br/>
+          Mobile
+        </h3>
+      </div>
+      <div class="contact-method__body">
+        <p><span class="contact-method__text--small">call</span> 0300 200 0023</p>
+        <p><span class="contact-method__text--small">or text</span> 61114</p>
+      </div>
     </div>
-    <div class="g one-third palm-one-whole mb--n">
-      <a href="https://twitter.com/{{ settings.TWITTER_USERNAME }}">@{{ settings.TWITTER_USERNAME }}</a>
+    <div class="g  one-third  lap-one-whole  palm-one-whole  contact-method  contact-method--internet">
+      <div class="contact-method__header">
+        <img src="{% static 'img/internet.png' %}" />
+        <h3 class="sub-title">
+          <span class="small">From the</span><br/>
+          Internet
+        </h3>
+      </div>
+      <div class="contact-method__body">
+        <p>
+          <a href="https://twitter.com/{{ settings.TWITTER_USERNAME }}"><img src="{% static 'img/twitter-bird.png' %}" alt="Twitter"/>@{{ settings.TWITTER_USERNAME }}</a>
+        </p>
+      </div>
     </div>
+  </div>
 </div>
