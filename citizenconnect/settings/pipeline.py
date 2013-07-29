@@ -85,5 +85,11 @@ PIPELINE_JS = {
             'js/moderation_form.js',
         ),
         'output_filename': 'js/moderation_form.min.js'
-    }
+    },
+    'summary_table': {
+        'source_filenames': (
+            'js/summary-table.js',
+        ),
+        'output_filename': 'js/summary-table.min.js'
+    },
 }
