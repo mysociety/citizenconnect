@@ -6,6 +6,7 @@ PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
 PIPELINE_YUI_BINARY = '/usr/bin/env yui-compressor'
 PIPELINE_SASS_BINARY = PARENT_DIR + '/gem-bin/sass'
 PIPELINE_TEMPLATE_FUNC = '_.template'
+PIPELINE_DISABLE_WRAPPER = True
 
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 
