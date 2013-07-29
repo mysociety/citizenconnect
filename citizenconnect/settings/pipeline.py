@@ -88,6 +88,7 @@ PIPELINE_JS = {
     },
     'summary_table': {
         'source_filenames': (
+            'js/templates/*-filters.jst',
             'js/summary-table.js',
         ),
         'output_filename': 'js/summary-table.min.js'
