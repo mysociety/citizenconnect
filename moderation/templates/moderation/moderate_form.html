@@ -12,17 +12,40 @@
 <div class="gw">
 
     <div class="g  two-thirds  palm-one-whole">
+        {% if form.non_field_errors %}
+            <fieldset class="island">
+                <label class="island-label">There were some errors...</label>
+                {% include "citizenconnect/includes/message_list.html" with messages=form.non_field_errors message_type='error' %}
+            </fieldset>
+        {% endif %}
+
+        {% comment %}
+          If there are errors with the fields we want to make sure that there is a
+          message at the top of the page that directs users down to the errors. This
+          is what the following block does, but only if there weren't some errors
+          reported above (as that would be ugly).
+        {% endcomment %}
+        {% if not form.non_field_errors %}
+            {% if form.errors or image_forms.errors %}
+              <fieldset class="island">
+                <label class="island-label">There were some errors...</label>
+
+                <ul class="message-list">
+                    <li class="message-list__error">
+                      There were errors with some of the details.
+                      Please scroll down, correct the highlighted
+                      issues and submit again.
+                    </li>
+                </ul>
+              </fieldset>
+            {% endif %}
+        {% endif %}
+
         {% include "issues/includes/issue_meta_private.html" with object=issue %}
 
         <div class="moderate-form">
             <form method="post">
                 {% csrf_token %}
-
-                {% if form.non_field_errors %}
-                    <fieldset class="island">
-                        {% include "citizenconnect/includes/message_list.html" with messages=form.non_field_errors message_type='error' %}
-                    </fieldset>
-                {% endif %}
 
                 {% for hidden in form.hidden_fields %}
                     {{ hidden }}
