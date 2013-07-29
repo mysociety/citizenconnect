@@ -11,7 +11,7 @@ PIPELINE_CSS = {
             'css/placeholder_polyfill.min.css',
             'sass/default.scss',
         ),
-        'output_filename': 'css/default.css',
+        'output_filename': 'css/default.min.css',
         'extra_context': {
             'media': 'screen,projection',
         },
@@ -19,19 +19,16 @@ PIPELINE_CSS = {
 }
 
 PIPELINE_JS = {
-    'frameworks': {
-        'source_filenames': (
-            'js/jquery-1.10.2.js',
-            'js/placeholder_polyfill.jquery.min.combo.js',
-            'js/jquery.customSelect.js',
-        ),
-        'output_filename': 'js/frameworks.js',
-    },
     'careconnect': {
         'source_filenames': (
+            'js/jquery-1.10.2.js',
+
+            # TODO: Find an uncompressed version as this won't minify well (because it's already minified).
+            'js/placeholder_polyfill.jquery.min.combo.js',
+            'js/jquery.customSelect.js',
             'js/tables.js',
             'js/filters.js',
         ),
-        'output_filename': 'js/careconnect.js'
+        'output_filename': 'js/careconnect.min.js'
     },
 }
