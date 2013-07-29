@@ -254,7 +254,7 @@ class ReviewFormViewTest(ReviewFormViewBase, TestCase):
         resp = self.client.post(self.review_form_url, spam_review)
         self.assertEqual(resp.status_code, 200)
         self.assertTrue('has been rejected' in resp.content)
-        self.assertEqual(self.organisation.submitted_reviews.count(), 0)    
+        self.assertEqual(self.organisation.submitted_reviews.count(), 0)
 
 
 class ReviewFormViewBrowserTest(ReviewFormViewBase, SeleniumTestCase):

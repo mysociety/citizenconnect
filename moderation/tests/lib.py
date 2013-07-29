@@ -5,14 +5,21 @@ from organisations.models import Organisation
 from organisations.tests.lib import create_test_problem, create_test_organisation, AuthorizationTestCase
 from issues.models import Problem
 
+
 class BaseModerationTestCase(AuthorizationTestCase, TransactionTestCase):
 
     def setUp(self):
         # Add some issues
         super(BaseModerationTestCase, self).setUp()
-        self.test_problem = create_test_problem({'organisation':self.test_hospital})
-        self.test_second_tier_moderation_problem = create_test_problem({'organisation': self.test_hospital,
-                                                                            'requires_second_tier_moderation': True})
+        self.test_problem = create_test_problem({
+            'organisation': self.test_hospital,
+            'priority': Problem.PRIORITY_NORMAL
+        })
+        self.test_second_tier_moderation_problem = create_test_problem({
+            'organisation': self.test_hospital,
+            'requires_second_tier_moderation': True,
+            'priority': Problem.PRIORITY_NORMAL
+        })
         self.home_url = reverse('moderate-home')
         self.lookup_url = reverse('moderate-lookup')
         self.problem_form_url = reverse('moderate-form', kwargs={'pk':self.test_problem.id})
@@ -37,4 +44,3 @@ class BaseModerationTestCase(AuthorizationTestCase, TransactionTestCase):
         self.assertEqual(resp.status_code, 302)
         problem = Problem.objects.get(pk=problem.id)
         self.assertEqual(problem.publication_status, expected_status)
-

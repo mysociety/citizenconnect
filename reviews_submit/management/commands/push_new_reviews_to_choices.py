@@ -62,4 +62,4 @@ class Command(BaseCommand):
         return render_to_string('reviews/choices_review.xml', {
             'review': review,
             'posting_organisation_id': settings.NHS_CHOICES_POSTING_ORGANISATION_ID
-        })
+        }).encode('utf8')
