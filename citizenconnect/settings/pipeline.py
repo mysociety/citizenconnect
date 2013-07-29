@@ -19,6 +19,7 @@ PIPELINE_CSS = {
             'css/placeholder_polyfill.min.css',
             'css/select2/select2.css',
             'css/fancybox/jquery.fancybox-1.3.4.css',
+            'css/rateit/rateit.css',
             'sass/default.scss',
         ),
         'output_filename': 'css/default.min.css',
