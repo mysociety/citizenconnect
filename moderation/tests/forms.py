@@ -63,20 +63,22 @@ class ModerationFormPublicReporterNameMixin(object):
         super(ModerationFormPublicReporterNameMixin, self).setUp()
 
         self.public_name_problem = create_test_problem({
-            'organisation':self.test_hospital,
+            'organisation': self.test_hospital,
             'public_reporter_name': True,
             'requires_second_tier_moderation': True,
+            'priority': Problem.PRIORITY_NORMAL
         })
 
         self.private_name_problem = create_test_problem({
-            'organisation':self.test_hospital,
+            'organisation': self.test_hospital,
             'public_reporter_name': False,
             'requires_second_tier_moderation': True,
+            'priority': Problem.PRIORITY_NORMAL
         })
 
     def test_public_name_can_be_redacted(self):
         problem = self.public_name_problem
-        form_url = reverse(self.form_url_name, kwargs={'pk':problem.id})
+        form_url = reverse(self.form_url_name, kwargs={'pk': problem.id})
         form_values = self.form_values
 
         # check that the control is there
@@ -92,7 +94,7 @@ class ModerationFormPublicReporterNameMixin(object):
         self.assertTrue(problem.public_reporter_name)
 
         # update problem to requires_second_tier_moderation = True
-        problem.requires_second_tier_moderation=True
+        problem.requires_second_tier_moderation = True
         problem.save()
 
         # uncheck the form
@@ -120,7 +122,7 @@ class ModerationFormPublicReporterNameMixin(object):
         self.assertFalse(problem.public_reporter_name)
 
         # update problem to requires_second_tier_moderation = True
-        problem.requires_second_tier_moderation=True
+        problem.requires_second_tier_moderation = True
         problem.save()
 
         # uncheck the form
@@ -144,6 +146,8 @@ class ModerationFormTests(ModerationFormPublicReporterNameMixin, BaseModerationT
             'publish': '',
             'status': self.test_problem.status,
             'commissioned': Problem.NATIONALLY_COMMISSIONED,
+            'priority': self.test_problem.priority,
+            'elevate_priority': False,
             'responses-TOTAL_FORMS': 0,
             'responses-INITIAL_FORMS': 0,
             'responses-MAX_NUM_FORMS': 0,
@@ -157,7 +161,7 @@ class ModerationFormTests(ModerationFormPublicReporterNameMixin, BaseModerationT
             'moderated_description': moderated_description
         }
         self.form_values.update(test_form_values)
-        self.client.post(self.problem_form_url, self.form_values)
+        resp = self.client.post(self.problem_form_url, self.form_values)
         problem = Problem.objects.get(pk=self.test_problem.id)
         self.assertEqual(problem.moderated_description, moderated_description)
 
@@ -382,7 +386,7 @@ class ModerationFormTests(ModerationFormPublicReporterNameMixin, BaseModerationT
             'responses-1-DELETE': False
         }
         self.form_values.update(test_form_values)
-        resp = self.client.post(self.problem_form_url, self.form_values)
+        self.client.post(self.problem_form_url, self.form_values)
         problem = Problem.objects.get(pk=self.test_problem.id)
         self.assertEqual(problem.responses.all().count(), 1)
         self.assertEqual(problem.responses.all()[0], response2)
@@ -393,9 +397,36 @@ class ModerationFormTests(ModerationFormPublicReporterNameMixin, BaseModerationT
         self.assertFormError(resp, 'form', 'commissioned', 'This field is required.')
 
     def test_moderation_form_sets_commissioned(self):
-        resp = self.client.post(self.problem_form_url, self.form_values)
+        self.client.post(self.problem_form_url, self.form_values)
         problem = Problem.objects.get(pk=self.test_problem.id)
         self.assertEqual(problem.commissioned, Problem.NATIONALLY_COMMISSIONED)
+
+    def test_moderation_form_can_elevate_priority(self):
+        self.test_problem.priority = Problem.PRIORITY_NORMAL
+        self.test_problem.save()
+        # Get the form as the client to set the session vars
+        self.client.get(self.problem_form_url)
+
+        self.form_values['elevate_priority'] = True
+
+        self.client.post(self.problem_form_url, self.form_values)
+
+        problem = Problem.objects.get(pk=self.test_problem.id)
+        self.assertEqual(problem.priority, Problem.PRIORITY_HIGH)
+
+    def test_moderation_form_can_remove_priority(self):
+        self.test_problem.priority = Problem.PRIORITY_HIGH
+        self.test_problem.save()
+        # Get the form as the client to set the session vars
+        self.client.get(self.problem_form_url)
+
+        self.form_values['elevate_priority'] = False
+
+        self.client.post(self.problem_form_url, self.form_values)
+
+        problem = Problem.objects.get(pk=self.test_problem.id)
+        self.assertEqual(problem.priority, Problem.PRIORITY_NORMAL)
+
 
 class ModerationFormConcurrencyTests(BaseModerationTestCase):
 
@@ -408,6 +439,8 @@ class ModerationFormConcurrencyTests(BaseModerationTestCase):
             'publish': '',
             'status': self.test_problem.status,
             'commissioned': Problem.NATIONALLY_COMMISSIONED,
+            'priority': self.test_problem.priority,
+            'elevate_priority': False,
             'responses-TOTAL_FORMS': 0,
             'responses-INITIAL_FORMS': 0,
             'responses-MAX_NUM_FORMS': 0,
@@ -421,7 +454,7 @@ class ModerationFormConcurrencyTests(BaseModerationTestCase):
 
     def test_version_cleared_when_form_valid(self):
         self.assertTrue(self.test_problem.id in self.client.session['object_versions'])
-        resp = self.client.post(self.problem_form_url, self.form_values)
+        self.client.post(self.problem_form_url, self.form_values)
         self.assertFalse(self.test_problem.id in self.client.session['object_versions'])
 
     def test_form_checks_problem_versions(self):
@@ -469,7 +502,7 @@ class ModerationFormConcurrencyTests(BaseModerationTestCase):
         session['object_versions'][self.test_problem.id] -= 3000
         session.save()
 
-        resp = self.client.post(self.problem_form_url, self.form_values)
+        self.client.post(self.problem_form_url, self.form_values)
         session_version = self.client.session['object_versions'][self.test_problem.id]
         self.assertEqual(session_version, self.test_problem.version)
 

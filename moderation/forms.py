@@ -78,6 +78,23 @@ class ModerationForm(ConcurrentFormMixin, forms.ModelForm):
 class ProblemModerationForm(ModerationForm):
 
     commissioned = forms.ChoiceField(widget=RadioSelect(), required=True, choices=Problem.COMMISSIONED_CHOICES)
+    elevate_priority = forms.BooleanField(required=False)
+
+    def __init__(self, request=None, *args, **kwargs):
+        super(ProblemModerationForm, self).__init__(request=request, *args, **kwargs)
+        # Set initial elevate_priority from priority field
+        if self.instance.priority == Problem.PRIORITY_HIGH:
+            self.fields["elevate_priority"].initial = True
+        else:
+            self.fields["elevate_priority"].initial = False
+
+    def clean_elevate_priority(self):
+        # Unlike on the problem form, we always allow moderators to set
+        # or unset this field
+        if self.cleaned_data.get('elevate_priority'):
+            self.cleaned_data['priority'] = Problem.PRIORITY_HIGH
+        else:
+            self.cleaned_data['priority'] = Problem.PRIORITY_NORMAL
 
     def clean_requires_second_tier_moderation(self):
         # requires_second_tier_moderation is hidden, but if people click the "Requires Second Tier Moderation"
@@ -102,12 +119,14 @@ class ProblemModerationForm(ModerationForm):
             'commissioned',
             'public_reporter_name',
             'public',
+            'priority'
         ]
 
         widgets = {
             'publication_status': HiddenInput,
             'requires_second_tier_moderation': HiddenInput,
-            'public': HiddenInput
+            'public': HiddenInput,
+            'priority': HiddenInput
         }
 
 
