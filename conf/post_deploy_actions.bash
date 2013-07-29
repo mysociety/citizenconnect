@@ -21,6 +21,9 @@ find . -name '*.pyc' -delete
 ./manage.py syncdb
 ./manage.py migrate
 
+# make sure we've got the correct sass version
+bundle install --path ../gems --deployment --binstubs
+
 # gather all the static files in one place
 ./manage.py collectstatic --noinput
 

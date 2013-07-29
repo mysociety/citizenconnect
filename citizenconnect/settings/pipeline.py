@@ -1,3 +1,6 @@
+from .paths import PROJECT_ROOT
+
+
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 
 PIPELINE_COMPILERS = (
@@ -7,6 +10,7 @@ PIPELINE_COMPILERS = (
 PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
 PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
 PIPELINE_YUI_BINARY = '/usr/bin/env yui-compressor'
+PIPELINE_SASS_BINARY = PROJECT_ROOT + '/bin/sass'
 
 PIPELINE_CSS = {
     'default': {
