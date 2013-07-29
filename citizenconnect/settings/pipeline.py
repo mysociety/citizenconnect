@@ -5,6 +5,7 @@ PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
 PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
 PIPELINE_YUI_BINARY = '/usr/bin/env yui-compressor'
 PIPELINE_SASS_BINARY = PARENT_DIR + '/gem-bin/sass'
+PIPELINE_TEMPLATE_FUNC = '_.template'
 
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 
@@ -33,6 +34,7 @@ PIPELINE_JS = {
     'careconnect': {
         'source_filenames': (
             'js/jquery-1.10.2.js',
+            'js/underscore.js',
 
             # TODO: Find an uncompressed version as this won't minify well (because it's already minified).
             'js/placeholder_polyfill.jquery.min.combo.js',
@@ -48,12 +50,12 @@ PIPELINE_JS = {
     },
     'map': {
         'source_filenames': (
-            'js/underscore.js',
             'js/leaflet-src.js',
             'js/wax.leaf.js',
             'js/oms.js',
             'js/spin.js',
             'js/jquery.spin.js',
+            'js/templates/map-hover-bubble.jst',
             'js/map.js',
         ),
         'output_filename': 'js/map.min.js'

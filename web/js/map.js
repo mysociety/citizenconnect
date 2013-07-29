@@ -46,7 +46,6 @@ $(document).ready(function () {
         shadowSize: [24, 24]
     });
     var $form = $(".filters");
-    var hoverBubbleTemplate = $("script[name=hover-bubble]").html();
     var londonCentre = new L.LatLng(51.505, -0.09);
     var northEastCentre = new L.LatLng(54.95, -1.62);
     var londonZoomLevel = 10;
@@ -234,7 +233,7 @@ $(document).ready(function () {
     };
 
     var templateForProvider = function(nhsCentre) {
-        return _.template(hoverBubbleTemplate, {
+        return JST['map-hover-bubble']({
             nhsCentre: nhsCentre,
             issueType: currentIssueType(),
             icon: iconClassForOpenIssues(nhsCentre.all_time_open),
