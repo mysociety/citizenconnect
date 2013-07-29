@@ -1,10 +1,10 @@
-from .paths import PROJECT_ROOT
+from .paths import PARENT_DIR
 
 
 PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
 PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
 PIPELINE_YUI_BINARY = '/usr/bin/env yui-compressor'
-PIPELINE_SASS_BINARY = PROJECT_ROOT + '/bin/sass'
+PIPELINE_SASS_BINARY = PARENT_DIR + '/gem-bin/sass'
 
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 
