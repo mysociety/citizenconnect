@@ -80,4 +80,10 @@ PIPELINE_JS = {
         ),
         'output_filename': 'js/survey_form.min.js'
     },
+    'moderation_form': {
+        'source_filenames': (
+            'js/moderation_form.js',
+        ),
+        'output_filename': 'js/moderation_form.min.js'
+    }
 }

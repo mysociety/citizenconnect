@@ -1,6 +1,7 @@
 {% extends "citizenconnect/base.html" %}
 {% load url from future %}
 {% load staticfiles %}
+{% load compressed %}
 
 {% block title %}Moderate problem{% endblock %}
 
@@ -110,5 +111,5 @@
 {% endblock extra_css %}
 
 {% block extra_js %}
-<script src="{% static 'js/moderation_form.js' %}"></script>
+{% compressed_js 'moderation_form' %}
 {% endblock extra_js %}
