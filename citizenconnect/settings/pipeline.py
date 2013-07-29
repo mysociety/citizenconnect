@@ -60,4 +60,12 @@ PIPELINE_JS = {
         ),
         'output_filename': 'js/map.min.js'
     },
+    'about': {
+        'source_filenames': (
+            'js/jquery.scrollspy.js',
+            'js/side_nav.js',
+            'js/about.js',
+        ),
+        'output_filename': 'js/about.min.js'
+    },
 }
