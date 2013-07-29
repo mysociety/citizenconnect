@@ -51,7 +51,9 @@
               Email: <strong>{{ object.reporter_email }}</strong>
               {% endif %}
             </p>
-            <p>We have also sent a confirmation to you by email.</p>
+            {% if object.reporter_email %}
+              <p>We have also sent a confirmation to you by email.</p>
+            {% endif %}
 
             <p>If these details are incorrect, please <a href="{% url 'feedback' cobrand=cobrand.name %}">contact us</a></p>
         </div>

@@ -26,21 +26,15 @@ class MHLIframeTests(TestCase):
 
     def test_includes_cta_buttons_with_target_blank(self):
         reviews_url = reverse('reviews-pick-provider', kwargs={'cobrand': 'myhealthlondon'})
-        expected_reviews_cta = '<a target="_blank" href="{0}"'.format(reviews_url)
+        expected_reviews_cta = '<a target="_blank" href="https://www.myhealth.london.nhs.uk{0}"'.format(reviews_url)
 
-        expected_questions_cta = '<a target="_blank" href="https://www.nhsdirect.nhs.uk/CheckSymptoms/HealthEnquiry.aspx"'
+        expected_questions_cta = '<a target="_blank" href="https://www.myhealth.london.nhs.uk/faq-page"'
 
         problems_url = reverse('problems-pick-provider', kwargs={'cobrand': 'myhealthlondon'})
-        expected_problems_cta = '<a target="_blank" href="{0}"'.format(problems_url)
+        expected_problems_cta = '<a target="_blank" href="https://www.myhealth.london.nhs.uk{0}"'.format(problems_url)
 
         resp = self.client.get(self.iframe_url)
 
         self.assertContains(resp, expected_reviews_cta)
         self.assertContains(resp, expected_questions_cta)
         self.assertContains(resp, expected_problems_cta)
-
-    def test_includes_common_questions_link_with_target_blank(self):
-        common_questions_url = reverse('common-questions', kwargs={'cobrand': 'myhealthlondon'})
-        expected_questions_link = '<a target="_blank" href="{0}"'.format(common_questions_url)
-        resp = self.client.get(self.iframe_url)
-        self.assertContains(resp, expected_questions_link)
