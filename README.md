@@ -49,7 +49,6 @@ The provided script should work for Debian based hosts, see https://docs.djangop
     pip install --requirement requirements.txt
 
 ### Install required ruby packages
-    gem install bundler
     bundle install --path ../gems --binstubs ../gem-bin
 
 ### Alter conf/general.yml as per your set up
