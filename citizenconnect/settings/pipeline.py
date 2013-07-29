@@ -46,4 +46,16 @@ PIPELINE_JS = {
         ),
         'output_filename': 'js/careconnect.min.js'
     },
+    'map': {
+        'source_filenames': (
+            'js/underscore.js',
+            'js/leaflet-src.js',
+            'js/wax.leaf.js',
+            'js/oms.js',
+            'js/spin.js',
+            'js/jquery.spin.js',
+            'js/map.js',
+        ),
+        'output_filename': 'js/map.min.js'
+    },
 }

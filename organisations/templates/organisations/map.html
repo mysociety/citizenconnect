@@ -2,6 +2,7 @@
 {% load url from future %}
 
 {% load staticfiles %}
+{% load compressed %}
 
 {% block title %}Organisation performance data{% endblock %}
 
@@ -55,17 +56,13 @@
 
 {% block extra_js %}
 {{ block.super }}
-<script src="{% static 'js/underscore.min.js' %}"></script>
-<script src="{% static 'js/leaflet.js' %}"></script>
-<script src="{% static 'js/wax.leaf.min.js' %}"></script>
-<script src="{% static 'js/oms.min.js' %}"></script>
-<script src="{% static 'js/spin.min.js' %}"></script>
-<script src="{% static 'js/jquery.spin.js' %}"></script>
 <script type="text/javascript">
     window.CitizenConnect = window.CitizenConnect || {};
     window.CitizenConnect.providers = {{ organisations|safe }};
     window.CitizenConnect.STATIC_URL = "{{ settings.STATIC_URL }}";
 </script>
+
+{% compressed_js 'map' %}
 
 <script type="text/x-underscore-template" name="hover-bubble">
     <div class="hover-bubble  cf">
@@ -122,5 +119,4 @@
     </div>
 </script>
 
-<script src="{% static 'js/map.js' %}"></script>
 {% endblock extra_js %}
