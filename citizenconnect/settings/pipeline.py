@@ -37,6 +37,7 @@ PIPELINE_JS = {
             # TODO: Find an uncompressed version as this won't minify well (because it's already minified).
             'js/placeholder_polyfill.jquery.min.combo.js',
             'js/jquery.customSelect.js',
+            'js/select2.js',
             'js/tables.js',
             'js/filters.js',
         ),
