@@ -5,7 +5,7 @@
   @extend .cf;
   display: table;
   width: 100%;
-  margin: ($grid-gutter) + em 0;
+  margin: ($grid-gutter * 0.5) + em 0;
   .site-top-bar__row {
     display: table-row;
     .site-top-bar__cell {
