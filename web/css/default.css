@@ -1182,10 +1182,6 @@ th .filters__dropdown .customSelect, th .filters__dropdown select { font-size: 1
 .leaflet-popup-content .hover-bubble ul { margin: 0; }
 .leaflet-popup-content .hover-bubble ul li { list-style: none; }
 
-/** Increase the size of select2 elements. */
-.map-search-controls .select2-container--large .select2-choice { font-size: 1.5em; height: 1.875em; line-height: 1.875em; }
-.map-search-controls .select2-container--large .select2-choice div b { background-position: 0 9px; }
-
 /** A horizontal nav, used inside `.site-top-bar` */
 .nav { list-style: none; padding: 0; margin: 0; }
 .nav li { display: block; float: left; }
@@ -1428,6 +1424,10 @@ div.review-form__rating-answer div.rateit-selected { background: url("rateit/rev
 .contact-details .contact-method__body .contact-method__text--small sup { color: #00adc6; }
 .contact-details .contact-method--internet p { font-size: 1.25em; }
 .contact-details .contact-method--internet p a img { margin-top: 10px; margin-right: 10px; }
+
+/** Increase the size of select2 elements. */
+.search-controls .select2-container--large .select2-choice { font-size: 1.5em; height: 1.875em; line-height: 1.875em; }
+.search-controls .select2-container--large .select2-choice div b { background-position: 0 9px; }
 
 /* ========================================================================== Print styles. Inlined to avoid required HTTP connection: h5bp.com/r ========================================================================== */
 @media print { * { background: transparent !important; color: #000 !important; /* Black prints faster: h5bp.com/s */ box-shadow: none !important; text-shadow: none !important; }
