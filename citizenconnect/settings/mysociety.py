@@ -89,4 +89,4 @@ SESSION_COOKIE_PATH = '/careconnect'
 CSRF_COOKIE_SECURE = not STAGING
 CSRF_COOKIE_PATH = '/careconnect'
 
-ALLOWED_HOSTS = [] if STAGING else config.get('ALLOWED_HOSTS', [])
+# ALLOWED_HOSTS = [] if STAGING else config.get('ALLOWED_HOSTS', [])
