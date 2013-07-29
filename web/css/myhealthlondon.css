@@ -1,6 +1,6 @@
 html{
         background-color: #ccc;
-        background: url("/static/img/myhealthlondon/bg-body.png") repeat-x scroll 0 0 transparent;
+        background: url("../img/myhealthlondon/bg-body.png") repeat-x scroll 0 0 transparent;
     }
 body{
     max-width: 1034px;
@@ -10,7 +10,7 @@ body{
 }
 
 #myhealthlondon-header #myhealthlondon-logo h1 a {
-  background: url(/static/img/myhealthlondon/myhealthlondon.png) no-repeat top left;
+  background: url(../img/myhealthlondon/myhealthlondon.png) no-repeat top left;
   display: block;
   height: 56px;
   width: 249px;
@@ -22,7 +22,7 @@ body{
 #myhealthlondon-header #nhs-logo p {
   margin: 25px 0 37px 37px; }
 #myhealthlondon-header #nhs-logo p span {
-  background: url(/static/img/myhealthlondon/nhslogo.png) no-repeat top left;
+  background: url(../img/myhealthlondon/nhslogo.png) no-repeat top left;
   display: block;
   height: 35px;
   width: 88px;
