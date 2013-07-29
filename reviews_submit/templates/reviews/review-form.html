@@ -1,6 +1,7 @@
 {% extends "citizenconnect/base.html" %}
 {% load url from future %}
 {% load staticfiles %}
+{% load compressed %}
 
 {% block title %}Submit your review of {{ organisation.name }} - Share Your Experience{% endblock %}
 
@@ -134,9 +135,7 @@
 {% endblock %}
 
 {% block extra_js %}
-    {# Note that the ordering here is important: review-form needs to be before rateit #}
     <!--[if gt IE 7]>!-->
-        <script src="{% static 'js/review-form.js' %}"></script>
-        <script src="{% static 'js/jquery.rateit.min.js' %}"></script>
-     <!--<![endif]-->
+    {% compressed_js 'review_form' %}
+    <!--<![endif]-->
 {% endblock extra_js %}

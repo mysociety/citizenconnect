@@ -93,4 +93,12 @@ PIPELINE_JS = {
         ),
         'output_filename': 'js/summary-table.min.js'
     },
+    'review_form': {
+        'source_filenames': (
+            # Note that the ordering here is important: review-form needs to be before rateit
+            'js/review-form.js',
+            'js/jquery.rateit.min.js',
+        ),
+        'output_filename': 'js/review-form.min.js'
+    },
 }
