@@ -3,7 +3,7 @@
 <div class="gw main-options">
     <div class="g  one-third  palm-one-whole">
         <div class="islet  islet--white  mt  mb">
-            <a {% if iframe %}target="_blank"{% endif %} href="{% url 'reviews-pick-provider' cobrand=cobrand.name %}" class="btn__with-caption">
+            <a {% if iframe %}target="_blank"{% endif %} href="{% if iframe and cobrand.name == 'myhealthlondon' %}https://www.myhealth.london.nhs.uk{% endif %}{% url 'reviews-pick-provider' cobrand=cobrand.name %}" class="btn__with-caption">
                 <span class="btn  btn--big  btn--light-green  btn--no-border">Share Your Experience</span>
                 <span class="btn__caption">Click here</span>
             </a>
@@ -19,7 +19,7 @@
     </div>
     <div class="g  one-third  palm-one-whole  align-center">
         <div class="islet  islet--white  mt  mb">
-            <a {% if iframe %}target="_blank"{% endif %} href="{% url 'problems-pick-provider' cobrand=cobrand.name %}" class="btn__with-caption">
+            <a {% if iframe %}target="_blank"{% endif %} href="{% if iframe and cobrand.name == 'myhealthlondon' %}https://www.myhealth.london.nhs.uk{% endif %}{% url 'problems-pick-provider' cobrand=cobrand.name %}" class="btn__with-caption">
                 <span class="btn  btn--big  btn--blue btn--big--fix  btn--no-border">Report a problem</span>
                 <span class="btn__caption">Click here</span>
             </a>

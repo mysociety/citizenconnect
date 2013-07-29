@@ -66,7 +66,7 @@
             }
             /* With a smaller container, fixed height buttons need to be a bit larger */
             .ie8 .btn--big--fix {
-                height:59px;
+                min-height:82px;
             }
         </style>
         <![endif]-->
@@ -78,9 +78,9 @@
 
             {% block content %}
 
-            <h2 class="iframe-header mt--n"><a target="_blank" href="{% url 'home' cobrand=cobrand.name %}">Care Connect</a></h2>
+            <h2 class="iframe-header mt--n"><a target="_blank" href="https://www.myhealth.london.nhs.uk{% url 'home' cobrand=cobrand.name %}">Care Connect</a></h2>
 
-            <p>Care Connect is a new way for you to share your experiences of the NHS, ask a question or report a problem. We will listen and act. Please be aware that this service is currently only available in parts of London. For more information, please visit the <a target="_blank" href="{% url 'home' cobrand=cobrand.name %}">Care Connect home page</a> or click on the links below.
+            <p>Care Connect is a new way for you to share your experiences of the NHS, ask a question or report a problem. We will listen and act. Please be aware that this service is currently only available in parts of London. For more information, please visit the <a target="_blank" href="https://www.myhealth.london.nhs.uk{% url 'home' cobrand=cobrand.name %}">Care Connect home page</a> or click on the links below.
 
             {% include 'citizenconnect/includes/homepage-main-options.html' with iframe=1 %}
 
