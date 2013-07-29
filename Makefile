@@ -1,23 +1,9 @@
-all: css
-
-SASS = sass
-STYLE = compact
-SOURCE = web/sass/default.scss
-TARGET =  web/css/default.css
-
-css:
-	$(SASS) --version
-	$(SASS) --style $(STYLE) $(SOURCE) $(TARGET)
-
-watch:
-	$(SASS) --watch --style $(STYLE) $(SOURCE):$(TARGET)
-
 update:
 	find . -name '*.pyc' -delete
 	pip install -r requirements.txt
+	bundle install --path ../gems --binstubs ../gem-bin
 	./manage.py syncdb
 	./manage.py migrate
-
 
 dev-data: update
 	./manage.py loaddata demo_ccg.json
@@ -25,4 +11,4 @@ dev-data: update
 	./manage.py loaddata phase_2_organisations.json
 	./manage.py loaddata example_problems.json
 
-.PHONY: css watch update dev-data
+.PHONY: update dev-data
