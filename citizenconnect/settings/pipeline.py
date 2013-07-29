@@ -17,6 +17,7 @@ PIPELINE_CSS = {
         'source_filenames': (
             'css/leaflet.css',
             'css/placeholder_polyfill.min.css',
+            'css/select2/select2.css',
             'sass/default.scss',
         ),
         'output_filename': 'css/default.min.css',
