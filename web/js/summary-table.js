@@ -165,6 +165,7 @@
             minimumInputLength: 1,
             placeholder: "Search for provider",
             dropdownAutoWidth: true,
+            containerCssClass: 'select2-container--large',
             ajax: {
                 url: $searchBox.data('search-url'),
                 dataType: 'json',
