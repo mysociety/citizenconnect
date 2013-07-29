@@ -37,6 +37,9 @@ RewriteEngine On
 RewriteRule   ^/private/(.+)  /careconnect/private/$1  [R=301]
 RewriteRule   ^/private$  /careconnect/private  [R=301]
 
+# Pick a default cobrand
+RewriteRule   ^/careconnect$  /careconnect/choices  [R=301]
+
 # Turn off file directory listings for uploads and static files dirs
 <Directory "/data/vhost/!!(*= $vhost *)!!/uploads">
   Options -Indexes
