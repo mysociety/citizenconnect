@@ -74,4 +74,10 @@ PIPELINE_JS = {
         ),
         'output_filename': 'js/problem-form.min.js'
     },
+    'survey_form': {
+        'source_filenames': (
+            'js/survey_form.js',
+        ),
+        'output_filename': 'js/survey_form.min.js'
+    },
 }
