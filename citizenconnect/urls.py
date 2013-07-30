@@ -4,7 +4,17 @@ from django.conf.urls import patterns, include, url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.generic import RedirectView
 
-from .views import Home, MHLIframe, DevHomepageSelector, About, Feedback, FeedbackConfirm, HelpYourNHS
+from .views import (
+    Home,
+    MHLIframe,
+    DevHomepageSelector,
+    About,
+    Feedback,
+    FeedbackConfirm,
+    HelpYourNHS,
+    Boom
+)
+
 # Admin section
 from django.contrib import admin
 admin.autodiscover()
@@ -14,7 +24,7 @@ allowed_cobrands = settings.ALLOWED_COBRANDS
 cobrand_pattern = '(?P<cobrand>%s)' % '|'.join(allowed_cobrands)
 urlpatterns = patterns(
     '',
-    url(r'^' + cobrand_pattern + r'/?$', Home.as_view(), name='home'),
+    url(r'^' + cobrand_pattern + r'$', Home.as_view(), name='home'),
     # This page is only for myhealthlondon
     url(
         r'^myhealthlondon/iframe?$',
@@ -44,6 +54,9 @@ urlpatterns = patterns(
 
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
+
+    # Dev page for exception handling
+    url(r'^dev/boom$', Boom.as_view(), name='dev-boom'),
 )
 
 # Append /careconnect to everything above, to fix proxy relative link issues
@@ -58,7 +71,7 @@ urlpatterns += patterns(
     url(r'^api/v0.1/', include('api.urls')),
 )
 
-# Dev homepage lives at the real root though
+# Dev pages live at the real root though
 urlpatterns += patterns(
     '',
     url(r'^$', DevHomepageSelector.as_view(), name='dev-homepage'),

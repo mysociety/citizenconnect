@@ -115,3 +115,10 @@ class FeedbackConfirm(TemplateView):
 
 class HelpYourNHS(TemplateView):
     template_name = 'citizenconnect/help_your_nhs.html'
+
+
+class Boom(TemplateView):
+    """ A helper view to show us what a server error looks like """
+
+    def get(self, request, *args, **kwargs):
+        raise(Exception("Boom!"))
