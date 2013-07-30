@@ -1,7 +1,7 @@
 /**
 * HTML5 placeholder polyfill
 * @requires jQuery - tested with 1.6.2 but might as well work with older versions
-* 
+*
 * code: https://github.com/ginader/HTML5-placeholder-polyfill
 * please report issues at: https://github.com/ginader/HTML5-placeholder-polyfill/issues
 *
@@ -9,7 +9,7 @@
 * Dual licensed under the MIT and GPL licenses:
 * http://www.opensource.org/licenses/mit-license.php
 * http://www.gnu.org/licenses/gpl.html
-* 
+*
 */
 
 (function($) {
@@ -94,7 +94,7 @@
             var input = $(this),
                 text = input.attr('placeholder'),
                 id = input.attr('id'),
-                label,placeholder,titleNeeded,polyfilled;
+                label,placeholder,titleNeeded,polyfilled,timerId;
 
             function onFocusIn() {
                 if(!o.options.hideOnFocus && window.requestAnimationFrame){
@@ -152,8 +152,11 @@
             showPlaceholderIfEmpty(input,o.options);
 
             // reformat on window resize and optional reformat on font resize - requires: http://www.tomdeater.com/jquery/onfontresize/
-            $(document).bind("fontresize resize", function(){
-                positionPlaceholder(placeholder,input);
+            $(window).bind("fontresize resize", function(){
+                if (timerId) clearTimeout(timerId);
+                timerId = setTimeout(function() {
+                    positionPlaceholder(placeholder,input);
+                }, 500);
             });
 
             // optional reformat when a textarea is being resized - requires http://benalman.com/projects/jquery-resize-plugin/
