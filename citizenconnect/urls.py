@@ -24,7 +24,7 @@ allowed_cobrands = settings.ALLOWED_COBRANDS
 cobrand_pattern = '(?P<cobrand>%s)' % '|'.join(allowed_cobrands)
 urlpatterns = patterns(
     '',
-    url(r'^' + cobrand_pattern + r'/?$', Home.as_view(), name='home'),
+    url(r'^' + cobrand_pattern + r'$', Home.as_view(), name='home'),
     # This page is only for myhealthlondon
     url(
         r'^myhealthlondon/iframe?$',
