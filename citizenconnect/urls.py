@@ -4,7 +4,17 @@ from django.conf.urls import patterns, include, url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.generic import RedirectView
 
-from .views import Home, MHLIframe, DevHomepageSelector, About, Feedback, FeedbackConfirm, HelpYourNHS
+from .views import (
+    Home,
+    MHLIframe,
+    DevHomepageSelector,
+    About,
+    Feedback,
+    FeedbackConfirm,
+    HelpYourNHS,
+    Boom
+)
+
 # Admin section
 from django.contrib import admin
 admin.autodiscover()
@@ -58,10 +68,11 @@ urlpatterns += patterns(
     url(r'^api/v0.1/', include('api.urls')),
 )
 
-# Dev homepage lives at the real root though
+# Dev pages live at the real root though
 urlpatterns += patterns(
     '',
     url(r'^$', DevHomepageSelector.as_view(), name='dev-homepage'),
+    url(r'^dev/boom$', Boom.as_view(), name='dev-boom')
 )
 
 urlpatterns += staticfiles_urlpatterns()
