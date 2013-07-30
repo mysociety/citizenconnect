@@ -36,9 +36,8 @@ PIPELINE_JS = {
         'source_filenames': (
             'js/jquery-1.10.2.js',
             'js/underscore.js',
-
-            # TODO: Find an uncompressed version as this won't minify well (because it's already minified).
-            'js/placeholder_polyfill.jquery.min.combo.js',
+            'js/jquery.onfontresize.js',
+            'js/placeholder_polyfill.jquery.js',
             'js/jquery.customSelect.js',
             'js/select2.js',
             'js/jquery.browser.js',
