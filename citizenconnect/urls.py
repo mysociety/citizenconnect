@@ -54,6 +54,9 @@ urlpatterns = patterns(
 
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
+
+    # Dev page for exception handling
+    url(r'^dev/boom$', Boom.as_view(), name='dev-boom'),
 )
 
 # Append /careconnect to everything above, to fix proxy relative link issues
@@ -72,7 +75,6 @@ urlpatterns += patterns(
 urlpatterns += patterns(
     '',
     url(r'^$', DevHomepageSelector.as_view(), name='dev-homepage'),
-    url(r'^dev/boom$', Boom.as_view(), name='dev-boom')
 )
 
 urlpatterns += staticfiles_urlpatterns()
