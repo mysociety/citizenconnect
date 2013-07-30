@@ -1423,7 +1423,7 @@ div.review-form__rating-answer div.rateit-selected { background: url("rateit/rev
 .contact-details .contact-method__body .contact-method__text--small { font-weight: normal; font-size: 16px; color: #333333; }
 .contact-details .contact-method__body .contact-method__text--small sup { color: #00adc6; }
 .contact-details .contact-method--internet p { font-size: 1.25em; }
-.contact-details .contact-method--internet p a img { margin-top: 10px; margin-right: 10px; }
+.contact-details .contact-method--internet p a img { margin-top: 7px; margin-right: 10px; }
 
 /** Increase the size of select2 elements. */
 .search-controls .select2-container--large .select2-choice { font-size: 1.5em; height: 1.875em; line-height: 1.875em; }
