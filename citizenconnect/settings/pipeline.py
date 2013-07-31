@@ -1,5 +1,9 @@
 from .paths import PARENT_DIR
 
+# If you need to test out the pipeline in development, run
+# `./manage.py collectstatic`, then uncomment this line.
+#
+# PIPELINE_ENABLED = True
 
 PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
 PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
