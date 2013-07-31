@@ -77,12 +77,15 @@ FEEDBACK_EMAIL_ADDRESS: feedback@example.com
 # What email address people should report abusive problems to
 ABUSE_EMAIL_ADDRESS: abuse@example.com
 
-# Where should error reports from the server be sent? Leave blank to disable
+# Where should error reports from the server be sent?
 SERVER_EMAIL: server-error@example.com
 
+# Analytics account code
 GOOGLE_ANALYTICS_ACCOUNT: 'UA-12345-XXX'
 
+# How many images should each problem be allowed to have uploaded?
 MAX_IMAGES_PER_PROBLEM: 3
+
 # What image file extensions are allowed.
 # Keep this lower case only, we'll lowercase the submitted files
 # before checking them against it
@@ -95,9 +98,13 @@ ALLOWED_IMAGE_EXTENSIONS: ['.jpg', '.jpeg', '.gif', '.bmp']
 # TWITTER_USERNAME:  'CareConnectNHS' # without the '@'
 # TWITTER_WIDGET_ID: '355653879704207362'
 
+# The news feed url where news articles should be pulled from
 NHS_RSS_FEED_URL: http://news.careconnect.mysociety.org/feed/
 
+# Whether to prefer the X_FORWARDED_HOST header - used when the site
+# is behind a proxy, and therefore set here on a site-by-site basis
 USE_X_FORWARDED_HOST: False
 
+# Django's allowed hosts setting
 ALLOWED_HOSTS:
   - '.example.com'
