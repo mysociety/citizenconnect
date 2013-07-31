@@ -48,7 +48,7 @@ class AppsTestSuiteRunner(DjangoTestSuiteRunner):
         # Change media root to be a temp directory
         settings.MEDIA_ROOT = tempfile.mkdtemp()
         settings.STATICFILES_STORAGE = 'pipeline.storage.PipelineFinderStorage'
-        pipeline_settings.DEBUG = True
+        pipeline_settings.PIPELINE_ENABLED = True
 
     def teardown_test_environment(self):
         super(AppsTestSuiteRunner, self).teardown_test_environment
