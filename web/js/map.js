@@ -110,7 +110,7 @@ $(document).ready(function () {
 
     $searchBox.select2({
         minimumInputLength: 1,
-        placeholder: "Search the map",
+        placeholder: "Enter a provider name, postcode or location",
         dropdownAutoWidth: true,
         containerCssClass: 'select2-container--large',
         ajax: {
