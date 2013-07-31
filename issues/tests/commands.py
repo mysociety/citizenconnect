@@ -93,7 +93,7 @@ class EmailSurveysToReportersTests(EmailToReportersBase, TestCase):
         self.assertTrue("Dear %s," % self.test_problem.reporter_name in first_mail.body)
         self.assertTrue("Recently you reported a problem" in first_mail.body)
         self.assertTrue('Fab Organisation' in first_mail.body)
-        self.assertTrue('/choices/' in first_mail.body)
+        self.assertTrue(settings.COBRAND_BASE_URLS.get('choices') in first_mail.body)
 
         self.assertTrue(Problem.objects.get(pk=self.test_problem.id).survey_sent)
 
@@ -110,7 +110,7 @@ class EmailSurveysToReportersTests(EmailToReportersBase, TestCase):
         self._call_command()
         self.assertEqual(len(mail.outbox), 1)
         first_mail = mail.outbox[0]
-        self.assertTrue('/myhealthlondon/' in first_mail.body)
+        self.assertTrue(settings.COBRAND_BASE_URLS.get('myhealthlondon') in first_mail.body)
 
     def test_does_not_send_survey_for_a_problem_in_a_hidden_state(self):
         self.test_problem.status = Problem.ABUSIVE
