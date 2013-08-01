@@ -73,7 +73,8 @@ Make sure you have set the `SITE_BASE_URL` setting to something accurate (probab
 ### Gather all the static files in one place
     ./manage.py collectstatic --noinput
 
-### Add some users which are useful for development
+### Add some users and groups which are useful for development
+    ./manage.py loaddata organisations/fixtures/initial_data.json
     ./manage.py loaddata organisations/fixtures/development_users.json
 
 ### Load demo CCGs, Organisation Parents and Organisations
