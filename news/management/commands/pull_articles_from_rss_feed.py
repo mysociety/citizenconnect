@@ -24,29 +24,33 @@ class Command(BaseCommand):
         feed = feedparser.parse(feed_url)
 
         for entry in feed.entries:
-            if not Article.objects.filter(guid=entry.id).exists():
-                # Save the article first
-                article = Article.objects.create(
-                    guid=entry.id,
-                    title=entry.title,
-                    description=entry.summary,
-                    content=entry.content[0].value,
-                    author=entry.author,
-                    published=parser.parse(entry.published)
-                )
-                # Then try to download the image
-                if len(entry.enclosures) > 0:
-                    image_url = entry.enclosures[0].get('url', '')
-                    if image_url:
-                        try:
-                            (temp_image_file, headers) = urllib.urlretrieve(image_url)
-                            image_filename = os.path.basename(image_url)
-                            article.image.save(
-                                image_filename,
-                                File(open(temp_image_file))
-                            )
-                            article.save()
-                            os.remove(temp_image_file)
-                        except Exception as e:
-                            # On any exception, just ignore the image
-                            self.stderr.write("Skipping image for %s: %s\n" % (article.title, e))
+            try:
+                article = Article.objects.get(guid=entry.id)
+            except Article.DoesNotExist:
+                article = Article(guid=entry.guid)
+
+            article.title = entry.title
+            article.description = entry.summary
+            article.content = entry.content[0].value
+            article.author = entry.author
+            article.published = parser.parse(entry.published)
+
+            # Save the article first
+            article.save()
+
+            # Then try to download the image
+            if len(entry.enclosures) > 0:
+                image_url = entry.enclosures[0].get('url', '')
+                if image_url:
+                    try:
+                        (temp_image_file, headers) = urllib.urlretrieve(image_url)
+                        image_filename = os.path.basename(image_url)
+                        article.image.save(
+                            image_filename,
+                            File(open(temp_image_file))
+                        )
+                        article.save()
+                        os.remove(temp_image_file)
+                    except Exception as e:
+                        # On any exception, just ignore the image
+                        self.stderr.write("Skipping image for %s: %s\n" % (article.title, e))
