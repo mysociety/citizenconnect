@@ -11,11 +11,22 @@ STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 #
 # PIPELINE_ENABLED = True
 
+# Compress the css and js using yui-compressor.
 PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
 PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
+
+# On some platforms this might be called "yuicompressor", so it may be
+# necessary to symlink it into your PATH as "yui-compressor".
 PIPELINE_YUI_BINARY = '/usr/bin/env yui-compressor'
+
+# Specify path to local sass version.
 PIPELINE_SASS_BINARY = PARENT_DIR + '/gem-bin/sass'
+
+# Use underscore's templating library for javascript templates. These
+# templates get compiled into the javascript in production.
 PIPELINE_TEMPLATE_FUNC = '_.template'
+
+# Don't use a top-level function safety wrapper.
 PIPELINE_DISABLE_WRAPPER = True
 
 PIPELINE_COMPILERS = (
