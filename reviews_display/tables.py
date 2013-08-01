@@ -37,7 +37,7 @@ class ReviewTable(tables.Table):
     def render_content(self, record, value):
         """Truncate the review's content to 20 words, returns a string."""
         truncated_content = Truncator(value).words(20)
-        review_link = reverse('review-detail', kwargs={'ods_code': self.organisation.ods_code, 'cobrand': 'choices', 'api_posting_id': record.api_posting_id})
+        review_link = reverse('review-detail', kwargs={'ods_code': self.organisation.ods_code, 'cobrand': self.cobrand, 'api_posting_id': record.api_posting_id})
         return mark_safe(u'<a href="{0}">{1} <span class="icon-chevron-right  fr" aria-hidden="true"></span></a>'.format(review_link, conditional_escape(truncated_content)))
 
     def row_classes(self, record):
@@ -48,11 +48,20 @@ class ReviewTable(tables.Table):
             super_row_classes = ""
         return '{0} table-link__row'.format(super_row_classes)
 
+    def row_href(self, record):
+        return reverse(
+            'review-detail',
+            kwargs={
+                'ods_code': self.organisation.ods_code,
+                'cobrand': self.cobrand,
+                'api_posting_id': record.api_posting_id
+            }
+        )
+
     def __init__(self, *args, **kwargs):
-        """Overriden __init__ to take an extra organisation parameter"""
-        self.organisation = kwargs.get('organisation')
-        if kwargs.get('organisation'):
-            del kwargs['organisation']
+        """Overriden __init__ to take an extra organisation and cobrand parameters"""
+        self.organisation = kwargs.pop('organisation', None)
+        self.cobrand = kwargs.pop('cobrand', None)
         super(ReviewTable, self).__init__(*args, **kwargs)
 
     class Meta:
