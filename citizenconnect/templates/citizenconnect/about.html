@@ -1,6 +1,5 @@
 {% extends "citizenconnect/base.html" %}
 {% load url from future %}
-{% load compressed %}
 
 {% block title %}About{% endblock %}
 
@@ -617,7 +616,7 @@
 </div>
 {% endblock content %}
 
-{% load staticfiles %}
+{% load compressed %}
 {% block extra_js %}
 {{ block.super }}
 {% compressed_js 'about' %}
