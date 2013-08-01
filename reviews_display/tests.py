@@ -479,15 +479,61 @@ class ReviewOrganisationListTests(TestCase):
                                                    'organisation': self.test_other_organisation}, {})
 
     def test_organisation_reviews_page(self):
-        reviews_list_url = reverse('review-organisation-list',
-                                   kwargs={
-                                       'ods_code': self.test_organisation.ods_code,
-                                       'cobrand': 'choices'
-                                   })
+        reviews_list_url = reverse(
+            'review-organisation-list',
+            kwargs={
+                'ods_code': self.test_organisation.ods_code,
+                'cobrand': 'choices'
+            }
+        )
         resp = self.client.get(reviews_list_url)
         self.assertEqual(resp.context['organisation'], self.test_organisation)
         self.assertEqual(len(resp.context['table'].rows), 1)
         self.assertEqual(resp.context['table'].rows[0].record, self.org_review)
+
+    def test_organisation_reviews_page_links_to_review(self):
+        # Issue #1083 - the row_href on the table class used by this view
+        # didn't exist, but the display code expected it to in order to populate
+        # data-href
+        reviews_list_url = reverse(
+            'review-organisation-list',
+            kwargs={
+                'ods_code': self.test_organisation.ods_code,
+                'cobrand': 'choices'
+            }
+        )
+        expected_review_url = reverse(
+            'review-detail',
+            kwargs={
+                'cobrand': 'choices',
+                'ods_code': self.test_organisation.ods_code,
+                'api_posting_id': self.org_review.api_posting_id
+            }
+        )
+        resp = self.client.get(reviews_list_url)
+        self.assertContains(resp, 'data-href="{0}"'.format(expected_review_url))
+        self.assertContains(resp, '<a href="{0}">'.format(expected_review_url))
+
+    def test_organisation_reviews_page_links_to_correct_cobrand(self):
+        # The choices cobrand was hardcoded
+        reviews_list_url = reverse(
+            'review-organisation-list',
+            kwargs={
+                'ods_code': self.test_organisation.ods_code,
+                'cobrand': 'myhealthlondon'
+            }
+        )
+        expected_review_url = reverse(
+            'review-detail',
+            kwargs={
+                'cobrand': 'myhealthlondon',
+                'ods_code': self.test_organisation.ods_code,
+                'api_posting_id': self.org_review.api_posting_id
+            }
+        )
+        resp = self.client.get(reviews_list_url)
+        self.assertContains(resp, 'data-href="{0}"'.format(expected_review_url))
+        self.assertContains(resp, '<a href="{0}">'.format(expected_review_url))
 
 
 class OrganisationParentReviewsTests(AuthorizationTestCase):
@@ -501,15 +547,27 @@ class OrganisationParentReviewsTests(AuthorizationTestCase):
         self.other_org_review = create_test_review({'organisation': self.test_gp_branch}, {})
 
     def test_trust_reviews_page(self):
-        reviews_list_url = reverse('org-parent-reviews',
-                                   kwargs={
-                                       'code': self.test_trust.code,
-                                   })
+        reviews_list_url = reverse(
+            'org-parent-reviews',
+            kwargs={
+                'code': self.test_trust.code,
+            }
+        )
+        expected_review_url = reverse(
+            'review-detail',
+            kwargs={
+                'cobrand': 'choices',
+                'ods_code': self.test_hospital.ods_code,
+                'api_posting_id': self.org_review.api_posting_id
+            }
+        )
         self.login_as(self.trust_user)
         resp = self.client.get(reviews_list_url)
         self.assertEqual(resp.context['organisation_parent'], self.test_trust)
         self.assertEqual(len(resp.context['table'].rows), 1)
         self.assertEqual(resp.context['table'].rows[0].record, self.org_review)
+        self.assertContains(resp, 'data-href="{0}"'.format(expected_review_url))
+        self.assertContains(resp, '<a href="{0}">'.format(expected_review_url))
 
 
 class ReviewDetailTests(TestCase):
