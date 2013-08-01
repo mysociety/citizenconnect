@@ -24,6 +24,17 @@
         {% endif %}
         {% block extra_css %}{% endblock %}
 
+        <!-- Another hack to work under the NHS proxy. We need to specify an absolute path
+        to the boxsizing.htc behaviour file for it to work, so we need to inline the css
+        here to get that absolute url from Django -->
+        <!--[if lte IE 7]>
+        <style type="text/css">
+            * {
+                behavior: url({{ settings.STATIC_URL }}boxsizing.htc);
+            }
+        </style>
+        <![endif]-->
+
         <!--[if lte IE 7]>
             <script type="text/javascript" src="{% static "js/fonts-lte-ie7.js" %}"></script>
         <![endif]-->
