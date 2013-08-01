@@ -1,5 +1,11 @@
 from .paths import PARENT_DIR
 
+# Processes static files when collectstatic is called, also versions
+# them in the url.
+#
+# See http://django-pipeline.readthedocs.org/en/latest/storages.html
+STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+
 # If you need to test out the pipeline in development, run
 # `./manage.py collectstatic`, then uncomment this line.
 #
@@ -11,8 +17,6 @@ PIPELINE_YUI_BINARY = '/usr/bin/env yui-compressor'
 PIPELINE_SASS_BINARY = PARENT_DIR + '/gem-bin/sass'
 PIPELINE_TEMPLATE_FUNC = '_.template'
 PIPELINE_DISABLE_WRAPPER = True
-
-STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 
 PIPELINE_COMPILERS = (
   'pipeline.compilers.sass.SASSCompiler',
