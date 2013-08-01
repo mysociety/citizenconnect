@@ -62,6 +62,8 @@ PIPELINE_JS = {
             'js/jquery.browser.js',
             'js/jquery.fancybox-1.3.4.js',
             'js/fancybox-zoom.js',
+            'js/jquery.scrollspy.js',
+            'js/side_nav.js',
             'js/tables.js',
             'js/filters.js',
         ),
@@ -78,14 +80,6 @@ PIPELINE_JS = {
             'js/map.js',
         ),
         'output_filename': 'js/map.min.js'
-    },
-    'about': {
-        'source_filenames': (
-            'js/jquery.scrollspy.js',
-            'js/side_nav.js',
-            'js/about.js',
-        ),
-        'output_filename': 'js/about.min.js'
     },
     'problem_form': {
         'source_filenames': (
