@@ -25,7 +25,7 @@ class Command(BaseCommand):
     @classmethod
     def now_utc(cls):
         return datetime.utcnow().replace(tzinfo=utc)
-        
+
     def handle(self, *args, **options):
         surveyable_problems = Problem.objects.requiring_survey_to_be_sent()
 
@@ -60,12 +60,19 @@ class Command(BaseCommand):
         survey_params['response'] = 'd'
         no_answer_url = reverse('survey-form', kwargs=survey_params)
 
-        context = Context({'problem': problem,
-                           'interval_in_days': interval,
-                           'yes_url': yes_url,
-                           'no_url': no_url,
-                           'no_answer_url': no_answer_url,
-                           'site_base_url': settings.SITE_BASE_URL })
+        # Get the right site base url for the cobrand the problem was raised under
+        site_base_url = settings.COBRAND_BASE_URLS.get(problem.cobrand, None)
+        if not site_base_url:
+            site_base_url = settings.SITE_BASE_URL
+
+        context = Context({
+            'problem': problem,
+            'interval_in_days': interval,
+            'yes_url': yes_url,
+            'no_url': no_url,
+            'no_answer_url': no_answer_url,
+            'site_base_url': site_base_url
+        })
 
         logger.info('Emailing survey for problem reference number: {0}'.format(problem.reference_number))
 

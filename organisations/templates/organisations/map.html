@@ -28,6 +28,10 @@
 
 {% include 'organisations/includes/filters.html' %}
 
+<div class="header">
+    <h2>Find a service provider</h2>
+</div>
+
 <div class="search-controls mb">
     <input type="text" id="map-search-org-name" value="{{ ods_code }}" data-search-url="{% url 'org-map-search' cobrand=cobrand.name %}" />
     <input type="hidden" id="map-search-lon-lat" value="{{ lon }},{{ lat }}" />

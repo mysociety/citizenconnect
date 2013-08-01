@@ -40,6 +40,13 @@ WGS_84 = 4326
 
 SITE_BASE_URL = config.get('SITE_BASE_URL')
 
+# Base urls mapped to cobrands
+# The real live urls are only used if we're not in debug mode
+COBRAND_BASE_URLS = {
+    'choices': SITE_BASE_URL if DEBUG else 'https://www.nhs.uk',
+    'myhealthlondon': SITE_BASE_URL if DEBUG else 'https://www.myhealth.london.nhs.uk'
+}
+
 DEFAULT_FROM_EMAIL = config.get('DEFAULT_FROM_EMAIL')
 
 SERVER_EMAIL = config.get('SERVER_EMAIL')
