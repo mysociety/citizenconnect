@@ -66,6 +66,7 @@ PIPELINE_JS = {
             'js/side_nav.js',
             'js/tables.js',
             'js/filters.js',
+            'js/templates/*.jst',
         ),
         'output_filename': 'js/careconnect.min.js'
     },
@@ -76,7 +77,6 @@ PIPELINE_JS = {
             'js/oms.js',
             'js/spin.js',
             'js/jquery.spin.js',
-            'js/templates/map-hover-bubble.jst',
             'js/map.js',
         ),
         'output_filename': 'js/map.min.js'
@@ -101,7 +101,6 @@ PIPELINE_JS = {
     },
     'summary_table': {
         'source_filenames': (
-            'js/templates/*-filters.jst',
             'js/summary-table.js',
         ),
         'output_filename': 'js/summary-table.min.js'
