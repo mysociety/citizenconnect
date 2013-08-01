@@ -84,6 +84,17 @@ class PullArticlesFromRssFeedTests(TestCase):
         image_filename_regex = re.compile('article_images/\w{2}/\w{2}/[0-9a-f]{32}.jpg', re.I)
         self.assertRegexpMatches(image_filename, image_filename_regex)
 
+    def test_updates_existing_entries(self):
+        article = Article(guid='http://blogs.mysociety.org/careconnect/?p=1')
+        article.title = "Foo"
+        article.author = "Bar"
+        article.published = timezone.now()
+        article.save()
+        self.call_command('pull_articles_from_rss_feed', self.rss_feed)
+        article = Article.objects.get(guid='http://blogs.mysociety.org/careconnect/?p=1')
+        self.assertEqual("Hello world!", article.title)
+        self.assertEqual("steve", article.author)
+
     def test_image_optional(self):
         self.call_command('pull_articles_from_rss_feed', self.rss_feed)
         article = Article.objects.get(guid='http://blogs.mysociety.org/careconnect/?p=2')  # This one has no image
