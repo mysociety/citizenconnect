@@ -1,7 +1,5 @@
 from django.core.urlresolvers import reverse
 from django.core.files.images import ImageFile
-from django.conf import settings
-from django.test.utils import override_settings
 
 from sorl.thumbnail import get_thumbnail
 
@@ -254,6 +252,19 @@ class ModerateFormViewTests(BaseModerationTestCase, ProblemImageTestBase):
     def test_closed_issues_accepted(self):
         resp = self.client.get(reverse('moderate-form', kwargs={'pk': self.closed_problem.id}))
         self.assertEqual(resp.status_code, 200)
+
+    def test_descriptions_escaped(self):
+        xss = '<script>alert("hacked");</script>'
+        escaped_xss = '&lt;script&gt;alert(&quot;hacked&quot;);&lt;/script&gt;'
+        self.xss_problem = create_test_problem({
+            'organisation': self.test_hospital,
+            'description': xss,
+            'moderated_description': xss
+        })
+        resp = self.client.get(reverse('moderate-form', kwargs={'pk': self.xss_problem.id}))
+        self.assertNotContains(resp, xss)
+        self.assertContains(resp, escaped_xss)
+
 
 
 class SecondTierModerateFormViewTests(BaseModerationTestCase, ProblemImageTestBase):
