@@ -559,14 +559,14 @@ class OrganisationParentReviewsTests(AuthorizationTestCase):
             {}
         )
         self.other_org_review = create_test_review({'organisation': self.test_gp_branch}, {})
-
-    def test_trust_reviews_page(self):
-        reviews_list_url = reverse(
+        self.reviews_list_url = reverse(
             'org-parent-reviews',
             kwargs={
                 'code': self.test_trust.code,
             }
         )
+
+    def test_trust_reviews_page(self):
         expected_review_url = reverse(
             'review-detail',
             kwargs={
@@ -576,12 +576,30 @@ class OrganisationParentReviewsTests(AuthorizationTestCase):
             }
         )
         self.login_as(self.trust_user)
-        resp = self.client.get(reviews_list_url)
+        resp = self.client.get(self.reviews_list_url)
         self.assertEqual(resp.context['organisation_parent'], self.test_trust)
         self.assertEqual(len(resp.context['table'].rows), 1)
         self.assertEqual(resp.context['table'].rows[0].record, self.org_review)
         self.assertContains(resp, 'data-href="{0}"'.format(expected_review_url))
         self.assertContains(resp, '<a href="{0}">'.format(expected_review_url))
+
+    def test_replies_not_shown_in_list(self):
+        # Issues #1089 - Replies were showing up in the
+        # list as well as reviews
+
+        # Add a reply to one of the reviews
+        org_review_reply = create_test_review(
+            {'organisation': self.test_hospital},
+            {}
+        )
+        org_review_reply.in_reply_to = self.org_review
+        org_review_reply.save()
+        self.login_as(self.trust_user)
+        resp = self.client.get(self.reviews_list_url)
+        # There should still only be one review in the table
+        self.assertEqual(len(resp.context['table'].rows), 1)
+        # It should be the review, not the reply
+        self.assertEqual(resp.context['table'].rows[0].record, self.org_review)
 
 
 class ReviewDetailTests(TestCase):
