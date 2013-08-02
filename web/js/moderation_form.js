@@ -6,7 +6,10 @@ jQuery(document).ready(function($) {
 
         var moderatedDescription = $('#id_moderated_description').val();
         if (moderatedDescription && moderatedDescription !== "") {
-            $('.content', $content).html('<p>' + moderatedDescription + '</p>');
+            // moderatedDescription has not been escaped, so we use .text()
+            // to insert it into the modal, not .html()
+            $('.content', $content).html('<p class="description"></p>');
+            $('.content .description', $content).text(moderatedDescription);
         }
 
 
