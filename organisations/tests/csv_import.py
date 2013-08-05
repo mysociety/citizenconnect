@@ -30,8 +30,8 @@ class CsvImportTests(TestCase):
     def setUp(self):
         self.old_stdout = sys.stdout
         self.old_stderr = sys.stderr
-        #sys.stdout = DevNull()
-        #sys.stderr = DevNull()
+        sys.stdout = DevNull()
+        sys.stderr = DevNull()
 
         # Paths to the various sample CSV files
         csv_dir = 'documentation/csv_samples/'
