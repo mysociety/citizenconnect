@@ -50,9 +50,9 @@ RewriteRule   ^/careconnect$  /careconnect/choices  [R=301]
 
 # Reverse proxy the files on the blog domain, so that we don't get mixed content
 # warnings because it doesn't have an SSL cert
-ProxyPass           /news/files     http://news.careconnect.mysociety.org/files
+ProxyPass           /careconnect/news/files     http://news.careconnect.mysociety.org/files
 # Reverse Proxy headers in case we get redirects
-ProxyPassReverse    /news/files     http://news.careconnect.mysociety.org/files
+ProxyPassReverse    /careconnect/news/files     http://news.careconnect.mysociety.org/files
 # Not rewriting cookies because there should be none
 # Not rewriting any html because this is just for files
 
