@@ -17,7 +17,7 @@
   {% include 'organisations/includes/filters.html' %}
 
     <div class="search-controls mb">
-        <input type="text" id="search-org-name" data-search-url="{% url 'org-search' cobrand=cobrand.name %}" />
+        <input type="text" id="search-org-name" data-search-url="{% url 'org-search' cobrand=cobrand.name %}" data-org-summary-url="{% url 'org-all-summary' cobrand=cobrand.name %}" />
     </div>
 
   {% render_table table 'organisations/includes/national_table.html' %}
