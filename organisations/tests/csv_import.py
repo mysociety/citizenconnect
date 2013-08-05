@@ -30,8 +30,8 @@ class CsvImportTests(TestCase):
     def setUp(self):
         self.old_stdout = sys.stdout
         self.old_stderr = sys.stderr
-        sys.stdout = DevNull()
-        sys.stderr = DevNull()
+        #sys.stdout = DevNull()
+        #sys.stderr = DevNull()
 
         # Paths to the various sample CSV files
         csv_dir = 'documentation/csv_samples/'
@@ -200,6 +200,18 @@ class CsvImportTests(TestCase):
         first_email = mail.outbox[0]
         expected_text = "You're receiving this e-mail because an account has been created"
         self.assertTrue(expected_text in first_email.body)
+        # test that users' passwords _ARE_ usable - if not usable then
+        # the password cannot be reset. See #689 and #1084
+        emails = [
+            'spreadsheetsuper@example.com',
+            'spreadsheetcasehandler@example.com',
+            'spreadsheetcasemod@example.com',
+            'spreadsheetccc@example.com'
+        ]
+        for email in emails:
+            user = User.objects.get(email=email)
+            self.assertTrue(user.password)
+            self.assertTrue(user.has_usable_password())
 
     def test_image_retrieval_errors(self):
         # Mock urlretrieve to throw an error
