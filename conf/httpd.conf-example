@@ -54,13 +54,7 @@ ProxyPass           /news/files     http://news.careconnect.blog.mysociety.org/f
 # Reverse Proxy headers in case we get redirects
 ProxyPassReverse    /news/files     http://news.careconnect.blog.mysociety.org/files
 # Not rewriting cookies because there should be none
-# Rewrite links in HTML
-<Location /news/files>
-      # Need to gunzip the content before rewriting, and then zip it back up again
-      SetOutputFilter  INFLATE;proxy-html;DEFLATE
-      # Rewrite /files links in the html to /news/files
-      ProxyHTMLURLMap  /files        /news/files
-</Location>
+# Not rewriting any html because this is just for files
 
 WSGIDaemonProcess example.com \
     user=exampleuser \
