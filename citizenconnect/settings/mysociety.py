@@ -99,3 +99,9 @@ CSRF_COOKIE_SECURE = not STAGING
 CSRF_COOKIE_PATH = '/careconnect'
 
 ALLOWED_HOSTS = [] if STAGING else config.get('ALLOWED_HOSTS', [])
+
+# What URL do the blog files live at?
+# So that we can rewrite their HTML and reverse proxy them
+BLOG_FILES_URL = 'http://news.careconnect.blog.mysociety.org/files'
+# What url should they be proxied to?
+PROXIED_BLOG_FILES_URL = '/files/news'
