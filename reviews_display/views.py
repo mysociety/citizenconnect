@@ -8,7 +8,6 @@ from django_tables2 import RequestConfig
 
 from organisations.views.organisations import OrganisationAwareViewMixin
 from organisations.views.organisation_parents import OrganisationParentAwareViewMixin
-from organisations.models import Organisation
 
 from .models import Review
 from .tables import ReviewTable, OrganisationParentReviewTable
@@ -28,8 +27,12 @@ class ReviewOrganisationList(OrganisationAwareViewMixin,
 
     def get_context_data(self, **kwargs):
         context = super(ReviewOrganisationList, self).get_context_data(**kwargs)
-        all_reviews = self.organisation.reviews.all()
-        table = ReviewTable(data=all_reviews, organisation=self.organisation)
+        all_reviews = self.organisation.reviews.all().filter(in_reply_to=None)
+        table = ReviewTable(
+            data=all_reviews,
+            organisation=self.organisation,
+            cobrand=kwargs['cobrand']
+        )
         RequestConfig(self.request, paginate={'per_page': 8}).configure(table)
         context['table'] = table
         context['page_obj'] = table.page
@@ -48,7 +51,10 @@ class OrganisationParentReviews(OrganisationParentAwareViewMixin,
         # Note we distinct() the results here because we're getting the reviews
         # via their associated organisations' parent, and for GP surgeries, this
         # would otherwise mean that they saw the same review duplicated for every branch
-        all_reviews = Review.objects.all().filter(organisations__parent=self.organisation_parent).distinct()
+        all_reviews = Review.objects.all().filter(
+            organisations__parent=self.organisation_parent,
+            in_reply_to=None
+        ).distinct()
         table = OrganisationParentReviewTable(all_reviews)
         RequestConfig(self.request, paginate={'per_page': 8}).configure(table)
         context['table'] = table

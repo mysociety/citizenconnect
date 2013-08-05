@@ -447,3 +447,14 @@ class PublicLookupFormTests(TestCase):
     def test_form_allows_closed_problems(self):
         resp = self.client.post(self.homepage_url, {'reference_number': '{0}{1}'.format(Problem.PREFIX, self.closed_problem.id)})
         self.assertRedirects(resp, self.closed_problem_url)
+
+    def test_form_handles_non_numeric_input(self):
+        # Issues 1090 - Submitting just 'P' got you a 500 error, not a nice message
+        for reference_number in ['P', 'ABC', 'PABC', 'P\-.=']:
+            resp = self.client.post(
+                self.homepage_url,
+                {
+                    'reference_number': reference_number
+                }
+            )
+            self.assertFormError(resp, 'form', None, 'Sorry, that reference number is not recognised')

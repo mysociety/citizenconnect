@@ -448,7 +448,6 @@ class ReviewModelTests(TestCase):
         )
 
     def test_delete_old_reviews(self):
-
         # put a couple of test reviews in the db
         test_age_in_days = settings.NHS_CHOICES_API_MAX_REVIEW_AGE_IN_DAYS + 10
         old_review = create_test_review({
@@ -472,21 +471,82 @@ class ReviewOrganisationListTests(TestCase):
     def setUp(self):
         self.test_organisation = create_test_organisation({'ods_code': 'ABC'})
         self.test_other_organisation = create_test_organisation(
-            {'ods_code': 'DEF'})
-        self.org_review = create_test_review({
-                                             'organisation': self.test_organisation}, {})
-        self.other_org_review = create_test_review({
-                                                   'organisation': self.test_other_organisation}, {})
+            {'ods_code': 'DEF'}
+        )
+        self.org_review = create_test_review(
+            {'organisation': self.test_organisation},
+            {}
+        )
+        self.other_org_review = create_test_review(
+            {'organisation': self.test_other_organisation},
+            {}
+        )
+        self.reviews_list_url = reverse(
+            'review-organisation-list',
+            kwargs={
+                'ods_code': self.test_organisation.ods_code,
+                'cobrand': 'choices'
+            }
+        )
 
     def test_organisation_reviews_page(self):
-        reviews_list_url = reverse('review-organisation-list',
-                                   kwargs={
-                                       'ods_code': self.test_organisation.ods_code,
-                                       'cobrand': 'choices'
-                                   })
-        resp = self.client.get(reviews_list_url)
+        resp = self.client.get(self.reviews_list_url)
         self.assertEqual(resp.context['organisation'], self.test_organisation)
         self.assertEqual(len(resp.context['table'].rows), 1)
+        self.assertEqual(resp.context['table'].rows[0].record, self.org_review)
+
+    def test_organisation_reviews_page_links_to_review(self):
+        # Issue #1083 - the row_href on the table class used by this view
+        # didn't exist, but the display code expected it to in order to populate
+        # data-href
+        expected_review_url = reverse(
+            'review-detail',
+            kwargs={
+                'cobrand': 'choices',
+                'ods_code': self.test_organisation.ods_code,
+                'api_posting_id': self.org_review.api_posting_id
+            }
+        )
+        resp = self.client.get(self.reviews_list_url)
+        self.assertContains(resp, 'data-href="{0}"'.format(expected_review_url))
+        self.assertContains(resp, '<a href="{0}">'.format(expected_review_url))
+
+    def test_organisation_reviews_page_links_to_correct_cobrand(self):
+        mhl_reviews_list_url = reverse(
+            'review-organisation-list',
+            kwargs={
+                'ods_code': self.test_organisation.ods_code,
+                'cobrand': 'myhealthlondon'
+            }
+        )
+        # The choices cobrand was hardcoded
+        expected_review_url = reverse(
+            'review-detail',
+            kwargs={
+                'cobrand': 'myhealthlondon',
+                'ods_code': self.test_organisation.ods_code,
+                'api_posting_id': self.org_review.api_posting_id
+            }
+        )
+        resp = self.client.get(mhl_reviews_list_url)
+        self.assertContains(resp, 'data-href="{0}"'.format(expected_review_url))
+        self.assertContains(resp, '<a href="{0}">'.format(expected_review_url))
+
+    def test_replies_not_shown_in_list(self):
+        # Issues #1089 - Replies were showing up in the
+        # list as well as reviews
+
+        # Add a reply to one of the reviews
+        org_review_reply = create_test_review(
+            {'organisation': self.test_organisation},
+            {}
+        )
+        org_review_reply.in_reply_to = self.org_review
+        org_review_reply.save()
+        resp = self.client.get(self.reviews_list_url)
+        # There should still only be one review in the table
+        self.assertEqual(len(resp.context['table'].rows), 1)
+        # It should be the review, not the reply
         self.assertEqual(resp.context['table'].rows[0].record, self.org_review)
 
 
@@ -499,16 +559,46 @@ class OrganisationParentReviewsTests(AuthorizationTestCase):
             {}
         )
         self.other_org_review = create_test_review({'organisation': self.test_gp_branch}, {})
+        self.reviews_list_url = reverse(
+            'org-parent-reviews',
+            kwargs={
+                'code': self.test_trust.code,
+            }
+        )
 
     def test_trust_reviews_page(self):
-        reviews_list_url = reverse('org-parent-reviews',
-                                   kwargs={
-                                       'code': self.test_trust.code,
-                                   })
+        expected_review_url = reverse(
+            'review-detail',
+            kwargs={
+                'cobrand': 'choices',
+                'ods_code': self.test_hospital.ods_code,
+                'api_posting_id': self.org_review.api_posting_id
+            }
+        )
         self.login_as(self.trust_user)
-        resp = self.client.get(reviews_list_url)
+        resp = self.client.get(self.reviews_list_url)
         self.assertEqual(resp.context['organisation_parent'], self.test_trust)
         self.assertEqual(len(resp.context['table'].rows), 1)
+        self.assertEqual(resp.context['table'].rows[0].record, self.org_review)
+        self.assertContains(resp, 'data-href="{0}"'.format(expected_review_url))
+        self.assertContains(resp, '<a href="{0}">'.format(expected_review_url))
+
+    def test_replies_not_shown_in_list(self):
+        # Issues #1089 - Replies were showing up in the
+        # list as well as reviews
+
+        # Add a reply to one of the reviews
+        org_review_reply = create_test_review(
+            {'organisation': self.test_hospital},
+            {}
+        )
+        org_review_reply.in_reply_to = self.org_review
+        org_review_reply.save()
+        self.login_as(self.trust_user)
+        resp = self.client.get(self.reviews_list_url)
+        # There should still only be one review in the table
+        self.assertEqual(len(resp.context['table'].rows), 1)
+        # It should be the review, not the reply
         self.assertEqual(resp.context['table'].rows[0].record, self.org_review)
 
 

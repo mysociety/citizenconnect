@@ -21,6 +21,7 @@ from issues.models import Problem
 
 import organisations
 from ..models import Organisation
+from ..forms import MapitPostCodeLookup, MapitPostcodeNotFoundError
 from . import (create_test_problem,
                create_test_organisation,
                create_test_service,
@@ -189,6 +190,12 @@ class MapOrganisationCoordsTests(TestCase):
 class MapSearchTests(TestCase):
     def setUp(self):
         self.place_search_url = reverse('org-map-search', kwargs={'cobrand': 'choices'})
+        # Mock out mapit
+        self._old_postcode_to_point = MapitPostCodeLookup.postcode_to_point
+        MapitPostCodeLookup.postcode_to_point = MagicMock()
+
+    def tearDown(self):
+        MapitPostCodeLookup.postcode_to_point = self._old_postcode_to_point
 
     def test_search_page_exists(self):
         resp = self.client.get(self.place_search_url)
@@ -214,6 +221,7 @@ class MapSearchTests(TestCase):
         self.assertContains(resp, place.context_name)
 
     def test_search_returns_postcode(self):
+        MapitPostCodeLookup.postcode_to_point.return_value = Point(-0.14158706711000901, 51.501009611553926)
         resp = self.client.get(self.place_search_url + '?term=SW1A+1AA')
         data = json.loads(resp.content)
         self.assertEqual(data, [{
@@ -225,6 +233,7 @@ class MapSearchTests(TestCase):
         }])
 
     def test_search_returns_partial_postcode(self):
+        MapitPostCodeLookup.postcode_to_point.return_value = Point(-0.13294453160162145, 51.501434410230779)
         resp = self.client.get(self.place_search_url + '?term=SW1A')
         data = json.loads(resp.content)
         self.assertEqual(data, [{
@@ -236,6 +245,7 @@ class MapSearchTests(TestCase):
         }])
 
     def test_search_returns_bad_postcode(self):
+        MapitPostCodeLookup.postcode_to_point.side_effect = MapitPostcodeNotFoundError()
         resp = self.client.get(self.place_search_url + '?term=BA1D+1AB')
         data = json.loads(resp.content)
         self.assertEqual(data, [])

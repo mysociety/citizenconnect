@@ -25,6 +25,17 @@
         {% endif %}
         {% block extra_css %}{% endblock %}
 
+        <!-- Another hack to work under the NHS proxy. We need to specify an absolute path
+        to the boxsizing.htc behaviour file for it to work, so we need to inline the css
+        here to get that absolute url from Django -->
+        <!--[if lte IE 7]>
+        <style type="text/css">
+            * {
+                behavior: url({{ settings.STATIC_URL }}boxsizing.htc);
+            }
+        </style>
+        <![endif]-->
+
         <!--[if lte IE 7]>
             <script type="text/javascript" src="{% static "js/fonts-lte-ie7.js" %}"></script>
         <![endif]-->
@@ -81,7 +92,7 @@
 
             <h2 class="iframe-header mt--n"><a target="_blank" href="https://www.myhealth.london.nhs.uk{% url 'home' cobrand=cobrand.name %}">Care Connect</a></h2>
 
-            <p>Care Connect is a new way for you to share your experiences of the NHS, ask a question or report a problem. We will listen and act. Please be aware that this service is currently only available in parts of London. For more information, please visit the <a target="_blank" href="https://www.myhealth.london.nhs.uk{% url 'home' cobrand=cobrand.name %}">Care Connect home page</a> or click on the links below.
+            <p>Care Connect is a new way for you to share your experiences of the NHS. You can do this online here, by phone on 0800 151 0023 (best from a landline) or 0300 200 0023 (best from a mobile), or by text on 61114. We will listen and act. Please be aware that this service is currently only available in parts of London. For more information, please visit the <a target="_blank" href="https://www.myhealth.london.nhs.uk{% url 'home' cobrand=cobrand.name %}">Care Connect home page</a> or click on the links below.</p>
 
             {% include 'citizenconnect/includes/homepage-main-options.html' with iframe=1 %}
 
