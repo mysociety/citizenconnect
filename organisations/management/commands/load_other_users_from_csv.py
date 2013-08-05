@@ -2,7 +2,7 @@ import csv
 from optparse import make_option
 
 from django.db import transaction
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from django.template.loader import get_template
 from django.template import Context
@@ -50,7 +50,11 @@ class Command(BaseCommand):
                 is_second_tier_moderator = self.true_if_x(row["Second Tier Moderators"], rownum)
                 is_ccc = self.true_if_x(row["Customer Contact Centre"], rownum)
 
-                user, created = User.objects.get_or_create(username=username, email=email)
+                user, created = User.objects.get_or_create(
+                    username=username,
+                    email=email,
+                    password=auth.create_initial_password()
+                )
                 if is_super:
                     user.groups.add(auth.NHS_SUPERUSERS)
                 if is_case_handler:
