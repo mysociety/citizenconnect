@@ -48,6 +48,20 @@ RewriteRule   ^/careconnect$  /careconnect/choices  [R=301]
   Options -Indexes
 </Directory>
 
+# Reverse proxy the files on the blog domain, so that we don't get mixed content
+# warnings because it doesn't have an SSL cert
+ProxyPass           /news/files     http://news.careconnect.blog.mysociety.org/files
+# Reverse Proxy headers in case we get redirects
+ProxyPassReverse    /news/files     http://news.careconnect.blog.mysociety.org/files
+# Not rewriting cookies because there should be none
+# Rewrite links in HTML
+<Location /news/files>
+      # Need to gunzip the content before rewriting, and then zip it back up again
+      SetOutputFilter  INFLATE;proxy-html;DEFLATE
+      # Rewrite /files links in the html to /news/files
+      ProxyHTMLURLMap  /files        /news/files
+</Location>
+
 WSGIDaemonProcess example.com \
     user=exampleuser \
     group=examplegroup \
