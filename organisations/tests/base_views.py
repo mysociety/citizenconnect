@@ -455,6 +455,12 @@ class SummaryBrowserTests(SeleniumTestCase, AuthorizationTestCase):
             lambda x: self.driver.current_url.split('?')[1] == "sort=-week&problems_interval=week"
         )
 
+    def test_searching_goes_to_individual_summary(self):
+        self.driver.get(self.full_url('{0}?sort=-all_time'.format(self.summary_url)))
+        # Simulate searching for a provider
+        self.driver.execute_script('$("#search-org-name").val("RJ01").trigger("change")')
+        self.assertEquals(self.driver.current_url, self.full_url('{0}/RJ01'.format(self.summary_url)))
+
 
 class ProviderPickerTests(TestCase):
 
