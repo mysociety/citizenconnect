@@ -23,7 +23,7 @@ class Command(NoArgsCommand):
     def handle_noargs(self, *args, **options):
 
         if options['fetch_all']:
-            api_args = dict(max_fetch=10000000)
+            api_args = dict(max_fetch=10000)
         else:
             one_week_ago = datetime.date.today() - datetime.timedelta(days=7)
             api_args = dict(since=one_week_ago, max_fetch=100)
