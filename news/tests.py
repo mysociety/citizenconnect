@@ -8,6 +8,7 @@ from StringIO import StringIO
 from mock import MagicMock
 
 from django.test import TestCase
+from django.test.utils import override_settings
 from django.utils import timezone
 from django.core.urlresolvers import reverse
 from django.core.management import call_command
@@ -71,12 +72,16 @@ class PullArticlesFromRssFeedTests(TestCase):
         self.call_command('pull_articles_from_rss_feed', self.rss_feed)
         self.assertEqual(2, Article.objects.count())
 
+    @override_settings(
+        BLOG_FILES_URL='http://www.example.com/files',
+        PROXIED_BLOG_FILES_URL='/careconnect/files'
+    )
     def test_creates_entries_correctly(self):
         self.call_command('pull_articles_from_rss_feed', self.rss_feed)
         article = Article.objects.get(guid='http://blogs.mysociety.org/careconnect/?p=1')
         self.assertEqual("Hello world!", article.title)
         self.assertEqual("Welcome to mySociety Blog Network. This is your first post. Edit or delete it, then start blogging!", article.description)
-        self.assertEqual("""<p>Welcome to <a href="http://blogs.mysociety.org/">mySociety Blog Network</a>. This is your first post. Edit or delete it, then start blogging!</p>""", article.content)
+        self.assertEqual('<p>Welcome to <a href="http://blogs.mysociety.org/">mySociety Blog Network</a>. This is your first post. Edit or delete it, then start blogging! <img src="{0}/2013/07/test-image.jpg" /></p>'.format(settings.PROXIED_BLOG_FILES_URL), article.content)
         self.assertEqual("steve", article.author)
 
         # Test the image was added
