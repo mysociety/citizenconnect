@@ -33,7 +33,7 @@ class Home(FormView):
         context = super(Home, self).get_context_data(**kwargs)
         num_issues = 5
         problems = Problem.objects.all_published_visible_problems().order_by('-created')[:num_issues]
-        reviews = Review.objects.all().order_by('-api_published')[:num_issues]
+        reviews = Review.objects.all().filter(in_reply_to=None).order_by('-api_published')[:num_issues]
 
         # Merge and reverse date sort, getting most recent from merged list
         issues = (list(problems) + list(reviews))
