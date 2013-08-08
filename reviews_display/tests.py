@@ -2,6 +2,7 @@ import copy
 import os
 import json
 import datetime
+from datetime import timedelta
 import urlparse
 import mock
 import urllib
@@ -549,6 +550,28 @@ class ReviewOrganisationListTests(TestCase):
         # It should be the review, not the reply
         self.assertEqual(resp.context['table'].rows[0].record, self.org_review)
 
+    def test_reviews_shown_in_descending_published_order(self):
+        # Add a new review from the past
+        old_date = datetime.datetime.utcnow().replace(tzinfo=utc) - timedelta(days=10)
+        old_review = create_test_review(
+            {
+                'organisation': self.test_organisation,
+                'api_published': old_date
+            },
+            {}
+        )
+        older_review = create_test_review(
+            {
+                'organisation': self.test_organisation,
+                'api_published': old_date - timedelta(days=10)
+            },
+            {}
+        )
+        resp = self.client.get(self.reviews_list_url)
+        self.assertEqual(resp.context['table'].rows[0].record, self.org_review)
+        self.assertEqual(resp.context['table'].rows[1].record, old_review)
+        self.assertEqual(resp.context['table'].rows[2].record, older_review)
+
 
 class OrganisationParentReviewsTests(AuthorizationTestCase):
 
@@ -600,6 +623,29 @@ class OrganisationParentReviewsTests(AuthorizationTestCase):
         self.assertEqual(len(resp.context['table'].rows), 1)
         # It should be the review, not the reply
         self.assertEqual(resp.context['table'].rows[0].record, self.org_review)
+
+    def test_reviews_shown_in_descending_published_order(self):
+        # Add a new review from the past
+        old_date = datetime.datetime.utcnow().replace(tzinfo=utc) - timedelta(days=10)
+        old_review = create_test_review(
+            {
+                'organisation': self.test_hospital,
+                'api_published': old_date
+            },
+            {}
+        )
+        older_review = create_test_review(
+            {
+                'organisation': self.test_hospital,
+                'api_published': old_date - timedelta(days=10)
+            },
+            {}
+        )
+        self.login_as(self.trust_user)
+        resp = self.client.get(self.reviews_list_url)
+        self.assertEqual(resp.context['table'].rows[0].record, self.org_review)
+        self.assertEqual(resp.context['table'].rows[1].record, old_review)
+        self.assertEqual(resp.context['table'].rows[2].record, older_review)
 
 
 class ReviewDetailTests(TestCase):
