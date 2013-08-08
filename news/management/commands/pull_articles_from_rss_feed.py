@@ -31,7 +31,7 @@ class Command(BaseCommand):
 
             article.title = entry.title
             article.description = entry.summary
-            article.content = entry.content[0].value
+            article.content = entry.content[0].value.replace(settings.BLOG_FILES_URL, settings.PROXIED_BLOG_FILES_URL)
             article.author = entry.author
             article.published = parser.parse(entry.published)
 
