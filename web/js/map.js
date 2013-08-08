@@ -149,8 +149,7 @@ $(document).ready(function () {
     });
 
     $searchBox.on('change', function(e) {
-        $('#id_organisation_type').val('');
-        showSelectedFilters();
+        $('#id_organisation_type').val('').trigger('change');
 
         var selection = e.added;
         if (selection.type === 'organisation') {
@@ -470,17 +469,9 @@ $(document).ready(function () {
 
         var formData = getAjaxRequestParameters($form, map);
 
-        // Lock the form during the ajax request
-        $form.find("select").prop("disabled", "disabled");
-
         // Try to get new pins
         getRequest($form.attr('action'), formData).done(function (response) {
-            // Display the links which show selected filters
-            showSelectedFilters();
             drawProviders(response);
-        }).always(function (jqXHR, textStatus) {
-            // Renable all the things we disabled
-            $form.find("select").prop("disabled", false);
         });
     });
 });
