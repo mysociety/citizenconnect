@@ -278,7 +278,7 @@ $(document).ready(function () {
         // If there was already a popup open when the filtering occurred,
         // check if the marker is still visible, if it is we reopen the popup.
         if (reopenPopup) {
-            var odsCodes = _.pluck(providers, 'ods_code')
+            var odsCodes = _.pluck(providers, 'ods_code');
             var reopenCode = reopenPopup._source.nhsCentre.ods_code;
             if (_.contains(odsCodes, reopenCode)) {
                 reopenPopup.openOn(map);

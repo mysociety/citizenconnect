@@ -186,6 +186,22 @@ class MapOrganisationCoordsTests(TestCase):
         resp = self.client.get(self.map_org_url)
         self.assertEqual(200, resp.status_code)
 
+    def test_org_not_found_raises_404(self):
+        non_existent_org_url = reverse(
+            'org-coords-map',
+            kwargs={'cobrand': 'choices', 'ods_code': '404'}
+        )
+        # disable logging of "Not Found"
+        logger = logging.getLogger('django.request')
+        previous_level = logger.getEffectiveLevel()
+        logger.setLevel(logging.ERROR)
+
+        resp = self.client.get(non_existent_org_url)
+
+        # restore logger
+        logger.setLevel(previous_level)
+        self.assertEqual(404, resp.status_code)
+
 
 class MapSearchTests(TestCase):
     def setUp(self):
