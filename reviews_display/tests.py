@@ -553,17 +553,18 @@ class ReviewOrganisationListTests(TestCase):
     def test_reviews_shown_in_descending_published_order(self):
         # Add a new review from the past
         old_date = datetime.datetime.utcnow().replace(tzinfo=utc) - timedelta(days=10)
-        old_review = create_test_review(
-            {
-                'organisation': self.test_organisation,
-                'api_published': old_date
-            },
-            {}
-        )
+        # Create this one first to double-check it's not in any other ordering
         older_review = create_test_review(
             {
                 'organisation': self.test_organisation,
                 'api_published': old_date - timedelta(days=10)
+            },
+            {}
+        )
+        old_review = create_test_review(
+            {
+                'organisation': self.test_organisation,
+                'api_published': old_date
             },
             {}
         )
@@ -627,17 +628,18 @@ class OrganisationParentReviewsTests(AuthorizationTestCase):
     def test_reviews_shown_in_descending_published_order(self):
         # Add a new review from the past
         old_date = datetime.datetime.utcnow().replace(tzinfo=utc) - timedelta(days=10)
-        old_review = create_test_review(
-            {
-                'organisation': self.test_hospital,
-                'api_published': old_date
-            },
-            {}
-        )
+        # Create this one first to double check it's not in any other ordering
         older_review = create_test_review(
             {
                 'organisation': self.test_hospital,
                 'api_published': old_date - timedelta(days=10)
+            },
+            {}
+        )
+        old_review = create_test_review(
+            {
+                'organisation': self.test_hospital,
+                'api_published': old_date
             },
             {}
         )
