@@ -69,6 +69,12 @@
             /* With a smaller container, fixed height buttons need to be a bit larger */
             .ie8 .btn--big,
             .ie7 .btn--big {
+                /**
+                 * Some IE7/8's manange to squeeze things onto two lines, others don't
+                 * so squeeze it with some more padding to make it all the same
+                */
+                padding-left: 0.6em;
+                padding-right: 0.6em;
                 padding-top: 0.75em;
             }
             .ie8 .btn--big--fix {
