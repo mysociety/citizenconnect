@@ -887,7 +887,9 @@ body.docs .c-nhs_blue-tint_10 { background-color: #e5f0f9; }
 .btn--big--fix { min-height: 114px; padding-top: 1.75em; }
 @media only screen and (max-width: 1023px) { .btn--big--fix { min-height: 0; padding-top: 1em; } }
 
-.ie7 .btn--big--fix, .ie8 .btn--big--fix { min-height: 49px; }
+.ie8 .btn--big--fix { min-height: 49px; }
+
+.ie7 .btn--big--fix { height: 115px; }
 
 /** Same sizing as btn--big but with a chevron */
 .btn--big--fwd { width: 100%; font-size: 1.5em; line-height: 1.2; text-align: left; padding: 2em 1em 0.75em 1em; -webkit-border-radius: 0; -moz-border-radius: 0; -ms-border-radius: 0; -o-border-radius: 0; border-radius: 0; }
