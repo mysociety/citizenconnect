@@ -73,9 +73,12 @@ class OrganisationParentReviewTable(ReviewTable):
 
     """Table for the reviews for all the organisations under an Organisation Parent."""
 
-    organisation_name = tables.Column(verbose_name='Provider name',
-                                      accessor='organisations.all.0.name',
-                                      attrs={'th': {'class': 'two-twelfths'}})
+    organisation_name = tables.Column(
+        verbose_name='Provider name',
+        accessor='organisations.all.0.name',
+        order_by='organisations.name',
+        attrs={'th': {'class': 'two-twelfths'}}
+    )
 
     def render_content(self, record, value):
         """Overriden render_content to use the first organisation from the
