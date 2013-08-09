@@ -234,6 +234,8 @@ def interval_counts(problem_filters={},
         _create_review_selects(intervals, data_intervals, select_clauses, params)
         # We'll manually add a join to reviews_display_review_organisations below
         review_filter_clauses = ["""reviews_display_review_organisations.review_id = reviews_display_review.id"""]
+        # We don't want any "replies" to show up in these counts
+        review_filter_clauses.append("""reviews_display_review.in_reply_to_id IS NULL""")
 
     else:
         raise "Unknown data_type: %s" % data_type
