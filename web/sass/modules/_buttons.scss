@@ -40,9 +40,12 @@
                 padding-top: 1em;
             }
         }
-        // IE8 gets a bit funny about min-height on a border-box element
+        // IE7/8 gets a bit funny about min-height on a border-box element
         .ie8 .btn--big--fix {
-            min-height: 49px;
+            min-height:49px;
+        }
+        .ie7 .btn--big--fix {
+            height: 115px;
         }
 
     /**

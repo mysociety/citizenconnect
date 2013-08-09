@@ -65,7 +65,7 @@ class ReviewTable(tables.Table):
         super(ReviewTable, self).__init__(*args, **kwargs)
 
     class Meta:
-        order_by = ('-created',)
+        order_by = ('-api_published',)
         attrs = {'class': 'problem-table problem-table--expanded'}
 
 
@@ -88,7 +88,7 @@ class OrganisationParentReviewTable(ReviewTable):
         return reverse('review-detail', kwargs={'ods_code': record.organisations.all()[0].ods_code, 'cobrand': 'choices', 'api_posting_id': record.api_posting_id})
 
     class Meta:
-        order_by = ('-created',)
+        order_by = ('-api_published',)
         attrs = {'class': 'problem-table problem-table--expanded'}
         sequence = ('api_posting_id',
                     'organisation_name',

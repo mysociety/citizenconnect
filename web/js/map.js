@@ -149,8 +149,7 @@ $(document).ready(function () {
     });
 
     $searchBox.on('change', function(e) {
-        $('#id_organisation_type').val('');
-        showSelectedFilters();
+        $('#id_organisation_type').val('').trigger('change');
 
         var selection = e.added;
         if (selection.type === 'organisation') {
@@ -279,7 +278,7 @@ $(document).ready(function () {
         // If there was already a popup open when the filtering occurred,
         // check if the marker is still visible, if it is we reopen the popup.
         if (reopenPopup) {
-            var odsCodes = _.pluck(providers, 'ods_code')
+            var odsCodes = _.pluck(providers, 'ods_code');
             var reopenCode = reopenPopup._source.nhsCentre.ods_code;
             if (_.contains(odsCodes, reopenCode)) {
                 reopenPopup.openOn(map);
@@ -470,17 +469,9 @@ $(document).ready(function () {
 
         var formData = getAjaxRequestParameters($form, map);
 
-        // Lock the form during the ajax request
-        $form.find("select").prop("disabled", "disabled");
-
         // Try to get new pins
         getRequest($form.attr('action'), formData).done(function (response) {
-            // Display the links which show selected filters
-            showSelectedFilters();
             drawProviders(response);
-        }).always(function (jqXHR, textStatus) {
-            // Renable all the things we disabled
-            $form.find("select").prop("disabled", false);
         });
     });
 });

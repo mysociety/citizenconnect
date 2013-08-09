@@ -9,7 +9,7 @@ from django.views.generic.edit import FormMixin
 from django.core.urlresolvers import reverse, resolve
 from django_tables2 import RequestConfig
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.contrib.gis.geos import Polygon
 
 # App imports
@@ -232,7 +232,7 @@ class Map(FilterFormMixin,
             org = Organisation.objects.get(ods_code=org_data['ods_code'])
             if org.image:
                 org_data['thumbnail_url'] = get_thumbnail(org.image, '60x60').url
-                
+
         # Make it into a JSON string
         context['organisations'] = json.dumps(organisations_list)
 
@@ -275,7 +275,10 @@ class MapOrganisationCoords(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(MapOrganisationCoords, self).get_context_data(**kwargs)
-        organisation = Organisation.objects.get(ods_code=kwargs['ods_code'])
+        try:
+            organisation = Organisation.objects.get(ods_code=kwargs['ods_code'])
+        except Organisation.DoesNotExist:
+            raise Http404
         org_data = {
             'id': organisation.id,
             'text': organisation.name,

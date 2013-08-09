@@ -215,6 +215,13 @@ class IntervalCountsTest(TestCase):
 
         self.rejected_problem = create_problem_with_age(self.test_hospital, 1, {'publication_status': Problem.REJECTED})
 
+        # Issue 1130 - Replies were being counted as reviews when showing totals for organisations
+        # This reply should not be counted, adding it broke all the review tests before we
+        # fixed the issue
+        self.review_reply = create_review_with_age(self.test_hospital, 5)
+        self.review_reply.in_reply_to = Review.objects.all()[0]
+        self.review_reply.save()
+
     def test_organisation_interval_counts(self):
         organisation_filters = {'organisation_id': self.test_hospital.id}
         expected_counts = {'week': 3,
