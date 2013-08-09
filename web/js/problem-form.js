@@ -41,14 +41,14 @@
                 $(this).addClass('big-radio-group--active');
             });
         });
-        
+
         // Find the checked radio button and trigger the click
         $('.big-radio-group input[type=radio]').each(function(){
             if($(this).is(':checked')){
                 $(this).parents('li').click();
             }
         });
-        
+
 
         // Category fields
         $('input[name="category"]').change(function () {
@@ -91,6 +91,7 @@
         $serviceSelect.prepend('<option></option>');
         $serviceSelect.val(''); // select the empty value, so placeholder text shown.
         $serviceSelect.select2({
+            dropdownAutoWidth: true,
             placeholder: $servicePlaceholder.text(),
             allowClear: true
         });
