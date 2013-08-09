@@ -67,8 +67,15 @@
                 width: 573px;
             }
             /* With a smaller container, fixed height buttons need to be a bit larger */
+            .ie8 .btn--big,
+            .ie7 .btn--big {
+                padding-top: 0.75em;
+            }
             .ie8 .btn--big--fix {
-                min-height:82px;
+                min-height:100px;
+            }
+            .ie7 .btn--big--fix {
+                height:144px;
             }
         </style>
         <![endif]-->
