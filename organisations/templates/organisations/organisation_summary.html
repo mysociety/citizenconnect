@@ -43,7 +43,7 @@
 
 {% if organisation.average_recommendation_rating %}
     <h2 class="rating  rating--organisation-summary  align-center  mt">
-        Average Review Rating&nbsp;
+        <abbr title="This is the average score based upon two years of reviews on the NHS Choices site">Average Review Rating</abbr>&nbsp;
         {% with organisation.average_recommendation_rating as value %}
         <span class="{{ value|star_class:1 }}" aria-hidden="true"></span>
         <span class="{{ value|star_class:2 }}" aria-hidden="true"></span>
