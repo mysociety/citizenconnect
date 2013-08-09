@@ -649,6 +649,18 @@ class OrganisationParentReviewsTests(AuthorizationTestCase):
         self.assertEqual(resp.context['table'].rows[1].record, old_review)
         self.assertEqual(resp.context['table'].rows[2].record, older_review)
 
+    def test_can_sort_by_provider_name(self):
+        # Issues #1118 - Sorting by provider name had an issue with the Accessor
+        # used, for some reason Django-Tables2 introspects differently when
+        # ordering than when just displaying, so what worked for one didn't for
+        # this other. The solution was to specify a different Accessor for
+        # the ordering: http://django-tables2.readthedocs.org/en/latest/#specifying-alternative-ordering-for-a-column
+        ordered_reviews_list_url = "{0}?sort=-organisation_name".format(self.reviews_list_url)
+        self.login_as(self.trust_user)
+        # This would 500 before we fixed it
+        resp = self.client.get(ordered_reviews_list_url)
+        self.assertEqual(resp.status_code, 200)
+
 
 class ReviewDetailTests(TestCase):
 
