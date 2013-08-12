@@ -2,7 +2,7 @@
  * Top bar, usually with a nav and site message inside it
  */
 .site-top-bar {
-  @extend .cf;
+  clear: both;
   display: table;
   width: 100%;
   margin: ($grid-gutter * 0.5) + em 0;
