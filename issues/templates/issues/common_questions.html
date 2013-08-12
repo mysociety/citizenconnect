@@ -7,16 +7,8 @@
 
 {% block content %}
 
-
-
-
-<div class="header gw gw--no-gutters">
-    <div class="g four-fifths mt--s palm-one-whole">
+<div class="header">
     <h1>Common questions</h1>
-    </div>
-    <div class="g one-fifth mb--s palm-one-whole">
-        <a href="https://www.nhsdirect.nhs.uk/CheckSymptoms/HealthEnquiry.aspx"  class="btn fr btn--med btn--med-normal-padding btn--dark-orange" target="_blank">Ask a question</a>
-    </div>
 </div>
 
 <ul class="gw  gridded-list">
@@ -48,4 +40,13 @@
     <a href="http://www.nhs.uk/livewell/healthy-eating/Pages/Healthyeating.aspx" class="btn  btn--med  btn--no-border  btn--dark-red">I want advice on eating healthily</a>
   </li>
 </ul>
+
+<p>Click on the button below to go to the NHS Choices Symptom checkers and Online enquiry service.</p>
+
+<p><a class="btn btn--no-border" href="http://www.nhs.uk/NHSdirect/pages/symptoms.aspx" target="_blank">NHS Choices Symptom checkers <span class="icon-chevron-right" aria-hidden="true"></span></a></p>
+
+<p>Alternatively you may like to contact our case handlers, who are available 24/7, through the channels below.</p>
+
+{% include 'citizenconnect/includes/contact_numbers.html' %}
+
 {% endblock %}
