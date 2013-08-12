@@ -230,7 +230,7 @@ class ProblemCreateFormBrowserTests(ProblemCreateFormBase, SeleniumTestCase):
         self.assertFalse(under_16_input.is_selected())
         self.assertTrue(keep_private_input.is_selected())
         self.assertTrue(publish_with_name_li.is_displayed())
-    
+
     def test_privacy_status_preserved(self):
 
         d = self.driver
@@ -252,6 +252,28 @@ class ProblemCreateFormBrowserTests(ProblemCreateFormBase, SeleniumTestCase):
 
         # check correct privacy option still selected
         self.assertTrue(d.find_element_by_id('id_privacy_2').is_selected())
+
+    def test_service_preserved(self):
+
+        # convert to string because that is what the JS returns
+        test_service_id = str(self.test_service.id)
+
+        d = self.driver
+        d.get(self.full_url(self.form_url))
+        # import IPython; IPython.embed()
+
+        # check that no value set for service
+        self.assertEqual(d.execute_script('return $("#id_service").select2("val")'), "")
+
+        # set a value
+        d.execute_script('$("#id_service").select2("val", {0})'.format(test_service_id))
+        self.assertEqual(d.execute_script('return $("#id_service").select2("val")'), test_service_id)
+
+        # submit form
+        d.find_element_by_css_selector('button[type="submit"]').click()
+
+        # check that correct value still set for service
+        self.assertEqual(d.execute_script('return $("#id_service").select2("val")'), test_service_id)
 
 
 class ProblemCreateFormImageTests(ProblemCreateFormBase, ProblemImageTestBase):
