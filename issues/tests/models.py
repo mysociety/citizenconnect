@@ -44,6 +44,7 @@ class ProblemTestCase(AuthorizationTestCase):
         # A brand new, moderated problem, all public
         self.test_moderated_problem = Problem(organisation=self.test_hospital,
                                               description='A Test Problem',
+                                              moderated_description='A Test Problem (moderated)',
                                               category='cleanliness',
                                               reporter_name='Test User',
                                               reporter_email='reporter@example.com',
@@ -333,6 +334,18 @@ class ProblemModelTests(ProblemTestCase):
 
     def test_defaults_to_primary_cobrand(self):
         self.assertEqual(self.test_problem.cobrand, 'choices')
+    
+    def test_summary(self):
+        tests = (
+            # (problem, expected summary)
+            (self.test_problem, "Awaiting moderation"),
+            (self.test_moderated_problem, "A Test Problem (moderated)"),
+            (self.test_moderated_hidden_problem, "Hidden"),
+            (self.test_private_problem, "Private"),
+        )
+        
+        for problem, expected_summary in tests:
+            self.assertEqual(problem.summary, expected_summary)
 
 
 class ProblemModelTimeToTests(ProblemTestCase):

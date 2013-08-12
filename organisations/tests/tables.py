@@ -28,7 +28,7 @@ class ProblemTableTest(TestCase):
         table = ProblemTable([], private=False, cobrand='choices')
         link = table.render_summary_as_public_link(self.problem)
         problem_url = reverse('problem-view', kwargs={'pk': self.problem.id, 'cobrand': 'choices'})
-        expected = '<a href="{0}">&lt;script&gt;alert(&#39;xss&#39;)&lt;/script&gt; <span class="icon-chevron-right" aria-hidden="true"></span></a>'.format(problem_url)
+        expected = '<a href="{0}">&lt;script&gt;alert(&#39;xss&#39;)&lt;/script&gt;</a>'.format(problem_url)
         self.assertEqual(link, expected)
 
     def test_escaping_summary(self):

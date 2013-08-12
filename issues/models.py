@@ -364,8 +364,13 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
 
     @property
     def summary(self):
-        if (self.public and self.publication_status == Problem.PUBLISHED):
-            return self.summarise(self.moderated_description)
+        if self.public:
+            if self.publication_status == Problem.PUBLISHED:
+                return self.summarise(self.moderated_description)
+            elif self.publication_status == Problem.NOT_MODERATED:
+                return "Awaiting moderation"
+            else:
+                return "Hidden"
         else:
             return "Private"
 
