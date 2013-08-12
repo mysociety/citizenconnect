@@ -4,7 +4,6 @@ Tables for displaying reviews.
 
 import django_tables2 as tables
 
-from django.utils.text import Truncator
 from django.utils.safestring import mark_safe
 from django.utils.html import conditional_escape
 from django.core.urlresolvers import reverse
@@ -27,18 +26,17 @@ class ReviewTable(tables.Table):
                            orderable=False,
                            attrs={'th': {'class': 'two-twelfths  align-center'}})
 
-    content = tables.Column(verbose_name='Review',
+    summary = tables.Column(verbose_name='Review',
                             orderable=False,
-                            attrs={'th': {'class': 'seven-twelfths  align-center'}})
+                            attrs={'th': {'class': 'seven-twelfths  align-center'}},
+                            default="See more...")
 
     def render_rating(self, record):
         return render_to_string('organisations/includes/rating_column.html', {'value': record.main_rating_score})
 
-    def render_content(self, record, value):
-        """Truncate the review's content to 20 words, returns a string."""
-        truncated_content = Truncator(value).words(20)
+    def render_summary(self, record, value):
         review_link = reverse('review-detail', kwargs={'ods_code': self.organisation.ods_code, 'cobrand': self.cobrand, 'api_posting_id': record.api_posting_id})
-        return mark_safe(u'<a href="{0}">{1} <span class="icon-chevron-right  fr" aria-hidden="true"></span></a>'.format(review_link, conditional_escape(truncated_content)))
+        return mark_safe(u'<a href="{0}">{1}</a>'.format(review_link, conditional_escape(value)))
 
     def row_classes(self, record):
         """Format rows as link classes, returns a string."""
@@ -80,12 +78,11 @@ class OrganisationParentReviewTable(ReviewTable):
         attrs={'th': {'class': 'two-twelfths'}}
     )
 
-    def render_content(self, record, value):
-        """Overriden render_content to use the first organisation from the
+    def render_summary(self, record, value):
+        """Overriden render_summary to use the first organisation from the
         record's organisations field instead of the table's organisation field"""
-        truncated_content = Truncator(value).words(20)
         review_link = reverse('review-detail', kwargs={'ods_code': record.organisations.all()[0].ods_code, 'cobrand': 'choices', 'api_posting_id': record.api_posting_id})
-        return mark_safe(u'<a href="{0}">{1} <span class="icon-chevron-right  fr" aria-hidden="true"></span></a>'.format(review_link, conditional_escape(truncated_content)))
+        return mark_safe(u'<a href="{0}">{1}</a>'.format(review_link, conditional_escape(value)))
 
     def row_href(self, record):
         return reverse('review-detail', kwargs={'ods_code': record.organisations.all()[0].ods_code, 'cobrand': 'choices', 'api_posting_id': record.api_posting_id})
@@ -97,4 +94,4 @@ class OrganisationParentReviewTable(ReviewTable):
                     'organisation_name',
                     'api_published',
                     'rating',
-                    'content')
+                    'summary')
