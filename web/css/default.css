@@ -1202,12 +1202,6 @@ th .filters__dropdown .customSelect, th .filters__dropdown select { font-size: 1
 .site-top-bar .site-top-bar__row .site-top-bar__cell p { font-size: 0.875em; background: #f2f2f2; color: #d81e05; margin: 0; padding: 0.5em 0.75em; text-align: center; -webkit-border-radius: 0.35714em; -moz-border-radius: 0.35714em; -ms-border-radius: 0.35714em; -o-border-radius: 0.35714em; border-radius: 0.35714em; }
 .site-top-bar .site-top-bar__row .site-top-bar__cell--nav .nav { float: right; }
 
-.site-top-bar--choices { width: auto; float: left; margin: 2em; }
-@media only screen and (max-width: 480px) { .site-top-bar--choices { float: none; width: 100%; margin: auto; } }
-
-.site-top-bar--mhl { float: right; width: 54%; margin: 1em; }
-@media only screen and (max-width: 480px) { .site-top-bar--mhl { float: none; width: 100%; margin: auto; } }
-
 .ie6 .site-top-bar, .ie7 .site-top-bar { display: block; }
 .ie6 .site-top-bar .site-top-bar__row, .ie7 .site-top-bar .site-top-bar__row { display: block; }
 .ie6 .site-top-bar .site-top-bar__row .site-top-bar__cell, .ie7 .site-top-bar .site-top-bar__row .site-top-bar__cell { display: block; float: left; }

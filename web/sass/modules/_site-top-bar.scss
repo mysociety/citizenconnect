@@ -27,30 +27,6 @@
   }
 }
 
-.site-top-bar--choices {
-  width: auto;
-  float: left;
-  margin: 2em;
-
-  @include media-query(palm) {
-    float: none;
-    width: 100%;
-    margin: auto;
-  }
-}
-
-.site-top-bar--mhl {
-  float: right;
-  width: 54%;
-  margin: 1em;
-
-  @include media-query(palm) {
-    float: none;
-    width: 100%;
-    margin: auto;
-  }
-}
-
 // alternative layout for IEs that don't support display:table;
 .ie6, .ie7 {
   .site-top-bar {
