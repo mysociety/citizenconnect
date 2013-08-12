@@ -120,7 +120,7 @@ class BaseProblemTable(tables.Table):
 
     def render_summary_as_public_link(self, record):
         detail_link = self.row_href(record)
-        return mark_safe('<a href="{0}">{1} <span class="icon-chevron-right" aria-hidden="true"></span></a>'.format(detail_link, conditional_escape(record.summary)))
+        return mark_safe('<a href="{0}">{1}</a>'.format(detail_link, conditional_escape(record.summary)))
 
     def row_classes(self, record):
         try:
