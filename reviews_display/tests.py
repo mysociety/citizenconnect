@@ -466,6 +466,20 @@ class ReviewModelTests(TestCase):
         self.assertFalse(Review.objects.filter(pk=old_review.id).exists())
         self.assertTrue(Review.objects.filter(pk=young_review.id).exists())
 
+    def test_summary_property(self):
+        # Test summary returns "See more..." when content is empty
+        # and truncates to 20 words if not
+        review = create_test_review({'organisation': self.organisation}, {})
+        review.content = "Something that is awfully long, much longer in fact than the twenty words or so that we have set the summary field to truncate to"
+        review.save()
+
+        self.assertEqual(review.summary, "Something that is awfully long, much longer in fact than the twenty words or so that we have set the...")
+
+        review.content = ''
+        review.save()
+
+        self.assertEqual(review.summary, "See more...")
+
 
 class ReviewOrganisationListTests(TestCase):
 
@@ -573,6 +587,15 @@ class ReviewOrganisationListTests(TestCase):
         self.assertEqual(resp.context['table'].rows[1].record, old_review)
         self.assertEqual(resp.context['table'].rows[2].record, older_review)
 
+    def test_summary_shown_for_review(self):
+        resp = self.client.get(self.reviews_list_url)
+        self.assertContains(resp, self.org_review.summary)
+
+        self.org_review.content = ""
+        self.org_review.save()
+        resp = self.client.get(self.reviews_list_url)
+        self.assertContains(resp, self.org_review.summary)
+
 
 class OrganisationParentReviewsTests(AuthorizationTestCase):
 
@@ -661,6 +684,17 @@ class OrganisationParentReviewsTests(AuthorizationTestCase):
         resp = self.client.get(ordered_reviews_list_url)
         self.assertEqual(resp.status_code, 200)
 
+    def test_summary_shown_for_review(self):
+        self.login_as(self.trust_user)
+        resp = self.client.get(self.reviews_list_url)
+        self.assertContains(resp, self.org_review.summary)
+
+        self.org_review.content = ""
+        self.org_review.save()
+        self.login_as(self.trust_user)
+        resp = self.client.get(self.reviews_list_url)
+        self.assertContains(resp, self.org_review.summary)
+
 
 class ReviewDetailTests(TestCase):
 
@@ -702,4 +736,3 @@ class ReviewDetailTests(TestCase):
         logger.setLevel(previous_level)
 
         self.assertEqual(resp.status_code, 404)
-
