@@ -6,11 +6,13 @@ $(document).ready(function () {
   // Function to enable/disable the services filter depending on
   // the value of the organisation type filter
   var setUpServiceFilter = function() {
-    var org_type_value = $(organisation_type_selector).val();
-    if (org_type_value === 'hospitals' || org_type_value === 'clinics') {
-      $(service_selector).prop('disabled', false).trigger('update');
-    } else {
-      $(service_selector).val('').prop('disabled', true).trigger('update');
+    if($(organisation_type_selector).length > 0) {
+      var org_type_value = $(organisation_type_selector).val();
+      if (org_type_value === 'hospitals' || org_type_value === 'clinics') {
+        $(service_selector).prop('disabled', false).trigger('update');
+      } else {
+        $(service_selector).val('').prop('disabled', true).trigger('update');
+      }
     }
   };
 
