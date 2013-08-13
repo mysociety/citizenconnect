@@ -289,21 +289,6 @@ $(document).ready(function () {
         }
     };
 
-
-    // Function to add in some html to show the selected filters
-    var showSelectedFilters = function() {
-        $(".filters select").each(function(index, element) {
-            var $select = $(element);
-            var $dropdown = $select.parent('.filters__dropdown');
-            if($select.val() !== "") {
-                $dropdown.removeClass('filters__dropdown--default');
-            }
-            else {
-                $dropdown.addClass('filters__dropdown--default');
-            }
-        });
-    };
-
     /**
      * Get the parameters to send in an ajax request
      * These consist of any currently selected map filters
@@ -472,6 +457,8 @@ $(document).ready(function () {
         // Try to get new pins
         getRequest($form.attr('action'), formData).done(function (response) {
             drawProviders(response);
+            // Tell the filters to update
+            $(".filters").trigger("CitizenConnect.filters.update");
         });
     });
 });
