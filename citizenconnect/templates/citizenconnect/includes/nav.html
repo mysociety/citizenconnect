@@ -11,8 +11,12 @@
         {% url 'reviews-pick-provider' cobrand=cobrand.name as url %}
         <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Experiences</a></li>
 
-        {% url 'common-questions' cobrand=cobrand.name as url %}
-        <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Questions</a></li>
+        {% if cobrand.name == 'myhealthlondon' %}
+            <li><a target="_blank" href="https://www.myhealth.london.nhs.uk/faq-page">Questions</a></li>
+        {% else %}
+            {% url 'common-questions' cobrand=cobrand.name as url %}
+            <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Questions</a></li>
+        {% endif %}
 
         {% url 'problems-pick-provider' cobrand=cobrand.name as url %}
         <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Problems</a></li>

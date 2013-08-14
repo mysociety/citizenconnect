@@ -27,7 +27,7 @@ class ReviewOrganisationList(OrganisationAwareViewMixin,
 
     def get_context_data(self, **kwargs):
         context = super(ReviewOrganisationList, self).get_context_data(**kwargs)
-        all_reviews = self.organisation.reviews.all().filter(in_reply_to=None)
+        all_reviews = self.organisation.reviews.all().filter(in_reply_to=None).order_by('-api_published')
         table = ReviewTable(
             data=all_reviews,
             organisation=self.organisation,
@@ -54,7 +54,7 @@ class OrganisationParentReviews(OrganisationParentAwareViewMixin,
         all_reviews = Review.objects.all().filter(
             organisations__parent=self.organisation_parent,
             in_reply_to=None
-        ).distinct()
+        ).order_by('-api_published').distinct()
         table = OrganisationParentReviewTable(all_reviews)
         RequestConfig(self.request, paginate={'per_page': 8}).configure(table)
         context['table'] = table

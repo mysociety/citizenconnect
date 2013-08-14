@@ -2,6 +2,7 @@ import copy
 import os
 import json
 import datetime
+from datetime import timedelta
 import urlparse
 import mock
 import urllib
@@ -465,6 +466,20 @@ class ReviewModelTests(TestCase):
         self.assertFalse(Review.objects.filter(pk=old_review.id).exists())
         self.assertTrue(Review.objects.filter(pk=young_review.id).exists())
 
+    def test_summary_property(self):
+        # Test summary returns "See more..." when content is empty
+        # and truncates to 20 words if not
+        review = create_test_review({'organisation': self.organisation}, {})
+        review.content = "Something that is awfully long, much longer in fact than the twenty words or so that we have set the summary field to truncate to"
+        review.save()
+
+        self.assertEqual(review.summary, "Something that is awfully long, much longer in fact than the twenty words or so that we have set the...")
+
+        review.content = ''
+        review.save()
+
+        self.assertEqual(review.summary, "See more...")
+
 
 class ReviewOrganisationListTests(TestCase):
 
@@ -549,6 +564,38 @@ class ReviewOrganisationListTests(TestCase):
         # It should be the review, not the reply
         self.assertEqual(resp.context['table'].rows[0].record, self.org_review)
 
+    def test_reviews_shown_in_descending_published_order(self):
+        # Add a new review from the past
+        old_date = datetime.datetime.utcnow().replace(tzinfo=utc) - timedelta(days=10)
+        # Create this one first to double-check it's not in any other ordering
+        older_review = create_test_review(
+            {
+                'organisation': self.test_organisation,
+                'api_published': old_date - timedelta(days=10)
+            },
+            {}
+        )
+        old_review = create_test_review(
+            {
+                'organisation': self.test_organisation,
+                'api_published': old_date
+            },
+            {}
+        )
+        resp = self.client.get(self.reviews_list_url)
+        self.assertEqual(resp.context['table'].rows[0].record, self.org_review)
+        self.assertEqual(resp.context['table'].rows[1].record, old_review)
+        self.assertEqual(resp.context['table'].rows[2].record, older_review)
+
+    def test_summary_shown_for_review(self):
+        resp = self.client.get(self.reviews_list_url)
+        self.assertContains(resp, self.org_review.summary)
+
+        self.org_review.content = ""
+        self.org_review.save()
+        resp = self.client.get(self.reviews_list_url)
+        self.assertContains(resp, self.org_review.summary)
+
 
 class OrganisationParentReviewsTests(AuthorizationTestCase):
 
@@ -601,6 +648,53 @@ class OrganisationParentReviewsTests(AuthorizationTestCase):
         # It should be the review, not the reply
         self.assertEqual(resp.context['table'].rows[0].record, self.org_review)
 
+    def test_reviews_shown_in_descending_published_order(self):
+        # Add a new review from the past
+        old_date = datetime.datetime.utcnow().replace(tzinfo=utc) - timedelta(days=10)
+        # Create this one first to double check it's not in any other ordering
+        older_review = create_test_review(
+            {
+                'organisation': self.test_hospital,
+                'api_published': old_date - timedelta(days=10)
+            },
+            {}
+        )
+        old_review = create_test_review(
+            {
+                'organisation': self.test_hospital,
+                'api_published': old_date
+            },
+            {}
+        )
+        self.login_as(self.trust_user)
+        resp = self.client.get(self.reviews_list_url)
+        self.assertEqual(resp.context['table'].rows[0].record, self.org_review)
+        self.assertEqual(resp.context['table'].rows[1].record, old_review)
+        self.assertEqual(resp.context['table'].rows[2].record, older_review)
+
+    def test_can_sort_by_provider_name(self):
+        # Issues #1118 - Sorting by provider name had an issue with the Accessor
+        # used, for some reason Django-Tables2 introspects differently when
+        # ordering than when just displaying, so what worked for one didn't for
+        # this other. The solution was to specify a different Accessor for
+        # the ordering: http://django-tables2.readthedocs.org/en/latest/#specifying-alternative-ordering-for-a-column
+        ordered_reviews_list_url = "{0}?sort=-organisation_name".format(self.reviews_list_url)
+        self.login_as(self.trust_user)
+        # This would 500 before we fixed it
+        resp = self.client.get(ordered_reviews_list_url)
+        self.assertEqual(resp.status_code, 200)
+
+    def test_summary_shown_for_review(self):
+        self.login_as(self.trust_user)
+        resp = self.client.get(self.reviews_list_url)
+        self.assertContains(resp, self.org_review.summary)
+
+        self.org_review.content = ""
+        self.org_review.save()
+        self.login_as(self.trust_user)
+        resp = self.client.get(self.reviews_list_url)
+        self.assertContains(resp, self.org_review.summary)
+
 
 class ReviewDetailTests(TestCase):
 
@@ -642,4 +736,3 @@ class ReviewDetailTests(TestCase):
         logger.setLevel(previous_level)
 
         self.assertEqual(resp.status_code, 404)
-

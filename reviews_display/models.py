@@ -5,6 +5,7 @@ import pytz
 from django.conf import settings
 from django.db import models
 from django.forms.models import model_to_dict
+from django.utils.text import Truncator
 
 from organisations.models import Organisation, OrganisationParent
 from citizenconnect.models import AuditedModel
@@ -88,6 +89,14 @@ class Review(AuditedModel):
         except Rating.DoesNotExist:
             score = None
         return score
+
+    @property
+    def summary(self):
+        if self.content:
+            return Truncator(self.content).words(20)
+        else:
+            # TODO - search through other fields for something useful to summarise
+            return "See more..."
 
     @classmethod
     def delete_old_reviews(cls):

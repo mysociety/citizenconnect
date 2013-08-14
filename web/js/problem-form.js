@@ -41,14 +41,14 @@
                 $(this).addClass('big-radio-group--active');
             });
         });
-        
+
         // Find the checked radio button and trigger the click
         $('.big-radio-group input[type=radio]').each(function(){
             if($(this).is(':checked')){
                 $(this).parents('li').click();
             }
         });
-        
+
 
         // Category fields
         $('input[name="category"]').change(function () {
@@ -86,11 +86,20 @@
             }
         });
 
-        var $serviceSelect = $('#id_service');
+        // We use a tag name because when it's empty (IE: the org we're reporting
+        // a problem about has no departments/services) Django still puts it into
+        // the HTML as a hidden input, and then just #id_service would fail
+        var $serviceSelect = $('select#id_service');
         var $servicePlaceholder = $serviceSelect.find('option:first').remove();
         $serviceSelect.prepend('<option></option>');
-        $serviceSelect.val(''); // select the empty value, so placeholder text shown.
+
+        if (!$serviceSelect.val()){
+          // If no option was selected reselect the empty value, so placeholder text shown.
+           $serviceSelect.val();
+        }
+
         $serviceSelect.select2({
+            dropdownAutoWidth: true,
             placeholder: $servicePlaceholder.text(),
             allowClear: true
         });

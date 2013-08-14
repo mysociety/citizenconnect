@@ -2,7 +2,7 @@
  * Top bar, usually with a nav and site message inside it
  */
 .site-top-bar {
-  @extend .cf;
+  clear: both;
   display: table;
   width: 100%;
   margin: ($grid-gutter * 0.5) + em 0;
@@ -22,33 +22,8 @@
       }
     }
     .site-top-bar__cell--nav {
-      width: 170px;
       .nav { float: right; }
     }
-  }
-}
-
-.site-top-bar--choices {
-  width: auto;
-  float: left;
-  margin: 2em;
-
-  @include media-query(palm) {
-    float: none;
-    width: 100%;
-    margin: auto;
-  }
-}
-
-.site-top-bar--mhl {
-  float: right;
-  width: 54%;
-  margin: 1em;
-
-  @include media-query(palm) {
-    float: none;
-    width: 100%;
-    margin: auto;
   }
 }
 
