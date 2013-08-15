@@ -561,43 +561,6 @@ class ProblemManagerTests(ManagerTest):
             'status': Problem.RESOLVED
         })
 
-        # Problems that have been escalated and moderated
-        self.escalated_public_moderated_problem_published = create_test_problem({
-            'description': 'escalated_public_moderated_problem_published',
-            'organisation': self.test_organisation,
-            'public': True,
-            'publication_status': Problem.PUBLISHED,
-            'status': Problem.ESCALATED,
-            'commissioned': Problem.LOCALLY_COMMISSIONED,
-        })
-
-        self.escalated_acknowledged_public_moderated_problem_published = create_test_problem({
-            'description': 'escalated_acknowledged_public_moderated_problem_published',
-            'organisation': self.test_organisation,
-            'public': True,
-            'publication_status': Problem.PUBLISHED,
-            'status': Problem.ESCALATED_ACKNOWLEDGED,
-            'commissioned': Problem.LOCALLY_COMMISSIONED,
-        })
-
-        self.escalated_resolved_public_moderated_problem_published = create_test_problem({
-            'description': 'escalated_resolved_public_moderated_problem_published',
-            'organisation': self.test_organisation,
-            'public': True,
-            'publication_status': Problem.PUBLISHED,
-            'status': Problem.ESCALATED_RESOLVED,
-            'commissioned': Problem.LOCALLY_COMMISSIONED,
-        })
-
-        # Unmoderated escalated problems
-        self.escalated_private_unmoderated_problem = create_test_problem({
-            'description': 'escalated_private_unmoderated_problem',
-            'organisation': self.test_organisation,
-            'public': False,
-            'status': Problem.ESCALATED,
-            'commissioned': Problem.LOCALLY_COMMISSIONED,
-        })
-
         # A breach of care standards problem
         self.breach_public_moderated_problem_published = create_test_problem({
             'description': 'breach_public_moderated_problem_published',
@@ -625,7 +588,6 @@ class ProblemManagerTests(ManagerTest):
         })
 
         # Problems in hidden statuses
-
         self.public_published_abusive_problem = create_test_problem({
             'description': 'public_published_abusive_problem',
             'organisation': self.test_organisation,
@@ -635,47 +597,58 @@ class ProblemManagerTests(ManagerTest):
         })
 
         # Intermediate helper lists
-        self.open_unmoderated_problems = [self.new_public_unmoderated_problem,
-                                          self.new_private_unmoderated_problem,
-                                          self.escalated_private_unmoderated_problem]
-        self.closed_unmoderated_problems = [self.closed_public_unmoderated_problem,
-                                            self.closed_private_unmoderated_problem]
-        self.open_moderated_problems = [self.new_public_rejected_problem,
-                                        self.new_public_moderated_problem_published,
-                                        self.new_private_rejected_problem,
-                                        self.new_private_moderated_problem_published,
-                                        self.escalated_public_moderated_problem_published,
-                                        self.escalated_acknowledged_public_moderated_problem_published,
-                                        self.public_problem_requiring_second_tier_moderation,
-                                        self.private_problem_requiring_second_tier_moderation,
-                                        self.breach_public_moderated_problem_published]
-        self.closed_problems = self.closed_unmoderated_problems + [self.closed_public_rejected_problem,
-                                                                   self.closed_public_moderated_problem_published,
-                                                                   self.closed_private_rejected_problem,
-                                                                   self.closed_private_moderated_problem_published,
-                                                                   self.public_published_abusive_problem,
-                                                                   self.escalated_resolved_public_moderated_problem_published]
+        self.open_unmoderated_problems = [
+            self.new_public_unmoderated_problem,
+            self.new_private_unmoderated_problem
+        ]
+        self.closed_unmoderated_problems = [
+            self.closed_public_unmoderated_problem,
+            self.closed_private_unmoderated_problem
+        ]
+        self.open_moderated_problems = [
+            self.new_public_rejected_problem,
+            self.new_public_moderated_problem_published,
+            self.new_private_rejected_problem,
+            self.new_private_moderated_problem_published,
+            self.public_problem_requiring_second_tier_moderation,
+            self.private_problem_requiring_second_tier_moderation,
+            self.breach_public_moderated_problem_published
+        ]
+        self.closed_problems = self.closed_unmoderated_problems + [
+            self.closed_public_rejected_problem,
+           self.closed_public_moderated_problem_published,
+           self.closed_private_rejected_problem,
+           self.closed_private_moderated_problem_published,
+           self.public_published_abusive_problem
+        ]
 
-        self.closed_resolved_problems = self.closed_unmoderated_problems + [self.closed_public_rejected_problem,
-                                                                            self.closed_public_moderated_problem_published,
-                                                                            self.closed_private_rejected_problem,
-                                                                            self.closed_private_moderated_problem_published,
-                                                                            self.public_published_abusive_problem,
-                                                                            self.escalated_resolved_public_moderated_problem_published]
+        self.closed_resolved_problems = self.closed_unmoderated_problems + [
+            self.closed_public_rejected_problem,
+            self.closed_public_moderated_problem_published,
+            self.closed_private_rejected_problem,
+            self.closed_private_moderated_problem_published,
+            self.public_published_abusive_problem
+        ]
 
         # Lists that we expect from our manager's methods
         self.unmoderated_problems = self.open_unmoderated_problems + self.closed_unmoderated_problems
         self.open_problems = self.open_unmoderated_problems + self.open_moderated_problems
-        self.open_published_visible_problems = [self.new_public_moderated_problem_published,
-                                                          self.new_private_moderated_problem_published,
-                                                          self.breach_public_moderated_problem_published]
+        self.open_published_visible_problems = [
+            self.new_public_moderated_problem_published,
+            self.new_private_moderated_problem_published,
+            self.breach_public_moderated_problem_published
+        ]
 
-        self.closed_published_visible_problems = [self.closed_public_moderated_problem_published,
-                                                            self.closed_private_moderated_problem_published]
+        self.closed_published_visible_problems = [
+            self.closed_public_moderated_problem_published,
+            self.closed_private_moderated_problem_published
+        ]
 
         self.all_problems = self.open_problems + self.closed_problems
-        self.all_published_visible_problems = self.open_published_visible_problems + [self.closed_public_moderated_problem_published,
-                                                                                      self.closed_private_moderated_problem_published]
+        self.all_published_visible_problems = self.open_published_visible_problems + [
+            self.closed_public_moderated_problem_published,
+            self.closed_private_moderated_problem_published
+        ]
         self.all_not_rejected_visible_problems = [
             self.new_public_unmoderated_problem,
             self.new_private_unmoderated_problem,
@@ -685,17 +658,13 @@ class ProblemManagerTests(ManagerTest):
             self.new_private_moderated_problem_published,
             self.closed_public_moderated_problem_published,
             self.closed_private_moderated_problem_published,
-            self.breach_public_moderated_problem_published,
-
-            # not shown as all escalated states are not visible, but will be when shown again. Sigh.
-            # self.escalated_public_moderated_problem_published,
-            # self.escalated_acknowledged_public_moderated_problem_published,
-            # self.escalated_resolved_public_moderated_problem_published,
-            # self.escalated_private_unmoderated_problem,
+            self.breach_public_moderated_problem_published
         ]
 
-        self.problems_requiring_second_tier_moderation = [self.public_problem_requiring_second_tier_moderation,
-                                                          self.private_problem_requiring_second_tier_moderation]
+        self.problems_requiring_second_tier_moderation = [
+            self.public_problem_requiring_second_tier_moderation,
+            self.private_problem_requiring_second_tier_moderation
+        ]
 
     def test_all_problems_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.all(), self.all_problems)

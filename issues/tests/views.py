@@ -169,23 +169,6 @@ class ProblemPublicViewTests(ProblemImageTestBase, AuthorizationTestCase):
         self.assertNotContains(resp, self.test_moderated_problem.description)
         self.assertContains(resp, self.test_moderated_problem.moderated_description)
 
-
-    # Test removed as part of hiding escalated states for #669. Only commented
-    # out though as I'm sure we'll need to add this back in at some point.
-    #
-    # def test_escalated_statuses_highlighted(self):
-    #     for status in Problem.ESCALATION_STATUSES:
-    #         problem = create_test_problem({'organisation': self.test_hospital,
-    #                                        'publication_status': Problem.PUBLISHED,
-    #                                        'moderated_description': "A moderated description",
-    #                                        'status': status,
-    #                                        'commissioned': Problem.LOCALLY_COMMISSIONED})
-    #         problem_url = reverse('problem-view', kwargs={'cobrand': 'choices',
-    #                                                       'pk': problem.id})
-    #         resp = self.client.get(problem_url)
-    #         expected_text = '<span class="icon-arrow-up-right" aria-hidden="true"></span> This problem has been escalated'
-    #         self.assertContains(resp, expected_text)
-
     def test_shows_open_or_closed_and_specific_status(self):
         # An open problem
         resp = self.client.get(self.test_moderated_problem_url)
