@@ -129,25 +129,20 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     NEW = 0
     ACKNOWLEDGED = 1
     RESOLVED = 2
-    ESCALATED = 3
+    # There used to be a status called ESCALATED here, hence the missing number 3
     UNABLE_TO_RESOLVE = 4
     REFERRED_TO_OTHER_PROVIDER = 5
     UNABLE_TO_CONTACT = 6
     ABUSIVE = 7
-    ESCALATED_ACKNOWLEDGED = 8
-    ESCALATED_RESOLVED = 9
 
     STATUS_CHOICES = (
         (NEW, 'Open'),
         (ACKNOWLEDGED, 'In Progress'),
         (RESOLVED, 'Closed'),
-        (ESCALATED, 'Escalated'),
         (UNABLE_TO_RESOLVE, 'Unable to Resolve'),
         (REFERRED_TO_OTHER_PROVIDER, 'Referred to Another Provider'),
         (UNABLE_TO_CONTACT, 'Unable to Contact'),
         (ABUSIVE, 'Abusive/Vexatious'),
-        (ESCALATED_ACKNOWLEDGED, 'Escalated - In Progress'),
-        (ESCALATED_RESOLVED, 'Escalated - Resolved'),
     )
 
     # The numerical value of the priorities should be chosen so that when sorted
