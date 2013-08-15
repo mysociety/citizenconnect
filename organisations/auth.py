@@ -40,13 +40,6 @@ def user_is_superuser(user):
     return user.is_superuser or user_in_group(user, NHS_SUPERUSERS)
 
 
-def user_is_escalation_body(user):
-    """
-    A shortcut to check if a user is a CCG or the CCC
-    """
-    return user_in_groups(user, [CCG, CUSTOMER_CONTACT_CENTRE])
-
-
 def user_in_groups(user, groups):
     """
     Helper for seeing if a user is in any of a list of user groups.

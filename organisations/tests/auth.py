@@ -10,7 +10,6 @@ from organisations.auth import (user_is_superuser,
                                 is_valid_username_char,
                                 create_unique_username,
                                 create_initial_password,
-                                user_is_escalation_body,
                                 user_can_access_national_escalation_dashboard,
                                 create_home_links_for_user)
 from organisations.tests.lib import AuthorizationTestCase
@@ -24,10 +23,6 @@ class AuthTests(AuthorizationTestCase):
     def test_user_is_superuser(self):
         self.assertTrue(user_is_superuser(self.superuser))
         self.assertTrue(user_is_superuser(self.nhs_superuser))
-
-    def test_user_is_escalation_body(self):
-        self.assertTrue(user_is_escalation_body(self.ccg_user))
-        self.assertTrue(user_is_escalation_body(self.customer_contact_centre_user))
 
     def test_user_in_group(self):
         self.assertTrue(user_in_group(self.case_handler, auth.CASE_HANDLERS))
