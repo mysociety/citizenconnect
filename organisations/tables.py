@@ -4,7 +4,7 @@ from django.utils.safestring import mark_safe
 from django.utils.html import conditional_escape
 from django.core.urlresolvers import reverse
 
-from organisations.table_columns import BreachAndEscalationColumn
+from organisations.table_columns import BreachColumn
 
 
 class NationalSummaryTable(tables.Table):
@@ -100,7 +100,7 @@ class BaseProblemTable(tables.Table):
                             attrs={'td': {'class': 'problem-table__light-text'}})
 
     # Will only be made visible on private pages
-    breach_and_escalation = BreachAndEscalationColumn(visible=False)
+    breach_and_escalation = BreachColumn(visible=False)
 
     def __init__(self, *args, **kwargs):
         self.private = kwargs.pop('private')

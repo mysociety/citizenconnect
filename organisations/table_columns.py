@@ -1,12 +1,12 @@
 import django_tables2 as tables
 
 
-class BreachAndEscalationColumn(tables.TemplateColumn):
+class BreachColumn(tables.TemplateColumn):
 
     def __init__(self, *args, **kwargs):
 
         defaults = {
-            'template_name': "organisations/includes/tables/columns/breach_escalation_column.html",
+            'template_name': "organisations/includes/tables/columns/breach_column.html",
             'verbose_name': " ",
             'orderable': False,
             'attrs': {'td': {'class': 'problem-table__flag'}}
@@ -14,4 +14,4 @@ class BreachAndEscalationColumn(tables.TemplateColumn):
 
         defaults.update(kwargs)
 
-        return super(BreachAndEscalationColumn, self).__init__(*args, **defaults)
+        return super(BreachColumn, self).__init__(*args, **defaults)
