@@ -89,10 +89,6 @@ def enforce_response_access_check(problem, user):
     enforce_organisation_access_check(problem.organisation, user)
 
 
-def user_can_access_national_escalation_dashboard(user):
-    return (user_is_superuser(user) or user_in_groups(user, [CUSTOMER_CONTACT_CENTRE]))
-
-
 def create_initial_password():
     """
     Returns a random string that can be used as a password. We need this because
@@ -251,13 +247,6 @@ def create_home_links_for_user(user):
                 "title": "CCG dashboard for {0}".format(ccg.name),
                 "url": reverse('ccg-dashboard', kwargs={'code': ccg.code}),
             })
-
-    # Customer contact centre users go to the escalation dashboard
-    if user_in_group(user, CUSTOMER_CONTACT_CENTRE):
-        links.append({
-            "title": "Escalation dashboard",
-            "url": reverse('escalation-dashboard'),
-        })
 
     # Moderators go to the moderation queue
     if user_in_group(user, CASE_HANDLERS):
