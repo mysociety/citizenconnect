@@ -7,9 +7,6 @@ from django.conf import global_settings
 
 from .paths import *
 
-# Add pylib from commonlib into sys.path
-sys.path.append(os.path.join(PROJECT_ROOT, 'commonlib', 'pylib'))
-
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
