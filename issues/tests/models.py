@@ -2,12 +2,10 @@ import warnings
 import re
 from datetime import datetime, timedelta
 from time import strftime, gmtime
-from mock import patch
 
 from django.test import TestCase, TransactionTestCase
 from django.test.utils import override_settings
 from django.conf import settings
-from django.core import mail
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.core.files.images import ImageFile
@@ -699,10 +697,6 @@ class ProblemManagerTests(ManagerTest):
         self.problems_requiring_second_tier_moderation = [self.public_problem_requiring_second_tier_moderation,
                                                           self.private_problem_requiring_second_tier_moderation]
 
-        self.open_escalated_problems = [self.escalated_public_moderated_problem_published,
-                                        self.escalated_private_unmoderated_problem,
-                                        self.escalated_acknowledged_public_moderated_problem_published]
-
     def test_all_problems_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.all(), self.all_problems)
 
@@ -735,10 +729,6 @@ class ProblemManagerTests(ManagerTest):
     def test_problems_requiring_second_tier_moderation_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.problems_requiring_second_tier_moderation(),
                                self.problems_requiring_second_tier_moderation)
-
-    def test_escalated_problems_returns_correct_problems(self):
-        self.compare_querysets(Problem.objects.open_escalated_problems(),
-                               self.open_escalated_problems)
 
     def test_requiring_survey_to_be_sent_returns_correct_problems(self):
         now = datetime.utcnow().replace(tzinfo=utc)

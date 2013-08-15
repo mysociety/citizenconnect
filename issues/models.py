@@ -44,12 +44,6 @@ class ProblemQuerySet(models.query.QuerySet):
         args = self.ORDER_BY_FIELDS_FOR_MODERATION_TABLE
         return self.order_by(*args)
 
-    def open_unescalated_problems(self):
-        return self.filter(
-            Q(status__in=Problem.OPEN_STATUSES) &
-            Q(status__in=Problem.NON_ESCALATION_STATUSES)
-        )
-
     def open_problems(self):
         """
         Return only open problems
@@ -105,10 +99,6 @@ class ProblemManager(models.Manager):
 
     def problems_requiring_second_tier_moderation(self):
         return self.all().filter(requires_second_tier_moderation=True)
-
-    def open_escalated_problems(self):
-        return self.all().filter(Q(status__in=Problem.ESCALATION_STATUSES) &
-                                 Q(status__in=Problem.OPEN_STATUSES))
 
     def requiring_confirmation(self):
         return self.filter(
