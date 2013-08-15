@@ -161,7 +161,7 @@ class ModerationFormTests(ModerationFormPublicReporterNameMixin, BaseModerationT
             'moderated_description': moderated_description
         }
         self.form_values.update(test_form_values)
-        resp = self.client.post(self.problem_form_url, self.form_values)
+        self.client.post(self.problem_form_url, self.form_values)
         problem = Problem.objects.get(pk=self.test_problem.id)
         self.assertEqual(problem.moderated_description, moderated_description)
 
@@ -173,15 +173,6 @@ class ModerationFormTests(ModerationFormPublicReporterNameMixin, BaseModerationT
         self.client.post(self.problem_form_url, self.form_values)
         problem = Problem.objects.get(pk=self.test_problem.id)
         self.assertEqual(problem.breach, True)
-
-    def test_moderation_form_will_not_set_escalated_status(self):
-        test_form_values = {
-            'status': Problem.ESCALATED
-        }
-        self.form_values.update(test_form_values)
-        self.client.post(self.problem_form_url, self.form_values)
-        problem = Problem.objects.get(pk=self.test_problem.id)
-        self.assertEqual(problem.status, Problem.NEW)
 
     def test_moderation_form_sets_status(self):
         test_form_values = {
