@@ -334,7 +334,7 @@ class ProblemModelTests(ProblemTestCase):
 
     def test_defaults_to_primary_cobrand(self):
         self.assertEqual(self.test_problem.cobrand, 'choices')
-    
+
     def test_summary(self):
         tests = (
             # (problem, expected summary)
@@ -343,7 +343,7 @@ class ProblemModelTests(ProblemTestCase):
             (self.test_moderated_hidden_problem, "Hidden"),
             (self.test_private_problem, "Private"),
         )
-        
+
         for problem, expected_summary in tests:
             self.assertEqual(problem.summary, expected_summary)
 
@@ -461,108 +461,6 @@ class ProblemModelConcurrencyTests(TransactionTestCase, ConcurrencyTestMixin):
     def tearDown(self):
         # get rid of filters added in setUp
         warnings.resetwarnings()
-
-
-class ProblemModelEscalationTests(ProblemTestCase):
-
-    def setUp(self):
-        super(ProblemModelEscalationTests, self).setUp()
-
-        self.test_escalation_ccg = self.test_trust.escalation_ccg
-        self.test_escalation_ccg.email = 'ccg@example.org'
-        self.test_escalation_ccg.save()
-
-    def test_send_escalation_email_method_raises_when_not_escalated(self):
-        problem = self.test_problem
-        self.assertTrue(problem.status != Problem.ESCALATED)
-        self.assertRaises(ValueError, problem.send_escalation_email)
-
-    def test_send_escalation_email_method_not_commissioned(self):
-        problem = self.test_problem
-        problem.status = Problem.ESCALATED
-        problem.commissioned = None  # deliberately not set
-
-        self.assertRaises(ValueError, problem.send_escalation_email)
-
-    def test_send_escalation_email_method_locally_commisioned(self):
-        problem = self.test_problem
-        problem.status = Problem.ESCALATED
-        problem.commissioned = Problem.LOCALLY_COMMISSIONED
-
-        problem.send_escalation_email()
-
-        self.assertEqual(len(mail.outbox), 1)
-
-        escalation_email = mail.outbox[0]
-
-        self.assertTrue("Problem has been escalated" in escalation_email.subject)
-        self.assertEqual(escalation_email.to, ['ccg@example.org'])
-
-    def test_send_escalation_email_method_nationally_commissioned(self):
-        problem = self.test_problem
-        problem.status = Problem.ESCALATED
-        problem.commissioned = Problem.NATIONALLY_COMMISSIONED
-
-        problem.send_escalation_email()
-
-        self.assertEqual(len(mail.outbox), 1)
-
-        escalation_email = mail.outbox[0]
-
-        self.assertTrue("Problem has been escalated" in escalation_email.subject)
-        self.assertEqual(escalation_email.to, settings.CUSTOMER_CONTACT_CENTRE_EMAIL_ADDRESSES)
-
-    def test_send_escalation_email_called_on_save(self):
-        problem = self.test_problem
-
-        with patch.object(problem, 'send_escalation_email') as mocked_send:
-
-            # Save the problem for the first time, should not send
-            self.assertTrue(problem.status != Problem.ESCALATED)
-            problem.save()
-            self.assertFalse(mocked_send.called)
-
-            # change the status to Escalated
-            problem.status = Problem.ESCALATED
-            problem.save()
-            self.assertTrue(mocked_send.called)
-
-            # Save it again
-            mocked_send.reset_mock()
-            self.assertTrue(problem.status == Problem.ESCALATED)
-            problem.save()
-            self.assertFalse(mocked_send.called)
-
-            # Change it to not escalated
-            mocked_send.reset_mock()
-            problem.status = Problem.ACKNOWLEDGED
-            problem.save()
-            self.assertFalse(mocked_send.called)
-
-            # Escalate again
-            mocked_send.reset_mock()
-            problem.status = Problem.ESCALATED
-            problem.save()
-            self.assertTrue(mocked_send.called)
-
-    def test_send_escalation_email_called_on_create_escalated(self):
-        problem = Problem(
-            organisation=self.test_hospital,
-            description='A Test Problem',
-            category='cleanliness',
-            reporter_name='Test User',
-            reporter_email='reporter@example.com',
-            reporter_phone='01111 111 111',
-            public=True,
-            public_reporter_name=True,
-            preferred_contact_method=Problem.CONTACT_EMAIL,
-            status=Problem.ESCALATED
-        )
-
-        # save object
-        with patch.object(problem, 'send_escalation_email') as mocked_send:
-            problem.save()
-            self.assertTrue(mocked_send.called)
 
 
 class ManagerTest(TestCase):
@@ -830,7 +728,7 @@ class ProblemManagerTests(ManagerTest):
         self.compare_querysets(Problem.objects.all_published_visible_problems(),
                                self.all_published_visible_problems)
 
-    def test_all_published_visible_problems_returns_correct_problems(self):
+    def test_all_not_rejected_visible_problems_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.all_not_rejected_visible_problems(),
                                self.all_not_rejected_visible_problems)
 
@@ -872,7 +770,6 @@ class ProblemManagerTests(ManagerTest):
         old_problem.survey_sent = now
         old_problem.save()
         self.assertEqual(Problem.objects.requiring_survey_to_be_sent().count(), 0)
-
 
 
 class ProblemImageModelTests(ProblemImageTestBase):
