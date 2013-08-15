@@ -117,6 +117,10 @@ class HelpYourNHS(TemplateView):
     template_name = 'citizenconnect/help_your_nhs.html'
 
 
+class CommonQuestions(TemplateView):
+    template_name = 'citizenconnect/common_questions.html'
+
+
 class Boom(TemplateView):
     """ A helper view to show us what a server error looks like """
 
