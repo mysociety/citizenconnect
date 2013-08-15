@@ -292,11 +292,6 @@ class CCGEscalationDashboardTests(AuthorizationTestCase):
         resp = self.client.get(self.escalation_dashboard_url)
         self.assertContains(resp, '<div class="problem-table__flag__breach">b</div>')
 
-    def test_dashboard_shows_escalation_flag(self):
-        self.login_as(self.ccg_user)
-        resp = self.client.get(self.escalation_dashboard_url)
-        self.assertContains(resp, '<div class="problem-table__flag__escalate">e</div>')
-
     def test_dashboard_highlights_priority_problems(self):
         self.login_as(self.ccg_user)
         # Up the priority of a problem
@@ -365,15 +360,6 @@ class CCGBreachDashboardTests(AuthorizationTestCase):
         self.login_as(self.ccg_user)
         resp = self.client.get(self.breach_dashboard_url)
         self.assertContains(resp, '<div class="problem-table__flag__breach">b</div>')
-
-    def test_dashboard_shows_escalation_flag(self):
-        self.login_as(self.ccg_user)
-        # Make the breach problem escalated too
-        self.org_breach_problem.status = Problem.ESCALATED
-        self.org_breach_problem.commissioned = Problem.LOCALLY_COMMISSIONED
-        self.org_breach_problem.save()
-        resp = self.client.get(self.breach_dashboard_url)
-        self.assertContains(resp, '<div class="problem-table__flag__escalate">e</div>')
 
     def test_dashboard_highlights_priority_problems(self):
         self.login_as(self.ccg_user)

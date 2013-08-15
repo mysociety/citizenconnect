@@ -381,16 +381,6 @@ class OrganisationParentProblemsTests(AuthorizationTestCase):
         resp = self.client.get(self.trust_problems_url)
         self.assertContains(resp, '<div class="problem-table__flag__breach">b</div>')
 
-    def test_private_page_shows_escalated_flag(self):
-        self.login_as(self.trust_user)
-        create_test_problem({'organisation': self.hospital,
-                             'publication_status': Problem.PUBLISHED,
-                             'moderated_description': 'Moderated',
-                             'status': Problem.ESCALATED,
-                             'commissioned': Problem.LOCALLY_COMMISSIONED})
-        resp = self.client.get(self.trust_problems_url)
-        self.assertContains(resp, '<div class="problem-table__flag__escalate">e</div>')
-
     def test_private_page_shows_private_summary(self):
         self.login_as(self.trust_user)
         create_test_problem({'organisation': self.hospital,
@@ -528,15 +518,6 @@ class OrganisationParentBreachesTests(AuthorizationTestCase):
         self.login_as(self.ccg_user)
         resp = self.client.get(self.breach_dashboard_url)
         self.assertContains(resp, '<div class="problem-table__flag__breach">b</div>')
-
-    def test_dashboard_shows_escalation_flag(self):
-        self.login_as(self.ccg_user)
-        # Make the breach problem escalated too
-        self.org_breach_problem.status = Problem.ESCALATED
-        self.org_breach_problem.commissioned = Problem.LOCALLY_COMMISSIONED
-        self.org_breach_problem.save()
-        resp = self.client.get(self.breach_dashboard_url)
-        self.assertContains(resp, '<div class="problem-table__flag__escalate">e</div>')
 
     def test_dashboard_highlights_priority_problems(self):
         self.login_as(self.ccg_user)
