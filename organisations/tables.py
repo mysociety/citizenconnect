@@ -100,17 +100,17 @@ class BaseProblemTable(tables.Table):
                             attrs={'td': {'class': 'problem-table__light-text'}})
 
     # Will only be made visible on private pages
-    breach_and_escalation = BreachColumn(visible=False)
+    breach = BreachColumn(visible=False)
 
     def __init__(self, *args, **kwargs):
         self.private = kwargs.pop('private')
         if self.private:
             self.base_columns['summary'].accessor = 'private_summary'
-            self.base_columns['breach_and_escalation'].visible = True
+            self.base_columns['breach'].visible = True
         else:
             self.cobrand = kwargs.pop('cobrand')
             self.base_columns['summary'].accessor = 'summary'
-            self.base_columns['breach_and_escalation'].visible = False
+            self.base_columns['breach'].visible = False
 
         super(BaseProblemTable, self).__init__(*args, **kwargs)
 
@@ -186,7 +186,7 @@ class ProblemTable(BaseProblemTable):
                     'happy_service',
                     'happy_outcome',
                     'summary',
-                    'breach_and_escalation')
+                    'breach')
 
 
 class ExtendedProblemTable(ProblemTable):
@@ -217,7 +217,7 @@ class ExtendedProblemTable(ProblemTable):
                     'happy_service',
                     'happy_outcome',
                     'summary',
-                    'breach_and_escalation')
+                    'breach')
 
 
 class OrganisationParentProblemTable(ExtendedProblemTable):
@@ -242,7 +242,7 @@ class OrganisationParentProblemTable(ExtendedProblemTable):
                     'happy_service',
                     'happy_outcome',
                     'summary',
-                    'breach_and_escalation')
+                    'breach')
 
 
 class ProblemDashboardTable(BaseProblemTable):
@@ -285,7 +285,7 @@ class ProblemDashboardTable(BaseProblemTable):
                     'service',
                     'summary',
                     'images',
-                    'breach_and_escalation')
+                    'breach')
 
 
 class BreachTable(ProblemTable):
