@@ -6,7 +6,7 @@ class BreachAndEscalationColumn(tables.TemplateColumn):
     def __init__(self, *args, **kwargs):
 
         defaults = {
-            'template_name': "issues/includes/breach_escalation_column.html",
+            'template_name': "organisations/includes/tables/columns/breach_escalation_column.html",
             'verbose_name': " ",
             'orderable': False,
             'attrs': {'td': {'class': 'problem-table__flag'}}

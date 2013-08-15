@@ -14,7 +14,7 @@ class BaseModerationTable(tables.Table):
     private_summary = tables.Column(verbose_name='Text snippet', orderable=False)
 
     images = tables.TemplateColumn(
-        template_name="organisations/includes/images_column.html",
+        template_name="organisations/includes/tables/columns/images_column.html",
         accessor="images",
         orderable=False
     )

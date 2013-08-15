@@ -24,17 +24,17 @@ class NationalSummaryTable(tables.Table):
 
     # We split these into sub-columns
     average_time_to_acknowledge = tables.TemplateColumn(verbose_name='Acknowledge',
-                                                        template_name='organisations/includes/time_interval_column.html')
+                                                        template_name='organisations/includes/tables/columns/time_interval_column.html')
     average_time_to_address = tables.TemplateColumn(verbose_name='Close',
-                                                    template_name='organisations/includes/time_interval_column.html',
+                                                    template_name='organisations/includes/tables/columns/time_interval_column.html',
                                                     attrs={'th': {'class': 'summary-table__cell-no-border'}})
 
     # We split these into sub-columns
     happy_service = tables.TemplateColumn(verbose_name='Manner',
-                                          template_name="organisations/includes/percent_column.html")
+                                          template_name="organisations/includes/tables/columns/percent_column.html")
 
     happy_outcome = tables.TemplateColumn(verbose_name='Resolution',
-                                          template_name="organisations/includes/percent_column.html",
+                                          template_name="organisations/includes/tables/columns/percent_column.html",
                                           attrs={'th': {'class': 'summary-table__cell-no-border'}})
 
     # We put all these columns in, and then js hides all but one
@@ -48,7 +48,7 @@ class NationalSummaryTable(tables.Table):
                                      attrs={'th': {'class': 'reviews-received'}})
 
     average_recommendation_rating = tables.TemplateColumn(verbose_name='Average Review:',
-                                                          template_name='organisations/includes/rating_column.html',
+                                                          template_name='organisations/includes/tables/columns/rating_column.html',
                                                           attrs={'th': {'class': 'two-twelfths'}})
 
     def __init__(self, *args, **kwargs):
@@ -67,9 +67,9 @@ class NationalSummaryTable(tables.Table):
 
     class Meta:
         # Show organisations with the most problems first. This is so that when
-        # the results are filtered the top of the list (after it updates) is 
+        # the results are filtered the top of the list (after it updates) is
         # more relevant. See issue #843 for rationale.
-        order_by = ('-all_time',) 
+        order_by = ('-all_time',)
 
 
 class CCGSummaryTable(NationalSummaryTable):
@@ -156,10 +156,10 @@ class ProblemTable(BaseProblemTable):
     is implied or the primary focus.
     """
     happy_service = tables.TemplateColumn(verbose_name='Manner',
-                                          template_name="organisations/includes/boolean_column.html",
+                                          template_name="organisations/includes/tables/columns/boolean_column.html",
                                           orderable=False)
     happy_outcome = tables.TemplateColumn(verbose_name='Resolution',
-                                          template_name="organisations/includes/boolean_column.html",
+                                          template_name="organisations/includes/tables/columns/boolean_column.html",
                                           orderable=False)
     status = tables.Column()
 
@@ -196,10 +196,10 @@ class ExtendedProblemTable(ProblemTable):
     """
     service = tables.Column(verbose_name='Department', orderable=False)
     time_to_acknowledge = tables.TemplateColumn(verbose_name='Acknowledge',
-                                                template_name='organisations/includes/time_interval_column.html',
+                                                template_name='organisations/includes/tables/columns/time_interval_column.html',
                                                 orderable=False)
     time_to_address = tables.TemplateColumn(verbose_name='Close',
-                                            template_name='organisations/includes/time_interval_column.html',
+                                            template_name='organisations/includes/tables/columns/time_interval_column.html',
                                             orderable=False)
     resolved = tables.DateTimeColumn(verbose_name="Resolved")
 
@@ -262,7 +262,7 @@ class ProblemDashboardTable(BaseProblemTable):
     service = tables.Column(verbose_name="Service", orderable=False)
 
     images = tables.TemplateColumn(
-        template_name="organisations/includes/images_column.html",
+        template_name="organisations/includes/tables/columns/images_column.html",
         accessor="images",
         orderable=False
     )
