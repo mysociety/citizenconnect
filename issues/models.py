@@ -252,9 +252,8 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     # Names for transitions between statuses we might want to print
     TRANSITIONS = {
         'status': {
-            'Acknowledged': [[NEW, ACKNOWLEDGED], [ESCALATED, ESCALATED_ACKNOWLEDGED]],
-            'Escalated': [[NEW, ESCALATED], [ACKNOWLEDGED, ESCALATED]],
-            'Resolved': [[ACKNOWLEDGED, RESOLVED], [ESCALATED_ACKNOWLEDGED, ESCALATED_RESOLVED]]
+            'Acknowledged': [[NEW, ACKNOWLEDGED]],
+            'Resolved': [[ACKNOWLEDGED, RESOLVED]]
         },
         'publication_status': {
             'Published': [[NOT_MODERATED, PUBLISHED], [REJECTED, PUBLISHED]],
