@@ -12,6 +12,7 @@ from .views import (
     Feedback,
     FeedbackConfirm,
     HelpYourNHS,
+    CommonQuestions,
     Boom
 )
 
@@ -37,6 +38,7 @@ urlpatterns = patterns(
     url(r'^' + cobrand_pattern + r'/feedback$', Feedback.as_view(), name='feedback'),
     url(r'^' + cobrand_pattern + r'/feedback/confirm$', FeedbackConfirm.as_view(), name='feedback-confirm'),
     url(r'^' + cobrand_pattern + r'/help-your-nhs$', HelpYourNHS.as_view(), name='help-your-nhs'),
+    url(r'^' + cobrand_pattern + r'/common-questions$', CommonQuestions.as_view(), name='common-questions'),
 
     url(r'^' + cobrand_pattern + r'/', include('issues.urls.public')),
     url(r'^' + cobrand_pattern + r'/reviews/', include('reviews_submit.urls')),
