@@ -473,15 +473,6 @@ class OrganisationProblemsTests(AuthorizationTestCase):
         resp = self.client.get(self.public_hospital_problems_url)
         self.assertNotContains(resp, '<div class="problem-table__flag__breach">b</div>')
 
-    def test_public_page_doesnt_show_escalated_flag(self):
-        create_test_problem({'organisation': self.hospital,
-                             'publication_status': Problem.PUBLISHED,
-                             'moderated_description': 'Moderated',
-                             'status': Problem.ESCALATED,
-                             'commissioned': Problem.LOCALLY_COMMISSIONED})
-        resp = self.client.get(self.public_hospital_problems_url)
-        self.assertNotContains(resp, '<div class="problem-table__flag__escalate">e</div>')
-
     def test_public_page_shows_public_summary(self):
         create_test_problem({'organisation': self.hospital,
                              'publication_status': Problem.PUBLISHED,
