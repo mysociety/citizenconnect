@@ -451,14 +451,10 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         now = datetime.utcnow().replace(tzinfo=utc)
         minutes_since_created = self.timedelta_to_minutes(now - self.created)
         statuses_which_indicate_acknowledgement = [Problem.ACKNOWLEDGED,
-                                                   Problem.RESOLVED,
-                                                   Problem.ESCALATED_ACKNOWLEDGED,
-                                                   Problem.ESCALATED_RESOLVED]
-        statuses_which_indicate_resolution = [Problem.RESOLVED,
-                                              Problem.ESCALATED_RESOLVED]
+                                                   Problem.RESOLVED]
         if self.time_to_acknowledge is None and int(self.status) in statuses_which_indicate_acknowledgement:
             self.time_to_acknowledge = minutes_since_created
-        if self.time_to_address is None and int(self.status) in statuses_which_indicate_resolution:
+        if self.time_to_address is None and self.status == Problem.RESOLVED:
             self.time_to_address = minutes_since_created
             self.resolved = now
 
