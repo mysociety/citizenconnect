@@ -37,7 +37,7 @@ class SecondTierModerationTable(BaseModerationTable):
     action = tables.TemplateColumn(verbose_name='Actions',
                                    template_name='moderation/includes/second_tier_moderation_link.html',
                                    orderable=False)
-    breach_and_escalation = BreachColumn()
+    breach = BreachColumn()
 
     class Meta:
         attrs = {'class': 'problem-table  problem-table--expanded'}
