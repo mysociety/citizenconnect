@@ -50,6 +50,12 @@ class ProblemQuerySet(models.query.QuerySet):
             Q(status__in=Problem.NON_ESCALATION_STATUSES)
         )
 
+    def open_problems(self):
+        """
+        Return only open problems
+        """
+        return self.all().filter(Q(status__in=Problem.OPEN_STATUSES))
+
 
 class ProblemManager(models.Manager):
     use_for_related_fields = True

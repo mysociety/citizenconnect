@@ -5,10 +5,7 @@ from django.test.utils import override_settings
 # App imports
 from issues.models import Problem
 
-from . import (create_test_problem,
-               create_test_service,
-               create_test_organisation,
-               AuthorizationTestCase)
+from . import create_test_problem, AuthorizationTestCase
 
 
 class CCGDashboardTests(AuthorizationTestCase):
@@ -50,15 +47,6 @@ class CCGDashboardTests(AuthorizationTestCase):
         self.login_as(self.ccg_user)
         resp = self.client.get(self.dashboard_url)
         self.assertTrue(closed_problem_response_url not in resp.content)
-
-    def test_dashboard_doesnt_show_escalated_problems(self):
-        self.escalated_problem = create_test_problem({'organisation': self.test_hospital,
-                                                      'status': Problem.ESCALATED,
-                                                      'commissioned': Problem.LOCALLY_COMMISSIONED})
-        escalated_problem_response_url = reverse('response-form', kwargs={'pk': self.escalated_problem.id})
-        self.login_as(self.ccg_user)
-        resp = self.client.get(self.dashboard_url)
-        self.assertTrue(escalated_problem_response_url not in resp.content)
 
     def test_dashboard_page_is_inaccessible_to_anon_users(self):
         expected_login_url = "{0}?next={1}".format(self.login_url, self.dashboard_url)
