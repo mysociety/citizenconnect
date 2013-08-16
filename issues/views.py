@@ -130,7 +130,3 @@ class ProblemSurvey(UpdateView):
         context = RequestContext(self.request)
         context['object'] = self.object
         return render(self.request, self.confirm_template, context)
-
-
-class CommonQuestions(TemplateView):
-    template_name = 'issues/common_questions.html'
