@@ -95,8 +95,8 @@ class OrganisationParent(MailSendMixin, AuditedModel):
     email = models.EmailField(max_length=254)
     secondary_email = models.EmailField(max_length=254, blank=True)
 
-    # Which CCG this Parent should escalate problems too
-    primary_ccg = models.ForeignKey(CCG, blank=False, null=False, related_name='escalation_organisation_parents')
+    # Which CCG is this Parent primarily responsible to
+    primary_ccg = models.ForeignKey(CCG, blank=False, null=False, related_name='primary_organisation_parents')
 
     # Which CCGs commission services from this Parent.
     # This means that those CCGs will be able to see all the problems at
