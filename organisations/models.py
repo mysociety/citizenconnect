@@ -153,11 +153,11 @@ class OrganisationParent(MailSendMixin, AuditedModel):
 
 
 @receiver(post_save, sender=OrganisationParent)
-def ensure_ccgs_contains_escalation_ccg(sender, **kwargs):
-    """ post_save signal handler to ensure that organisation_parent.escalation_ccg is always in organisation_parent.ccgs """
+def ensure_ccgs_contains_primary_ccg(sender, **kwargs):
+    """ post_save signal handler to ensure that organisation_parent.primary_ccg is always in organisation_parent.ccgs """
     organisation_parent = kwargs['instance']
-    if organisation_parent.escalation_ccg and organisation_parent.escalation_ccg not in organisation_parent.ccgs.all():
-        organisation_parent.ccgs.add(organisation_parent.escalation_ccg)
+    if organisation_parent.primary_ccg and organisation_parent.primary_ccg not in organisation_parent.ccgs.all():
+        organisation_parent.ccgs.add(organisation_parent.primary_ccg)
 
 
 def organisation_image_upload_path(instance, filename):
