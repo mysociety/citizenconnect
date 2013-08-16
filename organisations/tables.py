@@ -1,3 +1,5 @@
+import itertools
+
 import django_tables2 as tables
 
 from django.utils.safestring import mark_safe
@@ -8,6 +10,8 @@ from issues.table_columns import BreachAndEscalationColumn
 
 
 class NationalSummaryTable(tables.Table):
+
+    row_number = tables.Column(empty_values=())
 
     name = tables.Column(verbose_name='Provider name',
                          attrs={'th': {'class': 'two-twelfths'}})
@@ -54,6 +58,16 @@ class NationalSummaryTable(tables.Table):
     def __init__(self, *args, **kwargs):
         self.cobrand = kwargs.pop('cobrand')
         super(NationalSummaryTable, self).__init__(*args, **kwargs)
+        self.counter = itertools.count()
+
+    def render_row_number(self, record, table):
+        records_before = 0
+        if table.paginator and table.page.number > 1:
+            # We're paginating and on somewhere other than the first page
+            # so we need to add all the rows from previous pages to our
+            # count (yes, table.page.number is 1-based)
+            records_before = (table.page.number - 1) * table.paginator.per_page
+        return next(self.counter) + records_before + 1
 
     def render_name(self, record):
         url = self.reverse_to_org_summary(record['ods_code'])
@@ -67,9 +81,9 @@ class NationalSummaryTable(tables.Table):
 
     class Meta:
         # Show organisations with the most problems first. This is so that when
-        # the results are filtered the top of the list (after it updates) is 
+        # the results are filtered the top of the list (after it updates) is
         # more relevant. See issue #843 for rationale.
-        order_by = ('-all_time',) 
+        order_by = ('-all_time',)
 
 
 class CCGSummaryTable(NationalSummaryTable):
