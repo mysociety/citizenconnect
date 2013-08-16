@@ -99,11 +99,11 @@ class OrganisationSummaryTests(AuthorizationTestCase):
         self.assertEqual(problems_by_status[2]['six_months'], 0)
         self.assertEqual(problems_by_status[2]['description'], 'Closed')
 
-        self.assertEqual(problems_by_status[7]['all_time'], 1)
-        self.assertEqual(problems_by_status[7]['week'], 1)
-        self.assertEqual(problems_by_status[7]['four_weeks'], 1)
-        self.assertEqual(problems_by_status[7]['six_months'], 1)
-        self.assertEqual(problems_by_status[7]['description'], 'Abusive/Vexatious')
+        self.assertEqual(problems_by_status[6]['all_time'], 1)
+        self.assertEqual(problems_by_status[6]['week'], 1)
+        self.assertEqual(problems_by_status[6]['four_weeks'], 1)
+        self.assertEqual(problems_by_status[6]['six_months'], 1)
+        self.assertEqual(problems_by_status[6]['description'], 'Abusive/Vexatious')
 
     def test_public_summary_page_only_shows_visible_problems(self):
         self.login_as(self.trust_user)
@@ -239,10 +239,10 @@ class OrganisationSummaryTests(AuthorizationTestCase):
     def test_private_summary_page_does_not_display_summary_stats_values_in_hidden_status_rows(self):
         self.login_as(self.trust_user)
         resp = self.client.get(self.private_summary_url)
-        self.assertContains(resp, '<td class="average_time_to_acknowledge" id="status_7_time_to_acknowledge">—</td>')
-        self.assertContains(resp, '<td class="average_time_to_address" id="status_7_time_to_address">—</td>')
-        self.assertContains(resp, '<td class="happy_service" id="status_7_happy_service">—</td>')
-        self.assertContains(resp, '<td class="happy_outcome" id="status_7_happy_outcome">—</td>')
+        self.assertContains(resp, '<td class="average_time_to_acknowledge" id="status_6_time_to_acknowledge">—</td>')
+        self.assertContains(resp, '<td class="average_time_to_address" id="status_6_time_to_address">—</td>')
+        self.assertContains(resp, '<td class="happy_service" id="status_6_happy_service">—</td>')
+        self.assertContains(resp, '<td class="happy_outcome" id="status_6_happy_outcome">—</td>')
 
     def test_public_summary_page_is_accessible_to_everyone(self):
         resp = self.client.get(self.public_summary_url)

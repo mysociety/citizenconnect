@@ -168,11 +168,11 @@ class OrganisationParentSummaryTests(AuthorizationTestCase):
         self.assertEqual(problems_by_status[2]['six_months'], 0)
         self.assertEqual(problems_by_status[2]['description'], 'Closed')
 
-        self.assertEqual(problems_by_status[7]['all_time'], 1)
-        self.assertEqual(problems_by_status[7]['week'], 1)
-        self.assertEqual(problems_by_status[7]['four_weeks'], 1)
-        self.assertEqual(problems_by_status[7]['six_months'], 1)
-        self.assertEqual(problems_by_status[7]['description'], 'Abusive/Vexatious')
+        self.assertEqual(problems_by_status[6]['all_time'], 1)
+        self.assertEqual(problems_by_status[6]['week'], 1)
+        self.assertEqual(problems_by_status[6]['four_weeks'], 1)
+        self.assertEqual(problems_by_status[6]['six_months'], 1)
+        self.assertEqual(problems_by_status[6]['description'], 'Abusive/Vexatious')
 
     def test_private_summary_page_shows_visible_and_hidden_status_rows(self):
         self.login_as(self.trust_user)
@@ -201,10 +201,10 @@ class OrganisationParentSummaryTests(AuthorizationTestCase):
     def test_private_summary_page_does_not_display_summary_stats_values_in_hidden_status_rows(self):
         self.login_as(self.trust_user)
         resp = self.client.get(self.trust_summary_url)
-        self.assertContains(resp, '<td class="average_time_to_acknowledge" id="status_7_time_to_acknowledge">—</td>')
-        self.assertContains(resp, '<td class="average_time_to_address" id="status_7_time_to_address">—</td>')
-        self.assertContains(resp, '<td class="happy_service" id="status_7_happy_service">—</td>')
-        self.assertContains(resp, '<td class="happy_outcome" id="status_7_happy_outcome">—</td>')
+        self.assertContains(resp, '<td class="average_time_to_acknowledge" id="status_6_time_to_acknowledge">—</td>')
+        self.assertContains(resp, '<td class="average_time_to_address" id="status_6_time_to_address">—</td>')
+        self.assertContains(resp, '<td class="happy_service" id="status_6_happy_service">—</td>')
+        self.assertContains(resp, '<td class="happy_outcome" id="status_6_happy_outcome">—</td>')
 
     def test_private_summary_page_is_inaccessible_to_anon_users(self):
         expected_login_url = "{0}?next={1}".format(self.login_url, self.trust_summary_url)
@@ -242,7 +242,7 @@ class OrganisationParentSummaryTests(AuthorizationTestCase):
                 'name': 'Trust with no orgs',
                 'code': 'hagq123',
                 'choices_id': 98086,
-                'escalation_ccg': self.test_ccg  # So that we can use the ccg user to login
+                'primary_ccg': self.test_ccg  # So that we can use the ccg user to login
             }
         )
         trust_with_no_orgs_summary_url = reverse('org-parent-summary', kwargs={'code': trust_with_no_orgs.code})
