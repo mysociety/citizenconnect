@@ -78,8 +78,8 @@ def create_test_organisation_parent(attributes={}):
         'secondary_email': 'test-trust-secondary@example.org',
     }
     default_attributes.update(attributes)
-    if 'escalation_ccg' not in attributes:
-        default_attributes['escalation_ccg'] = create_test_ccg({"code": default_attributes['code']})
+    if 'primary_ccg' not in attributes:
+        default_attributes['primary_ccg'] = create_test_ccg({"code": default_attributes['code']})
     instance = OrganisationParent(**dict((k, v) for (k, v) in default_attributes.items() if '__' not in k))
     instance.save()
     return instance
@@ -169,11 +169,11 @@ class IntervalCountsTest(TestCase):
         self.test_ccg = create_test_ccg()
         self.other_test_ccg = create_test_ccg({'name': 'Other test ccg', 'code': 'CCG2'})
 
-        self.test_trust = create_test_organisation_parent({'escalation_ccg': self.test_ccg})
+        self.test_trust = create_test_organisation_parent({'primary_ccg': self.test_ccg})
         self.test_trust.ccgs.add(self.test_ccg)
         self.test_trust.save()
 
-        self.test_gp_surgery = create_test_organisation_parent({'escalation_ccg': self.other_test_ccg,
+        self.test_gp_surgery = create_test_organisation_parent({'primary_ccg': self.other_test_ccg,
                                                   'code': 'TRUST2'})
         self.test_gp_surgery.ccgs.add(self.other_test_ccg)
         self.test_gp_surgery.save()
@@ -539,10 +539,10 @@ class AuthorizationTestCase(TestCase):
         self.other_test_ccg = create_test_ccg({'name': 'other test ccg', 'code': 'XYZ'})
 
         # Organisation Parent
-        self.test_trust = create_test_organisation_parent({'escalation_ccg': self.test_ccg})
+        self.test_trust = create_test_organisation_parent({'primary_ccg': self.test_ccg})
         self.test_gp_surgery = create_test_organisation_parent({'name': 'other test trust',
                                                                 'code': 'XYZ',
-                                                                'escalation_ccg': self.other_test_ccg})
+                                                                'primary_ccg': self.other_test_ccg})
 
         self.test_trust.ccgs.add(self.test_ccg)
         self.test_trust.save()

@@ -95,8 +95,8 @@ class OrganisationParent(MailSendMixin, AuditedModel):
     email = models.EmailField(max_length=254)
     secondary_email = models.EmailField(max_length=254, blank=True)
 
-    # Which CCG this Parent should escalate problems too
-    escalation_ccg = models.ForeignKey(CCG, blank=False, null=False, related_name='escalation_organisation_parents')
+    # Which CCG is this Parent primarily responsible to
+    primary_ccg = models.ForeignKey(CCG, blank=False, null=False, related_name='primary_organisation_parents')
 
     # Which CCGs commission services from this Parent.
     # This means that those CCGs will be able to see all the problems at
@@ -153,11 +153,11 @@ class OrganisationParent(MailSendMixin, AuditedModel):
 
 
 @receiver(post_save, sender=OrganisationParent)
-def ensure_ccgs_contains_escalation_ccg(sender, **kwargs):
-    """ post_save signal handler to ensure that organisation_parent.escalation_ccg is always in organisation_parent.ccgs """
+def ensure_ccgs_contains_primary_ccg(sender, **kwargs):
+    """ post_save signal handler to ensure that organisation_parent.primary_ccg is always in organisation_parent.ccgs """
     organisation_parent = kwargs['instance']
-    if organisation_parent.escalation_ccg and organisation_parent.escalation_ccg not in organisation_parent.ccgs.all():
-        organisation_parent.ccgs.add(organisation_parent.escalation_ccg)
+    if organisation_parent.primary_ccg and organisation_parent.primary_ccg not in organisation_parent.ccgs.all():
+        organisation_parent.ccgs.add(organisation_parent.primary_ccg)
 
 
 def organisation_image_upload_path(instance, filename):

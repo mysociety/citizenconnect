@@ -32,7 +32,7 @@ class ReviewTable(tables.Table):
                             default="See more...")
 
     def render_rating(self, record):
-        return render_to_string('organisations/includes/rating_column.html', {'value': record.main_rating_score})
+        return render_to_string('organisations/includes/tables/columns/rating_column.html', {'value': record.main_rating_score})
 
     def render_summary(self, record, value):
         review_link = reverse('review-detail', kwargs={'ods_code': self.organisation.ods_code, 'cobrand': self.cobrand, 'api_posting_id': record.api_posting_id})

@@ -107,7 +107,7 @@ class CsvImportTests(TestCase):
                 'code': 'AN1',
                 'choices_id': 1234,
                 'email': 'an-trust@example.com',
-                'escalation_ccg': ccg.id,
+                'primary_ccg': ccg.id,
                 'id': org_parent.id,
                 'name': 'Ascot North Trust',
                 'secondary_email': 'an-trust-backup@example.com',

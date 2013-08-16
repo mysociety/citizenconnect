@@ -5,7 +5,6 @@ from .organisation_views import *
 from .organisation_parent_views import *
 from .ccg_views import *
 from .superuser_views import *
-from .escalation_views import *
 from .commands import *
 from .templatetags import *
 from .models import *

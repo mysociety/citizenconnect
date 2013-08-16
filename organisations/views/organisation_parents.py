@@ -180,7 +180,7 @@ class OrganisationParentDashboard(OrganisationParentAwareViewMixin,
         context = super(OrganisationParentDashboard, self).get_context_data(**kwargs)
 
         # Get the models related to this organisation, and let the db sort them
-        problems = context['organisation_parent'].problem_set.open_unescalated_problems()
+        problems = context['organisation_parent'].problem_set.open_problems()
         problems_table = ProblemDashboardTable(problems)
         RequestConfig(self.request, paginate={'per_page': 25}).configure(problems_table)
         context['table'] = problems_table

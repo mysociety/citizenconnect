@@ -39,8 +39,7 @@ class ProblemAPITests(TestCase):
             'requires_second_tier_moderation': 0,
             'breach': 1,
             'commissioned': Problem.NATIONALLY_COMMISSIONED,
-            'priority': Problem.PRIORITY_HIGH,
-            'escalated': 0
+            'priority': Problem.PRIORITY_HIGH
         }
 
         self.problem_api_url = reverse('api-problem-create')
@@ -286,32 +285,8 @@ class ProblemAPITests(TestCase):
         errors = content_json['errors']
         self.assertEqual(errors['priority'][0],  u"The problem is not in a category which permits setting of a high priority.")
 
-    def test_escalated_is_optional(self):
-        problem_without_escalated = self.test_problem_defaults
-        del problem_without_escalated['escalated']
-        resp = self.client.post(self.problem_api_url, problem_without_escalated)
-        self.assertEquals(resp.status_code, 201)
-
-        problem = Problem.objects.get(reporter_name=self.problem_uuid)
-        expected_reference_number = '{0}{1}'.format(Problem.PREFIX, problem.id)
-
-        content_json = json.loads(resp.content)
-        self.assertEqual(content_json['reference_number'], expected_reference_number)
-        self.assertEqual(problem.status, Problem.NEW)
-
-    def test_does_not_accept_escalated_problems(self):
-        problem_with_escalation_flag = self.test_problem_defaults
-        problem_with_escalation_flag['escalated'] = 1
-        resp = self.client.post(self.problem_api_url, problem_with_escalation_flag)
-        self.assertEquals(resp.status_code, 400)
-        content_json = json.loads(resp.content)
-
-        errors = content_json['errors']
-        self.assertEqual(errors['escalated'][0],  u"Escalation is not currently enabled.")
-
     def test_status_is_ignored(self):
         self.test_problem_defaults['status'] = Problem.ACKNOWLEDGED
-        del self.test_problem_defaults['escalated']
         resp = self.client.post(self.problem_api_url, self.test_problem_defaults)
         self.assertEquals(resp.status_code, 201)
 

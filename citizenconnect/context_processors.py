@@ -58,7 +58,6 @@ def add_site_section(request):
         'dashboard':  'problem',
         'moderate':   'problem',
         'respond':    'problem',
-        'escalation': 'problem',
         'survey':     'problem',
 
         'reviews': 'review',

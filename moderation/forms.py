@@ -26,10 +26,6 @@ class ModerationForm(ConcurrentFormMixin, forms.ModelForm):
         if self.instance.public_reporter_name_original is False:
             del self.fields['public_reporter_name']
 
-        if 'status' in self.fields:
-            # For now, restrict the statuses allowable to non-escalation statuses
-            self.fields["status"].choices = Problem.NON_ESCALATION_STATUS_CHOICES
-
     def clean_publication_status(self):
 
         publication_status = self.cleaned_data['publication_status']

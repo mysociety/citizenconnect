@@ -9,7 +9,6 @@ from organisations.views.organisations import *
 from organisations.views.organisation_parents import *
 from organisations.views.ccgs import *
 from organisations.views.superusers import *
-from organisations.views.escalation import *
 from organisations.auth import StrongSetPasswordForm, StrongPasswordChangeForm
 
 urlpatterns = patterns(
@@ -51,16 +50,6 @@ urlpatterns = patterns(
         name='ccg-dashboard',
         kwargs={'private': True}),
 
-    url(r'^ccg/(?P<code>\w+)/escalation$',
-        login_required(CCGEscalationDashboard.as_view()),
-        name='ccg-escalation-dashboard',
-        kwargs={'private': True}),
-
-    url(r'^ccg/(?P<code>\w+)/breaches$',
-        login_required(CCGEscalationBreaches.as_view()),
-        name='ccg-escalation-breaches',
-        kwargs={'private': True}),
-
     url(r'^ccg/(?P<code>\w+)/summary$',
         login_required(CCGSummary.as_view()),
         name='ccg-summary',
@@ -80,17 +69,6 @@ urlpatterns = patterns(
     url(r'^superuser/access-logs$',
         login_required(SuperuserLogs.as_view()),
         name='superuser-logs'),
-
-    # Body-independent urls
-    url(r'^escalation$',
-        login_required(EscalationDashboard.as_view()),
-        name='escalation-dashboard',
-        kwargs={'private': True}),
-
-    url(r'^escalation/breaches$',
-        login_required(EscalationBreaches.as_view()),
-        name='escalation-breaches',
-        kwargs={'private': True}),
 
     # Authentication related urls
     url(r'^login$',

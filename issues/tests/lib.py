@@ -67,43 +67,6 @@ class LibTests(TestCase):
         actual = changes_as_string(changes, Problem.TRANSITIONS)
         self.assertEqual(actual, expected)
 
-    def test_changes_as_string_escalated(self):
-        new_escalated = {'status': Problem.ESCALATED,
-                         'publication_status': Problem.REJECTED}
-
-        expected = "Rejected and Escalated"
-        changes = changed_attrs(self.old, new_escalated, Problem.REVISION_ATTRS)
-        actual = changes_as_string(changes, Problem.TRANSITIONS)
-        self.assertEqual(actual, expected)
-
-    def test_changes_as_string_escalated_acknowledged(self):
-        old_escalated = {'status': Problem.ESCALATED,
-                         'publication_status': Problem.REJECTED,
-                         'requires_second_tier_moderation': False}
-
-        new_escalated_acknowledged = {'status': Problem.ESCALATED_ACKNOWLEDGED,
-                                      'publication_status': Problem.REJECTED,
-                                      'requires_second_tier_moderation': False}
-
-        expected = "Acknowledged"
-        changes = changed_attrs(old_escalated, new_escalated_acknowledged, Problem.REVISION_ATTRS)
-        actual = changes_as_string(changes, Problem.TRANSITIONS)
-        self.assertEqual(actual, expected)
-
-    def test_changes_as_string_escalated_resolved(self):
-        old_escalated_acknowledged = {'status': Problem.ESCALATED_ACKNOWLEDGED,
-                                      'publication_status': Problem.REJECTED,
-                                      'requires_second_tier_moderation': False}
-
-        new_escalated_resolved = {'status': Problem.ESCALATED_RESOLVED,
-                                  'publication_status': Problem.REJECTED,
-                                  'requires_second_tier_moderation': False}
-
-        expected = "Resolved"
-        changes = changed_attrs(old_escalated_acknowledged, new_escalated_resolved, Problem.REVISION_ATTRS)
-        actual = changes_as_string(changes, Problem.TRANSITIONS)
-        self.assertEqual(actual, expected)
-
     def changes_as_string_requires_second_tier_moderation(self):
         old = {
             'status': Problem.NOT_MODERATED,

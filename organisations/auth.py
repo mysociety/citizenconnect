@@ -40,13 +40,6 @@ def user_is_superuser(user):
     return user.is_superuser or user_in_group(user, NHS_SUPERUSERS)
 
 
-def user_is_escalation_body(user):
-    """
-    A shortcut to check if a user is a CCG or the CCC
-    """
-    return user_in_groups(user, [CCG, CUSTOMER_CONTACT_CENTRE])
-
-
 def user_in_groups(user, groups):
     """
     Helper for seeing if a user is in any of a list of user groups.
@@ -94,10 +87,6 @@ def enforce_response_access_check(problem, user):
     For now, this is equivalent to being able to access the organisation.
     """
     enforce_organisation_access_check(problem.organisation, user)
-
-
-def user_can_access_national_escalation_dashboard(user):
-    return (user_is_superuser(user) or user_in_groups(user, [CUSTOMER_CONTACT_CENTRE]))
 
 
 def create_initial_password():
@@ -258,13 +247,6 @@ def create_home_links_for_user(user):
                 "title": "CCG dashboard for {0}".format(ccg.name),
                 "url": reverse('ccg-dashboard', kwargs={'code': ccg.code}),
             })
-
-    # Customer contact centre users go to the escalation dashboard
-    if user_in_group(user, CUSTOMER_CONTACT_CENTRE):
-        links.append({
-            "title": "Escalation dashboard",
-            "url": reverse('escalation-dashboard'),
-        })
 
     # Moderators go to the moderation queue
     if user_in_group(user, CASE_HANDLERS):

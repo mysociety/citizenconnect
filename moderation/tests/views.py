@@ -181,21 +181,6 @@ class SecondTierModerationHomeViewTests(BaseModerationTestCase):
         resp = self.client.get(self.second_tier_home_url)
         self.assertContains(resp, expected)
 
-    def test_escalated_problems_identified(self):
-        expected = '<div class="problem-table__flag__escalate">e</div>'
-
-        # Test without there being an escalated enry
-        resp = self.client.get(self.second_tier_home_url)
-        self.assertNotContains(resp, expected)
-
-        # add an escalated entry
-        self.second_tier_moderation.status = Problem.ESCALATED_ACKNOWLEDGED
-        self.second_tier_moderation.save()
-
-        # check it is now listed
-        resp = self.client.get(self.second_tier_home_url)
-        self.assertContains(resp, expected)
-
 
 class ModerateFormViewTests(BaseModerationTestCase, ProblemImageTestBase):
 
