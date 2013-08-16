@@ -42,18 +42,35 @@ class OrganisationParentModelTests(TestCase):
         for p in problems:
             self.assertEqual(p.organisation.parent, self.test_trust)
 
-    def test_escalation_ccg_always_in_ccgs(self):
+    def test_primary_ccg_always_in_ccgs(self):
         ccg = create_test_ccg({})
         trust = OrganisationParent(name="test_trust",
                                    code="ABC",
                                    choices_id=12345,
                                    email='test-trust@example.org',
                                    secondary_email='test-trust-secondary@example.org',
-                                   escalation_ccg=ccg)
+                                   primary_ccg=ccg)
 
         trust.save()
         trust = OrganisationParent.objects.get(pk=trust.id)
-        self.assertTrue(trust.escalation_ccg in trust.ccgs.all())
+        self.assertTrue(trust.primary_ccg in trust.ccgs.all())
+
+    def test_that_email_address_is_required_when_none(self):
+        self.assertRaises(
+            ValidationError,
+            OrganisationParent.objects.create,
+            primary_ccg=create_test_ccg({}),
+            choices_id=123
+        )
+
+    def test_that_email_address_is_required_when_empty(self):
+        self.assertRaises(
+            ValidationError,
+            OrganisationParent.objects.create,
+            primary_ccg=create_test_ccg({}),
+            choices_id=123,
+            email=""
+        )
 
 
 class CCGModelTests(TestCase):
@@ -63,7 +80,7 @@ class CCGModelTests(TestCase):
         self.test_ccg = create_test_ccg({'code': 'CCG1'})
 
         # create a trust
-        self.test_trust = create_test_organisation_parent({'code': 'MYTRUST', 'escalation_ccg': self.test_ccg})
+        self.test_trust = create_test_organisation_parent({'code': 'MYTRUST', 'primary_ccg': self.test_ccg})
 
         # create three orgs, two of which belong to the ccg, and one that does not
         self.test_trust_org_1 = create_test_organisation({"parent": self.test_trust, "ods_code": "test1"})
@@ -107,24 +124,6 @@ class CCGModelAuthTests(AuthorizationTestCase):
         self.assertFalse(self.test_ccg.can_be_accessed_by(self.other_ccg_user))
         self.assertFalse(self.other_test_ccg.can_be_accessed_by(self.ccg_user))
         self.assertFalse(self.test_ccg.can_be_accessed_by(self.no_ccg_user))
-
-
-class OrganisationParentModelTests(TestCase):
-    def test_that_email_address_is_required(self):
-        self.assertRaises(
-            ValidationError,
-            OrganisationParent.objects.create,
-            escalation_ccg=create_test_ccg({}),
-            choices_id=123
-        )
-    def test_that_email_address_is_required(self):
-        self.assertRaises(
-            ValidationError,
-            OrganisationParent.objects.create,
-            escalation_ccg=create_test_ccg({}),
-            choices_id=123,
-            email=""
-        )
 
 
 class OrganisationModelTests(TestCase):
