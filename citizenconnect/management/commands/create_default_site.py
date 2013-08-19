@@ -1,6 +1,6 @@
 from urlparse import urlparse
 
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import NoArgsCommand, CommandError
 from django.conf import settings
 from django.contrib.sites.models import Site
 
@@ -21,7 +21,7 @@ class Command(NoArgsCommand):
                 self.stdout.write("settings.SITE_BASE_URL = %s\n" % settings.SITE_BASE_URL)
             base_domain = urlparse(settings.SITE_BASE_URL).netloc
             if not base_domain:
-                raise ValueError("settings.SITE_BASE_URL is not a valid fully qualified domain.")
+                raise CommandError("settings.SITE_BASE_URL is not a valid fully qualified domain.")
             try:
                 default_site = Site.objects.get(id=1)
                 default_site.domain = base_domain
