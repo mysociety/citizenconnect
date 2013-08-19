@@ -32,3 +32,5 @@ class Command(NoArgsCommand):
                 Site.objects.create(name="Default Site", domain=base_domain)
                 if verbosity >= 1:
                     self.stdout.write("Created Site id=1\n")
+        else:
+            raise CommandError("settings.SITE_BASE_URL has not been set")
