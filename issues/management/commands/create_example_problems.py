@@ -7,6 +7,7 @@ from ...models import Problem
 from organisations.models import Organisation
 
 class Command(BaseCommand):
+    args = '<number_to_create>'
     help = """Create some example problems based on existing problems and assign them
     randomly to organisations, categories and statuses"""
 
