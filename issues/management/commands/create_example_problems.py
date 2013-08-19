@@ -12,6 +12,7 @@ class Command(BaseCommand):
     randomly to organisations, categories and statuses"""
 
     def handle(self, *args, **options):
+        verbosity = int(options.get('verbosity'))
 
         if len(args) != 1:
             raise CommandError("Usage: ./manage.py create_example_problems number_to_create")
@@ -25,8 +26,15 @@ class Command(BaseCommand):
         if not existing_problems.count():
             raise CommandError("There are no existing problems in the database to base the new example ones on")
 
-        while i <= number_of_problems:
+        if verbosity >= 1:
+            self.stdout.write("Creating %i example problems\n" % number_of_problems)
+
+        while i < number_of_problems:
             i += 1
+
+            if verbosity >= 3:
+                self.stdout.write("Creating problem %i of %i\n" % (i, number_of_problems))
+
             template_problem = existing_problems[int(random.random() * len(existing_problems))]
             new_problem = Problem(description=template_problem.description,
                                   reporter_name=template_problem.reporter_name,
