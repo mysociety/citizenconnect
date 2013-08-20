@@ -1,10 +1,8 @@
 from django import forms
 from django.forms.widgets import HiddenInput, RadioSelect
-from django.forms.models import inlineformset_factory
 
 from citizenconnect.forms import ConcurrentFormMixin
 from issues.models import Problem
-from responses.models import ProblemResponse
 
 
 class ModerationForm(ConcurrentFormMixin, forms.ModelForm):
@@ -124,12 +122,6 @@ class ProblemModerationForm(ModerationForm):
             'public': HiddenInput,
             'priority': HiddenInput
         }
-
-
-ProblemResponseInlineFormSet = inlineformset_factory(Problem,
-                                                     ProblemResponse,
-                                                     max_num=0,
-                                                     fields=('response',))
 
 
 class ProblemSecondTierModerationForm(ModerationForm):
