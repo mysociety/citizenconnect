@@ -10,6 +10,7 @@ class Command(BaseCommand):
 
     @transaction.commit_manually
     def handle(self, *args, **options):
+        verbosity = int(options.get('verbosity'))
 
         api = ChoicesAPI()
         for organisation in Organisation.objects.all():
@@ -20,9 +21,11 @@ class Command(BaseCommand):
                     organisation.average_recommendation_rating = rating
                     organisation.save()
 
-                    self.stdout.write('Updated rating for organisation %s\n' % organisation.name)
+                    if verbosity >= 1:
+                        self.stdout.write('Updated rating for organisation %s\n' % organisation.name)
                     transaction.commit()
             except Exception as e:
-                self.stderr.write("Error updating rating for %s\n" % (organisation.name))
-                self.stderr.write(str(e))
+                if verbosity >= 1:
+                    self.stderr.write("Error updating rating for %s\n" % (organisation.name))
+                    self.stderr.write(str(e))
                 transaction.rollback()

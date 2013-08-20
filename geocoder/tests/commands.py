@@ -37,7 +37,7 @@ class GeocoderCsvImportTests(TestCase):
     ))
     def test_os_locator(self):
 
-        call_command('import_from_OS_locator', self.os_locator_data_filename)
+        call_command('load_places_from_OS_locator', self.os_locator_data_filename)
         self.assertEqual(Place.objects.count(), 10)
 
         place = Place.objects.get(name="BEVAN COURT")
@@ -60,7 +60,7 @@ class GeocoderCsvImportTests(TestCase):
     ))
     def test_50k_gazetteer(self):
 
-        call_command('import_from_OS_50k_gazetteer', self.os_50k_gazetteer_data_filename)
+        call_command('load_places_from_OS_50k_gazetteer', self.os_50k_gazetteer_data_filename)
         self.assertEqual(Place.objects.count(), 10)
 
         place = Place.objects.get(name="Farringdon Station")

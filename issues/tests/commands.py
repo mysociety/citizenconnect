@@ -1,4 +1,4 @@
-import logging
+from StringIO import StringIO
 from mock import patch
 from datetime import datetime, timedelta
 
@@ -143,9 +143,7 @@ class EmailProblemsToOrganisationParentTests(TestCase):
                                                        'reporter_email': 'problem@example.com',
                                                        'reporter_phone': '123456789'})
 
-    def _call_command(self):
-        args = []
-        opts = {}
+    def _call_command(self, *args, **opts):
         call_command('email_issues_to_providers', *args, **opts)
 
     def test_happy_path(self):
@@ -210,14 +208,11 @@ class EmailProblemsToOrganisationParentTests(TestCase):
         self.assertTrue(self.test_problem.reporter_email not in first_mail.body)
 
     def test_handles_errors_in_sending_mails(self):
-        # Quiet logging for this test
-        logging.disable(logging.CRITICAL)
         # Make send_mail throw an exception for the first call
         with patch.object(mail, 'send_mail') as mock_send_mail:
-
             # intro mail, intro mail again, other problem mail
             mock_send_mail.side_effect = [Exception('A fake error in sending mail'), 1, 1]
-            self._call_command()
+            self._call_command(stdout=StringIO(), stderr=StringIO())
             # Check it tried to send two emails
             self.assertEqual(mock_send_mail.call_count, 2)
             # Check that the errored issue is still marked as not mailed
@@ -226,6 +221,3 @@ class EmailProblemsToOrganisationParentTests(TestCase):
             # # And that the successful one got marked as mailed
             self.other_test_problem = Problem.objects.get(pk=self.other_test_problem.id)
             self.assertTrue(self.other_test_problem.mailed)
-
-        logging.disable(logging.NOTSET)
-

@@ -8,16 +8,10 @@ from ...models import OrganisationParent, CCG
 
 
 class Command(BaseCommand):
+    args = '<csv_file>'
     help = 'Load Organisation Parents from a spreadsheet extracted from the NHS Choices database'
 
     option_list = BaseCommand.option_list + (
-        make_option(
-            '--verbose',
-            action='store_true',
-            dest='verbose',
-            default=False,
-            help='Show verbose output'),
-    ) + (
         make_option(
             '--update',
             action='store_true',
@@ -44,17 +38,17 @@ class Command(BaseCommand):
         filename = args[0]
         reader = csv.DictReader(open(filename), delimiter=',', quotechar='"')
         rownum = 0
-        verbose = options['verbose']
+        verbosity = int(options.get('verbosity'))
         # clean = options['clean']
         update = options['update']
 
         # if clean:
-        #     if verbose:
+        #     if verbosity >= 2:
         #         self.stdout.write("Deleting existing organisation parents")
         #     Service.objects.all().delete()
         #     OrganisationParent.objects.all().delete()
 
-        if verbose:
+        if verbosity >= 2:
             processed = 0
             skipped = 0
 
@@ -136,18 +130,18 @@ class Command(BaseCommand):
 
                 if org_parent_created:
                     self.stdout.write('Created organisation parent %s\n' % org_parent.name)
-                elif verbose:
+                elif verbosity >= 2:
                     self.stdout.write('Organisation Parent %s exists\n' % ods_code)
-                if verbose:
+                if verbosity >= 2:
                     processed += 1
                 transaction.commit()
             except Exception as e:
-                if verbose:
+                if verbosity >= 2:
                     skipped += 1
                 self.stderr.write("Skipping %s (%s): %s" % (name, ods_code, e))
                 transaction.rollback()
 
-        if verbose:
+        if verbosity >= 2:
             self.stdout.write("Total records in file: {0}\n".format(rownum))
             self.stdout.write("Processed {0} records\n".format(processed))
             self.stdout.write("Skipped {0} records\n".format(skipped))

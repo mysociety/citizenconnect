@@ -11,24 +11,18 @@ from django.core import mail
 
 from organisations import auth
 
-class Command(BaseCommand):
-    help = "Create accounts in groups that aren't directly associated with CCGs or organisations from a spreadsheet"
 
-    option_list = BaseCommand.option_list + (
-        make_option('--verbose',
-            action='store_true',
-            dest='verbose',
-            default=False,
-            help='Show verbose output'),
-        )
+class Command(BaseCommand):
+    args = '<csv_file>'
+    help = "Create accounts in groups that aren't directly associated with CCGs or organisations from a spreadsheet"
 
     @transaction.commit_manually
     def handle(self, *args, **options):
         filename = args[0]
         reader = csv.DictReader(open(filename), delimiter=',', quotechar='"')
-        verbose = options['verbose']
+        verbosity = int(options.get('verbosity'))
 
-        if verbose:
+        if verbosity >= 2:
             processed = 0
             skipped = 0
 
@@ -64,7 +58,7 @@ class Command(BaseCommand):
                 if is_ccc:
                     user.groups.add(auth.CUSTOMER_CONTACT_CENTRE)
 
-                if verbose:
+                if verbosity >= 2:
                     processed += 1
                 transaction.commit()
                 if created:
@@ -79,12 +73,13 @@ class Command(BaseCommand):
                                    fail_silently=False)
 
             except Exception as e:
-                if verbose:
+                if verbosity >= 2:
                     skipped += 1
-                self.stderr.write("Skipping %s: %s" % (username, e))
+                if verbosity >= 1:
+                    self.stderr.write("Skipping %s: %s" % (username, e))
                 transaction.rollback()
 
-        if verbose:
+        if verbosity >= 2:
             # First row is a header, so ignore it in the count
             self.stdout.write("Total records in file: {0}\n".format(rownum-1))
             self.stdout.write("Processed {0} records\n".format(processed))

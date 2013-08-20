@@ -21,10 +21,15 @@ class Command(NoArgsCommand):
 
     # @transaction.commit_manually
     def handle_noargs(self, *args, **options):
+        verbosity = int(options.get('verbosity'))
 
         if options['fetch_all']:
+            if verbosity >= 2:
+                self.stdout.write("Fetching most recent 10,000 reviews\n")
             api_args = dict(max_fetch=10000)
         else:
+            if verbosity >= 2:
+                self.stdout.write("Fetching up to 100 reviews from the past week\n")
             one_week_ago = datetime.date.today() - datetime.timedelta(days=7)
             api_args = dict(since=one_week_ago, max_fetch=100)
 
@@ -37,4 +42,5 @@ class Command(NoArgsCommand):
                 except OrganisationFromApiDoesNotExist:
                     pass
                 except RepliedToReviewDoesNotExist, e:
-                    self.stderr.write('RepliedToReviewDoesNotExist: ' + str(e) + " - skipping\n")
+                    if verbosity >= 1:
+                        self.stderr.write('RepliedToReviewDoesNotExist: ' + str(e) + " - skipping\n")

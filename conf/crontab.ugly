@@ -35,12 +35,12 @@ PATH=/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/:/data/vhost/!!(*= $vhost 
 
 0 0 * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/get_organisation_ratings_from_choices_api.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash get_organisation_ratings_from_choices_api" || echo "stalled?"
 
-0 * * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/push_new_reviews_to_choices.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash push_new_reviews_to_choices" || echo "stalled?"
+0 * * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/send_new_reviews_to_choices_api.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash send_new_reviews_to_choices_api" || echo "stalled?"
 
-0 7 * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/remove_reviews_sent_to_choices.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash remove_reviews_sent_to_choices" || echo "stalled?"
+0 7 * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/delete_reviews_sent_to_choices_api.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash delete_reviews_sent_to_choices_api" || echo "stalled?"
 
-0 * * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/fetch_reviews_from_choices_api.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash fetch_reviews_from_choices_api" || echo "stalled?"
+0 * * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/get_reviews_from_choices_api.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash get_reviews_from_choices_api" || echo "stalled?"
 
 5 7 * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/delete_old_reviews.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash delete_old_reviews" || echo "stalled?"
 
-10 * * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/pull_articles_from_rss_feed.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash pull_articles_from_rss_feed" || echo "stalled?"
+10 * * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/get_articles_from_rss_feed.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash get_articles_from_rss_feed" || echo "stalled?"

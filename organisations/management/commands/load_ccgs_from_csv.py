@@ -7,15 +7,8 @@ from django.core.management.base import BaseCommand, CommandError
 from ...models import CCG
 
 class Command(BaseCommand):
+    args = '<csv_file>'
     help = 'Load CCGs from a spreadsheet'
-
-    option_list = BaseCommand.option_list + (
-        make_option('--verbose',
-            action='store_true',
-            dest='verbose',
-            default=False,
-            help='Show verbose output'),
-        )
 
     def clean_value(self, value):
         if value == 'NULL':
@@ -28,9 +21,9 @@ class Command(BaseCommand):
         filename = args[0]
         reader = csv.DictReader(open(filename), delimiter=',', quotechar='"')
         rownum = 0
-        verbose = options['verbose']
+        verbosity = int(options.get('verbosity'))
 
-        if verbose:
+        if verbosity >= 2:
             processed = 0
             skipped = 0
 
@@ -56,18 +49,18 @@ class Command(BaseCommand):
                                                              defaults=ccg_defaults)
                 if ccg_created:
                     self.stdout.write('Created CCG %s\n' % ccg.name)
-                if verbose:
+                if verbosity >= 2:
                     processed += 1
                 transaction.commit()
 
             except Exception as e:
-                if verbose:
+                if verbosity >= 2:
                     skipped += 1
                 self.stderr.write("Skipping %s %s: %s" % (name, code, e))
                 transaction.rollback()
 
 
-        if verbose:
+        if verbosity >= 2:
             # First row is a header, so ignore it in the count
             self.stdout.write("Total records in file: {0}\n".format(rownum-1))
             self.stdout.write("Processed {0} records\n".format(processed))

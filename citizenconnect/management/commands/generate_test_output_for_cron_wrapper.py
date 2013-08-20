@@ -10,9 +10,11 @@ class Command(NoArgsCommand):
     help = "Send some output to stdout and stderr, for testing the cron wrapper"
 
     def handle_noargs(self, *args, **options):
+        verbosity = int(options.get('verbosity'))
 
-        self.stderr.write("This is to STDERR\n");
-        self.stdout.write("This is to STDOUT\n");
-        self.stderr.write("This is to STDERR again\n");
+        if verbosity >= 1:
+            self.stderr.write("This is to STDERR\n");
+            self.stdout.write("This is to STDOUT\n");
+            self.stderr.write("This is to STDERR again\n");
 
         raise Exception("Boom - exception raised")
