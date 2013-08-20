@@ -27,7 +27,7 @@ django-passwords
 django-extra-views
 sorl-thumbnail
 django-failedloginblocker==1.0.1
-django-os-geocoder==0.1.5
+django-os-geocoder==0.1.6
 
 ### Testing
 mock
