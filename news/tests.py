@@ -63,13 +63,13 @@ class PullArticlesFromRssFeedTests(TestCase):
 
     def test_pulls_entries_from_rss_feed(self):
         self.assertEqual(0, Article.objects.count())
-        self.call_command('pull_articles_from_rss_feed', self.rss_feed)
+        self.call_command('get_articles_from_rss_feed', self.rss_feed)
         self.assertEqual(2, Article.objects.count())
 
     def test_doesnt_create_entries_twice(self):
         self.assertEqual(0, Article.objects.count())
-        self.call_command('pull_articles_from_rss_feed', self.rss_feed)
-        self.call_command('pull_articles_from_rss_feed', self.rss_feed)
+        self.call_command('get_articles_from_rss_feed', self.rss_feed)
+        self.call_command('get_articles_from_rss_feed', self.rss_feed)
         self.assertEqual(2, Article.objects.count())
 
     @override_settings(
@@ -77,7 +77,7 @@ class PullArticlesFromRssFeedTests(TestCase):
         PROXIED_BLOG_FILES_URL='/careconnect/files'
     )
     def test_creates_entries_correctly(self):
-        self.call_command('pull_articles_from_rss_feed', self.rss_feed)
+        self.call_command('get_articles_from_rss_feed', self.rss_feed)
         article = Article.objects.get(guid='http://blogs.mysociety.org/careconnect/?p=1')
         self.assertEqual("Hello world!", article.title)
         self.assertEqual("Welcome to mySociety Blog Network. This is your first post. Edit or delete it, then start blogging!", article.description)
@@ -95,13 +95,13 @@ class PullArticlesFromRssFeedTests(TestCase):
         article.author = "Bar"
         article.published = timezone.now()
         article.save()
-        self.call_command('pull_articles_from_rss_feed', self.rss_feed)
+        self.call_command('get_articles_from_rss_feed', self.rss_feed)
         article = Article.objects.get(guid='http://blogs.mysociety.org/careconnect/?p=1')
         self.assertEqual("Hello world!", article.title)
         self.assertEqual("steve", article.author)
 
     def test_image_optional(self):
-        self.call_command('pull_articles_from_rss_feed', self.rss_feed)
+        self.call_command('get_articles_from_rss_feed', self.rss_feed)
         article = Article.objects.get(guid='http://blogs.mysociety.org/careconnect/?p=2')  # This one has no image
         self.assertFalse(bool(article.image))
 
@@ -110,7 +110,7 @@ class PullArticlesFromRssFeedTests(TestCase):
         urllib.urlretrieve.side_effect = Exception("Boom!")
 
         # Load the data in
-        self.call_command('pull_articles_from_rss_feed', self.rss_feed)
+        self.call_command('get_articles_from_rss_feed', self.rss_feed)
 
         # Check it worked, but we have no image
         self.assertEqual(Article.objects.count(), 2)

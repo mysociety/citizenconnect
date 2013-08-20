@@ -43,4 +43,4 @@ PATH=/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/:/data/vhost/!!(*= $vhost 
 
 5 7 * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/delete_old_reviews.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash delete_old_reviews" || echo "stalled?"
 
-10 * * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/pull_articles_from_rss_feed.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash pull_articles_from_rss_feed" || echo "stalled?"
+10 * * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/get_articles_from_rss_feed.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash get_articles_from_rss_feed" || echo "stalled?"
