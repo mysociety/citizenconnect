@@ -497,7 +497,7 @@ class OrganisationReviewsTests(TestCase):
             {}
         )
         self.reviews_list_url = reverse(
-            'organisation-reviews',
+            'public-org-reviews',
             kwargs={
                 'ods_code': self.test_organisation.ods_code,
                 'cobrand': 'choices'
@@ -528,7 +528,7 @@ class OrganisationReviewsTests(TestCase):
 
     def test_organisation_reviews_page_links_to_correct_cobrand(self):
         mhl_reviews_list_url = reverse(
-            'organisation-reviews',
+            'public-org-reviews',
             kwargs={
                 'ods_code': self.test_organisation.ods_code,
                 'cobrand': 'myhealthlondon'
