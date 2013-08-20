@@ -441,9 +441,18 @@ class Summary(FilterFormMixin, PrivateViewMixin, TemplateView):
         organisation_data = []
         if threshold:
             interval, cutoff = threshold
+
         for problem_data, review_data in zip(organisation_problem_data, organisation_review_data):
             if (not threshold) or (problem_data[interval] >= cutoff or
                 review_data['reviews_' + interval] >= cutoff):
+                # This assumes that the lists are in the same order, so it's
+                # safe to iterate over them in lockstep like this
+                assert problem_data['ods_code'] == review_data['ods_code'], \
+                    "Problem ods_code {0} != Review ods_code {1} (Check the ORDER BY in interval_counts)".format(
+                            problem_data['ods_code'],
+                            review_data['ods_code']
+                        )
+
                 organisation_data.append(dict(problem_data.items() + review_data.items()))
 
         return organisation_data
