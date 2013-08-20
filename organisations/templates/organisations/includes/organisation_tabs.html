@@ -5,6 +5,6 @@
 
     <li><a {% if active_tab == 'problems' %}class="active"{% endif %} href="{% url 'public-org-problems' ods_code=organisation.ods_code cobrand=cobrand.name %}">Problems</a></li>
 
-    <li><a {% if active_tab == 'reviews' %}class="active"{% endif %} href="{% url 'review-organisation-list' ods_code=organisation.ods_code cobrand=cobrand.name %}">Reviews</a></li>
+    <li><a {% if active_tab == 'reviews' %}class="active"{% endif %} href="{% url 'organisation-reviews' ods_code=organisation.ods_code cobrand=cobrand.name %}">Reviews</a></li>
 
  </ul>
