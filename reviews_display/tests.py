@@ -481,7 +481,7 @@ class ReviewModelTests(TestCase):
         self.assertEqual(review.summary, "See more...")
 
 
-class ReviewOrganisationListTests(TestCase):
+class OrganisationReviewsTests(TestCase):
 
     def setUp(self):
         self.test_organisation = create_test_organisation({'ods_code': 'ABC'})
@@ -497,7 +497,7 @@ class ReviewOrganisationListTests(TestCase):
             {}
         )
         self.reviews_list_url = reverse(
-            'review-organisation-list',
+            'public-org-reviews',
             kwargs={
                 'ods_code': self.test_organisation.ods_code,
                 'cobrand': 'choices'
@@ -528,7 +528,7 @@ class ReviewOrganisationListTests(TestCase):
 
     def test_organisation_reviews_page_links_to_correct_cobrand(self):
         mhl_reviews_list_url = reverse(
-            'review-organisation-list',
+            'public-org-reviews',
             kwargs={
                 'ods_code': self.test_organisation.ods_code,
                 'cobrand': 'myhealthlondon'

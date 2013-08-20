@@ -11,6 +11,5 @@ from .models import *
 from .accounts import *
 from .superuser_logs import *
 from .auth import *
-from .tables import *
 from .password_strength import *
 from .csv_import import *
