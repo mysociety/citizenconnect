@@ -17,7 +17,7 @@ class Command(BaseCommand):
     help = 'Email confirmations to problem reporters'
 
     def handle(self, *args, **options):
-        verbosity = int(options.get('verbosity'))
+        verbosity = self.verbosity = int(options.get('verbosity'))
 
         problems = Problem.objects.requiring_confirmation()
 
@@ -50,7 +50,7 @@ class Command(BaseCommand):
                            'site_base_url': settings.SITE_BASE_URL,
                            'survey_interval_in_days': settings.SURVEY_INTERVAL_IN_DAYS })
 
-        if verbosity >= 2:
+        if self.verbosity >= 2:
             self.stdout.write("Emailing confirmation for problem reference number: {0}\n".format(problem.reference_number))
 
         mail.send_mail(

@@ -12,7 +12,7 @@ class Command(BaseCommand):
     help = 'Email new problems to providers'
 
     def handle(self, *args, **options):
-        verbosity = int(options.get('verbosity'))
+        verbosity = self.verbosity = int(options.get('verbosity'))
         new_problems = Problem.objects.all().filter(mailed=False)
 
         if verbosity >= 2:
@@ -38,7 +38,7 @@ class Command(BaseCommand):
 
     def send_problem(self, template, problem):
         context = Context({'problem': problem, 'site_base_url': settings.SITE_BASE_URL})
-        if verbosity >= 2:
+        if self.verbosity >= 2:
             self.stdout.write("Emailing problem reference number: {0}\n".format(problem.reference_number))
 
         problem.organisation.parent.send_mail(
