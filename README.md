@@ -3,7 +3,7 @@ Citizen Connect
 
 Documentation
 -------------
-Various documentation is available in the `documentation` folder.
+Various documentation is available in the `documentation` folder. For an overview of what this project is about and does, see `conf/OVERVIEW.md`.
 
 Installation
 ------------
