@@ -37,7 +37,7 @@ PATH=/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/:/data/vhost/!!(*= $vhost 
 
 0 * * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/push_new_reviews_to_choices.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash push_new_reviews_to_choices" || echo "stalled?"
 
-0 7 * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/delete_reviews_sent_to_choices.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash delete_reviews_sent_to_choices" || echo "stalled?"
+0 7 * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/delete_reviews_sent_to_choices_api.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash delete_reviews_sent_to_choices_api" || echo "stalled?"
 
 0 * * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/get_reviews_from_choices_api.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash get_reviews_from_choices_api" || echo "stalled?"
 

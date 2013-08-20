@@ -428,5 +428,5 @@ class RemoveReviewsSentToApiTest(TestCase):
 
     def test_removes_old_reviews(self):
         self.assertEquals(self.organisation.submitted_reviews.count(), 4)
-        call_command('delete_reviews_sent_to_choices', stdout=self.stdout, stderr=self.stderr)
+        call_command('delete_reviews_sent_to_choices_api', stdout=self.stdout, stderr=self.stderr)
         self.assertEquals(self.organisation.submitted_reviews.count(), 2)
