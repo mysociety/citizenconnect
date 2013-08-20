@@ -3,8 +3,6 @@ from django.http import Http404
 from django.views.generic import TemplateView
 from django.core.urlresolvers import reverse
 
-from django_tables2 import RequestConfig
-
 # App imports
 from issues.models import Problem
 
@@ -13,7 +11,6 @@ from ..auth import enforce_organisation_access_check, user_in_group
 from ..models import Organisation
 from ..forms import OrganisationFilterForm
 from ..lib import interval_counts
-from ..tables import ProblemTable, ExtendedProblemTable
 
 from .base import PrivateViewMixin, PickProviderBase, FilterFormMixin
 
@@ -123,45 +120,4 @@ class OrganisationSummary(OrganisationAwareViewMixin,
             elif user_in_group(self.request.user, auth.ORGANISATION_PARENTS):
                 context['private_back_to_summaries_link'] = reverse('org-parent-summary', kwargs={'code': self.request.user.organisation_parents.all()[0].code})
 
-        return context
-
-
-class OrganisationProblems(OrganisationAwareViewMixin,
-                           FilterFormMixin,
-                           TemplateView):
-    template_name = 'issues/organisation_problems.html'
-
-    form_class = OrganisationFilterForm
-
-    def get_form_kwargs(self):
-        kwargs = super(OrganisationProblems, self).get_form_kwargs()
-
-        kwargs['organisation'] = self.organisation
-        # Only show service_id if the organisation has services
-        if not self.organisation.has_services():
-            kwargs['with_service_id'] = False
-
-        return kwargs
-
-    def get_context_data(self, **kwargs):
-        context = super(OrganisationProblems, self).get_context_data(**kwargs)
-
-        # Get a queryset of issues and apply any filters to them
-        problems = context['organisation'].problem_set.all_not_rejected_visible_problems()
-        filtered_problems = self.filter_problems(context['selected_filters'], problems)
-
-        # Build a table
-        table_args = {
-            'private': context['private'],
-            'cobrand': kwargs['cobrand']
-        }
-
-        if context['organisation'].has_services() and context['organisation'].has_time_limits():
-            problem_table = ExtendedProblemTable(filtered_problems, **table_args)
-        else:
-            problem_table = ProblemTable(filtered_problems, **table_args)
-
-        RequestConfig(self.request, paginate={'per_page': 8}).configure(problem_table)
-        context['table'] = problem_table
-        context['page_obj'] = problem_table.page
         return context

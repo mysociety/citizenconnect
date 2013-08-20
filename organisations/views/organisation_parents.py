@@ -8,11 +8,9 @@ from django_tables2 import RequestConfig
 from issues.models import Problem
 
 from ..auth import enforce_organisation_parent_access_check
-from ..models import Organisation, OrganisationParent
+from ..models import OrganisationParent
 from ..lib import interval_counts
-from ..tables import (OrganisationParentProblemTable,
-                      ProblemDashboardTable,
-                      BreachTable)
+from ..tables import ProblemDashboardTable
 
 from .base import PrivateViewMixin, FilterFormMixin
 
@@ -136,41 +134,6 @@ class OrganisationParentSummary(OrganisationParentAwareViewMixin, FilterFormMixi
         return organisation_data
 
 
-class OrganisationParentProblems(OrganisationParentAwareViewMixin,
-                                 FilterFormMixin,
-                                 TemplateView):
-
-    template_name = 'issues/organisation_parent_problems.html'
-
-    def get_form_kwargs(self):
-        kwargs = super(OrganisationParentProblems, self).get_form_kwargs()
-
-        # Turn off the ccg filter and filter organisations to this organisation_parent
-        kwargs['with_ccg'] = False
-        kwargs['organisations'] = Organisation.objects.filter(parent=self.organisation_parent)
-
-        # Turn off the organisation_type filter
-        kwargs['with_organisation_type'] = False
-
-        return kwargs
-
-    def get_context_data(self, **kwargs):
-        context = super(OrganisationParentProblems, self).get_context_data(**kwargs)
-
-        # Get a queryset of issues and apply any filters to them
-        problems = self.organisation_parent.problem_set.all()
-        filtered_problems = self.filter_problems(context['selected_filters'], problems)
-
-        # Build a table
-        table_args = {'private': context['private']}
-        problem_table = OrganisationParentProblemTable(filtered_problems, **table_args)
-
-        RequestConfig(self.request, paginate={'per_page': 8}).configure(problem_table)
-        context['table'] = problem_table
-        context['page_obj'] = problem_table.page
-        return context
-
-
 class OrganisationParentDashboard(OrganisationParentAwareViewMixin,
                                   TemplateView):
     template_name = 'organisations/organisation_parent_dashboard.html'
@@ -185,28 +148,4 @@ class OrganisationParentDashboard(OrganisationParentAwareViewMixin,
         RequestConfig(self.request, paginate={'per_page': 25}).configure(problems_table)
         context['table'] = problems_table
         context['page_obj'] = problems_table.page
-        return context
-
-
-class OrganisationParentBreaches(OrganisationParentAwareViewMixin,
-                                 TemplateView):
-
-    template_name = 'issues/organisation_parent_breaches.html'
-
-    def dispatch(self, request, *args, **kwargs):
-        return super(OrganisationParentBreaches, self).dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super(OrganisationParentBreaches, self).get_context_data(**kwargs)
-        problems = Problem.objects.open_problems().filter(breach=True, organisation__parent=context['organisation_parent'])
-
-        # Setup a table for the problems
-        problem_table = BreachTable(problems, private=True)
-        RequestConfig(self.request, paginate={'per_page': 25}).configure(problem_table)
-        context['table'] = problem_table
-        context['page_obj'] = problem_table.page
-
-        # These tables are always in the private context
-        context['private'] = True
-
         return context
