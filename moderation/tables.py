@@ -1,7 +1,7 @@
 import django_tables2 as tables
 from issues.models import ProblemQuerySet
 
-from organisations.table_columns import BreachColumn
+from issues.table_columns import BreachColumn
 
 
 class BaseModerationTable(tables.Table):

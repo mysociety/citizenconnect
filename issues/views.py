@@ -16,17 +16,17 @@ from organisations.views.organisations import OrganisationAwareViewMixin
 from organisations.views.organisation_parents import OrganisationParentAwareViewMixin
 from organisations.auth import enforce_problem_access_check
 from organisations.lib import interval_counts
-from organisations.tables import (
-    ProblemTable,
-    ExtendedProblemTable,
-    OrganisationParentProblemTable,
-    BreachTable
-)
 from organisations.forms import OrganisationFilterForm
 
 from .models import Problem, ProblemImage
 from .forms import ProblemForm, ProblemSurveyForm
 from .lib import base32_to_int
+from .tables import (
+    ProblemTable,
+    ExtendedProblemTable,
+    OrganisationParentProblemTable,
+    BreachTable
+)
 
 
 class ProblemPickProvider(PickProviderBase):

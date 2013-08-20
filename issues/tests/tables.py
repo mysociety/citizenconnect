@@ -3,9 +3,10 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from issues.models import Problem
+from organisations.tests.lib import create_test_organisation, create_test_problem
+
+from ..models import Problem
 from ..tables import ProblemTable
-from .lib import create_test_organisation, create_test_problem
 
 
 class ProblemTableTest(TestCase):
