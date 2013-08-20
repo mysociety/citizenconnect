@@ -23,7 +23,7 @@ class OrganisationReviews(OrganisationAwareViewMixin,
                              TemplateView):
     """ All the reviews for a given organisation """
 
-    template_name = 'reviews_display/reviews_organisation_list.html'
+    template_name = 'reviews_display/organisation_reviews.html'
 
     def get_context_data(self, **kwargs):
         context = super(OrganisationReviews, self).get_context_data(**kwargs)
