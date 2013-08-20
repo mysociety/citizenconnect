@@ -1,4 +1,3 @@
-import logging
 from datetime import datetime
 import random
 
@@ -16,7 +15,6 @@ from django.core.urlresolvers import reverse
 from ...models import Problem
 from ...lib import int_to_base32
 
-logger = logging.getLogger(__name__)
 
 @transaction.commit_manually
 class Command(BaseCommand):
@@ -27,9 +25,12 @@ class Command(BaseCommand):
         return datetime.utcnow().replace(tzinfo=utc)
 
     def handle(self, *args, **options):
+        verbosity = self.verbosity = int(options.get('verbosity'))
         surveyable_problems = Problem.objects.requiring_survey_to_be_sent()
 
-        logger.info('{0} surveys to email'.format(len(surveyable_problems)))
+        if verbosity >= 2:
+            self.stdout.write("{0} surveys to email\n".format(len(surveyable_problems)))
+
         if len(surveyable_problems) > 0:
             # Get the template
             survey_template = get_template('issues/survey_email.txt')
@@ -44,8 +45,9 @@ class Command(BaseCommand):
                     problem.save()
                     transaction.commit()
                 except Exception as e:
-                    logger.error('{0}'.format(e))
-                    logger.error('Error mailing survey: {0}'.format(problem.reference_number))
+                    if verbosity >= 1:
+                        self.stderr.write("{0}\n".format(e))
+                        self.stderr.write("Error mailing survey: {0}\n".format(problem.reference_number))
                     transaction.rollback()
 
     def send_survey(self, template, problem):
@@ -74,7 +76,8 @@ class Command(BaseCommand):
             'site_base_url': site_base_url
         })
 
-        logger.info('Emailing survey for problem reference number: {0}'.format(problem.reference_number))
+        if self.verbosity >= 2:
+            self.stdout.write("Emailing survey for problem reference number: {0}\n".format(problem.reference_number))
 
         mail.send_mail(subject='Care Connect Survey',
                   message=template.render(context),

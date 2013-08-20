@@ -16,6 +16,7 @@ class Command(BaseCommand):
     help = "Import articles from the given file or url"
 
     def handle(self, *args, **options):
+        verbosity = int(options.get('verbosity'))
         if len(args) > 0:
             feed_url = args[0]
         else:
@@ -26,8 +27,12 @@ class Command(BaseCommand):
         for entry in feed.entries:
             try:
                 article = Article.objects.get(guid=entry.id)
+                if verbosity >= 2:
+                    self.stdout.write("Updating Article guid={0}\n".format(article.id))
             except Article.DoesNotExist:
                 article = Article(guid=entry.guid)
+                if verbosity >= 2:
+                    self.stdout.write("Creating Article guid={0}\n".format(article.id))
 
             article.title = entry.title
             article.description = entry.summary
@@ -53,4 +58,5 @@ class Command(BaseCommand):
                         os.remove(temp_image_file)
                     except Exception as e:
                         # On any exception, just ignore the image
-                        self.stderr.write("Skipping image for %s: %s\n" % (article.title, e))
+                        if verbosity >= 1:
+                            self.stderr.write("Skipping image for %s: %s\n" % (article.title, e))
