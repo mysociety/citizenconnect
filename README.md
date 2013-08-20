@@ -1,6 +1,10 @@
 Citizen Connect
 ===============
 
+Documentation
+-------------
+Various documentation is available in the `documentation` folder.
+
 Installation
 ------------
 
