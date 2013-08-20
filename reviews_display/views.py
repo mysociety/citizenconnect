@@ -20,7 +20,7 @@ class ReviewLoadOrganisationBase(OrganisationAwareViewMixin):
 
 
 class OrganisationReviews(OrganisationAwareViewMixin,
-                             TemplateView):
+                          TemplateView):
     """ All the reviews for a given organisation """
 
     template_name = 'reviews_display/organisation_reviews.html'
