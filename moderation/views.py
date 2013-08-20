@@ -2,6 +2,7 @@ from django.views.generic import TemplateView, UpdateView
 from django.views.generic.edit import FormView
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 
 from django_tables2 import RequestConfig
 from extra_views import UpdateWithInlinesView, InlineFormSet, NamedFormsetsMixin
@@ -11,7 +12,7 @@ from issues.models import Problem
 from organisations.auth import enforce_moderation_access_check, enforce_second_tier_moderation_access_check
 from responses.models import ProblemResponse
 
-from .forms import ProblemModerationForm, ProblemResponseInlineFormSet, ProblemSecondTierModerationForm
+from .forms import ProblemModerationForm, ProblemSecondTierModerationForm
 from issues.forms import LookupForm
 from .tables import ModerationTable, SecondTierModerationTable
 
@@ -104,9 +105,9 @@ class ProblemResponseInline(InlineFormSet):
     fields = ('response',)
 
 
-class ModerateForm(ModeratorsOnlyMixin,
-                   UpdateWithInlinesView,
-                   NamedFormsetsMixin):
+class ModerateForm(NamedFormsetsMixin,
+                   ModeratorsOnlyMixin,
+                   UpdateWithInlinesView):
 
     model = Problem
     template_name = 'moderation/moderate_form.html'
@@ -129,6 +130,12 @@ class ModerateForm(ModeratorsOnlyMixin,
 
     def get_success_url(self):
         return reverse('moderate-confirm')
+
+    def get_context_data(self, **kwargs):
+        context = super(ModerateForm, self).get_context_data(**kwargs)
+        # This shouldn't be necessary, but for some reason it is
+        context['issue'] = get_object_or_404(Problem, pk=self.kwargs['pk'])
+        return context
 
 
 class SecondTierModerateForm(SecondTierModeratorsOnlyMixin,
