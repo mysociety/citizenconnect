@@ -140,7 +140,7 @@ class OrganisationParentProblems(OrganisationParentAwareViewMixin,
                                  FilterFormMixin,
                                  TemplateView):
 
-    template_name = 'organisations/organisation_parent_problems.html'
+    template_name = 'issues/organisation_parent_problems.html'
 
     def get_form_kwargs(self):
         kwargs = super(OrganisationParentProblems, self).get_form_kwargs()
@@ -191,7 +191,7 @@ class OrganisationParentDashboard(OrganisationParentAwareViewMixin,
 class OrganisationParentBreaches(OrganisationParentAwareViewMixin,
                                  TemplateView):
 
-    template_name = 'organisations/organisation_parent_breaches.html'
+    template_name = 'issues/organisation_parent_breaches.html'
 
     def dispatch(self, request, *args, **kwargs):
         return super(OrganisationParentBreaches, self).dispatch(request, *args, **kwargs)

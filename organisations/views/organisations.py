@@ -129,7 +129,7 @@ class OrganisationSummary(OrganisationAwareViewMixin,
 class OrganisationProblems(OrganisationAwareViewMixin,
                            FilterFormMixin,
                            TemplateView):
-    template_name = 'organisations/organisation_problems.html'
+    template_name = 'issues/organisation_problems.html'
 
     form_class = OrganisationFilterForm
 
