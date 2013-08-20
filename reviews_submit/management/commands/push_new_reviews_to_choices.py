@@ -14,38 +14,46 @@ class Command(BaseCommand):
     help = 'Push new reviews to the Choices API'
 
     def handle(self, *args, **options):
+        verbosity = int(options.get('verbosity'))
         organisations = Organisation.objects.annotate(num_reviews=Count('submitted_reviews')).filter(num_reviews__gt=0)
 
         for organisation in organisations:
             url = self.choices_api_url(organisation)
             reviews = organisation.submitted_reviews.filter(last_sent_to_api__isnull=True)
-            if reviews is not None:
-                self.push_reviews(url, reviews)
+            if not reviews:
+                if verbosity >= 1:
+                    self.stdout.write("No reviews found\n")
+                return
 
-    def push_reviews(self, url, reviews):
-        for review in reviews:
-            data = self.xml_encode(review)
-            response = requests.post(url, data=data, headers={'content-type': 'application/xml'})
+            for review in reviews:
+                data = self.xml_encode(review)
+                response = requests.post(url, data=data, headers={'content-type': 'application/xml'})
 
-            if response.status_code == 202:
-                self.stdout.write("{0}: Sent review to the Choices API\n".format(review.id))
-                review.last_sent_to_api = timezone.now()
-                review.save()
+                if response.status_code == 202:
+                    if verbosity >= 1:
+                        self.stdout.write("{0}: Sent review to the Choices API\n".format(review.id))
+                    review.last_sent_to_api = timezone.now()
+                    review.save()
 
-            elif response.status_code == 400:
-                self.stderr.write("{0}: The XML has invalid fields\n".format(review.id))
+                elif response.status_code == 400:
+                    if verbosity >= 1:
+                        self.stderr.write("{0}: The XML has invalid fields\n".format(review.id))
 
-            elif response.status_code == 401:
-                self.stderr.write("{0}: The API key does not have permission\n".format(review.id))
+                elif response.status_code == 401:
+                    if verbosity >= 1:
+                        self.stderr.write("{0}: The API key does not have permission\n".format(review.id))
 
-            elif response.status_code == 403:
-                self.stderr.write("{0}: PostingID is a duplicate\n".format(review.id))
+                elif response.status_code == 403:
+                    if verbosity >= 1:
+                        self.stderr.write("{0}: PostingID is a duplicate\n".format(review.id))
 
-            elif response.status_code == 404:
-                self.stderr.write("{0}: The NACS code {1} is not valid\n".format(review.id, review.organisation.ods_code))
+                elif response.status_code == 404:
+                    if verbosity >= 1:
+                        self.stderr.write("{0}: The NACS code {1} is not valid\n".format(review.id, review.organisation.ods_code))
 
-            elif response.status_code == 500:
-                self.stderr.write("{0}: Server error\n".format(review.id, review.organisation.ods_code))
+                elif response.status_code == 500:
+                    if verbosity >= 1:
+                        self.stderr.write("{0}: Server error\n".format(review.id, review.organisation.ods_code))
 
     def choices_api_url(self, organisation):
         """Return the choices api url for submitting a review about a specific organisation."""
