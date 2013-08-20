@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 
 from reviews_display.views import OrganisationParentReviews
+from issues.views import OrganisationParentProblems, OrganisationParentBreaches
 
 from organisations.views.base import *
 from organisations.views.organisations import *
