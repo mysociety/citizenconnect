@@ -2,8 +2,6 @@ import logging
 import re
 from datetime import datetime, timedelta
 from decimal import Decimal
-from StringIO import StringIO
-import json
 
 # Django imports
 from django.test import TestCase
@@ -11,7 +9,6 @@ from django.utils.timezone import utc
 from django.contrib.gis.geos import Point
 from django.contrib.auth.models import User, AnonymousUser
 from django.core.urlresolvers import reverse
-from django.core.management import call_command
 
 # App imports
 from issues.models import Problem
@@ -522,6 +519,28 @@ class IntervalCountsTest(TestCase):
         organisation_filters = {'organisation_ids': ()}
         with self.assertRaises(ValueError) as context_manager:
             interval_counts(organisation_filters=organisation_filters)
+
+    def test_counts_ordered_by_name_and_ods_code(self):
+        # Bug #1167 - When two orgs have the same name, the problem count
+        # appeared against the wrong organisation. interval_counts wasn't really
+        # the culprit, rather some code in the view which assumed separate calls for
+        # reviews and problems would always be sorted the same, when really
+        # the DB could not be relied upon for this, so we changed the ordering
+        # to also order by ods_code after name.
+
+        # Add a new hospital with the same name as the existing one
+        duplicate_name_hospital = create_test_organisation({
+            'ods_code': 'XXX888',
+            'organisation_type': 'hospitals',
+            'parent': self.test_trust,
+            'name': self.test_hospital.name
+        })
+
+        counts = interval_counts()
+
+        self.assertEqual(counts[0]['ods_code'], self.test_gp_branch.ods_code)
+        self.assertEqual(counts[1]['ods_code'], duplicate_name_hospital.ods_code)
+        self.assertEqual(counts[2]['ods_code'], self.test_hospital.ods_code)
 
 
 class AuthorizationTestCase(TestCase):

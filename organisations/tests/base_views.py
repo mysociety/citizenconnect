@@ -22,6 +22,7 @@ from issues.models import Problem
 import organisations
 from ..models import Organisation
 from ..forms import MapitPostCodeLookup, MapitPostcodeNotFoundError
+from ..views.base import Summary
 from . import (create_test_problem,
                create_test_organisation,
                create_test_service,
@@ -401,6 +402,68 @@ class SummaryTests(AuthorizationTestCase):
         resp = self.client.get("{0}?problems_interval=not_there&reviews_interval=neither".format(self.summary_url))
         self.assertEqual(resp.context['problems_sort_column'], resp.context['table'].columns['all_time'])
         self.assertEqual(resp.context['reviews_sort_column'], resp.context['table'].columns['reviews_all_time'])
+
+
+    @override_settings(SUMMARY_THRESHOLD=None)
+    def test_get_interval_counts_works_with_duplicate_names(self):
+        # Issue #1167 - when two orgs had identical names, the code in
+        # Summary.get_interval_counts could mix up the problem and
+        # review data if the two orgs with the same name were in
+        # different orders in the two sets of data
+        # (Possible because the sorting can't guarantee anything when
+        # sorting by the name field alone)
+
+        # Add a new org with the same name as a previous one:
+        duplicate_name_hospital = create_test_organisation({
+            'ods_code': 'DUPE1',
+            'organisation_type': 'hospitals',
+            'parent': self.test_hospital.parent,
+            'name': self.test_hospital.name
+        })
+
+        expected_organisation_data = [
+            {
+                'week': 0,
+                'ods_code': duplicate_name_hospital.ods_code,
+                'name': duplicate_name_hospital.name,
+                'happy_outcome': None,
+                'average_time_to_acknowledge': None,
+                'reviews_week': 0,
+                'six_months': 0,
+                'all_time': 0,
+                'four_weeks': 0,
+                'reviews_all_time': 0,
+                'average_recommendation_rating': None,
+                'average_time_to_address': None,
+                'reviews_four_weeks': 0,
+                'id': duplicate_name_hospital.id,
+                'reviews_six_months': 0,
+                'happy_service': None,
+            },
+            {
+                'week': 1L,
+                'ods_code': self.test_hospital.ods_code,
+                'name': self.test_hospital.name,
+                'happy_outcome': None,
+                'average_time_to_acknowledge': None,
+                'reviews_week': 1L,
+                'six_months': 1L,
+                'all_time': 1L,
+                'four_weeks': 1L,
+                'reviews_all_time': 1L,
+                'average_recommendation_rating': None,
+                'average_time_to_address': None,
+                'reviews_four_weeks': 1L,
+                'id': self.test_hospital.id,
+                'reviews_six_months': 1L,
+                'happy_service': None,
+            }
+        ]
+
+        summary_view = Summary()
+
+        actual_organisation_data = summary_view.get_interval_counts({}, {'organisation_type':'hospitals'}, None)
+        self.assertEqual(expected_organisation_data, actual_organisation_data)
 
 
 class SummaryBrowserTests(SeleniumTestCase, AuthorizationTestCase):
