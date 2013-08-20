@@ -157,11 +157,6 @@ class SecondTierModerateForm(SecondTierModeratorsOnlyMixin,
     def get_success_url(self):
         return reverse('second-tier-moderate-confirm')
 
-    def get_context_data(self, **kwargs):
-        context = super(SecondTierModerateForm, self).get_context_data(**kwargs)
-        context['issue'] = Problem.objects.get(pk=self.kwargs['pk'])
-        return context
-
 
 class ModerateConfirm(ModeratorsOnlyMixin,
                       ModerationConfirmationMixin,
