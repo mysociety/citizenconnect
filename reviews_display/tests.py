@@ -481,7 +481,7 @@ class ReviewModelTests(TestCase):
         self.assertEqual(review.summary, "See more...")
 
 
-class ReviewOrganisationListTests(TestCase):
+class OrganisationReviewsTests(TestCase):
 
     def setUp(self):
         self.test_organisation = create_test_organisation({'ods_code': 'ABC'})

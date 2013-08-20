@@ -19,14 +19,14 @@ class ReviewLoadOrganisationBase(OrganisationAwareViewMixin):
         return self.organisation.reviews.filter(api_category="comment")
 
 
-class ReviewOrganisationList(OrganisationAwareViewMixin,
+class OrganisationReviews(OrganisationAwareViewMixin,
                              TemplateView):
     """ All the reviews for a given organisation """
 
     template_name = 'reviews_display/reviews_organisation_list.html'
 
     def get_context_data(self, **kwargs):
-        context = super(ReviewOrganisationList, self).get_context_data(**kwargs)
+        context = super(OrganisationReviews, self).get_context_data(**kwargs)
         all_reviews = self.organisation.reviews.all().filter(in_reply_to=None).order_by('-api_published')
         table = ReviewTable(
             data=all_reviews,
