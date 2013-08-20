@@ -5,6 +5,7 @@ from ..load_users import from_csv
 
 
 class Command(BaseCommand):
+    args = '<csv_file>'
     help = "Create user accounts for CCGs from a csv"
 
     def handle(self, *args, **options):
