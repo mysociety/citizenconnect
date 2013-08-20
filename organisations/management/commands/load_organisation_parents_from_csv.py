@@ -71,7 +71,7 @@ class Command(BaseCommand):
                 name = self.clean_value(row['Name'])
                 email = self.clean_value(row['Email'])
                 secondary_email = self.clean_value(row['Secondary Email'])
-                escalation_ccg_code = self.clean_value(row['Escalation CCG'])
+                primary_ccg_code = self.clean_value(row['Primary CCG'])
                 other_ccg_codes = self.clean_value(row['Other CCGs'] or '').split(r'|')
 
             except KeyError as message:
@@ -85,18 +85,18 @@ class Command(BaseCommand):
 
             # load the various CCGs
             try:
-                escalation_ccg = CCG.objects.get(code=escalation_ccg_code)
+                primary_ccg = CCG.objects.get(code=primary_ccg_code)
             except CCG.DoesNotExist:
                 raise Exception(
-                    "Could not find 'Escalation CCG' with code '{0}' on line {1}".format(
-                        escalation_ccg_code, rownum
+                    "Could not find 'Primary CCG' with code '{0}' on line {1}".format(
+                        primary_ccg_code, rownum
                     )
                 )
             finally:
                 transaction.rollback()
 
             all_ccgs = set()
-            all_ccgs.add(escalation_ccg)
+            all_ccgs.add(primary_ccg)
             for other_code in other_ccg_codes:
                 if other_code == '':
                     continue
@@ -116,7 +116,7 @@ class Command(BaseCommand):
                 'name': name,
                 'email': email,
                 'secondary_email': secondary_email,
-                'escalation_ccg': escalation_ccg,
+                'primary_ccg': primary_ccg,
             }
 
             try:

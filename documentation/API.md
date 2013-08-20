@@ -63,9 +63,6 @@ Optional. The reporter's preferred contact method, the available options are: `p
 ### source
 Required. The source of the original report, ie: whether they phoned, emailed, texted etc. Available options: [`email`, `phone`, `sms`, `twitter`, `facebook`, `mms`]
 
-### escalated
-Optional. Whether or not this problem has been escalated. Send `0` or `1` for false or true. Defaults to false.
-
 ### images_0
 
 Optional. An image to attach to this problem report. If images are attached to the report, then the POST request must use a `Content-Type: multipart/form-data`.

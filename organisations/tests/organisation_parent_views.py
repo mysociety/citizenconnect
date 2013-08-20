@@ -168,11 +168,11 @@ class OrganisationParentSummaryTests(AuthorizationTestCase):
         self.assertEqual(problems_by_status[2]['six_months'], 0)
         self.assertEqual(problems_by_status[2]['description'], 'Closed')
 
-        self.assertEqual(problems_by_status[7]['all_time'], 1)
-        self.assertEqual(problems_by_status[7]['week'], 1)
-        self.assertEqual(problems_by_status[7]['four_weeks'], 1)
-        self.assertEqual(problems_by_status[7]['six_months'], 1)
-        self.assertEqual(problems_by_status[7]['description'], 'Abusive/Vexatious')
+        self.assertEqual(problems_by_status[6]['all_time'], 1)
+        self.assertEqual(problems_by_status[6]['week'], 1)
+        self.assertEqual(problems_by_status[6]['four_weeks'], 1)
+        self.assertEqual(problems_by_status[6]['six_months'], 1)
+        self.assertEqual(problems_by_status[6]['description'], 'Abusive/Vexatious')
 
     def test_private_summary_page_shows_visible_and_hidden_status_rows(self):
         self.login_as(self.trust_user)
@@ -201,10 +201,10 @@ class OrganisationParentSummaryTests(AuthorizationTestCase):
     def test_private_summary_page_does_not_display_summary_stats_values_in_hidden_status_rows(self):
         self.login_as(self.trust_user)
         resp = self.client.get(self.trust_summary_url)
-        self.assertContains(resp, '<td class="average_time_to_acknowledge" id="status_7_time_to_acknowledge">—</td>')
-        self.assertContains(resp, '<td class="average_time_to_address" id="status_7_time_to_address">—</td>')
-        self.assertContains(resp, '<td class="happy_service" id="status_7_happy_service">—</td>')
-        self.assertContains(resp, '<td class="happy_outcome" id="status_7_happy_outcome">—</td>')
+        self.assertContains(resp, '<td class="average_time_to_acknowledge" id="status_6_time_to_acknowledge">—</td>')
+        self.assertContains(resp, '<td class="average_time_to_address" id="status_6_time_to_address">—</td>')
+        self.assertContains(resp, '<td class="happy_service" id="status_6_happy_service">—</td>')
+        self.assertContains(resp, '<td class="happy_outcome" id="status_6_happy_outcome">—</td>')
 
     def test_private_summary_page_is_inaccessible_to_anon_users(self):
         expected_login_url = "{0}?next={1}".format(self.login_url, self.trust_summary_url)
@@ -242,7 +242,7 @@ class OrganisationParentSummaryTests(AuthorizationTestCase):
                 'name': 'Trust with no orgs',
                 'code': 'hagq123',
                 'choices_id': 98086,
-                'escalation_ccg': self.test_ccg  # So that we can use the ccg user to login
+                'primary_ccg': self.test_ccg  # So that we can use the ccg user to login
             }
         )
         trust_with_no_orgs_summary_url = reverse('org-parent-summary', kwargs={'code': trust_with_no_orgs.code})
@@ -381,16 +381,6 @@ class OrganisationParentProblemsTests(AuthorizationTestCase):
         resp = self.client.get(self.trust_problems_url)
         self.assertContains(resp, '<div class="problem-table__flag__breach">b</div>')
 
-    def test_private_page_shows_escalated_flag(self):
-        self.login_as(self.trust_user)
-        create_test_problem({'organisation': self.hospital,
-                             'publication_status': Problem.PUBLISHED,
-                             'moderated_description': 'Moderated',
-                             'status': Problem.ESCALATED,
-                             'commissioned': Problem.LOCALLY_COMMISSIONED})
-        resp = self.client.get(self.trust_problems_url)
-        self.assertContains(resp, '<div class="problem-table__flag__escalate">e</div>')
-
     def test_private_page_shows_private_summary(self):
         self.login_as(self.trust_user)
         create_test_problem({'organisation': self.hospital,
@@ -438,15 +428,6 @@ class OrganisationParentDashboardTests(AuthorizationTestCase):
         self.login_as(self.trust_user)
         resp = self.client.get(self.dashboard_url)
         self.assertTrue(closed_problem_response_url not in resp.content)
-
-    def test_dashboard_doesnt_show_escalated_problems(self):
-        self.escalated_problem = create_test_problem({'organisation': self.test_hospital,
-                                                      'status': Problem.ESCALATED,
-                                                      'commissioned': Problem.LOCALLY_COMMISSIONED})
-        escalated_problem_response_url = reverse('response-form', kwargs={'pk': self.escalated_problem.id})
-        self.login_as(self.trust_user)
-        resp = self.client.get(self.dashboard_url)
-        self.assertTrue(escalated_problem_response_url not in resp.content)
 
     def test_dashboard_page_is_inaccessible_to_anon_users(self):
         expected_login_url = "{0}?next={1}".format(self.login_url, self.dashboard_url)
@@ -528,15 +509,6 @@ class OrganisationParentBreachesTests(AuthorizationTestCase):
         self.login_as(self.ccg_user)
         resp = self.client.get(self.breach_dashboard_url)
         self.assertContains(resp, '<div class="problem-table__flag__breach">b</div>')
-
-    def test_dashboard_shows_escalation_flag(self):
-        self.login_as(self.ccg_user)
-        # Make the breach problem escalated too
-        self.org_breach_problem.status = Problem.ESCALATED
-        self.org_breach_problem.commissioned = Problem.LOCALLY_COMMISSIONED
-        self.org_breach_problem.save()
-        resp = self.client.get(self.breach_dashboard_url)
-        self.assertContains(resp, '<div class="problem-table__flag__escalate">e</div>')
 
     def test_dashboard_highlights_priority_problems(self):
         self.login_as(self.ccg_user)

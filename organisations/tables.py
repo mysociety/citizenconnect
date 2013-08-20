@@ -4,7 +4,7 @@ from django.utils.safestring import mark_safe
 from django.utils.html import conditional_escape
 from django.core.urlresolvers import reverse
 
-from issues.table_columns import BreachAndEscalationColumn
+from organisations.table_columns import BreachColumn
 
 
 class NationalSummaryTable(tables.Table):
@@ -24,17 +24,17 @@ class NationalSummaryTable(tables.Table):
 
     # We split these into sub-columns
     average_time_to_acknowledge = tables.TemplateColumn(verbose_name='Acknowledge',
-                                                        template_name='organisations/includes/time_interval_column.html')
+                                                        template_name='organisations/includes/tables/columns/time_interval_column.html')
     average_time_to_address = tables.TemplateColumn(verbose_name='Close',
-                                                    template_name='organisations/includes/time_interval_column.html',
+                                                    template_name='organisations/includes/tables/columns/time_interval_column.html',
                                                     attrs={'th': {'class': 'summary-table__cell-no-border'}})
 
     # We split these into sub-columns
     happy_service = tables.TemplateColumn(verbose_name='Manner',
-                                          template_name="organisations/includes/percent_column.html")
+                                          template_name="organisations/includes/tables/columns/percent_column.html")
 
     happy_outcome = tables.TemplateColumn(verbose_name='Resolution',
-                                          template_name="organisations/includes/percent_column.html",
+                                          template_name="organisations/includes/tables/columns/percent_column.html",
                                           attrs={'th': {'class': 'summary-table__cell-no-border'}})
 
     # We put all these columns in, and then js hides all but one
@@ -48,7 +48,7 @@ class NationalSummaryTable(tables.Table):
                                      attrs={'th': {'class': 'reviews-received'}})
 
     average_recommendation_rating = tables.TemplateColumn(verbose_name='Average Review:',
-                                                          template_name='organisations/includes/rating_column.html',
+                                                          template_name='organisations/includes/tables/columns/rating_column.html',
                                                           attrs={'th': {'class': 'two-twelfths'}})
 
     def __init__(self, *args, **kwargs):
@@ -67,9 +67,9 @@ class NationalSummaryTable(tables.Table):
 
     class Meta:
         # Show organisations with the most problems first. This is so that when
-        # the results are filtered the top of the list (after it updates) is 
+        # the results are filtered the top of the list (after it updates) is
         # more relevant. See issue #843 for rationale.
-        order_by = ('-all_time',) 
+        order_by = ('-all_time',)
 
 
 class CCGSummaryTable(NationalSummaryTable):
@@ -100,17 +100,17 @@ class BaseProblemTable(tables.Table):
                             attrs={'td': {'class': 'problem-table__light-text'}})
 
     # Will only be made visible on private pages
-    breach_and_escalation = BreachAndEscalationColumn(visible=False)
+    breach = BreachColumn(visible=False)
 
     def __init__(self, *args, **kwargs):
         self.private = kwargs.pop('private')
         if self.private:
             self.base_columns['summary'].accessor = 'private_summary'
-            self.base_columns['breach_and_escalation'].visible = True
+            self.base_columns['breach'].visible = True
         else:
             self.cobrand = kwargs.pop('cobrand')
             self.base_columns['summary'].accessor = 'summary'
-            self.base_columns['breach_and_escalation'].visible = False
+            self.base_columns['breach'].visible = False
 
         super(BaseProblemTable, self).__init__(*args, **kwargs)
 
@@ -156,10 +156,10 @@ class ProblemTable(BaseProblemTable):
     is implied or the primary focus.
     """
     happy_service = tables.TemplateColumn(verbose_name='Manner',
-                                          template_name="organisations/includes/boolean_column.html",
+                                          template_name="organisations/includes/tables/columns/boolean_column.html",
                                           orderable=False)
     happy_outcome = tables.TemplateColumn(verbose_name='Resolution',
-                                          template_name="organisations/includes/boolean_column.html",
+                                          template_name="organisations/includes/tables/columns/boolean_column.html",
                                           orderable=False)
     status = tables.Column()
 
@@ -186,7 +186,7 @@ class ProblemTable(BaseProblemTable):
                     'happy_service',
                     'happy_outcome',
                     'summary',
-                    'breach_and_escalation')
+                    'breach')
 
 
 class ExtendedProblemTable(ProblemTable):
@@ -196,10 +196,10 @@ class ExtendedProblemTable(ProblemTable):
     """
     service = tables.Column(verbose_name='Department', orderable=False)
     time_to_acknowledge = tables.TemplateColumn(verbose_name='Acknowledge',
-                                                template_name='organisations/includes/time_interval_column.html',
+                                                template_name='organisations/includes/tables/columns/time_interval_column.html',
                                                 orderable=False)
     time_to_address = tables.TemplateColumn(verbose_name='Close',
-                                            template_name='organisations/includes/time_interval_column.html',
+                                            template_name='organisations/includes/tables/columns/time_interval_column.html',
                                             orderable=False)
     resolved = tables.DateTimeColumn(verbose_name="Resolved")
 
@@ -217,7 +217,7 @@ class ExtendedProblemTable(ProblemTable):
                     'happy_service',
                     'happy_outcome',
                     'summary',
-                    'breach_and_escalation')
+                    'breach')
 
 
 class OrganisationParentProblemTable(ExtendedProblemTable):
@@ -242,7 +242,7 @@ class OrganisationParentProblemTable(ExtendedProblemTable):
                     'happy_service',
                     'happy_outcome',
                     'summary',
-                    'breach_and_escalation')
+                    'breach')
 
 
 class ProblemDashboardTable(BaseProblemTable):
@@ -262,7 +262,7 @@ class ProblemDashboardTable(BaseProblemTable):
     service = tables.Column(verbose_name="Service", orderable=False)
 
     images = tables.TemplateColumn(
-        template_name="organisations/includes/images_column.html",
+        template_name="organisations/includes/tables/columns/images_column.html",
         accessor="images",
         orderable=False
     )
@@ -285,7 +285,7 @@ class ProblemDashboardTable(BaseProblemTable):
                     'service',
                     'summary',
                     'images',
-                    'breach_and_escalation')
+                    'breach')
 
 
 class BreachTable(ProblemTable):

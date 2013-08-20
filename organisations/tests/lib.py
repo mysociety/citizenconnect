@@ -2,8 +2,6 @@ import logging
 import re
 from datetime import datetime, timedelta
 from decimal import Decimal
-from StringIO import StringIO
-import json
 
 # Django imports
 from django.test import TestCase
@@ -11,7 +9,6 @@ from django.utils.timezone import utc
 from django.contrib.gis.geos import Point
 from django.contrib.auth.models import User, AnonymousUser
 from django.core.urlresolvers import reverse
-from django.core.management import call_command
 
 # App imports
 from issues.models import Problem
@@ -78,8 +75,8 @@ def create_test_organisation_parent(attributes={}):
         'secondary_email': 'test-trust-secondary@example.org',
     }
     default_attributes.update(attributes)
-    if 'escalation_ccg' not in attributes:
-        default_attributes['escalation_ccg'] = create_test_ccg({"code": default_attributes['code']})
+    if 'primary_ccg' not in attributes:
+        default_attributes['primary_ccg'] = create_test_ccg({"code": default_attributes['code']})
     instance = OrganisationParent(**dict((k, v) for (k, v) in default_attributes.items() if '__' not in k))
     instance.save()
     return instance
@@ -169,11 +166,11 @@ class IntervalCountsTest(TestCase):
         self.test_ccg = create_test_ccg()
         self.other_test_ccg = create_test_ccg({'name': 'Other test ccg', 'code': 'CCG2'})
 
-        self.test_trust = create_test_organisation_parent({'escalation_ccg': self.test_ccg})
+        self.test_trust = create_test_organisation_parent({'primary_ccg': self.test_ccg})
         self.test_trust.ccgs.add(self.test_ccg)
         self.test_trust.save()
 
-        self.test_gp_surgery = create_test_organisation_parent({'escalation_ccg': self.other_test_ccg,
+        self.test_gp_surgery = create_test_organisation_parent({'primary_ccg': self.other_test_ccg,
                                                   'code': 'TRUST2'})
         self.test_gp_surgery.ccgs.add(self.other_test_ccg)
         self.test_gp_surgery.save()
@@ -523,6 +520,28 @@ class IntervalCountsTest(TestCase):
         with self.assertRaises(ValueError) as context_manager:
             interval_counts(organisation_filters=organisation_filters)
 
+    def test_counts_ordered_by_name_and_ods_code(self):
+        # Bug #1167 - When two orgs have the same name, the problem count
+        # appeared against the wrong organisation. interval_counts wasn't really
+        # the culprit, rather some code in the view which assumed separate calls for
+        # reviews and problems would always be sorted the same, when really
+        # the DB could not be relied upon for this, so we changed the ordering
+        # to also order by ods_code after name.
+
+        # Add a new hospital with the same name as the existing one
+        duplicate_name_hospital = create_test_organisation({
+            'ods_code': 'XXX888',
+            'organisation_type': 'hospitals',
+            'parent': self.test_trust,
+            'name': self.test_hospital.name
+        })
+
+        counts = interval_counts()
+
+        self.assertEqual(counts[0]['ods_code'], self.test_gp_branch.ods_code)
+        self.assertEqual(counts[1]['ods_code'], duplicate_name_hospital.ods_code)
+        self.assertEqual(counts[2]['ods_code'], self.test_hospital.ods_code)
+
 
 class AuthorizationTestCase(TestCase):
     """
@@ -539,10 +558,10 @@ class AuthorizationTestCase(TestCase):
         self.other_test_ccg = create_test_ccg({'name': 'other test ccg', 'code': 'XYZ'})
 
         # Organisation Parent
-        self.test_trust = create_test_organisation_parent({'escalation_ccg': self.test_ccg})
+        self.test_trust = create_test_organisation_parent({'primary_ccg': self.test_ccg})
         self.test_gp_surgery = create_test_organisation_parent({'name': 'other test trust',
                                                                 'code': 'XYZ',
-                                                                'escalation_ccg': self.other_test_ccg})
+                                                                'primary_ccg': self.other_test_ccg})
 
         self.test_trust.ccgs.add(self.test_ccg)
         self.test_trust.save()

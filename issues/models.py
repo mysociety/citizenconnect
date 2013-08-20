@@ -10,12 +10,9 @@ from time import strftime, gmtime
 
 from django.db import models
 from django.conf import settings
-from django.core import mail
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxLengthValidator
 from django.db.models import Q
-from django.template import Context
-from django.template.loader import get_template
 from django.utils.timezone import utc
 
 import dirtyfields
@@ -47,11 +44,11 @@ class ProblemQuerySet(models.query.QuerySet):
         args = self.ORDER_BY_FIELDS_FOR_MODERATION_TABLE
         return self.order_by(*args)
 
-    def open_unescalated_problems(self):
-        return self.filter(
-            Q(status__in=Problem.OPEN_STATUSES) &
-            Q(status__in=Problem.NON_ESCALATION_STATUSES)
-        )
+    def open_problems(self):
+        """
+        Return only open problems
+        """
+        return self.all().filter(Q(status__in=Problem.OPEN_STATUSES))
 
 
 class ProblemManager(models.Manager):
@@ -103,10 +100,6 @@ class ProblemManager(models.Manager):
     def problems_requiring_second_tier_moderation(self):
         return self.all().filter(requires_second_tier_moderation=True)
 
-    def open_escalated_problems(self):
-        return self.all().filter(Q(status__in=Problem.ESCALATION_STATUSES) &
-                                 Q(status__in=Problem.OPEN_STATUSES))
-
     def requiring_confirmation(self):
         return self.filter(
             confirmation_sent__isnull=True,
@@ -136,25 +129,19 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     NEW = 0
     ACKNOWLEDGED = 1
     RESOLVED = 2
-    ESCALATED = 3
-    UNABLE_TO_RESOLVE = 4
-    REFERRED_TO_OTHER_PROVIDER = 5
-    UNABLE_TO_CONTACT = 6
-    ABUSIVE = 7
-    ESCALATED_ACKNOWLEDGED = 8
-    ESCALATED_RESOLVED = 9
+    UNABLE_TO_RESOLVE = 3
+    REFERRED_TO_OTHER_PROVIDER = 4
+    UNABLE_TO_CONTACT = 5
+    ABUSIVE = 6
 
     STATUS_CHOICES = (
         (NEW, 'Open'),
         (ACKNOWLEDGED, 'In Progress'),
         (RESOLVED, 'Closed'),
-        (ESCALATED, 'Escalated'),
         (UNABLE_TO_RESOLVE, 'Unable to Resolve'),
         (REFERRED_TO_OTHER_PROVIDER, 'Referred to Another Provider'),
         (UNABLE_TO_CONTACT, 'Unable to Contact'),
         (ABUSIVE, 'Abusive/Vexatious'),
-        (ESCALATED_ACKNOWLEDGED, 'Escalated - In Progress'),
-        (ESCALATED_RESOLVED, 'Escalated - Resolved'),
     )
 
     # The numerical value of the priorities should be chosen so that when sorted
@@ -168,18 +155,11 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         (PRIORITY_NORMAL, 'Normal'),
     )
 
-    # Assigning individual statuses to status sets
-    BASE_OPEN_STATUSES = [NEW, ACKNOWLEDGED]
-    OPEN_ESCALATION_STATUSES = [ESCALATED, ESCALATED_ACKNOWLEDGED]
-    HIDDEN_STATUSES = [ABUSIVE, ESCALATED, ESCALATED_ACKNOWLEDGED, ESCALATED_RESOLVED]
-
     # Calculated status sets
     ALL_STATUSES = [status for status, description in STATUS_CHOICES]
-    OPEN_STATUSES = BASE_OPEN_STATUSES + OPEN_ESCALATION_STATUSES
-    CLOSED_STATUSES = [RESOLVED, UNABLE_TO_RESOLVE, UNABLE_TO_CONTACT, ABUSIVE, ESCALATED_RESOLVED]
-    ESCALATION_STATUSES = OPEN_ESCALATION_STATUSES + [ESCALATED_RESOLVED]
-    NON_ESCALATION_STATUSES = [status for status in ALL_STATUSES if status not in ESCALATION_STATUSES]
-    NON_ESCALATION_STATUS_CHOICES = [(status, description) for status, description in STATUS_CHOICES if status in NON_ESCALATION_STATUSES]
+    OPEN_STATUSES = [NEW, ACKNOWLEDGED]
+    CLOSED_STATUSES = [RESOLVED, UNABLE_TO_RESOLVE, UNABLE_TO_CONTACT, ABUSIVE]
+    HIDDEN_STATUSES = [ABUSIVE]
     VISIBLE_STATUSES = [status for status in ALL_STATUSES if status not in HIDDEN_STATUSES]
     VISIBLE_STATUS_CHOICES = [(status, description) for status, description in STATUS_CHOICES if status in VISIBLE_STATUSES]
 
@@ -255,9 +235,8 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     # Names for transitions between statuses we might want to print
     TRANSITIONS = {
         'status': {
-            'Acknowledged': [[NEW, ACKNOWLEDGED], [ESCALATED, ESCALATED_ACKNOWLEDGED]],
-            'Escalated': [[NEW, ESCALATED], [ACKNOWLEDGED, ESCALATED]],
-            'Resolved': [[ACKNOWLEDGED, RESOLVED], [ESCALATED_ACKNOWLEDGED, ESCALATED_RESOLVED]]
+            'Acknowledged': [[NEW, ACKNOWLEDGED]],
+            'Resolved': [[ACKNOWLEDGED, RESOLVED]]
         },
         'publication_status': {
             'Published': [[NOT_MODERATED, PUBLISHED], [REJECTED, PUBLISHED]],
@@ -466,14 +445,10 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         now = datetime.utcnow().replace(tzinfo=utc)
         minutes_since_created = self.timedelta_to_minutes(now - self.created)
         statuses_which_indicate_acknowledgement = [Problem.ACKNOWLEDGED,
-                                                   Problem.RESOLVED,
-                                                   Problem.ESCALATED_ACKNOWLEDGED,
-                                                   Problem.ESCALATED_RESOLVED]
-        statuses_which_indicate_resolution = [Problem.RESOLVED,
-                                              Problem.ESCALATED_RESOLVED]
+                                                   Problem.RESOLVED]
         if self.time_to_acknowledge is None and int(self.status) in statuses_which_indicate_acknowledgement:
             self.time_to_acknowledge = minutes_since_created
-        if self.time_to_address is None and int(self.status) in statuses_which_indicate_resolution:
+        if self.time_to_address is None and self.status == Problem.RESOLVED:
             self.time_to_address = minutes_since_created
             self.resolved = now
 
@@ -501,14 +476,6 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
             # set the public_reporter_name_original to match public_reporter_name
             self.public_reporter_name_original = self.public_reporter_name
 
-        # capture the old state of the problem to use after the actual save has
-        # run. If there is no value it has not been changed since the last save,
-        # so use the current value. Or use None if this is a new entry.
-        if self.pk:
-            previous_status_value = self.get_dirty_fields().get('status', self.status)
-        else:
-            previous_status_value = None
-
         super(Problem, self).save(*args, **kwargs)  # Call the "real" save() method.
 
         # This should be run by the post-save signal, but it does not seem to
@@ -517,10 +484,6 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         #
         # Slightly changed contents of dirtyfields.reset_state:
         self._original_state = self._as_dict()
-
-        # If we are now ESCALATED, but were not before the save, send email
-        if self.status == self.ESCALATED and previous_status_value != self.ESCALATED:
-            self.send_escalation_email()
 
     def check_token(self, token):
         try:
@@ -547,44 +510,6 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
         days_in_minutes = timedelta.days * 60 * 24
         seconds_in_minutes = timedelta.seconds / 60
         return days_in_minutes + seconds_in_minutes
-
-    def send_escalation_email(self):
-        """
-        Send the escalation email. Throws exception if status is not 'ESCALATED'.
-        """
-
-        # Safety check to prevent accidentally sending emails when not appropriate
-        if self.status != self.ESCALATED:
-            raise ValueError("Problem status of '{0}' is not 'ESCALATED'".format(self))
-
-        # gather the templates and create the context for them
-        subject_template = get_template('issues/escalation_email_subject.txt')
-        message_template = get_template('issues/escalation_email_message.txt')
-
-        context = Context({
-            'object':        self,
-            'site_base_url': settings.SITE_BASE_URL
-        })
-
-        logger.info('Sending escalation email for {0}'.format(self))
-
-        kwargs = dict(
-            subject=subject_template.render(context),
-            message=message_template.render(context),
-        )
-
-        if self.commissioned == self.LOCALLY_COMMISSIONED:
-            # Send email to the CCG
-            self.organisation.parent.escalation_ccg.send_mail(**kwargs)
-        elif self.commissioned == self.NATIONALLY_COMMISSIONED:
-            # send email to CCC
-            mail.send_mail(
-                recipient_list=settings.CUSTOMER_CONTACT_CENTRE_EMAIL_ADDRESSES,
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                **kwargs
-            )
-        else:
-            raise ValueError("commissioned must be set to select destination for escalation email for {0}".format(self))
 
 
 def obfuscated_upload_path_and_name(instance, filename):

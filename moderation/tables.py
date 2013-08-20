@@ -1,7 +1,7 @@
 import django_tables2 as tables
 from issues.models import ProblemQuerySet
 
-from issues.table_columns import BreachAndEscalationColumn
+from organisations.table_columns import BreachColumn
 
 
 class BaseModerationTable(tables.Table):
@@ -14,7 +14,7 @@ class BaseModerationTable(tables.Table):
     private_summary = tables.Column(verbose_name='Text snippet', orderable=False)
 
     images = tables.TemplateColumn(
-        template_name="organisations/includes/images_column.html",
+        template_name="organisations/includes/tables/columns/images_column.html",
         accessor="images",
         orderable=False
     )
@@ -37,7 +37,7 @@ class SecondTierModerationTable(BaseModerationTable):
     action = tables.TemplateColumn(verbose_name='Actions',
                                    template_name='moderation/includes/second_tier_moderation_link.html',
                                    orderable=False)
-    breach_and_escalation = BreachAndEscalationColumn()
+    breach = BreachColumn()
 
     class Meta:
         attrs = {'class': 'problem-table  problem-table--expanded'}
