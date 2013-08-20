@@ -295,6 +295,21 @@ class OrganisationMapBrowserTests(SeleniumTestCase):
         org_type_filter_container = self.driver.find_element_by_css_selector('.filters .filters__dropdown')
         self.assertEqual(org_type_filter_container.get_attribute('class'), 'filters__dropdown')
 
+    def test_searching_the_map(self):
+        # Create test organisation
+        org = create_test_organisation({'name': "Testing org"})
+        self.driver.get(self.full_url(self.map_url))
+
+        # Search for a provider
+        elm = self.driver.find_element_by_css_selector('.select2-container a')
+        elm.click()
+        search_box = self.driver.find_element_by_css_selector('.select2-search input')
+        search_box.send_keys("Testing")
+        results = self.driver.find_element_by_css_selector('.select2-results')
+        WebDriverWait(self.driver, 5).until(
+            lambda x: org.name in results.text
+        )
+
 
 @override_settings(SUMMARY_THRESHOLD=['all_time', 1])
 class SummaryTests(AuthorizationTestCase):
