@@ -6,6 +6,7 @@ import urllib
 import logging
 from datetime import datetime
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.keys import Keys
 
 # Django imports
 from django.test import TestCase
@@ -309,6 +310,14 @@ class OrganisationMapBrowserTests(SeleniumTestCase):
         WebDriverWait(self.driver, 5).until(
             lambda x: org.name in results.text
         )
+
+        search_box.send_keys(Keys.RETURN)
+        map_elm = self.driver.find_element_by_css_selector('#map')
+        WebDriverWait(self.driver, 5).until(
+            lambda x: org.name in map_elm.text
+        )
+        self.assertTrue("Problem reports" in map_elm.text)
+        self.assertTrue("Reviews" in map_elm.text)
 
 
 @override_settings(SUMMARY_THRESHOLD=['all_time', 1])
