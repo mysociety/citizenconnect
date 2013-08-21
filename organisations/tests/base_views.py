@@ -345,6 +345,28 @@ class OrganisationMapBrowserTests(SeleniumTestCase):
         markers = marker_pane.find_elements_by_tag_name('img')
         self.assertEquals(len(markers), 3)
 
+    def test_clicking_map_pins(self):
+        create_test_organisation({'name': "Testing org", 'point': Point(0, 51.5)})
+        self.driver.get(self.full_url(self.map_url))
+        marker_pane = self.driver.find_element_by_css_selector('.leaflet-marker-pane')
+        marker = marker_pane.find_elements_by_tag_name('img')[0]
+        # Need to click twice, once to scroll the map into view, once
+        # to open the marker popup.
+        marker.click()
+        marker.click()
+        popup = self.driver.find_element_by_css_selector('.leaflet-popup')
+        expected_text = """
+×
+Testing org
+Problem reports:
+0 open/in progress, 0 closed.
+— average time to close.
+Reviews:
+0 received.
+View all details
+"""
+        self.assertEqual(popup.text, expected_text)
+
 
 @override_settings(SUMMARY_THRESHOLD=['all_time', 1])
 class SummaryTests(AuthorizationTestCase):
