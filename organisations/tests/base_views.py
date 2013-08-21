@@ -335,6 +335,16 @@ class OrganisationMapBrowserTests(SeleniumTestCase):
         self.assertTrue("Problem reports" in map_elm.text)
         self.assertTrue("Reviews" in map_elm.text)
 
+    def test_map_pins_loaded(self):
+        # Create 3 test orgs with points on the map
+        for i in range(3):
+            create_test_organisation({'name': "Testing org {0}".format(i), 'ods_code': i, 'point': Point(0, 51.5)})
+
+        self.driver.get(self.full_url(self.map_url))
+        marker_pane = self.driver.find_element_by_css_selector('.leaflet-marker-pane')
+        markers = marker_pane.find_elements_by_tag_name('img')
+        self.assertEquals(len(markers), 3)
+
 
 @override_settings(SUMMARY_THRESHOLD=['all_time', 1])
 class SummaryTests(AuthorizationTestCase):
