@@ -1,0 +1,8 @@
+<div class="filters__dropdown  filters__dropdown--last">
+    <select id="reviews-interval-filters">
+        <option value='reviews_week' <% if (selectedColumn === "reviews_week") { %>selected<%}%>>In the last week</option>
+        <option value='reviews_four_weeks' <% if (selectedColumn === "reviews_four_weeks") { %>selected<%}%>>In the last 30 days</option>
+        <option value='reviews_six_months' <% if (selectedColumn === "reviews_six_months") { %>selected<%}%>>In the last 6 months</option>
+        <option value='reviews_all_time' <% if (selectedColumn === "reviews_all_time") { %>selected<%}%>>All time</option>
+    </select>
+</div>

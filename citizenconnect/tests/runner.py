@@ -6,6 +6,8 @@ import os
 import tempfile
 import shutil
 
+from pipeline.conf import settings as pipeline_settings
+
 from django.test.simple import DjangoTestSuiteRunner
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -45,6 +47,8 @@ class AppsTestSuiteRunner(DjangoTestSuiteRunner):
         super(AppsTestSuiteRunner, self).setup_test_environment()
         # Change media root to be a temp directory
         settings.MEDIA_ROOT = tempfile.mkdtemp()
+        settings.STATICFILES_STORAGE = 'pipeline.storage.PipelineFinderStorage'
+        pipeline_settings.PIPELINE_ENABLED = True
 
     def teardown_test_environment(self):
         super(AppsTestSuiteRunner, self).teardown_test_environment

@@ -118,7 +118,6 @@
 
 {% block extra_js %}
 {{ block.super }}
-<script src="{% static 'js/select2.min.js' %}"></script>
 <script>
     jQuery(function($) {
 
@@ -157,7 +156,3 @@
 <script src="{% static 'js/twitter-embed.js' %}"></script>
 
 {% endblock extra_js %}
-
-{% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/select2/select2.css' %}" />
-{% endblock extra_css %}

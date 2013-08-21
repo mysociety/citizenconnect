@@ -29,6 +29,10 @@ libjpeg-dev
 libpng-dev
 libgif-dev
 
+# Asset management
+yui-compressor
+bundler
+
 # If you want to run this on a headless server, or eg: in vagrant
 # you'll also need a browser and a display setup too
 # iceweasel

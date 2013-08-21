@@ -1,0 +1,8 @@
+<div class="filters__dropdown  filters__dropdown--last">
+    <select id="problems-interval-filters">
+        <option value='week' <% if (selectedColumn === "week") { %>selected<%}%>>In the last week</option>
+        <option value='four_weeks' <% if (selectedColumn === "four_weeks") { %>selected<%}%>>In the last 30 days</option>
+        <option value='six_months' <% if (selectedColumn === "six_months") { %>selected<%}%>>In the last 6 months</option>
+        <option value='all_time' <% if (selectedColumn === "all_time") { %>selected<%}%>>All time</option>
+    </select>
+</div>

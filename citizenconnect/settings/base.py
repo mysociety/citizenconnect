@@ -156,6 +156,7 @@ INSTALLED_APPS = (
     'failedloginblocker',
     'geocoder',
     'news',
+    'pipeline',
 )
 
 
@@ -256,3 +257,6 @@ ORGANISATION_TYPES = [organisation_type for organisation_type, label in ORGANISA
 
 # Now get the mySociety configuration
 from .mysociety import *
+
+# django-pipeline configuration
+from .pipeline import *

@@ -74,5 +74,12 @@
         });
     };
 
-    window.SideNavView = SideNavView;
+    // Expose class functionality as a jQuery plugin.
+    $.fn.sideNav = function() {
+        return this.each(function() {
+            var $this = $(this);
+            var sections = $($this.data('sections'));
+            $this.data('sideNav', new SideNavView({el: $this, sections: sections}));
+        });
+    };
 })(window.jQuery, window);
