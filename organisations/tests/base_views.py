@@ -296,7 +296,7 @@ class OrganisationMapBrowserTests(SeleniumTestCase):
         org_type_filter_container = self.driver.find_element_by_css_selector('.filters .filters__dropdown')
         self.assertEqual(org_type_filter_container.get_attribute('class'), 'filters__dropdown')
 
-    def test_map_filters(self):
+    def test_map_filters_enable_service(self):
         org = create_test_organisation({'name': "Testing org"})
         self.driver.get(self.full_url(self.map_url))
         service_dept_filter = self.driver.find_element_by_id('id_service_code')
