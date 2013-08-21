@@ -371,7 +371,7 @@ class OrganisationMapBrowserTests(SeleniumTestCase):
         self.driver.get(self.full_url(self.map_url))
         marker_pane = self.driver.find_element_by_css_selector('.leaflet-marker-pane')
         markers = marker_pane.find_elements_by_tag_name('img')
-        self.assertEquals(len(markers), 3)
+        self.assertEquals(3, len(markers))
 
     def test_clicking_map_pins(self):
         create_test_organisation({'name': "Testing org", 'point': Point(0, 51.5)})
