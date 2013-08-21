@@ -312,6 +312,34 @@ class OrganisationMapBrowserTests(SeleniumTestCase):
         # Check that the service/department is enabled after selecting org type
         self.assertIsNone(service_dept_filter.get_attribute('disabled'))
 
+    def test_filtering_map_pins(self):
+        point = Point(0, 51.5)
+        # Create a hospital and a clinic
+        hospital = create_test_organisation({
+            'name': "Test hospital",
+            'ods_code': 1,
+            'organisation_type': 'hospitals',
+            'point': point
+        })
+        clinic = create_test_organisation({
+            'name': "Test clinic",
+            'ods_code': 2,
+            'organisation_type': 'clinics',
+            'point': point
+        })
+
+        self.driver.get(self.full_url(self.map_url))
+        markers = self.driver.find_element_by_css_selector('.leaflet-marker-pane')
+        self.assertEquals(2, len(markers.find_elements_by_tag_name('img')))
+
+        # Filter to only hospitals
+        org_type_filter = self.driver.find_element_by_id('id_organisation_type')
+        org_type_filter.find_element_by_css_selector('option[value="hospitals"]').click()
+        WebDriverWait(self.driver, 3).until(
+            lambda x: len(markers.find_elements_by_tag_name('img')) is 1
+        )
+        self.assertEquals(1, len(markers.find_elements_by_tag_name('img')))
+
     def test_searching_the_map(self):
         # Create test organisation
         org = create_test_organisation({'name': "Testing org"})
