@@ -292,7 +292,7 @@ def interval_counts(problem_filters={},
         criteria_text += " WHERE %s" % " AND ".join(organisation_filter_clauses)
 
     group_text = "GROUP BY %s" % ', '.join(group_by_clauses)
-    sort_text = "ORDER BY name"
+    sort_text = "ORDER BY name, ods_code"
     query = "%s %s %s %s %s %s" % (select_text,
                                    from_text,
                                    criteria_text,

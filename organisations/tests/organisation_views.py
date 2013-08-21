@@ -8,7 +8,6 @@ from django.core.urlresolvers import reverse
 from issues.models import Problem
 
 from . import (create_test_problem,
-               create_test_organisation,
                create_test_service,
                AuthorizationTestCase)
 
@@ -99,11 +98,11 @@ class OrganisationSummaryTests(AuthorizationTestCase):
         self.assertEqual(problems_by_status[2]['six_months'], 0)
         self.assertEqual(problems_by_status[2]['description'], 'Closed')
 
-        self.assertEqual(problems_by_status[7]['all_time'], 1)
-        self.assertEqual(problems_by_status[7]['week'], 1)
-        self.assertEqual(problems_by_status[7]['four_weeks'], 1)
-        self.assertEqual(problems_by_status[7]['six_months'], 1)
-        self.assertEqual(problems_by_status[7]['description'], 'Abusive/Vexatious')
+        self.assertEqual(problems_by_status[6]['all_time'], 1)
+        self.assertEqual(problems_by_status[6]['week'], 1)
+        self.assertEqual(problems_by_status[6]['four_weeks'], 1)
+        self.assertEqual(problems_by_status[6]['six_months'], 1)
+        self.assertEqual(problems_by_status[6]['description'], 'Abusive/Vexatious')
 
     def test_public_summary_page_only_shows_visible_problems(self):
         self.login_as(self.trust_user)
@@ -239,10 +238,10 @@ class OrganisationSummaryTests(AuthorizationTestCase):
     def test_private_summary_page_does_not_display_summary_stats_values_in_hidden_status_rows(self):
         self.login_as(self.trust_user)
         resp = self.client.get(self.private_summary_url)
-        self.assertContains(resp, '<td class="average_time_to_acknowledge" id="status_7_time_to_acknowledge">—</td>')
-        self.assertContains(resp, '<td class="average_time_to_address" id="status_7_time_to_address">—</td>')
-        self.assertContains(resp, '<td class="happy_service" id="status_7_happy_service">—</td>')
-        self.assertContains(resp, '<td class="happy_outcome" id="status_7_happy_outcome">—</td>')
+        self.assertContains(resp, '<td class="average_time_to_acknowledge" id="status_6_time_to_acknowledge">—</td>')
+        self.assertContains(resp, '<td class="average_time_to_address" id="status_6_time_to_address">—</td>')
+        self.assertContains(resp, '<td class="happy_service" id="status_6_happy_service">—</td>')
+        self.assertContains(resp, '<td class="happy_outcome" id="status_6_happy_outcome">—</td>')
 
     def test_public_summary_page_is_accessible_to_everyone(self):
         resp = self.client.get(self.public_summary_url)
@@ -275,223 +274,6 @@ class OrganisationSummaryTests(AuthorizationTestCase):
         self.assertEqual(resp.status_code, 403)
 
 
-class OrganisationProblemsTests(AuthorizationTestCase):
-
-    def setUp(self):
-        super(OrganisationProblemsTests, self).setUp()
-
-        # Organisations
-        self.hospital = create_test_organisation({'organisation_type': 'hospitals',
-                                                  'ods_code': 'ABC123',
-                                                  'parent': self.test_trust})
-        self.clinic = create_test_organisation({'organisation_type': 'clinics',
-                                                'ods_code': 'GHI123',
-                                                'parent': self.test_trust})
-        self.gp = create_test_organisation({'organisation_type': 'gppractices',
-                                            'ods_code': 'DEF456',
-                                            'parent': self.test_gp_surgery})
-
-        # Useful urls
-        self.public_hospital_problems_url = reverse('public-org-problems',
-                                                    kwargs={'ods_code': self.hospital.ods_code,
-                                                            'cobrand': 'choices'})
-        self.public_clinic_problems_url = reverse('public-org-problems',
-                                                  kwargs={'ods_code': self.clinic.ods_code,
-                                                          'cobrand': 'choices'})
-        self.public_gp_problems_url = reverse('public-org-problems',
-                                              kwargs={'ods_code': self.gp.ods_code,
-                                                      'cobrand': 'choices'})
-
-        # Problems
-        self.staff_problem = create_test_problem({'category': 'staff',
-                                                  'organisation': self.hospital,
-                                                  'publication_status': Problem.PUBLISHED,
-                                                  'moderated_description': "Moderated description"})
-        # Add an explicitly public and an explicitly private problem to test
-        # privacy is respected
-        self.public_problem = create_test_problem({'organisation': self.hospital})
-        self.private_problem = create_test_problem({'organisation': self.hospital, 'public': False})
-
-    def test_shows_services_for_hospitals(self):
-        resp = self.client.get(self.public_hospital_problems_url)
-        self.assertContains(resp, '<th class="service">Department</th>', count=1, status_code=200)
-
-    def test_shows_time_limits_for_hospitals(self):
-        resp = self.client.get(self.public_hospital_problems_url)
-        self.assertContains(resp, '<th class="time_to_acknowledge">Acknowledge</th>', count=1, status_code=200)
-        self.assertContains(resp, '<th class="time_to_address">Close</th>', count=1, status_code=200)
-
-    def test_shows_services_for_clinics(self):
-        resp = self.client.get(self.public_clinic_problems_url)
-        self.assertContains(resp, '<th class="service">Department</th>', count=1, status_code=200)
-
-    def test_shows_time_limits_for_clinics(self):
-        resp = self.client.get(self.public_clinic_problems_url)
-        self.assertContains(resp, '<th class="time_to_acknowledge">Acknowledge</th>', count=1, status_code=200)
-        self.assertContains(resp, '<th class="time_to_address">Close</th>', count=1, status_code=200)
-
-    def test_no_services_for_gps(self):
-        resp = self.client.get(self.public_gp_problems_url)
-        self.assertNotContains(resp, '<th class="service">Department</th>')
-
-    def test_no_time_limits_for_gps(self):
-        resp = self.client.get(self.public_gp_problems_url)
-        self.assertNotContains(resp, '<th class="time_to_acknowledge">Acknowledge</th>')
-        self.assertNotContains(resp, '<th class="time_to_address">Close</th>')
-
-    def test_public_page_exists_and_is_accessible_to_anyone(self):
-        resp = self.client.get(self.public_hospital_problems_url)
-        self.assertEqual(resp.status_code, 200)
-
-    def test_public_page_links_to_public_problems(self):
-        staff_problem_url = reverse('problem-view', kwargs={'pk': self.staff_problem.id,
-                                                            'cobrand': 'choices'})
-        resp = self.client.get(self.public_hospital_problems_url)
-        self.assertContains(resp, staff_problem_url)
-
-    def test_public_page_shows_private_problems(self):
-        # Add a private problem
-        private_problem = create_test_problem({'organisation': self.hospital,
-                                               'publication_status': Problem.PUBLISHED,
-                                               'public': False})
-        private_problem_url = reverse('problem-view', kwargs={'pk': self.private_problem.id,
-                                                              'cobrand': 'choices'})
-        resp = self.client.get(self.public_hospital_problems_url)
-        self.assertTrue(private_problem.reference_number in resp.content)
-        self.assertTrue(private_problem.summary in resp.content)
-        self.assertTrue(private_problem_url in resp.content)
-
-    def test_public_page_doesnt_show_rejected_problems(self):
-        # Add some problems which shouldn't show up
-        rejected_problem = create_test_problem({'organisation': self.hospital,
-                                                'publication_status': Problem.REJECTED})
-        rejected_problem_url = reverse('problem-view', kwargs={'pk': rejected_problem.id,
-                                                               'cobrand': 'choices'})
-        resp = self.client.get(self.public_hospital_problems_url)
-        self.assertTrue(rejected_problem_url not in resp.content)
-
-    def test_public_page_shows_not_moderated_problems(self):
-        unmoderated_problem = create_test_problem({'organisation': self.hospital,
-                                                   'publication_status': Problem.NOT_MODERATED})
-        unmoderated_problem_url = reverse('problem-view', kwargs={'pk': unmoderated_problem.id,
-                                                                  'cobrand': 'choices'})
-        resp = self.client.get(self.public_hospital_problems_url)
-        self.assertTrue(unmoderated_problem_url in resp.content)
-
-    def test_filters_by_status(self):
-        # Add a problem in a different status that would show up
-        resolved_problem = create_test_problem({'organisation': self.hospital,
-                                                'status': Problem.ACKNOWLEDGED,
-                                                'publication_status': Problem.PUBLISHED,
-                                                'moderated_description': 'Moderated'})
-        status_filtered_url = "{0}?status={1}".format(self.public_hospital_problems_url, Problem.NEW)
-        resp = self.client.get(status_filtered_url)
-        self.assertContains(resp, self.staff_problem.reference_number)
-        self.assertNotContains(resp, resolved_problem.reference_number)
-
-    def test_shows_only_public_statuses_on_public_page(self):
-        resp = self.client.get(self.public_hospital_problems_url)
-        for status, label in Problem.STATUS_CHOICES:
-            if status in Problem.HIDDEN_STATUSES:
-                self.assertNotContains(resp, '<option value="{0}">{1}</option>'.format(status, label))
-
-    def test_ignores_private_statuses_on_public_page(self):
-        # Even if we manually hack the url, it shouldn't do any filtering
-        # Add a problem in a different status that would show up
-        abusive_problem = create_test_problem({'organisation': self.hospital,
-                                               'status': Problem.ABUSIVE,
-                                               'publication_status': Problem.PUBLISHED,
-                                               'moderated_description': 'Moderated'})
-        status_filtered_url = "{0}?status={1}".format(self.public_hospital_problems_url, Problem.ABUSIVE)
-        resp = self.client.get(status_filtered_url)
-        self.assertContains(resp, self.staff_problem.reference_number)
-        self.assertNotContains(resp, abusive_problem.reference_number)
-
-    def test_filters_by_category(self):
-        # Add a problem in a different status that would show up
-        cleanliness_problem = create_test_problem({'organisation': self.hospital,
-                                                   'category': 'cleanliness',
-                                                   'publication_status': Problem.PUBLISHED,
-                                                   'moderated_description': 'Moderated'})
-        category_filtered_url = "{0}?category=cleanliness".format(self.public_hospital_problems_url)
-        resp = self.client.get(category_filtered_url)
-        self.assertContains(resp, cleanliness_problem.reference_number)
-        self.assertNotContains(resp, self.staff_problem.reference_number)
-
-    def test_public_page_does_not_have_breach_filter(self):
-        resp = self.client.get(self.public_hospital_problems_url)
-        self.assertNotContains(resp, '<option value="breach">')
-
-    def test_public_page_does_not_have_formal_complaint_filter(self):
-        resp = self.client.get(self.public_hospital_problems_url)
-        self.assertNotContains(resp, '<option value="formal_complaint">')
-
-    def test_doesnt_show_service_filter_for_gp(self):
-        resp = self.client.get(self.public_gp_problems_url)
-        self.assertNotContains(resp, '<select name="service_id" id="id_service_id">')
-
-    def test_filters_by_service_for_hospital(self):
-        # Add a service to the test hospital
-        service = create_test_service({'organisation': self.hospital})
-        # Add a problem about a specific service
-        service_problem = create_test_problem({'organisation': self.hospital,
-                                               'service': service,
-                                               'publication_status': Problem.PUBLISHED,
-                                               'moderated_description': 'Moderated'})
-        service_filtered_url = "{0}?service_id={1}".format(self.public_hospital_problems_url, service.id)
-        resp = self.client.get(service_filtered_url)
-        self.assertContains(resp, service_problem.reference_number)
-        self.assertNotContains(resp, self.staff_problem.reference_number)
-
-    def test_column_sorting(self):
-        # Test that each of the columns we expect to be sortable, is.
-        # ISSUE-498 - this raised a 500 on 'resolved' because resolved was not a model field
-        columns = ('reference_number',
-                   'created',
-                   'status',
-                   'resolved')
-        for column in columns:
-            sorted_url = "{0}?sort={1}".format(self.public_hospital_problems_url, column)
-            resp = self.client.get(sorted_url)
-            self.assertEqual(resp.status_code, 200)
-            self.assertEqual(resp.context['table'].data.ordering, [column])
-
-    def test_public_page_doesnt_highlight_priority_problems(self):
-        # Add a priority problem
-        create_test_problem({'organisation': self.hospital,
-                             'publication_status': Problem.PUBLISHED,
-                             'moderated_description': 'Moderated',
-                             'priority': Problem.PRIORITY_HIGH})
-        resp = self.client.get(self.public_hospital_problems_url)
-        self.assertNotContains(resp, 'problem-table__highlight')
-
-    def test_public_page_doesnt_show_breach_flag(self):
-        create_test_problem({'organisation': self.hospital,
-                             'publication_status': Problem.PUBLISHED,
-                             'moderated_description': 'Moderated',
-                             'breach': True})
-        resp = self.client.get(self.public_hospital_problems_url)
-        self.assertNotContains(resp, '<div class="problem-table__flag__breach">b</div>')
-
-    def test_public_page_doesnt_show_escalated_flag(self):
-        create_test_problem({'organisation': self.hospital,
-                             'publication_status': Problem.PUBLISHED,
-                             'moderated_description': 'Moderated',
-                             'status': Problem.ESCALATED,
-                             'commissioned': Problem.LOCALLY_COMMISSIONED})
-        resp = self.client.get(self.public_hospital_problems_url)
-        self.assertNotContains(resp, '<div class="problem-table__flag__escalate">e</div>')
-
-    def test_public_page_shows_public_summary(self):
-        create_test_problem({'organisation': self.hospital,
-                             'publication_status': Problem.PUBLISHED,
-                             'description': 'private description',
-                             'moderated_description': 'public description'})
-        resp = self.client.get(self.public_hospital_problems_url)
-        self.assertNotContains(resp, 'private description')
-        self.assertContains(resp, 'public description')
-
-
 class OrganisationTabsTests(AuthorizationTestCase):
     """Test that the tabs shown on organisation pages link to the right places"""
 
@@ -499,7 +281,7 @@ class OrganisationTabsTests(AuthorizationTestCase):
         super(OrganisationTabsTests, self).setUp()
         self.summary_url = reverse('public-org-summary', kwargs={'ods_code': self.test_hospital.ods_code, 'cobrand': 'choices'})
         self.problems_url = reverse('public-org-problems', kwargs={'ods_code': self.test_hospital.ods_code, 'cobrand': 'choices'})
-        self.reviews_url = reverse('review-organisation-list', kwargs={'ods_code': self.test_hospital.ods_code, 'cobrand': 'choices'})
+        self.reviews_url = reverse('public-org-reviews', kwargs={'ods_code': self.test_hospital.ods_code, 'cobrand': 'choices'})
         self.tab_urls = [
             self.reviews_url,
             self.problems_url,

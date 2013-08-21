@@ -204,6 +204,11 @@ class PrivateHomeTests(AuthorizationTestCase):
         resp = self.client.get(self.private_home_url)
         self.assertEqual(resp.status_code, 200)
 
+        # CCC user
+        self.login_as(self.customer_contact_centre_user)
+        resp = self.client.get(self.private_home_url)
+        self.assertEqual(resp.status_code, 200)
+
     def test_ccg_user_goes_to_ccg_dashboard(self):
         ccg_dashboard_url = reverse('ccg-dashboard', kwargs={'code': self.test_ccg.code})
         self.login_as(self.ccg_user)
@@ -216,10 +221,4 @@ class PrivateHomeTests(AuthorizationTestCase):
         self.assertEqual(resp.status_code, 200)
         for ccg in self.ccg_user.ccgs.all():
             self.assertContains(resp, "CCG dashboard for {0}".format(ccg.name))
-
-    def test_customer_contact_centre_user_goes_to_escalation_dashboard(self):
-        escalation_dashboard_url = reverse('escalation-dashboard')
-        self.login_as(self.customer_contact_centre_user)
-        resp = self.client.get(self.private_home_url)
-        self.assertRedirects(resp, escalation_dashboard_url)
 

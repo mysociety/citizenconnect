@@ -1,0 +1,24 @@
+{% extends "citizenconnect/base.html" %}
+{% load url from future %}
+{% load render_table from django_tables2 %}
+
+{% block title %}{{ organisation.name }} Reviews{% endblock %}
+
+{% block bodyclasses %}public-org-reviews{% endblock %}
+
+{% block content %}
+
+{% include "organisations/includes/provider_summary_link.html" %}
+
+{# Not the finest hour for Django templates. The "add" filter is idiotic with regards to not coercing values #}
+{% with total_reviews|stringformat:"s" as total_reviews_string %}
+  {% with "Reviews ("|add:total_reviews_string|add:")" as title %}
+    {% include "organisations/includes/page_header.html" with title=title %}
+  {% endwith %}
+{% endwith %}
+
+{% include "organisations/includes/organisation_tabs.html" with active_tab='reviews' %}
+
+{% render_table table 'reviews_display/includes/review-table.html' %}
+
+{% endblock %}

@@ -10,7 +10,7 @@ from .models import ProblemResponse
 class ProblemResponseForm(ConcurrentFormMixin, forms.ModelForm):
 
     response = forms.CharField(required=False, widget=Textarea())
-    issue_status = forms.ChoiceField(choices=Problem.NON_ESCALATION_STATUS_CHOICES,
+    issue_status = forms.ChoiceField(choices=Problem.STATUS_CHOICES,
                                      required=False)
     issue_formal_complaint = forms.BooleanField(required=False)
 

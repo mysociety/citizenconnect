@@ -190,9 +190,11 @@ table {
     padding: 0 0 0 10px;
     height: 100%;
   }
-    .problem-table__flag__breach, .problem-table__flag__escalate {
+    .problem-table__flag__breach {
       position: absolute;
       width: 100%;
+      background: $c-problem-table-flag-breach-bg;
+      top: 0;
       right: 0;
       text-transform: uppercase;
       color: $c-problem-table-flag-color;
@@ -202,14 +204,6 @@ table {
     }
     .rating {
         position: relative;
-    }
-    .problem-table__flag__breach {
-      background: $c-problem-table-flag-breach-bg;
-      top: 0;
-    }
-    .problem-table__flag__escalate {
-      background: $c-problem-table-flag-escalated-bg;
-      bottom: 0;
     }
 
   .breach {

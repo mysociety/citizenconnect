@@ -1,4 +1,3 @@
-import logging
 from datetime import datetime, timedelta
 
 from django.core import mail
@@ -12,17 +11,18 @@ from django.template import Context
 
 from ...models import Problem
 
-logger = logging.getLogger(__name__)
 
 @transaction.commit_manually
 class Command(BaseCommand):
     help = 'Email confirmations to problem reporters'
 
     def handle(self, *args, **options):
+        verbosity = self.verbosity = int(options.get('verbosity'))
 
         problems = Problem.objects.requiring_confirmation()
 
-        logger.info('{0} confirmations to email'.format(len(problems)))
+        if verbosity >= 2:
+            self.stdout.write("{0} confirmations to email\n".format(len(problems)))
 
         if len(problems) > 0:
 
@@ -36,8 +36,9 @@ class Command(BaseCommand):
                     problem.save()
                     transaction.commit()
                 except Exception as e:
-                    logger.error('{0}'.format(e))
-                    logger.error('Error mailing confirmation: {0}'.format(problem.reference_number))
+                    if verbosity >= 1:
+                        self.stderr.write("{0}\n".format(e))
+                        self.stderr.write("Error mailing confirmation: {0}\n".format(problem.reference_number))
                     transaction.rollback()
 
     def send_confirmation(self, problem):
@@ -49,7 +50,8 @@ class Command(BaseCommand):
                            'site_base_url': settings.SITE_BASE_URL,
                            'survey_interval_in_days': settings.SURVEY_INTERVAL_IN_DAYS })
 
-        logger.info('Emailing confirmation for problem reference number: {0}'.format(problem.reference_number))
+        if self.verbosity >= 2:
+            self.stdout.write("Emailing confirmation for problem reference number: {0}\n".format(problem.reference_number))
 
         mail.send_mail(
             subject=subject_template.render(context),

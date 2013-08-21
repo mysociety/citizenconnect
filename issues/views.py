@@ -5,19 +5,28 @@ from django.forms.widgets import HiddenInput
 from django.template import RequestContext
 from django.http import Http404
 
+from django_tables2 import RequestConfig
 from extra_views import CreateWithInlinesView, InlineFormSet, NamedFormsetsMixin
 
 # App imports
 from citizenconnect.shortcuts import render
 from organisations.models import Organisation, Service
-from organisations.views.base import PickProviderBase
+from organisations.views.base import PickProviderBase, FilterFormMixin
 from organisations.views.organisations import OrganisationAwareViewMixin
+from organisations.views.organisation_parents import OrganisationParentAwareViewMixin
 from organisations.auth import enforce_problem_access_check
 from organisations.lib import interval_counts
+from organisations.forms import OrganisationFilterForm
 
 from .models import Problem, ProblemImage
 from .forms import ProblemForm, ProblemSurveyForm
 from .lib import base32_to_int
+from .tables import (
+    ProblemTable,
+    ExtendedProblemTable,
+    OrganisationParentProblemTable,
+    BreachTable
+)
 
 
 class ProblemPickProvider(PickProviderBase):
@@ -132,5 +141,101 @@ class ProblemSurvey(UpdateView):
         return render(self.request, self.confirm_template, context)
 
 
-class CommonQuestions(TemplateView):
-    template_name = 'issues/common_questions.html'
+class OrganisationProblems(OrganisationAwareViewMixin,
+                           FilterFormMixin,
+                           TemplateView):
+    template_name = 'issues/organisation_problems.html'
+
+    form_class = OrganisationFilterForm
+
+    def get_form_kwargs(self):
+        kwargs = super(OrganisationProblems, self).get_form_kwargs()
+
+        kwargs['organisation'] = self.organisation
+        # Only show service_id if the organisation has services
+        if not self.organisation.has_services():
+            kwargs['with_service_id'] = False
+
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super(OrganisationProblems, self).get_context_data(**kwargs)
+
+        # Get a queryset of issues and apply any filters to them
+        problems = context['organisation'].problem_set.all_not_rejected_visible_problems()
+        filtered_problems = self.filter_problems(context['selected_filters'], problems)
+
+        # Build a table
+        table_args = {
+            'private': context['private'],
+            'cobrand': kwargs['cobrand']
+        }
+
+        if context['organisation'].has_services() and context['organisation'].has_time_limits():
+            problem_table = ExtendedProblemTable(filtered_problems, **table_args)
+        else:
+            problem_table = ProblemTable(filtered_problems, **table_args)
+
+        RequestConfig(self.request, paginate={'per_page': 8}).configure(problem_table)
+        context['table'] = problem_table
+        context['page_obj'] = problem_table.page
+        return context
+
+
+class OrganisationParentProblems(OrganisationParentAwareViewMixin,
+                                 FilterFormMixin,
+                                 TemplateView):
+
+    template_name = 'issues/organisation_parent_problems.html'
+
+    def get_form_kwargs(self):
+        kwargs = super(OrganisationParentProblems, self).get_form_kwargs()
+
+        # Turn off the ccg filter and filter organisations to this organisation_parent
+        kwargs['with_ccg'] = False
+        kwargs['organisations'] = Organisation.objects.filter(parent=self.organisation_parent)
+
+        # Turn off the organisation_type filter
+        kwargs['with_organisation_type'] = False
+
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super(OrganisationParentProblems, self).get_context_data(**kwargs)
+
+        # Get a queryset of issues and apply any filters to them
+        problems = self.organisation_parent.problem_set.all()
+        filtered_problems = self.filter_problems(context['selected_filters'], problems)
+
+        # Build a table
+        table_args = {'private': context['private']}
+        problem_table = OrganisationParentProblemTable(filtered_problems, **table_args)
+
+        RequestConfig(self.request, paginate={'per_page': 8}).configure(problem_table)
+        context['table'] = problem_table
+        context['page_obj'] = problem_table.page
+        return context
+
+
+class OrganisationParentBreaches(OrganisationParentAwareViewMixin,
+                                 TemplateView):
+
+    template_name = 'issues/organisation_parent_breaches.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        return super(OrganisationParentBreaches, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(OrganisationParentBreaches, self).get_context_data(**kwargs)
+        problems = Problem.objects.open_problems().filter(breach=True, organisation__parent=context['organisation_parent'])
+
+        # Setup a table for the problems
+        problem_table = BreachTable(problems, private=True)
+        RequestConfig(self.request, paginate={'per_page': 25}).configure(problem_table)
+        context['table'] = problem_table
+        context['page_obj'] = problem_table.page
+
+        # These tables are always in the private context
+        context['private'] = True
+
+        return context
