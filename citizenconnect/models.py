@@ -8,6 +8,11 @@ from django.db import models
 
 
 class AuditedModel(models.Model):
+    """Abstract model class providing datetime fields useful for auditing.
+
+    Provides created and modified datetime fields, which automatically get set
+    to the current time on creation, and whenever the model is modified.
+    """
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     modified = models.DateTimeField(auto_now=True)
 
