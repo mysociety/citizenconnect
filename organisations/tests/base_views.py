@@ -355,17 +355,8 @@ class OrganisationMapBrowserTests(SeleniumTestCase):
         marker.click()
         marker.click()
         popup = self.driver.find_element_by_css_selector('.leaflet-popup')
-        expected_text = """
-×
-Testing org
-Problem reports:
-0 open/in progress, 0 closed.
-— average time to close.
-Reviews:
-0 received.
-View all details
-"""
-        self.assertEqual(popup.text, expected_text)
+        expected_text = u'Testing org\nProblem reports:\n0 open/in progress, 0 closed.'
+        self.assertTrue(expected_text in popup.text)
 
 
 @override_settings(SUMMARY_THRESHOLD=['all_time', 1])
