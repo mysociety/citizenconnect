@@ -296,6 +296,22 @@ class OrganisationMapBrowserTests(SeleniumTestCase):
         org_type_filter_container = self.driver.find_element_by_css_selector('.filters .filters__dropdown')
         self.assertEqual(org_type_filter_container.get_attribute('class'), 'filters__dropdown')
 
+    def test_map_filters(self):
+        org = create_test_organisation({'name': "Testing org"})
+        self.driver.get(self.full_url(self.map_url))
+        service_dept_filter = self.driver.find_element_by_id('id_service_code')
+
+        # Check that the service/department filter starts off disabled
+        self.assertTrue(service_dept_filter.get_attribute('disabled'))
+        org_type_filter = self.driver.find_element_by_id('id_organisation_type')
+        org_type_filter.find_element_by_css_selector('option[value="hospitals"]').click()
+        WebDriverWait(self.driver, 3).until(
+            lambda x: org_type_filter.get_attribute('disabled') is None
+        )
+
+        # Check that the service/department is enabled after selecting org type
+        self.assertIsNone(service_dept_filter.get_attribute('disabled'))
+
     def test_searching_the_map(self):
         # Create test organisation
         org = create_test_organisation({'name': "Testing org"})
