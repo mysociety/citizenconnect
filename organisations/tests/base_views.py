@@ -749,11 +749,13 @@ class ProviderPickerTests(TestCase):
         mock_results = MagicMock()
         ordered_results = mock_results.distance().order_by('distance')
         ordered_results.return_value = []
+        old_filter = Organisation.objects.filter
         Organisation.objects.filter = mock_results
         resp = self.client.get(self.results_url)
         expected_message = 'Sorry, there are no matches within 5 miles of SW1A 1AA. Please try again'
         self.assertContains(resp, expected_message, count=1, status_code=200)
         self.assertContains(resp, OrganisationFinderForm.PILOT_SEARCH_CAVEAT)
+        Organisation.objects.filter = old_filter
 
 
 class NotFoundTest(TestCase):
