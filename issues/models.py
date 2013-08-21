@@ -15,8 +15,6 @@ from django.core.validators import MaxLengthValidator
 from django.db.models import Q
 from django.utils.timezone import utc
 
-import dirtyfields
-
 from concurrency.fields import IntegerVersionField
 from concurrency.api import concurrency_check
 
@@ -140,7 +138,7 @@ class ProblemManager(models.Manager):
         return surveyable_problems
 
 
-class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
+class Problem(AuditedModel):
     """Stores problems reported by the public about organisations and services.
 
     Related to :model:`organisations.Organisation` and
@@ -425,6 +423,15 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
     # concurrent editing of the problem by two different people
     version = IntegerVersionField()
 
+    def __init__(self, *args, **kwargs):
+        """Overriden __init__ to save an initial copy of
+        public_reporter_name_original to check against when saving.
+
+        See: http://stackoverflow.com/questions/1355150/django-when-saving-how-can-you-check-if-a-field-has-changed
+        """
+        super(Problem, self).__init__(*args, **kwargs)
+        self.__initial_public_reporter_name_original = self.public_reporter_name_original
+
     @models.permalink
     def get_absolute_url(self):
         """Get the URL for viewing this Problem"""
@@ -597,7 +604,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
 
         if self.pk:
             # check that we are not trying to change public_reporter_name_original
-            if 'public_reporter_name_original' in self.get_dirty_fields():
+            if self.public_reporter_name_original != self.__initial_public_reporter_name_original:
                 raise Exception("Value of 'public_reporter_name_original' may not be changed after creation")
             self.validate_public_reporter_name(self.public_reporter_name, self.public_reporter_name_original)
         else:
@@ -605,13 +612,7 @@ class Problem(dirtyfields.DirtyFieldsMixin, AuditedModel):
             self.public_reporter_name_original = self.public_reporter_name
 
         super(Problem, self).save(*args, **kwargs)  # Call the "real" save() method.
-
-        # This should be run by the post-save signal, but it does not seem to
-        # run. Adding it here manually to get it working. See https://github.com/smn/django-dirtyfields/blob/master/src/dirtyfields/dirtyfields.py
-        # for the code that should run. This is why django-dirtyfields is pinned to 0.1
-        #
-        # Slightly changed contents of dirtyfields.reset_state:
-        self._original_state = self._as_dict()
+        self.__initial_public_reporter_name_original = self.public_reporter_name_original
 
     def check_token(self, token):
         """Check that a given token is valid for this Problem"""
