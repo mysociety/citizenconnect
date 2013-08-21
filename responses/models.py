@@ -22,3 +22,7 @@ class ProblemResponse(AuditedModel):
         concurrency check."""
         concurrency_check(self, *args, **kwargs) # Do a concurrency check
         super(ProblemResponse, self).save(*args, **kwargs) # Call the "real" save() method.
+
+    class Meta:
+        # Order by earliest responses first
+        ordering = ['created']
