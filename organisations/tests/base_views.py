@@ -381,6 +381,7 @@ class OrganisationMapBrowserTests(SeleniumTestCase):
         # Need to click twice, once to scroll the map into view, once
         # to open the marker popup.
         marker.click()
+        WebDriverWait(self.driver, 1)
         marker.click()
         popup = self.driver.find_element_by_css_selector('.leaflet-popup')
         expected_text = u'Testing org\nProblem reports:\n0 open/in progress, 0 closed.'
