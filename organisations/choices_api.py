@@ -159,12 +159,13 @@ class ChoicesAPI():
         organisation_dict['rating'] = None
         five_star_rating = organisation.find('%sFiveStarRecommendationRating' % self.organisation_namespace)
         if five_star_rating is not None:
-            rating = five_star_rating.find('%sValue' % self.organisation_namespace)
-            if rating is not None:
-                try:
+            try:
+                rating = five_star_rating.find('%sValue' % self.organisation_namespace)
+                if rating is not None:
                     organisation_dict['rating'] = float(rating.text)
-                except ValueError:
-                    # Probably an empty string - ignore it
-                    pass
+            except (AttributeError, ValueError):
+                # Probably an empty string or it doesn't have a five star
+                # recommendation rating element at all - ignore it
+                pass
 
         return organisation_dict

@@ -43,4 +43,4 @@ class Command(NoArgsCommand):
                     pass
                 except RepliedToReviewDoesNotExist, e:
                     if verbosity >= 1:
-                        self.stderr.write('RepliedToReviewDoesNotExist: ' + str(e) + " - skipping\n")
+                        self.stdout.write('RepliedToReviewDoesNotExist: ' + str(e) + " - skipping\n")
