@@ -1,5 +1,4 @@
 # encoding: utf-8
-
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
@@ -38,3 +37,18 @@ class ProblemTableTest(TestCase):
         link = table.render_summary(self.problem)
         expected = 'Private'
         self.assertEqual(link, expected)
+
+    def test_unicode_in_description(self):
+        # Issue #1189 - The render_summary_as_public_link method fell over
+        # when the summary had unicode characters in it that didn't map to ascii
+        unicode_char_string = u'\u2019'
+        self.problem.description = unicode_char_string
+        self.problem.moderated_description = unicode_char_string
+        self.problem.save()
+
+        table = ProblemTable([], private=False, cobrand='choices')
+        # Calling this threw an error before
+        table.render_summary_as_public_link(self.problem)
+
+        # Test similar methods too
+        table.render_summary_as_response_link(self.problem)

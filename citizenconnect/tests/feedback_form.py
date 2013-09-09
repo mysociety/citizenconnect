@@ -43,3 +43,15 @@ class FeedbackFormTest(TestCase):
     def test_feedback_form_doesnt_reference_problem_by_default(self):
         resp = self.client.get(self.feedback_form_url)
         self.assertNotContains(resp, "RE: Problem reference")
+
+    def test_handles_unicode(self):
+        resp = self.client.post(self.feedback_form_url, {
+            'name': u'Bob \u2019',
+            'email': 'bob@example.com',
+            'feedback_comments': u'Test XYZ Comment \u2019'})
+        self.assertEquals(302, resp.status_code)
+        self.assertRedirects(resp, self.feedback_confirm_url)
+        self.assertEqual(len(mail.outbox), 1)
+        email = mail.outbox[0]
+        self.assertTrue(u'Test XYZ Comment \u2019' in email.body)
+        self.assertEqual(email.subject, u'Feedback on CareConnect Service from Bob \u2019')

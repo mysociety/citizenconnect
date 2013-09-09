@@ -100,7 +100,7 @@ class Feedback(FormView):
             'name': form.cleaned_data['name'],
             'email': form.cleaned_data['email']})
 
-        subject = "Feedback on CareConnect Service from {0}".format(form.cleaned_data['name'])
+        subject = u"Feedback on CareConnect Service from {0}".format(form.cleaned_data['name'])
         message = feedback_template.render(context)
         from_email = settings.DEFAULT_FROM_EMAIL
         recipients = [settings.FEEDBACK_EMAIL_ADDRESS]
