@@ -69,15 +69,16 @@ table {
       text-decoration: none;
       &:hover { color: $c-table-heading-link-hover-color; }
     }
-    // up / down carats for srotable cols
+    // up / down carats for sortable cols
     &.sortable a {
       &:after {
         @extend .i;
         margin-left: 0.5em;
-        content: "\e005";
+        content: "\25b8";
       }
     }
     &.asc a, &.desc a { color: $c-table-heading-link-active-color; }
+    &.desc a:after { content: "\e005"; }
     &.asc a:after { content: "\e004"; }
   }
   .icon-x {
