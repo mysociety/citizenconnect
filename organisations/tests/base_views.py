@@ -297,7 +297,7 @@ class OrganisationMapBrowserTests(SeleniumTestCase):
         self.assertEqual(org_type_filter_container.get_attribute('class'), 'filters__dropdown')
 
     def test_map_filters_enable_service(self):
-        org = create_test_organisation({'name': "Testing org"})
+        create_test_organisation({'name': "Testing org"})
         self.driver.get(self.full_url(self.map_url))
         service_dept_filter = self.driver.find_element_by_id('id_service_code')
 
@@ -315,13 +315,13 @@ class OrganisationMapBrowserTests(SeleniumTestCase):
     def test_filtering_map_pins(self):
         point = Point(0, 51.5)
         # Create a hospital and a clinic
-        hospital = create_test_organisation({
+        create_test_organisation({
             'name': "Test hospital",
             'ods_code': 1,
             'organisation_type': 'hospitals',
             'point': point
         })
-        clinic = create_test_organisation({
+        create_test_organisation({
             'name': "Test clinic",
             'ods_code': 2,
             'organisation_type': 'clinics',
@@ -339,6 +339,57 @@ class OrganisationMapBrowserTests(SeleniumTestCase):
             lambda x: len(markers.find_elements_by_tag_name('img')) is 1
         )
         self.assertEquals(1, len(markers.find_elements_by_tag_name('img')))
+
+    def test_filtering_map_popup(self):
+        # Issue #1183 - filtering the map with a popup didn't rebuild the HTML
+        # for the popup, it just re-opened it, so the numbers within were then
+        # wrong
+        # Create some organisations
+        hospital = create_test_organisation({
+            'name': "Test hospital",
+            'ods_code': 1,
+            'organisation_type': 'hospitals',
+            'point': Point(0, 51.5)
+        })
+        # Create a problem
+        create_test_problem({
+            'organisation': hospital,
+            'publication_status': Problem.PUBLISHED,
+            'category': 'staff'
+        })
+
+        # Click the org's marker to load the popup
+        self.driver.get(self.full_url(self.map_url))
+        markers = self.driver.find_element_by_css_selector('.leaflet-marker-pane')
+        hospital_marker = markers.find_element_by_tag_name('img')
+
+        # Need to click twice, once to scroll the map into view, once
+        # to open the marker popup.
+        hospital_marker.click()
+        WebDriverWait(self.driver, 3).until(
+            lambda x: hospital_marker.is_displayed()
+        )
+        hospital_marker.click()
+
+        # Check the right number of problems is shown
+
+        popup = self.driver.find_element_by_css_selector('.leaflet-popup')
+        WebDriverWait(self.driver, 3).until(
+            lambda x: popup.is_displayed()
+        )
+        expected_text = u'Test hospital\nProblem reports:\n1 open/in progress, 0 closed.'
+        self.assertTrue(expected_text in popup.text)
+
+        # Now filter the map to a category that excludes our test problem
+        category_filter = self.driver.find_element_by_id('id_category')
+        category_filter.find_element_by_css_selector('option[value="access"]').click()
+
+        WebDriverWait(self.driver, 3)
+
+        # Check the text has changed
+        expected_text = u'Test hospital\nProblem reports:\n0 open/in progress, 0 closed.'
+        popup = self.driver.find_element_by_css_selector('.leaflet-popup')
+        self.assertTrue(expected_text in popup.text)
 
     def test_searching_the_map(self):
         # Create test organisation
@@ -381,9 +432,14 @@ class OrganisationMapBrowserTests(SeleniumTestCase):
         # Need to click twice, once to scroll the map into view, once
         # to open the marker popup.
         marker.click()
-        WebDriverWait(self.driver, 1)
+        WebDriverWait(self.driver, 3).until(
+            lambda x: marker.is_displayed()
+        )
         marker.click()
         popup = self.driver.find_element_by_css_selector('.leaflet-popup')
+        WebDriverWait(self.driver, 3).until(
+            lambda x: popup.is_displayed()
+        )
         expected_text = u'Testing org\nProblem reports:\n0 open/in progress, 0 closed.'
         self.assertTrue(expected_text in popup.text)
 
