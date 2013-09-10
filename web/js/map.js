@@ -246,6 +246,19 @@ $(document).ready(function () {
         oms.clearMarkers();
         markersGroup.clearLayers();
 
+        // If there was already a popup open when the filtering occurred,
+        // check if the marker is still visible, if it is we reopen the popup.
+        if (reopenPopup) {
+            var odsCodes = _.pluck(providers, 'ods_code');
+            var reopenCode = reopenPopup._source.nhsCentre.ods_code;
+            if (_.contains(odsCodes, reopenCode)) {
+                openPopupFor = reopenCode;
+            } else {
+                map.closePopup(reopenPopup);
+            }
+            reopenPopup = false;
+        }
+
         _.each(providers, function(nhsCentre) {
             var marker;
 
@@ -273,19 +286,6 @@ $(document).ready(function () {
                 openPopupFor = false;
             }
         });
-
-        // If there was already a popup open when the filtering occurred,
-        // check if the marker is still visible, if it is we reopen the popup.
-        if (reopenPopup) {
-            var odsCodes = _.pluck(providers, 'ods_code');
-            var reopenCode = reopenPopup._source.nhsCentre.ods_code;
-            if (_.contains(odsCodes, reopenCode)) {
-                reopenPopup.openOn(map);
-            } else {
-                map.closePopup(reopenPopup);
-            }
-            reopenPopup = false;
-        }
     };
 
     /**
