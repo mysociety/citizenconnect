@@ -52,6 +52,29 @@ class ReviewTest(TestCase):
 
         self.assertEqual(review.ratings.count(), 1)
 
+    def test_handles_unicode(self):
+        # Issue #1189 led me to check the rest of the codebase, and this class
+        # exhibited the same bug - potential unicode being inserted into an
+        # ascii string using format()
+        organisation = create_test_organisation()
+
+        test_question = Question.objects.all()[0]
+        test_answer = test_question.answers.all()[0]
+
+        review = Review.objects.create(
+            email="bob@example.com",
+            display_name=u"Bob Smith \u2019",
+            title=u"Good review \u2019",
+            comment=u"Not bad \u2019",
+            month_year_of_visit=datetime.date.today(),
+            organisation=organisation,
+        )
+
+        rating = Rating(question=test_question, answer=test_answer)
+        review.ratings.add(rating)
+
+        self.assertEqual(review.__unicode__(), u"Bob Smith \u2019 - Good review \u2019")
+
 
 class ReviewFormDateCompareTest(TestCase):
 

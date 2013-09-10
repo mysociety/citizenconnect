@@ -28,7 +28,7 @@ class Review(AuditedModel):
 
     def __unicode__(self):
         """String representation of this Review"""
-        return "{0} - {1}".format(self.display_name, self.title)
+        return u"{0} - {1}".format(self.display_name, self.title)
 
 
 class Rating(models.Model):
@@ -43,7 +43,7 @@ class Rating(models.Model):
 
     def __unicode__(self):
         """String representation of this Rating"""
-        return "{0} - {1}".format(self.question.title, self.answer.text)
+        return u"{0} - {1}".format(self.question.title, self.answer.text)
 
 
 class Question(models.Model):
