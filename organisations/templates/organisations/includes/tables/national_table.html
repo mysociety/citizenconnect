@@ -24,8 +24,11 @@
                         <th class="two-twelfths" colspan="2">Satisfaction with:</th>
                     {% elif column.accessor == 'happy_outcome' %}
                         {# happy_service covers this heading #}
-                    {% else %}
+                    {% elif column.accessor == 'average_recommendation_rating' %}
                         <th {{ column.attrs.th.as_html }}><a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.opposite %}">{{ column.header }}</a></th>
+                    {% elif column.accessor == 'name' %}
+                        {# All the other columns are numeric, so sort descending first, but alphabetical ones should sort ascending first #}
+                        <th {{ column.attrs.th.as_html }}><a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">{{ column.header }}</a></th>
                     {% endif %}
                 {% endfor %}
 
