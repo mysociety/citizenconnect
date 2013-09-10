@@ -344,15 +344,14 @@ class OrganisationMapBrowserTests(SeleniumTestCase):
         # Issue #1183 - filtering the map with a popup didn't rebuild the HTML
         # for the popup, it just re-opened it, so the numbers within were then
         # wrong
-        point = Point(0, 51.5)
-        # Create an organisation
+        # Create some organisations
         hospital = create_test_organisation({
             'name': "Test hospital",
             'ods_code': 1,
             'organisation_type': 'hospitals',
-            'point': point
+            'point': Point(0, 51.5)
         })
-        # Create a problem at that organisation
+        # Create a problem
         create_test_problem({
             'organisation': hospital,
             'publication_status': Problem.PUBLISHED,
@@ -363,13 +362,21 @@ class OrganisationMapBrowserTests(SeleniumTestCase):
         self.driver.get(self.full_url(self.map_url))
         markers = self.driver.find_element_by_css_selector('.leaflet-marker-pane')
         hospital_marker = markers.find_element_by_tag_name('img')
+
         # Need to click twice, once to scroll the map into view, once
         # to open the marker popup.
         hospital_marker.click()
+        WebDriverWait(self.driver, 3).until(
+            lambda x: hospital_marker.is_displayed()
+        )
         hospital_marker.click()
 
         # Check the right number of problems is shown
+
         popup = self.driver.find_element_by_css_selector('.leaflet-popup')
+        WebDriverWait(self.driver, 3).until(
+            lambda x: popup.is_displayed()
+        )
         expected_text = u'Test hospital\nProblem reports:\n1 open/in progress, 0 closed.'
         self.assertTrue(expected_text in popup.text)
 
@@ -377,13 +384,11 @@ class OrganisationMapBrowserTests(SeleniumTestCase):
         category_filter = self.driver.find_element_by_id('id_category')
         category_filter.find_element_by_css_selector('option[value="access"]').click()
 
-        WebDriverWait(self.driver, 3).until(
-            lambda x: len(markers.find_elements_by_tag_name('img')) is 1
-        )
+        WebDriverWait(self.driver, 3)
 
         # Check the text has changed
-        popup = self.driver.find_element_by_css_selector('.leaflet-popup')
         expected_text = u'Test hospital\nProblem reports:\n0 open/in progress, 0 closed.'
+        popup = self.driver.find_element_by_css_selector('.leaflet-popup')
         self.assertTrue(expected_text in popup.text)
 
     def test_searching_the_map(self):
@@ -427,9 +432,14 @@ class OrganisationMapBrowserTests(SeleniumTestCase):
         # Need to click twice, once to scroll the map into view, once
         # to open the marker popup.
         marker.click()
-        WebDriverWait(self.driver, 1)
+        WebDriverWait(self.driver, 3).until(
+            lambda x: marker.is_displayed()
+        )
         marker.click()
         popup = self.driver.find_element_by_css_selector('.leaflet-popup')
+        WebDriverWait(self.driver, 3).until(
+            lambda x: popup.is_displayed()
+        )
         expected_text = u'Testing org\nProblem reports:\n0 open/in progress, 0 closed.'
         self.assertTrue(expected_text in popup.text)
 
