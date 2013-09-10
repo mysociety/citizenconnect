@@ -2,6 +2,7 @@
 {% load url from future %}
 {% load staticfiles %}
 {% load render_table from django_tables2 %}
+{% load compressed %}
 {% block title %}Overview of Participating Providers{% endblock %}
 
 {% block bodyclasses %}summary{% endblock %}
@@ -19,15 +20,10 @@
         <input type="text" id="search-org-name" data-search-url="{% url 'org-search' cobrand=cobrand.name %}" data-org-summary-url="{% url 'org-all-summary' cobrand=cobrand.name %}" />
     </div>
 
-  {% render_table table 'organisations/includes/national_table.html' %}
+  {% render_table table 'organisations/includes/tables/national_table.html' %}
 
 {% endblock %}
 
 {% block extra_js %}
-    <script src="{% static 'js/select2.min.js' %}"></script>
-    <script src="{% static 'js/summary-table.js' %}"></script>
+{% compressed_js 'summary_table' %}
 {% endblock extra_js %}
-
-{% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/select2/select2.css' %}" />
-{% endblock extra_css %}

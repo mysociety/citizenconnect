@@ -2,14 +2,17 @@ from django.views.generic import TemplateView, UpdateView
 from django.views.generic.edit import FormView
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 
 from django_tables2 import RequestConfig
+from extra_views import UpdateWithInlinesView, InlineFormSet, NamedFormsetsMixin
 
 # App imports
 from issues.models import Problem
 from organisations.auth import enforce_moderation_access_check, enforce_second_tier_moderation_access_check
+from responses.models import ProblemResponse
 
-from .forms import ProblemModerationForm, ProblemResponseInlineFormSet, ProblemSecondTierModerationForm
+from .forms import ProblemModerationForm, ProblemSecondTierModerationForm
 from issues.forms import LookupForm
 from .tables import ModerationTable, SecondTierModerationTable
 
@@ -95,15 +98,27 @@ class ModerateLookup(ModeratorsOnlyMixin,
         return HttpResponseRedirect(moderate_url)
 
 
-class ModerateForm(ModeratorsOnlyMixin,
-                   UpdateView):
+class ProblemResponseInline(InlineFormSet):
+    model = ProblemResponse
+    can_delete = True
+    max_num = 0
+    fields = ('response',)
 
-    queryset = Problem.objects.all()
+
+class ModerateForm(NamedFormsetsMixin,
+                   ModeratorsOnlyMixin,
+                   UpdateWithInlinesView):
+
+    model = Problem
     template_name = 'moderation/moderate_form.html'
     form_class = ProblemModerationForm
 
     # Standardise the context_object's name
     context_object_name = 'issue'
+
+    # Settings for the inline formsets
+    inlines = [ProblemResponseInline]
+    inlines_names = ['response_forms']
 
     def get_form_kwargs(self):
         # Add the request to the form's kwargs
@@ -118,30 +133,9 @@ class ModerateForm(ModeratorsOnlyMixin,
 
     def get_context_data(self, **kwargs):
         context = super(ModerateForm, self).get_context_data(**kwargs)
-        if self.request.POST:
-            context['response_forms'] = ProblemResponseInlineFormSet(data=self.request.POST,
-                                                                     instance=self.object)
-        else:
-            context['response_forms'] = ProblemResponseInlineFormSet(instance=self.object)
-
+        # This shouldn't be necessary, but for some reason it is
+        context['issue'] = get_object_or_404(Problem, pk=self.kwargs['pk'])
         return context
-
-    def form_valid(self, form):
-        context = self.get_context_data()
-        # If we have responses too, we have to check them manually for validity
-        if 'response_forms' in context:
-            response_forms = context['response_forms']
-            if response_forms.is_valid():
-                self.object = form.save()
-                response_forms.instance = self.object
-                response_forms.save()
-            else:
-                return self.render_to_response(self.get_context_data(form=form))
-        else:
-            # No responses, just a problem
-            self.object = form.save()
-
-        return HttpResponseRedirect(self.get_success_url())
 
 
 class SecondTierModerateForm(SecondTierModeratorsOnlyMixin,
@@ -162,11 +156,6 @@ class SecondTierModerateForm(SecondTierModeratorsOnlyMixin,
 
     def get_success_url(self):
         return reverse('second-tier-moderate-confirm')
-
-    def get_context_data(self, **kwargs):
-        context = super(SecondTierModerateForm, self).get_context_data(**kwargs)
-        context['issue'] = Problem.objects.get(pk=self.kwargs['pk'])
-        return context
 
 
 class ModerateConfirm(ModeratorsOnlyMixin,

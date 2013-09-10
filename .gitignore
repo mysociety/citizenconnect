@@ -5,3 +5,5 @@ conf/httpd.conf
 .sass-cache
 chromedriver.log
 libpeerconnection.log
+.bundle/
+web/sass/default.css

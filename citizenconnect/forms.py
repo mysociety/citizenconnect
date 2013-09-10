@@ -47,17 +47,20 @@ class ConcurrentFormMixin(object):
         """
         Check that the user's version of the model is still the latest
         """
-        session_version = self.request.session.get(self.session_key)[self.concurrency_model.id]
-        return session_version == self.concurrency_model.version
+        if self.request.session.get(self.session_key, False):
+            if self.concurrency_model.id in self.request.session[self.session_key]:
+                session_version = self.request.session.get(self.session_key)[self.concurrency_model.id]
+                return session_version == self.concurrency_model.version
+        return False
 
-    def save(self):
+    def save(self, *args, **kwargs):
         """
         Overriden save to unset the session variables we set in __init__
         This may still throw a RecordModifiedError, which you should catch to be
         totally sure you've not allowed concurrent editing, but it's quite a slim
         chance.
         """
-        saved_object = super(ConcurrentFormMixin, self).save()
+        saved_object = super(ConcurrentFormMixin, self).save(*args, **kwargs)
         self.unset_version_in_session()
         return saved_object
 

@@ -5,8 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 
 from citizenconnect.shortcuts import render
-from organisations import auth
-from organisations.auth import enforce_response_access_check, user_is_escalation_body, user_in_group
+from organisations.auth import enforce_response_access_check
 from issues.models import Problem
 from issues.lib import changes_for_model
 

@@ -6,6 +6,7 @@ import urllib
 import logging
 from datetime import datetime
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.keys import Keys
 
 # Django imports
 from django.test import TestCase
@@ -22,6 +23,7 @@ from issues.models import Problem
 import organisations
 from ..models import Organisation
 from ..forms import MapitPostCodeLookup, MapitPostcodeNotFoundError
+from ..views.base import Summary
 from . import (create_test_problem,
                create_test_organisation,
                create_test_service,
@@ -294,6 +296,97 @@ class OrganisationMapBrowserTests(SeleniumTestCase):
         org_type_filter_container = self.driver.find_element_by_css_selector('.filters .filters__dropdown')
         self.assertEqual(org_type_filter_container.get_attribute('class'), 'filters__dropdown')
 
+    def test_map_filters_enable_service(self):
+        org = create_test_organisation({'name': "Testing org"})
+        self.driver.get(self.full_url(self.map_url))
+        service_dept_filter = self.driver.find_element_by_id('id_service_code')
+
+        # Check that the service/department filter starts off disabled
+        self.assertTrue(service_dept_filter.get_attribute('disabled'))
+        org_type_filter = self.driver.find_element_by_id('id_organisation_type')
+        org_type_filter.find_element_by_css_selector('option[value="hospitals"]').click()
+        WebDriverWait(self.driver, 3).until(
+            lambda x: org_type_filter.get_attribute('disabled') is None
+        )
+
+        # Check that the service/department is enabled after selecting org type
+        self.assertIsNone(service_dept_filter.get_attribute('disabled'))
+
+    def test_filtering_map_pins(self):
+        point = Point(0, 51.5)
+        # Create a hospital and a clinic
+        hospital = create_test_organisation({
+            'name': "Test hospital",
+            'ods_code': 1,
+            'organisation_type': 'hospitals',
+            'point': point
+        })
+        clinic = create_test_organisation({
+            'name': "Test clinic",
+            'ods_code': 2,
+            'organisation_type': 'clinics',
+            'point': point
+        })
+
+        self.driver.get(self.full_url(self.map_url))
+        markers = self.driver.find_element_by_css_selector('.leaflet-marker-pane')
+        self.assertEquals(2, len(markers.find_elements_by_tag_name('img')))
+
+        # Filter to only hospitals
+        org_type_filter = self.driver.find_element_by_id('id_organisation_type')
+        org_type_filter.find_element_by_css_selector('option[value="hospitals"]').click()
+        WebDriverWait(self.driver, 3).until(
+            lambda x: len(markers.find_elements_by_tag_name('img')) is 1
+        )
+        self.assertEquals(1, len(markers.find_elements_by_tag_name('img')))
+
+    def test_searching_the_map(self):
+        # Create test organisation
+        org = create_test_organisation({'name': "Testing org"})
+        self.driver.get(self.full_url(self.map_url))
+
+        # Search for a provider
+        elm = self.driver.find_element_by_css_selector('.select2-container a')
+        elm.click()
+        search_box = self.driver.find_element_by_css_selector('.select2-search input')
+        search_box.send_keys("Testing")
+        results = self.driver.find_element_by_css_selector('.select2-results')
+        WebDriverWait(self.driver, 5).until(
+            lambda x: org.name in results.text
+        )
+
+        search_box.send_keys(Keys.RETURN)
+        map_elm = self.driver.find_element_by_css_selector('#map')
+        WebDriverWait(self.driver, 5).until(
+            lambda x: org.name in map_elm.text
+        )
+        self.assertTrue("Problem reports" in map_elm.text)
+        self.assertTrue("Reviews" in map_elm.text)
+
+    def test_map_pins_loaded(self):
+        # Create 3 test orgs with points on the map
+        for i in range(3):
+            create_test_organisation({'name': "Testing org {0}".format(i), 'ods_code': i, 'point': Point(0, 51.5)})
+
+        self.driver.get(self.full_url(self.map_url))
+        marker_pane = self.driver.find_element_by_css_selector('.leaflet-marker-pane')
+        markers = marker_pane.find_elements_by_tag_name('img')
+        self.assertEquals(3, len(markers))
+
+    def test_clicking_map_pins(self):
+        create_test_organisation({'name': "Testing org", 'point': Point(0, 51.5)})
+        self.driver.get(self.full_url(self.map_url))
+        marker_pane = self.driver.find_element_by_css_selector('.leaflet-marker-pane')
+        marker = marker_pane.find_elements_by_tag_name('img')[0]
+        # Need to click twice, once to scroll the map into view, once
+        # to open the marker popup.
+        marker.click()
+        WebDriverWait(self.driver, 1)
+        marker.click()
+        popup = self.driver.find_element_by_css_selector('.leaflet-popup')
+        expected_text = u'Testing org\nProblem reports:\n0 open/in progress, 0 closed.'
+        self.assertTrue(expected_text in popup.text)
+
 
 @override_settings(SUMMARY_THRESHOLD=['all_time', 1])
 class SummaryTests(AuthorizationTestCase):
@@ -401,6 +494,68 @@ class SummaryTests(AuthorizationTestCase):
         resp = self.client.get("{0}?problems_interval=not_there&reviews_interval=neither".format(self.summary_url))
         self.assertEqual(resp.context['problems_sort_column'], resp.context['table'].columns['all_time'])
         self.assertEqual(resp.context['reviews_sort_column'], resp.context['table'].columns['reviews_all_time'])
+
+
+    @override_settings(SUMMARY_THRESHOLD=None)
+    def test_get_interval_counts_works_with_duplicate_names(self):
+        # Issue #1167 - when two orgs had identical names, the code in
+        # Summary.get_interval_counts could mix up the problem and
+        # review data if the two orgs with the same name were in
+        # different orders in the two sets of data
+        # (Possible because the sorting can't guarantee anything when
+        # sorting by the name field alone)
+
+        # Add a new org with the same name as a previous one:
+        duplicate_name_hospital = create_test_organisation({
+            'ods_code': 'DUPE1',
+            'organisation_type': 'hospitals',
+            'parent': self.test_hospital.parent,
+            'name': self.test_hospital.name
+        })
+
+        expected_organisation_data = [
+            {
+                'week': 0,
+                'ods_code': duplicate_name_hospital.ods_code,
+                'name': duplicate_name_hospital.name,
+                'happy_outcome': None,
+                'average_time_to_acknowledge': None,
+                'reviews_week': 0,
+                'six_months': 0,
+                'all_time': 0,
+                'four_weeks': 0,
+                'reviews_all_time': 0,
+                'average_recommendation_rating': None,
+                'average_time_to_address': None,
+                'reviews_four_weeks': 0,
+                'id': duplicate_name_hospital.id,
+                'reviews_six_months': 0,
+                'happy_service': None,
+            },
+            {
+                'week': 1L,
+                'ods_code': self.test_hospital.ods_code,
+                'name': self.test_hospital.name,
+                'happy_outcome': None,
+                'average_time_to_acknowledge': None,
+                'reviews_week': 1L,
+                'six_months': 1L,
+                'all_time': 1L,
+                'four_weeks': 1L,
+                'reviews_all_time': 1L,
+                'average_recommendation_rating': None,
+                'average_time_to_address': None,
+                'reviews_four_weeks': 1L,
+                'id': self.test_hospital.id,
+                'reviews_six_months': 1L,
+                'happy_service': None,
+            }
+        ]
+
+        summary_view = Summary()
+
+        actual_organisation_data = summary_view.get_interval_counts({}, {'organisation_type':'hospitals'}, None)
+        self.assertEqual(expected_organisation_data, actual_organisation_data)
 
 
 class SummaryBrowserTests(SeleniumTestCase, AuthorizationTestCase):
@@ -595,11 +750,13 @@ class ProviderPickerTests(TestCase):
         mock_results = MagicMock()
         ordered_results = mock_results.distance().order_by('distance')
         ordered_results.return_value = []
+        old_filter = Organisation.objects.filter
         Organisation.objects.filter = mock_results
         resp = self.client.get(self.results_url)
         expected_message = 'Sorry, there are no matches within 5 miles of SW1A 1AA. Please try again'
         self.assertContains(resp, expected_message, count=1, status_code=200)
         self.assertContains(resp, OrganisationFinderForm.PILOT_SEARCH_CAVEAT)
+        Organisation.objects.filter = old_filter
 
 
 class NotFoundTest(TestCase):

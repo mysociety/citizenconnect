@@ -685,7 +685,7 @@
     </div>
 
     <div class="g  one-third  palm-one-whole">
-        <ul class="side-nav">
+        <ul class="side-nav" data-sections=".about-section">
             <li class="active"><a href="#about-this-service">About this service</a></li>
             <li><a href="#why-have-we-developed-this-service">Why have we developed this?</a></li>
             <li><a href="#share-your-experiences">Share your experiences</a></li>
@@ -708,16 +708,11 @@
 </div>
 {% endblock content %}
 
-{% load staticfiles %}
 {% block extra_js %}
 {{ block.super }}
-
-<script src="{% static 'js/jquery.scrollspy.js' %}"></script>
-<script src="{% static 'js/side_nav.js' %}"></script>
-<script>
+<script type="text/javascript">
     jQuery(document).ready(function($) {
-        new SideNavView({el: $('.side-nav'), sections: $('.about-section')});
+        $('.side-nav').sideNav();
     });
 </script>
-
 {% endblock extra_js %}

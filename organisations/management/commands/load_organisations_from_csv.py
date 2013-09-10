@@ -12,15 +12,10 @@ from ...models import Organisation, Service, OrganisationParent
 
 
 class Command(BaseCommand):
+    args = '<csv_file>'
     help = 'Load organisations from a spreadsheet extracted from the NHS Choices database'
 
     option_list = BaseCommand.option_list + (
-        make_option('--verbose',
-            action='store_true',
-            dest='verbose',
-            default=False,
-            help='Show verbose output'),
-        ) + (
         make_option('--clean',
             action='store_true',
             dest='clean',
@@ -45,17 +40,17 @@ class Command(BaseCommand):
         filename = args[0]
         reader = csv.DictReader(open(filename), delimiter=',', quotechar='"')
         rownum = 0
-        verbose = options['verbose']
+        verbosity = int(options.get('verbosity'))
         clean = options['clean']
         update = options['update']
 
         if clean:
-            if verbose:
+            if verbosity >= 2:
                 self.stdout.write("Deleting existing organisations and services")
             Service.objects.all().delete()
             Organisation.objects.all().delete()
 
-        if verbose:
+        if verbosity >= 2:
             processed = 0
             skipped = 0
 
@@ -120,7 +115,7 @@ class Command(BaseCommand):
                 transaction.rollback()
 
             if organisation_type_text not in type_mappings:
-                if verbose:
+                if verbosity >= 2:
                     print "Unknown organisation type %s, skipping" % organisation_type_text
                 continue
             organisation_type = type_mappings[organisation_type_text]
@@ -174,23 +169,23 @@ class Command(BaseCommand):
 
                 if organisation_created:
                     self.stdout.write('Created organisation %s\n' % organisation.name)
-                elif verbose:
+                elif verbosity >= 2:
                     self.stdout.write('Organisation %s exists\n' % ods_code)
                 if service:
                     if service_created:
                         self.stdout.write('Created service %s\n' % service.name)
-                    elif verbose:
+                    elif verbosity >= 2:
                         self.stdout.write('Service %s for organisation %s')
-                if verbose:
+                if verbosity >= 2:
                     processed += 1
                 transaction.commit()
             except Exception as e:
-                if verbose:
+                if verbosity >= 2:
                     skipped += 1
                 self.stderr.write("Skipping %s %s (%s): %s" % (name, organisation_type, ods_code, e))
                 transaction.rollback()
 
-        if verbose:
+        if verbosity >= 2:
             self.stdout.write("Total records in file: {0}\n".format(rownum))
             self.stdout.write("Processed {0} records\n".format(processed))
             self.stdout.write("Skipped {0} records\n".format(skipped))

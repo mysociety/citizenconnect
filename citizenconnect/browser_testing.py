@@ -2,6 +2,7 @@ import sys
 import os
 
 from selenium import webdriver
+from pipeline.conf import settings as pipeline_settings
 
 from django.test import LiveServerTestCase
 from django.utils import unittest
@@ -46,11 +47,13 @@ class SeleniumTestCase(LiveServerTestCase):
         # commend is not supported by them. Ues Chrome instead
         cls.driver = webdriver.Chrome()
         super(SeleniumTestCase, cls).setUpClass()
+        pipeline_settings.PIPELINE_ENABLED = False
 
     @classmethod
     def tearDownClass(cls):
         cls.driver.quit()
         super(SeleniumTestCase, cls).tearDownClass()
+        pipeline_settings.PIPELINE_ENABLED = True
 
     def full_url(self, path):
         """Add the path given to the live_server_url"""

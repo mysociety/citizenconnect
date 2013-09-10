@@ -1,0 +1,20 @@
+{% extends "citizenconnect/base.html" %}
+{% load url from future %}
+{% load render_table from django_tables2 %}
+
+{% block title %}{{ organisation.name }} :: Problem Reports{% endblock %}
+
+{% block bodyclasses %}organisation-problems{% endblock %}
+
+{% block content %}
+
+{% include "organisations/includes/provider_summary_link.html" %}
+
+{% include "organisations/includes/page_header.html" with title="Problem Reports" %}
+
+{% include "organisations/includes/organisation_tabs.html" with active_tab='problems' %}
+
+{% include "organisations/includes/filters.html" %}
+
+{% render_table table 'issues/includes/tables/problem_table.html' %}
+{% endblock %}

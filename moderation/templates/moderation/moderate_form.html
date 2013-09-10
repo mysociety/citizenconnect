@@ -1,6 +1,7 @@
 {% extends "citizenconnect/base.html" %}
 {% load url from future %}
 {% load staticfiles %}
+{% load compressed %}
 
 {% block title %}Moderate problem{% endblock %}
 
@@ -51,9 +52,9 @@
                     {{ hidden }}
                 {% endfor %}
 
-                {% include "moderation/fields/public_reporter_name.html" %}
+                {% include "moderation/fields/public_reporter_name.html" with object=issue %}
 
-                {% include "moderation/fields/moderated_description.html" %}
+                {% include "moderation/fields/moderated_description.html" with object=issue %}
 
                 <div class="meta-data-wrap">
                     <h3 class="meta-data-label">Manage problem</h3>
@@ -140,7 +141,5 @@
 {% endblock extra_css %}
 
 {% block extra_js %}
-<script src="{% static 'js/jquery.fancybox-1.3.4.js' %}"></script>
-<script src="{% static 'js/moderation_form.js' %}"></script>
-<script src="{% static 'js/fancybox-zoom.js' %}"></script>
+{% compressed_js 'moderation_form' %}
 {% endblock extra_js %}

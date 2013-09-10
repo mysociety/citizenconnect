@@ -16,8 +16,6 @@ class ProblemAPIForm(forms.ModelForm):
     source = forms.CharField(required=True)
     # Make commissioned required
     commissioned = forms.ChoiceField(required=True, choices=Problem.COMMISSIONED_CHOICES)
-    # Add an escalated flag with which we'll set the Problem status
-    escalated = forms.BooleanField(required=False)
 
     status = forms.IntegerField(required=False)
     # Make priority optional (we will set a default)
@@ -51,8 +49,7 @@ class ProblemAPIForm(forms.ModelForm):
         return None
 
     def clean_status(self):
-        # Always set status to Problem.New. Note that if escalated is set
-        # we will modify this in clean
+        # Always set status to Problem.New
         return Problem.NEW
 
     def clean_priority(self):
@@ -107,11 +104,6 @@ class ProblemAPIForm(forms.ModelForm):
         if cleaned_data.get('priority') == Problem.PRIORITY_HIGH and not cleaned_data.get('category') in Problem.CATEGORIES_PERMITTING_SETTING_OF_PRIORITY_AT_SUBMISSION:
             self._errors['priority'] = self.error_class(['The problem is not in a category which permits setting of a high priority.'])
             del cleaned_data['priority']
-
-        # Raise an error if escalation flag is set - we don't support this yet
-        if cleaned_data.get('escalated') is True:
-            self._errors['escalated'] = self.error_class(['Escalation is not currently enabled.'])
-            del cleaned_data['escalated']
 
         return cleaned_data
 

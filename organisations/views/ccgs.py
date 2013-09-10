@@ -9,7 +9,6 @@ from ..models import CCG, Problem
 from ..tables import ProblemDashboardTable, CCGSummaryTable
 
 from .base import PrivateViewMixin, Summary
-from .escalation import EscalationDashboard, EscalationBreaches
 
 
 class CCGAwareViewMixin(PrivateViewMixin):
@@ -44,60 +43,11 @@ class CCGDashboard(CCGAwareViewMixin, TemplateView):
         context = super(CCGDashboard, self).get_context_data(**kwargs)
 
         # Get the problems related to this ccg, and let the db sort them
-        problems = context['ccg'].problem_set.open_unescalated_problems()
+        problems = context['ccg'].problem_set.open_problems()
         problems_table = ProblemDashboardTable(problems)
         RequestConfig(self.request, paginate={'per_page': 25}).configure(problems_table)
         context['table'] = problems_table
         context['page_obj'] = problems_table.page
-        return context
-
-
-class CCGEscalationDashboard(CCGAwareViewMixin, EscalationDashboard):
-
-    template_name = 'organisations/escalation_dashboard.html'
-
-    def enforce_access(self, user):
-        enforce_ccg_access_check(self.ccg, user)
-
-    def get_form_kwargs(self):
-        kwargs = super(CCGEscalationDashboard, self).get_form_kwargs()
-        kwargs['with_ccg'] = False
-        return kwargs
-
-    def get_organisations(self):
-        organisations = super(CCGEscalationDashboard, self).get_organisations()
-        return organisations.filter(parent__escalation_ccg=self.ccg)
-
-    def get_problems(self):
-        problems = super(CCGEscalationDashboard, self).get_problems()
-        # Filter to the current CCG
-        return problems.filter(organisation__parent__escalation_ccg=self.ccg,
-                               commissioned=Problem.LOCALLY_COMMISSIONED)
-
-    def get_context_data(self, **kwargs):
-        context = super(CCGEscalationDashboard, self).get_context_data(**kwargs)
-        context['tabs_template'] = 'organisations/includes/ccg_tabs.html'
-
-        return context
-
-
-class CCGEscalationBreaches(CCGAwareViewMixin, EscalationBreaches):
-
-    template_name = 'organisations/escalation_breaches.html'
-
-    def enforce_access(self, user):
-        enforce_ccg_access_check(self.ccg, user)
-
-    def get_problems(self):
-        problems = super(CCGEscalationBreaches, self).get_problems()
-        # Filter them to the current ccg
-        problems = problems.filter(organisation__parent__escalation_ccg=self.ccg)
-        return problems
-
-    def get_context_data(self, **kwargs):
-        context = super(CCGEscalationBreaches, self).get_context_data(**kwargs)
-        context['tabs_template'] = 'organisations/includes/ccg_tabs.html'
-
         return context
 
 

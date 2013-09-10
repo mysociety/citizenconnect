@@ -1,10 +1,8 @@
 from django import forms
 from django.forms.widgets import HiddenInput, RadioSelect
-from django.forms.models import inlineformset_factory
 
 from citizenconnect.forms import ConcurrentFormMixin
 from issues.models import Problem
-from responses.models import ProblemResponse
 
 
 class ModerationForm(ConcurrentFormMixin, forms.ModelForm):
@@ -25,10 +23,6 @@ class ModerationForm(ConcurrentFormMixin, forms.ModelForm):
         # If the name was not originally public then we don't need the public_reporter_name
         if self.instance.public_reporter_name_original is False:
             del self.fields['public_reporter_name']
-
-        if 'status' in self.fields:
-            # For now, restrict the statuses allowable to non-escalation statuses
-            self.fields["status"].choices = Problem.NON_ESCALATION_STATUS_CHOICES
 
     def clean_publication_status(self):
 
@@ -128,12 +122,6 @@ class ProblemModerationForm(ModerationForm):
             'public': HiddenInput,
             'priority': HiddenInput
         }
-
-
-ProblemResponseInlineFormSet = inlineformset_factory(Problem,
-                                                     ProblemResponse,
-                                                     max_num=0,
-                                                     fields=('response',))
 
 
 class ProblemSecondTierModerationForm(ModerationForm):

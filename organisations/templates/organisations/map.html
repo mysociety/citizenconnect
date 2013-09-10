@@ -2,6 +2,7 @@
 {% load url from future %}
 
 {% load staticfiles %}
+{% load compressed %}
 
 {% block title %}Organisation performance data{% endblock %}
 
@@ -59,78 +60,12 @@
 
 {% block extra_js %}
 {{ block.super }}
-<script src="{% static 'js/underscore.min.js' %}"></script>
-<script src="{% static 'js/leaflet.js' %}"></script>
-<script src="{% static 'js/wax.leaf.min.js' %}"></script>
-<script src="{% static 'js/oms.min.js' %}"></script>
-<script src="{% static 'js/spin.min.js' %}"></script>
-<script src="{% static 'js/jquery.spin.js' %}"></script>
 <script type="text/javascript">
     window.CitizenConnect = window.CitizenConnect || {};
     window.CitizenConnect.providers = {{ organisations|safe }};
     window.CitizenConnect.STATIC_URL = "{{ settings.STATIC_URL }}";
 </script>
 
-<script type="text/x-underscore-template" name="hover-bubble">
-    <div class="hover-bubble  cf">
-        <div class="header">
-            <% if (nhsCentre.thumbnail_url) { %>
-              <img src="<%= nhsCentre.thumbnail_url %>" alt="Image of <%= nhsCentre.name %>" class="fr" />
-            <% } %>
-            <h2 class="map-header"><%= nhsCentre.name %></h2>
-        </div>
+{% compressed_js 'map' %}
 
-        <strong>Problem reports</strong>:
-
-        <ul>
-          <li><%= nhsCentre.all_time_open %> open/in progress, <%= nhsCentre.all_time_closed %> closed.</li>
-
-          <% if (nhsCentre.average_time_to_address) { %>
-              <li><%= nhsCentre.average_time_to_address %> average time to close.</li>
-          <% } %>
-          <% if (nhsCentre.happy_outcome && /\d+/.test(nhsCentre.happy_outcome)) { %>
-              <li><%= nhsCentre.happy_outcome %> users satisfied with resolution.</li>
-          <% } %>
-        </ul>
-
-
-        <% if (nhsCentre.average_recommendation_rating) { %>
-
-          <strong>Average Rating</strong>:
-
-          <ul>
-            <li>
-              <span class="rating">
-                <span class="<%= starClass(nhsCentre.average_recommendation_rating, 1) %>" aria-hidden="true"></span>
-                <span class="<%= starClass(nhsCentre.average_recommendation_rating, 2) %>" aria-hidden="true"></span>
-                <span class="<%= starClass(nhsCentre.average_recommendation_rating, 3) %>" aria-hidden="true"></span>
-                <span class="<%= starClass(nhsCentre.average_recommendation_rating, 4) %>" aria-hidden="true"></span>
-                <span class="<%= starClass(nhsCentre.average_recommendation_rating, 5) %>" aria-hidden="true"></span>
-              </span>
-            </li>
-          </ul>
-        <% } %>
-
-
-        <strong>Reviews</strong>:
-
-        <ul>
-          <li>
-            <%= nhsCentre.reviews_all_time %> received.
-          </li>
-        </ul>
-
-
-        <span class="fr"><a href="<%= nhsCentre.url %>">View all details <span class="icon-chevron-right" aria-hidden="true"></span></a></span>
-
-    </div>
-</script>
-
-<script src="{% static 'js/select2.min.js' %}"></script>
-<script src="{% static 'js/map.js' %}"></script>
 {% endblock extra_js %}
-
-
-{% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/select2/select2.css' %}" />
-{% endblock extra_css %}

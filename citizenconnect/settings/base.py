@@ -7,9 +7,6 @@ from django.conf import global_settings
 
 from .paths import *
 
-# Add pylib from commonlib into sys.path
-sys.path.append(os.path.join(PROJECT_ROOT, 'commonlib', 'pylib'))
-
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -159,13 +156,14 @@ INSTALLED_APPS = (
     'failedloginblocker',
     'geocoder',
     'news',
+    'pipeline',
 )
 
 
 # Only test some of the apps by default. Anything in INSTALLED_APPS starting
 # 'django' is ignored and you can add additional apps to ignore to
 # IGNORE_APPS_FOR_TESTING
-IGNORE_APPS_FOR_TESTING = ('south', 'pagination', 'reversion', 'sorl.thumbnail')
+IGNORE_APPS_FOR_TESTING = ('south', 'pagination', 'reversion', 'sorl.thumbnail', 'geocoder')
 TEST_RUNNER = 'citizenconnect.tests.runner.AppsTestSuiteRunner'
 
 
@@ -259,3 +257,6 @@ ORGANISATION_TYPES = [organisation_type for organisation_type, label in ORGANISA
 
 # Now get the mySociety configuration
 from .mysociety import *
+
+# django-pipeline configuration
+from .pipeline import *

@@ -1,6 +1,10 @@
 Citizen Connect
 ===============
 
+Documentation
+-------------
+Various documentation is available in the `documentation` folder. For an overview of what this project is about and does, see `conf/OVERVIEW.md`.
+
 Installation
 ------------
 
@@ -10,10 +14,7 @@ up:
 ### Clone the repo
     mkdir citizenconnect
     cd citizenconnect
-    git clone --recursive https://github.com/mysociety/citizenconnect.git
-
-### Get the submodules if your git doesn't understand --recursive
-    git submodule update --init
+    git clone https://github.com/mysociety/citizenconnect.git
 
 ### Install the required software packages
 Assuming you're on a debian/ubuntu server, you can look in `conf/packages` for a list, for other OSes, google to see what they're called on your system.
@@ -47,6 +48,9 @@ The provided script should work for Debian based hosts, see https://docs.djangop
 ### Install required python packages
     cd citizenconnect
     pip install --requirement requirements.txt
+
+### Install required ruby packages
+    bundle install --path ../gems --binstubs ../gem-bin
 
 ### Alter conf/general.yml as per your set up
     cp conf/general.yml-example conf/general.yml

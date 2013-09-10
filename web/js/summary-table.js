@@ -38,12 +38,9 @@
     // Initialise the columns which get javascripted up
     var initialiseColumns = function(columns, filtersTemplate, selectedColumn, headerID) {
         // Get the filter html from an underscore template
-        var filters = _.template(
-            filtersTemplate,
-            {
-                selectedColumn: selectedColumn
-            }
-        );
+        var filters = filtersTemplate({
+            selectedColumn: selectedColumn
+        });
 
         // Hide the appropriate columns and their headers
         toggleColumns(columns, selectedColumn);
@@ -123,8 +120,8 @@
             }
         }
         // Get the underscore templates
-        var problemFiltersTemplate = $("script[name='problems-filters']").html();
-        var reviewFiltersTemplate = $("script[name='reviews-filters']").html();
+        var problemFiltersTemplate = JST['problems-filters'];
+        var reviewFiltersTemplate = JST['reviews-filters'];
 
         // Do the inital hiding and turning into a select for the interval columns
         initialiseColumns(problemsColumns,

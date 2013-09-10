@@ -1,6 +1,7 @@
 {% load url from future %}
 {% load staticfiles %}
 {% load utils %}
+{% load compressed %}
 <!DOCTYPE html>
 <!--[if lt IE 7]> <html class="no-js ie6 oldie"> <![endif]-->
 <!--[if IE 7]>    <html class="no-js ie7 oldie"> <![endif]-->
@@ -18,7 +19,7 @@
 
         {% block extra_initial_css %}{% endblock extra_initial_css %}
 
-        <link rel="stylesheet" href="{% static 'css/default.css' %}">
+        {% compressed_css 'default' %}
         {% if cobrand %}
           {% include cobrand.styles_template %}
         {% endif %}
@@ -103,12 +104,12 @@
 
         </div>
         <!-- Scripts at the bottom, as per html5bp -->
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="{% static "js/jquery-1.9.0.min.js" %}"><\/script>')</script>
         <script>
             var docEl = document.documentElement;
             docEl.className = docEl.className.replace(/\bno-js\b/,'') + ' js';
         </script>
+
+        {% compressed_js 'careconnect' %}
 
         {% if cobrand %}
             {% include cobrand.scripts_template %}

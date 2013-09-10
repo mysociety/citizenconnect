@@ -411,3 +411,23 @@ class ResponseModelTests(TransactionTestCase, ConcurrencyTestMixin):
         # These are needed for ConcurrencyTestMixin to run its' tests
         self.concurrency_model = ProblemResponse
         self.concurrency_kwargs = {'response': 'A response', 'issue': self.problem}
+
+    def test_default_ordering(self):
+        response1 = ProblemResponse.objects.create(
+            response="Response 1",
+            issue=self.problem
+        )
+        response2 = ProblemResponse.objects.create(
+            response="Response 2",
+            issue=self.problem
+        )
+        response3 = ProblemResponse.objects.create(
+            response="Response 3",
+            issue=self.problem
+        )
+
+        responses = ProblemResponse.objects.all()
+
+        self.assertEqual(responses[0], response1)
+        self.assertEqual(responses[1], response2)
+        self.assertEqual(responses[2], response3)
