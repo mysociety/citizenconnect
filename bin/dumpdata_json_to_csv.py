@@ -25,9 +25,11 @@ if __name__ == '__main__':
     else:
         source = open(path)
     s = source.read()
-    objects = [object['fields'] for object in json.loads(s)]
+    objects = [dict({'id': object['pk']}.items() + object['fields'].items()) for object in json.loads(s)]
     writer = csv.DictWriter(open(outpath, 'w'), objects[0].keys())
-    objects.insert(0, dict(zip(objects[0].keys(), objects[0].keys())))
+    headings = {'id': 'id'}
+    headings.update(dict(zip(objects[0].keys(), objects[0].keys())))
+    objects.insert(0, headings)
     for d in objects:
         for key, value in d.items():
             if isinstance(value, basestring):
