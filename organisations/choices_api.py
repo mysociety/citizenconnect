@@ -13,7 +13,6 @@ logger = logging.getLogger(__name__)
 
 class ChoicesAPI():
 
-    user_agent = "CitizenConnect ChoicesAPI"
 
     def __init__(self):
         self.atom_namespace = '{http://www.w3.org/2005/Atom}'
@@ -38,11 +37,19 @@ class ChoicesAPI():
                                                         'base_url': settings.NHS_CHOICES_BASE_URL}
         return url
 
+    def send_api_request(self, url):
+        """Send a request to the API, return response object. Adds user agent."""
+        user_agent = "CitizenConnect ChoicesAPI"
+
+        opener = urllib2.build_opener()
+        opener.addheaders = [('User-agent', user_agent)]
+        response = opener.open(url)
+
+        return response
+
     def _query_api(self, path_elements, parameters):
         url = self.construct_url(path_elements, parameters)
-        opener = urllib2.build_opener()
-        opener.addheaders = [('User-agent', self.user_agent)]
-        return opener.open(url)
+        return self.send_api_request(url)
 
     def find_all_organisations(self, search_type, search_value=None):
         """

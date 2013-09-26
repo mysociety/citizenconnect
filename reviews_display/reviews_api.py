@@ -4,7 +4,6 @@ import re
 from HTMLParser import HTMLParser
 import lxml.etree as ET
 
-import urllib2
 from furl import furl
 
 from organisations.choices_api import ChoicesAPI
@@ -13,8 +12,6 @@ logger = logging.getLogger(__name__)
 
 
 class ReviewsAPI(object):
-
-    user_agent = "CitizenConnect ReviewsAPI"
 
     """
     Abstraction around the Choices API that hides the pagination and parsing
@@ -74,9 +71,7 @@ class ReviewsAPI(object):
 
         logger.debug("Fetching '%s'" % url)
 
-        opener = urllib2.build_opener()
-        opener.addheaders = [('User-agent', self.user_agent)]
-        response = opener.open(url)
+        response = self.api.send_api_request(url)
 
         if response.getcode() == 404:
             # They use 404 for empty responses :(
