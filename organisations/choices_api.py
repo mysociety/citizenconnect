@@ -1,5 +1,6 @@
 # Standard imports
 import urllib
+import urllib2
 import xml.etree.ElementTree as ET
 import os
 import logging
@@ -11,6 +12,8 @@ logger = logging.getLogger(__name__)
 
 
 class ChoicesAPI():
+
+    user_agent = "CitizenConnect ChoicesAPI"
 
     def __init__(self):
         self.atom_namespace = '{http://www.w3.org/2005/Atom}'
@@ -37,7 +40,9 @@ class ChoicesAPI():
 
     def _query_api(self, path_elements, parameters):
         url = self.construct_url(path_elements, parameters)
-        return urllib.urlopen(url)
+        opener = urllib2.build_opener()
+        opener.addheaders = [('User-agent', self.user_agent)]
+        return opener.open(url)
 
     def find_all_organisations(self, search_type, search_value=None):
         """
