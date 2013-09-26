@@ -4,7 +4,6 @@ import re
 from HTMLParser import HTMLParser
 import lxml.etree as ET
 
-import urllib
 from furl import furl
 
 from organisations.choices_api import ChoicesAPI
@@ -71,7 +70,8 @@ class ReviewsAPI(object):
         self.fetches_remaining -= 1
 
         logger.debug("Fetching '%s'" % url)
-        response = urllib.urlopen(url)
+
+        response = self.api.send_api_request(url)
 
         if response.getcode() == 404:
             # They use 404 for empty responses :(

@@ -1,7 +1,6 @@
 # Standard imports
 import os.path
 from mock import MagicMock
-import urllib
 
 # Django imports
 from django.test import TestCase
@@ -28,13 +27,13 @@ class ExampleFileAPITest(TestCase):
     def setUp(self):
         # Reset the api in case we modify it inside tests
         self._api = ChoicesAPI()
-        self._original_urlopen = urllib.urlopen
-        urllib.urlopen = MagicMock(return_value=self._example_data)
+        self._original_send_api_request = ChoicesAPI.send_api_request
+        ChoicesAPI.send_api_request = MagicMock(return_value=self._example_data)
 
     # Reset the fixture file so that we can read it again
     def tearDown(self):
         self._example_data.seek(0)
-        urllib.urlopen = self._original_urlopen
+        ChoicesAPI.send_api_request = self._original_send_api_request
 
     # Close the fixture file
     @classmethod
@@ -108,13 +107,13 @@ class ChoicesAPIOrganisationsSearchResultExampleFileTests(ExampleFileAPITest):
     def test_generates_api_url_for_postcode(self):
         self._api.find_organisations('gppractices', 'postcode', 'SW1A')
         expected = '{0}organisations/gppractices/postcode/SW1A.xml?range=5&apikey=OURKEY'.format(settings.NHS_CHOICES_BASE_URL)
-        urllib.urlopen.assert_called_once_with(expected)
+        ChoicesAPI.send_api_request.assert_called_once_with(expected)
 
     @override_settings(NHS_CHOICES_API_KEY='OURKEY')
     def test_generates_api_url_for_all(self):
         self._api.find_organisations('gppractices', 'all')
         expected = '{0}organisations/gppractices/all.xml?apikey=OURKEY'.format(settings.NHS_CHOICES_BASE_URL)
-        urllib.urlopen.assert_called_once_with(expected)
+        ChoicesAPI.send_api_request.assert_called_once_with(expected)
 
     def test_finds_all_organisations(self):
         # Mock find_organisations to return a dummy result

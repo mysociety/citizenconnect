@@ -20,6 +20,7 @@ from organisations.tests.lib import create_test_organisation, create_test_organi
 
 from .models import Review, OrganisationFromApiDoesNotExist, RepliedToReviewDoesNotExist
 from .reviews_api import ReviewsAPI
+from organisations.choices_api import ChoicesAPI
 
 
 def create_test_rating(attributes, review):
@@ -196,7 +197,7 @@ class ReviewParseEmptyApiXmlTests(SampleDirMixin, TestCase):
         )
 
         # mock urllib's urlopen
-        with mock.patch.object(urllib, 'urlopen', return_value=mock_response):
+        with mock.patch.object(ChoicesAPI, 'send_api_request', return_value=mock_response):
             api = ReviewsAPI(organisation_type="hospitals")
 
             for review in api:

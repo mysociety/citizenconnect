@@ -84,3 +84,7 @@ These come back as `404`s - not empty lists (have confirmed that this is the int
 ## Detecting change reviews
 
 It has been confirmed by email that "Any comment that is changed (be it content or category) will appear in the 'commentssince' results and so this is the only one we need to query to stay up to date" is correct and so we do not need to do intermittent polls of all previous comments.
+
+## User-Agent header required
+
+At some point in September 2013 it appears that the proxy that fronts the Choices API started `403`ing all requests that did not have a `User-Agent` header. The error response was invalid HTML that lead to confusing error messages. Now fixed by sending the user agent header. See https://github.com/mysociety/citizenconnect/issues/1203 for full details.
