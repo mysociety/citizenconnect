@@ -36,9 +36,25 @@ PATH=/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/:/data/vhost/!!(*= $vhost 
 
 # Fetch content from the Choices  API
 
+# The Choices API is broken on preview causing errors each time these jobs are
+# run. For now don't run them except on production, instead send a daily
+# reminder that they are not running.
+#
+# See https://github.com/mysociety/citizenconnect/issues/1207
+
+!!(* if ($vhost eq 'citizenconnect.mysociety.org') { *)!!
+
 0 0 * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/get_organisation_ratings_from_choices_api.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash get_organisation_ratings_from_choices_api" || echo "stalled?"
 
 0 * * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/get_reviews_from_choices_api.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash get_reviews_from_choices_api" || echo "stalled?"
+
+!!(* } else { *)!!
+
+# Send a reminder every weekday afternoon to check if the NHS has fixed preview
+0 16 * * 1-5 !!(*= $user *)!! echo "Has https://github.com/mysociety/citizenconnect/issues/1207 been fixed yet? If so switch crons back on."
+
+!!(* } *)!!
+
 
 0 * * * * !!(*= $user *)!! run-with-lockfile -n /data/vhost/!!(*= $vhost *)!!/send_new_reviews_to_choices_api.lock "/data/vhost/!!(*= $vhost *)!!/citizenconnect/bin/cron_wrapper.bash send_new_reviews_to_choices_api" || echo "stalled?"
 
