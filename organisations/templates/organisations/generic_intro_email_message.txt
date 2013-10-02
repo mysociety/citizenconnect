@@ -15,7 +15,7 @@ If you have not logged in before you will need to create a new password. Please 
 
   {{ site_base_url }}{% url 'password_reset' %}
 
-(If the email address above is not one that will be delivered to you please contact us at nhscb.myhealthlondon@nhs.net)
+(If the email address above is not one that will be delivered to you please contact us at cchelpdesk@nhs.net)
 
 Thanks for using Care Connect!
 
