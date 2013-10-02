@@ -1,5 +1,6 @@
 import logging
 import re
+import urllib2
 
 from HTMLParser import HTMLParser
 import lxml.etree as ET
@@ -71,11 +72,14 @@ class ReviewsAPI(object):
 
         logger.debug("Fetching '%s'" % url)
 
-        response = self.api.send_api_request(url)
-
-        if response.getcode() == 404:
-            # They use 404 for empty responses :(
-            return None
+        try:
+            response = self.api.send_api_request(url)
+        except urllib2.HTTPError as e:
+            if e.code == 404:
+                # They use 404 for empty responses :(
+                return None
+            else:
+                raise e
 
         data = response.read()
         data = self.cleanup_xml(data)

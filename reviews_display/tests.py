@@ -5,7 +5,7 @@ import datetime
 from datetime import timedelta
 import urlparse
 import mock
-import urllib
+import urllib2
 import pytz
 import logging
 
@@ -189,15 +189,12 @@ class ReviewParseEmptyApiXmlTests(SampleDirMixin, TestCase):
         # like that in ReviewParseApiXmlTests would suffice (with a different
         # sample xml file).
 
-        # create the mock response
-        mock_response = mock.Mock()
-        mock_response.getcode = mock.MagicMock(return_value=404)
-        mock_response.read = mock.MagicMock(
-            return_value=open(os.path.join(self.sample_dir, '404.html')).read()
-        )
+        # create a HTTPError exception. Note the expected parameters:
+        #   def __init__(self, url, code, msg, hdrs, fp):
+        exception = urllib2.HTTPError( 'http://test.com/', 404, 'Not Found', {}, None )
 
-        # mock urllib's urlopen
-        with mock.patch.object(ChoicesAPI, 'send_api_request', return_value=mock_response):
+        # mock send_api_request to throw the 404 exception
+        with mock.patch.object(ChoicesAPI, 'send_api_request', side_effect=exception):
             api = ReviewsAPI(organisation_type="hospitals")
 
             for review in api:
