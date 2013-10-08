@@ -165,11 +165,7 @@ class AuthTests(AuthorizationTestCase):
                         'url': reverse('ccg-dashboard', kwargs={'code': 'CCG1'})
                     },
                 ]
-            ),
-            (
-                self.customer_contact_centre_user,
-                []
-            ),
+            )
         ]
 
         for user, expected_links in tests:
