@@ -5,3 +5,4 @@ from .mhl_iframe import *
 from .models import *
 from .homepage import *
 from .concurrent_form import *
+from .requirements import *
