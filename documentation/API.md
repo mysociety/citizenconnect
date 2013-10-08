@@ -65,7 +65,7 @@ Required. The source of the original report, ie: whether they phoned, emailed, t
 
 ### images_0
 
-Optional. An image to attach to this problem report. If images are attached to the report, then the POST request must use a `Content-Type: multipart/form-data`.
+Optional. An image to attach to this problem report. If images are attached to the report, then the API expects the images to be uploaded in the way that a normal browser would send them for a form post with multiple file fields on it. This means that POST request must use a `Content-Type: multipart/form-data`, and (currently) send the images in raw binary, because Django <=1.4 has a bug with form data that is base64 encoded that causes it to erroneously reject the submission if you use that encoding.
 
 The currently allowed image types are JPEG, GIF and BMP.
 
