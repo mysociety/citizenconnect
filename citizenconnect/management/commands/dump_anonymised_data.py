@@ -53,6 +53,7 @@ class Command(NoArgsCommand):
             org_parent.email = 'organisation-parent@example.com'
             if org_parent.secondary_email:
                 org_parent.secondary_email = 'organisation-parent@example.com'
+            org_parent.users = []
         objects.extend(org_parents)
 
         # Organisations
