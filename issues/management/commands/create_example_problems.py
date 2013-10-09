@@ -49,7 +49,7 @@ class Command(BaseCommand):
                 "..",
                 "..",
                 "fixtures",
-                "seed_example_problems.json"
+                "seed_problems.json"
             )
             with open(seed_problem_path, 'r') as seed_problem_file:
                 seed_problems = serializers.deserialize('json', seed_problem_file)
@@ -89,7 +89,7 @@ class Command(BaseCommand):
                 new_problem.publication_status = Problem.NOT_MODERATED
             elif int(random.random() * 10 ) < 4:
                 new_problem.publication_status = Problem.PUBLISHED
-            else: 
+            else:
                 new_problem.publication_status = Problem.REJECTED
 
             new_problem.category= Problem.CATEGORY_CHOICES[int(random.random() * len(Problem.CATEGORY_CHOICES))][0]
