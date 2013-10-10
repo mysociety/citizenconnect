@@ -68,8 +68,8 @@ class CCG(MailSendMixin, AuditedModel):
         if user.is_superuser:
             return True
 
-        # NHS Superusers, Case Handlers and Customer Contact Centre users - YES
-        if user_in_groups(user, [auth.NHS_SUPERUSERS, auth.CASE_HANDLERS, auth.CUSTOMER_CONTACT_CENTRE]):
+        # NHS Superusers, Case Handlers - YES
+        if user_in_groups(user, [auth.NHS_SUPERUSERS, auth.CASE_HANDLERS]):
             return True
 
         # Users in this ccg - YES
@@ -148,10 +148,8 @@ class OrganisationParent(MailSendMixin, AuditedModel):
         if user.is_superuser:
             return True
 
-        # NHS Superusers, Moderators or customer contact centre users - YES
-        if user_in_groups(user, [auth.NHS_SUPERUSERS,
-                                 auth.CASE_HANDLERS,
-                                 auth.CUSTOMER_CONTACT_CENTRE]):
+        # NHS Superusers, Moderators - YES
+        if user_in_groups(user, [auth.NHS_SUPERUSERS, auth.CASE_HANDLERS]):
             return True
 
         # Users in this Parent - YES

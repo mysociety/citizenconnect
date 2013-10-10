@@ -70,7 +70,6 @@ Passwords are not specified in this import. For new users a random password is c
 - `NHS Superusers`: Flag for superuser status
 - `Case Handlers`: Flag for case handler status
 - `Second Tier Moderators`: Flag for second tier moderator status
-- `Customer Contact Centre`: Flag for CCC status
 
 Note that the last row in the sample CSV is deliberately bad, and is there for the test scripts.
 

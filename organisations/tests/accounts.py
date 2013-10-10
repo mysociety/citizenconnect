@@ -204,11 +204,6 @@ class PrivateHomeTests(AuthorizationTestCase):
         resp = self.client.get(self.private_home_url)
         self.assertEqual(resp.status_code, 200)
 
-        # CCC user
-        self.login_as(self.customer_contact_centre_user)
-        resp = self.client.get(self.private_home_url)
-        self.assertEqual(resp.status_code, 200)
-
     def test_ccg_user_goes_to_ccg_dashboard(self):
         ccg_dashboard_url = reverse('ccg-dashboard', kwargs={'code': self.test_ccg.code})
         self.login_as(self.ccg_user)

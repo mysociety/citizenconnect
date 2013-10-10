@@ -216,26 +216,6 @@
             "email": "no_ccg_user@example.com",
             "date_joined": "2013-03-19T11:28:50Z"
         }
-    },
-    {
-        "pk": 15,
-        "model": "auth.user",
-        "fields": {
-            "username": "customer_contact_centre",
-            "first_name": "",
-            "last_name": "Development User",
-            "is_active": true,
-            "is_superuser": false,
-            "is_staff": false,
-            "last_login": "2013-03-19T11:28:50Z",
-            "groups": [
-                8
-            ],
-            "user_permissions": [],
-            "password": "pbkdf2_sha256$10000$jWJUa0RaX5zt$bnS2UDpLvK+rPjjrU5zaVymaUnr0Dr1GG4ELTIH4PNg=",
-            "email": "customer_contact_centre@example.com",
-            "date_joined": "2013-03-19T11:28:50Z"
-        }
     }
 
 ]

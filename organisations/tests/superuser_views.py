@@ -31,7 +31,6 @@ class SuperuserDashboardTests(AuthorizationTestCase):
             (self.second_tier_moderator,         False),
             (self.ccg_user,                      False),
             (self.no_ccg_user,                   False),
-            (self.customer_contact_centre_user,  False),
 
             (self.superuser,                     True),
             (self.nhs_superuser,                 True),
