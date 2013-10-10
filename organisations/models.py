@@ -9,6 +9,8 @@ from django.db.models.signals import post_save
 from django.contrib.auth.models import User, Group
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
 
 from citizenconnect.models import (
     AuditedModel,
@@ -93,6 +95,54 @@ class CCG(MailSendMixin, AuditedModel):
         return self.name
 
 
+class FriendsAndFamilySurvey(AuditedModel):
+    """Stores the monthly results of a survey conducted of patients in a
+    particular ward of a hospital, or a particular NHS Trust"""
+
+    # These three fields are so that we can foreign key to both Organisations and
+    # OrganisationParents in one relation.
+    # See: https://docs.djangoproject.com/en/1.4/ref/contrib/contenttypes/
+
+    # These two fields effectively "id" the Organisation or OrganisationParent
+    # that a survey is related to
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    # This will point to the Organisation or OrganisationParent we're related
+    # to, but you can't use it in filter(), etc - it doesn't work like that.
+    content_object = generic.GenericForeignKey()
+
+    # The overall score (out of 100)
+    overall_score = models.PositiveIntegerField()
+
+    # Individual numbers for different responses
+    extremely_likely = models.PositiveIntegerField()
+    likely = models.PositiveIntegerField()
+    neither = models.PositiveIntegerField()
+    extremely_unlikely = models.PositiveIntegerField()
+    dont_know = models.PositiveIntegerField()
+
+    # Where this survey was performed, usually a hospital ward such as A&E.
+    # Trust survey's don't have this, hence it can be blank
+    location = models.CharField(
+        max_length=100,
+        db_index=True,
+        blank=True,
+        choices=settings.SURVEY_LOCATION_CHOICES
+    )
+
+    # When this survey was taken. Really, this is just the month/year, the day
+    # is irrelevant, but it's easier to sort and filter by date if we store it
+    # in a DateField.
+    date = models.DateField(db_index=True)
+
+    class Meta:
+        # We can only have one survey per org/parent, per month, per location
+        # IE: you can't survey the A&E ward in one hospital twice in the same
+        # month
+        unique_together = ('content_type', 'object_id', 'date', 'location')
+        ordering = ['-date']
+
+
 class OrganisationParent(MailSendMixin, AuditedModel):
     """Stores parent bodies of :model:`organisations.Organisation`.
 
@@ -129,6 +179,9 @@ class OrganisationParent(MailSendMixin, AuditedModel):
     # This means that those CCGs will be able to see all the problems at
     # this parent's organisations.
     ccgs = models.ManyToManyField(CCG, related_name='organisation_parents')
+
+    # Reverse relation to Surveys
+    surveys = generic.GenericRelation(FriendsAndFamilySurvey)
 
     def save(self, *args, **kwargs):
         """Overriden save to ensure email address is set"""
@@ -245,6 +298,11 @@ class Organisation(AuditedModel, geomodels.Model):
 
     # Image of the organisation
     image = sorlImageField(upload_to=organisation_image_upload_path, validators=[validate_file_extension], blank=True)
+
+    # Reverse relation to Surveys - this helps us get the surveys for an
+    # Organisation easily, because querying them directly with an Organisation
+    # is a bit clunky
+    surveys = generic.GenericRelation(FriendsAndFamilySurvey)
 
     @property
     def organisation_type_name(self):

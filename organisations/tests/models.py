@@ -5,6 +5,7 @@ from django.core import mail
 from django.contrib.gis.geos import Point
 from django.utils.timezone import utc
 from django.core.exceptions import ValidationError
+from django.contrib.contenttypes.models import ContentType
 
 from .lib import (create_test_organisation,
                   create_test_ccg,
@@ -12,9 +13,12 @@ from .lib import (create_test_organisation,
                   create_test_problem,
                   AuthorizationTestCase)
 
-from ..models import (Organisation,
-                      OrganisationParent,
-                      CCG)
+from ..models import (
+    Organisation,
+    OrganisationParent,
+    CCG,
+    FriendsAndFamilySurvey
+)
 
 
 class OrganisationParentModelTests(TestCase):
@@ -245,3 +249,58 @@ class OrganisationParentModelSendMailTests(CreateTestOrganisationParentMixin, Se
 
 class CCGModelSendMailTests(CreateTestCCGMixin, SendMailTestsMixin, TestCase):
     pass
+
+
+class FriendsAndFamilyModelTests(TestCase):
+
+    def test_can_be_assigned_to_org_or_parent(self):
+        organisation = create_test_organisation({})
+        trust = create_test_organisation_parent({})
+
+        organisation_type = ContentType.objects.get(
+            app_label='organisations',
+            model='organisation'
+        )
+        organisation_parent_type = ContentType.objects.get(
+            app_label='organisations',
+            model='organisationparent'
+        )
+
+        now = datetime.date.today()
+
+        FriendsAndFamilySurvey.objects.create(
+            content_object=organisation,
+            location='ande',
+            overall_score=75,
+            extremely_likely=10,
+            likely=10,
+            neither=1,
+            extremely_unlikely=1,
+            dont_know=0,
+            date=now
+        )
+
+        FriendsAndFamilySurvey.objects.create(
+            content_object=trust,
+            overall_score=78,
+            extremely_likely=10,
+            likely=10,
+            neither=1,
+            extremely_unlikely=1,
+            dont_know=0,
+            date=now
+        )
+
+        # These would error and fail the test if the things weren't in the DB
+        FriendsAndFamilySurvey.objects.get(
+            content_type=organisation_type,
+            object_id=organisation.id
+        )
+        FriendsAndFamilySurvey.objects.get(
+            content_type=organisation_parent_type,
+            object_id=trust.id
+        )
+
+        self.assertEqual(organisation.surveys.all().count(), 1)
+
+
