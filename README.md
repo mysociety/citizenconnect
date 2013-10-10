@@ -63,33 +63,61 @@ use to access the citizenconnect admin interface. Don't bother, we'll load
 a precreated one in a minute.
 
 ### Add all the tables and columns we manage with South
-
     ./manage.py migrate
 
 ### Create/Update the default site to be something useful
 
 This is needed because we emit fully qualified redirects, amongst other reasons.
 
-Make sure you have set the `SITE_BASE_URL` setting to something accurate (probably `localhost:8000`) before running this.
-
+Make sure you have set the `SITE_BASE_URL` setting to something accurate
+(probably `localhost:8000`) before running this.
     ./manage.py create_default_site
 
 ### Gather all the static files in one place
     ./manage.py collectstatic --noinput
 
-### Add some users which are useful for development
+Loading Data
+------------
+
+At the very least, the site will need some CCGs, Organisation Parents and
+Organisations in order to be useful. To have a fully functional site, you'll
+also want some reviews, news articles and of course, some problems.
+
+The best way to do this is to take an anonymised dump of what's on the current
+live site. We have a command to do this for the organisations/ccgs/parents,
+news articles and reviews. By doing this you can mostly match the live site,
+but don't have to worry about having any real email addresses or private data
+in your instance.
+
+As problems are all about private data, and there aren't that many problems on
+the live site anyway, it's better to generate some dummy problems than dump
+and anonymise them. We have another command which will do just that,
+generating randomised problems for all the current orgs from a few "seeds".
+
+To do all that:
+
+### On the live site, dump the current orgs/ccgs/parents, news and reviews:
+    ./manage.py dump_anonymised_data > /tmp/some-file.json
+
+### On your site, load this dump in:
+    ./manage.py loaddata /where/you/put/the-file.json
+
+### Add a basic complement of users in the various roles:
     ./manage.py loaddata organisations/fixtures/development_users.json
 
-### Load demo CCGs, Organisation Parents and Organisations
-    ./manage.py loaddata organisations/fixtures/demo_ccg.json
-    ./manage.py loaddata organisations/fixtures/demo_organisation_parent.json
-    ./manage.py loaddata organisations/fixtures/phase_2_organisations.json
+### Assign appropriate users you just added to the ccgs/parents:
+    ./manage.py assign_orgs_to_dev_users
+
+### Generate some dummy problems for the organisations
+    ./manage.py create_example_problems 500
+You can swap 500 for any number of problems you like, though it'll take longer
+to run if you pick a higher number, obviously.
 
 ### If you ever need to reload the data, you can run
     ./manage.py flush
     ./manage.py migrate --fake
 (Because you just flushed South's records of what was migrated, but the structure is still the same)
-Then you can re-run the loaddata commands from above
+Then you can re-run all of the above.
 
 Testing
 ------------
