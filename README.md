@@ -109,7 +109,7 @@ To do all that:
     ./manage.py assign_orgs_to_dev_users
 
 ### Generate some dummy problems for the organisations
-    ./manage create_example_problems 500
+    ./manage.py create_example_problems 500
 You can swap 500 for any number of problems you like, though it'll take longer
 to run if you pick a higher number, obviously.
 
