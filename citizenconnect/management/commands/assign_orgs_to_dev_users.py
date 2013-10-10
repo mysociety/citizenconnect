@@ -1,7 +1,7 @@
 import random
 
 from django.core.management.base import NoArgsCommand, CommandError
-from django.contrib.auth import User
+from django.contrib.auth.models import User
 
 from organisations.models import OrganisationParent, CCG
 
