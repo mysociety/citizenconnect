@@ -35,24 +35,26 @@ class Command(BaseCommand):
 
         if use_existing:
             if verbosity >= 1:
-                self.stdout.write("Basing generated problems on existing problems.")
+                self.stdout.write("Basing generated problems on existing problems.\n")
             seed_problems = Problem.objects.all()
             if not seed_problems.count():
                 raise CommandError("There are no existing problems in the database to base the new example ones on")
         else:
             # Load seed problems
             if verbosity >= 1:
-                self.stdout.write("Basing generated problems on seed problems.")
+                self.stdout.write("Basing generated problems on seed problems.\n")
             seed_problems = []
             seed_problem_path = os.path.join(
-                os.abspath(os.path.dirname(__file__)),
+                os.path.abspath(os.path.dirname(__file__)),
                 "..",
                 "..",
                 "fixtures",
                 "seed_problems.json"
             )
             with open(seed_problem_path, 'r') as seed_problem_file:
-                seed_problems = serializers.deserialize('json', seed_problem_file)
+                # The deserializer returns DeserializedObject instances which
+                # wrap the real object we want
+                seed_problems = list([x.object for x in serializers.deserialize('json', seed_problem_file)])
 
 
         i = 0
