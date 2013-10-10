@@ -1,30 +1,64 @@
 import random
+import os
+from optparse import make_option
 
-from django.db import transaction, IntegrityError
 from django.core.management.base import BaseCommand, CommandError
+from django.core import serializers
 
 from ...models import Problem
 from organisations.models import Organisation
 
 class Command(BaseCommand):
     args = '<number_to_create>'
-    help = """Create some example problems based on existing problems and assign them
-    randomly to organisations, categories and statuses"""
+    help = """Create some example problems based on existing problems, or a
+    set of seed problems and assign them randomly to organisations, categories
+     and statuses"""
+
+    option_list = BaseCommand.option_list + (
+        make_option(
+            '--use-existing',
+            action='store',
+            dest='use_existing',
+            default=False,
+            help='Use existing problems in the DB as seeds.'
+        ),
+    )
 
     def handle(self, *args, **options):
         verbosity = int(options.get('verbosity'))
+        use_existing = bool(options.get('use_existing'))
 
         if len(args) != 1:
             raise CommandError("Usage: ./manage.py create_example_problems number_to_create")
 
         number_of_problems = int(args[0])
 
-        i = 0
-        existing_problems = Problem.objects.all()
-        organisations = Organisation.objects.all()
+        if use_existing:
+            if verbosity >= 1:
+                self.stdout.write("Basing generated problems on existing problems.\n")
+            seed_problems = Problem.objects.all()
+            if not seed_problems.count():
+                raise CommandError("There are no existing problems in the database to base the new example ones on")
+        else:
+            # Load seed problems
+            if verbosity >= 1:
+                self.stdout.write("Basing generated problems on seed problems.\n")
+            seed_problems = []
+            seed_problem_path = os.path.join(
+                os.path.abspath(os.path.dirname(__file__)),
+                "..",
+                "..",
+                "fixtures",
+                "seed_problems.json"
+            )
+            with open(seed_problem_path, 'r') as seed_problem_file:
+                # The deserializer returns DeserializedObject instances which
+                # wrap the real object we want
+                seed_problems = list([x.object for x in serializers.deserialize('json', seed_problem_file)])
 
-        if not existing_problems.count():
-            raise CommandError("There are no existing problems in the database to base the new example ones on")
+
+        i = 0
+        organisations = Organisation.objects.all()
 
         if verbosity >= 1:
             self.stdout.write("Creating %i example problems\n" % number_of_problems)
@@ -35,7 +69,7 @@ class Command(BaseCommand):
             if verbosity >= 3:
                 self.stdout.write("Creating problem %i of %i\n" % (i, number_of_problems))
 
-            template_problem = existing_problems[int(random.random() * len(existing_problems))]
+            template_problem = seed_problems[int(random.random() * len(seed_problems))]
             new_problem = Problem(description=template_problem.description,
                                   reporter_name=template_problem.reporter_name,
                                   reporter_phone=template_problem.reporter_phone,
@@ -57,7 +91,7 @@ class Command(BaseCommand):
                 new_problem.publication_status = Problem.NOT_MODERATED
             elif int(random.random() * 10 ) < 4:
                 new_problem.publication_status = Problem.PUBLISHED
-            else: 
+            else:
                 new_problem.publication_status = Problem.REJECTED
 
             new_problem.category= Problem.CATEGORY_CHOICES[int(random.random() * len(Problem.CATEGORY_CHOICES))][0]
