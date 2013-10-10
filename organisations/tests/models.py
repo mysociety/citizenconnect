@@ -301,3 +301,6 @@ class FriendsAndFamilyModelTests(TestCase):
             object_id=trust.id
         )
 
+        self.assertEqual(organisation.surveys.all().count(), 1)
+
+
