@@ -140,6 +140,7 @@ class FriendsAndFamilySurvey(AuditedModel):
         # IE: you can't survey the A&E ward in one hospital twice in the same
         # month
         unique_together = ('content_type', 'object_id', 'date', 'location')
+        ordering = ['-date']
 
 
 class OrganisationParent(MailSendMixin, AuditedModel):
