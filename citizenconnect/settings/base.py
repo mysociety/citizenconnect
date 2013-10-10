@@ -255,6 +255,12 @@ ORGANISATION_CHOICES = [
 
 ORGANISATION_TYPES = [organisation_type for organisation_type, label in ORGANISATION_CHOICES]
 
+# Survey location choices
+SURVEY_LOCATION_CHOICES = [
+    ['ande', 'A&E'],
+    ['inpatient', 'Inpatient'],
+]
+
 # Now get the mySociety configuration
 from .mysociety import *
 
