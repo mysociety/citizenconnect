@@ -66,11 +66,6 @@ EMAIL_PORT: 25
 # inclusion in the national summary report
 SUMMARY_THRESHOLD: ['six_months', 6]
 
-# Customer Contact Centre email addresses.
-CUSTOMER_CONTACT_CENTRE_EMAIL_ADDRESSES:
-  - 'ccc@example.org'
-  - 'ccc-247@example.org'
-
 # What email address people should send site feedback to
 FEEDBACK_EMAIL_ADDRESS: feedback@example.com
 

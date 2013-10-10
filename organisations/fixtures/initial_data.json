@@ -38,13 +38,5 @@
             "name": "Second Tier Moderators",
             "permissions": []
         }
-    },
-    {
-        "pk": 8,
-        "model": "auth.group",
-        "fields": {
-            "name": "Customer Contact Centre",
-            "permissions": []
-        }
     }
 ]

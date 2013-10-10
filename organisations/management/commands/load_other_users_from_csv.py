@@ -1,5 +1,4 @@
 import csv
-from optparse import make_option
 
 from django.db import transaction
 from django.core.management.base import BaseCommand
@@ -42,7 +41,6 @@ class Command(BaseCommand):
                 is_super = self.true_if_x(row["NHS Superusers"], rownum)
                 is_case_handler = self.true_if_x(row["Case Handlers"], rownum)
                 is_second_tier_moderator = self.true_if_x(row["Second Tier Moderators"], rownum)
-                is_ccc = self.true_if_x(row["Customer Contact Centre"], rownum)
 
                 user, created = User.objects.get_or_create(
                     username=username,
@@ -55,8 +53,6 @@ class Command(BaseCommand):
                     user.groups.add(auth.CASE_HANDLERS)
                 if is_second_tier_moderator:
                     user.groups.add(auth.SECOND_TIER_MODERATORS)
-                if is_ccc:
-                    user.groups.add(auth.CUSTOMER_CONTACT_CENTRE)
 
                 if verbosity >= 2:
                     processed += 1
