@@ -223,3 +223,9 @@ class SurveyAdminCSVUploadForm(forms.Form):
     csv_file = forms.FileField(
         label = 'CSV file',
     )
+
+    location = forms.ChoiceField(choices=settings.SURVEY_LOCATION_CHOICES)
+
+    context = forms.ChoiceField(choices=(('trust', 'Trust'), ('site', 'Site')))
+
+    month = forms.DateField()
