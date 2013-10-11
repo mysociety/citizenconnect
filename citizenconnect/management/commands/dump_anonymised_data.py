@@ -1,7 +1,7 @@
 from django.core.management.base import NoArgsCommand
 from django.core import serializers
 
-from organisations.models import Organisation, OrganisationParent, CCG
+from organisations.models import Service, Organisation, OrganisationParent, CCG
 from reviews_display.models import Review, Rating
 from news.models import Article
 
@@ -56,6 +56,9 @@ class Command(NoArgsCommand):
 
         # Organisations
         objects.extend(Organisation.objects.all())
+
+        # Services
+        objects.extend(Service.objects.all())
 
         # Reviews & Ratings
         objects.extend(Review.objects.all())
