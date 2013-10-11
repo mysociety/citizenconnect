@@ -21,7 +21,19 @@
     <form action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <fieldset class="module aligned">
-            {{ form.as_p }}
+            {% for field in form %}
+                <div class="form-row">
+                    {% if field.is_checkbox %}
+                        {{ field.field }}{{ field.label_tag }}
+                    {% else %}
+                        {{ field.label_tag }}
+                        {{ field }}
+                    {% endif %}
+                    {% if field.field.help_text %}
+                        <p class="help">{{ field.field.help_text|safe }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
         </fieldset>
         <div class="submit-row">
             <input type="submit" class="default" value="Submit" />
