@@ -15,6 +15,7 @@ class Command(NoArgsCommand):
     organisations.Organisation
     organisations.OrganisationParent
     organisations.CCG
+    organisations.Service
     reviews_display.Review
     reviews_display.Rating
     news.Article
