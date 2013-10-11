@@ -26,7 +26,7 @@ class MapitPostcodeNotValidError(MapitError): pass
 
 
 class MapitPostCodeLookup(object):
-    
+
     @classmethod
     def postcode_to_point(cls, postcode, partial=False):
 
@@ -216,3 +216,10 @@ class OrganisationFilterForm(FilterForm):
                                                                        required=False,
                                                                        empty_label="All services/departments",
                                                                        label="Service/Department"))
+
+
+class SurveyAdminCSVUploadForm(forms.Form):
+    """A Form for the admin site which allows bulk uploading of csv files"""
+    csv_file = forms.FileField(
+        label = 'CSV file',
+    )
