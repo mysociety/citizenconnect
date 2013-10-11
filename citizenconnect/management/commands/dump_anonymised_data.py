@@ -44,7 +44,6 @@ class Command(NoArgsCommand):
         ccgs = list(CCG.objects.all())
         for ccg in ccgs:
             ccg.email = 'ccg@example.com'
-            ccg.users = []
         objects.extend(ccgs)
 
         # OrganisationParents
@@ -53,7 +52,6 @@ class Command(NoArgsCommand):
             org_parent.email = 'organisation-parent@example.com'
             if org_parent.secondary_email:
                 org_parent.secondary_email = 'organisation-parent@example.com'
-            org_parent.users = []
         objects.extend(org_parents)
 
         # Organisations
@@ -67,4 +65,30 @@ class Command(NoArgsCommand):
         objects.extend(Article.objects.all())
 
         # Serialise things
-        return serializers.serialize('json', objects, indent=4, use_natural_keys=False)
+        # This is a bit tricky because we don't want to serialise some
+        # specific fields, but we want to get everything else.
+        allowed_fields = set()
+
+        # If you dump any more objects, make sure to add them to this list too
+        # otherwise we won't dump any of their fields for sure
+        model_classes = [CCG, OrganisationParent, Organisation, Service, Review, Rating, Article]
+
+        for model_class in model_classes:
+            # These two fields on the _meta are what
+            # django.core.serializers.base uses when it checks fields to
+            # serialize, so I've copied them here. The first covers normal
+            # fields and foreign keys, the second covers many_to_many fields.
+            allowed_fields.update([f.name for f in model_class._meta.local_fields])
+            allowed_fields.update([f.name for f in model_class._meta.many_to_many])
+
+        # We don't want any users that are connected to any models, because
+        # they won't be in the db we'll load this dump into
+        allowed_fields.discard('users')
+
+        return serializers.serialize(
+            'json',
+            objects,
+            indent=4,
+            use_natural_keys=False,
+            fields=allowed_fields
+        )
