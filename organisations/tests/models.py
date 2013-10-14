@@ -275,6 +275,7 @@ class FriendsAndFamilyModelTests(TestCase):
             extremely_likely=10,
             likely=10,
             neither=1,
+            unlikely=0,
             extremely_unlikely=1,
             dont_know=0,
             date=now
@@ -286,6 +287,7 @@ class FriendsAndFamilyModelTests(TestCase):
             extremely_likely=10,
             likely=10,
             neither=1,
+            unlikely=0,
             extremely_unlikely=1,
             dont_know=0,
             date=now

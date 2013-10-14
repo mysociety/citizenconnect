@@ -118,6 +118,7 @@ class FriendsAndFamilySurvey(AuditedModel):
     extremely_likely = models.PositiveIntegerField()
     likely = models.PositiveIntegerField()
     neither = models.PositiveIntegerField()
+    unlikely = models.PositiveIntegerField()
     extremely_unlikely = models.PositiveIntegerField()
     dont_know = models.PositiveIntegerField()
 
