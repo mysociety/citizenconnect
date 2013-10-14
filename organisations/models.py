@@ -1,16 +1,17 @@
 import logging
 logger = logging.getLogger(__name__)
+import csv
 
 from django.contrib.gis.db import models as geomodels
 from django.conf import settings
-from django.db import models
-from django.db import connection
+from django.db import models, connection, IntegrityError, transaction
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User, Group
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
+from django.utils.encoding import force_unicode
 
 from citizenconnect.models import (
     AuditedModel,
@@ -135,6 +136,100 @@ class FriendsAndFamilySurvey(AuditedModel):
     # is irrelevant, but it's easier to sort and filter by date if we store it
     # in a DateField.
     date = models.DateField(db_index=True)
+
+    @classmethod
+    def location_display(cls, location):
+        """Normal Django get_FOO_display only works on instances, not passed
+        values."""
+
+        # Copied from django.db.models.base._get_FIELD_display and tweaked a bit
+        return force_unicode(
+            dict(settings.SURVEY_LOCATION_CHOICES).get(location, location),
+            strings_only=True
+        )
+
+    @classmethod
+    def process_csv(cls, csv_file, month, content_type, location=None):
+        """Process a csv file of multiple surveys for either a Site (hospital)
+        or a Trust and create objects for them.
+
+        Returns an array of the created models."""
+
+        if content_type == "site" and location is None:
+            raise ValueError("Location is required for site files.")
+
+        if not content_type == 'site' and not content_type == 'trust':
+            raise ValueError("Unknown content_type")
+
+        created = []
+
+        csv_reader = csv.DictReader(csv_file, delimiter=',', quotechar='"')
+        for row in csv_reader:
+
+            # Work out the content_object the survey is for
+            content_object = None
+            if content_type == "site":
+                site_code = row['Site Code']
+                try:
+                    content_object = Organisation.objects.get(ods_code=site_code)
+                except Organisation.DoesNotExist:
+                    # TODO - should we just skip these?
+                    raise ValueError("Organisation with site code: {0} ({1}) is not in the database.".format(site_code, row['Site Name']))
+            else:
+                code = row['Code']
+                try:
+                    content_object = OrganisationParent.objects.get(code=code)
+                except OrganisationParent.DoesNotExist:
+                    # TODO - should we just skip these?
+                    raise ValueError("OrganisationParent with code: {0} ({1}) is not in the database.".format(code, row['Name']))
+
+            try:
+                overall_score = int(row['Friends and Family Test Score'])
+                extremely_likely = int(row['Extremely Likely'])
+                likely = int(row['Likely'])
+                neither = int(row['Neither'])
+                unlikely = int(row['Unlikely'])
+                extremely_unlikely = int(row['Extremely Unlikely'])
+                dont_know = int(row['Don\'t Know'])
+            except (KeyError, ValueError):
+                raise ValueError("Could not retrieve one of the score fields from the csv for: {0}, or the data is not a valid score.".format(content_object.name))
+
+            try:
+                survey = FriendsAndFamilySurvey(
+                    content_object=content_object,
+                    overall_score=overall_score,
+                    extremely_likely=extremely_likely,
+                    likely=likely,
+                    neither=neither,
+                    unlikely=unlikely,
+                    extremely_unlikely=extremely_unlikely,
+                    dont_know=dont_know,
+                    date=month
+                )
+
+                # Only site surveys have a "location"
+                if content_type == 'site':
+                    survey.location = location
+
+                survey.save()
+
+                created.append(survey)
+            except IntegrityError:
+                transaction.rollback()
+                date_string = month.strftime("%B, %Y")
+                location = cls.location_display(location)
+                if content_type == 'site':
+                    raise IntegrityError("There is already a survey for {0} for the month {1} and location {2}. Please delete the existing survey first if you're trying to replace it.".format(content_object.name, date_string, location))
+                else:
+                    raise IntegrityError("There is already a survey for {0} for the month {1}. Please delete the existing survey first if you're trying to replace it.".format(content_object.name, date_string))
+
+        return created
+
+    def __unicode__(self):
+        if self.location:
+            return "{0} - {1} - {2}".format(self.content_object.name, self.date, self.get_location_display())
+        else:
+            return "{0} - {1}".format(self.content_object.name, self.date)
 
     class Meta:
         # We can only have one survey per org/parent, per month, per location
