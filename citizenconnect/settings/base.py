@@ -257,7 +257,7 @@ ORGANISATION_TYPES = [organisation_type for organisation_type, label in ORGANISA
 
 # Survey location choices
 SURVEY_LOCATION_CHOICES = [
-    ['ande', 'A&E'],
+    ['aande', 'A&E'],
     ['inpatient', 'Inpatient'],
 ]
 
