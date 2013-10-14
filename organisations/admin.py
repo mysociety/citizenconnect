@@ -52,14 +52,6 @@ class FriendsAndFamilySurveyAdmin(admin.ModelAdmin):
         else:
             form = SurveyAdminCSVUploadForm()
 
-        if form.is_valid():
-            # note - for this to work the TemporaryFileUploadHandler upload
-            # handler needs to be the default
-            csv_file_path = request.FILES['csv_file'].temporary_file_path()
-            csv_file = open(csv_file_path)
-            # TODO - do stuff with the CSV file
-            # TODO - render a success template or redirect somewhere?
-
         # We copy the Django admins' Change Form's template for some bits,
         # like breadcrumbs, so I build the context for the template in a
         # similar way too.
@@ -72,6 +64,20 @@ class FriendsAndFamilySurveyAdmin(admin.ModelAdmin):
             'has_change_permission': self.has_change_permission(request),
             'opts': self.model._meta
         })
+
+        if form.is_valid():
+            # note - for this to work the TemporaryFileUploadHandler upload
+            # handler needs to be the default
+            csv_file = form.cleaned_data.get('csv_file')
+            survey_context = form.cleaned_data.get('context')
+            location = form.cleaned_data.get('location')
+            date = form.cleaned_data.get('month')
+            try:
+                context['created'] = models.FriendsAndFamilySurvey.process_csv(csv_file, date, survey_context, location)
+            except Exception as e:
+                # Something went wrong processing it, probably duff data:
+                context['csv_processing_error'] = e.message
+
         return render_to_response(
             'organisations/admin/survey_upload_csv.html',
             {

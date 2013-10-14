@@ -18,6 +18,20 @@
 
 <div id="content-main">
 
+    {% if created %}
+        <h2>{{ created|length }} Survey{{ created|length|pluralize }} Uploaded</h2>
+        <ul>
+        {% for survey in created %}
+            <li>{{ survey }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if csv_processing_error %}
+        <h2>Looks like something went wrong</h2>
+        <p class="errornote">{{ csv_processing_error }}</p>
+    {% endif %}
+
     <form action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {% if form.errors %}
