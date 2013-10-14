@@ -14,6 +14,7 @@ from django.db.models import Q
 
 # App imports
 from issues.models import Problem
+from citizenconnect.widgets import MonthYearWidget
 
 from .models import Organisation, CCG, Service
 from .metaphone import dm
@@ -228,4 +229,4 @@ class SurveyAdminCSVUploadForm(forms.Form):
 
     context = forms.ChoiceField(choices=(('trust', 'Trust'), ('site', 'Site')))
 
-    month = forms.DateField()
+    month = forms.DateField(widget=MonthYearWidget)
