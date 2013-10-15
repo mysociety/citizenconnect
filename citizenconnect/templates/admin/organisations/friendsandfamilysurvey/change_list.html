@@ -1,0 +1,11 @@
+{% extends "admin/change_list.html" %}
+{% load i18n admin_urls %}
+{% load url from future %}
+{% block object-tools-items %}
+    <li>
+      <a href="{% url cl.opts|admin_urlname:'survey_upload_csv' %}{% if is_popup %}?_popup=1{% endif %}" class="addlink">
+        Upload Survey CSV
+      </a>
+    </li>
+    {{ block.super }}
+{% endblock %}

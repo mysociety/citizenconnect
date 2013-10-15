@@ -14,6 +14,7 @@ from django.db.models import Q
 
 # App imports
 from issues.models import Problem
+from citizenconnect.widgets import MonthYearWidget
 
 from .models import Organisation, CCG, Service
 from .metaphone import dm
@@ -26,7 +27,7 @@ class MapitPostcodeNotValidError(MapitError): pass
 
 
 class MapitPostCodeLookup(object):
-    
+
     @classmethod
     def postcode_to_point(cls, postcode, partial=False):
 
@@ -216,3 +217,31 @@ class OrganisationFilterForm(FilterForm):
                                                                        required=False,
                                                                        empty_label="All services/departments",
                                                                        label="Service/Department"))
+
+
+class SurveyAdminCSVUploadForm(forms.Form):
+    """A Form for the admin site which allows bulk uploading of csv files"""
+    csv_file = forms.FileField(
+        label = 'CSV file',
+    )
+
+    location = forms.ChoiceField(
+        choices=[['', 'Select a location']] + settings.SURVEY_LOCATION_CHOICES,
+        required=False,
+        help_text="Optional, surveys for Trusts don't need a location.")
+
+    context = forms.ChoiceField(choices=(('trust', 'Trust'), ('site', 'Site')))
+
+    month = forms.DateField(widget=MonthYearWidget)
+
+    def clean(self):
+        cleaned_data = super(SurveyAdminCSVUploadForm, self).clean()
+        context = cleaned_data.get('context', None)
+        location = cleaned_data.get('location', None)
+        if context and context == 'site':
+            if not location and location not in self._errors:
+                # Location should be specified if you're uploading csvs for sites
+                self._errors['location'] = self.error_class(["Location is required for Site files."])
+                del cleaned_data['location']
+
+        return cleaned_data
