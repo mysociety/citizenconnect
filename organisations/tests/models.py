@@ -456,51 +456,69 @@ class FriendsAndFamilyModelTests(AuthorizationTestCase):
 
     def test_missing_org_csv(self):
         today = datetime.date.today()
-        headers = "Area Team Code,Code,Name,Site Code,Site Name,Total Responses,Total Eligible,Response Rate,Friends and Family Test Score,,Extremely Likely,Likely,Neither,Unlikely,Extremely Unlikely,Don't Know\n"
-        bad_org_row = "Q44,TRUST1,Test Trust,NOTVALID,Test Organisation,498,\"1,303\",38.20%,79,,346,79,6,0,0,67"
-        csv_file = StringIO(headers + bad_org_row)
+
+        missing_org_fixture_file = open(
+            os.path.join(
+                os.path.dirname(__file__),
+                'fixtures',
+                'fft_survey_missing_site.csv'
+            )
+        )
 
         with self.assertRaises(ValueError) as cm:
-            FriendsAndFamilySurvey.process_csv(csv_file, today, 'site', 'aande')
+            FriendsAndFamilySurvey.process_csv(missing_org_fixture_file, today, 'site', 'aande')
             self.assertEqual(cm.exception.message, "Organisation with site code: NOTVALID (Test Organisation) is not in the database.")
 
     def test_missing_trust_csv(self):
         today = datetime.date.today()
-        headers = "Area Team Code,Code,Name,Total Responses,Total Eligible,Response Rate,Friends and Family Test Score,,Extremely Likely,Likely,Neither,Unlikely,Extremely Unlikely,Don't Know,,SMS/Text / Smartphone App,Electronic tablet/kiosk at point of discharge,Paper / postcard at point of discharge,\"Paper survey, sent to the patients home\",Telephone survey once patient is home,Online survey once patient is home,Other\n"
-        bad_trust_row = "Q44,NOTVALID,Test Trust,498,\"1,303\",38.20%,79,,346,79,6,0,0,67,,0,0,497,0,0,0,1"
-        csv_file = StringIO(headers + bad_trust_row)
+
+        missing_trust_fixture_file = open(
+            os.path.join(
+                os.path.dirname(__file__),
+                'fixtures',
+                'fft_survey_missing_trust.csv'
+            )
+        )
 
         with self.assertRaises(ValueError) as cm:
-            FriendsAndFamilySurvey.process_csv(csv_file, today, 'trust')
+            FriendsAndFamilySurvey.process_csv(missing_trust_fixture_file, today, 'trust')
             self.assertEqual(cm.exception.message, "OrganisationParent with code: NOTVALID (Test Trust) is not in the database.")
 
     def test_location_required_for_site_csvs(self):
         today = datetime.date.today()
 
         with self.assertRaises(ValueError) as cm:
-            FriendsAndFamilySurvey.process_csv(self.site_fixture_file, today, 'site')
+            FriendsAndFamilySurvey.process_csv(self.site_fixture_file, today, 'site', location=None)
             self.assertEqual(cm.exception.message, "Location is required for site files.")
 
     def test_missing_fields_csv(self):
         today = datetime.date.today()
-        # Don't know field is missing
-        headers = "Area Team Code,Code,Name,Site Code,Site Name,Total Responses,Total Eligible,Response Rate,Friends and Family Test Score,,Extremely Likely,Likely,Neither,Unlikely,Extremely Unlikely\n"
-        bad_org_row = "Q44,TRUST1,Test Trust,F84021,Test Organisation,498,\"1,303\",38.20%,79,,346,79,6,0,0"
-        csv_file = StringIO(headers + bad_org_row)
+
+        missing_field_fixture_file = open(
+            os.path.join(
+                os.path.dirname(__file__),
+                'fixtures',
+                'fft_survey_missing_field.csv'
+            )
+        )
 
         with self.assertRaises(ValueError) as cm:
-            FriendsAndFamilySurvey.process_csv(csv_file, today, 'site', 'aande')
+            FriendsAndFamilySurvey.process_csv(missing_field_fixture_file, today, 'site', 'aande')
             self.assertEqual(cm.exception.message, "Could not retrieve one of the score fields from the csv for: Test Organisation, or the data is not a valid score.")
 
     def test_bad_fields_csv(self):
         today = datetime.date.today()
-        # Don't know field is empty
-        headers = "Area Team Code,Code,Name,Site Code,Site Name,Total Responses,Total Eligible,Response Rate,Friends and Family Test Score,,Extremely Likely,Likely,Neither,Unlikely,Extremely Unlikely, Don't Know\n"
-        bad_org_row = "Q44,TRUST1,Test Trust,F84021,Test Organisation,498,\"1,303\",38.20%,79,,346,79,6,0,0,,"
-        csv_file = StringIO(headers + bad_org_row)
+
+        bad_field_fixture_file = open(
+            os.path.join(
+                os.path.dirname(__file__),
+                'fixtures',
+                'fft_survey_bad_field.csv'
+            )
+        )
 
         with self.assertRaises(ValueError) as cm:
-            FriendsAndFamilySurvey.process_csv(csv_file, today, 'site', 'aande')
+            FriendsAndFamilySurvey.process_csv(bad_field_fixture_file, today, 'site', 'aande')
             self.assertEqual(cm.exception.message, "Could not retrieve one of the score fields from the csv for: Test Organisation, or the data is not a valid score.")
 
     def test_duplicate_site_csv(self):
