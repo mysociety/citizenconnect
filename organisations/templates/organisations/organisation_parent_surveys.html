@@ -1,7 +1,7 @@
 {% extends "citizenconnect/base.html" %}
 {% load url from future %}
 {% load organisation_extras %}
-{% load render_table from django_tables2 %}
+{% load compressed %}
 
 {% block title %}{{ organisation_parent.name }} Friends and Family{% endblock %}
 
@@ -13,17 +13,28 @@
 
 {% include "organisations/includes/organisation_parent_tabs.html" with active_tab='surveys' %}
 
-<div class="surveys">
+<div class="surveys  gw">
     {% if latest_survey %}
-    <div class="survey  mb">
+    <div class="survey  g  one-half  palm-one-whole  mb">
         <h2 class="survey__title">How likely are people to recommend {{ organisation_parent.name }}?</h2>
         {% include 'organisations/includes/survey.html' with latest_survey=latest_survey previous_surveys=previous_surveys %}
     </div>
     {% else %}
-    <p>There are no surveys for {{ organisation_parent.name }} at this time.</p>
+    <div class="g  one-whole">
+        <p>There are no surveys for {{ organisation_parent.name }} at this time.</p>
+    </div>
     {% endif %}
 
-    <p><a href="http://www.england.nhs.uk/statistics/statistical-work-areas/friends-and-family-test/">See more information on these surveys</a></p>
+    <div class="g  one-whole">
+        <p><a href="http://www.england.nhs.uk/statistics/statistical-work-areas/friends-and-family-test/">See more information on these surveys</a></p>
+    </div>
 </div>
 
 {% endblock %}
+
+{% block extra_js %}
+    {% compressed_js 'survey_page' %}
+    <!--[if lte IE 8]>
+        {% compressed_js 'excanvas' %}
+    <![endif]-->
+{% endblock extra_js %}

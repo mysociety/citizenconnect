@@ -1,44 +1,51 @@
 // Survey data on organisation and organisation parent "Friends and Family" pages
 
-.survey__response {
-  background-color: $c-lightgrey;
-  border-bottom:2px solid $c-white;
-  padding: 1em;
+.survey {
+  @include media-query(portable) {
+    border-bottom: solid $c-grey 3px;
+    margin-bottom:2em;
+  }
 
-  .survey__response__bar {
-    background-color: $c-white;
-    height: 1em;
-    .survey__response__bar__fill {
-      position:relative;
-      left:0px;
-      background-color: $c-aquablue;
+  .survey__response {
+    background-color: $c-lightgrey;
+    border-bottom:2px solid $c-white;
+    padding: 1em;
+
+    .survey__response__bar {
+      background-color: $c-white;
       height: 1em;
+      .survey__response__bar__fill {
+        position:relative;
+        left:0px;
+        background-color: $c-aquablue;
+        height: 1em;
+      }
+    }
+
+    .survey__response__value {
+      padding-left:1em;
     }
   }
 
-  .survey__response__value {
-    padding-left:1em;
-  }
-}
 
+  .survey__summary {
+    padding-bottom: 2em;
+    border-bottom: 2px solid $c-aquablue;
 
-.survey__summary {
-  padding-bottom: 2em;
-  border-bottom: 1px solid $c-aquablue;
+    .survey__overall {
 
-  .survey__overall {
-
-    span {
-      margin-top: 0.5em;
-      display: block;
-      width: 100px;
-      height: 100px;
-      line-height: 100px;
-      text-align: center;
-      font-size: 2em;
-      background-color: $c-aquablue;
-      border-radius: 50%;
-      color: $c-white;
+      span {
+        margin-top: 0.5em;
+        display: block;
+        width: 100px;
+        height: 100px;
+        line-height: 100px;
+        text-align: center;
+        font-size: 2em;
+        background-color: $c-aquablue;
+        border-radius: 50%;
+        color: $c-white;
+      }
     }
   }
 }

@@ -1,5 +1,6 @@
 {% extends "citizenconnect/base.html" %}
 {% load url from future %}
+{% load compressed %}
 
 {% block title %}{{ organisation.name }} :: Friends and Family Test{% endblock %}
 
@@ -31,4 +32,11 @@
     </div>
 
 </div>
-{% endblock %}
+{% endblock content %}
+
+{% block extra_js %}
+    {% compressed_js 'survey_page' %}
+    <!--[if lte IE 8]>
+        {% compressed_js 'excanvas' %}
+    <![endif]-->
+{% endblock extra_js %}

@@ -23,10 +23,10 @@
 {% if previous_surveys %}
 <div class="recent-surveys  mb  gw  gw--no-gutters">
     <h3>Previous month's test scores</h3>
-    <ul class="survey__previous">
+    <ol class="survey__previous">
         {% for survey in previous_surveys %}
-            <li>{{ survey.date|date:'F, Y' }}: {{ survey.overall_score }}</li>
+            <li class="survey__previous__overall" data-month="{{ survey.date|date:'F' }}" data-value="{{ survey.overall_score }}">{{ survey.date|date:'F, Y' }}: {{ survey.overall_score }}</li>
         {% endfor %}
-    </ul>
+    </ol>
 </div>
 {% endif %}
