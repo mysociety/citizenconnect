@@ -137,6 +137,44 @@ class FriendsAndFamilySurvey(AuditedModel):
     # in a DateField.
     date = models.DateField(db_index=True)
 
+    @property
+    def total_responses(self):
+        return (
+            self.extremely_likely +
+            self.likely +
+            self.neither +
+            self.unlikely +
+            self.extremely_unlikely +
+            self.dont_know
+        )
+
+    def calculate_percentage(self, num_responses):
+        return (float(num_responses) / float(self.total_responses)) * 100
+
+    @property
+    def extremely_likely_percentage(self):
+        return self.calculate_percentage(self.extremely_likely)
+
+    @property
+    def likely_percentage(self):
+        return self.calculate_percentage(self.likely)
+
+    @property
+    def neither_percentage(self):
+        return self.calculate_percentage(self.neither)
+
+    @property
+    def unlikely_percentage(self):
+        return self.calculate_percentage(self.unlikely)
+
+    @property
+    def extremely_unlikely_percentage(self):
+        return self.calculate_percentage(self.extremely_unlikely)
+
+    @property
+    def dont_know_percentage(self):
+        return self.calculate_percentage(self.dont_know)
+
     @classmethod
     def location_display(cls, location):
         """Normal Django get_FOO_display only works on instances, not passed
