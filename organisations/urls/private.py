@@ -45,6 +45,11 @@ urlpatterns = patterns(
         name='org-parent-breaches',
         kwargs={'private': True}),
 
+    url(r'^org-parent/(?P<code>\w+)/surveys$',
+        login_required(OrganisationParentSurveys.as_view()),
+        name='org-parent-surveys',
+        kwargs={'private': True}),
+
     # CCG urls
     url(r'^ccg/(?P<code>\w+)/dashboard$',
         login_required(CCGDashboard.as_view()),
