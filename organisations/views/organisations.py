@@ -2,6 +2,7 @@
 from django.http import Http404
 from django.views.generic import TemplateView
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 # App imports
 from issues.models import Problem
@@ -119,5 +120,31 @@ class OrganisationSummary(OrganisationAwareViewMixin,
                 context['private_back_to_summaries_link'] = reverse('ccg-summary', kwargs={'code': self.request.user.ccgs.all()[0].code})
             elif user_in_group(self.request.user, auth.ORGANISATION_PARENTS):
                 context['private_back_to_summaries_link'] = reverse('org-parent-summary', kwargs={'code': self.request.user.organisation_parents.all()[0].code})
+
+        return context
+
+
+class OrganisationSurveys(OrganisationAwareViewMixin, TemplateView):
+
+    template_name = 'organisations/organisation_surveys.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(OrganisationSurveys, self).get_context_data(**kwargs)
+
+        organisation = context['organisation']
+
+        context['survey_locations'] = settings.SURVEY_LOCATION_CHOICES
+
+        context['surveys'] = []
+
+        for location, location_label in context['survey_locations']:
+            location_surveys = {}
+            location_surveys['location_id'] = location
+            location_surveys['location_name'] = location_label
+            if organisation.surveys.filter(location=location).count() > 0:
+                location_surveys['latest_survey'] = organisation.surveys.filter(location=location)[0]
+                if organisation.surveys.filter(location=location).count() > 1:
+                    location_surveys['previous_surveys'] = organisation.surveys.filter(location=location)[1:6]
+                context['surveys'].append(location_surveys)
 
         return context
