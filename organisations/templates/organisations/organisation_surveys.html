@@ -1,0 +1,66 @@
+{% extends "citizenconnect/base.html" %}
+{% load url from future %}
+
+{% block title %}{{ organisation.name }} :: Friends and Family Test{% endblock %}
+
+{% block bodyclasses %}organisation-problems{% endblock %}
+
+{% block content %}
+
+{% include "organisations/includes/provider_summary_link.html" %}
+
+{% include "organisations/includes/page_header.html" with title="Friends and Family Test" %}
+
+{% include "organisations/includes/organisation_tabs.html" with active_tab='surveys' %}
+
+<form class="filters  gw  gw--no-gutters" action="{{ request.path }}">
+
+    <div class="filters__dropdown-wrap  g  two-twelfths  palm-one-half">
+        <label>Select a Location: </label>
+        <div class="filters__dropdown  filters__dropdown--default">
+            <select name="location">
+                {% for location, location_name in survey_locations %}
+                    <option value="{{ location }}">{{ location_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <input type="submit" value="Select" class="btn  filters__button  palm-one-half">
+</form>
+
+<div class="surveys  gw">
+{% for location in surveys %}
+    <div class="survey  g  one-half  palm-one-whole" id="{{ location.location_id }}">
+        <h2 class="survey__title">How likely are people to recommend {{ location.location_name }} at {{ organisation.name }}?</h2>
+        {% with location.latest_survey as survey %}
+            <ul class="survey__specifics">
+                <li>Extremely likely: {{ survey.extremely_likely }}</li>
+                <li>Likely: {{ survey.likely }}</li>
+                <li>Neither likely nor unlikely: {{ survey.neither }}</li>
+                <li>Unlikely: {{ survey.unlikely }}</li>
+                <li>Extremely unlikely: {{ survey.extremely_unlikely }}</li>
+            </ul>
+
+            <p class="survey__overall">Overall: {{ survey.overall_score }}</p>
+            <p class="survey__date">Month: {{ survey.date|date:'F, Y' }}</p>
+            <p class="survey__explanation">TODO: Explanation text</p>
+        {% endwith %}
+
+        {% if location.previous_surveys %}
+            <h3>Previous scores</h3>
+            <ul class="survey__previous">
+                {% for survey in location.previous_surveys %}
+                    <li>{{ survey.date|date:'F, Y' }}: {{ survey.overall_score }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+
+{% empty %}
+<p>There are no surveys for {{ organisation.name }} at this time.</p>
+{% endfor %}
+
+<a href="http://www.england.nhs.uk/statistics/statistical-work-areas/friends-and-family-test/">See more information on these surveys</a>
+</div>
+{% endblock %}
