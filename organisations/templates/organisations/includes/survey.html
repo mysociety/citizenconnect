@@ -1,17 +1,27 @@
-<ul class="survey__specifics">
-    <li>Extremely likely: {{ latest_survey.extremely_likely }}</li>
-    <li>Likely: {{ latest_survey.likely }}</li>
-    <li>Neither likely nor unlikely: {{ latest_survey.neither }}</li>
-    <li>Unlikely: {{ latest_survey.unlikely }}</li>
-    <li>Extremely unlikely: {{ latest_survey.extremely_unlikely }}</li>
-</ul>
+<div class="survey__responses">
+    {% include 'organisations/includes/survey_response.html' with label="Extremely likely" response_percentage=latest_survey.extremely_likely_percentage response_value=latest_survey.extremely_likely %}
 
-<p class="survey__overall">Overall: {{ latest_survey.overall_score }}</p>
-<p class="survey__date">Month: {{ latest_survey.date|date:'F, Y' }}</p>
-<p class="survey__explanation">TODO: Explanation text</p>
+    {% include 'organisations/includes/survey_response.html' with label="Likely" response_percentage=latest_survey.likely_percentage response_value=latest_survey.likely %}
+
+    {% include 'organisations/includes/survey_response.html' with label="Neither likely nor unlikely" response_percentage=latest_survey.neither_percentage response_value=latest_survey.neither %}
+
+    {% include 'organisations/includes/survey_response.html' with label="Unlikely" response_percentage=latest_survey.unlikely_percentage response_value=latest_survey.unlikely %}
+
+    {% include 'organisations/includes/survey_response.html' with label="Extremely unlikely" response_percentage=latest_survey.extremely_unlikely_percentage response_value=latest_survey.extremely_unlikely %}
+
+    {% include 'organisations/includes/survey_response.html' with label="Don't know" response_percentage=latest_survey.dont_know_percentage response_value=latest_survey.dont_know %}
+</div>
+
+<div class="survey__summary  gw  gw--no-gutters">
+    <div class="survey__overall  g  one-quarter  palm-one-half"><h3 class="hide-text">Overall</h3><span>{{ latest_survey.overall_score }}</span></div>
+    <div class="survey__text  g  three-quarters  palm-one-half">
+        <h3>{{ latest_survey.date|date:'F, Y' }}</h3>
+        <p class="survey__explanation">TODO: Explanation text</p>
+    </div>
+</div>
 
 {% if previous_surveys %}
-    <h3>Previous scores</h3>
+    <h3>Previous month's test scores</h3>
     <ul class="survey__previous">
         {% for survey in previous_surveys %}
             <li>{{ survey.date|date:'F, Y' }}: {{ survey.overall_score }}</li>

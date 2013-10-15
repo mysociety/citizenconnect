@@ -1,0 +1,9 @@
+<div class="survey__response">
+    <div class="survey__response__label">{{ label }}</div>
+    <div class="survey__response__wrapper  gw  gw--no-gutters">
+        <div class="survey__response__bar  g  seven-eighths">
+            <div class="survey__response__bar__fill" style="width:{{ response_percentage|floatformat }}%;"></div>
+        </div>
+        <div class="survey__response__value  g  one-eighth">{{ response_value }}</div>
+    </div>
+</div>
