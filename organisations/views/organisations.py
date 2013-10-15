@@ -143,8 +143,7 @@ class OrganisationSurveys(OrganisationAwareViewMixin, TemplateView):
             location_surveys['location_name'] = location_label
             if organisation.surveys.filter(location=location).count() > 0:
                 location_surveys['latest_survey'] = organisation.surveys.filter(location=location)[0]
-                if organisation.surveys.filter(location=location).count() > 1:
-                    location_surveys['previous_surveys'] = organisation.surveys.filter(location=location)[1:6]
+                location_surveys['previous_surveys'] = organisation.surveys.filter(location=location)[0:5]
                 context['surveys'].append(location_surveys)
 
         return context
