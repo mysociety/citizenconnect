@@ -1,7 +1,7 @@
 // Survey data on organisation and organisation parent "Friends and Family" pages
 
 .survey {
-  @include media-query(portable) {
+  @include media-query(palm) {
     border-bottom: solid $c-grey 3px;
     margin-bottom:2em;
   }
@@ -23,7 +23,7 @@
     }
 
     .survey__response__value {
-      padding-left:1em;
+      text-align:right;
     }
   }
 
