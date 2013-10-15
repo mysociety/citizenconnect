@@ -14,16 +14,21 @@
 {% include "organisations/includes/organisation_tabs.html" with active_tab='surveys' %}
 
 <div class="surveys  gw">
-{% for location in surveys %}
-    <div class="survey  g  one-half  palm-one-whole" id="{{ location.location_id }}">
-        <h2 class="survey__title">How likely are people to recommend {{ location.location_name }} at {{ organisation.name }}?</h2>
-        {% include 'organisations/includes/survey.html' with latest_survey=location.latest_survey previous_surveys=location.previous_surveys %}
+    {% for location in surveys %}
+        <div class="survey  g  one-half  palm-one-whole" id="{{ location.location_id }}">
+            <h2 class="survey__title">How likely are people to recommend {{ location.location_name }} at {{ organisation.name }}?</h2>
+            {% include 'organisations/includes/survey.html' with latest_survey=location.latest_survey previous_surveys=location.previous_surveys %}
+        </div>
+
+    {% empty %}
+    <div class="g  one-whole">
+        <p>There are no surveys for {{ organisation.name }} at this time.</p>
+    </div>
+    {% endfor %}
+
+    <div class="g  one-whole">
+        <p><a href="http://www.england.nhs.uk/statistics/statistical-work-areas/friends-and-family-test/">See more information on these surveys</a></p>
     </div>
 
-{% empty %}
-<p>There are no surveys for {{ organisation.name }} at this time.</p>
-{% endfor %}
-
-<a href="http://www.england.nhs.uk/statistics/statistical-work-areas/friends-and-family-test/">See more information on these surveys</a>
 </div>
 {% endblock %}

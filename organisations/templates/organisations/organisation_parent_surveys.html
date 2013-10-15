@@ -13,16 +13,17 @@
 
 {% include "organisations/includes/organisation_parent_tabs.html" with active_tab='surveys' %}
 
-{% if latest_survey %}
-<div class="survey">
-    <h2 class="survey__title">How likely are people to recommend {{ organisation_parent.name }}?</h2>
-    {% include 'organisations/includes/survey.html' with latest_survey=latest_survey previous_surveys=previous_surveys %}
-</div>
-{% else %}
-<p>There are no surveys for {{ organisation_parent.name }} at this time.</p>
-{% endif %}
+<div class="surveys">
+    {% if latest_survey %}
+    <div class="survey  mb">
+        <h2 class="survey__title">How likely are people to recommend {{ organisation_parent.name }}?</h2>
+        {% include 'organisations/includes/survey.html' with latest_survey=latest_survey previous_surveys=previous_surveys %}
+    </div>
+    {% else %}
+    <p>There are no surveys for {{ organisation_parent.name }} at this time.</p>
+    {% endif %}
 
-<a href="http://www.england.nhs.uk/statistics/statistical-work-areas/friends-and-family-test/">See more information on these surveys</a>
+    <p><a href="http://www.england.nhs.uk/statistics/statistical-work-areas/friends-and-family-test/">See more information on these surveys</a></p>
 </div>
 
 {% endblock %}
