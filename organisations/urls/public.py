@@ -16,5 +16,6 @@ urlpatterns = patterns(
     url(r'^summary/(?P<ods_code>\w+)$', OrganisationSummary.as_view(), name='public-org-summary'),
     url(r'^problems/(?P<ods_code>\w+)$', OrganisationProblems.as_view(), name='public-org-problems'),
     url(r'^reviews/(?P<ods_code>\w+)$', OrganisationReviews.as_view(), name="public-org-reviews"),
+    url(r'^surveys/(?P<ods_code>\w+)$', OrganisationSurveys.as_view(), name="public-org-surveys"),
     url(r'^search$', OrganisationSearch.as_view(), name='org-search'),
 )
