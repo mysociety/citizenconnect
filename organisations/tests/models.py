@@ -1,10 +1,10 @@
 import datetime
 import os
-from StringIO import StringIO
 
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
 from django.core import mail
 from django.contrib.gis.geos import Point
+from django.contrib.auth.models import User
 from django.utils.timezone import utc
 from django.core.exceptions import ValidationError
 from django.contrib.contenttypes.models import ContentType
@@ -254,10 +254,46 @@ class CCGModelSendMailTests(CreateTestCCGMixin, SendMailTestsMixin, TestCase):
     pass
 
 
-class FriendsAndFamilyModelTests(AuthorizationTestCase):
+class FriendsAndFamilySurveyModelTests(TransactionTestCase):
+
+    fixtures = ['development_users.json']
 
     def setUp(self):
-        super(FriendsAndFamilyModelTests, self).setUp()
+        super(FriendsAndFamilySurveyModelTests, self).setUp()
+
+
+        # Below bits copied from AuthorizationTestCase because that's not a
+        # TransactionTestCase and we need to be to test IntegrityErrors
+
+        # CCGs
+        self.test_ccg = create_test_ccg()
+        self.other_test_ccg = create_test_ccg({'name': 'other test ccg', 'code': 'XYZ'})
+
+        # Organisation Parent
+        self.test_trust = create_test_organisation_parent({'primary_ccg': self.test_ccg})
+        self.test_gp_surgery = create_test_organisation_parent({'name': 'other test trust',
+                                                                'code': 'XYZ',
+                                                                'primary_ccg': self.other_test_ccg})
+
+        self.test_trust.ccgs.add(self.test_ccg)
+        self.test_trust.save()
+        self.test_gp_surgery.ccgs.add(self.other_test_ccg)
+        self.test_gp_surgery.save()
+
+        # Organisations
+        self.test_hospital = create_test_organisation({'organisation_type': 'hospitals',
+                                                       'parent': self.test_trust,
+                                                       'point': Point(-0.2, 51.5)})
+        self.test_gp_branch = create_test_organisation({'ods_code': '12345',
+                                                        'name': 'Test GP Branch',
+                                                        'parent': self.test_gp_surgery,
+                                                        'point': Point(-0.1, 51.5)})
+
+        # Users
+        self.test_password = 'password'
+
+        # A Django superuser
+        self.superuser = User.objects.get(pk=1)
 
         self.site_fixture_file = open(
             os.path.join(
@@ -274,6 +310,10 @@ class FriendsAndFamilyModelTests(AuthorizationTestCase):
                 'fft_survey_trust.csv'
             )
         )
+
+    def login_as(self, user):
+        logged_in = self.client.login(username=user.username, password=self.test_password)
+        self.assertTrue(logged_in)
 
     def test_can_be_assigned_to_org_or_parent(self):
 
