@@ -149,3 +149,17 @@ class OrganisationParentDashboard(OrganisationParentAwareViewMixin,
         context['table'] = problems_table
         context['page_obj'] = problems_table.page
         return context
+
+
+class OrganisationParentSurveys(OrganisationParentAwareViewMixin,
+                                TemplateView):
+    template_name = 'organisations/organisation_parent_surveys.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(OrganisationParentSurveys, self).get_context_data(**kwargs)
+        organisation_parent = context['organisation_parent']
+        if organisation_parent.surveys.all().count() > 0:
+            context['latest_survey'] = organisation_parent.surveys.all()[0]
+            context['previous_surveys'] = organisation_parent.surveys.all()[0:5]
+
+        return context
