@@ -14,10 +14,14 @@
 
 {% include "organisations/includes/organisation_tabs.html" with active_tab='surveys' %}
 
+<h2>How likely are people to recommend {{ organisation.name }}?</h2>
+
+<p>TODO: Introductory text</h2>
+
 <div class="surveys  gw">
     {% for location in surveys %}
         <div class="survey  g  one-half  palm-one-whole" id="{{ location.location_id }}">
-            <h2 class="survey__title">How likely are people to recommend {{ location.location_name }} at {{ organisation.name }}?</h2>
+            <h2 class="survey__title">{{ location.location_name }}</h2>
             {% include 'organisations/includes/survey.html' with latest_survey=location.latest_survey previous_surveys=location.previous_surveys %}
         </div>
 

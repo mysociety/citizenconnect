@@ -13,10 +13,13 @@
 
 {% include "organisations/includes/organisation_parent_tabs.html" with active_tab='surveys' %}
 
+<h2>How likely are people to recommend {{ organisation_parent.name }}?</h2>
+
+<p>TODO: Introductory text</h2>
+
 <div class="surveys  gw">
     {% if latest_survey %}
-    <div class="survey  g  one-half  palm-one-whole  mb">
-        <h2 class="survey__title">How likely are people to recommend {{ organisation_parent.name }}?</h2>
+    <div class="survey  g  one-whole  mb">
         {% include 'organisations/includes/survey.html' with latest_survey=latest_survey previous_surveys=previous_surveys %}
     </div>
     {% else %}
