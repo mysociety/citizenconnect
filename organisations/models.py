@@ -149,6 +149,7 @@ class FriendsAndFamilySurvey(AuditedModel):
         )
 
     @classmethod
+    @transaction.commit_on_success
     def process_csv(cls, csv_file, month, content_type, location=None):
         """Process a csv file of multiple surveys for either a Site (hospital)
         or a Trust and create objects for them.
