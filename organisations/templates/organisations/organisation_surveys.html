@@ -17,28 +17,7 @@
 {% for location in surveys %}
     <div class="survey  g  one-half  palm-one-whole" id="{{ location.location_id }}">
         <h2 class="survey__title">How likely are people to recommend {{ location.location_name }} at {{ organisation.name }}?</h2>
-        {% with location.latest_survey as survey %}
-            <ul class="survey__specifics">
-                <li>Extremely likely: {{ survey.extremely_likely }}</li>
-                <li>Likely: {{ survey.likely }}</li>
-                <li>Neither likely nor unlikely: {{ survey.neither }}</li>
-                <li>Unlikely: {{ survey.unlikely }}</li>
-                <li>Extremely unlikely: {{ survey.extremely_unlikely }}</li>
-            </ul>
-
-            <p class="survey__overall">Overall: {{ survey.overall_score }}</p>
-            <p class="survey__date">Month: {{ survey.date|date:'F, Y' }}</p>
-            <p class="survey__explanation">TODO: Explanation text</p>
-        {% endwith %}
-
-        {% if location.previous_surveys %}
-            <h3>Previous scores</h3>
-            <ul class="survey__previous">
-                {% for survey in location.previous_surveys %}
-                    <li>{{ survey.date|date:'F, Y' }}: {{ survey.overall_score }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+        {% include 'organisations/includes/survey.html' with latest_survey=location.latest_survey previous_surveys=location.previous_surveys %}
     </div>
 
 {% empty %}

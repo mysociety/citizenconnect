@@ -1,0 +1,20 @@
+<ul class="survey__specifics">
+    <li>Extremely likely: {{ latest_survey.extremely_likely }}</li>
+    <li>Likely: {{ latest_survey.likely }}</li>
+    <li>Neither likely nor unlikely: {{ latest_survey.neither }}</li>
+    <li>Unlikely: {{ latest_survey.unlikely }}</li>
+    <li>Extremely unlikely: {{ latest_survey.extremely_unlikely }}</li>
+</ul>
+
+<p class="survey__overall">Overall: {{ latest_survey.overall_score }}</p>
+<p class="survey__date">Month: {{ latest_survey.date|date:'F, Y' }}</p>
+<p class="survey__explanation">TODO: Explanation text</p>
+
+{% if previous_surveys %}
+    <h3>Previous scores</h3>
+    <ul class="survey__previous">
+        {% for survey in previous_surveys %}
+            <li>{{ survey.date|date:'F, Y' }}: {{ survey.overall_score }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
