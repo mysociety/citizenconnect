@@ -334,12 +334,14 @@ class OrganisationParentTabsTests(AuthorizationTestCase):
         self.problems_url = reverse('org-parent-problems', kwargs={'code': self.test_trust.code})
         self.reviews_url = reverse('org-parent-reviews', kwargs={'code': self.test_trust.code})
         self.summary_url = reverse('org-parent-summary', kwargs={'code': self.test_trust.code})
+        self.surveys_url = reverse('org-parent-surveys', kwargs={'code': self.test_trust.code})
         self.tab_urls = [
             self.dashboard_url,
             self.breaches_url,
             self.problems_url,
             self.reviews_url,
-            self.summary_url
+            self.summary_url,
+            self.surveys_url
         ]
         self.login_as(self.trust_user)
 
