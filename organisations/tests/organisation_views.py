@@ -282,10 +282,12 @@ class OrganisationTabsTests(AuthorizationTestCase):
         self.summary_url = reverse('public-org-summary', kwargs={'ods_code': self.test_hospital.ods_code, 'cobrand': 'choices'})
         self.problems_url = reverse('public-org-problems', kwargs={'ods_code': self.test_hospital.ods_code, 'cobrand': 'choices'})
         self.reviews_url = reverse('public-org-reviews', kwargs={'ods_code': self.test_hospital.ods_code, 'cobrand': 'choices'})
+        self.surveys_url = reverse('public-org-surveys', kwargs={'ods_code': self.test_hospital.ods_code, 'cobrand': 'choices'})
         self.tab_urls = [
             self.reviews_url,
             self.problems_url,
-            self.summary_url
+            self.summary_url,
+            self.surveys_url
         ]
         self.login_as(self.trust_user)
 
