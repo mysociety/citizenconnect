@@ -1,3 +1,5 @@
+from datetime import date, timedelta
+
 # Django imports
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
@@ -135,15 +137,17 @@ class LiveFeed(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(LiveFeed, self).get_context_data(**kwargs)
-        # TODO restrict to a certain number of days
-        problems = Problem.objects.all_published_visible_problems().order_by('-created')
-        reviews = Review.objects.all().filter(in_reply_to=None).order_by('-api_published')
+        cutoff_date = date.today() - timedelta(days=settings.LIVE_FEED_CUTOFF_DAYS)
+        problems = Problem.objects.all_published_visible_problems().filter(created__gte=cutoff_date).order_by('-created')
+        reviews = Review.objects.all().filter(in_reply_to=None).filter(created__gte=cutoff_date).order_by('-api_published')
 
         # Merge and reverse date sort, getting most recent from merged list
         issues = (list(problems) + list(reviews))
         date_created = lambda issue: issue.api_published if hasattr(issue, 'api_published') else issue.created
         issues.sort(key=date_created, reverse=True)
+
         context['issues'] = issues
+        context['cutoff_days'] = settings.LIVE_FEED_CUTOFF_DAYS
 
         return context
 
