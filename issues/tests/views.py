@@ -315,31 +315,36 @@ class ProblemSurveyTests(AuthorizationTestCase):
         resp = self.client.get(form_page)
         self.assertEqual(resp.status_code, 404)
 
-    def test_form_page_records_the_happy_service_no_response(self):
+    def test_form_page_records_the_happy_outcome_no_response(self):
+        self.assertEqual(self.test_problem.happy_outcome, None)
         self.assertEqual(self.test_problem.happy_service, None)
         self.client.get(self.form_page)
         test_problem = Problem.objects.get(id=self.test_problem.id)
-        self.assertEqual(test_problem.happy_service, False)
+        self.assertEqual(test_problem.happy_outcome, False)
+        self.assertEqual(test_problem.happy_service, None)
 
-    def test_form_page_records_the_happy_service_yes_response(self):
+    def test_form_page_records_the_happy_outcome_yes_response(self):
         form_page = reverse('survey-form', kwargs={'cobrand': 'choices',
                                                    'response': 'y',
                                                    'id': int_to_base32(self.test_problem.id),
                                                    'token': self.test_problem.make_token(5555)})
+        self.assertEqual(self.test_problem.happy_outcome, None)
         self.assertEqual(self.test_problem.happy_service, None)
         self.client.get(form_page)
         test_problem = Problem.objects.get(id=self.test_problem.id)
-        self.assertEqual(test_problem.happy_service, True)
+        self.assertEqual(test_problem.happy_outcome, True)
 
     def test_form_page_records_nothing_for_a_no_answer_response(self):
         form_page = reverse('survey-form', kwargs={'cobrand': 'choices',
                                                    'response': 'd',
                                                    'id': int_to_base32(self.test_problem.id),
                                                    'token': self.test_problem.make_token(5555)})
+        self.assertEqual(self.test_problem.happy_outcome, None)
         self.assertEqual(self.test_problem.happy_service, None)
         resp = self.client.get(form_page)
         self.assertEqual(resp.status_code, 200)
         test_problem = Problem.objects.get(id=self.test_problem.id)
+        self.assertEqual(test_problem.happy_outcome, None)
         self.assertEqual(test_problem.happy_service, None)
 
     def test_confirm_page_links_to_reviews(self):

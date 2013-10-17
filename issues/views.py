@@ -128,9 +128,9 @@ class ProblemSurvey(UpdateView):
         # Record the first survey response
         response = self.kwargs.get('response', None)
         if response == 'y':
-            problem.happy_service = True
+            problem.happy_outcome = True
         elif response == 'n':
-            problem.happy_service = False
+            problem.happy_outcome = False
         problem.save()
         return problem
 

@@ -155,11 +155,11 @@ class ProblemSurveyForm(forms.ModelForm):
         )
 
         fields = [
-            'happy_outcome',
+            'happy_service',
         ]
 
         widgets = {
-            'happy_outcome': RadioSelect(choices=SURVEY_CHOICES),
+            'happy_service': RadioSelect(choices=SURVEY_CHOICES),
         }
 
 
