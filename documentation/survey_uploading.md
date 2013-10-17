@@ -11,8 +11,8 @@ CSV Formats
 The site expects the survey CSV's to be uploaded in one of the following
 formats:
 
-- [Sites](../../organisations/tests/fixtures/fft_survey_trust.csv)
-- [Trusts](../../organisations/tests/fixtures/fft_survey_trust.csv)
+- [Sites](../organisations/tests/fixtures/fft_survey_trust.csv)
+- [Trusts](../organisations/tests/fixtures/fft_survey_trust.csv)
 
 Note that these are taken from the sample Excel file we were given, and many
 of the fields are therefore ignored.
