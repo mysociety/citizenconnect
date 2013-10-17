@@ -41,8 +41,8 @@ The form should show you if there's anything wrong with the file you upload or
 the selections you make, and if it does, **none** of the data in the file will
 have been saved to the database.
 
-To reiterate that: you must fix all the errors in the file/form before it will
-save any of it.
+To reiterate that: **you must fix all the errors in the file/form before it will
+save any of it**.
 
 ### An organisation or trust in your CSV doesn't exist
 The error message should show you which org/trust is the problem, double check
@@ -54,8 +54,7 @@ row from the CSV.
 The form should tell you this, so you can correct the field - remember to
 re-attach the CSV file.
 
-### Your CSV is missing some required columns, or the numbers in the columns
-are bad.
+### Your CSV is missing some required columns, or the numbers in the columns are bad.
 The form identifies columns by name, so double-check that they are the same as
 in the example files linked above. Also check that any fields which have
 commas in are quoted with "" quote marks so as not to confuse it about where a
