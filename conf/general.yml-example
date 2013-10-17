@@ -103,3 +103,7 @@ USE_X_FORWARDED_HOST: False
 # Django's allowed hosts setting
 ALLOWED_HOSTS:
   - '.example.com'
+
+# How many days worth of reviews and problems to show on the live feed page
+LIVE_FEED_CUTOFF_DAYS: 30
+

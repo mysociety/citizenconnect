@@ -101,3 +101,6 @@ ALLOWED_HOSTS = [] if STAGING else config.get('ALLOWED_HOSTS', [])
 BLOG_FILES_URL = 'http://news.careconnect.mysociety.org/files'
 # What url should they be proxied to?
 PROXIED_BLOG_FILES_URL = '/careconnect/news/files'
+
+# How many day's worth of things to show on the Live feed
+LIVE_FEED_CUTOFF_DAYS = config.get("LIVE_FEED_CUTOFF_DAYS")
