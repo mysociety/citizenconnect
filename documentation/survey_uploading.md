@@ -20,17 +20,11 @@ of the fields are therefore ignored.
 The Uploading Process
 ---------------------
 1. Login to the Django admin
-
-![Django admin homepage](images/homepage.png)
-
+    ![Django admin homepage](images/surveys/homepage.png)
 2. Select "Friends and family surveys" from the homepage
-
-![Friends and Family homepage](images/fft_homepage.png)
-
+    ![Friends and Family homepage](images/surveys/fft_homepage.png)
 3. Click "Upload Survey CSV" in the top right
-
-![Friends and Family upload form](images/fft_form.png)
-
+    ![Friends and Family upload form](images/surveys/fft_form.png)
 4. Fill out the form
     1. Select a CSV file
     2. Select a location if you're uploading surveys for Sites (leave it empty
@@ -38,10 +32,8 @@ The Uploading Process
     3. Choose the context (Site or Trust)
     4. Select a month and year from the dropdowns
     5. Click "Submit"
-
 5. See the results
-
-![Friends and Family upload form](images/fft_form_success.png)
+    ![Friends and Family upload form](images/surveys/fft_form_success.png)
 
 Possible errors
 ---------------
@@ -81,11 +73,7 @@ replace a survey, you have to delete the existing one first:
 
 1. Go back to the Friends and family surveys page
 2. Find and select the survey you want to delete from the list
-3. Select "Delete selected Friends and family survey" from the "Action"
-dropdown at the top of the list and hit "Go".
-
-![Friends and Family homepage](images/fft_homepage_selected.png)
-
+3. Select "Delete selected Friends and family survey" from the "Action" dropdown at the top of the list and hit "Go".
+    ![Friends and Family homepage](images/surveys/fft_homepage_selected.png)
 4. Check and confirm your action on the "Are you sure" page
-
-![Friends and Family homepage](images/survey_delete_confirmation.png)
+    ![Friends and Family homepage](images/surveys/survey_delete_confirmation.png)
