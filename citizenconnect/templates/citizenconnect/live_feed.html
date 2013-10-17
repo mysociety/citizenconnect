@@ -1,0 +1,34 @@
+{% extends "citizenconnect/base.html" %}
+{% load url from future %}
+{% load staticfiles %}
+{% load utils %}
+
+{% block title %}Help Your NHS{% endblock %}
+
+{% block bodyclasses %}help-your-nhs{% endblock %}
+
+{% block content %}
+
+<div class="header">
+    <h1>Live Feed</h1>
+</div>
+
+<p class="lead">These are the latest problems and reviews.</p>
+
+<p>TODO: filters</p>
+
+<div class="gw  mb">
+    <div class="g  one-whole">
+        <ul class="feed-list">
+            {% for issue in issues %}
+                {% if issue|classname == 'Problem' %}
+                    {% include 'citizenconnect/includes/feed_problem.html' with problem=issue %}
+                {% elif issue|classname == 'Review' %}
+                    {% include 'citizenconnect/includes/feed_review.html' with review=issue score=issue.main_rating_score %}
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+{% endblock content %}
