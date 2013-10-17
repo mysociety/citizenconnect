@@ -1,0 +1,23 @@
+{% load url from future %}
+{% load organisation_extras %}
+<li>
+    <span class="feed-list__title">Review:</span>
+
+    {{ review.api_published}} - {{ review.organisations.0.name }}
+
+    <a {% if iframe %}target="_blank"{% endif %} href="{% url 'review-detail' api_posting_id=review.api_posting_id ods_code=review.organisations.all.0.ods_code cobrand=cobrand.name %}">
+
+      {% if score != None %}
+      <span class="rating">
+        <span class="{{ score|star_class:1 }}" aria-hidden="true"></span>
+        <span class="{{ score|star_class:2 }}" aria-hidden="true"></span>
+        <span class="{{ score|star_class:3 }}" aria-hidden="true"></span>
+        <span class="{{ score|star_class:4 }}" aria-hidden="true"></span>
+        <span class="{{ score|star_class:5 }}" aria-hidden="true"></span>
+      </span>
+      {% endif %}
+
+      {{ review.title }}
+
+    </a>
+</li>
