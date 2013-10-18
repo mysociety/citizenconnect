@@ -1,4 +1,7 @@
 from django import forms
+from django.forms.extras.widgets import SelectDateWidget
+
+from organisations.models import Organisation
 
 
 class ConcurrentFormMixin(object):
@@ -83,4 +86,13 @@ class HoneypotModelForm(forms.ModelForm):
         if self.cleaned_data.get('website'):
             raise forms.ValidationError("submission is probably spam")
         return ''
+
+
+class LiveFeedFilterForm(forms.Form):
+    """Form for processing filters on the live feed page, to filter problems
+    and reviews by organisation and a date range."""
+
+    organisation = forms.ModelChoiceField(required=False, queryset=Organisation.objects.all())
+    start = forms.DateField(widget=SelectDateWidget, required=False)
+    end = forms.DateField(widget=SelectDateWidget, required=False)
 
