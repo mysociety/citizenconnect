@@ -13,9 +13,12 @@
     <h1>Live Feed</h1>
 </div>
 
-<p class="lead">These are the problems and reviews for the last {{ cutoff_days }} day{{ cutoff_days|pluralize }}.</p>
+<p class="lead">These are the problems and reviews since {{ cutoff_date }}.</p>
 
-<p>TODO: filters</p>
+<form action="{{ request.path }}" method="GET">
+    {{ form.as_p }}
+    <input type="submit" value="Filter" class="btn"/>
+</form>
 
 <ul class="feed-list">
     {% for issue in issues %}
