@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import datetime, date, timedelta
 
 # Django imports
 from django.views.generic import TemplateView
@@ -9,15 +9,17 @@ from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.template.loader import get_template
 from django.core import mail
 from django.template import Context
+from django.utils.timezone import utc
 
 from django.contrib.auth.models import User
-
 
 # App imports
 from issues.forms import PublicLookupForm, FeedbackForm
 from issues.models import Problem
 from reviews_display.models import Review
 from news.models import Article
+
+from .forms import LiveFeedFilterForm
 
 
 class Home(FormView):
@@ -130,16 +132,88 @@ class Boom(TemplateView):
         raise(Exception("Boom!"))
 
 
-class LiveFeed(TemplateView):
+class LiveFeed(FormView):
     """A list of all the recent problems and reviews in the system."""
 
     template_name = 'citizenconnect/live_feed.html'
+    form_class = LiveFeedFilterForm
+
+    # TODO: the get, get_initial and get_form_kwargs bits of this are
+    # basically copy and pasted from organisations.FilterFormMixin - perhaps
+    # we need to refactor some of them into a more generic GETFormMixin, since
+    # that's what they're really doing.
+
+    def get(self, request, *args, **kwargs):
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        # Note: we call this to get a cleaned_data dict, which we then
+        # pass on into the context for use in filtering, but we don't
+        # care if it fails, because then it won't go into the context
+        # and the views can just ignore any duff selections
+        form.is_valid()
+        kwargs['form'] = form
+        return self.render_to_response(self.get_context_data(**kwargs))
+
+    def get_initial(self):
+        initial = super(LiveFeed, self).get_initial()
+        initial['start_date'] = datetime.now(utc).date() - timedelta(days=settings.LIVE_FEED_CUTOFF_DAYS)
+        return initial
+
+    def get_form_kwargs(self):
+        # Pass form kwargs from GET instead of POST
+        kwargs = {'initial': self.get_initial()}
+        if self.request.GET:
+            kwargs['data'] = self.request.GET
+        return kwargs
+
+    def build_filters(self, form):
+        """Build a filter dictionary from the form"""
+        filters = {}
+        if hasattr(form, 'cleaned_data'):
+            if form.cleaned_data.get('organisation'):
+                filters['organisation'] = form.cleaned_data.get('organisation')
+            if form.cleaned_data.get('start'):
+                filters['start'] = form.cleaned_data.get('start')
+            if form.cleaned_data.get('end'):
+                filters['end'] = form.cleaned_data.get('end')
+        return filters
 
     def get_context_data(self, **kwargs):
         context = super(LiveFeed, self).get_context_data(**kwargs)
-        cutoff_date = date.today() - timedelta(days=settings.LIVE_FEED_CUTOFF_DAYS)
-        problems = Problem.objects.all_published_visible_problems().filter(created__gte=cutoff_date).order_by('-created')
-        reviews = Review.objects.all().filter(in_reply_to=None).filter(created__gte=cutoff_date).order_by('-api_published')
+
+        # Get base queryset of problems and reviews
+        problems = Problem.objects.all_published_visible_problems().order_by('-created')
+        reviews = Review.objects.all().filter(in_reply_to=None).order_by('-api_published')
+
+        filters = self.build_filters(context['form'])
+
+        print filters
+
+        # Apply filters
+        # Start date
+        if filters.get('start'):
+            start_date = filters['start']
+        else:
+            # We default to showing only some problems regardless
+            start_date = datetime.now(utc).date() - timedelta(days=settings.LIVE_FEED_CUTOFF_DAYS)
+        print "filtering by start date: {0}".format(start_date)
+        context['cutoff_date'] =  start_date
+        problems = problems.filter(created__gte=start_date)
+        reviews = reviews.filter(created__gte=start_date)
+
+        # End date
+        if filters.get('end'):
+            print "filtering by end date"
+            end_date = filters['end']
+            problems = problems.filter(created__lte=end_date)
+            reviews = reviews.filter(created__lte=end_date)
+
+        # Organisation
+        if filters.get('organisation'):
+            print "filtering by organisation"
+            organisation = filters['organisation']
+            problems = problems.filter(organisation=organisation)
+            reviews = reviews.filter(organisations=organisation)
 
         # Merge and reverse date sort, getting most recent from merged list
         issues = (list(problems) + list(reviews))
@@ -147,7 +221,6 @@ class LiveFeed(TemplateView):
         issues.sort(key=date_created, reverse=True)
 
         context['issues'] = issues
-        context['cutoff_days'] = settings.LIVE_FEED_CUTOFF_DAYS
 
         return context
 
