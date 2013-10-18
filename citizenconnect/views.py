@@ -160,8 +160,19 @@ class LiveFeed(FormView):
         return initial
 
     def get_form_kwargs(self):
-        # Pass form kwargs from GET instead of POST
         kwargs = {'initial': self.get_initial()}
+
+        # Calculate a useful range of years to allow selection from
+        this_year = date.today().year
+        oldest_problem = Problem.objects.all().order_by('created')[0]
+        oldest_review = Review.objects.all().order_by('api_published')[0]
+        if oldest_review.api_published >= oldest_problem.created:
+            oldest_year = oldest_review.api_published.year
+        else:
+            oldest_year = oldest_problem.created.year
+        kwargs['years'] = range(oldest_year, this_year + 1)
+
+        # Pass form kwargs from GET instead of POST
         if self.request.GET:
             kwargs['data'] = self.request.GET
         return kwargs
@@ -187,8 +198,6 @@ class LiveFeed(FormView):
 
         filters = self.build_filters(context['form'])
 
-        print filters
-
         # Apply filters
         # Start date
         if filters.get('start'):
@@ -196,21 +205,18 @@ class LiveFeed(FormView):
         else:
             # We default to showing only some problems regardless
             start_date = datetime.now(utc).date() - timedelta(days=settings.LIVE_FEED_CUTOFF_DAYS)
-        print "filtering by start date: {0}".format(start_date)
         context['cutoff_date'] =  start_date
         problems = problems.filter(created__gte=start_date)
         reviews = reviews.filter(created__gte=start_date)
 
         # End date
         if filters.get('end'):
-            print "filtering by end date"
             end_date = filters['end']
             problems = problems.filter(created__lte=end_date)
             reviews = reviews.filter(created__lte=end_date)
 
         # Organisation
         if filters.get('organisation'):
-            print "filtering by organisation"
             organisation = filters['organisation']
             problems = problems.filter(organisation=organisation)
             reviews = reviews.filter(organisations=organisation)
