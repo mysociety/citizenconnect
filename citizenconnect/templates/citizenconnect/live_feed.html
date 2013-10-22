@@ -15,9 +15,26 @@
 
 <p class="lead">These are the problems and reviews since {{ cutoff_date }}.</p>
 
-<form action="{{ request.path }}" method="GET">
-    {{ form.as_p }}
-    <input type="submit" value="Filter" class="btn"/>
+<form class="filters  gw  gw--no-gutters" action="{{ request.path }}" method="GET">
+
+    <div class="g  one-whole">
+        {{ form.organisation.label }}:
+        {{ form.organisation }}
+    </div>
+
+    <div class="g  one-half">
+        {{ form.start.label }}:
+        {{ form.start }}
+    </div>
+
+    <div class="g  one-half">
+        {{ form.end.label }}:
+        {{ form.end }}
+    </div>
+
+    <div class="g one-whole">
+        <input type="submit" value="Filter" class="btn  palm-one-whole">
+    </div>
 </form>
 
 <ul class="feed-list">
