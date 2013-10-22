@@ -164,12 +164,34 @@ class LiveFeed(FormView):
 
         # Calculate a useful range of years to allow selection from
         this_year = date.today().year
-        oldest_problem = Problem.objects.all().order_by('created')[0]
-        oldest_review = Review.objects.all().order_by('api_published')[0]
-        if oldest_review.api_published >= oldest_problem.created:
-            oldest_year = oldest_review.api_published.year
+
+        # Get the oldest problem and oldest review (if any)
+        oldest_problems = list(Problem.objects.all().order_by('created')[:1])
+        if oldest_problems:
+            oldest_problem = oldest_problems[0]
         else:
+            oldest_problem = None
+
+        oldest_reviews = list(Review.objects.all().order_by('api_published')[:1])
+        if oldest_reviews:
+            oldest_review = oldest_reviews[0]
+        else:
+            oldest_review = None
+
+        # Work out which is the oldest piece of content and what year it's in
+        if oldest_problem is not None and oldest_review is not None:
+            if oldest_review.api_published >= oldest_problem.created:
+                oldest_year = oldest_review.api_published.year
+            else:
+                oldest_year = oldest_problem.created.year
+        elif oldest_problem is None and oldest_review is not None:
+            oldest_year = oldest_review.api_published.year
+        elif oldest_problem is not None and oldest_review is None:
             oldest_year = oldest_problem.created.year
+        else:
+            # There's no content in the database :(
+            oldest_year = this_year
+
         kwargs['years'] = range(oldest_year, this_year + 1)
 
         # Pass form kwargs from GET instead of POST
@@ -226,6 +248,9 @@ class LiveFeed(FormView):
             reviews = reviews.filter(organisations=organisation)
 
         # Merge and reverse date sort, getting most recent from merged list
+        # TODO - this is really inefficient and will probably take a long
+        # time for large date ranges, perhaps we need to rewrite the whole
+        # thing as custom SQL one day to avoid merging/sorting these two lists...
         issues = (list(problems) + list(reviews))
         date_created = lambda issue: issue.api_published if hasattr(issue, 'api_published') else issue.created
         issues.sort(key=date_created, reverse=True)
