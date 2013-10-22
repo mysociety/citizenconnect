@@ -583,7 +583,7 @@ class Problem(AuditedModel):
                                                    Problem.RESOLVED]
         if self.time_to_acknowledge is None and int(self.status) in statuses_which_indicate_acknowledgement:
             self.time_to_acknowledge = minutes_since_created
-        if self.time_to_address is None and self.status == Problem.RESOLVED:
+        if self.time_to_address is None and int(self.status) == Problem.RESOLVED:
             self.time_to_address = minutes_since_created
             self.resolved = now
 
