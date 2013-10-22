@@ -193,7 +193,11 @@ class LiveFeed(FormView):
         context = super(LiveFeed, self).get_context_data(**kwargs)
 
         # Get base queryset of problems and reviews
-        problems = Problem.objects.all_published_visible_problems().order_by('-created')
+        # Problems - we have to show all problems that are either open or
+        # closed, but we don't want things that have been completely removed
+        # (publication_status=REJECTED) or that are awaiting complicated legal
+        # moderation.
+        problems = Problem.objects.all_not_rejected_visible_problems().order_by('-created')
         reviews = Review.objects.all().filter(in_reply_to=None).order_by('-api_published')
 
         filters = self.build_filters(context['form'])
