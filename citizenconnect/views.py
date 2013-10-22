@@ -9,7 +9,7 @@ from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.template.loader import get_template
 from django.core import mail
 from django.template import Context
-from django.utils.timezone import utc
+from django.utils import timezone
 
 from django.contrib.auth.models import User
 
@@ -156,7 +156,7 @@ class LiveFeed(FormView):
 
     def get_initial(self):
         initial = super(LiveFeed, self).get_initial()
-        initial['start_date'] = datetime.now(utc).date() - timedelta(days=settings.LIVE_FEED_CUTOFF_DAYS)
+        initial['start_date'] = timezone.now().date() - timedelta(days=settings.LIVE_FEED_CUTOFF_DAYS)
         return initial
 
     def get_form_kwargs(self):
@@ -230,16 +230,19 @@ class LiveFeed(FormView):
             start_date = filters['start']
         else:
             # We default to showing only some problems regardless
-            start_date = datetime.now(utc).date() - timedelta(days=settings.LIVE_FEED_CUTOFF_DAYS)
+            start_date = timezone.now().date() - timedelta(days=settings.LIVE_FEED_CUTOFF_DAYS)
         context['cutoff_date'] =  start_date
         problems = problems.filter(created__gte=start_date)
-        reviews = reviews.filter(created__gte=start_date)
+        reviews = reviews.filter(api_published__gte=start_date)
 
         # End date
         if filters.get('end'):
-            end_date = filters['end']
-            problems = problems.filter(created__lte=end_date)
-            reviews = reviews.filter(created__lte=end_date)
+            # We add one day to the end_date because we use it to compare to a
+            # datetime, and it's time will thus get coerced to midnight, if we
+            # didn't, everything on the actual end day would get excluded.
+            end_date = filters['end'] + timedelta(days=1)
+            problems = problems.filter(created__lt=end_date)
+            reviews = reviews.filter(api_published__lt=end_date)
 
         # Organisation
         if filters.get('organisation'):
