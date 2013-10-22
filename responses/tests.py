@@ -95,6 +95,9 @@ class ResponseFormTests(AuthorizationTestCase, TransactionTestCase):
         self.assertEqual(self.problem.responses.count(), 1)
         self.assertEqual(response.response, response_text)
         self.assertEqual(self.problem.status, Problem.RESOLVED)
+        # Issue #1232 - Marking problems as closed didn't set the resolved
+        # timestamp
+        self.assertIsNotNone(self.problem.resolved)
 
     def test_form_allows_empty_response_for_status_change(self):
         response_text = ''
