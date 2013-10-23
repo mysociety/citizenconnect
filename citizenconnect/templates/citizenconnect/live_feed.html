@@ -36,7 +36,7 @@
 
 </form>
 
-<ul class="feed-list">
+<ul>
     {% for issue in issues %}
         {% if issue|classname == 'Problem' %}
             {% include 'citizenconnect/includes/extended_feed_problem.html' with problem=issue %}
