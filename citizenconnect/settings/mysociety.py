@@ -104,3 +104,4 @@ PROXIED_BLOG_FILES_URL = '/careconnect/news/files'
 
 # How many day's worth of things to show on the Live feed
 LIVE_FEED_CUTOFF_DAYS = config.get("LIVE_FEED_CUTOFF_DAYS")
+LIVE_FEED_PER_PAGE = config.get("LIVE_FEED_PER_PAGE")
