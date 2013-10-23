@@ -13,7 +13,7 @@
     <h1>Live Feed</h1>
 </div>
 
-<p class="lead">These are the problems and reviews since {{ cutoff_date }}.</p>
+<p class="lead">These are the problems and reviews since {{ cutoff_date|date:"d F, Y" }}.</p>
 
 <form class="live-feed-filters  gw  island  mb" action="{{ request.path }}" method="GET">
 
