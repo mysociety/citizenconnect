@@ -13,6 +13,7 @@ from organisations.tests.lib import (
 )
 from reviews_display.tests import create_test_review, create_test_organisation
 
+@override_settings(LIVE_FEED_CUTOFF_DAYS=30)
 class LiveFeedTests(TestCase):
 
     def setUp(self):
@@ -45,7 +46,6 @@ class LiveFeedTests(TestCase):
         self.assertContains(resp, review_url)
         self.assertNotContains(resp, reply_url)
 
-    @override_settings(LIVE_FEED_CUTOFF_DAYS=30)
     def test_limits_initial_results(self):
         problem = create_test_problem({'organisation': self.organisation})
         old_problem_date = timezone.now() - timedelta(days=settings.LIVE_FEED_CUTOFF_DAYS + 1)
