@@ -6,7 +6,11 @@ from django.utils import timezone
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
-from organisations.tests.lib import create_test_problem
+from organisations.tests.lib import (
+    create_test_problem,
+    create_problem_with_age,
+    create_review_with_age
+)
 from reviews_display.tests import create_test_review, create_test_organisation
 
 class LiveFeedTests(TestCase):
@@ -70,25 +74,10 @@ class LiveFeedTests(TestCase):
 
         now = timezone.now()
 
-        old_date = now - timedelta(days=1)
-        old_problem = create_test_problem({
-            'organisation': self.organisation,
-            'created': old_date
-        })
-        old_review = create_test_review({
-            'organisation': self.organisation,
-            'api_published': old_date
-        })
-
-        older_date = now - timedelta(days=3)
-        older_problem = create_test_problem({
-            'organisation': self.organisation,
-            'created': older_date
-        })
-        older_review = create_test_review({
-            'organisation': self.organisation,
-            'api_published': older_date
-        })
+        old_problem = create_problem_with_age(self.organisation, 1)
+        old_review = create_review_with_age(self.organisation, 1)
+        older_problem = create_problem_with_age(self.organisation, 3)
+        older_review = create_review_with_age(self.organisation, 3)
 
         # Get the urls for each, because that's the easiest bit of content to
         # look for in the page to see if they're filtered or not
@@ -154,7 +143,6 @@ class LiveFeedTests(TestCase):
         self.assertContains(resp, older_review_url)
 
         # Contracting the date range to 1 day should limit the problems again
-        filtered_url_string = "{0}?start_day={1}&start_month={2}&start_year={3}&end_day={4}&end_month={5}&end_year={6}"
         filtered_url = filtered_url_string.format(
             self.live_feed_url,
             now.day,
