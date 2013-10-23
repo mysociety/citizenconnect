@@ -166,6 +166,7 @@ class LiveFeed(FormView):
         we can limit the filter selections accordingly."""
 
         oldest_year = None
+
         # Get the oldest problem and oldest review (if any)
         oldest_problems = list(Problem.objects.all().order_by('created')[:1])
         oldest_problem = None
@@ -245,14 +246,11 @@ class LiveFeed(FormView):
 
         # End date
         if filters.get('end'):
-            # We add one day to the end_date because we use it to compare to a
-            # datetime, and it's time will thus get coerced to midnight, if we
-            # didn't, everything on the actual end day would get excluded.
-            end_date = filters['end'] + timedelta(days=1)
+            end_date = filters['end']
             # We also have to make this a timezone-aware datetime to keep the ORM happy
-            end_datetime = datetime.combine(end_date, time.min).replace(tzinfo=timezone.utc)
-            problems = problems.filter(created__lt=end_datetime)
-            reviews = reviews.filter(api_published__lt=end_datetime)
+            end_datetime = datetime.combine(end_date, time.max).replace(tzinfo=timezone.utc)
+            problems = problems.filter(created__lte=end_datetime)
+            reviews = reviews.filter(api_published__lte=end_datetime)
 
         # Organisation
         if filters.get('organisation'):
