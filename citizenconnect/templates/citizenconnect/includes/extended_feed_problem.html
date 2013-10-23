@@ -1,22 +1,9 @@
 {% load url from future %}
-{% load thumbnail %}
 
-<li>
-    <span class="feed-list__title">{{ problem.get_category_display }}:</span>
+<li class="live-feed__item">
+    <span class="live-feed__item__organisation">{{ problem.organisation.name }} </span>
+    <span class="live-feed-item__date"> {{ problem.created }} </span>
+    <span class="live-feed-item__status"> {{ problem.get_status_display }}</span>
 
-    {{ problem.created}} - {{ problem.organisation.name }} -
-
-    <a {% if iframe %}target="_blank"{% endif %} href="{% url 'problem-view' pk=problem.id cobrand=cobrand.name %}">
-
-      {% if problem.are_details_publicly_visible %}
-        {% for image in problem.images.all %}
-          {% thumbnail image.image "x32" as im %}
-            <img src="{{ im.url }}" height="{{ im.height}}" width="{{im.width}}" />
-          {% endthumbnail %}
-        {% endfor %}
-      {% endif %}
-
-      {{ problem.summary|default:"More details" }}
-
-    </a>
+    <h3><span class="live-feed__item__type">Problem: </span><a href="{% url 'problem-view' pk=problem.id cobrand=cobrand.name %}"><span class="live-feed__item__category">{{ problem.get_category_display }}</span></a></h3>
 </li>
