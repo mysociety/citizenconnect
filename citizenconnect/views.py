@@ -1,4 +1,4 @@
-from datetime import datetime, date, timedelta
+from datetime import datetime, date, time, timedelta
 
 # Django imports
 from django.views.generic import TemplateView
@@ -156,7 +156,7 @@ class LiveFeed(FormView):
 
     def get_initial(self):
         initial = super(LiveFeed, self).get_initial()
-        initial['start_date'] = timezone.now().date() - timedelta(days=settings.LIVE_FEED_CUTOFF_DAYS)
+        initial['start_date'] = date.today() - timedelta(days=settings.LIVE_FEED_CUTOFF_DAYS)
         return initial
 
     def get_form_kwargs(self):
@@ -230,10 +230,12 @@ class LiveFeed(FormView):
             start_date = filters['start']
         else:
             # We default to showing only some problems regardless
-            start_date = timezone.now().date() - timedelta(days=settings.LIVE_FEED_CUTOFF_DAYS)
-        context['cutoff_date'] =  start_date
-        problems = problems.filter(created__gte=start_date)
-        reviews = reviews.filter(api_published__gte=start_date)
+            start_date = date.today() - timedelta(days=settings.LIVE_FEED_CUTOFF_DAYS)
+        # We have to make this a timezone-aware datetime to keep the ORM happy
+        start_datetime = datetime.combine(start_date, time.min).replace(tzinfo=timezone.utc)
+        context['cutoff_date'] =  start_datetime
+        problems = problems.filter(created__gte=start_datetime)
+        reviews = reviews.filter(api_published__gte=start_datetime)
 
         # End date
         if filters.get('end'):
@@ -241,8 +243,10 @@ class LiveFeed(FormView):
             # datetime, and it's time will thus get coerced to midnight, if we
             # didn't, everything on the actual end day would get excluded.
             end_date = filters['end'] + timedelta(days=1)
-            problems = problems.filter(created__lt=end_date)
-            reviews = reviews.filter(api_published__lt=end_date)
+            # We also have to make this a timezone-aware datetime to keep the ORM happy
+            end_datetime = datetime.combine(end_date, time.min).replace(tzinfo=timezone.utc)
+            problems = problems.filter(created__lt=end_datetime)
+            reviews = reviews.filter(api_published__lt=end_datetime)
 
         # Organisation
         if filters.get('organisation'):
