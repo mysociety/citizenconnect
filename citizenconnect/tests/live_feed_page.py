@@ -14,7 +14,7 @@ from organisations.tests.lib import (
 from reviews_display.tests import create_test_review, create_test_organisation
 from issues.models import Problem
 
-@override_settings(LIVE_FEED_CUTOFF_DAYS=30)
+@override_settings(LIVE_FEED_CUTOFF_DAYS=30, LIVE_FEED_PER_PAGE=25)
 class LiveFeedTests(TestCase):
 
     def setUp(self):
@@ -274,5 +274,30 @@ class LiveFeedTests(TestCase):
 
         self.assertNotContains(resp, second_tier_moderation_problem_url)
 
+    @override_settings(LIVE_FEED_PER_PAGE=2)
     def test_pagination(self):
-        pass
+        # Add three problems
+        problem3 = create_test_problem({'organisation': self.organisation})
+        problem2 = create_test_problem({'organisation': self.organisation})
+        problem1 = create_test_problem({'organisation': self.organisation})
+
+        problem1_url = reverse('problem-view', kwargs={'pk': problem1.id, 'cobrand': 'choices'})
+        problem2_url = reverse('problem-view', kwargs={'pk': problem2.id, 'cobrand': 'choices'})
+        problem3_url = reverse('problem-view', kwargs={'pk': problem3.id, 'cobrand': 'choices'})
+
+        resp = self.client.get(self.live_feed_url)
+
+        # Check that only two are shown
+        self.assertContains(resp, problem1_url)
+        self.assertContains(resp, problem2_url)
+        self.assertNotContains(resp, problem3_url)
+
+        # Check that there's a pagination setup
+        self.assertContains(resp, "?page=2")
+
+        # Go to the first page and check that there's the third problem shown
+        resp = self.client.get("{0}?page=2".format(self.live_feed_url))
+        self.assertContains(resp, problem3_url)
+        self.assertNotContains(resp, problem1_url)
+        self.assertNotContains(resp, problem2_url)
+        self.assertContains(resp, "?page=1")
