@@ -1,8 +1,8 @@
 {% load url from future %}
 {% load organisation_extras %}
 <li class="live-feed__item">
-    <span class="live-feed__item__organisation">{{ review.organisations.0.name }} </span>
-    <span class="live-feed-item__date"> {{ review.api_published }} </span>
+    <span class="live-feed__item__organisation">{{ review.organisations.all.0.name }}</span>
+    <span class="live-feed-item__date">{{ review.api_published }}</span>
     {% if score != None %}
       <span class="live-feed-item__status">
         <span class="rating">
@@ -15,5 +15,5 @@
       </span>
     {% endif %}
 
-    <h3><span class="live-feed__item__type">Review: </span><a href="{% url 'review-detail' api_posting_id=review.api_posting_id ods_code=review.organisations.all.0.ods_code cobrand=cobrand.name %}"><span class="live-feed__item__category">{{ review.title }}</span></a></h3>
+    <h3><span class="live-feed__item__type">Review: </span><a href="{% url 'review-detail' api_posting_id=review.api_posting_id ods_code=review.organisations.all.0.ods_code cobrand=cobrand.name %}"><span class="live-feed__item__category">{{ review.title|capfirst }}</span></a></h3>
 </li>
