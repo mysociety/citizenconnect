@@ -156,7 +156,8 @@ class LiveFeed(FormView):
 
     def get_initial(self):
         initial = super(LiveFeed, self).get_initial()
-        initial['start_date'] = date.today() - timedelta(days=settings.LIVE_FEED_CUTOFF_DAYS)
+        initial['start'] = date.today() - timedelta(days=settings.LIVE_FEED_CUTOFF_DAYS)
+        initial['end'] = date.today()
         return initial
 
     def get_form_kwargs(self):
