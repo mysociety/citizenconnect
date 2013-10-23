@@ -203,7 +203,12 @@ class LiveFeed(FormView):
 
         # Pass form kwargs from GET instead of POST
         if self.request.GET:
-            kwargs['data'] = self.request.GET
+            # We pop the page GET variable because otherwise the form will
+            # ignore initial data just because you specified a page
+            data = self.request.GET.copy()
+            data.pop('page', None)
+            if data:
+                kwargs['data'] = data
         return kwargs
 
     def build_filters(self, form):
