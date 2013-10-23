@@ -8,6 +8,7 @@ from django.conf import settings
 from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.template.loader import get_template
 from django.core import mail
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.template import Context
 from django.utils import timezone
 
@@ -263,7 +264,18 @@ class LiveFeed(FormView):
         date_created = lambda issue: issue.api_published if hasattr(issue, 'api_published') else issue.created
         issues.sort(key=date_created, reverse=True)
 
+        # Deal with pagination
+        paginator = Paginator(issues, settings.LIVE_FEED_PER_PAGE)
+        page = self.request.GET.get('page', 1)
+        try:
+            issues = paginator.page(page)
+        except PageNotAnInteger:
+            issues = paginator.page(1)
+        except EmptyPage:
+            issues = paginator.page(paginator.num_pages)
+
         context['issues'] = issues
+        context['page_numbers'] = paginator.page_range
 
         return context
 
