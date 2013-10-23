@@ -21,6 +21,10 @@ class LiveFeedTests(TestCase):
         self.live_feed_url = reverse('live-feed', kwargs={'cobrand': 'choices'})
         self.organisation = create_test_organisation({})
 
+    def test_empty_page(self):
+        resp = self.client.get(self.live_feed_url)
+        self.assertContains(resp, 'There are no matching problems or reviews, try expanding your date range or selecting a different organisation if you have chosen one.')
+
     def test_doesnt_show_replies(self):
         review = create_test_review({'organisation': self.organisation})
         reply = create_test_review({'organisation': self.organisation})

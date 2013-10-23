@@ -43,6 +43,8 @@
         {% elif issue|classname == 'Review' %}
             {% include 'citizenconnect/includes/extended_feed_review.html' with review=issue score=issue.main_rating_score %}
         {% endif %}
+    {% empty %}
+        <p>There are no matching problems or reviews, try expanding your date range or selecting a different organisation if you have chosen one.</p>
     {% endfor %}
 </ul>
 
