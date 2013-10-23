@@ -93,12 +93,5 @@ class LiveFeedFilterForm(forms.Form):
     and reviews by organisation and a date range."""
 
     organisation = forms.ModelChoiceField(required=False, queryset=Organisation.objects.all())
-
-    # Start and end fields are added in __init__
-
-    def __init__(self, *args, **kwargs):
-        years = kwargs.pop('years')
-        super(LiveFeedFilterForm, self).__init__(*args, **kwargs)
-        # Set the years values on start/end to be something useful
-        self.fields['start'] = forms.DateField(widget=SelectDateWidget(years=years), required=False)
-        self.fields['end'] = forms.DateField(widget=SelectDateWidget(years=years), required=False)
+    start = forms.DateField(required=False)
+    end = forms.DateField(required=False)

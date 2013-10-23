@@ -124,7 +124,7 @@ class LiveFeedTests(TestCase):
         # in
         four_days_ago = now - timedelta(days=4)
 
-        filtered_url_string = "{0}?start_day={1}&start_month={2}&start_year={3}&end_day={4}&end_month={5}&end_year={6}"
+        filtered_url_string = "{0}?start={1}%2F{2}%2F{3}&end={4}%2F{5}%2F{6}"
         filtered_url = filtered_url_string.format(
             self.live_feed_url,
             four_days_ago.day,
@@ -167,14 +167,10 @@ class LiveFeedTests(TestCase):
         # the start_date should be showing whatever 30 days ago equates to
         today = date.today()
         thirty_days_ago = today - timedelta(days=30)
-        option_string = '<option value="{0}" selected="selected">{1}</option>'
-        self.assertContains(resp, option_string.format(thirty_days_ago.day, thirty_days_ago.day))
-        self.assertContains(resp, option_string.format(thirty_days_ago.month, thirty_days_ago.strftime("%B")))
-        self.assertContains(resp, option_string.format(thirty_days_ago.year, thirty_days_ago.year))
-
-        self.assertContains(resp, option_string.format(today.day, today.day))
-        self.assertContains(resp, option_string.format(today.month, today.strftime("%B")))
-        self.assertContains(resp, option_string.format(today.year, today.year))
+        start_date_string = '<input type="text" name="start" value="{0}" id="id_start" />'
+        end_date_string = '<input type="text" name="end" value="{0}" id="id_end" />'
+        self.assertContains(resp, start_date_string.format(thirty_days_ago.strftime("%d/%m/%Y")))
+        self.assertContains(resp, end_date_string.format(today.strftime("%d/%m/%Y")))
 
     def test_filters_by_organisation(self):
         # add a second organisation so that we can test filtering

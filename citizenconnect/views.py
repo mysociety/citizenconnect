@@ -161,45 +161,8 @@ class LiveFeed(FormView):
         initial['end'] = date.today()
         return initial
 
-    def get_oldest_year(self):
-        """Return the oldest year from the oldest problem or review, so that
-        we can limit the filter selections accordingly."""
-
-        oldest_year = None
-
-        # Get the oldest problem and oldest review (if any)
-        oldest_problems = list(Problem.objects.all().order_by('created')[:1])
-        oldest_problem = None
-        if oldest_problems:
-            oldest_problem = oldest_problems[0]
-
-        oldest_reviews = list(Review.objects.all().order_by('api_published')[:1])
-        oldest_review = None
-        if oldest_reviews:
-            oldest_review = oldest_reviews[0]
-
-        # Work out which is the oldest piece of content and what year it's in
-        if oldest_problem and oldest_review:
-            if oldest_review.api_published >= oldest_problem.created:
-                oldest_year = oldest_review.api_published.year
-            else:
-                oldest_year = oldest_problem.created.year
-        elif not oldest_problem and oldest_review:
-            oldest_year = oldest_review.api_published.year
-        elif oldest_problem and not oldest_review:
-            oldest_year = oldest_problem.created.year
-
-        return oldest_year
-
     def get_form_kwargs(self):
         kwargs = {'initial': self.get_initial()}
-
-        # Calculate a useful range of years to allow selection from
-        this_year = date.today().year
-        oldest_year = self.get_oldest_year()
-        if not oldest_year:
-            oldest_year = this_year
-        kwargs['years'] = range(oldest_year, this_year + 1)
 
         # Pass form kwargs from GET instead of POST
         if self.request.GET:
