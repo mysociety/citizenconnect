@@ -117,23 +117,16 @@ class ProblemManager(models.Manager):
         )
 
     def requiring_survey_to_be_sent(self):
-        """Return all problems which have not had a survey email sent.
+        """Return all problems which require a survey email to be sent.
 
-        This uses the SURVEY_INTERVAL_IN_DAYS setting to only return problems
-        which are older than that interval. Problems which don't have an email
-        address are also excluded.
+        Closed problems are sent a survey unless they've already been sent one,
+        problems which don't have an email address are excluded.
         """
-        now = datetime.utcnow().replace(tzinfo=utc)
-        survey_interval = timedelta(days=settings.SURVEY_INTERVAL_IN_DAYS)
-        survey_cutoff = now - survey_interval
-        surveyable_problems = Problem.objects  \
-            .filter(
-                survey_sent__isnull=True,
-                created__lte=survey_cutoff,
-                status__in=Problem.VISIBLE_STATUSES
-            )  \
-            .exclude(
-                reporter_email='',
+        surveyable_problems = Problem.objects.filter(
+                status__in=Problem.CLOSED_STATUSES
+            ).exclude(
+                status__in=Problem.HIDDEN_STATUSES,
+                reporter_email=''
             )
         return surveyable_problems
 
