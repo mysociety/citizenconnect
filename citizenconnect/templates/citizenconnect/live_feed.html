@@ -2,6 +2,7 @@
 {% load url from future %}
 {% load staticfiles %}
 {% load utils %}
+{% load compressed %}
 
 {% block title %}Live Feed{% endblock %}
 
@@ -36,7 +37,7 @@
 
 </form>
 
-<ul>
+<ul class="live-feed__list">
     {% for issue in issues %}
         {% if issue|classname == 'Problem' %}
             {% include 'citizenconnect/includes/extended_feed_problem.html' with problem=issue %}
@@ -51,3 +52,7 @@
 {% include 'citizenconnect/includes/live_feed_paginator.html' with page_obj=issues %}
 
 {% endblock content %}
+
+{% block extra_js %}
+    {% compressed_js 'live_feed' %}
+{% endblock extra_js %}
