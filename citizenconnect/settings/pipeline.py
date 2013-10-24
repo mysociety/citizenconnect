@@ -113,4 +113,10 @@ PIPELINE_JS = {
         ),
         'output_filename': 'js/review-form.min.js'
     },
+    'live_feed': {
+        'source_filenames': (
+            'js/live-feed.js',
+        ),
+        'output_filename': 'js/live-feed.min.js'
+    },
 }
