@@ -16,5 +16,7 @@ You can track the progress of your problem by entering your reference into the h
 {{ object.organisation.name }} will contact you to find out how they can help you and to agree with you how long they expect your problem will take to resolve. Once this is underway the status of your problem on the site will change to 'in progress'.
 
 
-When the problem is resolved the NHS provider will mark it as 'closed' which means it will no longer appear on the live map but will still be visible on the provider summary. When your problem is closed you will receive an email asking you to complete a short survey asking if you feel the problem was resolved satisfactorily.
+When the problem is resolved the NHS provider will mark it as 'closed' which means it will no longer appear on the live map but will still be visible on the provider summary.
+
+When your problem is closed you will receive an email asking you to complete a short survey asking if you feel the problem was resolved satisfactorily.
 {% endautoescape %}
