@@ -15,6 +15,7 @@
         // a little, so that select2's placeholder and clearing works correctly
         // because it's expecting a totally empty <option> tag at the top
         $orgSelect.children("option[value='']").replaceWith("<option></option>");
+        $orgSelect.val('');
         $orgSelect.select2({
             placeholder: "Search for provider",
             dropdownAutoWidth: true,
