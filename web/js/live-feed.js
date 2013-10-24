@@ -8,7 +8,12 @@
         var $orgSelect = $("#id_organisation");
         var $startDate = $("#id_start");
         var $endDate = $("#id_end");
-        var dateFormat= "dd/mm/yyyy";
+        var datePickerOptions = {
+            format: "dd/mm/yyyy",
+            autoclose: true,
+            endDate: new Date(),
+            weekStart: 1
+        };
 
         // Turn on select2 for the organisation dropdown
         // Before we turn it on we need to massage the content of the options
@@ -23,12 +28,8 @@
         });
 
         // Turn on datepickers for the start and end dates
-        $startDate.datepicker({
-            format: dateFormat
-        });
-        $endDate.datepicker({
-            format: dateFormat
-        });
+        $startDate.datepicker(datePickerOptions);
+        $endDate.datepicker(datePickerOptions);
 
     });
 })(window.jQuery);
