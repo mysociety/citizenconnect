@@ -67,13 +67,9 @@ class EmailSurveysToReportersTests(EmailToReportersBase, TestCase):
 
     def setUp(self):
         super(EmailSurveysToReportersTests, self).setUp()
-        self.set_problem_age()
-
-    def set_problem_age(self):
-        now = datetime.utcnow().replace(tzinfo=utc)
-        self.test_problem_age = settings.SURVEY_INTERVAL_IN_DAYS+1
-        interval = timedelta(days=self.test_problem_age)
-        Problem.objects.filter(pk=self.test_problem.id).update(created=now-interval)
+        # Close the test problem, so that it needs surveying
+        self.test_problem.status = Problem.RESOLVED
+        self.test_problem.save()
 
     def _call_command(self):
         args = []
@@ -103,7 +99,6 @@ class EmailSurveysToReportersTests(EmailToReportersBase, TestCase):
     def test_sends_links_using_correct_cobrand(self):
         self.test_problem.cobrand = 'myhealthlondon'
         self.test_problem.save()
-        self.set_problem_age()
         self._call_command()
         self.assertEqual(len(mail.outbox), 1)
         first_mail = mail.outbox[0]
@@ -112,7 +107,6 @@ class EmailSurveysToReportersTests(EmailToReportersBase, TestCase):
     def test_does_not_send_survey_for_a_problem_in_a_hidden_state(self):
         self.test_problem.status = Problem.ABUSIVE
         self.test_problem.save()
-        self.set_problem_age()
         self._call_command()
         self.assertEqual(len(mail.outbox), 0)
 
