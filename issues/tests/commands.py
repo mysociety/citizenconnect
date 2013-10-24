@@ -8,7 +8,6 @@ from django.core import mail
 from django.core.urlresolvers import reverse
 from django.utils.timezone import utc
 from django.conf import settings
-from django.test.utils import override_settings
 
 from organisations.tests.lib import (create_test_organisation_parent,
                                      create_test_organisation,
