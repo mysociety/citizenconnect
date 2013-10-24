@@ -80,3 +80,11 @@
     }
 
 }
+
+// Filters on the map page where they sit at the top
+.outcomes-map {
+    .filters {
+        border-top:none;
+        margin-top:1em;
+    }
+}
