@@ -122,13 +122,9 @@ class ProblemManager(models.Manager):
         Closed problems are sent a survey unless they've already been sent one,
         problems which don't have an email address are excluded.
         """
-        surveyable_problems = Problem.objects.filter(
-                status__in=Problem.CLOSED_STATUSES
-            ).exclude(
-                status__in=Problem.HIDDEN_STATUSES,
-                reporter_email=''
-            )
-        return surveyable_problems
+        return self.closed_problems() \
+            .exclude(status=Problem.ABUSIVE) \
+            .exclude(reporter_email='')
 
 
 class Problem(AuditedModel):
