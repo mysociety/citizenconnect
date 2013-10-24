@@ -25,7 +25,6 @@
         $startDate.datepicker({
             format: dateFormat
         });
-        console.log($startDate);
         $endDate.datepicker({
             format: dateFormat
         });
