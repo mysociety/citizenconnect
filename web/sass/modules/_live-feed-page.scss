@@ -1,9 +1,14 @@
 /** Styling for the live feed page */
 .live-feed-filters {
-
     margin-left:0;
-
     border-bottom:2px solid $c-lightgrey;
+
+    .organisation {
+        .select2-choice {
+            padding-top:0.25em;
+            height:2.15em;
+        }
+    }
 
     .submit {
         margin-top:2em;
