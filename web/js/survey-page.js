@@ -26,10 +26,10 @@
             series = {
                 data: dataPoints.reverse(),
                 lines: {
-                    show: true,
+                    show: true
                 },
                 points: {
-                    show: true,
+                    show: true
                 },
                 color: '#2f9aa8' // $c-aquablue from the sass
             };
@@ -41,7 +41,7 @@
                 xaxis: {
                     mode: "categories",
                     min: xMinWithMargin,
-                    max: xMaxWithMargin,
+                    max: xMaxWithMargin
                 },
                 grid: {
                     borderWidth: {
