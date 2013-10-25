@@ -361,11 +361,11 @@ class Problem(AuditedModel):
                                 blank=True,
                                 verbose_name="Please select a department (optional)")
     # Whether the reporter was happy with the service they received after
-    # reporting this problem - collected by surveying them after a given
-    # interval
+    # reporting this problem - collected by surveying them after it's closed
+    # in some way
     happy_service = models.NullBooleanField()
     # Whether the reporter was happy with the outcome after reporting this
-    # problem - collected by surveying them after a given interval
+    # problem - collected by surveying them after it's closed in some way
     happy_outcome = models.NullBooleanField()
 
     # How long whoever's dealing with the problem took to acknowledge it
