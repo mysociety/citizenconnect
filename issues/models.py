@@ -122,7 +122,7 @@ class ProblemManager(models.Manager):
         Closed problems are sent a survey unless they've already been sent one,
         problems which don't have an email address are excluded.
         """
-        return self.closed_problems().filter(survey_sent=None) \
+        return self.closed_problems().filter(survey_sent__isnull=True) \
             .exclude(status=Problem.ABUSIVE) \
             .exclude(reporter_email='')
 
