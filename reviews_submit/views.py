@@ -69,5 +69,5 @@ class ReviewConfirm(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(ReviewConfirm, self).get_context_data(**kwargs)
-        context['organisation'] = Organisation.objects.get(ods_code=context['params']['ods_code'])
+        context['organisation'] = Organisation.objects.get(ods_code=context['ods_code'])
         return context
