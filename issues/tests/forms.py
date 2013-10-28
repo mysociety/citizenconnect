@@ -390,7 +390,7 @@ class ProblemCreateFormImageTests(ProblemCreateFormBase, ProblemImageTestBase):
     @override_settings(MAX_IMAGES_PER_PROBLEM=2)
     def test_number_of_image_fields_matches_setting(self):
         resp = self.client.get(self.form_url)
-        field_html_template = '<input type="file" name="images-{0}-image" id="id_images-{0}-image" />'
+        field_html_template = '<input id="id_images-{0}-image" name="images-{0}-image" type="file" />'
         self.assertContains(resp, field_html_template.format(0))
         self.assertContains(resp, field_html_template.format(1))
         self.assertNotContains(resp, field_html_template.format(2))
