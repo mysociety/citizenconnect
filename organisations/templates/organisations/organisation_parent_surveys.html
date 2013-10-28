@@ -1,0 +1,43 @@
+{% extends "citizenconnect/base.html" %}
+{% load url from future %}
+{% load organisation_extras %}
+{% load compressed %}
+
+{% block title %}{{ organisation_parent.name }} Friends and Family{% endblock %}
+
+{% block bodyclasses %}organisation-parent-surveys{% endblock %}
+
+{% block content %}
+
+{% include "organisations/includes/page_header.html" with title=organisation_parent.name|add:" Friends and Family Test" %}
+
+{% include "organisations/includes/organisation_parent_tabs.html" with active_tab='surveys' %}
+
+<h2>How likely are people to recommend {{ organisation_parent.name }}?</h2>
+
+<p>TODO: Introductory text</h2>
+
+<div class="surveys  gw">
+    {% if latest_survey %}
+    <div class="survey  g  one-whole  mb">
+        {% include 'organisations/includes/survey.html' with latest_survey=latest_survey previous_surveys=previous_surveys %}
+    </div>
+    {% else %}
+    <div class="g  one-whole">
+        <p>There are no surveys for {{ organisation_parent.name }} at this time.</p>
+    </div>
+    {% endif %}
+
+    <div class="g  one-whole">
+        <p><a href="http://www.england.nhs.uk/statistics/statistical-work-areas/friends-and-family-test/">See more information on these surveys</a></p>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+    {% compressed_js 'survey_page' %}
+    <!--[if lte IE 8]>
+        {% compressed_js 'excanvas' %}
+    <![endif]-->
+{% endblock extra_js %}

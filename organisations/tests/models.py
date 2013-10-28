@@ -580,3 +580,44 @@ class FriendsAndFamilySurveyModelTests(TransactionTestCase):
         with self.assertRaises(Exception) as cm:
             FriendsAndFamilySurvey.process_csv(self.trust_fixture_file, today, 'trust')
             self.assertEqual(cm.exception.message, "There is already a survey for Test Trust for the month January, 2013. Please delete the existing survey first if you're trying to replace it.")
+
+    def test_total_responses(self):
+        now = datetime.date.today()
+
+        survey = FriendsAndFamilySurvey(
+            content_object=self.test_trust,
+            overall_score=78,
+            extremely_likely=10,
+            likely=10,
+            neither=1,
+            unlikely=0,
+            extremely_unlikely=1,
+            dont_know=0,
+            date=now
+        )
+        survey.save()
+
+        self.assertEqual(survey.total_responses, 22)
+
+    def test_percentages(self):
+        now = datetime.date.today()
+
+        survey = FriendsAndFamilySurvey(
+            content_object=self.test_trust,
+            overall_score=78,
+            extremely_likely=10,
+            likely=10,
+            neither=1,
+            unlikely=0,
+            extremely_unlikely=1,
+            dont_know=0,
+            date=now
+        )
+        survey.save()
+
+        self.assertAlmostEqual(survey.extremely_likely_percentage, 45.45, places=2)
+        self.assertAlmostEqual(survey.likely_percentage, 45.45, places=2)
+        self.assertAlmostEqual(survey.neither_percentage, 4.55, places=2)
+        self.assertAlmostEqual(survey.unlikely_percentage, 0, places=2)
+        self.assertAlmostEqual(survey.extremely_unlikely_percentage, 4.55, places=2)
+        self.assertAlmostEqual(survey.dont_know_percentage, 0, places=2)
