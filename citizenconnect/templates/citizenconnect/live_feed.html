@@ -3,6 +3,7 @@
 {% load staticfiles %}
 {% load utils %}
 {% load compressed %}
+{% load live_feed_pagination %}
 
 {% block title %}Live Feed{% endblock %}
 
@@ -49,7 +50,7 @@
     {% endfor %}
 </ul>
 
-{% include 'citizenconnect/includes/live_feed_paginator.html' with page_obj=issues %}
+{% live_feed_paginator %}
 
 {% endblock content %}
 
