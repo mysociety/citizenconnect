@@ -6,7 +6,7 @@ from django.utils.decorators import decorator_from_middleware
 class BasicAuthMiddleware(object):
 
     def unauthed(self):
-        response = HttpResponse('Error: Authentication required', mimetype="text/plain")
+        response = HttpResponse('Error: Authentication required', content_type="text/plain")
         response['WWW-Authenticate'] = 'Basic realm="NHSD API"'
         response.status_code = 401
         return response
