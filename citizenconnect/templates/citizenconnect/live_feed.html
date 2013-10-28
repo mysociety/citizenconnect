@@ -1,0 +1,58 @@
+{% extends "citizenconnect/base.html" %}
+{% load url from future %}
+{% load staticfiles %}
+{% load utils %}
+{% load compressed %}
+
+{% block title %}Live Feed{% endblock %}
+
+{% block bodyclasses %}live-feed{% endblock %}
+
+{% block content %}
+
+<div class="header">
+    <h1>Live Feed</h1>
+</div>
+
+<form class="live-feed-filters  gw  island  mb" action="{{ request.path }}" method="GET">
+
+        <div class="organisation  g  three-eighths  portable-one-whole">
+            <label for="id_organisation">{{ form.organisation.label }}</label>
+            {{ form.organisation }}
+        </div>
+
+        <div class="start-date  g  two-eighths  portable-one-half">
+            <label for="id_start">{{ form.start.label }}</label>
+            {{ form.start }}
+        </div>
+
+        <div class="end-date  g  two-eighths  portable-one-half">
+            <label for="id_end">{{ form.end.label }}</label>
+            {{ form.end }}
+        </div>
+
+        <div class="submit  g  one-eighth  portable-one-whole">
+            <input type="submit" value="Filter" class="btn  palm-one-whole">
+        </div>
+
+</form>
+
+<ul class="live-feed__list">
+    {% for issue in issues %}
+        {% if issue|classname == 'Problem' %}
+            {% include 'citizenconnect/includes/extended_feed_problem.html' with problem=issue %}
+        {% elif issue|classname == 'Review' %}
+            {% include 'citizenconnect/includes/extended_feed_review.html' with review=issue score=issue.main_rating_score %}
+        {% endif %}
+    {% empty %}
+        <p>There are no matching problems or reviews, try expanding your date range or selecting a different organisation if you have chosen one.</p>
+    {% endfor %}
+</ul>
+
+{% include 'citizenconnect/includes/live_feed_paginator.html' with page_obj=issues %}
+
+{% endblock content %}
+
+{% block extra_js %}
+    {% compressed_js 'live_feed' %}
+{% endblock extra_js %}
