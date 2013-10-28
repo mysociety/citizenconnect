@@ -251,6 +251,41 @@ class ModerationFormTests(ModerationFormPublicReporterNameMixin, BaseModerationT
         problem = Problem.objects.get(pk=self.test_problem.id)
         self.assertFalse(problem.public)
 
+    def test_moderation_form_sets_reporter_name_to_private_when_keep_private_clicked(self):
+        # Ensure we're totally public before
+        self.test_problem.public = True
+        self.test_problem.public_reporter_name = True
+        self.test_problem.save()
+        self.client.get(self.problem_form_url)  # deal with versioning
+
+        test_form_values = {
+            'keep_private': ''
+        }
+        self.form_values.update(test_form_values)
+        del self.form_values['publish']
+
+        self.client.post(self.problem_form_url, self.form_values)
+
+        problem = Problem.objects.get(pk=self.test_problem.id)
+        self.assertFalse(problem.public_reporter_name)
+
+    def test_moderation_form_doesnt_break_when_keep_private_clicked_and_no_reporter_name(self):
+        # public_reporter_name field is removed from the form when the problem's
+        # reporter_name is already private, check this doesn't break the form
+        Problem.objects.filter(pk=self.test_problem.id).update(public_reporter_name_original=False, public_reporter_name=False)
+        self.client.get(self.problem_form_url)  # deal with versioning
+        test_form_values = {
+            'keep_private': ''
+        }
+        self.form_values.update(test_form_values)
+        del self.form_values['publish']
+
+        self.client.post(self.problem_form_url, self.form_values)
+
+        problem = Problem.objects.get(pk=self.test_problem.id)
+        self.assertFalse(problem.public)
+        self.assertFalse(problem.public_reporter_name)
+
     def assert_expected_requires_second_tier_moderation(self, expected_value, form_values):
         resp = self.client.post(self.problem_form_url, form_values)
         self.assertEqual(resp.status_code, 302)
@@ -601,6 +636,41 @@ class SecondTierModerationFormTests(ModerationFormPublicReporterNameMixin, BaseM
 
         problem = Problem.objects.get(pk=self.test_second_tier_moderation_problem.id)
         self.assertFalse(problem.public)
+
+    def test_second_tier_moderation_form_sets_reporter_name_to_private_when_keep_private_clicked(self):
+        # Ensure we're totally public before
+        self.test_second_tier_moderation_problem.public = True
+        self.test_second_tier_moderation_problem.public_reporter_name = True
+        self.test_second_tier_moderation_problem.save()
+        self.client.get(self.second_tier_problem_form_url)  # deal with versioning
+
+        test_form_values = {
+            'keep_private': ''
+        }
+        self.form_values.update(test_form_values)
+        del self.form_values['publish']
+
+        self.client.post(self.second_tier_problem_form_url, self.form_values)
+
+        problem = Problem.objects.get(pk=self.test_second_tier_moderation_problem.id)
+        self.assertFalse(problem.public_reporter_name)
+
+    def test_second_tier_moderation_form_doesnt_break_when_keep_private_clicked_and_no_reporter_name(self):
+        # public_reporter_name field is removed from the form when the problem's
+        # reporter_name is already private, check this doesn't break the form
+        Problem.objects.filter(pk=self.test_second_tier_moderation_problem.id).update(public_reporter_name_original=False, public_reporter_name=False)
+        self.client.get(self.second_tier_problem_form_url)  # deal with versioning
+        test_form_values = {
+            'keep_private': ''
+        }
+        self.form_values.update(test_form_values)
+        del self.form_values['publish']
+
+        self.client.post(self.second_tier_problem_form_url, self.form_values)
+
+        problem = Problem.objects.get(pk=self.test_second_tier_moderation_problem.id)
+        self.assertFalse(problem.public)
+        self.assertFalse(problem.public_reporter_name)
 
 
 class SecondTierModerationFormConcurrencyTests(BaseModerationTestCase):
