@@ -269,7 +269,7 @@ class ReviewFormViewTest(ReviewFormViewBase, TestCase):
 
         # get the form, check the website field is shown
         resp = self.client.get(self.review_form_url)
-        self.assertContains(resp, '<input type="text" name="website"')
+        self.assertContains(resp, '<input id="id_website" name="website" type="text"')
 
         # post spammy data, check it is not accepted
         spam_review = self.review_post_data.copy()
