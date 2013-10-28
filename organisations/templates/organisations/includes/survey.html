@@ -1,4 +1,5 @@
 <div class="survey__responses  mb">
+    <h3>Total responses: {{ latest_survey.total_responses }}</h3>
     {% include 'organisations/includes/survey_response.html' with label="Extremely likely" response_percentage=latest_survey.extremely_likely_percentage response_value=latest_survey.extremely_likely %}
 
     {% include 'organisations/includes/survey_response.html' with label="Likely" response_percentage=latest_survey.likely_percentage response_value=latest_survey.likely %}
