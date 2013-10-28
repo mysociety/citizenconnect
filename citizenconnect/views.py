@@ -245,6 +245,7 @@ class LiveFeed(FormView):
             issues = paginator.page(paginator.num_pages)
 
         context['issues'] = issues
+        context['page_obj'] = issues
         context['page_numbers'] = paginator.page_range
 
         return context

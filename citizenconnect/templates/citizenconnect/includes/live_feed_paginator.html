@@ -37,7 +37,12 @@
            <span>&hellip;</span>
        </li>
        <li>
-           <a href="{% querystring "page"=last %}">{{ paginator.num_pages }}</a>
+          {% comment %}
+             The table pagination template I stole this from uses page=last
+             here but that appears to be a django_tables2 specific thing which
+             doesn't work in normal Django paginators :(
+          {% endcomment %}
+          <a href="{% querystring "page"=paginator.num_pages %}">{{ paginator.num_pages }}</a>
        </li>
     {% endif %}
 
