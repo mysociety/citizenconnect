@@ -106,7 +106,7 @@ class ProblemCreateFormTests(ProblemCreateFormBase, TestCase):
         # test correctly formatted
         self.test_problem['reporter_email'] = 'not an email.com'
         resp = self.client.post(self.form_url, self.test_problem)
-        self.assertFormError(resp, 'form', 'reporter_email', 'Enter a valid e-mail address.')
+        self.assertFormError(resp, 'form', 'reporter_email', 'Enter a valid email address.')
         # test required
         del self.test_problem['reporter_email']
         del self.test_problem['reporter_phone']

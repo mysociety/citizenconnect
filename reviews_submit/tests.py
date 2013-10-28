@@ -231,7 +231,7 @@ class ReviewFormViewTest(ReviewFormViewBase, TestCase):
     def test_form_requires_valid_email_address(self):
         self.review_post_data['email'] = 'not an email'
         resp = self.client.post(self.review_form_url, self.review_post_data)
-        self.assertFormError(resp, 'form', 'email', 'Enter a valid e-mail address.')
+        self.assertFormError(resp, 'form', 'email', 'Enter a valid email address.')
 
     def test_form_requires_visit_date(self):
         self.review_post_data['month_year_of_visit_year'] = None
