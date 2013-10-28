@@ -76,7 +76,7 @@ class FriendsAndFamilySurveyAdmin(admin.ModelAdmin):
                 context['created'] = models.FriendsAndFamilySurvey.process_csv(csv_file, date, survey_context, location)
             except Exception as e:
                 # Something went wrong processing it, probably duff data:
-                context['csv_processing_error'] = e.message
+                context['csv_processing_error'] = str(e)
 
         return render_to_response(
             'organisations/admin/survey_upload_csv.html',
