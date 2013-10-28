@@ -47,8 +47,7 @@ class Command(BaseCommand):
         message_template = get_template('issues/problem_confirmation_email_message.txt')
 
         context = Context({'object': problem,
-                           'site_base_url': settings.SITE_BASE_URL,
-                           'survey_interval_in_days': settings.SURVEY_INTERVAL_IN_DAYS })
+                           'site_base_url': settings.SITE_BASE_URL})
 
         if self.verbosity >= 2:
             self.stdout.write("Emailing confirmation for problem reference number: {0}\n".format(problem.reference_number))

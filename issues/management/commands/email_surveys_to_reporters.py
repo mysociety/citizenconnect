@@ -2,8 +2,7 @@ from datetime import datetime
 import random
 
 from django.core import mail
-from django.core.management.base import BaseCommand, CommandError
-from django.db.models import Q
+from django.core.management.base import BaseCommand
 from django.utils.timezone import utc
 from django.db import transaction
 from django.template.loader import get_template

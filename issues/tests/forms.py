@@ -59,13 +59,11 @@ class ProblemCreateFormTests(ProblemCreateFormBase, TestCase):
         resp = self.client.get(self.form_url)
         self.assertTrue(self.test_organisation.name in resp.content)
 
-    @override_settings(SURVEY_INTERVAL_IN_DAYS=99)
     def test_problem_form_happy_path(self):
         resp = self.client.post(self.form_url, self.test_problem)
         # Check in db
         problem = Problem.objects.get(reporter_name=self.uuid)
         self.assertContains(resp, problem.reference_number, count=2, status_code=200)
-        self.assertContains(resp, '{0} days after posting'.format(settings.SURVEY_INTERVAL_IN_DAYS))
         self.assertEqual(problem.organisation, self.test_organisation)
         self.assertEqual(problem.service, self.test_service)
         self.assertEqual(problem.public, False)

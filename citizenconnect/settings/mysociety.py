@@ -53,8 +53,6 @@ SERVER_EMAIL = config.get('SERVER_EMAIL')
 
 ADMINS = (('CitizenConnect Admins', SERVER_EMAIL),)
 
-SURVEY_INTERVAL_IN_DAYS = config.get('SURVEY_INTERVAL_IN_DAYS')
-
 EMAIL_HOST = config.get('EMAIL_HOST')
 
 EMAIL_PORT = config.get('EMAIL_PORT')
