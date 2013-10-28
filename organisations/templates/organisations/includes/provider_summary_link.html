@@ -2,7 +2,5 @@
 
 {# cobrand will not be present on the private pages #}
 {% if cobrand %}
-<div class="cf">
-    <a href="{% url 'org-all-summary' cobrand=cobrand.name %}" class="back-btn  fr  mt--b"><span class="icon-chevron-left" aria-hidden="true"></span> Provider summaries</a>
-</div>
+<a href="{% url 'org-all-summary' cobrand=cobrand.name %}" class="back-btn  fr  mt--b"><span class="icon-chevron-left" aria-hidden="true"></span> Provider summaries</a>
 {% endif %}
