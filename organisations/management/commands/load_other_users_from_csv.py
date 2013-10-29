@@ -44,9 +44,11 @@ class Command(BaseCommand):
 
                 user, created = User.objects.get_or_create(
                     username=username,
-                    email=email,
-                    password=auth.create_initial_password()
+                    email=email
                 )
+                if created:
+                    user.set_password(auth.create_initial_password())
+                    user.save()
                 if is_super:
                     user.groups.add(auth.NHS_SUPERUSERS)
                 if is_case_handler:
