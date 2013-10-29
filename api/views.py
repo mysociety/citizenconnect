@@ -1,6 +1,7 @@
+import json
+
 from django.views.generic import CreateView
 from django.http import HttpResponse
-from django.utils import simplejson as json
 from django.core.files.images import ImageFile
 from django.conf import settings
 

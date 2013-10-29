@@ -1,9 +1,9 @@
 import uuid
 import base64
 import os
+import json
 
 from django.test import TestCase
-from django.utils import simplejson as json
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.test.utils import override_settings
