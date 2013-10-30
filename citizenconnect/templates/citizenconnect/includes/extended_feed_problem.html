@@ -4,12 +4,12 @@
     <span class="live-feed__item__organisation">{{ problem.organisation.name }}</span>
     <span class="live-feed-item__date">{{ problem.created }}</span>
     <span class="live-feed-item__status">
-        {% if object.status == object.NEW %}
+        {% if problem.status == problem.NEW %}
             <span class="bordered-circle  bordered-circle--pink" aria-hidden="true"></span> Open
-        {% elif object.status in object.OPEN_STATUSES %}
-            <span class="bordered-circle  bordered-circle--orange" aria-hidden="true"></span> {{ object.get_status_display }}
+        {% elif problem.status in problem.OPEN_STATUSES %}
+            <span class="bordered-circle  bordered-circle--orange" aria-hidden="true"></span> {{ problem.get_status_display }}
         {% else %}
-            <span class="bordered-circle  bordered-circle--green" aria-hidden="true"></span> Closed - {{ object.get_status_display }}
+            <span class="bordered-circle  bordered-circle--green" aria-hidden="true"></span> Closed - {{ problem.get_status_display }}
         {% endif %}
     </span>
 

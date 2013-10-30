@@ -5,6 +5,8 @@ from django.test.utils import override_settings
 from django.utils import timezone
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.template.defaultfilters import date as django_date
+from django.template.defaultfilters import capfirst
 
 from organisations.tests.lib import (
     create_test_problem,
@@ -301,3 +303,35 @@ class LiveFeedTests(TestCase):
         self.assertNotContains(resp, problem1_url)
         self.assertNotContains(resp, problem2_url)
         self.assertContains(resp, "?page=1")
+
+    def test_shows_problem_details(self):
+        problem = create_test_problem({'organisation': self.organisation})
+        problem.status = Problem.RESOLVED
+        problem.save()
+        resp = self.client.get(self.live_feed_url)
+        self.assertEqual(resp.status_code, 200)
+
+        problem_url = reverse('problem-view', kwargs={'pk': problem.id, 'cobrand': 'choices'})
+        self.assertContains(resp, problem_url)
+        self.assertContains(resp, problem.organisation.name)
+        self.assertContains(resp, django_date(problem.created, 'd M Y, g:i a'))
+        self.assertContains(resp, problem.get_category_display())
+        self.assertContains(resp, problem.get_status_display())
+
+    def test_shows_review_details(self):
+        review = create_test_review({'organisation': self.organisation})
+        resp = self.client.get(self.live_feed_url)
+        self.assertEqual(resp.status_code, 200)
+
+        review_url = reverse(
+            'review-detail',
+            kwargs={
+                'api_posting_id': review.api_posting_id,
+                'ods_code': review.organisations.all()[0].ods_code,
+                'cobrand': 'choices'
+            }
+        )
+        self.assertContains(resp, review_url)
+        self.assertContains(resp, review.organisations.all()[0].name)
+        self.assertContains(resp, django_date(review.api_published, 'd M Y, g:i a'))
+        self.assertContains(resp, capfirst(review.title))
