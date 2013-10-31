@@ -1,4 +1,5 @@
 // Javascript to set up drawing of graphs on Friends and Family survey pages
+// and make the location selector form auto-submit
 (function ($) {
 
     // Get all the data for a survey contained inside $element
@@ -58,6 +59,12 @@
             $(this).css('height', '10em');
             $.plot($(this), [series], options);
         });
+
+        // Auto-submit the location form when someone chooses a location
+        $('#id_location').change(function(){
+            $("#location-form").submit();
+        });
+        $('#location-form .btn').hide();
     });
 
 })(window.jQuery);
