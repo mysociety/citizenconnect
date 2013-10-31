@@ -7,18 +7,16 @@
   }
 
   .survey__response {
-    background-color: $c-lightgrey;
-    border-bottom:2px solid $c-white;
-    padding: 1em;
+    margin-bottom:0.5em;
 
     .survey__response__bar {
-      background-color: $c-white;
-      height: 1em;
+      background-color: $c-lightgrey;
+      height: 1.5em;
       .survey__response__bar__fill {
         position:relative;
         left:0px;
         background-color: $c-aquablue;
-        height: 1em;
+        height: 1.5em;
       }
     }
 
