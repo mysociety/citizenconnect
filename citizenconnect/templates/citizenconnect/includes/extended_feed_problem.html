@@ -9,7 +9,7 @@
         {% elif problem.status in problem.OPEN_STATUSES %}
             <span class="bordered-circle  bordered-circle--orange" aria-hidden="true"></span> {{ problem.get_status_display }}
         {% else %}
-            <span class="bordered-circle  bordered-circle--green" aria-hidden="true"></span> Closed - {{ problem.get_status_display }}
+            <span class="bordered-circle  bordered-circle--green" aria-hidden="true"></span> Closed
         {% endif %}
     </span>
 
