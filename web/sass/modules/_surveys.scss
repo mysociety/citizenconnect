@@ -6,19 +6,21 @@
     margin-bottom:2em;
   }
 
+  .survey__responses {
+    padding-right: ($grid-gutter * 2) + em;
+  }
+
   .survey__response {
-    background-color: $c-lightgrey;
-    border-bottom:2px solid $c-white;
-    padding: 1em;
+    margin-bottom:0.5em;
 
     .survey__response__bar {
-      background-color: $c-white;
-      height: 1em;
+      background-color: $c-lightgrey;
+      height: 1.5em;
       .survey__response__bar__fill {
         position:relative;
         left:0px;
         background-color: $c-aquablue;
-        height: 1em;
+        height: 1.5em;
       }
     }
 
@@ -30,7 +32,6 @@
 
   .survey__summary {
     padding-bottom: 2em;
-    border-bottom: 2px solid $c-aquablue;
 
     .survey__overall {
 
@@ -47,5 +48,18 @@
         color: $c-white;
       }
     }
+  }
+}
+
+.survey-filters {
+  label {
+    font-size:1em;
+    font-weight:bold;
+    color:$c-black;
+  }
+
+  .btn {
+    margin-top: 1.5em;
+    line-height: 1.75em;
   }
 }

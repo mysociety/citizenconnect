@@ -245,3 +245,14 @@ class SurveyAdminCSVUploadForm(forms.Form):
                 del cleaned_data['location']
 
         return cleaned_data
+
+
+class SurveyLocationForm(forms.Form):
+    """A Form for the survey page on organisations that lets you choose a
+    location to show surveys for."""
+
+    location = forms.ChoiceField(
+        label="Select a location:",
+        choices=settings.SURVEY_LOCATION_CHOICES,
+        required=False
+    )

@@ -18,24 +18,27 @@
 
 <p>TODO: Introductory text</h2>
 
-<div class="surveys  gw">
-    {% for location in surveys %}
-        <div class="survey  g  one-half  palm-one-whole" id="{{ location.location_id }}">
-            <h2 class="survey__title">{{ location.location_name }}</h2>
-            {% include 'organisations/includes/survey.html' with latest_survey=location.latest_survey previous_surveys=location.previous_surveys %}
-        </div>
-
-    {% empty %}
-    <div class="g  one-whole">
-        <p>There are no surveys for {{ organisation.name }} at this time.</p>
+<form id="location-form" method="GET" action="{{ request.path }}" class="gw  survey-filters">
+    <div class="filters__dropdown-wrap g  one-third portable-one-half  palm-one-whole">
+        <label for="id_location">{{ form.location.label }}</label>
+        <div class="filters__dropdown filters__dropdown--default">{{ form.location }}</div>
     </div>
-    {% endfor %}
-
-    <div class="g  one-whole">
-        <p><a href="http://www.england.nhs.uk/statistics/statistical-work-areas/friends-and-family-test/">See more information on these surveys</a></p>
+    <div class="submit  g  one-eighth  portable-one-whole">
+        <input type="submit" value="Select" class="btn  palm-one-whole">
     </div>
+</form>
 
-</div>
+{% if survey %}
+    <div class="survey">
+        <h2 class="survey__title">{{ location }}</h2>
+        {% include 'organisations/includes/survey.html' with latest_survey=survey previous_surveys=previous_surveys %}
+    </div>
+{% else %}
+<p>There are no surveys for {{ location }} at {{ organisation.name }} at this time.</p>
+{% endif %}
+
+<p><a href="http://www.england.nhs.uk/statistics/statistical-work-areas/friends-and-family-test/">See more information on these surveys</a></p>
+
 {% endblock content %}
 
 {% block extra_js %}

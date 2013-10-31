@@ -1,6 +1,6 @@
 # Django imports
 from django.http import Http404
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, FormView
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
@@ -9,8 +9,8 @@ from issues.models import Problem
 
 from .. import auth
 from ..auth import enforce_organisation_access_check, user_in_group
-from ..models import Organisation
-from ..forms import OrganisationFilterForm
+from ..models import Organisation, FriendsAndFamilySurvey
+from ..forms import OrganisationFilterForm, SurveyLocationForm
 from ..lib import interval_counts
 
 from .base import PrivateViewMixin, PickProviderBase, FilterFormMixin
@@ -124,26 +124,52 @@ class OrganisationSummary(OrganisationAwareViewMixin,
         return context
 
 
-class OrganisationSurveys(OrganisationAwareViewMixin, TemplateView):
+class OrganisationSurveys(OrganisationAwareViewMixin, FormView):
 
     template_name = 'organisations/organisation_surveys.html'
+    form_class = SurveyLocationForm
+
+    def get(self, request, *args, **kwargs):
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        # Note: we call this to get a cleaned_data dict, which we then
+        # pass on into the context for use in filtering, but we don't
+        # care if it fails, because then it won't go into the context
+        # and the views can just ignore any duff selections
+        form.is_valid()
+        kwargs['form'] = form
+        return self.render_to_response(self.get_context_data(**kwargs))
+
+    def get_initial(self):
+        initial = super(OrganisationSurveys, self).get_initial()
+        initial['location'] = 'inpatient'
+        return initial
+
+    def get_form_kwargs(self):
+        kwargs = {'initial': self.get_initial()}
+
+        # Pass form kwargs from GET instead of POST
+        if self.request.GET:
+            kwargs['data'] = self.request.GET
+        return kwargs
+
+    def get_location(self, form):
+        """Get the location chosen on the form"""
+        if hasattr(form, 'cleaned_data') and form.cleaned_data.get('location'):
+            return form.cleaned_data.get('location')
+        else:
+            return 'inpatient'
 
     def get_context_data(self, **kwargs):
         context = super(OrganisationSurveys, self).get_context_data(**kwargs)
 
         organisation = context['organisation']
 
-        context['survey_locations'] = settings.SURVEY_LOCATION_CHOICES
+        location = self.get_location(context['form'])
+        context['location'] = FriendsAndFamilySurvey.location_display(location)
 
-        context['surveys'] = []
-
-        for location, location_label in context['survey_locations']:
-            location_surveys = {}
-            location_surveys['location_id'] = location
-            location_surveys['location_name'] = location_label
-            if organisation.surveys.filter(location=location).count() > 0:
-                location_surveys['latest_survey'] = organisation.surveys.filter(location=location)[0]
-                location_surveys['previous_surveys'] = organisation.surveys.filter(location=location)[0:5]
-                context['surveys'].append(location_surveys)
+        if organisation.surveys.filter(location=location).count() > 0:
+            context['survey'] = organisation.surveys.filter(location=location)[0]
+            context['previous_surveys'] = organisation.surveys.filter(location=location)[0:5]
 
         return context
