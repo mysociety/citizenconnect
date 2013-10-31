@@ -10,17 +10,6 @@
 
 {% block content %}
 
-{% include 'organisations/includes/filters.html' %}
-
-<div class="header">
-    <h2>Find a service provider</h2>
-</div>
-
-<div class="search-controls mb">
-    <input type="text" id="map-search-org-name" value="{{ ods_code }}" data-search-url="{% url 'org-map-search' cobrand=cobrand.name %}" />
-    <input type="hidden" id="map-search-lon-lat" value="{{ lon }},{{ lat }}" />
-</div>
-
 <div class="map-container">
     <div id="map" class="map"></div>
 </div>
@@ -39,18 +28,24 @@
 </div>
 
 <div class="gw  mt">
-    <div class="g  two-thirds  palm-one-whole  mb__palm">
-        <p>The map shows the number of problems that have been submitted. A blue dot marks the location of the participating NHS providers. The darker the shade of blue, the higher the number of 'open' and 'in progress' problems there are.</p>
+    <div class="g  three-quarters  palm-one-whole  mb__palm">
+        <div class="header">
+            <h2>Filter the map</h2>
+        </div>
 
-        <ul>
-            <li>Click on the dot to see a summary for that NHS provider</li>
-            <li>Click on 'View problems' to see the details and how the NHS is responding</li>
-        </ul>
+        {% include 'organisations/includes/map-filters.html' %}
 
-        <p>A problem fixed is a positive outcome for you and for the NHS!</p>
+        <div class="header">
+            <h2>Find a service provider</h2>
+        </div>
+
+        <div class="search-controls mb">
+            <input type="text" id="map-search-org-name" value="{{ ods_code }}" data-search-url="{% url 'org-map-search' cobrand=cobrand.name %}" />
+            <input type="hidden" id="map-search-lon-lat" value="{{ lon }},{{ lat }}" />
+        </div>
     </div>
-    <div class="g  one-third  palm-one-whole">
-        <a href="{% url 'org-all-summary' cobrand=cobrand.name %}"  class="btn  btn--no-border  btn--big  btn--blue">See All Participating Service Providers <br><small>Click here</small></a>
+    <div class="g  one-quarter  palm-one-whole">
+        <a href="{% url 'org-all-summary' cobrand=cobrand.name %}"  class="btn  mt  btn--no-border  btn--big  btn--blue">Go to main dashboard</a>
     </div>
 </div>
 
