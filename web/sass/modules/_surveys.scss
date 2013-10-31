@@ -49,3 +49,16 @@
     }
   }
 }
+
+.survey-filters {
+  label {
+    font-size:1em;
+    font-weight:bold;
+    color:$c-black;
+  }
+
+  .btn {
+    margin-top: 1.5em;
+    line-height: 1.75em;
+  }
+}
