@@ -1,0 +1,14 @@
+{# Just like filters.html, but different widths #}
+<form class="filters  gw  gw--no-gutters" action="{{ request.path }}">
+
+    {% for field in form.visible_fields %}
+        <div class="filters__dropdown-wrap  g  {% if field.name == "service_code" or field.name == "service_id" %}two-fifths{% else %}one-fifth{% endif %}  portable-one-half">
+            <label for="filter-org_type">{{ field.label }}:</label>
+            <div class="filters__dropdown  {% if not field.value %}filters__dropdown--default{% endif %}">
+                {{ field }}
+            </div>
+        </div>
+    {% endfor %}
+
+    <input type="submit" value="Filter" class="fr  btn  filters__button  palm-one-whole">
+</form>
