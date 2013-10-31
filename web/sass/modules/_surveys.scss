@@ -6,6 +6,10 @@
     margin-bottom:2em;
   }
 
+  .survey__responses {
+    padding-right: ($grid-gutter * 2) + em;
+  }
+
   .survey__response {
     margin-bottom:0.5em;
 

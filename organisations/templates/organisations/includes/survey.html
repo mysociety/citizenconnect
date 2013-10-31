@@ -1,24 +1,4 @@
 <div class="gw">
-    <div class="g  one-half  palm-one-whole">
-        <div class="survey__summary  mb  gw  gw--no-gutters">
-            <div class="survey__overall  g  one-quarter  portable-one-whole"><h3 class="hide-text">Overall</h3><span>{{ latest_survey.overall_score }}</span></div>
-            <div class="survey__text  g  three-quarters  portable-one-whole">
-                <h3>{{ latest_survey.date|date:'F, Y' }}</h3>
-                <p class="survey__explanation">TODO: Explanation text</p>
-            </div>
-        </div>
-
-        {% if previous_surveys %}
-        <div class="recent-surveys  mb  gw  gw--no-gutters">
-            <h3>Previous month's test scores</h3>
-            <ol class="survey__previous">
-                {% for survey in previous_surveys %}
-                    <li class="survey__previous__overall" data-month="{{ survey.date|date:'F' }}" data-value="{{ survey.overall_score }}">{{ survey.date|date:'F, Y' }}: {{ survey.overall_score }}</li>
-                {% endfor %}
-            </ol>
-        </div>
-        {% endif %}
-    </div>
     <div class="g  one-half  palm-one-whole  survey__responses  mb">
         <h3>Total responses: {{ latest_survey.total_responses }}</h3>
         {% include 'organisations/includes/survey_response.html' with label="Extremely likely" response_percentage=latest_survey.extremely_likely_percentage response_value=latest_survey.extremely_likely %}
@@ -32,5 +12,25 @@
         {% include 'organisations/includes/survey_response.html' with label="Extremely unlikely" response_percentage=latest_survey.extremely_unlikely_percentage response_value=latest_survey.extremely_unlikely %}
 
         {% include 'organisations/includes/survey_response.html' with label="Don't know" response_percentage=latest_survey.dont_know_percentage response_value=latest_survey.dont_know %}
+    </div>
+    <div class="g  one-half  palm-one-whole">
+        <div class="survey__summary  mb  gw  gw--no-gutters">
+            <div class="survey__overall  g  one-quarter  portable-one-whole"><h3 class="hide-text">Overall</h3><span>{{ latest_survey.overall_score }}</span></div>
+            <div class="survey__text  g  three-quarters  portable-one-whole">
+                <h3>{{ latest_survey.date|date:'F, Y' }}</h3>
+                <p class="survey__explanation">TODO: Explanation text</p>
+            </div>
+        </div>
+
+        {% if previous_surveys %}
+            <div class="recent-surveys  mb">
+                <h3>Previous month's test scores</h3>
+                <ol class="survey__previous">
+                    {% for survey in previous_surveys %}
+                        <li class="survey__previous__overall" data-month="{{ survey.date|date:'F' }}" data-value="{{ survey.overall_score }}">{{ survey.date|date:'F, Y' }}: {{ survey.overall_score }}</li>
+                    {% endfor %}
+                </ol>
+            </div>
+        {% endif %}
     </div>
 </div>
