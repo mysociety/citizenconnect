@@ -1,7 +1,7 @@
 {% load url from future %}
 
 <li class="live-feed__item">
-    <span class="live-feed__item__organisation">{{ problem.organisation.name }}</span>
+    <span class="live-feed__item__organisation"><a href="{% url 'public-org-summary' ods_code=problem.organisation.ods_code cobrand=cobrand.name %}">{{ problem.organisation.name }}</a></span>
     <span class="live-feed-item__date">{{ problem.created }}</span>
     <span class="live-feed-item__status">
         {% if problem.status == problem.NEW %}
