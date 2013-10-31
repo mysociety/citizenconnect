@@ -1,7 +1,7 @@
 {% extends "citizenconnect/base.html" %}
 {% load url from future %}
 {% load organisation_extras %}
-{% block title %}{{ organisation.name }} :: Outcomes Summary{% endblock %}
+{% block title %}{{ organisation.name }} :: Dashboard{% endblock %}
 
 {% block bodyclasses %}organisation-summary{% endblock %}
 
@@ -15,7 +15,7 @@
   {% include "organisations/includes/provider_summary_link.html" %}
 {% endif %}
 
-{% include "organisations/includes/page_header.html" with title="Outcomes" %}
+{% include "organisations/includes/page_header.html" with title="Dashboard" %}
 
 {% if not private %}
 {% include "organisations/includes/organisation_tabs.html" with active_tab='summary' %}
