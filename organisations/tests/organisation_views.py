@@ -433,7 +433,7 @@ class OrganisationSurveysBrowserTests(SeleniumTestCase):
         for month in [1,2,3,4,5]:
             self.surveys.append(FriendsAndFamilySurvey.objects.create(
                 content_object=self.test_organisation,
-                location='aande',
+                location='inpatient',
                 overall_score=75,
                 extremely_likely=10,
                 likely=10,
