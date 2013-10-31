@@ -25,6 +25,13 @@
 
         .live-feed__item__organisation {
             margin-right: 1em;
+            a {
+                color: $c-aquablue;
+                text-decoration: none;
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
         }
 
         .live-feed-item__date {
