@@ -327,7 +327,7 @@ class OrganisationSurveysTests(AuthorizationTestCase):
         resp = self.client.get(self.survey_url)
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, "Test Organisation Friends and Family Test")
-        self.assertContains(resp, "There are no surveys for Test Organisation at this time.")
+        self.assertContains(resp, "There are no surveys for Inpatient at Test Organisation at this time.")
 
     def assert_contains_response_value(self, response, value):
         """Helper method to check a response value is in an HttpResponse"""
@@ -345,7 +345,7 @@ class OrganisationSurveysTests(AuthorizationTestCase):
         # Add a survey for test_hospital
         survey = FriendsAndFamilySurvey.objects.create(
             content_object=self.test_hospital,
-            location='aande',
+            location='inpatient',
             overall_score=75,
             extremely_likely=10,
             likely=10,
@@ -356,7 +356,7 @@ class OrganisationSurveysTests(AuthorizationTestCase):
             date=datetime.date(2013, 1, 1)
         )
         resp = self.client.get(self.survey_url)
-        self.assertContains(resp, 'A&amp;E')
+        self.assertContains(resp, 'Inpatient')
         self.assert_contains_response_value(resp, survey.extremely_likely)
         self.assert_contains_response_value(resp, survey.likely)
         self.assert_contains_response_value(resp, survey.neither)
@@ -373,7 +373,7 @@ class OrganisationSurveysTests(AuthorizationTestCase):
         for month in [2,3,4,5,6,7]:
             extra_surveys.append(FriendsAndFamilySurvey.objects.create(
                 content_object=self.test_hospital,
-                location='aande',
+                location='inpatient',
                 overall_score=75,
                 extremely_likely=10,
                 likely=10,
@@ -393,6 +393,35 @@ class OrganisationSurveysTests(AuthorizationTestCase):
         # We only show the most recent 6 months, so now the first one we added
         # shouldn't be in the list either
         self.assertNotContains(resp, '{0}'.format(survey.date.strftime('%B, %Y')))
+
+
+    def test_survey_page_allows_location_selection(self):
+        # Add a survey for test_hospital
+        survey = FriendsAndFamilySurvey.objects.create(
+            content_object=self.test_hospital,
+            location='aande',
+            overall_score=75,
+            extremely_likely=10,
+            likely=10,
+            neither=1,
+            unlikely=0,
+            extremely_unlikely=1,
+            dont_know=0,
+            date=datetime.date(2013, 1, 1)
+        )
+        # Choose the A&E location
+        resp = self.client.get("{0}?location=aande".format(self.survey_url))
+        self.assertContains(resp, 'A&amp;E')
+        self.assert_contains_response_value(resp, survey.extremely_likely)
+        self.assert_contains_response_value(resp, survey.likely)
+        self.assert_contains_response_value(resp, survey.neither)
+        self.assert_contains_response_value(resp, survey.unlikely)
+        self.assert_contains_response_value(resp, survey.extremely_unlikely)
+        self.assert_contains_response_value(resp, survey.dont_know)
+        self.assertContains(resp, '<span>{0}</span>'.format(survey.overall_score))
+        self.assertContains(resp, '<h3>{0}</h3>'.format(survey.date.strftime('%B, %Y')))
+        self.assertContains(resp, '<h3>Previous month\'s test scores</h3>')
+        self.assert_contains_overall_value(resp, survey.overall_score, survey.date)
 
 
 class OrganisationSurveysBrowserTests(SeleniumTestCase):
