@@ -76,6 +76,23 @@ class ReviewTest(TestCase):
         self.assertEqual(review.__unicode__(), u"Bob Smith \u2019 - Good review \u2019")
 
 
+class RatingTest(TestCase):
+
+    def test_unicode_doesnt_break_when_no_answer(self):
+        # Issue #1259 - the __unicode__() method tried to print a string
+        # containing the answer title, but answer is a nullable field
+        test_question = Question.objects.all()[0]
+        rating = Rating(question=test_question)
+
+        self.assertEqual(rating.__unicode__(), u"{0}".format(test_question.title))
+
+        # Test with an answer too
+        test_answer = test_question.answers.all()[0]
+        rating.answer = test_answer
+
+        self.assertEqual(rating.__unicode__(), u"{0} - {1}".format(test_question.title, test_answer.text))
+
+
 class ReviewFormDateCompareTest(TestCase):
 
     def test_mm_yyyy_date_compare(self):
