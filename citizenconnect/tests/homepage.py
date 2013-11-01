@@ -35,3 +35,7 @@ class HomepageTests(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, review_url)
         self.assertNotContains(resp, reply_url)
+
+    def test_has_link_to_live_page(self):
+        resp = self.client.get(self.homepage_url)
+        self.assertContains(resp, reverse('home', kwargs={'cobrand': 'choices'}))

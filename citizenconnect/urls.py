@@ -13,7 +13,8 @@ from .views import (
     FeedbackConfirm,
     HelpYourNHS,
     CommonQuestions,
-    Boom
+    Boom,
+    LiveFeed
 )
 
 # Admin section
@@ -39,6 +40,7 @@ urlpatterns = patterns(
     url(r'^' + cobrand_pattern + r'/feedback/confirm$', FeedbackConfirm.as_view(), name='feedback-confirm'),
     url(r'^' + cobrand_pattern + r'/help-your-nhs$', HelpYourNHS.as_view(), name='help-your-nhs'),
     url(r'^' + cobrand_pattern + r'/common-questions$', CommonQuestions.as_view(), name='common-questions'),
+    url(r'^' + cobrand_pattern + r'/live$', LiveFeed.as_view(), name='live-feed'),
 
     url(r'^' + cobrand_pattern + r'/', include('issues.urls.public')),
     url(r'^' + cobrand_pattern + r'/reviews/', include('reviews_submit.urls')),

@@ -343,3 +343,15 @@ table {
   &.dashboard-table__highlight {background: $c-table-row-hover-highlight-bg;}
   &.problem-table__highlight {background: $c-table-row-hover-highlight-bg;}
 }
+
+.datepicker {
+  table {
+    tr {
+      td,
+      th {
+        // Undo the smaller font-size on datepicker tables
+        font-size: $font-size-base;
+      }
+    }
+  }
+}
