@@ -43,7 +43,10 @@ class Rating(models.Model):
 
     def __unicode__(self):
         """String representation of this Rating"""
-        return u"{0} - {1}".format(self.question.title, self.answer.text)
+        if self.answer:
+            return u"{0} - {1}".format(self.question.title, self.answer.text)
+        else:
+            return u"{0}".format(self.question.title)
 
 
 class Question(models.Model):

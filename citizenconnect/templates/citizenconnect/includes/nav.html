@@ -22,7 +22,7 @@
         <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Problems</a></li>
 
         {% url 'org-all-summary' cobrand=cobrand.name as url %}
-        <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Provider summaries</a></li>
+        <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Dashboard</a></li>
 
         {% url 'help-your-nhs' cobrand=cobrand.name as url %}
         <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Help your NHS</a></li>
