@@ -38,6 +38,8 @@
 
 </form>
 
+<p>This page displays all reviews and problems received from the public about NHS services in Care Connect. Feedback is listed in chronological order. To view feedback for a specific provider or a specific date period you can use the filters above. To view more detail about the providers visit the <a href="{% url 'org-all-summary' cobrand=cobrand.name %}">main dashboard</a>.</p>
+
 <ul class="live-feed__list">
     {% for issue in issues %}
         {% if issue|classname == 'Problem' %}
