@@ -37,7 +37,8 @@
             options = {
                 yaxis: {
                     max: 100,
-                    min: -100
+                    min: -100,
+                    tickSize: 10
                 },
                 xaxis: {
                     mode: "categories",
@@ -58,7 +59,7 @@
             // CSS it would make the element look bad for non-js people
             $(this).css('padding', '0.5em');
             $(this).html('<div class="survey__previous__graph"></div>');
-            $(this).children('.survey__previous__graph').css('height', '15em');
+            $(this).children('.survey__previous__graph').css('height', '20em');
             $.plot($(this).children('.survey__previous__graph'), [series], options);
         });
 
