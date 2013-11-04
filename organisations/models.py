@@ -112,8 +112,8 @@ class FriendsAndFamilySurvey(AuditedModel):
     # to, but you can't use it in filter(), etc - it doesn't work like that.
     content_object = generic.GenericForeignKey()
 
-    # The overall score (out of 100)
-    overall_score = models.PositiveIntegerField()
+    # The overall score (between -100 and 100)
+    overall_score = models.IntegerField()
 
     # Individual numbers for different responses
     extremely_likely = models.PositiveIntegerField()
