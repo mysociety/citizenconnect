@@ -5,6 +5,7 @@ from django.test.utils import override_settings
 from django.utils import timezone
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.conf.locale.en_GB import formats
 from django.template.defaultfilters import date as django_date
 from django.template.defaultfilters import capfirst
 
@@ -314,7 +315,7 @@ class LiveFeedTests(TestCase):
         problem_url = reverse('problem-view', kwargs={'pk': problem.id, 'cobrand': 'choices'})
         self.assertContains(resp, problem_url)
         self.assertContains(resp, problem.organisation.name)
-        self.assertContains(resp, django_date(problem.created, 'd M Y, g:i a'))
+        self.assertContains(resp, django_date(problem.created, formats.DATETIME_FORMAT))
         self.assertContains(resp, problem.get_category_display())
         self.assertContains(resp, problem.get_status_display())
 
@@ -333,5 +334,5 @@ class LiveFeedTests(TestCase):
         )
         self.assertContains(resp, review_url)
         self.assertContains(resp, review.organisations.all()[0].name)
-        self.assertContains(resp, django_date(review.api_published, 'd M Y, g:i a'))
+        self.assertContains(resp, django_date(review.api_published, formats.DATETIME_FORMAT))
         self.assertContains(resp, capfirst(review.title))
