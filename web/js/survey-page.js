@@ -37,7 +37,7 @@
             options = {
                 yaxis: {
                     max: 100,
-                    min: 0
+                    min: -100
                 },
                 xaxis: {
                     mode: "categories",
@@ -56,7 +56,7 @@
             };
             // Manually set the height to get a nice graph, if we did this in
             // CSS it would make the element look bad for non-js people
-            $(this).css('height', '10em');
+            $(this).css('height', '15em');
             $.plot($(this), [series], options);
         });
 
