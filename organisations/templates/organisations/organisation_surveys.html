@@ -16,23 +16,25 @@
 
 <h2>How likely are people to recommend {{ organisation.name }}?</h2>
 
-<p>The Friends and Family Test (FFT) is a measure of patient experience and is used to highlight areas where action may be needed to be taken to improve quality of care.</p>
-<p>The FFT is calculated using a simple question asked of patients based on their own experience: &#8220;How likely are you to recommend our ward/A&amp;E department to friends and family if they needed similar care or treatment?&#8221;. Patients can then select from six responses ranging from &#8216;extremely likely&#8217; through to &#8216;extremely unlikely&#8217;.</p>
-<p>The results for this NHS provider are displayed in the charts below.</p>
-
-<form id="location-form" method="GET" action="{{ request.path }}" class="gw  survey-filters">
-    <div class="filters__dropdown-wrap g  one-third portable-one-half  palm-one-whole">
-        <label for="id_location">{{ form.location.label }}</label>
-        <div class="filters__dropdown filters__dropdown--default">{{ form.location }}</div>
+<div class="survey-header  gw  gw--no-gutters">
+    <div class="g  one-third  portable-one-half  palm-one-whole">
+        <h2 class="survey__title">{{ location }}</h2>
     </div>
-    <div class="submit  g  one-eighth  portable-one-whole">
-        <input type="submit" value="Select" class="btn  palm-one-whole">
+    <div class="g  two-thirds  portable-one-half  palm-one-whole">
+        <form id="location-form" method="GET" action="{{ request.path }}" class="survey-filters">
+            <div class="filters__dropdown-wrap  fr">
+                <label for="id_location">{{ form.location.label }}</label>
+                <div class="filters__dropdown filters__dropdown--default">{{ form.location }}</div>
+            </div>
+            <div class="submit  fr">
+                <input type="submit" value="Select" class="btn  palm-one-whole">
+            </div>
+        </form>
     </div>
-</form>
+</div>
 
 {% if survey %}
     <div class="survey">
-        <h2 class="survey__title">{{ location }}</h2>
         {% include 'organisations/includes/survey.html' with latest_survey=survey previous_surveys=previous_surveys %}
     </div>
 {% else %}
