@@ -24,6 +24,10 @@
             var numGaps = dataPoints.length;
             var xMinWithMargin = -0.2;
             var xMaxWithMargin = (numGaps - 1) + 0.2;
+            // Work out whether we need to show any minus figures on the graph
+            var yMin = _.min(dataPoints, function(context, value, index, list) {
+                return context[1];
+            })[1];
             series = {
                 data: dataPoints.reverse(),
                 lines: {
@@ -37,7 +41,7 @@
             options = {
                 yaxis: {
                     max: 100,
-                    min: -100,
+                    min: (yMin >= 0) ? 0 : -100,
                     tickSize: 10
                 },
                 xaxis: {
