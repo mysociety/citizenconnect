@@ -24,6 +24,9 @@
         {% url 'org-all-summary' cobrand=cobrand.name as url %}
         <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Dashboard</a></li>
 
+        {% url 'org-map' cobrand=cobrand.name as url %}
+        <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Map</a></li>
+
         {% url 'help-your-nhs' cobrand=cobrand.name as url %}
         <li><a {% if request.path == url %}class="active"{% endif %} href="{{ url }}">Help your NHS</a></li>
 
