@@ -11,7 +11,6 @@
         <p>The FFT is calculated using a simple question asked of patients based on their own experience: &#8220;How likely are you to recommend our ward/A&amp;E department to friends and family if they needed similar care or treatment?&#8221;. Patients can then select from six responses ranging from &#8216;extremely likely&#8217; through to &#8216;extremely unlikely&#8217;.</p>
     </div>
      <div class="g  one-half  palm-one-whole  survey__responses  mb">
-        <h3>Total responses: {{ latest_survey.total_responses }}</h3>
         {% include 'organisations/includes/survey_response.html' with label="Extremely likely" response_percentage=latest_survey.extremely_likely_percentage response_value=latest_survey.extremely_likely %}
 
         {% include 'organisations/includes/survey_response.html' with label="Likely" response_percentage=latest_survey.likely_percentage response_value=latest_survey.likely %}
@@ -23,6 +22,7 @@
         {% include 'organisations/includes/survey_response.html' with label="Extremely unlikely" response_percentage=latest_survey.extremely_unlikely_percentage response_value=latest_survey.extremely_unlikely %}
 
         {% include 'organisations/includes/survey_response.html' with label="Don't know" response_percentage=latest_survey.dont_know_percentage response_value=latest_survey.dont_know %}
+        <h3>Total responses: {{ latest_survey.total_responses }}</h3>
     </div>
     {% if previous_surveys %}
         <div class="recent-surveys  g  one-whole">
