@@ -1,9 +1,7 @@
 <div class="survey__response">
     <div class="survey__response__label">{{ label }}</div>
-    <div class="survey__response__wrapper  gw  gw--no-gutters">
-        <div class="survey__response__bar  g  seven-eighths  portable-three-quarters">
-            <div class="survey__response__bar__fill" style="width:{{ response_percentage|floatformat }}%;"></div>
-        </div>
-        <div class="survey__response__value  g  one-eighth  portable-one-quarter">{{ response_value }}</div>
+    <div class="survey__response__bar">
+        <div class="survey__response__bar__fill" style="width:{{ response_percentage|floatformat }}%;"></div>
+        <span class="survey__response__value  fr">{{ response_value }}</span>
     </div>
 </div>

@@ -11,26 +11,30 @@
     margin-bottom:2em;
   }
 
-  .survey__responses {
-    padding-right: ($grid-gutter * 2) + em;
-  }
-
   .survey__response {
     margin-bottom:0.5em;
 
     .survey__response__bar {
-      background-color: $c-lightgrey;
+      position: relative;
       height: 1.5em;
+      width: 100%;
+      background-color: $c-lightgrey;
       .survey__response__bar__fill {
-        position:relative;
-        left:0px;
+        position: absolute;
+        left: 0px;
+        top: 0px;
         background-color: $c-aquablue;
         height: 1.5em;
+        z-index: 0;
       }
-    }
-
-    .survey__response__value {
-      text-align:right;
+      .survey__response__value {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        line-height: 1.5em;
+        padding-right: 0.5em;
+        z-index: 1;
+      }
     }
   }
 
