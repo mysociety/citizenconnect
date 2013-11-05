@@ -57,10 +57,8 @@
             };
             // Manually set the height to get a nice graph, if we did this in
             // CSS it would make the element look bad for non-js people
-            $(this).css('padding', '0.5em');
-            $(this).html('<div class="survey__previous__graph"></div>');
-            $(this).children('.survey__previous__graph').css('height', '20em');
-            $.plot($(this).children('.survey__previous__graph'), [series], options);
+            $(this).css('height', '20em');
+            $.plot($(this), [series], options);
         });
 
         // Auto-submit the location form when someone chooses a location
