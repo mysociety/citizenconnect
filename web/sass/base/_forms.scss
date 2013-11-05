@@ -171,6 +171,7 @@ textarea {
     &.big-radio-group--active {
       .big-radio-group__radio { background: $c-big-radio-group-active-radio-bg; }
       &.big-radio-group--green .big-radio-group__radio { background: $c-big-radio-group-active-green-radio-bg; }
+      &.big-radio-group--orange .big-radio-group__radio { background: $c-big-radio-group-active-orange-radio-bg; }
     }
   }
 }
@@ -178,10 +179,10 @@ textarea {
 .big-radio-group--horizontal {
     display: table;
     @include media-query(palm){ display: block; }
-    ul { 
-      display: table-row; 
-      @include media-query(palm){ 
-        display: table; 
+    ul {
+      display: table-row;
+      @include media-query(palm){
+        display: table;
         margin-left: 1.25em
       }
     }

@@ -10,42 +10,38 @@
 
 {% block content %}
 
+<div class="header">
+    <h2>Filter the map</h2>
+</div>
+
+{% include 'organisations/includes/map-filters.html' %}
+
+<div class="header">
+    <h2>Find a service provider</h2>
+</div>
+
+<div class="search-controls mb">
+    <input type="text" id="map-search-org-name" value="{{ ods_code }}" data-search-url="{% url 'org-map-search' cobrand=cobrand.name %}" />
+    <input type="hidden" id="map-search-lon-lat" value="{{ lon }},{{ lat }}" />
+</div>
+
 <div class="map-container">
     <div id="map" class="map"></div>
 </div>
 
 <div class="map-explanation  gw">
-    <div class="g  one-fifth  palm-one-whole  scale">
+    <div class="g  one-fifth  portable-one-quarter  palm-one-whole  scale">
         <img class="scale-image" src="{% static 'img/problem_scale.png' %}" />
         <small class="meta-data-label">Fewer</small>
         <small class="meta-data-label  fr">More</small>
     </div>
-    <div class="g  four-fifths  palm-one-whole">
+    <div class="g  three-fifths  portable-three-quarters  palm-one-whole">
         <p>
             <small>The map displays the location of NHS providers that are part of Care Connect using dots. Clicking the dot will display a summary of feedback the provider has received. To view more detailed information, click 'View all details'.<br/>
             Dots will vary in shade; darker dots indicate a higher number of 'open' and 'in progress' problems. This does not necessarily indicate a poorly performing NHS provider - it could be that they are actively progressing problems and encouraging people to report them.</small>
         </p>
     </div>
-</div>
-
-<div class="gw  mt">
-    <div class="g  three-quarters  palm-one-whole  mb__palm">
-        <div class="header">
-            <h2>Filter the map</h2>
-        </div>
-
-        {% include 'organisations/includes/map-filters.html' %}
-
-        <div class="header">
-            <h2>Find a service provider</h2>
-        </div>
-
-        <div class="search-controls mb">
-            <input type="text" id="map-search-org-name" value="{{ ods_code }}" data-search-url="{% url 'org-map-search' cobrand=cobrand.name %}" />
-            <input type="hidden" id="map-search-lon-lat" value="{{ lon }},{{ lat }}" />
-        </div>
-    </div>
-    <div class="g  one-quarter  palm-one-whole">
+    <div class="g  one-fifth  palm-one-whole">
         <a href="{% url 'org-all-summary' cobrand=cobrand.name %}"  class="btn  mt  btn--no-border  btn--big  btn--blue">Go to main dashboard</a>
     </div>
 </div>

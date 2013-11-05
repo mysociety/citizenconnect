@@ -3,7 +3,7 @@
 
     <li><a {% if active_tab == 'summary' %}class="active"{% endif %} href="{% url 'public-org-summary' ods_code=organisation.ods_code cobrand=cobrand.name %}">Summary</a></li>
 
-    <li><a {% if active_tab == 'problems' %}class="active"{% endif %} href="{% url 'public-org-problems' ods_code=organisation.ods_code cobrand=cobrand.name %}">Problems</a></li>
+    <li><a {% if active_tab == 'problems' %}class="active"{% endif %} href="{% url 'public-org-problems' ods_code=organisation.ods_code cobrand=cobrand.name %}">Problem Reports</a></li>
 
     <li><a {% if active_tab == 'reviews' %}class="active"{% endif %} href="{% url 'public-org-reviews' ods_code=organisation.ods_code cobrand=cobrand.name %}">Reviews</a></li>
 

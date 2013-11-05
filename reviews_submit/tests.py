@@ -1,4 +1,5 @@
 import datetime
+import logging
 from StringIO import StringIO
 
 import requests
@@ -300,10 +301,16 @@ class ReviewFormViewTest(ReviewFormViewBase, TestCase):
         # Issue #1245 - review form view didn't use get_object_or_404
         # so we got errors when someone tried to hack the url instead of them
         # just getting a 404
+
+        # Silence the output, because the 404 will be printed otherwise
+        logging.disable(logging.CRITICAL)
         bad_org_form_url = reverse('review-form', kwargs={'cobrand': 'choices',
                                                           'ods_code': 'BAD'})
         resp = self.client.get(bad_org_form_url)
         self.assertEqual(resp.status_code, 404)
+
+        # Reset our logging to normal
+        logging.disable(logging.NOTSET)
 
 
 class ReviewFormViewBrowserTest(ReviewFormViewBase, SeleniumTestCase):

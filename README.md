@@ -148,7 +148,7 @@ To get google-chrome-stable, you need to add Google's repository to your apt-get
     # Install google chrome
     sudo apt-get install google-chrome-stable
 
-To get ChromeDriver, download the appropriate zip directly from: https://code.google.com/p/chromedriver/downloads/list and put the binary somewhere on your $PATH.
+To get ChromeDriver, download the appropriate zip directly from: http://chromedriver.storage.googleapis.com/index.html and put the binary somewhere on your $PATH.
 
 After installing them, start Xvfb with:
 
