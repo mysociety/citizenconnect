@@ -69,12 +69,12 @@ class Command(BaseCommand):
             try:
                 # Remember to update the docs in documentation/csv_formats.md if you make changes here
                 choices_id = row['ChoicesID']
-                ods_code = row['ODS Code']
-                name = row['Name']
+                ods_code = row['OrganisationCode']
+                name = row['OrganisationName']
                 organisation_type_text = row['OrganisationTypeID']
                 last_updated = row['LastUpdatedDate']
 
-                trust_code = row['Trust Code']
+                trust_code = row['ParentCode']
 
                 url = row['URL']
 

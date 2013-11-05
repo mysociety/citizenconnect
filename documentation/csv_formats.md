@@ -30,10 +30,10 @@ There are several sample csv files in the [documentation/csv_samples folder](htt
 
 ## Organisations
 
-- `ODS Code`: The ODS code for this org
+- `OrganisationCode`: The ODS code for this org
 - `ChoicesID`: The Choices ID of this org
-- `Name`
-- `Trust Code`: The ODS code of the Trust (should match that provided in the trusts CSV)
+- `OrganisationName`
+- `ParentCode`: The ODS code of the Trust (should match that provided in the trusts CSV)
 - `OrganisationTypeID`: What is this org. Eg `HOS`
 - `URL`
 - `Address1`
