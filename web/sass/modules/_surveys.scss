@@ -38,23 +38,15 @@
     }
   }
 
-
   .survey__summary {
-    padding-bottom: 2em;
-
     .survey__overall {
-
+      text-align: center;
       span {
-        margin-top: 0.5em;
+        margin-top:0.25em;
         display: block;
-        width: 100px;
-        height: 100px;
-        line-height: 100px;
-        text-align: center;
-        font-size: 2em;
-        background-color: $c-aquablue;
-        border-radius: 50%;
-        color: $c-white;
+        font-size: 4em;
+        font-weight: bold;
+        color: $c-aquablue;
       }
     }
   }
