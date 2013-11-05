@@ -175,14 +175,14 @@ class Command(BaseCommand):
                     if service_created:
                         self.stdout.write('Created service %s\n' % service.name)
                     elif verbosity >= 2:
-                        self.stdout.write('Service %s for organisation %s')
+                        self.stdout.write('Service %s for organisation %s\n' % (service.name, organisation.name))
                 if verbosity >= 2:
                     processed += 1
                 transaction.commit()
             except Exception as e:
                 if verbosity >= 2:
                     skipped += 1
-                self.stderr.write("Skipping %s %s (%s): %s" % (name, organisation_type, ods_code, e))
+                self.stderr.write("Skipping %s %s (%s): %s\n" % (name, organisation_type, ods_code, e))
                 transaction.rollback()
 
         if verbosity >= 2:
