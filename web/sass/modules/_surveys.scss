@@ -1,5 +1,10 @@
 // Survey data on organisation and organisation parent "Friends and Family" pages
-
+.survey-header {
+  border-bottom: solid $c-grey 2px;
+  h2 {
+    font-weight: bold;
+  }
+}
 .survey {
   @include media-query(palm) {
     border-bottom: solid $c-grey 3px;
