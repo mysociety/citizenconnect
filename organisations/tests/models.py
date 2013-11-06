@@ -505,9 +505,9 @@ class FriendsAndFamilySurveyModelTests(TransactionTestCase):
             )
         )
 
-        with self.assertRaises(ValueError) as cm:
-            FriendsAndFamilySurvey.process_csv(missing_org_fixture_file, today, 'site', 'aande')
-            self.assertEqual(cm.exception.message, "Organisation with site code: NOTVALID (Test Organisation) is not in the database.")
+        FriendsAndFamilySurvey.process_csv(missing_org_fixture_file, today, 'site', 'aande')
+        # Should skip the missing site and only add a survey for the good one
+        self.assertEqual(FriendsAndFamilySurvey.objects.all().count(), 1)
 
     def test_missing_trust_csv(self):
         today = datetime.date.today()
@@ -520,9 +520,9 @@ class FriendsAndFamilySurveyModelTests(TransactionTestCase):
             )
         )
 
-        with self.assertRaises(ValueError) as cm:
-            FriendsAndFamilySurvey.process_csv(missing_trust_fixture_file, today, 'trust')
-            self.assertEqual(cm.exception.message, "OrganisationParent with code: NOTVALID (Test Trust) is not in the database.")
+        FriendsAndFamilySurvey.process_csv(missing_trust_fixture_file, today, 'trust')
+        # Should skip the missing trust and only add a survey for the good one
+        self.assertEqual(FriendsAndFamilySurvey.objects.all().count(), 1)
 
     def test_location_required_for_site_csvs(self):
         today = datetime.date.today()
