@@ -343,6 +343,7 @@ class FriendsAndFamilySurveyModelTests(TransactionTestCase):
 
         FriendsAndFamilySurvey.objects.create(
             content_object=self.test_trust,
+            location='ande',
             overall_score=78,
             extremely_likely=10,
             likely=10,
@@ -402,6 +403,7 @@ class FriendsAndFamilySurveyModelTests(TransactionTestCase):
 
         survey = FriendsAndFamilySurvey(
             content_object=self.test_trust,
+            location='ande',
             overall_score=78,
             extremely_likely=10,
             likely=10,
@@ -416,6 +418,7 @@ class FriendsAndFamilySurveyModelTests(TransactionTestCase):
         with self.assertRaises(IntegrityError):
             survey = FriendsAndFamilySurvey(
                 content_object=self.test_trust,
+                location='ande',
                 overall_score=78,
                 extremely_likely=10,
                 likely=10,
@@ -464,13 +467,13 @@ class FriendsAndFamilySurveyModelTests(TransactionTestCase):
     def test_process_csv_trusts(self):
         today = datetime.date.today()
 
-        created = FriendsAndFamilySurvey.process_csv(self.trust_fixture_file, today, 'trust')
+        created = FriendsAndFamilySurvey.process_csv(self.trust_fixture_file, today, 'trust', 'aande')
 
         self.assertEqual(len(created), 2)
 
         self.assertEqual(self.test_trust.surveys.all().count(), 1)
         trust_survey = self.test_trust.surveys.all()[0]
-        self.assertEqual(trust_survey.location, '')
+        self.assertEqual(trust_survey.location, 'aande')
         self.assertEqual(trust_survey.date, today)
         self.assertEqual(trust_survey.overall_score, 79)
         self.assertEqual(trust_survey.extremely_likely, 346)
@@ -484,7 +487,7 @@ class FriendsAndFamilySurveyModelTests(TransactionTestCase):
         # testing I added one in the fixture
         self.assertEqual(self.test_gp_surgery.surveys.all().count(), 1)
         other_trust_survey = self.test_gp_surgery.surveys.all()[0]
-        self.assertEqual(other_trust_survey.location, '')
+        self.assertEqual(other_trust_survey.location, 'aande')
         self.assertEqual(other_trust_survey.date, today)
         self.assertEqual(other_trust_survey.overall_score, 57)
         self.assertEqual(other_trust_survey.extremely_likely, 100)
@@ -520,16 +523,9 @@ class FriendsAndFamilySurveyModelTests(TransactionTestCase):
             )
         )
 
-        FriendsAndFamilySurvey.process_csv(missing_trust_fixture_file, today, 'trust')
+        FriendsAndFamilySurvey.process_csv(missing_trust_fixture_file, today, 'trust', 'aande')
         # Should skip the missing trust and only add a survey for the good one
         self.assertEqual(FriendsAndFamilySurvey.objects.all().count(), 1)
-
-    def test_location_required_for_site_csvs(self):
-        today = datetime.date.today()
-
-        with self.assertRaises(ValueError) as cm:
-            FriendsAndFamilySurvey.process_csv(self.site_fixture_file, today, 'site', location=None)
-            self.assertEqual(cm.exception.message, "Location is required for site files.")
 
     def test_missing_fields_csv(self):
         today = datetime.date.today()
@@ -575,17 +571,18 @@ class FriendsAndFamilySurveyModelTests(TransactionTestCase):
         today = datetime.date.today()
 
         # Put the csv through once, should work fine
-        FriendsAndFamilySurvey.process_csv(self.trust_fixture_file, today, 'trust')
+        FriendsAndFamilySurvey.process_csv(self.trust_fixture_file, today, 'trust', 'aande')
         # Put it through again and we should get an IntegrityError
         with self.assertRaises(Exception) as cm:
-            FriendsAndFamilySurvey.process_csv(self.trust_fixture_file, today, 'trust')
-            self.assertEqual(cm.exception.message, "There is already a survey for Test Trust for the month January, 2013. Please delete the existing survey first if you're trying to replace it.")
+            FriendsAndFamilySurvey.process_csv(self.trust_fixture_file, today, 'trust', 'aande')
+            self.assertEqual(cm.exception.message, "There is already a survey for Test Trust for the month January, 2013 and location A&E. Please delete the existing survey first if you're trying to replace it.")
 
     def test_total_responses(self):
         now = datetime.date.today()
 
         survey = FriendsAndFamilySurvey(
             content_object=self.test_trust,
+            location='aande',
             overall_score=78,
             extremely_likely=10,
             likely=10,
@@ -604,6 +601,7 @@ class FriendsAndFamilySurveyModelTests(TransactionTestCase):
 
         survey = FriendsAndFamilySurvey(
             content_object=self.test_trust,
+            location='aande',
             overall_score=78,
             extremely_likely=10,
             likely=10,
