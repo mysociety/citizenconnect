@@ -3,6 +3,7 @@ from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 
 # App imports
 from organisations.views.base import PickProviderBase
@@ -24,7 +25,7 @@ class ReviewForm(CreateView):
         # Set organisation here so that we can use it anywhere in the class
         # without worrying about whether it has been set yet
         self.cobrand = kwargs['cobrand']
-        self.organisation = Organisation.objects.get(ods_code=kwargs['ods_code'])
+        self.organisation = get_object_or_404(Organisation, ods_code=kwargs['ods_code'])
 
         self.all_questions = Question.objects.filter(org_type=self.organisation.organisation_type)
         self.required_questions = self.all_questions.filter(is_required=True)
@@ -69,5 +70,5 @@ class ReviewConfirm(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(ReviewConfirm, self).get_context_data(**kwargs)
-        context['organisation'] = Organisation.objects.get(ods_code=context['params']['ods_code'])
+        context['organisation'] = get_object_or_404(Organisation, ods_code=context['params']['ods_code'])
         return context

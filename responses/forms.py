@@ -10,8 +10,11 @@ from .models import ProblemResponse
 class ProblemResponseForm(ConcurrentFormMixin, forms.ModelForm):
 
     response = forms.CharField(required=False, widget=Textarea())
-    issue_status = forms.ChoiceField(choices=Problem.STATUS_CHOICES,
-                                     required=False)
+    issue_status = forms.TypedChoiceField(
+        choices=Problem.STATUS_CHOICES,
+        required=False,
+        coerce=int
+    )
     issue_formal_complaint = forms.BooleanField(required=False)
 
     def __init__(self, request=None, *args, **kwargs):

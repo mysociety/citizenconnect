@@ -639,6 +639,10 @@ class ProblemManagerTests(ManagerTest):
             self.private_problem_requiring_second_tier_moderation
         ]
 
+        self.problems_requiring_a_survey = list(self.closed_problems)
+        # Abusive problems don't get sent surveys
+        self.problems_requiring_a_survey.remove(self.public_published_abusive_problem)
+
     def test_all_problems_returns_correct_problems(self):
         self.compare_querysets(Problem.objects.all(), self.all_problems)
 
@@ -673,35 +677,49 @@ class ProblemManagerTests(ManagerTest):
                                self.problems_requiring_second_tier_moderation)
 
     def test_requiring_survey_to_be_sent_returns_correct_problems(self):
-        now = datetime.utcnow().replace(tzinfo=utc)
-        survey_interval = timedelta(days=settings.SURVEY_INTERVAL_IN_DAYS)
-        after_survey_cutoff = now - survey_interval + timedelta(days=1)
+        # Test that the right number of problems need to be sent
+        self.compare_querysets(
+            Problem.objects.requiring_survey_to_be_sent(),
+            self.problems_requiring_a_survey
+        )
 
-        old_problem = create_test_problem({
+        # Add problems which have been marked as abusive or referred to another
+        # provider and check that they do not need to be sent
+        create_test_problem({
+            'description': 'abusive_problem',
             'organisation': self.test_organisation,
-            'created': after_survey_cutoff,
+            'publication_status': Problem.PUBLISHED,
+            'status': Problem.ABUSIVE
         })
-
-        self.assertEqual(old_problem.created, after_survey_cutoff)
-
-        # test that this problem does not need to be sent a survey
-        self.assertEqual(Problem.objects.requiring_survey_to_be_sent().count(), 0)
-
-        # change the created and check that it does
-        old_problem.created = after_survey_cutoff - timedelta(days=2)
-        old_problem.save()
-        self.assertEqual(Problem.objects.requiring_survey_to_be_sent()[0].id, old_problem.id)
+        create_test_problem({
+            'description': 'referred_problem',
+            'organisation': self.test_organisation,
+            'publication_status': Problem.PUBLISHED,
+            'status': Problem.REFERRED_TO_OTHER_PROVIDER
+        })
+        self.compare_querysets(
+            Problem.objects.requiring_survey_to_be_sent(),
+            self.problems_requiring_a_survey
+        )
 
         # remove email address and check it does not need to be sent
-        old_problem.reporter_email = ''
-        old_problem.save()
-        self.assertEqual(Problem.objects.requiring_survey_to_be_sent().count(), 0)
+        self.closed_private_unmoderated_problem.reporter_email = ''
+        self.closed_private_unmoderated_problem.save()
+        new_problems_requiring_a_survey = list(self.problems_requiring_a_survey)
+        new_problems_requiring_a_survey.remove(self.closed_private_unmoderated_problem)
+        self.compare_querysets(
+            Problem.objects.requiring_survey_to_be_sent(),
+            new_problems_requiring_a_survey
+        )
 
         # restore email address, mark as sent, check it does not need to be sent
-        old_problem.email = 'foo@example.com'
-        old_problem.survey_sent = now
-        old_problem.save()
-        self.assertEqual(Problem.objects.requiring_survey_to_be_sent().count(), 0)
+        self.closed_private_unmoderated_problem.email = 'foo@example.com'
+        self.closed_private_unmoderated_problem.survey_sent = datetime.utcnow().replace(tzinfo=utc)
+        self.closed_private_unmoderated_problem.save()
+        self.compare_querysets(
+            Problem.objects.requiring_survey_to_be_sent(),
+            new_problems_requiring_a_survey
+        )
 
 
 class ProblemImageModelTests(ProblemImageTestBase):

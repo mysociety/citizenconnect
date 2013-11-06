@@ -59,13 +59,11 @@ class ProblemCreateFormTests(ProblemCreateFormBase, TestCase):
         resp = self.client.get(self.form_url)
         self.assertTrue(self.test_organisation.name in resp.content)
 
-    @override_settings(SURVEY_INTERVAL_IN_DAYS=99)
     def test_problem_form_happy_path(self):
         resp = self.client.post(self.form_url, self.test_problem)
         # Check in db
         problem = Problem.objects.get(reporter_name=self.uuid)
         self.assertContains(resp, problem.reference_number, count=2, status_code=200)
-        self.assertContains(resp, '{0} days after posting'.format(settings.SURVEY_INTERVAL_IN_DAYS))
         self.assertEqual(problem.organisation, self.test_organisation)
         self.assertEqual(problem.service, self.test_service)
         self.assertEqual(problem.public, False)
@@ -427,22 +425,23 @@ class ProblemSurveyFormTests(TestCase):
                                                               'response': 'n',
                                                               'id': int_to_base32(self.test_problem.id),
                                                               'token': self.test_problem.make_token(5555)})
-        self.form_values = {'happy_outcome': 'True'}
+        self.form_values = {'happy_service': 'True'}
 
     def test_form_happy_path(self):
         resp = self.client.post(self.survey_form_url, self.form_values)
         self.assertContains(resp, 'Thank you for taking the time to send us your feedback')
         self.test_problem = Problem.objects.get(pk=self.test_problem.id)
-        self.assertEqual(self.test_problem.happy_outcome, True)
-
-    def test_form_records_empty_happy_outcome(self):
-        resp = self.client.post(self.survey_form_url, {'happy_outcome': ''})
-        self.assertContains(resp, 'Thank you for taking the time to send us your feedback')
-        self.test_problem = Problem.objects.get(pk=self.test_problem.id)
-        self.assertEqual(self.test_problem.happy_outcome, None)
-
-    def test_form_records_false_happy_outcome(self):
-        resp = self.client.post(self.survey_form_url, {'happy_outcome': 'False'})
-        self.assertContains(resp, 'Thank you for taking the time to send us your feedback')
-        self.test_problem = Problem.objects.get(pk=self.test_problem.id)
         self.assertEqual(self.test_problem.happy_outcome, False)
+        self.assertEqual(self.test_problem.happy_service, True)
+
+    def test_form_records_empty_happy_service(self):
+        resp = self.client.post(self.survey_form_url, {'happy_service': ''})
+        self.assertContains(resp, 'Thank you for taking the time to send us your feedback')
+        self.test_problem = Problem.objects.get(pk=self.test_problem.id)
+        self.assertEqual(self.test_problem.happy_service, None)
+
+    def test_form_records_false_happy_service(self):
+        resp = self.client.post(self.survey_form_url, {'happy_service': 'False'})
+        self.assertContains(resp, 'Thank you for taking the time to send us your feedback')
+        self.test_problem = Problem.objects.get(pk=self.test_problem.id)
+        self.assertEqual(self.test_problem.happy_service, False)
