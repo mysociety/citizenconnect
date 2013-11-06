@@ -124,11 +124,9 @@ class FriendsAndFamilySurvey(AuditedModel):
     dont_know = models.PositiveIntegerField()
 
     # Where this survey was performed, usually a hospital ward such as A&E.
-    # Trust survey's don't have this, hence it can be blank
     location = models.CharField(
         max_length=100,
         db_index=True,
-        blank=True,
         choices=settings.SURVEY_LOCATION_CHOICES
     )
 
@@ -194,9 +192,6 @@ class FriendsAndFamilySurvey(AuditedModel):
 
         Returns an array of the created models."""
 
-        if content_type == "site" and location is None:
-            raise ValueError("Location is required for site files.")
-
         if not content_type == 'site' and not content_type == 'trust':
             raise ValueError("Unknown content_type")
 
@@ -243,12 +238,9 @@ class FriendsAndFamilySurvey(AuditedModel):
                     unlikely=unlikely,
                     extremely_unlikely=extremely_unlikely,
                     dont_know=dont_know,
-                    date=month
+                    date=month,
+                    location=location
                 )
-
-                # Only site surveys have a "location"
-                if content_type == 'site':
-                    survey.location = location
 
                 survey.save()
 
@@ -257,10 +249,7 @@ class FriendsAndFamilySurvey(AuditedModel):
                 transaction.rollback()
                 date_string = month.strftime("%B, %Y")
                 location = cls.location_display(location)
-                if content_type == 'site':
-                    raise IntegrityError("There is already a survey for {0} for the month {1} and location {2}. Please delete the existing survey first if you're trying to replace it.".format(content_object.name, date_string, location))
-                else:
-                    raise IntegrityError("There is already a survey for {0} for the month {1}. Please delete the existing survey first if you're trying to replace it.".format(content_object.name, date_string))
+                raise IntegrityError("There is already a survey for {0} for the month {1} and location {2}. Please delete the existing survey first if you're trying to replace it.".format(content_object.name, date_string, location))
 
         return created
 
