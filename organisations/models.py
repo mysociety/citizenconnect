@@ -212,15 +212,15 @@ class FriendsAndFamilySurvey(AuditedModel):
                 try:
                     content_object = Organisation.objects.get(ods_code=site_code)
                 except Organisation.DoesNotExist:
-                    # TODO - should we just skip these?
-                    raise ValueError("Organisation with site code: {0} ({1}) is not in the database.".format(site_code, row['Site Name']))
+                    # Skip this row
+                    continue
             else:
                 code = row['Code']
                 try:
                     content_object = OrganisationParent.objects.get(code=code)
                 except OrganisationParent.DoesNotExist:
-                    # TODO - should we just skip these?
-                    raise ValueError("OrganisationParent with code: {0} ({1}) is not in the database.".format(code, row['Name']))
+                    # Skip this row
+                    continue
 
             try:
                 overall_score = int(row['Friends and Family Test Score'])
