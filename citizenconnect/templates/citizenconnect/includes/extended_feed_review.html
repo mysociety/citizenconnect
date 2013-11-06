@@ -15,5 +15,5 @@
       </span>
     {% endif %}
 
-    <h3><span class="live-feed__item__type">Review: </span><a href="{% url 'review-detail' api_posting_id=review.api_posting_id ods_code=review.organisations.all.0.ods_code cobrand=cobrand.name %}"><span class="live-feed__item__category">{{ review.title|capfirst }}</span></a></h3>
+    <h3><span class="live-feed__item--review">Review: </span><a href="{% url 'review-detail' api_posting_id=review.api_posting_id ods_code=review.organisations.all.0.ods_code cobrand=cobrand.name %}"><span class="live-feed__item__category">{{ review.title|capfirst }}</span></a></h3>
 </li>

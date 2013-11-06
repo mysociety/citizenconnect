@@ -54,7 +54,7 @@
 <div class="gw">
     <div class="g  two-thirds  palm-one-whole">
         <div class="bordered-box">
-            <h2 class="feed-list__heading">Live Feed</h2>
+            <h2 class="feed-list__heading">Latest Feedback</h2>
             <ul class="feed-list">
 
                 {% for issue in issues %}
@@ -65,7 +65,7 @@
                     {% endif %}
                 {% endfor %}
             </ul>
-            <p class="align-center"><a href="{% url 'live-feed' cobrand=cobrand.name %}" class="btn btn--light-green">Latest feedback</a></p>
+            <p class="align-center"><a href="{% url 'live-feed' cobrand=cobrand.name %}" class="btn btn--light-green">More feedback</a></p>
         </div>
     </div>
     <div class="g  one-third  palm-one-whole">
