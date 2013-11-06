@@ -109,7 +109,7 @@ class FriendsAndFamilySurveyFormTests(TransactionTestCase):
         test_data = self.site_test_data.copy()
         del test_data['location']
         resp = self.client.post(self.form_url, test_data)
-        self.assertFormError(resp, 'form', 'location', 'Location is required for Site files.')
+        self.assertFormError(resp, 'form', 'location', 'Service is required for Site files.')
 
     def test_happy_path_sites(self):
         self.login_as(self.superuser)
@@ -216,9 +216,9 @@ class FriendsAndFamilySurveyFormTests(TransactionTestCase):
             )
         )
         test_data['csv_file'] = missing_org_fixture_file
-        resp = self.client.post(self.form_url, test_data)
-        self.assertContains(resp, "Organisation with site code: NOTVALID (Test Organisation) is not in the database.")
-        self.assertEqual(FriendsAndFamilySurvey.objects.all().count(), 0)
+        self.client.post(self.form_url, test_data)
+        # Should skip the bad orgs and just save the good ones
+        self.assertEqual(FriendsAndFamilySurvey.objects.all().count(), 1)
 
     def test_missing_trust(self):
         self.login_as(self.superuser)
@@ -231,9 +231,9 @@ class FriendsAndFamilySurveyFormTests(TransactionTestCase):
             )
         )
         test_data['csv_file'] = missing_trust_fixture_file
-        resp = self.client.post(self.form_url, test_data)
-        self.assertContains(resp, "OrganisationParent with code: NOTVALID (Test Trust) is not in the database.")
-        self.assertEqual(FriendsAndFamilySurvey.objects.all().count(), 0)
+        self.client.post(self.form_url, test_data)
+        # Should skip the bad trusts and just save the good ones
+        self.assertEqual(FriendsAndFamilySurvey.objects.all().count(), 1)
 
     def test_duplicate_org_survey(self):
         self.login_as(self.superuser)

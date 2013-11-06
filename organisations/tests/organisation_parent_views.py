@@ -374,7 +374,7 @@ class OrganisationParentSurveysTests(AuthorizationTestCase):
 
     def assert_contains_response_value(self, response, value):
         """Helper method to check a response value is in an HttpResponse"""
-        response_html = '<div class="survey__response__value  g  one-eighth  portable-one-quarter">{0}</div>'.format(value)
+        response_html = '<span class="survey__response__value  fr">{0}</span>'.format(value)
         self.assertContains(response, response_html)
 
     def assert_contains_overall_value(self, response, value, date):
