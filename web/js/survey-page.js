@@ -42,7 +42,7 @@
                 yaxis: {
                     max: 100,
                     min: (yMin >= 0) ? 0 : -100,
-                    tickSize: 10
+                    tickSize: 20
                 },
                 xaxis: {
                     mode: "categories",
