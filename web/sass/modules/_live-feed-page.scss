@@ -42,8 +42,11 @@
         h3 {
             margin-top:0.5em;
             margin-bottom:0.5em;
-            .live-feed__item__type {
-                color:$c-darkgrey;
+            .live-feed__item--problem {
+                color:$c-nhs_blue;
+            }
+            .live-feed__item--review {
+                color:$c-nhs_lightgreen;
             }
             a {
                 color: $c-aquablue;
