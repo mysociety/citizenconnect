@@ -112,8 +112,8 @@ class FriendsAndFamilySurvey(AuditedModel):
     # to, but you can't use it in filter(), etc - it doesn't work like that.
     content_object = generic.GenericForeignKey()
 
-    # The overall score (out of 100)
-    overall_score = models.PositiveIntegerField()
+    # The overall score (between -100 and 100)
+    overall_score = models.IntegerField()
 
     # Individual numbers for different responses
     extremely_likely = models.PositiveIntegerField()
@@ -124,11 +124,9 @@ class FriendsAndFamilySurvey(AuditedModel):
     dont_know = models.PositiveIntegerField()
 
     # Where this survey was performed, usually a hospital ward such as A&E.
-    # Trust survey's don't have this, hence it can be blank
     location = models.CharField(
         max_length=100,
         db_index=True,
-        blank=True,
         choices=settings.SURVEY_LOCATION_CHOICES
     )
 
@@ -136,6 +134,44 @@ class FriendsAndFamilySurvey(AuditedModel):
     # is irrelevant, but it's easier to sort and filter by date if we store it
     # in a DateField.
     date = models.DateField(db_index=True)
+
+    @property
+    def total_responses(self):
+        return (
+            self.extremely_likely +
+            self.likely +
+            self.neither +
+            self.unlikely +
+            self.extremely_unlikely +
+            self.dont_know
+        )
+
+    def calculate_percentage(self, num_responses):
+        return (float(num_responses) / float(self.total_responses)) * 100
+
+    @property
+    def extremely_likely_percentage(self):
+        return self.calculate_percentage(self.extremely_likely)
+
+    @property
+    def likely_percentage(self):
+        return self.calculate_percentage(self.likely)
+
+    @property
+    def neither_percentage(self):
+        return self.calculate_percentage(self.neither)
+
+    @property
+    def unlikely_percentage(self):
+        return self.calculate_percentage(self.unlikely)
+
+    @property
+    def extremely_unlikely_percentage(self):
+        return self.calculate_percentage(self.extremely_unlikely)
+
+    @property
+    def dont_know_percentage(self):
+        return self.calculate_percentage(self.dont_know)
 
     @classmethod
     def location_display(cls, location):
@@ -156,9 +192,6 @@ class FriendsAndFamilySurvey(AuditedModel):
 
         Returns an array of the created models."""
 
-        if content_type == "site" and location is None:
-            raise ValueError("Location is required for site files.")
-
         if not content_type == 'site' and not content_type == 'trust':
             raise ValueError("Unknown content_type")
 
@@ -174,24 +207,26 @@ class FriendsAndFamilySurvey(AuditedModel):
                 try:
                     content_object = Organisation.objects.get(ods_code=site_code)
                 except Organisation.DoesNotExist:
-                    # TODO - should we just skip these?
-                    raise ValueError("Organisation with site code: {0} ({1}) is not in the database.".format(site_code, row['Site Name']))
+                    # Skip this row
+                    continue
             else:
                 code = row['Code']
                 try:
                     content_object = OrganisationParent.objects.get(code=code)
                 except OrganisationParent.DoesNotExist:
-                    # TODO - should we just skip these?
-                    raise ValueError("OrganisationParent with code: {0} ({1}) is not in the database.".format(code, row['Name']))
+                    # Skip this row
+                    continue
 
             try:
                 overall_score = int(row['Friends and Family Test Score'])
-                extremely_likely = int(row['Extremely Likely'])
-                likely = int(row['Likely'])
-                neither = int(row['Neither'])
-                unlikely = int(row['Unlikely'])
-                extremely_unlikely = int(row['Extremely Unlikely'])
-                dont_know = int(row['Don\'t Know'])
+                # We do replace(',', '') on these values because sometimes they
+                # contain thousands like "1,700"
+                extremely_likely = int(row['Extremely Likely'].replace(',', ''))
+                likely = int(row['Likely'].replace(',', ''))
+                neither = int(row['Neither'].replace(',', ''))
+                unlikely = int(row['Unlikely'].replace(',', ''))
+                extremely_unlikely = int(row['Extremely Unlikely'].replace(',', ''))
+                dont_know = int(row['Don\'t Know'].replace(',', ''))
             except (KeyError, ValueError):
                 raise ValueError("Could not retrieve one of the score fields from the csv for: {0}, or the data is not a valid score.".format(content_object.name))
 
@@ -205,12 +240,9 @@ class FriendsAndFamilySurvey(AuditedModel):
                     unlikely=unlikely,
                     extremely_unlikely=extremely_unlikely,
                     dont_know=dont_know,
-                    date=month
+                    date=month,
+                    location=location
                 )
-
-                # Only site surveys have a "location"
-                if content_type == 'site':
-                    survey.location = location
 
                 survey.save()
 
@@ -219,10 +251,7 @@ class FriendsAndFamilySurvey(AuditedModel):
                 transaction.rollback()
                 date_string = month.strftime("%B, %Y")
                 location = cls.location_display(location)
-                if content_type == 'site':
-                    raise IntegrityError("There is already a survey for {0} for the month {1} and location {2}. Please delete the existing survey first if you're trying to replace it.".format(content_object.name, date_string, location))
-                else:
-                    raise IntegrityError("There is already a survey for {0} for the month {1}. Please delete the existing survey first if you're trying to replace it.".format(content_object.name, date_string))
+                raise IntegrityError("There is already a survey for {0} for the month {1} and location {2}. Please delete the existing survey first if you're trying to replace it.".format(content_object.name, date_string, location))
 
         return created
 

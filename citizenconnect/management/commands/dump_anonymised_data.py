@@ -1,7 +1,13 @@
 from django.core.management.base import NoArgsCommand
 from django.core import serializers
 
-from organisations.models import Service, Organisation, OrganisationParent, CCG
+from organisations.models import (
+    Service,
+    Organisation,
+    OrganisationParent,
+    CCG,
+    FriendsAndFamilySurvey
+)
 from reviews_display.models import Review, Rating
 from news.models import Article
 
@@ -16,6 +22,7 @@ class Command(NoArgsCommand):
     organisations.OrganisationParent
     organisations.CCG
     organisations.Service
+    organisations.FriendsAndFamilySurvey
     reviews_display.Review
     reviews_display.Rating
     news.Article
@@ -61,6 +68,9 @@ class Command(NoArgsCommand):
         # Services
         objects.extend(Service.objects.all())
 
+        # Friends and Family Surveys
+        objects.extend(FriendsAndFamilySurvey.objects.all())
+
         # Reviews & Ratings
         objects.extend(Review.objects.all())
         objects.extend(Rating.objects.all())
@@ -75,7 +85,7 @@ class Command(NoArgsCommand):
 
         # If you dump any more objects, make sure to add them to this list too
         # otherwise we won't dump any of their fields for sure
-        model_classes = [CCG, OrganisationParent, Organisation, Service, Review, Rating, Article]
+        model_classes = [CCG, OrganisationParent, Organisation, Service, FriendsAndFamilySurvey, Review, Rating, Article]
 
         for model_class in model_classes:
             # These two fields on the _meta are what
