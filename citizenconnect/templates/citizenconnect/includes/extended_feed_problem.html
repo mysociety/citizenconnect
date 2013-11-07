@@ -13,5 +13,5 @@
         {% endif %}
     </span>
 
-    <h3><span class="live-feed__item__type">Problem: </span><a href="{% url 'problem-view' pk=problem.id cobrand=cobrand.name %}"><span class="live-feed__item__category">{{ problem.get_category_display }}</span> - {{ problem.summary|default:"More details" }}</a></h3>
+    <h3><span class="live-feed__item__type">Problem: </span><a href="{% url 'problem-view' pk=problem.id cobrand=cobrand.name %}"><span class="live-feed__item__category">{{ problem.get_category_display }}</span> - <span class="live-feed__problem-summary">{{ problem.summary|default:"More details" }}</span></a></h3>
 </li>
