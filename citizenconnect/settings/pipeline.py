@@ -115,6 +115,21 @@ PIPELINE_JS = {
         ),
         'output_filename': 'js/review-form.min.js'
     },
+    'survey_page': {
+        'source_filenames': (
+            'js/jquery.flot.js',
+            'js/jquery.flot.categories.js',
+            'js/jquery.flot.resize.js',
+            'js/survey-page.js',
+        ),
+        'output_filename': 'js/jquery.flot.min.js'
+    },
+    'excanvas': {
+        'source_filenames': (
+            'js/excanvas.js',
+        ),
+        'output_filename': 'js/excanvas.min.js'
+    },
     'live_feed': {
         'source_filenames': (
             'js/live-feed.js',

@@ -82,6 +82,7 @@ class FriendsAndFamilySurveyFormTests(TransactionTestCase):
         }
         self.trust_test_data = {
             'csv_file': self.trust_fixture_file,
+            'location': 'aande',
             'context': 'trust',
             'month_month': 1,
             'month_year': 2013
@@ -103,13 +104,7 @@ class FriendsAndFamilySurveyFormTests(TransactionTestCase):
         self.assertFormError(resp, 'form', 'csv_file', 'This field is required.')
         self.assertFormError(resp, 'form', 'context', 'This field is required.')
         self.assertFormError(resp, 'form', 'month', 'This field is required.')
-
-    def test_location_required_for_site_files(self):
-        self.login_as(self.superuser)
-        test_data = self.site_test_data.copy()
-        del test_data['location']
-        resp = self.client.post(self.form_url, test_data)
-        self.assertFormError(resp, 'form', 'location', 'Location is required for Site files.')
+        self.assertFormError(resp, 'form', 'location', 'This field is required.')
 
     def test_happy_path_sites(self):
         self.login_as(self.superuser)
@@ -151,7 +146,7 @@ class FriendsAndFamilySurveyFormTests(TransactionTestCase):
 
         self.assertEqual(self.test_trust.surveys.all().count(), 1)
         trust_survey = self.test_trust.surveys.all()[0]
-        self.assertEqual(trust_survey.location, '')
+        self.assertEqual(trust_survey.location, 'aande')
         self.assertEqual(trust_survey.date, expected_date)
         self.assertEqual(trust_survey.overall_score, 79)
         self.assertEqual(trust_survey.extremely_likely, 346)
@@ -165,7 +160,7 @@ class FriendsAndFamilySurveyFormTests(TransactionTestCase):
         # testing I added one in the fixture
         self.assertEqual(self.test_gp_surgery.surveys.all().count(), 1)
         other_trust_survey = self.test_gp_surgery.surveys.all()[0]
-        self.assertEqual(other_trust_survey.location, '')
+        self.assertEqual(other_trust_survey.location, 'aande')
         self.assertEqual(other_trust_survey.date, expected_date)
         self.assertEqual(other_trust_survey.overall_score, 57)
         self.assertEqual(other_trust_survey.extremely_likely, 100)
@@ -216,9 +211,9 @@ class FriendsAndFamilySurveyFormTests(TransactionTestCase):
             )
         )
         test_data['csv_file'] = missing_org_fixture_file
-        resp = self.client.post(self.form_url, test_data)
-        self.assertContains(resp, "Organisation with site code: NOTVALID (Test Organisation) is not in the database.")
-        self.assertEqual(FriendsAndFamilySurvey.objects.all().count(), 0)
+        self.client.post(self.form_url, test_data)
+        # Should skip the bad orgs and just save the good ones
+        self.assertEqual(FriendsAndFamilySurvey.objects.all().count(), 1)
 
     def test_missing_trust(self):
         self.login_as(self.superuser)
@@ -231,9 +226,9 @@ class FriendsAndFamilySurveyFormTests(TransactionTestCase):
             )
         )
         test_data['csv_file'] = missing_trust_fixture_file
-        resp = self.client.post(self.form_url, test_data)
-        self.assertContains(resp, "OrganisationParent with code: NOTVALID (Test Trust) is not in the database.")
-        self.assertEqual(FriendsAndFamilySurvey.objects.all().count(), 0)
+        self.client.post(self.form_url, test_data)
+        # Should skip the bad trusts and just save the good ones
+        self.assertEqual(FriendsAndFamilySurvey.objects.all().count(), 1)
 
     def test_duplicate_org_survey(self):
         self.login_as(self.superuser)
@@ -279,12 +274,13 @@ class FriendsAndFamilySurveyFormTests(TransactionTestCase):
         )
         trust_test_data = {
             'csv_file': trust_fixture_file,
+            'location': 'aande',
             'context': 'trust',
             'month_month': 1,
             'month_year': 2013
         }
 
         resp = self.client.post(self.form_url, trust_test_data)
-        self.assertContains(resp, "There is already a survey for Test Trust for the month January, 2013. Please delete the existing survey first if you&#39;re trying to replace it.")
+        self.assertContains(resp, "There is already a survey for Test Trust for the month January, 2013 and location A&amp;E. Please delete the existing survey first if you&#39;re trying to replace it.")
         self.assertEqual(FriendsAndFamilySurvey.objects.all().count(), 2)
 

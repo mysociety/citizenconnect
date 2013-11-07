@@ -226,22 +226,20 @@ class SurveyAdminCSVUploadForm(forms.Form):
     )
 
     location = forms.ChoiceField(
-        choices=[['', 'Select a location']] + settings.SURVEY_LOCATION_CHOICES,
-        required=False,
-        help_text="Optional, surveys for Trusts don't need a location.")
+        choices=[['', 'Select a service']] + settings.SURVEY_LOCATION_CHOICES
+    )
 
     context = forms.ChoiceField(choices=(('trust', 'Trust'), ('site', 'Site')))
 
     month = forms.DateField(widget=MonthYearWidget)
 
-    def clean(self):
-        cleaned_data = super(SurveyAdminCSVUploadForm, self).clean()
-        context = cleaned_data.get('context', None)
-        location = cleaned_data.get('location', None)
-        if context and context == 'site':
-            if not location and location not in self._errors:
-                # Location should be specified if you're uploading csvs for sites
-                self._errors['location'] = self.error_class(["Location is required for Site files."])
-                del cleaned_data['location']
 
-        return cleaned_data
+class SurveyLocationForm(forms.Form):
+    """A Form for the survey page on organisations that lets you choose a
+    location to show surveys for."""
+
+    location = forms.ChoiceField(
+        label="Select a service:",
+        choices=settings.SURVEY_LOCATION_CHOICES,
+        required=False
+    )
