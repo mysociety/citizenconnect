@@ -1,14 +1,14 @@
+<p>How likely are patients to recommend the NHS service they have received to friends and family who need similar treatment or care?</p>
 <div class="gw">
     <div class="g  one-half  palm-one-whole">
         <div class="survey__summary  mb  gw  gw--no-gutters">
             <div class="survey__overall  g  one-quarter  portable-one-third"><h3 class="hide-text">Overall</h3><span>{{ latest_survey.overall_score }}</span></div>
             <div class="survey__text  g  three-quarters  portable-two-thirds">
                 <h3>{{ latest_survey.date|date:'F, Y' }}</h3>
-                <p class="survey__explanation">An initial indicator of how likely patients are to recommend this service to friends and family.</p>
+                <p class="survey__explanation">The score is calculated using ‘net promoter score’ methodology. For more information please see the <a href="http://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2013/07/Publication-Guidance.pdf">FFT Guidance</a>.</p>
             </div>
         </div>
-        <p>The Friends and Family Test (FFT) is a measure of patient experience and is used to highlight areas where action may be needed to be taken to improve quality of care.</p>
-        <p>The FFT is calculated using a simple question asked of patients based on their own experience: &#8220;How likely are you to recommend our ward/A&amp;E department to friends and family if they needed similar care or treatment?&#8221;. Patients can then select from six responses ranging from &#8216;extremely likely&#8217; through to &#8216;extremely unlikely&#8217;.</p>
+        <p>The Friends and Family Test (FFT) is a survey which gives patients an opportunity to give feedback on the quality of the care they receive. This gives hospitals a better understanding of their patients needs, enabling them to make improvements.</p>
     </div>
      <div class="g  one-half  palm-one-whole  survey__responses  mb">
         {% include 'organisations/includes/survey_response.html' with label="Extremely likely" response_percentage=latest_survey.extremely_likely_percentage response_value=latest_survey.extremely_likely %}
