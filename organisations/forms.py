@@ -226,8 +226,8 @@ class SurveyAdminCSVUploadForm(forms.Form):
     )
 
     location = forms.ChoiceField(
-        choices=[['', 'Select a service']] + settings.SURVEY_LOCATION_CHOICES,
-        help_text="Optional, surveys for Trusts don't need a service.")
+        choices=[['', 'Select a service']] + settings.SURVEY_LOCATION_CHOICES
+    )
 
     context = forms.ChoiceField(choices=(('trust', 'Trust'), ('site', 'Site')))
 
