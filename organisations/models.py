@@ -219,12 +219,14 @@ class FriendsAndFamilySurvey(AuditedModel):
 
             try:
                 overall_score = int(row['Friends and Family Test Score'])
-                extremely_likely = int(row['Extremely Likely'])
-                likely = int(row['Likely'])
-                neither = int(row['Neither'])
-                unlikely = int(row['Unlikely'])
-                extremely_unlikely = int(row['Extremely Unlikely'])
-                dont_know = int(row['Don\'t Know'])
+                # We do replace(',', '') on these values because sometimes they
+                # contain thousands like "1,700"
+                extremely_likely = int(row['Extremely Likely'].replace(',', ''))
+                likely = int(row['Likely'].replace(',', ''))
+                neither = int(row['Neither'].replace(',', ''))
+                unlikely = int(row['Unlikely'].replace(',', ''))
+                extremely_unlikely = int(row['Extremely Unlikely'].replace(',', ''))
+                dont_know = int(row['Don\'t Know'].replace(',', ''))
             except (KeyError, ValueError):
                 raise ValueError("Could not retrieve one of the score fields from the csv for: {0}, or the data is not a valid score.".format(content_object.name))
 
