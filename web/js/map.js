@@ -148,16 +148,19 @@ $(document).ready(function () {
     });
 
     $searchBox.on('change', function(e) {
-        $('#id_organisation_type').val('').trigger('change');
-
         var selection = e.added;
         if (selection.type === 'organisation') {
             var odsCode = selection.id;
             openPopupFor = odsCode;
-            zoomToPoint(selection.lat, selection.lon);
-        } else {
-            zoomToPoint(selection.lat, selection.lon);
         }
+
+        // Reset the organisation type filter, because we could have picked
+        // any org type, so we want the filters to not contradict that
+        $('#id_organisation_type').val('').trigger('update');
+        $(".filters").trigger("CitizenConnect.filters.update");
+
+        // Show the selected point
+        zoomToPoint(selection.lat, selection.lon);
     });
 
     var selectedProvider = $searchBox.val();

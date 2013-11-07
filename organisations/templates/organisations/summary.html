@@ -3,16 +3,16 @@
 {% load staticfiles %}
 {% load render_table from django_tables2 %}
 {% load compressed %}
-{% block title %}Overview of Participating Providers{% endblock %}
+{% block title %}Main Dashboard{% endblock %}
 
 {% block bodyclasses %}summary{% endblock %}
 
 {% block content %}
 
-  <a href="{% url 'org-map' cobrand=cobrand.name %}" class="back-btn  fr  mt--b"><span class="icon-chevron-left" aria-hidden="true"></span> View Map</a>
+  <a href="{% url 'org-map' cobrand=cobrand.name %}" class="btn  fr  mt--b">Go to Map</a>
 
 
-  <h1>Overview of Participating Providers</h1>
+  <h1>Main Dashboard</h1>
 
   {% include 'organisations/includes/filters.html' %}
 

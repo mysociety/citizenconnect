@@ -1,0 +1,17 @@
+{% load url from future %}
+
+<li class="live-feed__item">
+    <span class="live-feed__item__organisation"><a href="{% url 'public-org-summary' ods_code=problem.organisation.ods_code cobrand=cobrand.name %}">{{ problem.organisation.name }}</a></span>
+    <span class="live-feed-item__date">{{ problem.created }}</span>
+    <span class="live-feed-item__status">
+        {% if problem.status == problem.NEW %}
+            <span class="bordered-circle  bordered-circle--pink" aria-hidden="true"></span> Open
+        {% elif problem.status in problem.OPEN_STATUSES %}
+            <span class="bordered-circle  bordered-circle--orange" aria-hidden="true"></span> {{ problem.get_status_display }}
+        {% else %}
+            <span class="bordered-circle  bordered-circle--green" aria-hidden="true"></span> Closed
+        {% endif %}
+    </span>
+
+    <h3><span class="live-feed__item__type">Problem: </span><a href="{% url 'problem-view' pk=problem.id cobrand=cobrand.name %}"><span class="live-feed__item__category">{{ problem.get_category_display }}</span> - <span class="live-feed__problem-summary">{{ problem.summary|default:"More details" }}</span></a></h3>
+</li>

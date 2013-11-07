@@ -53,9 +53,6 @@ SITE_BASE_URL: 'http://localhost:8000'
 # The default email address which emails sent by the site will appear to come from
 DEFAULT_FROM_EMAIL: 'no-reply@example.com'
 
-# How many days to wait after a problem is reported before sending a survey
-SURVEY_INTERVAL_IN_DAYS: 21
-
 # The host to use for sending email.
 EMAIL_HOST: localhost
 
@@ -65,11 +62,6 @@ EMAIL_PORT: 25
 # The threshold in number of reports per interval to use for determining
 # inclusion in the national summary report
 SUMMARY_THRESHOLD: ['six_months', 6]
-
-# Customer Contact Centre email addresses.
-CUSTOMER_CONTACT_CENTRE_EMAIL_ADDRESSES:
-  - 'ccc@example.org'
-  - 'ccc-247@example.org'
 
 # What email address people should send site feedback to
 FEEDBACK_EMAIL_ADDRESS: feedback@example.com
@@ -108,3 +100,9 @@ USE_X_FORWARDED_HOST: False
 # Django's allowed hosts setting
 ALLOWED_HOSTS:
   - '.example.com'
+
+# How many days worth of reviews and problems to show on the live feed page
+LIVE_FEED_CUTOFF_DAYS: 30
+# How many items to show per-page on the live feed pages
+LIVE_FEED_PER_PAGE: 25
+

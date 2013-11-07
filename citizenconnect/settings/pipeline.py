@@ -38,6 +38,7 @@ PIPELINE_CSS = {
         'source_filenames': (
             'css/leaflet.css',
             'css/placeholder_polyfill.min.css',
+            'css/datepicker.css',
             'sass/default.scss',
             'css/select2/select2.css',
             'css/fancybox/jquery.fancybox-1.3.4.css',
@@ -63,6 +64,7 @@ PIPELINE_JS = {
             'js/jquery.fancybox-1.3.4.js',
             'js/fancybox-zoom.js',
             'js/jquery.scrollspy.js',
+            'js/bootstrap-datepicker.js',
             'js/side_nav.js',
             'js/tables.js',
             'js/filters.js',
@@ -112,5 +114,26 @@ PIPELINE_JS = {
             'js/jquery.rateit.js',
         ),
         'output_filename': 'js/review-form.min.js'
+    },
+    'survey_page': {
+        'source_filenames': (
+            'js/jquery.flot.js',
+            'js/jquery.flot.categories.js',
+            'js/jquery.flot.resize.js',
+            'js/survey-page.js',
+        ),
+        'output_filename': 'js/jquery.flot.min.js'
+    },
+    'excanvas': {
+        'source_filenames': (
+            'js/excanvas.js',
+        ),
+        'output_filename': 'js/excanvas.min.js'
+    },
+    'live_feed': {
+        'source_filenames': (
+            'js/live-feed.js',
+        ),
+        'output_filename': 'js/live-feed.min.js'
     },
 }

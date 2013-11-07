@@ -1,15 +1,22 @@
 # encoding: utf-8
+import datetime
 from decimal import Decimal
 
 # Django imports
 from django.core.urlresolvers import reverse
 
 # App imports
+from citizenconnect.browser_testing import SeleniumTestCase
 from issues.models import Problem
 
-from . import (create_test_problem,
-               create_test_service,
-               AuthorizationTestCase)
+from ..models import FriendsAndFamilySurvey
+
+from .lib import (
+    create_test_problem,
+    create_test_service,
+    create_test_organisation,
+    AuthorizationTestCase
+)
 
 
 class OrganisationSummaryTests(AuthorizationTestCase):
@@ -282,10 +289,12 @@ class OrganisationTabsTests(AuthorizationTestCase):
         self.summary_url = reverse('public-org-summary', kwargs={'ods_code': self.test_hospital.ods_code, 'cobrand': 'choices'})
         self.problems_url = reverse('public-org-problems', kwargs={'ods_code': self.test_hospital.ods_code, 'cobrand': 'choices'})
         self.reviews_url = reverse('public-org-reviews', kwargs={'ods_code': self.test_hospital.ods_code, 'cobrand': 'choices'})
+        self.surveys_url = reverse('public-org-surveys', kwargs={'ods_code': self.test_hospital.ods_code, 'cobrand': 'choices'})
         self.tab_urls = [
             self.reviews_url,
             self.problems_url,
-            self.summary_url
+            self.summary_url,
+            self.surveys_url
         ]
         self.login_as(self.trust_user)
 
@@ -305,3 +314,145 @@ class OrganisationTabsTests(AuthorizationTestCase):
             for url in self.tab_urls:
                 resp = self.client.get(url)
                 self._check_tabs(url, resp)
+
+
+class OrganisationSurveysTests(AuthorizationTestCase):
+    """Test that surveys show properly for an organisation"""
+
+    def setUp(self):
+        super(OrganisationSurveysTests, self).setUp()
+        self.survey_url = reverse('public-org-surveys', kwargs={'ods_code': self.test_hospital.ods_code, 'cobrand': 'choices'})
+
+    def test_survey_page_exists(self):
+        resp = self.client.get(self.survey_url)
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "Test Organisation Friends and Family Test")
+        self.assertContains(resp, "There are no surveys for Inpatient at Test Organisation at this time.")
+
+    def assert_contains_response_value(self, response, value):
+        """Helper method to check a response value is in an HttpResponse"""
+        response_html = '<span class="survey__response__value  fr">{0}</span>'.format(value)
+        self.assertContains(response, response_html)
+
+    def assert_contains_overall_value(self, response, value, date):
+        """Helper method to check an overall score is in an HttpResponse"""
+        month = date.strftime("%B")
+        month_year = date.strftime("%B, %Y")
+        overall_html = '<li class="survey__previous__overall" data-month="{0}" data-value="{1}">{2}: {1}</li>'.format(month, value, month_year)
+        self.assertContains(response, overall_html)
+
+    def test_survey_page_shows_surveys(self):
+        # Add a survey for test_hospital
+        survey = FriendsAndFamilySurvey.objects.create(
+            content_object=self.test_hospital,
+            location='inpatient',
+            overall_score=75,
+            extremely_likely=10,
+            likely=10,
+            neither=1,
+            unlikely=0,
+            extremely_unlikely=1,
+            dont_know=0,
+            date=datetime.date(2013, 1, 1)
+        )
+        resp = self.client.get(self.survey_url)
+        self.assertContains(resp, 'Inpatient')
+        self.assert_contains_response_value(resp, survey.extremely_likely)
+        self.assert_contains_response_value(resp, survey.likely)
+        self.assert_contains_response_value(resp, survey.neither)
+        self.assert_contains_response_value(resp, survey.unlikely)
+        self.assert_contains_response_value(resp, survey.extremely_unlikely)
+        self.assert_contains_response_value(resp, survey.dont_know)
+        self.assertContains(resp, '<span>{0}</span>'.format(survey.overall_score))
+        self.assertContains(resp, '<h3>{0}</h3>'.format(survey.date.strftime('%B, %Y')))
+        self.assertContains(resp, '<h3>Previous month\'s test scores</h3>')
+        self.assert_contains_overall_value(resp, survey.overall_score, survey.date)
+
+        # Now add some more surveys
+        extra_surveys = []
+        for month in [2,3,4,5,6,7]:
+            extra_surveys.append(FriendsAndFamilySurvey.objects.create(
+                content_object=self.test_hospital,
+                location='inpatient',
+                overall_score=75,
+                extremely_likely=10,
+                likely=10,
+                neither=1,
+                unlikely=0,
+                extremely_unlikely=1,
+                dont_know=0,
+                date=datetime.date(2013, month, 1)
+            ))
+        resp = self.client.get(self.survey_url)
+        # The most recent one won't be on here, as it'll be the main one now
+        self.assert_contains_overall_value(resp, 75, extra_surveys[1].date)
+        self.assert_contains_overall_value(resp, 75, extra_surveys[2].date)
+        self.assert_contains_overall_value(resp, 75, extra_surveys[3].date)
+        self.assert_contains_overall_value(resp, 75, extra_surveys[4].date)
+        self.assert_contains_overall_value(resp, 75, extra_surveys[5].date)
+        # We only show the most recent 6 months, so now the first one we added
+        # shouldn't be in the list either
+        self.assertNotContains(resp, '{0}'.format(survey.date.strftime('%B, %Y')))
+
+
+    def test_survey_page_allows_location_selection(self):
+        # Add a survey for test_hospital
+        survey = FriendsAndFamilySurvey.objects.create(
+            content_object=self.test_hospital,
+            location='aande',
+            overall_score=75,
+            extremely_likely=10,
+            likely=10,
+            neither=1,
+            unlikely=0,
+            extremely_unlikely=1,
+            dont_know=0,
+            date=datetime.date(2013, 1, 1)
+        )
+        # Choose the A&E location
+        resp = self.client.get("{0}?location=aande".format(self.survey_url))
+        self.assertContains(resp, 'A&amp;E')
+        self.assert_contains_response_value(resp, survey.extremely_likely)
+        self.assert_contains_response_value(resp, survey.likely)
+        self.assert_contains_response_value(resp, survey.neither)
+        self.assert_contains_response_value(resp, survey.unlikely)
+        self.assert_contains_response_value(resp, survey.extremely_unlikely)
+        self.assert_contains_response_value(resp, survey.dont_know)
+        self.assertContains(resp, '<span>{0}</span>'.format(survey.overall_score))
+        self.assertContains(resp, '<h3>{0}</h3>'.format(survey.date.strftime('%B, %Y')))
+        self.assertContains(resp, '<h3>Previous month\'s test scores</h3>')
+        self.assert_contains_overall_value(resp, survey.overall_score, survey.date)
+
+
+class OrganisationSurveysBrowserTests(SeleniumTestCase):
+
+    def setUp(self):
+        super(OrganisationSurveysBrowserTests, self).setUp()
+        self.test_organisation = create_test_organisation({})
+        self.surveys = []
+        for month in [1,2,3,4,5]:
+            self.surveys.append(FriendsAndFamilySurvey.objects.create(
+                content_object=self.test_organisation,
+                location='inpatient',
+                overall_score=75,
+                extremely_likely=10,
+                likely=10,
+                neither=1,
+                unlikely=0,
+                extremely_unlikely=1,
+                dont_know=0,
+                date=datetime.date(2013, month, 1)
+            ))
+        self.surveys_url = reverse('public-org-surveys', kwargs={'ods_code': self.test_organisation.ods_code, 'cobrand': 'choices'})
+
+    def test_graph_is_drawn(self):
+        self.driver.get(self.full_url(self.surveys_url))
+        graph_container = self.driver.find_element_by_css_selector('.survey__previous')
+        # Check the canvas is there and showing
+        canvas = graph_container.find_element_by_css_selector('canvas.flot-base')
+        self.assertTrue(canvas.is_displayed())
+        # Check the right months have been put into the graph
+        labels = graph_container.find_elements_by_css_selector('.flot-x-axis .flot-tick-label')
+        for index, survey in enumerate(self.surveys):
+            month_name = survey.date.strftime("%B")
+            self.assertEqual(labels[index].text, month_name)

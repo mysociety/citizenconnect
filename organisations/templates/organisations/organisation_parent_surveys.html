@@ -1,0 +1,52 @@
+{% extends "citizenconnect/base.html" %}
+{% load url from future %}
+{% load organisation_extras %}
+{% load compressed %}
+
+{% block title %}{{ organisation_parent.name }} Friends and Family{% endblock %}
+
+{% block bodyclasses %}organisation-parent-surveys{% endblock %}
+
+{% block content %}
+
+{% include "organisations/includes/page_header.html" with title=organisation_parent.name|add:" Friends and Family Test" %}
+
+{% include "organisations/includes/organisation_parent_tabs.html" with active_tab='surveys' %}
+
+<h2>How likely are people to recommend {{ organisation_parent.name }}?</h2>
+
+<div class="survey-header  gw  gw--no-gutters">
+    <div class="g  one-third  portable-one-half  palm-one-whole">
+        <h2 class="survey__title">{{ location }}</h2>
+    </div>
+    <div class="g  two-thirds  portable-one-half  palm-one-whole">
+        <form id="location-form" method="GET" action="{{ request.path }}" class="survey-filters">
+            <div class="filters__dropdown-wrap  fr">
+                <label for="id_location">{{ form.location.label }}</label>
+                <div class="filters__dropdown filters__dropdown--default">{{ form.location }}</div>
+            </div>
+            <div class="submit  fr">
+                <input type="submit" value="Select" class="btn  palm-one-whole">
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if survey %}
+    <div class="survey">
+        {% include 'organisations/includes/survey.html' with latest_survey=survey previous_surveys=previous_surveys %}
+    </div>
+{% else %}
+    <p>There are no surveys for {{ organisation_parent.name }} at this time.</p>
+{% endif %}
+
+<p><a href="http://www.england.nhs.uk/statistics/wp-content/uploads/sites/2/2013/07/Publication-Guidance.pdf"  target="_blank">See more information on these surveys</a></p>
+
+{% endblock %}
+
+{% block extra_js %}
+    {% compressed_js 'survey_page' %}
+    <!--[if lte IE 8]>
+        {% compressed_js 'excanvas' %}
+    <![endif]-->
+{% endblock extra_js %}

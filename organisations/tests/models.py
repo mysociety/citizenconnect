@@ -1,10 +1,14 @@
 import datetime
+import os
 
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
 from django.core import mail
 from django.contrib.gis.geos import Point
+from django.contrib.auth.models import User
 from django.utils.timezone import utc
 from django.core.exceptions import ValidationError
+from django.contrib.contenttypes.models import ContentType
+from django.db import IntegrityError, transaction
 
 from .lib import (create_test_organisation,
                   create_test_ccg,
@@ -12,9 +16,12 @@ from .lib import (create_test_organisation,
                   create_test_problem,
                   AuthorizationTestCase)
 
-from ..models import (Organisation,
-                      OrganisationParent,
-                      CCG)
+from ..models import (
+    Organisation,
+    OrganisationParent,
+    CCG,
+    FriendsAndFamilySurvey
+)
 
 
 class OrganisationParentModelTests(TestCase):
@@ -245,3 +252,370 @@ class OrganisationParentModelSendMailTests(CreateTestOrganisationParentMixin, Se
 
 class CCGModelSendMailTests(CreateTestCCGMixin, SendMailTestsMixin, TestCase):
     pass
+
+
+class FriendsAndFamilySurveyModelTests(TransactionTestCase):
+
+    fixtures = ['development_users.json']
+
+    def setUp(self):
+        super(FriendsAndFamilySurveyModelTests, self).setUp()
+
+
+        # Below bits copied from AuthorizationTestCase because that's not a
+        # TransactionTestCase and we need to be to test IntegrityErrors
+
+        # CCGs
+        self.test_ccg = create_test_ccg()
+        self.other_test_ccg = create_test_ccg({'name': 'other test ccg', 'code': 'XYZ'})
+
+        # Organisation Parent
+        self.test_trust = create_test_organisation_parent({'primary_ccg': self.test_ccg})
+        self.test_gp_surgery = create_test_organisation_parent({'name': 'other test trust',
+                                                                'code': 'XYZ',
+                                                                'primary_ccg': self.other_test_ccg})
+
+        self.test_trust.ccgs.add(self.test_ccg)
+        self.test_trust.save()
+        self.test_gp_surgery.ccgs.add(self.other_test_ccg)
+        self.test_gp_surgery.save()
+
+        # Organisations
+        self.test_hospital = create_test_organisation({'organisation_type': 'hospitals',
+                                                       'parent': self.test_trust,
+                                                       'point': Point(-0.2, 51.5)})
+        self.test_gp_branch = create_test_organisation({'ods_code': '12345',
+                                                        'name': 'Test GP Branch',
+                                                        'parent': self.test_gp_surgery,
+                                                        'point': Point(-0.1, 51.5)})
+
+        # Users
+        self.test_password = 'password'
+
+        # A Django superuser
+        self.superuser = User.objects.get(pk=1)
+
+        self.site_fixture_file = open(
+            os.path.join(
+                os.path.dirname(__file__),
+                'fixtures',
+                'fft_survey_site.csv'
+            )
+        )
+
+        self.trust_fixture_file = open(
+            os.path.join(
+                os.path.dirname(__file__),
+                'fixtures',
+                'fft_survey_trust.csv'
+            )
+        )
+
+    def login_as(self, user):
+        logged_in = self.client.login(username=user.username, password=self.test_password)
+        self.assertTrue(logged_in)
+
+    def test_can_be_assigned_to_org_or_parent(self):
+
+        organisation_type = ContentType.objects.get(
+            app_label='organisations',
+            model='organisation'
+        )
+        organisation_parent_type = ContentType.objects.get(
+            app_label='organisations',
+            model='organisationparent'
+        )
+
+        now = datetime.date.today()
+
+        FriendsAndFamilySurvey.objects.create(
+            content_object=self.test_hospital,
+            location='ande',
+            overall_score=75,
+            extremely_likely=10,
+            likely=10,
+            neither=1,
+            unlikely=0,
+            extremely_unlikely=1,
+            dont_know=0,
+            date=now
+        )
+
+        FriendsAndFamilySurvey.objects.create(
+            content_object=self.test_trust,
+            location='ande',
+            overall_score=78,
+            extremely_likely=10,
+            likely=10,
+            neither=1,
+            unlikely=0,
+            extremely_unlikely=1,
+            dont_know=0,
+            date=now
+        )
+
+        # These would error and fail the test if the things weren't in the DB
+        FriendsAndFamilySurvey.objects.get(
+            content_type=organisation_type,
+            object_id=self.test_hospital.id
+        )
+        FriendsAndFamilySurvey.objects.get(
+            content_type=organisation_parent_type,
+            object_id=self.test_trust.id
+        )
+
+        self.assertEqual(self.test_hospital.surveys.all().count(), 1)
+
+    def test_duplicate_site_surveys_not_allowed(self):
+        now = datetime.date.today()
+
+        survey = FriendsAndFamilySurvey(
+            content_object=self.test_hospital,
+            location='ande',
+            overall_score=75,
+            extremely_likely=10,
+            likely=10,
+            neither=1,
+            unlikely=0,
+            extremely_unlikely=1,
+            dont_know=0,
+            date=now
+        )
+        survey.save()
+
+        with self.assertRaises(IntegrityError):
+            survey = FriendsAndFamilySurvey(
+                content_object=self.test_hospital,
+                location='ande',
+                overall_score=75,
+                extremely_likely=10,
+                likely=10,
+                neither=1,
+                unlikely=0,
+                extremely_unlikely=1,
+                dont_know=0,
+                date=now
+            )
+            survey.save()
+
+    def test_duplicate_trust_surveys_not_allowed(self):
+        now = datetime.date.today()
+
+        survey = FriendsAndFamilySurvey(
+            content_object=self.test_trust,
+            location='ande',
+            overall_score=78,
+            extremely_likely=10,
+            likely=10,
+            neither=1,
+            unlikely=0,
+            extremely_unlikely=1,
+            dont_know=0,
+            date=now
+        )
+        survey.save()
+
+        with self.assertRaises(IntegrityError):
+            survey = FriendsAndFamilySurvey(
+                content_object=self.test_trust,
+                location='ande',
+                overall_score=78,
+                extremely_likely=10,
+                likely=10,
+                neither=1,
+                unlikely=0,
+                extremely_unlikely=1,
+                dont_know=0,
+                date=now
+            )
+            survey.save()
+            transaction.rollback()
+
+    def test_process_csv_sites(self):
+        today = datetime.date.today()
+
+        created = FriendsAndFamilySurvey.process_csv(self.site_fixture_file, today, 'site', 'aande')
+
+        self.assertEqual(len(created), 2)
+
+        self.assertEqual(self.test_hospital.surveys.all().count(), 1)
+        hospital_survey = self.test_hospital.surveys.all()[0]
+        self.assertEqual(hospital_survey.date, today)
+        self.assertEqual(hospital_survey.location, 'aande')
+        self.assertEqual(hospital_survey.overall_score, 79)
+        self.assertEqual(hospital_survey.extremely_likely, 346)
+        self.assertEqual(hospital_survey.likely, 79)
+        self.assertEqual(hospital_survey.neither, 6)
+        self.assertEqual(hospital_survey.unlikely, 0)
+        self.assertEqual(hospital_survey.extremely_unlikely, 0)
+        self.assertEqual(hospital_survey.dont_know, 67)
+
+        # Surveys won't normally be logged against GPs, but for the sake of
+        # testing I added one in the fixture
+        self.assertEqual(self.test_gp_branch.surveys.all().count(), 1)
+        gp_survey = self.test_gp_branch.surveys.all()[0]
+        self.assertEqual(gp_survey.date, today)
+        self.assertEqual(gp_survey.location, 'aande')
+        self.assertEqual(gp_survey.overall_score, 83)
+        self.assertEqual(gp_survey.extremely_likely, 223)
+        self.assertEqual(gp_survey.likely, 83)
+        self.assertEqual(gp_survey.neither, 6)
+        self.assertEqual(gp_survey.unlikely, 1)
+        self.assertEqual(gp_survey.extremely_unlikely, 0)
+        self.assertEqual(gp_survey.dont_know, 59)
+
+    def test_process_csv_trusts(self):
+        today = datetime.date.today()
+
+        created = FriendsAndFamilySurvey.process_csv(self.trust_fixture_file, today, 'trust', 'aande')
+
+        self.assertEqual(len(created), 2)
+
+        self.assertEqual(self.test_trust.surveys.all().count(), 1)
+        trust_survey = self.test_trust.surveys.all()[0]
+        self.assertEqual(trust_survey.location, 'aande')
+        self.assertEqual(trust_survey.date, today)
+        self.assertEqual(trust_survey.overall_score, 79)
+        self.assertEqual(trust_survey.extremely_likely, 346)
+        self.assertEqual(trust_survey.likely, 79)
+        self.assertEqual(trust_survey.neither, 6)
+        self.assertEqual(trust_survey.unlikely, 0)
+        self.assertEqual(trust_survey.extremely_unlikely, 0)
+        self.assertEqual(trust_survey.dont_know, 67)
+
+        # Surveys won't normally be logged against GPs, but for the sake of
+        # testing I added one in the fixture
+        self.assertEqual(self.test_gp_surgery.surveys.all().count(), 1)
+        other_trust_survey = self.test_gp_surgery.surveys.all()[0]
+        self.assertEqual(other_trust_survey.location, 'aande')
+        self.assertEqual(other_trust_survey.date, today)
+        self.assertEqual(other_trust_survey.overall_score, 57)
+        self.assertEqual(other_trust_survey.extremely_likely, 100)
+        self.assertEqual(other_trust_survey.likely, 57)
+        self.assertEqual(other_trust_survey.neither, 3)
+        self.assertEqual(other_trust_survey.unlikely, 0)
+        self.assertEqual(other_trust_survey.extremely_unlikely, 1)
+        self.assertEqual(other_trust_survey.dont_know, 47)
+
+    def test_missing_org_csv(self):
+        today = datetime.date.today()
+
+        missing_org_fixture_file = open(
+            os.path.join(
+                os.path.dirname(__file__),
+                'fixtures',
+                'fft_survey_missing_site.csv'
+            )
+        )
+
+        FriendsAndFamilySurvey.process_csv(missing_org_fixture_file, today, 'site', 'aande')
+        # Should skip the missing site and only add a survey for the good one
+        self.assertEqual(FriendsAndFamilySurvey.objects.all().count(), 1)
+
+    def test_missing_trust_csv(self):
+        today = datetime.date.today()
+
+        missing_trust_fixture_file = open(
+            os.path.join(
+                os.path.dirname(__file__),
+                'fixtures',
+                'fft_survey_missing_trust.csv'
+            )
+        )
+
+        FriendsAndFamilySurvey.process_csv(missing_trust_fixture_file, today, 'trust', 'aande')
+        # Should skip the missing trust and only add a survey for the good one
+        self.assertEqual(FriendsAndFamilySurvey.objects.all().count(), 1)
+
+    def test_missing_fields_csv(self):
+        today = datetime.date.today()
+
+        missing_field_fixture_file = open(
+            os.path.join(
+                os.path.dirname(__file__),
+                'fixtures',
+                'fft_survey_missing_field.csv'
+            )
+        )
+
+        with self.assertRaises(ValueError) as cm:
+            FriendsAndFamilySurvey.process_csv(missing_field_fixture_file, today, 'site', 'aande')
+            self.assertEqual(cm.exception.message, "Could not retrieve one of the score fields from the csv for: Test Organisation, or the data is not a valid score.")
+
+    def test_bad_fields_csv(self):
+        today = datetime.date.today()
+
+        bad_field_fixture_file = open(
+            os.path.join(
+                os.path.dirname(__file__),
+                'fixtures',
+                'fft_survey_bad_field.csv'
+            )
+        )
+
+        with self.assertRaises(ValueError) as cm:
+            FriendsAndFamilySurvey.process_csv(bad_field_fixture_file, today, 'site', 'aande')
+            self.assertEqual(cm.exception.message, "Could not retrieve one of the score fields from the csv for: Test Organisation, or the data is not a valid score.")
+
+    def test_duplicate_site_csv(self):
+        today = datetime.date.today()
+
+        # Put the csv through once, should work fine
+        FriendsAndFamilySurvey.process_csv(self.site_fixture_file, today, 'site', 'aande')
+        # Put it through again and we should get an IntegrityError
+        with self.assertRaises(Exception) as cm:
+            FriendsAndFamilySurvey.process_csv(self.site_fixture_file, today, 'site', 'aande')
+            self.assertEqual(cm.exception.message, "There is already a survey for Test Organisation for the month January, 2013 and location A&E. Please delete the existing survey first if you're trying to replace it.")
+
+    def test_duplicate_trust_csv(self):
+        today = datetime.date.today()
+
+        # Put the csv through once, should work fine
+        FriendsAndFamilySurvey.process_csv(self.trust_fixture_file, today, 'trust', 'aande')
+        # Put it through again and we should get an IntegrityError
+        with self.assertRaises(Exception) as cm:
+            FriendsAndFamilySurvey.process_csv(self.trust_fixture_file, today, 'trust', 'aande')
+            self.assertEqual(cm.exception.message, "There is already a survey for Test Trust for the month January, 2013 and location A&E. Please delete the existing survey first if you're trying to replace it.")
+
+    def test_total_responses(self):
+        now = datetime.date.today()
+
+        survey = FriendsAndFamilySurvey(
+            content_object=self.test_trust,
+            location='aande',
+            overall_score=78,
+            extremely_likely=10,
+            likely=10,
+            neither=1,
+            unlikely=0,
+            extremely_unlikely=1,
+            dont_know=0,
+            date=now
+        )
+        survey.save()
+
+        self.assertEqual(survey.total_responses, 22)
+
+    def test_percentages(self):
+        now = datetime.date.today()
+
+        survey = FriendsAndFamilySurvey(
+            content_object=self.test_trust,
+            location='aande',
+            overall_score=78,
+            extremely_likely=10,
+            likely=10,
+            neither=1,
+            unlikely=0,
+            extremely_unlikely=1,
+            dont_know=0,
+            date=now
+        )
+        survey.save()
+
+        self.assertAlmostEqual(survey.extremely_likely_percentage, 45.45, places=2)
+        self.assertAlmostEqual(survey.likely_percentage, 45.45, places=2)
+        self.assertAlmostEqual(survey.neither_percentage, 4.55, places=2)
+        self.assertAlmostEqual(survey.unlikely_percentage, 0, places=2)
+        self.assertAlmostEqual(survey.extremely_unlikely_percentage, 4.55, places=2)
+        self.assertAlmostEqual(survey.dont_know_percentage, 0, places=2)

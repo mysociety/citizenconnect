@@ -290,12 +290,6 @@ class ResponseFormViewTests(AuthorizationTestCase):
         resp = self.client.get(self.response_form_url)
         self.assertEqual(resp.status_code, 403)
 
-    def test_customer_contact_centre_users_can_respond(self):
-        self.client.logout()
-        self.login_as(self.customer_contact_centre_user)
-        resp = self.client.get(self.response_form_url)
-        self.assertEqual(resp.status_code, 200)
-
     def test_version_cleared_when_form_valid_even_if_no_response(self):
         # The view has to call the unset method when no response is given
         # because it doesn't call form.save()

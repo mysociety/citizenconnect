@@ -1,14 +1,17 @@
 import logging
 logger = logging.getLogger(__name__)
+import csv
 
 from django.contrib.gis.db import models as geomodels
 from django.conf import settings
-from django.db import models
-from django.db import connection
+from django.db import models, connection, IntegrityError, transaction
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User, Group
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
+from django.utils.encoding import force_unicode
 
 from citizenconnect.models import (
     AuditedModel,
@@ -68,8 +71,8 @@ class CCG(MailSendMixin, AuditedModel):
         if user.is_superuser:
             return True
 
-        # NHS Superusers, Case Handlers and Customer Contact Centre users - YES
-        if user_in_groups(user, [auth.NHS_SUPERUSERS, auth.CASE_HANDLERS, auth.CUSTOMER_CONTACT_CENTRE]):
+        # NHS Superusers, Case Handlers - YES
+        if user_in_groups(user, [auth.NHS_SUPERUSERS, auth.CASE_HANDLERS]):
             return True
 
         # Users in this ccg - YES
@@ -91,6 +94,179 @@ class CCG(MailSendMixin, AuditedModel):
 
     def __unicode__(self):
         return self.name
+
+
+class FriendsAndFamilySurvey(AuditedModel):
+    """Stores the monthly results of a survey conducted of patients in a
+    particular ward of a hospital, or a particular NHS Trust"""
+
+    # These three fields are so that we can foreign key to both Organisations and
+    # OrganisationParents in one relation.
+    # See: https://docs.djangoproject.com/en/1.4/ref/contrib/contenttypes/
+
+    # These two fields effectively "id" the Organisation or OrganisationParent
+    # that a survey is related to
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    # This will point to the Organisation or OrganisationParent we're related
+    # to, but you can't use it in filter(), etc - it doesn't work like that.
+    content_object = generic.GenericForeignKey()
+
+    # The overall score (between -100 and 100)
+    overall_score = models.IntegerField()
+
+    # Individual numbers for different responses
+    extremely_likely = models.PositiveIntegerField()
+    likely = models.PositiveIntegerField()
+    neither = models.PositiveIntegerField()
+    unlikely = models.PositiveIntegerField()
+    extremely_unlikely = models.PositiveIntegerField()
+    dont_know = models.PositiveIntegerField()
+
+    # Where this survey was performed, usually a hospital ward such as A&E.
+    location = models.CharField(
+        max_length=100,
+        db_index=True,
+        choices=settings.SURVEY_LOCATION_CHOICES
+    )
+
+    # When this survey was taken. Really, this is just the month/year, the day
+    # is irrelevant, but it's easier to sort and filter by date if we store it
+    # in a DateField.
+    date = models.DateField(db_index=True)
+
+    @property
+    def total_responses(self):
+        return (
+            self.extremely_likely +
+            self.likely +
+            self.neither +
+            self.unlikely +
+            self.extremely_unlikely +
+            self.dont_know
+        )
+
+    def calculate_percentage(self, num_responses):
+        return (float(num_responses) / float(self.total_responses)) * 100
+
+    @property
+    def extremely_likely_percentage(self):
+        return self.calculate_percentage(self.extremely_likely)
+
+    @property
+    def likely_percentage(self):
+        return self.calculate_percentage(self.likely)
+
+    @property
+    def neither_percentage(self):
+        return self.calculate_percentage(self.neither)
+
+    @property
+    def unlikely_percentage(self):
+        return self.calculate_percentage(self.unlikely)
+
+    @property
+    def extremely_unlikely_percentage(self):
+        return self.calculate_percentage(self.extremely_unlikely)
+
+    @property
+    def dont_know_percentage(self):
+        return self.calculate_percentage(self.dont_know)
+
+    @classmethod
+    def location_display(cls, location):
+        """Normal Django get_FOO_display only works on instances, not passed
+        values."""
+
+        # Copied from django.db.models.base._get_FIELD_display and tweaked a bit
+        return force_unicode(
+            dict(settings.SURVEY_LOCATION_CHOICES).get(location, location),
+            strings_only=True
+        )
+
+    @classmethod
+    @transaction.commit_on_success
+    def process_csv(cls, csv_file, month, content_type, location=None):
+        """Process a csv file of multiple surveys for either a Site (hospital)
+        or a Trust and create objects for them.
+
+        Returns an array of the created models."""
+
+        if not content_type == 'site' and not content_type == 'trust':
+            raise ValueError("Unknown content_type")
+
+        created = []
+
+        csv_reader = csv.DictReader(csv_file, delimiter=',', quotechar='"')
+        for row in csv_reader:
+
+            # Work out the content_object the survey is for
+            content_object = None
+            if content_type == "site":
+                site_code = row['Site Code']
+                try:
+                    content_object = Organisation.objects.get(ods_code=site_code)
+                except Organisation.DoesNotExist:
+                    # Skip this row
+                    continue
+            else:
+                code = row['Code']
+                try:
+                    content_object = OrganisationParent.objects.get(code=code)
+                except OrganisationParent.DoesNotExist:
+                    # Skip this row
+                    continue
+
+            try:
+                overall_score = int(row['Friends and Family Test Score'])
+                # We do replace(',', '') on these values because sometimes they
+                # contain thousands like "1,700"
+                extremely_likely = int(row['Extremely Likely'].replace(',', ''))
+                likely = int(row['Likely'].replace(',', ''))
+                neither = int(row['Neither'].replace(',', ''))
+                unlikely = int(row['Unlikely'].replace(',', ''))
+                extremely_unlikely = int(row['Extremely Unlikely'].replace(',', ''))
+                dont_know = int(row['Don\'t Know'].replace(',', ''))
+            except (KeyError, ValueError):
+                raise ValueError("Could not retrieve one of the score fields from the csv for: {0}, or the data is not a valid score.".format(content_object.name))
+
+            try:
+                survey = FriendsAndFamilySurvey(
+                    content_object=content_object,
+                    overall_score=overall_score,
+                    extremely_likely=extremely_likely,
+                    likely=likely,
+                    neither=neither,
+                    unlikely=unlikely,
+                    extremely_unlikely=extremely_unlikely,
+                    dont_know=dont_know,
+                    date=month,
+                    location=location
+                )
+
+                survey.save()
+
+                created.append(survey)
+            except IntegrityError:
+                transaction.rollback()
+                date_string = month.strftime("%B, %Y")
+                location = cls.location_display(location)
+                raise IntegrityError("There is already a survey for {0} for the month {1} and location {2}. Please delete the existing survey first if you're trying to replace it.".format(content_object.name, date_string, location))
+
+        return created
+
+    def __unicode__(self):
+        if self.location:
+            return "{0} - {1} - {2}".format(self.content_object.name, self.date, self.get_location_display())
+        else:
+            return "{0} - {1}".format(self.content_object.name, self.date)
+
+    class Meta:
+        # We can only have one survey per org/parent, per month, per location
+        # IE: you can't survey the A&E ward in one hospital twice in the same
+        # month
+        unique_together = ('content_type', 'object_id', 'date', 'location')
+        ordering = ['-date']
 
 
 class OrganisationParent(MailSendMixin, AuditedModel):
@@ -130,6 +306,9 @@ class OrganisationParent(MailSendMixin, AuditedModel):
     # this parent's organisations.
     ccgs = models.ManyToManyField(CCG, related_name='organisation_parents')
 
+    # Reverse relation to Surveys
+    surveys = generic.GenericRelation(FriendsAndFamilySurvey)
+
     def save(self, *args, **kwargs):
         """Overriden save to ensure email address is set"""
         if not self.email:
@@ -148,10 +327,8 @@ class OrganisationParent(MailSendMixin, AuditedModel):
         if user.is_superuser:
             return True
 
-        # NHS Superusers, Moderators or customer contact centre users - YES
-        if user_in_groups(user, [auth.NHS_SUPERUSERS,
-                                 auth.CASE_HANDLERS,
-                                 auth.CUSTOMER_CONTACT_CENTRE]):
+        # NHS Superusers, Moderators - YES
+        if user_in_groups(user, [auth.NHS_SUPERUSERS, auth.CASE_HANDLERS]):
             return True
 
         # Users in this Parent - YES
@@ -247,6 +424,11 @@ class Organisation(AuditedModel, geomodels.Model):
 
     # Image of the organisation
     image = sorlImageField(upload_to=organisation_image_upload_path, validators=[validate_file_extension], blank=True)
+
+    # Reverse relation to Surveys - this helps us get the surveys for an
+    # Organisation easily, because querying them directly with an Organisation
+    # is a bit clunky
+    surveys = generic.GenericRelation(FriendsAndFamilySurvey)
 
     @property
     def organisation_type_name(self):

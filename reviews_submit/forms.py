@@ -5,8 +5,8 @@ from django.forms.widgets import Select, HiddenInput
 from django.conf import settings
 
 from .models import Review, Rating
-from .widgets import MonthYearWidget
 
+from citizenconnect.widgets import MonthYearWidget
 from citizenconnect.forms import HoneypotModelForm
 
 
@@ -93,7 +93,7 @@ class RatingForm(forms.ModelForm):
 
         if self.question.is_required and answer is None:
             raise forms.ValidationError("Rating is required.")
-            
+
         return answer
 
 

@@ -49,6 +49,16 @@ class ModerationForm(ConcurrentFormMixin, forms.ModelForm):
             # We shouldn't be changing the public field
             return self.instance.public
 
+    def clean_public_reporter_name(self):
+        # If we are "keeping it private", we should make sure the reporter's
+        # name is set to private if it wasn't before
+        if 'keep_private' in self.data:
+            return False
+        else:
+            # Return whatever the user decided (they can choose to manually
+            # redact the name even when the report is public)
+            return self.cleaned_data['public_reporter_name']
+
     def clean(self):
         cleaned_data = super(ModerationForm, self).clean()
 

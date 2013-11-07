@@ -118,7 +118,6 @@ class CCGSummaryTests(AuthorizationTestCase):
             (self.superuser,                     True),
             (self.nhs_superuser,                 True),
             (self.case_handler,                  True),
-            (self.customer_contact_centre_user,  True),
             (self.ccg_user,                      True),
         )
 

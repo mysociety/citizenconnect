@@ -1,7 +1,7 @@
 {% extends "citizenconnect/base.html" %}
 {% load url from future %}
 {% load organisation_extras %}
-{% block title %}{{ organisation.name }} :: Outcomes Summary{% endblock %}
+{% block title %}{{ organisation.name }} :: Dashboard{% endblock %}
 
 {% block bodyclasses %}organisation-summary{% endblock %}
 
@@ -15,23 +15,23 @@
   {% include "organisations/includes/provider_summary_link.html" %}
 {% endif %}
 
-{% include "organisations/includes/page_header.html" with title="Outcomes" %}
+{% include "organisations/includes/page_header.html" with title="Dashboard" %}
 
 {% if not private %}
 {% include "organisations/includes/organisation_tabs.html" with active_tab='summary' %}
 {% endif %}
 
 <div class="island  island--lightblue mb">
-    <h2>Problem Resolution</h2>
+    <h2 class="mt--n  mb--n">Problem Resolution</h2>
     <div class="gw">
-        <p class="g  one-half  palm-one-whole  feature">
+        <p class="g  one-half  palm-one-whole  feature  mt--n  mb--n">
         {% if issues_total.happy_outcome != None %}
             <span class="feature__num">{{ issues_total.happy_outcome|percent }}</span><span class="feature__text"> of users who responded are happy with the resolution</span>
         {% else %}
             <span class="feature__text">No data on users happy with the resolution</span>
         {% endif %}
         </p>
-        <p class="g  one-half  palm-one-whole  feature">
+        <p class="g  one-half  palm-one-whole  feature  mt--n  mb--n">
         {% if issues_total.happy_service != None %}
            <span class="feature__num">{{ issues_total.happy_service|percent }}</span><span class="feature__text"> of users who responded are happy with the manner in which it was handled</span>
         {% else %}

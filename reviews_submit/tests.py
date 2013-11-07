@@ -1,4 +1,5 @@
 import datetime
+import logging
 from StringIO import StringIO
 
 import requests
@@ -74,6 +75,23 @@ class ReviewTest(TestCase):
         review.ratings.add(rating)
 
         self.assertEqual(review.__unicode__(), u"Bob Smith \u2019 - Good review \u2019")
+
+
+class RatingTest(TestCase):
+
+    def test_unicode_doesnt_break_when_no_answer(self):
+        # Issue #1259 - the __unicode__() method tried to print a string
+        # containing the answer title, but answer is a nullable field
+        test_question = Question.objects.all()[0]
+        rating = Rating(question=test_question)
+
+        self.assertEqual(rating.__unicode__(), u"{0}".format(test_question.title))
+
+        # Test with an answer too
+        test_answer = test_question.answers.all()[0]
+        rating.answer = test_answer
+
+        self.assertEqual(rating.__unicode__(), u"{0} - {1}".format(test_question.title, test_answer.text))
 
 
 class ReviewFormDateCompareTest(TestCase):
@@ -278,6 +296,21 @@ class ReviewFormViewTest(ReviewFormViewBase, TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertTrue('has been rejected' in resp.content)
         self.assertEqual(self.organisation.submitted_reviews.count(), 0)
+
+    def test_form_404s_if_org_not_found(self):
+        # Issue #1245 - review form view didn't use get_object_or_404
+        # so we got errors when someone tried to hack the url instead of them
+        # just getting a 404
+
+        # Silence the output, because the 404 will be printed otherwise
+        logging.disable(logging.CRITICAL)
+        bad_org_form_url = reverse('review-form', kwargs={'cobrand': 'choices',
+                                                          'ods_code': 'BAD'})
+        resp = self.client.get(bad_org_form_url)
+        self.assertEqual(resp.status_code, 404)
+
+        # Reset our logging to normal
+        logging.disable(logging.NOTSET)
 
 
 class ReviewFormViewBrowserTest(ReviewFormViewBase, SeleniumTestCase):

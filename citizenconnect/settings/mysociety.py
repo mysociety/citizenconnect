@@ -53,8 +53,6 @@ SERVER_EMAIL = config.get('SERVER_EMAIL')
 
 ADMINS = (('CitizenConnect Admins', SERVER_EMAIL),)
 
-SURVEY_INTERVAL_IN_DAYS = config.get('SURVEY_INTERVAL_IN_DAYS')
-
 EMAIL_HOST = config.get('EMAIL_HOST')
 
 EMAIL_PORT = config.get('EMAIL_PORT')
@@ -64,10 +62,6 @@ if summary_threshold:
     SUMMARY_THRESHOLD = tuple(summary_threshold)
 else:
     SUMMARY_THRESHOLD = None
-
-
-# Email addresses for the Customer Contact Centre
-CUSTOMER_CONTACT_CENTRE_EMAIL_ADDRESSES = config.get("CUSTOMER_CONTACT_CENTRE_EMAIL_ADDRESSES")
 
 FEEDBACK_EMAIL_ADDRESS = config.get("FEEDBACK_EMAIL_ADDRESS")
 
@@ -105,3 +99,7 @@ ALLOWED_HOSTS = [] if STAGING else config.get('ALLOWED_HOSTS', [])
 BLOG_FILES_URL = 'http://news.careconnect.mysociety.org/files'
 # What url should they be proxied to?
 PROXIED_BLOG_FILES_URL = '/careconnect/news/files'
+
+# How many day's worth of things to show on the Live feed
+LIVE_FEED_CUTOFF_DAYS = config.get("LIVE_FEED_CUTOFF_DAYS")
+LIVE_FEED_PER_PAGE = config.get("LIVE_FEED_PER_PAGE")

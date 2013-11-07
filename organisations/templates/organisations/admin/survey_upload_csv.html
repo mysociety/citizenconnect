@@ -1,0 +1,62 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_static admin_list %}
+{% load url from future %}
+{% load admin_urls %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+&rsaquo; <a href="{% url 'admin:app_list' app_label='organisations' %}">Organisations</a>
+&rsaquo; {% if has_change_permission %}<a href="{% url opts|admin_urlname:'changelist' %}">Friends and family surveys</a>{% else %}Friends and family surveys{% endif %}
+&rsaquo; Upload Survey CSV
+</div>
+{% endblock %}
+
+{% block content %}
+
+<div id="content-main">
+
+    {% if created %}
+        <h2>{{ created|length }} Survey{{ created|length|pluralize }} Uploaded</h2>
+        <ul>
+        {% for survey in created %}
+            <li>{{ survey }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if csv_processing_error %}
+        <h2>Looks like something went wrong</h2>
+        <p class="errornote">{{ csv_processing_error }}</p>
+    {% endif %}
+
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% if form.errors %}
+            <p class="errornote">Please correct the error{{ form.errors|length|pluralize }} below.</p>
+            {{ form.non_field_errors }}
+        {% endif %}
+        <fieldset class="module aligned">
+            {% for field in form %}
+                <div class="form-row">
+                    <div class="field-box{% if field.errors %} errors{% endif %}">
+                        {{ field.errors }}
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {% if field.help_text %}
+                            <p class="help">{{ field.help_text|safe }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </fieldset>
+        <div class="submit-row">
+            <input type="submit" class="default" value="Submit" />
+        </div>
+    </form>
+
+</div>
+
+{% endblock %}
