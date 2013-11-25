@@ -296,6 +296,71 @@ class ReviewModelTests(TestCase):
         # check running again on entry that is not there
         Review.upsert_or_delete_from_api_data(outdated_sample, self.organisation.organisation_type)
 
+    def test_upsert_or_deletes_replies(self):
+        # Insert a review
+        self.assertTrue(Review.upsert_or_delete_from_api_data(self.sample_review, self.organisation.organisation_type))
+        review = Review.objects.get(
+            api_posting_id=self.sample_review['api_posting_id']
+        )
+
+        # Make a reply to that review
+        self.sample_reply = {
+            'api_category': 'reply',
+            'api_posting_id': '185684R',
+            'api_postingorganisationid': '0',
+            'api_published': '2013-05-01T16:47:22+01:00',
+            'api_updated': '2013-05-01T16:49:12+01:00',
+            'author_display_name': 'NHS Hospital',
+            'title': 'Thanks for your comment',
+            'content_liked': '',
+            'content_improved': '',
+            'content': 'Thanks!',
+            'in_reply_to_id': '185684',
+            'in_reply_to_organisation_id': '0',
+            'organisation_choices_id': str(self.organisation.choices_id),
+            'ratings': [],
+        }
+
+        # Insert that reply
+        self.assertTrue(Review.upsert_or_delete_from_api_data(self.sample_reply, self.organisation.organisation_type))
+        reply = Review.objects.get(
+            api_posting_id=self.sample_reply['api_posting_id']
+        )
+        self.assertEqual(reply.title, self.sample_reply['title'])
+        self.assertEqual(reply.content, self.sample_reply['content'])
+        self.assertEqual(reply.content_liked, self.sample_reply['content_liked'])
+        self.assertEqual(reply.content_improved, self.sample_reply['content_improved'])
+
+        # do it again (unchanged) and check it is still there
+        self.assertTrue(Review.upsert_or_delete_from_api_data(self.sample_reply, self.organisation.organisation_type))
+
+        # upsert_or_delete with a changed comment and check it is updated
+        new_title = "This is the changed title"
+        new_comment = "This is the changed comment"
+        new_sample = self.sample_reply.copy()
+        new_sample.update({"title": new_title, "content": new_comment})
+        self.assertTrue(Review.upsert_or_delete_from_api_data(new_sample, self.organisation.organisation_type))
+        reply = Review.objects.get(
+            api_posting_id=self.sample_reply['api_posting_id']
+        )
+        self.assertTrue(reply)
+        self.assertEqual(reply.title, new_title)
+        self.assertEqual(reply.content, new_comment)
+
+        # upsert_or_delete with published as too old and check it is deleted
+        outdated_sample = self.sample_reply.copy()
+        outdated_sample.update({"api_published": '2010-05-01T12:47:22+01:00'})
+        Review.upsert_or_delete_from_api_data(outdated_sample, self.organisation.organisation_type)
+        self.assertEqual(
+            Review.objects.filter(
+                api_posting_id=self.sample_reply['api_posting_id']
+            ).count(),
+            0
+        )
+
+        # check running again on entry that is not there
+        Review.upsert_or_delete_from_api_data(outdated_sample, self.organisation.organisation_type)
+
     def test_upsert_or_deletes_ratings(self):
         self.maxDiff = None
 
