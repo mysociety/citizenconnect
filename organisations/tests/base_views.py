@@ -707,7 +707,7 @@ class ProviderPickerTests(TestCase):
         self.mapit_example = open(os.path.join(self.fixtures_path, 'SW1A1AA.json')).read()
         self.mapit_not_geocoded_example = open(os.path.join(self.fixtures_path, 'IM44RJ.json')).read()
 
-        self. mock_api_response(self.mapit_example, 200)
+        self.mock_api_response(self.mapit_example, 200)
         self.nearby_gp = create_test_organisation({
             'name': 'Nearby GP',
             'organisation_type': 'gppractices',
@@ -803,6 +803,16 @@ class ProviderPickerTests(TestCase):
         resp = self.client.get(self.results_url)
         expected_message = "Sorry, no postcode matches that query."
         self.assertContains(resp, expected_message, count=1, status_code=200)
+
+    def test_handles_the_case_where_mapit_doesnt_geocode_the_postcode(self):
+        # Issue #1268 - Mapit returns no lat/lon on some postcodes, eg:
+        # in the Isle of Man, but our code didn't expect this.
+        self.mock_api_response(self.mapit_not_geocoded_example, 200)
+        results_url = "%s?location=IM4+4RJ" % self.base_url
+        resp = self.client.get(results_url)
+        expected_message = 'Sorry, there are no matches within 5 miles of IM4 4RJ. Please try again'
+        self.assertContains(resp, expected_message, count=1, status_code=200)
+        self.assertContains(resp, OrganisationFinderForm.PILOT_SEARCH_CAVEAT)
 
     def test_shows_message_when_no_results_for_postcode(self):
         mock_results = MagicMock()
