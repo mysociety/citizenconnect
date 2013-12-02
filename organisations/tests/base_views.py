@@ -700,10 +700,12 @@ class ProviderPickerTests(TestCase):
 
     def setUp(self):
         self._organisations_path = os.path.abspath(organisations.__path__[0])
-        self.mapit_example = open(os.path.join(self._organisations_path,
+        self.fixtures_path = os.path.join(self._organisations_path,
+                                  'tests',
                                   'fixtures',
-                                  'mapit_api',
-                                  'SW1A1AA.json')).read()
+                                  'mapit_api')
+        self.mapit_example = open(os.path.join(self.fixtures_path, 'SW1A1AA.json')).read()
+        self.mapit_not_geocoded_example = open(os.path.join(self.fixtures_path, 'IM44RJ.json')).read()
 
         self. mock_api_response(self.mapit_example, 200)
         self.nearby_gp = create_test_organisation({
