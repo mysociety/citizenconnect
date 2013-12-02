@@ -30,6 +30,11 @@ class MapitPostCodeLookup(object):
 
     @classmethod
     def postcode_to_point(cls, postcode, partial=False):
+        """Lookup a lat/lon from a postcode and return a Point.
+
+        Raises various Mapit errors if the api is unavailable or the postcode
+        is invalid/not found, and None if the postcode exists and is valid but
+        Mapit can't geocode it."""
 
         path_elements = ['postcode']
         if partial:
@@ -47,8 +52,12 @@ class MapitPostCodeLookup(object):
         response_code = point_response.getcode()
         if response_code == 200:
             point_data = json.load(point_response)
-            point = Point(point_data["wgs84_lon"], point_data["wgs84_lat"])
-            return point
+            if point_data.get("wgs84_lon"):
+                return Point(point_data["wgs84_lon"], point_data["wgs84_lat"])
+            else:
+                # Mapit found the postcode and it's valid, but it couldn't
+                # geocode it for us.
+                return None
         elif response_code == 404:
             raise MapitPostcodeNotFoundError()
         elif response_code == 400:
@@ -66,7 +75,10 @@ class OrganisationFinderForm(forms.Form):
     def organisations_from_postcode(self, postcode, partial=False):
         try:
             point = MapitPostCodeLookup.postcode_to_point(postcode, partial)
-            return Organisation.objects.filter(point__distance_lt=(point, Distance(mi=5))).distance(point).order_by('distance')
+            if point:
+                return Organisation.objects.filter(point__distance_lt=(point, Distance(mi=5))).distance(point).order_by('distance')
+            else:
+                return []
         except MapitPostcodeNotFoundError:
             validation_message = 'Sorry, no postcode matches that query. Please try again, or try searching by provider name'
         except MapitPostcodeNotValidError:
