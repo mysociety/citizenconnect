@@ -78,7 +78,11 @@ class OrganisationFinderForm(forms.Form):
             if point:
                 return Organisation.objects.filter(point__distance_lt=(point, Distance(mi=5))).distance(point).order_by('distance')
             else:
-                return []
+                # If we couldn't geocode the point we get None back, which means
+                # the postcode is valid, but couldn't geocode it. The best way
+                # to present this to the user is as if we couldn't find any orgs
+                # near them.
+                return Organisation.objects.none()
         except MapitPostcodeNotFoundError:
             validation_message = 'Sorry, no postcode matches that query. Please try again, or try searching by provider name'
         except MapitPostcodeNotValidError:
