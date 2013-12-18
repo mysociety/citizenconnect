@@ -1,4 +1,4 @@
-import csv
+import unicodecsv
 from datetime import datetime, timedelta
 
 # Django imports
@@ -107,7 +107,7 @@ class ProblemsCSV(SuperuserOnlyMixin, View):
         ]
 
         # Make a csv writer
-        writer = csv.DictWriter(response, field_names)
+        writer = unicodecsv.DictWriter(response, field_names)
 
         # Write out a heading row
         # Note: If we only had to support Python 2.7 we could use:
