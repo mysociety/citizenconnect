@@ -117,7 +117,8 @@ class ProblemsCSVTests(AuthorizationTestCase):
         reader = unicodecsv.reader(StringIO(resp.content))
         expected_rows = [
             [
-                u'id',
+                # File should start with a BOM
+                u'\ufeffid',
                 u'Organisation',
                 u'Service',
                 u'Created',
