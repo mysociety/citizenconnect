@@ -43,7 +43,7 @@ class CCGDashboard(CCGAwareViewMixin, TemplateView):
         context = super(CCGDashboard, self).get_context_data(**kwargs)
 
         # Get the problems related to this ccg, and let the db sort them
-        problems = context['ccg'].problem_set.open_problems()
+        problems = context['ccg'].problem_set.all()
         problems_table = ProblemDashboardTable(problems)
         RequestConfig(self.request, paginate={'per_page': 25}).configure(problems_table)
         context['table'] = problems_table
