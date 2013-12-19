@@ -40,13 +40,13 @@ class CCGDashboardTests(AuthorizationTestCase):
         resp = self.client.get(self.dashboard_url)
         self.assertTrue(response_url in resp.content)
 
-    def test_dashboard_doesnt_show_closed_problems(self):
+    def test_dashboard_shows_closed_problems(self):
         self.closed_problem = create_test_problem({'organisation': self.test_hospital,
                                                    'status': Problem.RESOLVED})
         closed_problem_response_url = reverse('response-form', kwargs={'pk': self.closed_problem.id})
         self.login_as(self.ccg_user)
         resp = self.client.get(self.dashboard_url)
-        self.assertTrue(closed_problem_response_url not in resp.content)
+        self.assertTrue(closed_problem_response_url in resp.content)
 
     def test_dashboard_page_is_inaccessible_to_anon_users(self):
         expected_login_url = "{0}?next={1}".format(self.login_url, self.dashboard_url)
