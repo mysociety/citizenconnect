@@ -117,7 +117,7 @@ class ProblemsCSVTests(AuthorizationTestCase):
         reader = unicodecsv.reader(StringIO(resp.content))
         expected_rows = [
             [
-                u'ID',
+                u'id',
                 u'Organisation',
                 u'Service',
                 u'Created',

@@ -76,7 +76,9 @@ class ProblemsCSV(SuperuserOnlyMixin, View):
 
         # Define the field names
         field_names = [
-            'ID',
+            # This has to lowercase because otherwise Excel thinks this is a
+            # SYLK file - no, really: http://support.microsoft.com/kb/323626
+            'id',
             'Organisation',
             'Service',
             'Created',
@@ -107,6 +109,8 @@ class ProblemsCSV(SuperuserOnlyMixin, View):
         ]
 
         # Make a csv writer
+        # Write a BOM (Excel needs it to open UTF-8 file properly)
+        response.write(u'\ufeff'.encode('utf8'))
         writer = unicodecsv.DictWriter(response, field_names)
 
         # Write out a heading row
@@ -125,7 +129,7 @@ class ProblemsCSV(SuperuserOnlyMixin, View):
                     problem_privacy = "Public, anonymous"
 
             problem_row = {
-                'ID': problem.id,
+                'id': problem.id,
                 'Organisation': problem.organisation.name,
                 'Service': problem.service.name if problem.service else "",
                 'Created': problem.created.strftime(date_format),
