@@ -76,6 +76,10 @@ urlpatterns = patterns(
         login_required(SuperuserLogs.as_view()),
         name='superuser-logs'),
 
+    url(r'^superuser/problems-csv$',
+        login_required(ProblemsCSV.as_view()),
+        name='problems-csv'),
+
     # Authentication related urls
     url(r'^login$',
         'django.contrib.auth.views.login',

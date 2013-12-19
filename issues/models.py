@@ -2,7 +2,7 @@ import logging
 logger = logging.getLogger(__name__)
 import os
 
-from datetime import datetime, timedelta
+from datetime import datetime
 import hmac
 import hashlib
 from uuid import uuid4
