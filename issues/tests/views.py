@@ -191,7 +191,15 @@ class ProblemPublicViewTests(ProblemImageTestBase, AuthorizationTestCase):
                                                              'pk': self.closed_problem.id})
         resp = self.client.get(closed_problem_url)
         self.assertContains(resp, "Closed")
-        self.assertContains(resp, self.closed_problem.get_status_display())
+        # Issue #1276
+        self.assertNotContains(resp, "Closed - Closed")
+
+        # Set a more specific closed status and check that the page shows that
+        self.closed_problem.status = Problem.REFERRED_TO_OTHER_PROVIDER
+        self.closed_problem.save()
+        resp = self.client.get(closed_problem_url)
+
+        self.assertContains(resp, "Closed - {0}".format(self.closed_problem.get_status_display()))
 
     def test_doesnt_show_priority_on_public_pages(self):
         # A low priority problem - should never show priority
