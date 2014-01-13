@@ -8,23 +8,23 @@
 
 {% block content %}
 
-{% include "issues/includes/issue_header.html" with object=object title="Problem" %}
+{% include "issues/includes/problem_header.html" with object=object title="Problem" %}
 
 <div class="gw">
 
     <div class="g  two-thirds  palm-one-whole">
         {% if private %}
-            {% include "issues/includes/issue_meta_private.html" with object=object %}
+            {% include "issues/includes/problem_meta_private.html" with object=object %}
         {% else %}
-            {% include "issues/includes/issue_meta_public.html" with object=object %}
+            {% include "issues/includes/problem_meta_public.html" with object=object %}
         {% endif %}
     </div>
 
     <div class="meta-data-sidebar  g  one-third  palm-one-whole">
         {% if private %}
-            {% include "issues/includes/issue_sidebar_private.html" with object=object %}
+            {% include "issues/includes/problem_sidebar_private.html" with object=object %}
         {% else %}
-            {% include "issues/includes/issue_sidebar_public.html" with object=object %}
+            {% include "issues/includes/problem_sidebar_public.html" with object=object %}
         {% endif %}
     </div>
 
