@@ -46,7 +46,7 @@ class Command(BaseCommand):
         subject_template = get_template('issues/problem_confirmation_email_subject.txt')
         message_template = get_template('issues/problem_confirmation_email_message.txt')
 
-        context = Context({'object': problem,
+        context = Context({'problem': problem,
                            'site_base_url': settings.SITE_BASE_URL})
 
         if self.verbosity >= 2:

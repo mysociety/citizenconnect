@@ -22,17 +22,17 @@
             <li class="message-list__success">Thank you for reporting your problem.</li>
         </ul>
 
-        <p>It has been forwarded to <a href="{% url 'public-org-summary' cobrand=cobrand.name ods_code=object.organisation.ods_code %}">{{ object.organisation.name }}</a> and you should receive a response from them directly using the contact details you provided.
+        <p>It has been forwarded to <a href="{% url 'public-org-summary' cobrand=cobrand.name ods_code=problem.organisation.ods_code %}">{{ problem.organisation.name }}</a> and you should receive a response from them directly using the contact details you provided.
 
-        <p>Your Reference Number is {{ object.reference_number }}. If you need to contact us or {{ object.organisation.name }} about this issue in the future, please quote this reference number.</p>
+        <p>Your Reference Number is {{ problem.reference_number }}. If you need to contact us or {{ problem.organisation.name }} about this issue in the future, please quote this reference number.</p>
 
-        <p>You can track the progress of your problem by entering your reference number into the homepage which will take you directly to the provider summary for {{ object.organisation.name }}. This already displays your problem as new and 'open' along with the category and any department/ service that you ticked.</p>
+        <p>You can track the progress of your problem by entering your reference number into the homepage which will take you directly to the provider summary for {{ problem.organisation.name }}. This already displays your problem as new and 'open' along with the category and any department/ service that you ticked.</p>
 
-        {% if object.public %}
+        {% if problem.public %}
             <p>As you opted to also make the details of your problem visible to the public, this will appear shortly, once the content has gone through our moderation process.</p>
         {% endif %}
 
-        <p>{{ object.organisation.name }} will contact you to find out how they can help you and to agree with you how long they expect your problem will take to resolve. Once this is underway the status of your problem on the site will change to 'in progress'.</p>
+        <p>{{ problem.organisation.name }} will contact you to find out how they can help you and to agree with you how long they expect your problem will take to resolve. Once this is underway the status of your problem on the site will change to 'in progress'.</p>
 
 
         <p>When the problem is resolved the NHS provider will mark it as 'closed' which means it will no longer appear on the live map but will still be visible on the provider summary.</p>
@@ -41,17 +41,17 @@
     </div>
     <div class="g  one-half  palm-one-whole">
         <div class="islet  islet--squared  mt">
-            <h3>Your reference number is: {{ object.reference_number }}</h3>
+            <h3>Your reference number is: {{ problem.reference_number }}</h3>
             <p>
               You entered the following details:<br>
-              {% if object.reporter_phone %}
-              Tel: <strong>{{ object.reporter_phone }}</strong><br>
+              {% if problem.reporter_phone %}
+              Tel: <strong>{{ problem.reporter_phone }}</strong><br>
               {% endif %}
-              {% if object.reporter_email %}
-              Email: <strong>{{ object.reporter_email }}</strong>
+              {% if problem.reporter_email %}
+              Email: <strong>{{ problem.reporter_email }}</strong>
               {% endif %}
             </p>
-            {% if object.reporter_email %}
+            {% if problem.reporter_email %}
               <p>We have also sent a confirmation to you by email.</p>
             {% endif %}
 
@@ -62,12 +62,12 @@
 </div>
 
 <div class="header">
-  <h2>{{ object.organisation.name }}</h2>
+  <h2>{{ problem.organisation.name }}</h2>
 </div>
 
 <div class="break-bar">
     <p>
-        <a href="{% url 'public-org-summary' cobrand=cobrand.name ods_code=object.organisation.ods_code %}" class="standout-link">See the summary page</a> for {{ object.organisation.name }} to see how they are responding to problems raised. {% if not object.private %}Once your issue has completed the moderation process you will be able to see the details listed on this page, and view its status.
+        <a href="{% url 'public-org-summary' cobrand=cobrand.name ods_code=problem.organisation.ods_code %}" class="standout-link">See the summary page</a> for {{ problem.organisation.name }} to see how they are responding to problems raised. {% if not problem.private %}Once your issue has completed the moderation process you will be able to see the details listed on this page, and view its status.
         {% endif %}
     </p>
 </div>

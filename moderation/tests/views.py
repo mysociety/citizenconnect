@@ -189,9 +189,9 @@ class ModerateFormViewTests(BaseModerationTestCase, ProblemImageTestBase):
 
     def test_problem_in_context(self):
         resp = self.client.get(self.problem_form_url)
-        self.assertEqual(resp.context['issue'], self.test_problem)
+        self.assertEqual(resp.context['problem'], self.test_problem)
 
-    def test_issue_data_displayed(self):
+    def test_problem_data_displayed(self):
         # Add some responses to the issue too
         response1 = ProblemResponse.objects.create(response="response 1", issue=self.test_problem)
         response2 = ProblemResponse.objects.create(response="response 2", issue=self.test_problem)
@@ -253,7 +253,7 @@ class SecondTierModerateFormViewTests(BaseModerationTestCase, ProblemImageTestBa
 
     def test_problem_in_context(self):
         resp = self.client.get(self.second_tier_problem_form_url)
-        self.assertEqual(resp.context['issue'], self.test_second_tier_moderation_problem)
+        self.assertEqual(resp.context['problem'], self.test_second_tier_moderation_problem)
 
     def test_issues_not_requiring_second_tier_moderation_rejected(self):
         second_tier_moderation_form_url = reverse('second-tier-moderate-form',

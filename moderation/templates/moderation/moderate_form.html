@@ -9,7 +9,7 @@
 
 {% block content %}
 
-{% include "issues/includes/problem_header.html" with object=issue title="Moderate problem" %}
+{% include "issues/includes/problem_header.html" with title="Moderate problem" %}
 <div class="gw">
 
     <div class="g  two-thirds  palm-one-whole">
@@ -42,7 +42,7 @@
             {% endif %}
         {% endif %}
 
-        {% include "issues/includes/problem_meta_private.html" with object=issue %}
+        {% include "issues/includes/problem_meta_private.html" with problem=problem %}
 
         <div class="moderate-form">
             <form method="post">
@@ -52,9 +52,9 @@
                     {{ hidden }}
                 {% endfor %}
 
-                {% include "moderation/fields/public_reporter_name.html" with object=issue %}
+                {% include "moderation/fields/public_reporter_name.html" with problem=problem %}
 
-                {% include "moderation/fields/moderated_description.html" with object=issue %}
+                {% include "moderation/fields/moderated_description.html" %}
 
                 <div class="meta-data-wrap">
                     <h3 class="meta-data-label">Manage problem</h3>
@@ -121,7 +121,7 @@
 
     </div>
     <div class="meta-data-sidebar  g  one-third  palm-one-whole">
-        {% include "issues/includes/problem_sidebar_private.html" with object=issue %}
+        {% include "issues/includes/problem_sidebar_private.html" with problem=problem %}
     </div>
 </div>
 

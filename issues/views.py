@@ -56,6 +56,7 @@ class ProblemCreate(OrganisationAwareViewMixin,
     model = Problem
     form_class = ProblemForm
     confirm_template = 'issues/problem_confirm.html'
+    context_object_name = 'problem'
 
     # Settings for the inline formsets
     inlines = [ProblemImageInline]
@@ -74,7 +75,7 @@ class ProblemCreate(OrganisationAwareViewMixin,
         self.object.cobrand = context['cobrand']['name']
         self.object.save()
 
-        context['object'] = self.object
+        context['problem'] = self.object
         context['summary'] = interval_counts(organisation_filters={'organisation_id': self.object.organisation.id})
         return render(self.request, self.confirm_template, context)
 
@@ -104,6 +105,8 @@ class ProblemCreate(OrganisationAwareViewMixin,
 class ProblemDetail(DetailView):
 
     model = Problem
+    template_name = 'issues/problem_detail.html'
+    context_object_name = 'problem'
 
     def get_object(self, *args, **kwargs):
         obj = super(ProblemDetail, self).get_object(*args, **kwargs)
@@ -116,6 +119,7 @@ class ProblemSurvey(UpdateView):
     form_class = ProblemSurveyForm
     template_name = 'issues/problem_survey_form.html'
     confirm_template = 'issues/problem_survey_confirm.html'
+    context_object_name = 'problem'
 
     def get_object(self):
         id = self.kwargs.get('id', None)
@@ -137,7 +141,7 @@ class ProblemSurvey(UpdateView):
     def form_valid(self, form):
         self.object = form.save()
         context = RequestContext(self.request)
-        context['object'] = self.object
+        context['problem'] = self.object
         return render(self.request, self.confirm_template, context)
 
 

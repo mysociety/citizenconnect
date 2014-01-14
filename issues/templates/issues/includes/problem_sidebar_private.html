@@ -2,27 +2,27 @@
 
 <div class="split-box  split-box--alert  split-box--alert--lrg">
     <div class="split-box__inner">
-        {% if object.is_high_priority %}
+        {% if problem.is_high_priority %}
             <p class="split-box__left  split-box--red">Priority</p>
         {% endif %}
-        <p class="split-box__right">{{ object.reference_number }}</p>
+        <p class="split-box__right">{{ problem.reference_number }}</p>
     </div>
 </div>
 
-{% if object.breach %}
+{% if problem.breach %}
     <h2 class="alert  alert--orange">Breach</h2>
 {% endif %}
 
-{% include "issues/includes/problem_sidebar_status.html" with object=object %}
+{% include "issues/includes/problem_sidebar_status.html" with problem=problem %}
 
 <div class="meta-data-wrap">
     <h3 class="meta-data-label">Privacy</h3>
     <div class="meta-data">
         <ul class="meta-data-list">
             <li class="public">
-                {% if object.public and object.public_reporter_name %}
+                {% if problem.public and problem.public_reporter_name %}
                     <span class="bordered-circle  bordered-circle--green" aria-hidden="true"></span> Public
-                {% elif object.public and not object.public_reporter_name %}
+                {% elif problem.public and not problem.public_reporter_name %}
                     <span class="bordered-circle  bordered-circle--orange" aria-hidden="true"></span> Public with hidden name
                 {% else %}
                     <span class="bordered-circle  bordered-circle--pink" aria-hidden="true"></span> Private
@@ -38,19 +38,19 @@
     <div class="meta-data">
         <ul class="meta-data-list">
             <li>
-              Please contact by <strong>{{ object.preferred_contact_method }}</strong>.
+              Please contact by <strong>{{ problem.preferred_contact_method }}</strong>.
             </li>
             <li>
                 Email:
-                {% if object.reporter_email %}
-                  <a href="mailto:{{ object.reporter_email }}">{{ object.reporter_email }}</a>
+                {% if problem.reporter_email %}
+                  <a href="mailto:{{ problem.reporter_email }}">{{ problem.reporter_email }}</a>
                 {% else %}
                   n/a
                 {% endif %}
             </li>
             <li>
                 Phone:
-                {% firstof object.reporter_phone "n/a" %}
+                {% firstof problem.reporter_phone "n/a" %}
           </li>
         </ul>
     </div>
@@ -62,17 +62,17 @@
     <div class="meta-data">
         <ul class="meta-data-list">
             <li>
-                <span class="icon-tag" aria-hidden="true"></span> {{ object.get_category_display }}
+                <span class="icon-tag" aria-hidden="true"></span> {{ problem.get_category_display }}
             </li>
             <li>
-                <span class="icon-user" aria-hidden="true"></span> {{ object.reporter_name }}
+                <span class="icon-user" aria-hidden="true"></span> {{ problem.reporter_name }}
             </li>
             <li>
-                <span class="icon-calendar" aria-hidden="true"></span> {{ object.created|date:"h:ia" }} {{ object.created|date:"d M Y" }}
+                <span class="icon-calendar" aria-hidden="true"></span> {{ problem.created|date:"h:ia" }} {{ problem.created|date:"d M Y" }}
             </li>
-            {% if object.commissioned != None %}
+            {% if problem.commissioned != None %}
                 <li class="commissioned">
-                    <span class="icon-eye" aria-hidden="true"></span> {{ object.get_commissioned_display }}
+                    <span class="icon-eye" aria-hidden="true"></span> {{ problem.get_commissioned_display }}
                 </li>
             {% endif %}
         </ul>
