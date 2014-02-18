@@ -1,12 +1,12 @@
 # Standard imports
 import os.path
-from mock import MagicMock
+import urllib2
+from mock import Mock, MagicMock
 
 # Django imports
 from django.test import TestCase
 from django.conf import settings
 from django.test.utils import override_settings
-from django.conf import settings
 
 # App imports
 import organisations
@@ -182,3 +182,39 @@ class ChoicesAPIOrganisationServicesExampleFileTests(ExampleFileAPITest):
         last_expected = "Genetics"
         self.assertEqual(first_expected, results[0]['name'])
         self.assertEqual(last_expected, results[-1]['name'])
+
+
+class ChoicesAPIErrorTests(TestCase):
+    """Tests for when the choices API returns errors"""
+
+    def setUp(self):
+        # Reset the api in case we modify it inside tests
+        self._api = ChoicesAPI()
+
+    def test_get_organisation_recommendation_ratings_handles_404s(self):
+        # We shouldn't raise 404 errors because they're expected and just mean
+        # that there are no ratings for this organisation.
+        not_found_error = urllib2.HTTPError("", 404, "", None, None)
+        self._api.send_api_request = Mock(side_effect=not_found_error)
+
+        self.assertEqual(
+            self._api.get_organisation_recommendation_rating('hospitals', '12345'),
+            None
+        )
+
+        # Other errors should come through though
+        errors = (
+            urllib2.URLError(""),
+            urllib2.HTTPError("", 500, "", None, None),
+            urllib2.HTTPError("", 403, "", None, None),
+            KeyError(),
+            ValueError()
+        )
+        for error in errors:
+            self._api.send_api_request = Mock(side_effect=error)
+            self.assertRaises(
+                error.__class__,
+                self._api.get_organisation_recommendation_rating,
+                'hospitals',
+                '12345'
+            )

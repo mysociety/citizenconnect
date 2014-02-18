@@ -105,9 +105,17 @@ class ChoicesAPI():
         path_elements = ['organisations',
                          organisation_type,
                          str(choices_id) + '.xml']
-        data = self._query_api(path_elements, {})
-        organisation = self.parse_organisation(data)
-        return organisation['rating']
+        try:
+            data = self._query_api(path_elements, {})
+            organisation = self.parse_organisation(data)
+            return organisation['rating']
+        except urllib2.HTTPError as e:
+            if e.code == 404:
+                # The Choices API returns a 404 when there are no ratings for
+                # and organisation, this is ok
+                return None
+            else:
+                raise(e)
 
     def parse_services(self, document):
         services = []
