@@ -259,10 +259,9 @@ ORGANISATION_TYPES = [organisation_type for organisation_type, label in ORGANISA
 SURVEY_LOCATION_CHOICES = [
     ['aande', 'A&E'],
     ['inpatient', 'Inpatient'],
-    # Un-comment in January or so when Maternity data becomes available
-    # ['antenatal', 'Maternity - Antenatal'],
-    # ['labour', 'Maternity - Labour'],
-    # ['postnatal', 'Maternity - Postnatal'],
+    ['antenatal', 'Maternity - Antenatal'],
+    ['labour', 'Maternity - Labour'],
+    ['postnatal', 'Maternity - Postnatal'],
 ]
 
 # Now get the mySociety configuration
