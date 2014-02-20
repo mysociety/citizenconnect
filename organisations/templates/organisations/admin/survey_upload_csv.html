@@ -27,6 +27,15 @@
         </ul>
     {% endif %}
 
+    {% if skipped %}
+        <h2>{{ skipped|length }} Survey{{ skipped|length|pluralize }} Skipped because of unrecognised codes</h2>
+        <ul>
+        {% for code in skipped %}
+            <li>{{ code }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+
     {% if csv_processing_error %}
         <h2>Looks like something went wrong</h2>
         <p class="errornote">{{ csv_processing_error }}</p>

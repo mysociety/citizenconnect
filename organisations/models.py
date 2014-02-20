@@ -196,6 +196,7 @@ class FriendsAndFamilySurvey(AuditedModel):
             raise ValueError("Unknown content_type")
 
         created = []
+        skipped = []
 
         csv_reader = csv.DictReader(csv_file, delimiter=',', quotechar='"')
         for row in csv_reader:
@@ -208,13 +209,14 @@ class FriendsAndFamilySurvey(AuditedModel):
                     content_object = Organisation.objects.get(ods_code=site_code)
                 except Organisation.DoesNotExist:
                     # Skip this row
+                    skipped.append("{0}".format(site_code))
                     continue
             else:
                 code = row['Code']
                 try:
                     content_object = OrganisationParent.objects.get(code=code)
                 except OrganisationParent.DoesNotExist:
-                    # Skip this row
+                    skipped.append("{0}".format(code))
                     continue
 
             try:
@@ -253,7 +255,7 @@ class FriendsAndFamilySurvey(AuditedModel):
                 location = cls.location_display(location)
                 raise IntegrityError("There is already a survey for {0} for the month {1} and location {2}. Please delete the existing survey first if you're trying to replace it.".format(content_object.name, date_string, location))
 
-        return created
+        return (created, skipped)
 
     def __unicode__(self):
         if self.location:
