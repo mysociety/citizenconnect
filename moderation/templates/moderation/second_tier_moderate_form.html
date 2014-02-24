@@ -7,11 +7,11 @@
 {% block bodyclasses %}second-tier-moderate-form{% endblock %}
 {% block content %}
 
-{% include "issues/includes/issue_header.html" with object=issue title="Moderate problem" %}
+{% include "issues/includes/problem_header.html" with title="Moderate problem" %}
 <div class="gw">
 
     <div class="g  two-thirds  palm-one-whole">
-        {% include "issues/includes/issue_meta_private.html" with object=issue %}
+        {% include "issues/includes/problem_meta_private.html" with problem=problem %}
 
         <div class="second-tier-moderate-form">
             <form method="post">
@@ -27,7 +27,7 @@
                     {{ hidden }}
                 {% endfor %}
 
-                {% include "moderation/fields/public_reporter_name.html" %}
+                {% include "moderation/fields/public_reporter_name.html" with problem=problem %}
 
                 {% include "moderation/fields/moderated_description.html" %}
 
@@ -45,7 +45,7 @@
     </div>
 
     <div class="meta-data-sidebar  g  one-third  palm-one-whole">
-        {% include "issues/includes/issue_sidebar_private.html" with object=issue %}
+        {% include "issues/includes/problem_sidebar_private.html" with problem=problem %}
     </div>
 
 </div>

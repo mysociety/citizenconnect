@@ -73,7 +73,7 @@ class FriendsAndFamilySurveyAdmin(admin.ModelAdmin):
             location = form.cleaned_data.get('location')
             date = form.cleaned_data.get('month')
             try:
-                context['created'] = models.FriendsAndFamilySurvey.process_csv(csv_file, date, survey_context, location)
+                context['created'], context['skipped'] = models.FriendsAndFamilySurvey.process_csv(csv_file, date, survey_context, location)
             except Exception as e:
                 # Something went wrong processing it, probably duff data:
                 context['csv_processing_error'] = e.message

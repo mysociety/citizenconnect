@@ -114,7 +114,7 @@ class ModerateForm(NamedFormsetsMixin,
     form_class = ProblemModerationForm
 
     # Standardise the context_object's name
-    context_object_name = 'issue'
+    context_object_name = 'problem'
 
     # Settings for the inline formsets
     inlines = [ProblemResponseInline]
@@ -134,7 +134,7 @@ class ModerateForm(NamedFormsetsMixin,
     def get_context_data(self, **kwargs):
         context = super(ModerateForm, self).get_context_data(**kwargs)
         # This shouldn't be necessary, but for some reason it is
-        context['issue'] = get_object_or_404(Problem, pk=self.kwargs['pk'])
+        context['problem'] = get_object_or_404(Problem, pk=self.kwargs['pk'])
         return context
 
 
@@ -144,7 +144,7 @@ class SecondTierModerateForm(SecondTierModeratorsOnlyMixin,
     template_name = 'moderation/second_tier_moderate_form.html'
     form_class = ProblemSecondTierModerationForm
     # Standardise the context_object's name
-    context_object_name = 'issue'
+    context_object_name = 'problem'
 
     def get_form_kwargs(self):
         # Add the request to the form's kwargs

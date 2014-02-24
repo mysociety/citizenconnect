@@ -211,9 +211,10 @@ class FriendsAndFamilySurveyFormTests(TransactionTestCase):
             )
         )
         test_data['csv_file'] = missing_org_fixture_file
-        self.client.post(self.form_url, test_data)
+        resp = self.client.post(self.form_url, test_data)
         # Should skip the bad orgs and just save the good ones
         self.assertEqual(FriendsAndFamilySurvey.objects.all().count(), 1)
+        self.assertContains(resp, "1 Survey Skipped because of unrecognised codes")
 
     def test_missing_trust(self):
         self.login_as(self.superuser)
@@ -226,9 +227,10 @@ class FriendsAndFamilySurveyFormTests(TransactionTestCase):
             )
         )
         test_data['csv_file'] = missing_trust_fixture_file
-        self.client.post(self.form_url, test_data)
+        resp = self.client.post(self.form_url, test_data)
         # Should skip the bad trusts and just save the good ones
         self.assertEqual(FriendsAndFamilySurvey.objects.all().count(), 1)
+        self.assertContains(resp, "1 Survey Skipped because of unrecognised codes")
 
     def test_duplicate_org_survey(self):
         self.login_as(self.superuser)
@@ -283,4 +285,3 @@ class FriendsAndFamilySurveyFormTests(TransactionTestCase):
         resp = self.client.post(self.form_url, trust_test_data)
         self.assertContains(resp, "There is already a survey for Test Trust for the month January, 2013 and location A&amp;E. Please delete the existing survey first if you&#39;re trying to replace it.")
         self.assertEqual(FriendsAndFamilySurvey.objects.all().count(), 2)
-
