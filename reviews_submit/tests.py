@@ -4,6 +4,7 @@ from StringIO import StringIO
 
 import requests
 from mock import MagicMock
+from dateutil import relativedelta
 
 from selenium.webdriver.common.action_chains import ActionChains
 
@@ -94,27 +95,19 @@ class RatingTest(TestCase):
         self.assertEqual(rating.__unicode__(), u"{0} - {1}".format(test_question.title, test_answer.text))
 
 
-class ReviewFormDateCompareTest(TestCase):
+class ReviewFormMonthChoicesTest(TestCase):
 
-    def test_mm_yyyy_date_compare(self):
-        tests = [
-            # date,      oldest,    result
-            ( 3, 2010,   4, 2011,   True ),
-            ( 4, 2010,   4, 2011,   True ),
-            ( 5, 2010,   4, 2011,   True ),
-            ( 3, 2011,   4, 2011,   True ),
-            ( 4, 2011,   4, 2011,   False ),
-            ( 5, 2011,   4, 2011,   False ),
-            ( 3, 2012,   4, 2011,   False ),
-            ( 4, 2012,   4, 2011,   False ),
-            ( 5, 2012,   4, 2011,   False )
-        ]
+    def test_month_choices(self):
+        this_year = datetime.date.today().year
+        this_month = datetime.date.today().month
+        first_of_month = datetime.date(this_year, this_month, 1)
+        twenty_four_months_ago = first_of_month - relativedelta.relativedelta(years=2)
 
-        for mm_a, yyyy_a, mm_b, yyyy_b, expected in tests:
-            # print mm_a, yyyy_a, mm_b, yyyy_b, expected
-            dt_a = datetime.date(year=yyyy_a, month=mm_a, day=1)
-            dt_b = datetime.date(year=yyyy_b, month=mm_b, day=1)
-            self.assertEqual(ReviewForm._mm_yyyy_lt_compare_dates(dt_a, dt_b), expected)
+        choices = [x for x in ReviewForm._month_choices()]
+
+        self.assertEqual(choices[-1], (first_of_month.strftime("%Y-%m-%d"), first_of_month.strftime("%B %Y")))
+        self.assertEqual(choices[0], (twenty_four_months_ago.strftime("%Y-%m-%d"), twenty_four_months_ago.strftime("%B %Y")))
+        self.assertEqual(len(choices), 25)
 
 
 class ReviewFormViewBase(object):
@@ -129,8 +122,7 @@ class ReviewFormViewBase(object):
                                  'is_anonymous': False,
                                  'title': 'Good review',
                                  'comment': 'Not bad',
-                                 'month_year_of_visit_month': 1,
-                                 'month_year_of_visit_year': 2013,
+                                 'month_year_of_visit': datetime.date(2013, 1, 1),
                                  'organisation': self.organisation.id,
                                  'agree_to_terms': True,
                                  'website': '',  # honeypot - should be blank
@@ -169,7 +161,7 @@ class ReviewFormViewBase(object):
             'display_name': self.review_post_data['display_name'],
             'email': self.review_post_data['email'],
             'is_anonymous': self.review_post_data['is_anonymous'],
-            'month_year_of_visit': datetime.date(self.review_post_data['month_year_of_visit_year'], self.review_post_data['month_year_of_visit_month'], 1),
+            'month_year_of_visit': self.review_post_data['month_year_of_visit'],
             'title': self.review_post_data['title']
         })
 
@@ -216,35 +208,33 @@ class ReviewFormViewTest(ReviewFormViewBase, TestCase):
 
     def test_submitting_a_review_with_a_future_date(self):
         self.assertEquals(self.organisation.submitted_reviews.count(), 0)
-        self.review_post_data['month_year_of_visit_year'] = str((datetime.datetime.now() + datetime.timedelta(weeks=53)).year)
+        future_date = datetime.date.today() + datetime.timedelta(weeks=53)
+        self.review_post_data['month_year_of_visit'] = future_date
         resp = self.client.post(self.review_form_url, self.review_post_data)
         self.assertEquals(self.organisation.submitted_reviews.count(), 0)
-        # For some reason, assertFormError doesn't like this error
-        self.assertContains(resp, "The month and year of visit can&#39;t be in the future")
+        expected_error = 'Select a valid choice. {0} is not one of the available choices.'.format(future_date.strftime("%Y-%m-%d"))
+        self.assertFormError(resp, 'form', 'month_year_of_visit', expected_error)
 
     def test_submitting_a_review_with_a_just_long_enough_ago_date(self):
         self.assertEquals(self.organisation.submitted_reviews.count(), 0)
-        past_date = datetime.datetime.now() - datetime.timedelta(days=settings.NHS_CHOICES_API_MAX_REVIEW_AGE_IN_DAYS)
-        self.review_post_data['month_year_of_visit_year'] = past_date.year
-        self.review_post_data['month_year_of_visit_month'] = past_date.month
-        resp = self.client.post(self.review_form_url, self.review_post_data)
+        past_date = datetime.date(datetime.date.today().year, datetime.date.today().month, 1) - relativedelta.relativedelta(years=2)
+        self.review_post_data['month_year_of_visit'] = past_date
+        self.client.post(self.review_form_url, self.review_post_data)
         self.assert_review_correctly_stored()
 
     def test_submitting_a_review_with_a_too_long_ago_date(self):
         self.assertEquals(self.organisation.submitted_reviews.count(), 0)
-        past_date = datetime.datetime.now() - datetime.timedelta(days=settings.NHS_CHOICES_API_MAX_REVIEW_AGE_IN_DAYS) - datetime.timedelta(days=31)
-        self.review_post_data['month_year_of_visit_year'] = past_date.year
-        self.review_post_data['month_year_of_visit_month'] = past_date.month
+        past_date = datetime.date.today() - datetime.timedelta(days=settings.NHS_CHOICES_API_MAX_REVIEW_AGE_IN_DAYS) - datetime.timedelta(days=31)
+        self.review_post_data['month_year_of_visit'] = past_date
         resp = self.client.post(self.review_form_url, self.review_post_data)
         self.assertEquals(self.organisation.submitted_reviews.count(), 0)
-        # For some reason, assertFormError doesn't like this error
-        self.assertContains(resp, "The month and year of visit can&#39;t be more than two years ago")
+        expected_error = 'Select a valid choice. {0} is not one of the available choices.'.format(past_date.strftime("%Y-%m-%d"))
+        self.assertFormError(resp, 'form', 'month_year_of_visit', expected_error)
 
     def test_form_requires_tandc_agreement(self):
         self.review_post_data['agree_to_terms'] = False
         resp = self.client.post(self.review_form_url, self.review_post_data)
-        self.assertFormError(resp, 'form', 'agree_to_terms',
-                             'You must agree to the terms and conditions to use this service.')
+        self.assertFormError(resp, 'form', 'agree_to_terms', 'You must agree to the terms and conditions to use this service.')
 
     def test_form_requires_valid_email_address(self):
         self.review_post_data['email'] = 'not an email'
@@ -252,10 +242,9 @@ class ReviewFormViewTest(ReviewFormViewBase, TestCase):
         self.assertFormError(resp, 'form', 'email', 'Enter a valid e-mail address.')
 
     def test_form_requires_visit_date(self):
-        self.review_post_data['month_year_of_visit_year'] = None
-        self.review_post_data['month_year_of_visit_month'] = None
+        del self.review_post_data['month_year_of_visit']
         resp = self.client.post(self.review_form_url, self.review_post_data)
-        self.assertFormError(resp, 'form', 'month_year_of_visit', 'Enter a valid date.')
+        self.assertFormError(resp, 'form', 'month_year_of_visit', 'This field is required.')
 
     def test_form_title_and_comment_required(self):
         self.review_post_data['title'] = ''
@@ -318,8 +307,6 @@ class ReviewFormViewBrowserTest(ReviewFormViewBase, SeleniumTestCase):
     def set_rating(self, rating_select_name, score):
 
         # Find the element
-        rating_select = self.driver.find_element_by_name(rating_select_name)
-
         css_selector = 'div[data-select-name="{0}"] .rateit-range'.format(rating_select_name)
         rating_element = self.driver.find_element_by_css_selector(css_selector)
 
@@ -379,16 +366,11 @@ class ReviewFormViewBrowserTest(ReviewFormViewBase, SeleniumTestCase):
                 checkbox_element.click()
 
         # select boxes
-        for name in ['month_year_of_visit_month', 'month_year_of_visit_year']:
-            desired_value = self.review_post_data[name]
-            select_element = d.find_element_by_css_selector(
-                'select[name="{0}"] option[value="{1}"]'.format(
-                    name,
-                    desired_value
-                )
-            ).click()
-
-        # import IPython; IPython.embed()
+        d.find_element_by_css_selector(
+            'select[name="month_year_of_visit"] option[value="{0}"]'.format(
+                self.review_post_data['month_year_of_visit']
+            )
+        ).click()
 
         # submit form
         d.find_element_by_css_selector('button[type="submit"]').click()

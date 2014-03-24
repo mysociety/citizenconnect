@@ -1,20 +1,36 @@
 import datetime
+import re
+
+from dateutil import relativedelta
 
 from django import forms
 from django.forms.widgets import Select, HiddenInput
-from django.conf import settings
+from django.utils.dates import MONTHS
 
 from .models import Review, Rating
 
-from citizenconnect.widgets import MonthYearWidget
 from citizenconnect.forms import HoneypotModelForm
+
+RE_DATE = re.compile(r'(\d{4})-(\d\d?)-(\d\d?)$')
+
+
+def coerce_to_date(value):
+    """Helper function to coerce a datestring into a date"""
+    if isinstance(value, basestring):
+        match = RE_DATE.match(value)
+        if match:
+            year_val, month_val, day_val = [int(v) for v in match.groups()]
+            return datetime.date(year_val, month_val, day_val)
 
 
 class ReviewForm(HoneypotModelForm):
 
     # A check to make sure that people have read the T's & C's
-    agree_to_terms = forms.BooleanField(required=True,
-                                        error_messages={'required': 'You must agree to the terms and conditions to use this service.'})
+    agree_to_terms = forms.BooleanField(
+        required=True,
+        error_messages={'required': 'You must agree to the terms and conditions to use this service.'}
+    )
+
     def __init__(self, *args, **kwargs):
         super(ReviewForm, self).__init__(*args, **kwargs)
 
@@ -24,36 +40,34 @@ class ReviewForm(HoneypotModelForm):
         self.fields['comment'].widget.attrs.update(
             {'placeholder': 'Please enter the main text of your review'})
 
+        self.fields['month_year_of_visit'] = forms.TypedChoiceField(
+            choices=self._month_choices(),
+            coerce=coerce_to_date,
+            required=True
+        )
         self.fields['month_year_of_visit'].label = 'When did you visit?'
 
-    def clean_month_year_of_visit(self):
-        month_year_of_visit = self.cleaned_data['month_year_of_visit']
-        if month_year_of_visit > datetime.date.today():
-            raise forms.ValidationError("The month and year of visit can't be in the future")
-
-        # Check that the review date is not too long ago. Compare the year and
-        # month seperately as we can't be sure about the day as we don't capture
-        # it.
-        oldest_permittable = datetime.date.today() - datetime.timedelta(days=settings.NHS_CHOICES_API_MAX_REVIEW_AGE_IN_DAYS)
-        if self._mm_yyyy_lt_compare_dates(month_year_of_visit, oldest_permittable):
-            raise forms.ValidationError("The month and year of visit can't be more than two years ago")
-
-        return month_year_of_visit
-
     @classmethod
-    def _mm_yyyy_lt_compare_dates(cls, dt_a, dt_b ):
-        """Return True if dt_a is earlier than dt_b ignoring the days"""
+    def _month_choices(cls):
+        """Return a tuple of choices for the month_year_of_visit field."""
+        # First, work out the range of months we want to show
+        this_year = datetime.date.today().year
+        this_month = datetime.date.today().month
+        first_of_month = datetime.date(this_year, this_month, 1)
+        twenty_four_months_ago = first_of_month - relativedelta.relativedelta(years=2)
 
-        # If year is lower then always less
-        if dt_a.year < dt_b.year:
-            return True
+        # Now make them into choices
+        choices = []
+        for year in range(twenty_four_months_ago.year, this_year + 1):
+            for month in MONTHS:
+                if year == twenty_four_months_ago.year and month < twenty_four_months_ago.month:
+                    continue
+                elif year == this_year and month > this_month:
+                    continue
 
-        # If year is same then compare the months
-        if dt_a.year == dt_b.year and dt_a.month < dt_b.month:
-            return True
-
-        # Otherwise not less
-        return False
+                choice_date = datetime.date(year, month, 1)
+                choices.append((choice_date.strftime("%Y-%m-%d"), choice_date.strftime("%B %Y")))
+        return tuple(choices)
 
 
     class Meta:
@@ -70,8 +84,7 @@ class ReviewForm(HoneypotModelForm):
         ]
 
         widgets = {
-            'organisation': HiddenInput,
-            'month_year_of_visit': MonthYearWidget
+            'organisation': HiddenInput
         }
 
 
