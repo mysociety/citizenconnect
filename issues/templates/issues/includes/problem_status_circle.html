@@ -1,0 +1,14 @@
+{% if problem.status == problem.NEW %}
+    <span class="bordered-circle  bordered-circle--pink" aria-hidden="true"></span> Open
+{% elif problem.status in problem.OPEN_STATUSES %}
+    <span class="bordered-circle  bordered-circle--orange" aria-hidden="true"></span> {{ problem.get_status_display }}
+{% elif problem.status == problem.REFERRED_TO_OTHER_PROVIDER %}
+    - {{ problem.get_status_display }}
+{% else %}
+    <span class="bordered-circle  bordered-circle--green" aria-hidden="true"></span>
+    {% if problem.status == problem.RESOLVED %}
+        Closed
+    {% else %}
+        Closed - {{ problem.get_status_display }}
+    {% endif %}
+{% endif %}
