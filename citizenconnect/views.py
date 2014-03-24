@@ -15,12 +15,12 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 
 # App imports
-from issues.forms import PublicLookupForm, FeedbackForm
+from issues.forms import PublicLookupForm
 from issues.models import Problem
 from reviews_display.models import Review
 from news.models import Article
 
-from .forms import LiveFeedFilterForm
+from .forms import LiveFeedFilterForm, FeedbackForm
 
 
 class Home(FormView):
