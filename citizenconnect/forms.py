@@ -99,3 +99,10 @@ class LiveFeedFilterForm(forms.Form):
     )
     start = forms.DateField(required=False)
     end = forms.DateField(required=False)
+
+
+class FeedbackForm(forms.Form):
+    feedback_comments = forms.CharField(required=True, widget=forms.Textarea)
+    name = forms.CharField(required=True, label="Your name")
+    email = forms.EmailField(required=True,
+                             help_text="Your email address won't be used as part of a mailing list or given to any third parties.")
