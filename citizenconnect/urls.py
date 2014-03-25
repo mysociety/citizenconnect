@@ -14,7 +14,8 @@ from .views import (
     HelpYourNHS,
     CommonQuestions,
     Boom,
-    LiveFeed
+    LiveFeed,
+    HealthCheck
 )
 
 # Admin section
@@ -61,6 +62,9 @@ urlpatterns = patterns(
 
     # Dev page for exception handling
     url(r'^dev/boom$', Boom.as_view(), name='dev-boom'),
+
+    # Healthcheck page
+    url(r'^health$', HealthCheck.as_view(), name='healthcheck'),
 )
 
 # Append /careconnect to everything above, to fix proxy relative link issues
