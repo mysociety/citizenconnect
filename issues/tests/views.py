@@ -195,7 +195,7 @@ class ProblemPublicViewTests(ProblemImageTestBase, AuthorizationTestCase):
         self.assertNotContains(resp, "Closed - Closed")
 
         # Set a more specific closed status and check that the page shows that
-        self.closed_problem.status = Problem.REFERRED_TO_OTHER_PROVIDER
+        self.closed_problem.status = Problem.UNABLE_TO_RESOLVE
         self.closed_problem.save()
         resp = self.client.get(closed_problem_url)
 
