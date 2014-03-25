@@ -1,0 +1,15 @@
+{% extends "citizenconnect/base.html" %}
+
+{% block title %}Health Check{% endblock %}
+
+{% block content %}
+
+<h1>Health Check</h1>
+
+<ul>
+    <li>{{ unsent_problems.count }} unsent problem{{ unsent_problems.count|pluralize }}</li>
+    <li>{{ unsent_confirmations.count }} unsent confirmations{{ unsent_confirmations.count|pluralize }}</li>
+    <li>{{ unsent_surveys.count }} unsent surveys{{ unsent_surveys.count|pluralize }}</li>
+</ul>
+
+{% endblock content %}
