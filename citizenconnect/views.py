@@ -1,7 +1,5 @@
 from datetime import datetime, date, time, timedelta
 
-
-
 # Django imports
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
@@ -20,6 +18,7 @@ from django.contrib.auth.models import User
 from issues.forms import PublicLookupForm
 from issues.models import Problem
 from reviews_display.models import Review
+from reviews_submit.models import Review as SubmittedReview
 from news.models import Article
 
 from .forms import LiveFeedFilterForm, FeedbackForm
@@ -257,34 +256,80 @@ class HealthCheck(TemplateView):
 
     template_name = 'citizenconnect/health_check.html'
 
+    # Default response status, we'll alter this if there's something unhealthy
+    # that we wish to report as an error
+    status = 200
+
+    def render_to_response(self, context, **response_kwargs):
+        """Override render_to_response so that we can control the HTTP status"""
+
+        response_kwargs['status'] = self.status
+
+        return super(TemplateView, self).render_to_response(context, **response_kwargs)
+
     def get_context_data(self, **kwargs):
-        two_hours_ago = datetime.datetime.now() - timedelta(hours=2)
+        context = super(HealthCheck, self).get_context_data(**kwargs)
+
+        now = datetime.utcnow().replace(tzinfo=timezone.utc)
+        two_hours_ago = now - timedelta(hours=2)
+        two_days_ago = now - timedelta(days=2)
+        one_week_ago = now - timedelta(days=2)
+
         # Unsent problems
         unsent_problems = Problem.objects.filter(
-            created__gte=two_hours_ago,
+            created__lte=two_hours_ago,
             mailed=False
         )
+        context['unsent_problems'] = unsent_problems
+
         if unsent_problems:
-            msg = "There are {0} unsent problems over two hours old".format(unsent_problems.count())
-            raise(Exception(msg))
+            self.status = 500
 
         # Unsent confirmations
         unsent_confirmations = Problem.objects.requiring_confirmation().filter(
-            created__gte=two_hours_ago
+            created__lte=two_hours_ago
         )
+        context['unsent_confirmations'] = unsent_confirmations
+
         if unsent_confirmations:
-            msg = "There are {0} unsent confirmations over two hours old".format(unsent_confirmations.count())
-            raise(Exception(msg))
+            self.status = 500
 
         # Unsent surveys
-        unsent_surveys = Problem.objects.requiring_survey_to_be_sent()
+        unsent_surveys = list(Problem.objects.requiring_survey_to_be_sent())
         # These are a bit trickier because we don't have a timestamp for when
         # they are closed, which is the key piece of information to see if
         # the email sending is late. To find this out, we inspect the revision
         # history to find any that were closed more than two hours ago.
         for problem in unsent_surveys:
-            if problem.closed_timestamp <= two_hours_ago:
+            if problem.closed_timestamp >= two_hours_ago:
                 unsent_surveys.remove(problem)
+        context['unsent_surveys'] = unsent_surveys
 
         if unsent_surveys:
-            raise(Exception("There are {0} unsent problems over two hours old".format(unsent_surveys.count())))
+            self.status = 500
+
+        # Unsent reviews
+        unsent_reviews = SubmittedReview.objects.filter(
+            last_sent_to_api__isnull=True,
+            created__lte=two_hours_ago
+        )
+        context['unsent_reviews'] = unsent_reviews
+
+        if unsent_reviews:
+            self.status = 500
+
+        # No new reviews from the choices api
+        latest_choices_reviews = Review.objects.all().order_by('-created')
+        if latest_choices_reviews:
+            context['latest_choices_review'] = latest_choices_review = latest_choices_reviews[0]
+            if latest_choices_review.created <= two_days_ago:
+                self.status = 500
+
+        # No new problems
+        latest_problems = Problem.objects.all().order_by('-created')
+        if latest_problems:
+            context['latest_problem'] = latest_problem = latest_problems[0]
+            if latest_problem.created <= one_week_ago:
+                self.status = 500
+
+        return context

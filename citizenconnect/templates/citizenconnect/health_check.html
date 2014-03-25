@@ -7,9 +7,16 @@
 <h1>Health Check</h1>
 
 <ul>
-    <li>{{ unsent_problems.count }} unsent problem{{ unsent_problems.count|pluralize }}</li>
-    <li>{{ unsent_confirmations.count }} unsent confirmations{{ unsent_confirmations.count|pluralize }}</li>
-    <li>{{ unsent_surveys.count }} unsent surveys{{ unsent_surveys.count|pluralize }}</li>
+    <li>{{ unsent_problems|length }} unsent problem{{ unsent_problems|length|pluralize }}</li>
+    <li>{{ unsent_confirmations|length }} unsent confirmation{{ unsent_confirmations|length|pluralize }}</li>
+    <li>{{ unsent_surveys|length }} unsent survey{{ unsent_surveys|length|pluralize }}</li>
+    <li>{{ unsent_reviews|length }} unsent review{{ unsent_reviews|length|pluralize }} (to NHS Choices)</li>
+    {% if latest_choices_review %}
+        <li>Last new review (from NHS Choices) created: {{ latest_choices_review.created }}</li>
+    {% endif %}
+    {% if latest_problem %}
+        <li>Last new problem created: {{ latest_problem.created }}</li>
+    {% endif %}
 </ul>
 
 {% endblock content %}
