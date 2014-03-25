@@ -75,7 +75,7 @@ class HealthCheckTests(TestCase):
         review.last_sent_to_api = None
         review.save()
         resp = self.client.get(self.health_check_url)
-        self.assertContains(resp, '1 unsent review - Bad', status_code=500)
+        self.assertContains(resp, '1 unsent review (to NHS Choices) - Bad', status_code=500)
 
     def test_no_reviews_from_choices_api(self):
         # Create a review from the Choices API that's over two days old, so
