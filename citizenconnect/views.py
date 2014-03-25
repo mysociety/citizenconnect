@@ -1,5 +1,7 @@
 from datetime import datetime, date, time, timedelta
 
+
+
 # Django imports
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
@@ -250,3 +252,39 @@ class LiveFeed(FormView):
 
         return context
 
+
+class HealthCheck(TemplateView):
+
+    template_name = 'citizenconnect/health_check.html'
+
+    def get_context_data(self, **kwargs):
+        two_hours_ago = datetime.datetime.now() - timedelta(hours=2)
+        # Unsent problems
+        unsent_problems = Problem.objects.filter(
+            created__gte=two_hours_ago,
+            mailed=False
+        )
+        if unsent_problems:
+            msg = "There are {0} unsent problems over two hours old".format(unsent_problems.count())
+            raise(Exception(msg))
+
+        # Unsent confirmations
+        unsent_confirmations = Problem.objects.requiring_confirmation().filter(
+            created__gte=two_hours_ago
+        )
+        if unsent_confirmations:
+            msg = "There are {0} unsent confirmations over two hours old".format(unsent_confirmations.count())
+            raise(Exception(msg))
+
+        # Unsent surveys
+        unsent_surveys = Problem.objects.requiring_survey_to_be_sent()
+        # These are a bit trickier because we don't have a timestamp for when
+        # they are closed, which is the key piece of information to see if
+        # the email sending is late. To find this out, we inspect the revision
+        # history to find any that were closed more than two hours ago.
+        for problem in unsent_surveys:
+            if problem.closed_timestamp <= two_hours_ago:
+                unsent_surveys.remove(problem)
+
+        if unsent_surveys:
+            raise(Exception("There are {0} unsent problems over two hours old".format(unsent_surveys.count())))
