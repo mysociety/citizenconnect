@@ -34,7 +34,7 @@ class HealthCheckTests(TestCase):
         # Add a problem older than 2 hours that hasn't been mailed
         create_problem_with_age(self.organisation, 1)
         resp = self.client.get(self.health_check_url)
-        self.assertContains(resp, '1 unsent problem', status_code=500)
+        self.assertContains(resp, '1 unsent problem - Bad', status_code=500)
 
     def test_overdue_confirmation_emails(self):
         # Add a problem older than 2 hours that hasn't had the confirmation
@@ -44,7 +44,7 @@ class HealthCheckTests(TestCase):
         problem.mailed = True
         problem.save()
         resp = self.client.get(self.health_check_url)
-        self.assertContains(resp, '1 unsent confirmation', status_code=500)
+        self.assertContains(resp, '1 unsent confirmation - Bad', status_code=500)
 
     def test_overdue_survey_emails(self):
         # Add a closed problem that has been mailed and the confirmation sent,
@@ -65,7 +65,7 @@ class HealthCheckTests(TestCase):
         versions[1].revision.save()
 
         resp = self.client.get(self.health_check_url)
-        self.assertContains(resp, '1 unsent survey', status_code=500)
+        self.assertContains(resp, '1 unsent survey - Bad', status_code=500)
 
     def test_overdue_reviews(self):
         # Create a review which hasn't been sent to NHS Choices and is over
@@ -75,7 +75,7 @@ class HealthCheckTests(TestCase):
         review.last_sent_to_api = None
         review.save()
         resp = self.client.get(self.health_check_url)
-        self.assertContains(resp, '1 unsent review', status_code=500)
+        self.assertContains(resp, '1 unsent review - Bad', status_code=500)
 
     def test_no_reviews_from_choices_api(self):
         # Create a review from the Choices API that's over two days old, so
@@ -84,12 +84,12 @@ class HealthCheckTests(TestCase):
         review.created = self.two_days_ago
         review.save()
         resp = self.client.get(self.health_check_url)
-        expected_text = 'Last new review (from NHS Choices) created: {0}'.format(django_date(review.created, formats.DATETIME_FORMAT))
+        expected_text = 'Last new review (from NHS Choices) created: {0} - Bad'.format(django_date(review.created, formats.DATETIME_FORMAT))
         self.assertContains(resp, expected_text, status_code=500)
 
     def test_no_new_problems_recently(self):
         # Create a problem but make it over 1 week old
         problem = create_problem_with_age(self.organisation, 8)
         resp = self.client.get(self.health_check_url)
-        expected_text = 'Last new problem created:'.format(django_date(problem.created, formats.DATETIME_FORMAT))
+        expected_text = 'Last new problem created: {0} - Bad'.format(django_date(problem.created, formats.DATETIME_FORMAT))
         self.assertContains(resp, expected_text, status_code=500)

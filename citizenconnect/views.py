@@ -281,18 +281,22 @@ class HealthCheck(TemplateView):
             mailed=False
         )
         context['unsent_problems'] = unsent_problems
+        context['unsent_problems_healthy'] = True
 
         if unsent_problems:
             self.status = 500
+            context['unsent_problems_healthy'] = False
 
         # Unsent confirmations
         unsent_confirmations = Problem.objects.requiring_confirmation().filter(
             created__lte=two_hours_ago
         )
         context['unsent_confirmations'] = unsent_confirmations
+        context['unsent_confirmations_healthy'] = True
 
         if unsent_confirmations:
             self.status = 500
+            context['unsent_confirmations_healthy'] = False
 
         # Unsent surveys
         unsent_surveys = list(Problem.objects.requiring_survey_to_be_sent())
@@ -304,9 +308,11 @@ class HealthCheck(TemplateView):
             if problem.closed_timestamp >= two_hours_ago:
                 unsent_surveys.remove(problem)
         context['unsent_surveys'] = unsent_surveys
+        context['unsent_surveys_healthy'] = True
 
         if unsent_surveys:
             self.status = 500
+            context['unsent_surveys_healthy'] = False
 
         # Unsent reviews
         unsent_reviews = SubmittedReview.objects.filter(
@@ -314,22 +320,28 @@ class HealthCheck(TemplateView):
             created__lte=two_hours_ago
         )
         context['unsent_reviews'] = unsent_reviews
+        context['unsent_reviews_healthy'] = True
 
         if unsent_reviews:
             self.status = 500
+            context['unsent_reviews_healthy'] = False
 
         # No new reviews from the choices api
         latest_choices_reviews = Review.objects.all().order_by('-created')
         if latest_choices_reviews:
             context['latest_choices_review'] = latest_choices_review = latest_choices_reviews[0]
+            context['latest_choices_review_healthy'] = True
             if latest_choices_review.created <= two_days_ago:
                 self.status = 500
+                context['latest_choices_review_healthy'] = False
 
         # No new problems
         latest_problems = Problem.objects.all().order_by('-created')
         if latest_problems:
             context['latest_problem'] = latest_problem = latest_problems[0]
+            context['latest_problem_healthy'] = True
             if latest_problem.created <= one_week_ago:
                 self.status = 500
+                context['latest_problem_healthy'] = False
 
         return context
