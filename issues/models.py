@@ -644,8 +644,8 @@ class Problem(AuditedModel):
         if not self.id or self.status not in self.CLOSED_STATUSES:
             return None
         else:
-            for version, changed in enumerate(changed_attrs_by_version(self, ['status'])):
-                if changed[1] in self.CLOSED_STATUSES:
+            for version, changes in changed_attrs_by_version(self, ['status']).iteritems():
+                if changes['status'][1] in self.CLOSED_STATUSES:
                     return version.revision.date_created
             # If we didn't find a revision which closed the object, but the object
             # is closed, it must have been created closed, so the closed
