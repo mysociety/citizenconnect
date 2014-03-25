@@ -24,7 +24,7 @@ from citizenconnect.models import (
     validate_file_extension,
     delete_uploaded_file
 )
-from .lib import base32_to_int, int_to_base32
+from .lib import base32_to_int, int_to_base32, changed_attrs_by_version
 from sorl.thumbnail import ImageField as sorlImageField
 
 
@@ -636,6 +636,21 @@ class Problem(AuditedModel):
         days_in_minutes = timedelta.days * 60 * 24
         seconds_in_minutes = timedelta.seconds / 60
         return days_in_minutes + seconds_in_minutes
+
+    @property
+    def closed_timestamp(self):
+        """Return the timestamp of when this problem was closed, if any."""
+        # Unsaved and open problems don't have one
+        if not self.id or self.status not in self.CLOSED_STATUSES:
+            return None
+        else:
+            for version, changed in enumerate(changed_attrs_by_version(self, ['status'])):
+                if changed[1] in self.CLOSED_STATUSES:
+                    return version.revision.date_created
+            # If we didn't find a revision which closed the object, but the object
+            # is closed, it must have been created closed, so the closed
+            # timestamp is the same as the created one
+            return self.created
 
 
 def obfuscated_upload_path_and_name(instance, filename):
