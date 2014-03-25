@@ -46,8 +46,8 @@ def changes_as_string(changed_attrs, transitions):
         return ' and '.join(changes)
 
 
-def changed_attrs_by_version(model, attrs):
-    """Produce a full list of changed attrs for a model from all revisions"""
+def changed_attrs_by_version(model, interesting_attrs):
+    """Produce an ordered dictionary of changed attrs for a model, keyed by version"""
     changed = OrderedDict()
     history = reversion.get_for_object(model).order_by("revision__date_created")
     for index, version in enumerate(history):
@@ -56,7 +56,7 @@ def changed_attrs_by_version(model, attrs):
             try:
                 old = history[index - 1].field_dict
                 new = version.field_dict
-                changed[version] = changed_attrs(old, new, attrs)
+                changed[version] = changed_attrs(old, new, interesting_attrs)
             except DeserializationError:
                 # Django's deserialisation framework gets upset if it tries to get
                 # a model instance from some json or xml and the instance has fields
