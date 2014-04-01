@@ -119,6 +119,19 @@ class PullArticlesFromRssFeedTests(TestCase):
 
         urllib.urlretrieve.side_effect = None
 
+    def test_ignores_videos_in_multiple_enclosures(self):
+        self.multiple_enclosures_rss_feed = os.path.join(self.fixtures_dir, 'news_feed_multiple_enclosures.xml')
+
+        # Load the data in
+        self.call_command('get_articles_from_rss_feed', self.multiple_enclosures_rss_feed)
+
+        # Check it worked and we picked the right enclosure
+        self.assertEqual(Article.objects.count(), 2)
+        article = Article.objects.get(guid='http://blogs.mysociety.org/careconnect/?p=1')
+        image_filename = article.image.url
+        image_filename_regex = re.compile('article_images/\w{2}/\w{2}/[0-9a-f]{32}.jpg', re.I)
+        self.assertRegexpMatches(image_filename, image_filename_regex)
+
 
 class ArticleDetailViewTests(TestCase):
 
