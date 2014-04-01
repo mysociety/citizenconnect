@@ -50,7 +50,7 @@ class Command(BaseCommand):
                 image_content_type_regex = re.compile("^image/")
                 image_enclosure = None
                 for enclosure in entry.enclosures:
-                    if image_content_type_regex.match(enclosure.type):
+                    if hasattr(enclosure, 'type') and image_content_type_regex.match(enclosure.type):
                         image_enclosure = enclosure
                         break
 
