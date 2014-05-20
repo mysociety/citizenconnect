@@ -1,6 +1,7 @@
 import os
 import urllib
 from dateutil import parser
+import re
 
 import feedparser
 
@@ -44,19 +45,28 @@ class Command(BaseCommand):
             article.save()
 
             # Then try to download the image
-            if len(entry.enclosures) > 0:
-                image_url = entry.enclosures[0].get('url', '')
-                if image_url:
-                    try:
-                        (temp_image_file, headers) = urllib.urlretrieve(image_url)
-                        image_filename = os.path.basename(image_url)
-                        article.image.save(
-                            image_filename,
-                            File(open(temp_image_file))
-                        )
-                        article.save()
-                        os.remove(temp_image_file)
-                    except Exception as e:
-                        # On any exception, just ignore the image
-                        if verbosity >= 1:
-                            self.stderr.write("Skipping image for %s: %s\n" % (article.title, e))
+            if entry.enclosures:
+                # Enclosures can contain videos too, find the first image
+                image_content_type_regex = re.compile("^image/")
+                image_enclosure = None
+                for enclosure in entry.enclosures:
+                    if hasattr(enclosure, 'type') and image_content_type_regex.match(enclosure.type):
+                        image_enclosure = enclosure
+                        break
+
+                if image_enclosure:
+                    image_url = image_enclosure.get('url', '')
+                    if image_url:
+                        try:
+                            (temp_image_file, headers) = urllib.urlretrieve(image_url)
+                            image_filename = os.path.basename(image_url)
+                            article.image.save(
+                                image_filename,
+                                File(open(temp_image_file))
+                            )
+                            article.save()
+                            os.remove(temp_image_file)
+                        except Exception as e:
+                            # On any exception, just ignore the image
+                            if verbosity >= 1:
+                                self.stderr.write("Skipping image for %s: %s\n" % (article.title, e))

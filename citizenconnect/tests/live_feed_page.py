@@ -8,6 +8,7 @@ from django.conf import settings
 from django.conf.locale.en_GB import formats
 from django.template.defaultfilters import date as django_date
 from django.template.defaultfilters import capfirst
+from django.templatetags.tz import localtime
 
 from organisations.tests.lib import (
     create_test_problem,
@@ -315,7 +316,7 @@ class LiveFeedTests(TestCase):
         problem_url = reverse('problem-view', kwargs={'pk': problem.id, 'cobrand': 'choices'})
         self.assertContains(resp, problem_url)
         self.assertContains(resp, problem.organisation.name)
-        self.assertContains(resp, django_date(problem.created, formats.DATETIME_FORMAT))
+        self.assertContains(resp, django_date(localtime(problem.created), formats.DATETIME_FORMAT))
         self.assertContains(resp, problem.get_category_display())
         self.assertContains(resp, problem.get_status_display())
 
@@ -334,5 +335,5 @@ class LiveFeedTests(TestCase):
         )
         self.assertContains(resp, review_url)
         self.assertContains(resp, review.organisations.all()[0].name)
-        self.assertContains(resp, django_date(review.api_published, formats.DATETIME_FORMAT))
+        self.assertContains(resp, django_date(localtime(review.api_published), formats.DATETIME_FORMAT))
         self.assertContains(resp, capfirst(review.title))
