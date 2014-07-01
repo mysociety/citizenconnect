@@ -1,11 +1,15 @@
+import logging
+logger = logging.getLogger(__name__)
+
 from django.db import models
+from django.dispatch import receiver
 
 from sorl.thumbnail import ImageField as sorlImageField
 
 from citizenconnect.models import (
     AuditedModel,
     validate_file_extension,
-    partitioned_upload_path_and_obfuscated_name
+    delete_uploaded_file
 )
 
 class Article(AuditedModel):
@@ -28,3 +32,12 @@ class Article(AuditedModel):
         validators=[validate_file_extension],
         blank=True
     )
+
+# post_delete handler to remove the image for an Article when it's deleted.
+@receiver(models.signals.post_delete, sender=Article)
+def article_post_delete_handler(sender, **kwargs):
+    article = kwargs['instance']
+    storage = article.image.storage
+    path = article.image.path
+    name = article.image.name
+    delete_uploaded_file(storage, path, name)
