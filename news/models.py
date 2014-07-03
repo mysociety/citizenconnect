@@ -8,17 +8,6 @@ from citizenconnect.models import (
     partitioned_upload_path_and_obfuscated_name
 )
 
-
-def article_image_upload_path(instance, filename):
-    """Return a path to upload a News article image too"""
-    return "/".join(
-        [
-            'article_images',
-            partitioned_upload_path_and_obfuscated_name(instance, filename)
-        ]
-    )
-
-
 class Article(AuditedModel):
     """Stores news articles"""
 
@@ -35,7 +24,7 @@ class Article(AuditedModel):
     published = models.DateTimeField(db_index=True)
     # An image to display alongside this Article
     image = sorlImageField(
-        upload_to=article_image_upload_path,
+        upload_to='article_images',
         validators=[validate_file_extension],
         blank=True
     )

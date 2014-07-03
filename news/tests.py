@@ -86,7 +86,7 @@ class PullArticlesFromRssFeedTests(TestCase):
 
         # Test the image was added
         image_filename = article.image.url
-        image_filename_regex = re.compile('article_images/\w{2}/\w{2}/[0-9a-f]{32}.jpg', re.I)
+        image_filename_regex = re.compile('article_images/MelonHatCat.jpg', re.I)
         self.assertRegexpMatches(image_filename, image_filename_regex)
 
     def test_updates_existing_entries(self):
@@ -129,7 +129,7 @@ class PullArticlesFromRssFeedTests(TestCase):
         self.assertEqual(Article.objects.count(), 2)
         article = Article.objects.get(guid='http://blogs.mysociety.org/careconnect/?p=1')
         image_filename = article.image.url
-        image_filename_regex = re.compile('article_images/\w{2}/\w{2}/[0-9a-f]{32}.jpg', re.I)
+        image_filename_regex = re.compile('article_images/MelonHatCat_2.jpg', re.I)
         self.assertRegexpMatches(image_filename, image_filename_regex)
 
 
