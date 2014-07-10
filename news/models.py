@@ -1,23 +1,16 @@
+import logging
+logger = logging.getLogger(__name__)
+
 from django.db import models
+from django.dispatch import receiver
 
 from sorl.thumbnail import ImageField as sorlImageField
 
 from citizenconnect.models import (
     AuditedModel,
     validate_file_extension,
-    partitioned_upload_path_and_obfuscated_name
+    delete_uploaded_file
 )
-
-
-def article_image_upload_path(instance, filename):
-    """Return a path to upload a News article image too"""
-    return "/".join(
-        [
-            'article_images',
-            partitioned_upload_path_and_obfuscated_name(instance, filename)
-        ]
-    )
-
 
 class Article(AuditedModel):
     """Stores news articles"""
@@ -35,7 +28,16 @@ class Article(AuditedModel):
     published = models.DateTimeField(db_index=True)
     # An image to display alongside this Article
     image = sorlImageField(
-        upload_to=article_image_upload_path,
+        upload_to='article_images',
         validators=[validate_file_extension],
         blank=True
     )
+
+# post_delete handler to remove the image for an Article when it's deleted.
+@receiver(models.signals.post_delete, sender=Article)
+def article_post_delete_handler(sender, **kwargs):
+    article = kwargs['instance']
+    storage = article.image.storage
+    path = article.image.path
+    name = article.image.name
+    delete_uploaded_file(storage, path, name)

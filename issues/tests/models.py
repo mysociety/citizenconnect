@@ -1,11 +1,13 @@
 import warnings
 import re
+import os
 from datetime import datetime, timedelta
-from time import strftime, gmtime
+import time
+from StringIO import StringIO
+from mock import MagicMock
 
 from django.test import TestCase, TransactionTestCase
 from django.test.utils import override_settings
-from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.core.files.images import ImageFile
@@ -15,6 +17,7 @@ from concurrency.utils import ConcurrencyTestMixin
 
 from organisations.tests.lib import create_test_organisation, create_test_problem, AuthorizationTestCase
 
+from .. import models as models
 from ..models import Problem, ProblemImage
 
 from .lib import ProblemImageTestBase
@@ -723,8 +726,10 @@ class ProblemManagerTests(ManagerTest):
 
 
 class ProblemImageModelTests(ProblemImageTestBase):
-
     def setUp(self):
+        self.stdout = StringIO()
+        self.stderr = StringIO()
+
         # Create a test problem
         self.test_organisation = create_test_organisation()
         self.test_problem = create_test_problem({
@@ -751,7 +756,7 @@ class ProblemImageModelTests(ProblemImageTestBase):
         problem_image.image.save('test.jpg', self.jpg, save=True)
 
         # Note that django always divides FileField paths with unix separators
-        expected_folder = 'images/' + strftime('%m_%Y', gmtime()) + '/'
+        expected_folder = 'images/' + time.strftime('%m_%Y', time.gmtime()) + '/'
         expected_filename_regex = re.compile(expected_folder + '[0-9a-f]{32}.jpg', re.I)
         self.assertRegexpMatches(problem_image.image.name, expected_filename_regex)
 
@@ -766,3 +771,44 @@ class ProblemImageModelTests(ProblemImageTestBase):
 
         self.assertEqual(len(context_manager.exception.messages), 1)
         self.assertEqual(context_manager.exception.messages[0], "Problems can only have a maximum of 1 images.")
+
+    def test_image_and_directories_deleted(self):
+        # We have to mock the gmtime used in our models.py so that we can
+        # control the directory name the files are stored in to make sure that
+        # they're put into an empty directory.
+        self._original_gmtime = models.gmtime
+        models.gmtime = MagicMock(return_value=(2009, 2, 17, 17, 3, 38, 1, 48, 0))
+        problem_image = ProblemImage(problem=self.test_problem)
+        problem_image.image.save('test.jpg', self.jpg, save=True)
+
+        image_path = problem_image.image.path
+        path_parts = image_path.split("/")
+        directory = "/".join(path_parts[:-1])
+
+        self.assertTrue(os.path.isfile(image_path))
+        self.assertTrue(os.path.exists(directory))
+
+        problem_image.delete()
+
+        self.assertFalse(os.path.isfile(image_path))
+        self.assertFalse(os.path.exists(directory))
+        models.gmtime = self._original_gmtime
+
+    def test_directories_not_deleted_if_not_empty(self):
+        # By creating two image models, we ensure that the directory is not
+        # empty, so it shouldn't be deleted.
+        problem_image = ProblemImage(problem=self.test_problem)
+        problem_image.image.save('test.jpg', self.jpg, save=True)
+        problem_image2 = ProblemImage(problem=self.test_problem)
+        problem_image2.image.save('test2.jpg', self.jpg, save=True)
+
+        image_path = problem_image.image.path
+        path_parts = image_path.split("/")
+        directory = "/".join(path_parts[:-1])
+        self.assertTrue(os.path.isfile(image_path))
+        self.assertTrue(os.path.exists(directory))
+
+        problem_image.delete()
+
+        self.assertFalse(os.path.isfile(image_path))
+        self.assertTrue(os.path.exists(directory))

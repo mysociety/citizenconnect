@@ -14,11 +14,16 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MaxLengthValidator
 from django.db.models import Q
 from django.utils.timezone import utc
+from django.dispatch import receiver
 
 from concurrency.fields import IntegerVersionField
 from concurrency.api import concurrency_check
 
-from citizenconnect.models import AuditedModel, validate_file_extension
+from citizenconnect.models import (
+    AuditedModel,
+    validate_file_extension,
+    delete_uploaded_file
+)
 from .lib import base32_to_int, int_to_base32
 from sorl.thumbnail import ImageField as sorlImageField
 
@@ -634,13 +639,13 @@ class Problem(AuditedModel):
 
 
 def obfuscated_upload_path_and_name(instance, filename):
-        """Make an obfuscated image url"""
-        base_image_path = 'images'
-        date_based_directory = strftime('%m_%Y', gmtime())
-        random_filename = uuid4().hex
-        extension = os.path.splitext(filename)[1]
-        # Note that django always wants FileField paths divided with unix separators
-        return "/".join([base_image_path, date_based_directory, random_filename + extension])
+    """Make an obfuscated image url"""
+    base_image_path = 'images'
+    date_based_directory = strftime('%m_%Y', gmtime())
+    random_filename = uuid4().hex
+    extension = os.path.splitext(filename)[1]
+    # Note that django always wants FileField paths divided with unix separators
+    return "/".join([base_image_path, date_based_directory, random_filename + extension])
 
 
 class ProblemImage(AuditedModel):
@@ -664,3 +669,13 @@ class ProblemImage(AuditedModel):
         settings.MAX_IMAGES_PER_PROBLEM images on the given problem"""
         self.validate_problem(self.problem)
         super(ProblemImage, self).save(*args, **kwargs)
+
+
+# post_delete handler to remove the image for a ProblemImage when it's deleted.
+@receiver(models.signals.post_delete, sender=ProblemImage)
+def article_post_delete_handler(sender, **kwargs):
+    image = kwargs['instance']
+    storage = image.image.storage
+    path = image.image.path
+    name = image.image.name
+    delete_uploaded_file(storage, path, name, delete_empty_directory=True)

@@ -13,11 +13,33 @@ from django.utils import timezone
 from django.core.urlresolvers import reverse
 from django.core.management import call_command
 from django.conf import settings
+from django.core.files.images import ImageFile
+
+from . import models
 
 from .models import Article
 
 
 class ArticleModelTest(TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.sample_article_image = ImageFile(
+            open(
+                os.path.join(
+                    settings.PROJECT_ROOT,
+                    'news',
+                    'tests',
+                    'fixtures',
+                    'sample-article-image.jpg'
+                )
+            )
+        )
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.sample_article_image.close()
+
     def test_article_model_exists(self):
         article = Article.objects.create(
             title="Test title",
@@ -26,6 +48,27 @@ class ArticleModelTest(TestCase):
         )
         self.assertEqual("Test title", article.title)
         self.assertEqual("Test description", article.description)
+
+    def test_image_deleted(self):
+        article = Article.objects.create(
+            title="Test title",
+            description="Test description",
+            published=timezone.now()
+        )
+        article.image.save('sample-article-image.jpg', self.sample_article_image, save=True)
+
+
+        image_path = article.image.path
+        directory = os.path.dirname(image_path)
+
+        self.assertTrue(os.path.isfile(image_path))
+        self.assertTrue(os.path.exists(directory))
+
+        article.delete()
+
+        self.assertFalse(os.path.isfile(image_path))
+        # Check that the directory doesn't get deleted
+        self.assertTrue(os.path.exists(directory))
 
 
 class PullArticlesFromRssFeedTests(TestCase):
@@ -86,7 +129,7 @@ class PullArticlesFromRssFeedTests(TestCase):
 
         # Test the image was added
         image_filename = article.image.url
-        image_filename_regex = re.compile('article_images/\w{2}/\w{2}/[0-9a-f]{32}.jpg', re.I)
+        image_filename_regex = re.compile('article_images/MelonHatCat.jpg', re.I)
         self.assertRegexpMatches(image_filename, image_filename_regex)
 
     def test_updates_existing_entries(self):
@@ -129,7 +172,7 @@ class PullArticlesFromRssFeedTests(TestCase):
         self.assertEqual(Article.objects.count(), 2)
         article = Article.objects.get(guid='http://blogs.mysociety.org/careconnect/?p=1')
         image_filename = article.image.url
-        image_filename_regex = re.compile('article_images/\w{2}/\w{2}/[0-9a-f]{32}.jpg', re.I)
+        image_filename_regex = re.compile('article_images/MelonHatCat_2.jpg', re.I)
         self.assertRegexpMatches(image_filename, image_filename_regex)
 
 
