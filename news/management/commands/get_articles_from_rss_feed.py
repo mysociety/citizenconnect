@@ -9,6 +9,8 @@ from django.core.management.base import BaseCommand
 from django.conf import settings
 from django.core.files import File
 
+from citizenconnect.models import delete_uploaded_file
+
 from ...models import Article
 
 
@@ -58,8 +60,20 @@ class Command(BaseCommand):
                     image_url = image_enclosure.get('url', '')
                     if image_url:
                         try:
+                            if verbosity >= 2:
+                                self.stdout.write("Downloading new image for Article guid={0}\n".format(article.id))
+                            # Get the new image
                             (temp_image_file, headers) = urllib.urlretrieve(image_url)
                             image_filename = os.path.basename(image_url)
+                            # Delete the old image if there is one
+                            if article.image:
+                                if verbosity >= 2:
+                                    self.stdout.write("Deleting existing image for Article guid={0}\n".format(article.id))
+                                storage = article.image.storage
+                                path = article.image.path
+                                name = article.image.name
+                                delete_uploaded_file(storage, path, name)
+                            # Save the new one in it's place
                             article.image.save(
                                 image_filename,
                                 File(open(temp_image_file))
