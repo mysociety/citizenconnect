@@ -101,3 +101,53 @@ class HealthCheckTests(TestCase):
         resp = self.client.get(self.health_check_url)
         expected_text = 'Last new problem created: {0} - Bad'.format(django_date(problem.created, formats.DATETIME_FORMAT))
         self.assertContains(resp, expected_text, status_code=500)
+
+    def test_all_ok(self):
+        # Add all the things into the db that we need to return a success
+
+        # A brand new problem in the db that's not been mailed yet, but is
+        # within the 1hr limit
+        create_test_problem({'organisation': self.organisation})
+
+        # An older problem that has been mailed and the confirmation sent
+        problem = create_problem_with_age(self.organisation, 1)
+        problem.confirmation_sent = problem.created
+        problem.mailed = True
+        problem.save()
+
+        # A closed problem which hasn't had the survey sent yet, but is within
+        # the two hour limit
+        with reversion.create_revision():
+            problem = create_problem_with_age(self.organisation, 1)
+        problem.mailed = True
+        problem.confirmation_sent = problem.created
+        problem.status = Problem.RESOLVED
+        with reversion.create_revision():
+            problem.save()
+
+        # A closed problem which has had the survey sent
+        with reversion.create_revision():
+            problem = create_problem_with_age(self.organisation, 1)
+        problem.mailed = True
+        problem.confirmation_sent = problem.created
+        problem.status = Problem.RESOLVED
+        problem.survey_sent = problem.created
+        with reversion.create_revision():
+            problem.save()
+
+        # A review which is brand new and hasn't been sent, but is within the
+        # 2hr limit
+        review = create_review(self.organisation)
+        review.last_sent_to_api = None
+        review.save()
+
+        # An older review which has been sent to the API
+        review = create_review(self.organisation)
+        review.last_sent_to_api = review.created
+        review.save()
+
+        # A review which has come *from* the Choices API recently
+        review = create_test_review({'organisation': self.organisation})
+
+        resp = self.client.get(self.health_check_url)
+        self.assertEqual(resp.status_code, 200)
