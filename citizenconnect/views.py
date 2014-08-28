@@ -271,13 +271,16 @@ class HealthCheck(TemplateView):
         context = super(HealthCheck, self).get_context_data(**kwargs)
 
         now = datetime.utcnow().replace(tzinfo=timezone.utc)
-        two_hours_ago = now - timedelta(hours=2)
-        two_days_ago = now - timedelta(days=2)
-        one_week_ago = now - timedelta(days=2)
+        problems_must_be_sent_by = now - timedelta(hours=settings.PROBLEMS_MUST_BE_SENT)
+        confirmations_must_be_sent_by = now - timedelta(hours=settings.CONFIRMATIONS_MUST_BE_SENT)
+        surveys_must_be_sent_by = now - timedelta(hours=settings.SURVEYS_MUST_BE_SENT)
+        reviews_must_be_sent_by = now - timedelta(hours=settings.REVIEWS_MUST_BE_SENT)
+        reviews_must_have_been_received_since = now - timedelta(hours=settings.REVIEWS_MUST_BE_CREATED)
+        problems_must_have_been_created_since = now - timedelta(hours=settings.PROBLEMS_MUST_BE_CREATED)
 
         # Unsent problems
         unsent_problems = Problem.objects.filter(
-            created__lte=two_hours_ago,
+            created__lte=problems_must_be_sent_by,
             mailed=False
         )
         context['unsent_problems'] = unsent_problems
@@ -289,7 +292,7 @@ class HealthCheck(TemplateView):
 
         # Unsent confirmations
         unsent_confirmations = Problem.objects.requiring_confirmation().filter(
-            created__lte=two_hours_ago
+            created__lte=confirmations_must_be_sent_by
         )
         context['unsent_confirmations'] = unsent_confirmations
         context['unsent_confirmations_healthy'] = True
@@ -305,7 +308,7 @@ class HealthCheck(TemplateView):
         # the email sending is late. To find this out, we inspect the revision
         # history to find any that were closed more than two hours ago.
         for problem in unsent_surveys:
-            if problem.closed_timestamp >= two_hours_ago:
+            if problem.closed_timestamp >= surveys_must_be_sent_by:
                 unsent_surveys.remove(problem)
         context['unsent_surveys'] = unsent_surveys
         context['unsent_surveys_healthy'] = True
@@ -317,7 +320,7 @@ class HealthCheck(TemplateView):
         # Unsent reviews
         unsent_reviews = SubmittedReview.objects.filter(
             last_sent_to_api__isnull=True,
-            created__lte=two_hours_ago
+            created__lte=reviews_must_be_sent_by
         )
         context['unsent_reviews'] = unsent_reviews
         context['unsent_reviews_healthy'] = True
@@ -331,7 +334,7 @@ class HealthCheck(TemplateView):
         if latest_choices_reviews:
             context['latest_choices_review'] = latest_choices_review = latest_choices_reviews[0]
             context['latest_choices_review_healthy'] = True
-            if latest_choices_review.created <= two_days_ago:
+            if latest_choices_review.created <= reviews_must_have_been_received_since:
                 self.status = 500
                 context['latest_choices_review_healthy'] = False
 
@@ -340,7 +343,7 @@ class HealthCheck(TemplateView):
         if latest_problems:
             context['latest_problem'] = latest_problem = latest_problems[0]
             context['latest_problem_healthy'] = True
-            if latest_problem.created <= one_week_ago:
+            if latest_problem.created <= problems_must_have_been_created_since:
                 self.status = 500
                 context['latest_problem_healthy'] = False
 

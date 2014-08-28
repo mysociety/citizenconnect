@@ -106,3 +106,12 @@ LIVE_FEED_CUTOFF_DAYS: 30
 # How many items to show per-page on the live feed pages
 LIVE_FEED_PER_PAGE: 25
 
+# Monitoring settings
+# Each setting effectively is a deadline for a specific check, (in hours)
+PROBLEMS_MUST_BE_SENT: 2
+CONFIRMATIONS_MUST_BE_SENT: 2
+SURVEYS_MUST_BE_SENT: 2
+REVIEWS_MUST_BE_SENT: 2
+REVIEWS_MUST_BE_CREATED: 24
+PROBLEMS_MUST_BE_CREATED: 168
+

@@ -3,6 +3,7 @@ from datetime import timedelta
 import reversion
 
 from django.test import TestCase
+from django.test.utils import override_settings
 from django.core.urlresolvers import reverse
 from django.utils import timezone
 from django.conf.locale.en_GB import formats
@@ -18,6 +19,14 @@ from reviews_submit.tests import create_review
 from issues.models import Problem
 
 
+@override_settings(
+    PROBLEMS_MUST_BE_SENT = 2,
+    CONFIRMATIONS_MUST_BE_SENT = 2,
+    SURVEYS_MUST_BE_SENT = 2,
+    REVIEWS_MUST_BE_SENT = 2,
+    REVIEWS_MUST_BE_CREATED = 24,
+    PROBLEMS_MUST_BE_CREATED = 168
+)
 class HealthCheckTests(TestCase):
 
     def setUp(self):
