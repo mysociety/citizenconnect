@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 import reversion
 
@@ -10,6 +10,7 @@ from django.template.defaultfilters import date as django_date
 
 from organisations.tests.lib import (
     create_test_organisation,
+    create_test_problem,
     create_problem_with_age
 )
 from reviews_display.tests import create_test_review
@@ -22,9 +23,12 @@ class HealthCheckTests(TestCase):
     def setUp(self):
         self.health_check_url = reverse('healthcheck')
         self.organisation = create_test_organisation()
-        self.now = datetime.utcnow().replace(tzinfo=timezone.utc)
+        # Create a reference date in the current timezone (rather than UTC),
+        # because that's what the views we test will use to render dates
+        self.now = timezone.now().astimezone(timezone.get_current_timezone())
         self.two_hours_ago = self.now - timedelta(hours=2)
         self.two_days_ago = self.now - timedelta(days=2)
+        self.eight_days_ago = self.now - timedelta(days=8)
 
     def test_no_problems(self):
         resp = self.client.get(self.health_check_url)
@@ -88,8 +92,12 @@ class HealthCheckTests(TestCase):
         self.assertContains(resp, expected_text, status_code=500)
 
     def test_no_new_problems_recently(self):
-        # Create a problem but make it over 1 week old
-        problem = create_problem_with_age(self.organisation, 8)
+        # Create a problem but make it over 1 week old, and use our timezone
+        # specific date so that we can check the output from the view
+        problem = create_test_problem({
+            'organisation': self.organisation,
+            'created': self.eight_days_ago
+        })
         resp = self.client.get(self.health_check_url)
         expected_text = 'Last new problem created: {0} - Bad'.format(django_date(problem.created, formats.DATETIME_FORMAT))
         self.assertContains(resp, expected_text, status_code=500)
