@@ -22,8 +22,8 @@ class Command(BaseCommand):
             reviews = organisation.submitted_reviews.filter(last_sent_to_api__isnull=True)
             if not reviews:
                 if verbosity >= 1:
-                    self.stdout.write("No reviews found\n")
-                return
+                    self.stdout.write("No reviews found for {0}\n".format(organisation))
+                continue
 
             for review in reviews:
                 data = self.xml_encode(review)

@@ -453,6 +453,26 @@ class PushNewReviewToChoicesCommandTest(TestCase):
         self.assertIsNone(review.last_sent_to_api)
         self.assertEquals("{0}: Server error\n".format(review.id), self.stderr.getvalue())
 
+    def test_skips_empty_organisations(self):
+        # Issue #1308 - organisations with reviews that have already been
+        # sent but not yet deleted caused the command to immediately return
+
+        # Mark our test review as having been sent
+        self.review.last_sent_to_api = timezone.now()
+        self.review.save()
+
+        # Create another org with a review which hasn't been sent
+        self.second_organisation = create_test_organisation({'ods_code': 'A112'})
+        second_review = create_review(self.second_organisation)
+
+        self.mock_api_post_request(202)
+        call_command('send_new_reviews_to_choices_api', stdout=self.stdout, stderr=self.stderr)
+        expected_output = "No reviews found for {0}\n{1}: Sent review to the Choices API\n".format(self.organisation, second_review.id)
+
+        self.assertEquals(expected_output, self.stdout.getvalue())
+        second_review = Review.objects.get(pk=second_review.id)
+        self.assertIsNotNone(second_review.last_sent_to_api)
+
 
 class RemoveReviewsSentToApiTest(TestCase):
     def setUp(self):
