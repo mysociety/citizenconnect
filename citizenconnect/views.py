@@ -18,6 +18,7 @@ from django.contrib.auth.models import User
 from issues.forms import PublicLookupForm
 from issues.models import Problem
 from reviews_display.models import Review
+from reviews_submit.models import Review as SubmittedReview
 from news.models import Article
 
 from .forms import LiveFeedFilterForm, FeedbackForm
@@ -250,3 +251,100 @@ class LiveFeed(FormView):
 
         return context
 
+
+class HealthCheck(TemplateView):
+
+    template_name = 'citizenconnect/health_check.html'
+
+    # Default response status, we'll alter this if there's something unhealthy
+    # that we wish to report as an error
+    status = 200
+
+    def render_to_response(self, context, **response_kwargs):
+        """Override render_to_response so that we can control the HTTP status"""
+
+        response_kwargs['status'] = self.status
+
+        return super(TemplateView, self).render_to_response(context, **response_kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(HealthCheck, self).get_context_data(**kwargs)
+
+        now = datetime.utcnow().replace(tzinfo=timezone.utc)
+        problems_must_be_sent_by = now - timedelta(hours=settings.PROBLEMS_MUST_BE_SENT)
+        confirmations_must_be_sent_by = now - timedelta(hours=settings.CONFIRMATIONS_MUST_BE_SENT)
+        surveys_must_be_sent_by = now - timedelta(hours=settings.SURVEYS_MUST_BE_SENT)
+        reviews_must_be_sent_by = now - timedelta(hours=settings.REVIEWS_MUST_BE_SENT)
+        reviews_must_have_been_received_since = now - timedelta(hours=settings.REVIEWS_MUST_BE_CREATED)
+        problems_must_have_been_created_since = now - timedelta(hours=settings.PROBLEMS_MUST_BE_CREATED)
+
+        # Unsent problems
+        unsent_problems = Problem.objects.filter(
+            created__lte=problems_must_be_sent_by,
+            mailed=False
+        )
+        context['unsent_problems'] = unsent_problems
+        context['unsent_problems_healthy'] = True
+
+        if unsent_problems:
+            self.status = 500
+            context['unsent_problems_healthy'] = False
+
+        # Unsent confirmations
+        unsent_confirmations = Problem.objects.requiring_confirmation().filter(
+            created__lte=confirmations_must_be_sent_by
+        )
+        context['unsent_confirmations'] = unsent_confirmations
+        context['unsent_confirmations_healthy'] = True
+
+        if unsent_confirmations:
+            self.status = 500
+            context['unsent_confirmations_healthy'] = False
+
+        # Unsent surveys
+        unsent_surveys = list(Problem.objects.requiring_survey_to_be_sent())
+        # These are a bit trickier because we don't have a timestamp for when
+        # they are closed, which is the key piece of information to see if
+        # the email sending is late. To find this out, we inspect the revision
+        # history to find any that were closed more than two hours ago.
+        for problem in unsent_surveys:
+            if problem.closed_timestamp >= surveys_must_be_sent_by:
+                unsent_surveys.remove(problem)
+        context['unsent_surveys'] = unsent_surveys
+        context['unsent_surveys_healthy'] = True
+
+        if unsent_surveys:
+            self.status = 500
+            context['unsent_surveys_healthy'] = False
+
+        # Unsent reviews
+        unsent_reviews = SubmittedReview.objects.filter(
+            last_sent_to_api__isnull=True,
+            created__lte=reviews_must_be_sent_by
+        )
+        context['unsent_reviews'] = unsent_reviews
+        context['unsent_reviews_healthy'] = True
+
+        if unsent_reviews:
+            self.status = 500
+            context['unsent_reviews_healthy'] = False
+
+        # No new reviews from the choices api
+        latest_choices_reviews = Review.objects.all().order_by('-created')
+        if latest_choices_reviews:
+            context['latest_choices_review'] = latest_choices_review = latest_choices_reviews[0]
+            context['latest_choices_review_healthy'] = True
+            if latest_choices_review.created <= reviews_must_have_been_received_since:
+                self.status = 500
+                context['latest_choices_review_healthy'] = False
+
+        # No new problems
+        latest_problems = Problem.objects.all().order_by('-created')
+        if latest_problems:
+            context['latest_problem'] = latest_problem = latest_problems[0]
+            context['latest_problem_healthy'] = True
+            if latest_problem.created <= problems_must_have_been_created_since:
+                self.status = 500
+                context['latest_problem_healthy'] = False
+
+        return context

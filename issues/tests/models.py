@@ -348,6 +348,35 @@ class ProblemModelTests(ProblemTestCase):
         for problem, expected_summary in tests:
             self.assertEqual(problem.summary, expected_summary)
 
+    def test_closed_timestamp_is_none_for_open_problems(self):
+        self.assertEqual(self.test_problem.closed_timestamp, None)
+
+    def test_closed_timestamp_is_none_for_unsaved_problems(self):
+        # Change the status but don't save the problem
+        self.test_problem.status = Problem.RESOLVED
+        self.assertEqual(self.test_problem.closed_timestamp, None)
+
+    def test_closed_timestamp_is_equal_to_created_for_immediately_closed_problems(self):
+        # Close the problem before it's saved so that the initial revision
+        # shows it as being closed immediately
+        self.test_problem.status = Problem.RESOLVED
+        self.test_problem.save()
+        self.assertEqual(self.test_problem.closed_timestamp, self.test_problem.created)
+
+    def test_closed_timestamp_is_determined_from_revisions_for_closed_problems(self):
+        # Save the problem to setup an initial revision
+        self.test_problem.save()
+
+        # Add some history to the problem
+        self.test_problem.status = Problem.ACKNOWLEDGED
+        self.test_problem.save()
+        self.test_problem.status = Problem.RESOLVED
+        self.test_problem.save()
+
+        self.assertNotEqual(self.test_problem.closed_timestamp, None)
+        now = datetime.utcnow().replace(tzinfo=utc)
+        self.assertAlmostEqual(self.test_problem.closed_timestamp, now, delta=timedelta(seconds=10))
+
 
 class ProblemModelTimeToTests(ProblemTestCase):
 

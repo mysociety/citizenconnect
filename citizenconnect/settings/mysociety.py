@@ -103,3 +103,12 @@ PROXIED_BLOG_FILES_URL = '/careconnect/news/files'
 # How many day's worth of things to show on the Live feed
 LIVE_FEED_CUTOFF_DAYS = config.get("LIVE_FEED_CUTOFF_DAYS")
 LIVE_FEED_PER_PAGE = config.get("LIVE_FEED_PER_PAGE")
+
+# Monitoring settings
+# Each setting effectively is a deadline for a specific check, (in hours)
+PROBLEMS_MUST_BE_SENT = config.get("PROBLEMS_MUST_BE_SENT", 2)
+CONFIRMATIONS_MUST_BE_SENT = config.get("CONFIRMATIONS_MUST_BE_SENT", 2)
+SURVEYS_MUST_BE_SENT = config.get("SURVEYS_MUST_BE_SENT", 2)
+REVIEWS_MUST_BE_SENT = config.get("REVIEWS_MUST_BE_SENT", 2)
+REVIEWS_MUST_BE_CREATED = config.get("REVIEWS_MUST_BE_CREATED", 24)
+PROBLEMS_MUST_BE_CREATED = config.get("PROBLEMS_MUST_BE_CREATED", 168)

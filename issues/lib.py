@@ -28,10 +28,13 @@ def changed_attrs(old_version, new_version, interesting_attrs):
 
 def changes_as_string(changed_attrs, transitions):
     """
-    Returns an English string describing a hash of changes, drawn from a dictionary of transition descriptions.
+    Returns an English string describing a hash of changes, drawn from a
+    dictionary of transition descriptions.
     EG: Acknowledged, Moderated and Published, Resolved, etc.
     """
     changes = []
+    if not changed_attrs:
+        return ''
     for attr, change in changed_attrs.items():
         for transition_description, possible_transitions in transitions[attr].items():
             for transition in possible_transitions:
@@ -43,12 +46,9 @@ def changes_as_string(changed_attrs, transitions):
         return ' and '.join(changes)
 
 
-def changes_for_model(model):
-    """
-    Use changed_attrs and changes_as_string to produce a list of changes in English
-    for a given model
-    """
-    changes = []
+def changed_attrs_by_version(model, interesting_attrs):
+    """Produce an ordered dictionary of changed attrs for a model, keyed by version"""
+    changed = OrderedDict()
     history = reversion.get_for_object(model).order_by("revision__date_created")
     for index, version in enumerate(history):
         # We're only interested in changes
@@ -56,13 +56,7 @@ def changes_for_model(model):
             try:
                 old = history[index - 1].field_dict
                 new = version.field_dict
-                changed = changed_attrs(old, new, model.REVISION_ATTRS)
-                if changed:
-                    change_string = changes_as_string(changed, model.TRANSITIONS)
-                    if change_string:
-                        changes.append({"user": version.revision.user,
-                                        "description": change_string,
-                                        "when": version.revision.date_created})
+                changed[version] = changed_attrs(old, new, interesting_attrs)
             except DeserializationError:
                 # Django's deserialisation framework gets upset if it tries to get
                 # a model instance from some json or xml and the instance has fields
@@ -76,7 +70,22 @@ def changes_for_model(model):
                 # and passes on this error to us. At which point we can nothing useful
                 # with it, and so we just ignore that point in history.
                 pass
-    return changes
+    return changed
+
+
+def changes_for_model(model):
+    """Return a list of changes in English for a given model."""
+    change_strings = []
+    for version, changes in changed_attrs_by_version(model, model.REVISION_ATTRS).items():
+        change_string = changes_as_string(changes, model.TRANSITIONS)
+        if change_string:
+            change_strings.append({
+                "user": version.revision.user,
+                "description": change_string,
+                "when": version.revision.date_created
+            })
+
+    return change_strings
 
 
 # Miss out i l o u

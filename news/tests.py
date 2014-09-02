@@ -172,7 +172,7 @@ class PullArticlesFromRssFeedTests(TestCase):
         self.assertEqual(Article.objects.count(), 2)
         article = Article.objects.get(guid='http://blogs.mysociety.org/careconnect/?p=1')
         image_filename = article.image.url
-        image_filename_regex = re.compile('article_images/MelonHatCat_2.jpg', re.I)
+        image_filename_regex = re.compile('article_images/MelonHatCat_1.jpg', re.I)
         self.assertRegexpMatches(image_filename, image_filename_regex)
 
 

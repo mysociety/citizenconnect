@@ -1,0 +1,22 @@
+{% extends "citizenconnect/base.html" %}
+
+{% block title %}Health Check{% endblock %}
+
+{% block content %}
+
+<h1>Health Check</h1>
+
+<ul>
+    <li>{{ unsent_problems|length }} unsent problem{{ unsent_problems|length|pluralize }} - {% if unsent_problems_healthy %}Good{% else %}Bad{% endif %}</li>
+    <li>{{ unsent_confirmations|length }} unsent confirmation{{ unsent_confirmations|length|pluralize }} - {% if unsent_confirmations_healthy %}Good{% else %}Bad{% endif %}</li>
+    <li>{{ unsent_surveys|length }} unsent survey{{ unsent_surveys|length|pluralize }} - {% if unsent_surveys_healthy %}Good{% else %}Bad{% endif %}</li>
+    <li>{{ unsent_reviews|length }} unsent review{{ unsent_reviews|length|pluralize }} (to NHS Choices) - {% if unsent_reviews_healthy %}Good{% else %}Bad{% endif %}</li>
+    {% if latest_choices_review %}
+        <li>Last new review (from NHS Choices) created: {{ latest_choices_review.created }} - {% if latest_choices_review_healthy %}Good{% else %}Bad{% endif %}</li>
+    {% endif %}
+    {% if latest_problem %}
+        <li>Last new problem created: {{ latest_problem.created }} - {% if latest_problem_healthy %}Good{% else %}Bad{% endif %}</li>
+    {% endif %}
+</ul>
+
+{% endblock content %}

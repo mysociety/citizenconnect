@@ -7,3 +7,4 @@ from .homepage import *
 from .concurrent_form import *
 from .requirements import *
 from .live_feed_page import *
+from .health_check import *
