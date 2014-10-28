@@ -15,6 +15,10 @@
 #     Satisfy any
 # </Location>
 
+# Strip out extra hosts from the X-Forwarded-Host header, as Django doesn't
+# like them and it breaks ALLOWED_HOSTS checking
+RequestHeader edit X-Forwarded-Host ",.*$" ""
+
 # Limit the max request we'll accept. This is fairly brutal as the user may not
 # see a nice error, but is the only really effective way to do it. We can't do
 # it in the Django app as it won't be given the request until it has been fully
