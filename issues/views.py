@@ -32,6 +32,9 @@ from .tables import (
 class ProblemPickProvider(PickProviderBase):
     result_link_url_name = 'problem-form'
     title_text = 'Report a Problem'
+    # Limit the organisations the search will search in to active
+    # organisations only
+    queryset = Organisation.objects.active()
 
 
 class ProblemImageInline(InlineFormSet):

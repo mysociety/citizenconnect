@@ -7,6 +7,7 @@ from sorl.thumbnail import get_thumbnail
 from organisations.tests import (
     create_test_problem,
     create_test_organisation,
+    create_test_organisation_parent,
     create_test_service,
     create_review_with_age,
     create_problem_with_age,
@@ -291,12 +292,26 @@ class ProblemPublicViewTests(ProblemImageTestBase, AuthorizationTestCase):
 class ProblemProviderPickerTests(TestCase):
 
     def setUp(self):
-        pick_provider_url = reverse('problems-pick-provider', kwargs={'cobrand': 'choices'})
-        self.results_url = "{0}?organisation_type={1}&location={2}".format(pick_provider_url, 'gppractices', 'London')
+        self.pick_provider_url = reverse('problems-pick-provider', kwargs={'cobrand': 'choices'})
+        self.results_url = "{0}?organisation_type={1}&location={2}".format(self.pick_provider_url, 'gppractices', 'London')
+
+        # Create an inactive org to test that the results are filtered
+        self.inactive_trust = create_test_organisation_parent({'code': 'MYTRUST', 'active': False})
+        self.inactive_hospital = create_test_organisation({
+            'name': 'Inactive Hospital',
+            'organisation_type': 'hospitals',
+            'ods_code': 'HOS456',
+            'parent': self.inactive_trust
+        })
 
     def test_results_page_exists(self):
         resp = self.client.get(self.results_url)
         self.assertEqual(resp.status_code, 200)
+
+    def test_results_page_does_not_show_inactive_organisation(self):
+        results_url = "{0}?organisation_type={1}&location={2}".format(self.pick_provider_url, 'hospitals', 'London')
+        resp = self.client.get(results_url)
+        self.assertNotContains(resp, self.inactive_hospital.name, status_code=200)
 
 
 class ProblemSurveyTests(AuthorizationTestCase):

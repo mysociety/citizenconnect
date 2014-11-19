@@ -72,17 +72,23 @@ class OrganisationFinderForm(forms.Form):
 
     PILOT_SEARCH_CAVEAT = 'The provider or postcode may not be covered by this service.'
 
+    def __init__(self, *args, **kwargs):
+        # Override __init__ to allow the calling view to pass us an initial
+        # queryset to find organisations in
+        self.queryset = kwargs.pop('queryset', Organisation.objects.all())
+        super(OrganisationFinderForm, self).__init__(*args, **kwargs)
+
     def organisations_from_postcode(self, postcode, partial=False):
         try:
             point = MapitPostCodeLookup.postcode_to_point(postcode, partial)
             if point:
-                return Organisation.objects.filter(point__distance_lt=(point, Distance(mi=5))).distance(point).order_by('distance')
+                return self.queryset.filter(point__distance_lt=(point, Distance(mi=5))).distance(point).order_by('distance')
             else:
                 # If we couldn't geocode the point we get None back, which means
                 # the postcode is valid, but couldn't geocode it. The best way
                 # to present this to the user is as if we couldn't find any orgs
                 # near them.
-                return Organisation.objects.none()
+                return self.queryset.none()
         except MapitPostcodeNotFoundError:
             validation_message = 'Sorry, no postcode matches that query. Please try again, or try searching by provider name'
         except MapitPostcodeNotValidError:
@@ -103,19 +109,19 @@ class OrganisationFinderForm(forms.Form):
                 organisations = self.organisations_from_postcode(postcode, partial=True)
                 validation_message = "Sorry, there are no matches within 5 miles of %s. Please try again. %s" % (location, self.PILOT_SEARCH_CAVEAT)
             else:
-                organisations = Organisation.objects.filter(name__icontains=location)
+                organisations = self.queryset.filter(name__icontains=location)
                 if len(organisations) < 5:
                     # Try a metaphone search to give more results
                     location_metaphone = dm(location)
                     # First do a __startswith or __endswith
-                    alt_orgs = Organisation.objects.filter(Q(name_metaphone__startswith=location_metaphone[0])
-                                                           | Q(name_metaphone__endswith=location_metaphone[0]),
-                                                           ~Q(pk__in=list([a.id for a in organisations])))
+                    alt_orgs = self.queryset.filter(Q(name_metaphone__startswith=location_metaphone[0])
+                                                    | Q(name_metaphone__endswith=location_metaphone[0]),
+                                                    ~Q(pk__in=list([a.id for a in organisations])))
                     organisations = list(chain(organisations, alt_orgs))
                     if len(organisations) < 10:
                         # Try a metaphone __contains to give even more results
-                        more_orgs = Organisation.objects.filter(Q(name_metaphone__contains=location_metaphone[0]),
-                                                                ~Q(pk__in=list([a.id for a in organisations])))
+                        more_orgs = self.queryset.filter(Q(name_metaphone__contains=location_metaphone[0]),
+                                                         ~Q(pk__in=list([a.id for a in organisations])))
                         organisations = list(chain(organisations, more_orgs))
 
                 validation_message = "We couldn't find any matches for '%s'. Please try again. %s" % (location, self.PILOT_SEARCH_CAVEAT)

@@ -1,6 +1,6 @@
 # encoding: utf-8
 import os
-from mock import MagicMock
+from mock import MagicMock, patch
 import json
 import urllib
 import logging
@@ -21,11 +21,11 @@ from citizenconnect.browser_testing import SeleniumTestCase
 from issues.models import Problem
 
 import organisations
-from ..models import Organisation
 from ..forms import MapitPostCodeLookup, MapitPostcodeNotFoundError
 from ..views.base import Summary
 from . import (create_test_problem,
                create_test_organisation,
+               create_test_organisation_parent,
                create_test_service,
                create_test_review,
                AuthorizationTestCase)
@@ -726,6 +726,7 @@ class ProviderPickerTests(TestCase):
             'ods_code': 'HOS123',
             'point': Point(-0.13, 51.5)
         })
+
         self.base_url = reverse('org-pick-provider', kwargs={'cobrand': 'choices'})
         self.results_url = "%s?location=SW1A+1AA" % self.base_url
 
@@ -818,13 +819,12 @@ class ProviderPickerTests(TestCase):
         mock_results = MagicMock()
         ordered_results = mock_results.distance().order_by('distance')
         ordered_results.return_value = []
-        old_filter = Organisation.objects.filter
-        Organisation.objects.filter = mock_results
-        resp = self.client.get(self.results_url)
+        with patch('organisations.models.OrganisationQuerySet.filter') as patched_filter:
+            patched_filter.return_value = mock_results
+            resp = self.client.get(self.results_url)
         expected_message = 'Sorry, there are no matches within 5 miles of SW1A 1AA. Please try again'
         self.assertContains(resp, expected_message, count=1, status_code=200)
         self.assertContains(resp, OrganisationFinderForm.PILOT_SEARCH_CAVEAT)
-        Organisation.objects.filter = old_filter
 
 
 class NotFoundTest(TestCase):

@@ -367,7 +367,7 @@ class PickProviderBase(ListView):
     def get(self, *args, **kwargs):
         super(PickProviderBase, self).get(*args, **kwargs)
         if self.request.GET:
-            form = OrganisationFinderForm(self.request.GET)
+            form = OrganisationFinderForm(self.request.GET, queryset=self.get_queryset())
             if form.is_valid():  # All validation rules pass
                 context = self.get_context_data(object_list=self.object_list)
                 context.update({'location': form.cleaned_data['location'],
