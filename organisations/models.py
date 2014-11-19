@@ -3,6 +3,7 @@ logger = logging.getLogger(__name__)
 import csv
 
 from django.contrib.gis.db import models as geomodels
+from django.contrib.gis.db.models.query import GeoQuerySet
 from django.conf import settings
 from django.db import models, connection, IntegrityError, transaction
 from django.db.models.signals import post_save
@@ -12,6 +13,8 @@ from django.core.exceptions import ValidationError
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.utils.encoding import force_unicode
+
+from model_utils.managers import PassThroughManagerMixin
 
 from citizenconnect.models import (
     AuditedModel,
@@ -384,6 +387,21 @@ def organisation_image_upload_path(instance, filename):
     )
 
 
+class OrganisationQuerySet(GeoQuerySet):
+    """Custom queryset for Organisations that allows selecting only active
+    organisations."""
+
+    def active(self):
+        return self.filter(parent__active=True)
+
+
+class PassThroughGeoManager(PassThroughManagerMixin, geomodels.GeoManager):
+    """Mixin PassThroughManager from model_utils with GeoManager so that we
+    can get the custom queryset pass through business from that, alongside the
+    standard GeoManager methods."""
+    pass
+
+
 class Organisation(AuditedModel, geomodels.Model):
     """Stores an Organisation - a Hospital, GP, Clinic, etc"""
 
@@ -411,10 +429,8 @@ class Organisation(AuditedModel, geomodels.Model):
     # The organisation's location
     point = geomodels.PointField()
 
-    # Set a custom manager as an instance of GeoManager - so that we can
-    # perform geo-spatial queries against Organisation.
-    # See: https://docs.djangoproject.com/en/1.4/ref/contrib/gis/model-api/#geomanager
-    objects = geomodels.GeoManager()
+    # Set up our custom manager
+    objects = PassThroughGeoManager.for_queryset_class(OrganisationQuerySet)()
 
     # The parent of this organisation
     parent = models.ForeignKey(OrganisationParent, blank=False, null=False, related_name='organisations')

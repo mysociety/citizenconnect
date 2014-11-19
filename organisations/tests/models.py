@@ -137,9 +137,18 @@ class CCGModelAuthTests(AuthorizationTestCase):
 
 
 class OrganisationModelTests(TestCase):
+
     def test_organisation_type_name(self):
         test_org = create_test_organisation({'organisation_type': 'hospitals'})
         self.assertEqual(test_org.organisation_type_name, 'Hospital')
+
+    def test_custom_queryset_limits_to_active_organisations(self):
+        active_trust = create_test_organisation_parent({'code': 'MYTRUST', 'active': True})
+        inactive_trust = create_test_organisation_parent({'code': 'MYTRUST2', 'active': False})
+        active_org = create_test_organisation({'organisation_type': 'hospitals', 'ods_code': '1234', 'parent': active_trust})
+        inactive_org = create_test_organisation({'organisation_type': 'hospitals', 'ods_code': '4567', 'parent': inactive_trust})
+        self.assertEqual(list(Organisation.objects.all()), [active_org, inactive_org])
+        self.assertEqual(list(Organisation.objects.active()), [active_org])
 
 
 class OrganisationModelAuthTests(AuthorizationTestCase):
