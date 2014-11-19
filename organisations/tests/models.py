@@ -79,6 +79,9 @@ class OrganisationParentModelTests(TestCase):
             email=""
         )
 
+    def test_active_defaults_to_true(self):
+        self.assertTrue(self.test_trust.active)
+
 
 class CCGModelTests(TestCase):
 

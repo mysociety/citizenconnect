@@ -311,6 +311,9 @@ class OrganisationParent(MailSendMixin, AuditedModel):
     # Reverse relation to Surveys
     surveys = generic.GenericRelation(FriendsAndFamilySurvey)
 
+    # Whether this parent is 'active', e.g. receiving new problems
+    active = models.BooleanField(default=True, db_index=True)
+
     def save(self, *args, **kwargs):
         """Overriden save to ensure email address is set"""
         if not self.email:

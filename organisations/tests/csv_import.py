@@ -112,6 +112,7 @@ class CsvImportTests(TestCase):
                 'name': 'Ascot North Trust',
                 'secondary_email': 'an-trust-backup@example.com',
                 'users': [],
+                'active': True,
             }
         )
         self.assertEqual(
