@@ -17,7 +17,7 @@ class OrganisationAdmin(AdminImageMixin, reversion.VersionAdmin):
 
 
 class OrganisationParentAdmin(reversion.VersionAdmin):
-    list_display = ('id', 'name', 'code', 'email')
+    list_display = ('id', 'name', 'code', 'email', 'active')
 
 
 class CCGAdmin(reversion.VersionAdmin):
