@@ -39,6 +39,21 @@ class OrganisationAwareViewMixin(PrivateViewMixin):
         return context
 
 
+class ActiveOrganisationAwareViewMixin(OrganisationAwareViewMixin):
+    """Extension of OrganisationAwareViewMixin that only looks in active organisations."""
+
+    def dispatch(self, request, *args, **kwargs):
+        # As per OrganisationAwareViewMixin, we set an organisation here so
+        # that we can use it anywhere in the class without worrying about
+        # whether it has been set yet. However, here we only look in active
+        # organisations
+        try:
+            self.organisation = Organisation.objects.active().get(ods_code=kwargs['ods_code'])
+        except Organisation.DoesNotExist:
+            raise Http404
+        return super(OrganisationAwareViewMixin, self).dispatch(request, *args, **kwargs)
+
+
 class OrganisationPickProvider(PickProviderBase):
     pass
 

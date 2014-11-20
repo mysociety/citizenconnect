@@ -3,18 +3,24 @@ import datetime
 from decimal import Decimal
 
 # Django imports
+from django.http import Http404
+from django.test import TestCase
+from django.test.client import RequestFactory
 from django.core.urlresolvers import reverse
+from django.views.generic import View
 
 # App imports
 from citizenconnect.browser_testing import SeleniumTestCase
 from issues.models import Problem
 
 from ..models import FriendsAndFamilySurvey
+from ..views.organisations import ActiveOrganisationAwareViewMixin
 
 from .lib import (
     create_test_problem,
     create_test_service,
     create_test_organisation,
+    create_test_organisation_parent,
     AuthorizationTestCase
 )
 
@@ -456,3 +462,32 @@ class OrganisationSurveysBrowserTests(SeleniumTestCase):
         for index, survey in enumerate(self.surveys):
             month_name = survey.date.strftime("%B")
             self.assertEqual(labels[index].text, month_name)
+
+
+class JustForTestView(ActiveOrganisationAwareViewMixin, View):
+    """Dummy class to text the ActiveOrganisationAwareViewMixin."""
+
+    def get(self, request, *args, **kwargs):
+        pass
+
+
+class ActiveOrganisationAwareViewMixinTest(TestCase):
+    """Test the mixin that makes only active orgs available to a view."""
+
+    def setUp(self):
+        self.active_trust = create_test_organisation_parent({'code': 'MYTRUST', 'active': True})
+        self.inactive_trust = create_test_organisation_parent({'code': 'MYTRUST2', 'active': False})
+        self.active_org = create_test_organisation({'organisation_type': 'hospitals', 'ods_code': '1234', 'parent': self.active_trust})
+        self.inactive_org = create_test_organisation({'organisation_type': 'hospitals', 'ods_code': '4567', 'parent': self.inactive_trust})
+        self.request_factory = RequestFactory()
+
+    def test_finds_active_organisation(self):
+        view = JustForTestView()
+        request = self.request_factory.get('fake-url')
+        view.dispatch(request, ods_code=self.active_org.ods_code)
+        self.assertEqual(view.organisation, self.active_org)
+
+    def test_doesnt_find_inactive_organisation(self):
+        view = JustForTestView()
+        request = self.request_factory.get('fake-url')
+        self.assertRaises(Http404, view.dispatch, request, ods_code=self.inactive_org.ods_code)
