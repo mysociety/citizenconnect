@@ -12,7 +12,10 @@ from extra_views import CreateWithInlinesView, InlineFormSet, NamedFormsetsMixin
 from citizenconnect.shortcuts import render
 from organisations.models import Organisation, Service
 from organisations.views.base import PickProviderBase, FilterFormMixin
-from organisations.views.organisations import OrganisationAwareViewMixin
+from organisations.views.organisations import (
+    OrganisationAwareViewMixin,
+    ActiveOrganisationAwareViewMixin
+)
 from organisations.views.organisation_parents import OrganisationParentAwareViewMixin
 from organisations.auth import enforce_problem_access_check
 from organisations.lib import interval_counts
@@ -53,7 +56,7 @@ class ProblemImageInline(InlineFormSet):
         return kwargs
 
 
-class ProblemCreate(OrganisationAwareViewMixin,
+class ProblemCreate(ActiveOrganisationAwareViewMixin,
                     NamedFormsetsMixin,
                     CreateWithInlinesView):
     model = Problem
