@@ -8,7 +8,11 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.test.utils import override_settings
 
-from organisations.tests.lib import create_test_organisation, create_test_service
+from organisations.tests.lib import (
+    create_test_organisation,
+    create_test_service,
+    create_test_organisation_parent
+)
 from issues.models import Problem
 
 
@@ -131,6 +135,24 @@ class ProblemAPITests(TestCase):
         problem_with_unknown_organisation = self.test_problem_defaults
         problem_with_unknown_organisation['organisation'] = 'gibberish'
         resp = self.client.post(self.problem_api_url, problem_with_unknown_organisation)
+        self.assertEquals(resp.status_code, 400)
+
+        content_json = json.loads(resp.content)
+        errors = content_json['errors']
+        self.assertEqual(errors['organisation'][0], 'Sorry, that organisation is not recognised.')
+
+    def test_inactive_organisation_rejected(self):
+        self.inactive_trust = create_test_organisation_parent({'code': 'MYTRUST', 'active': False})
+        self.inactive_hospital = create_test_organisation({
+            'name': 'Inactive Hospital',
+            'organisation_type': 'hospitals',
+            'ods_code': 'HOS456',
+            'parent': self.inactive_trust
+        })
+
+        problem_with_inactive_organisation = self.test_problem_defaults
+        problem_with_inactive_organisation['organisation'] = 'HOS456'
+        resp = self.client.post(self.problem_api_url, problem_with_inactive_organisation)
         self.assertEquals(resp.status_code, 400)
 
         content_json = json.loads(resp.content)

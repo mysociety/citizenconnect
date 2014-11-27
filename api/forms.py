@@ -39,7 +39,7 @@ class ProblemAPIForm(forms.ModelForm):
 
         if 'organisation' in cleaned_data and cleaned_data['organisation']:
             try:
-                return Organisation.objects.get(ods_code=cleaned_data['organisation'])
+                return Organisation.objects.active().get(ods_code=cleaned_data['organisation'])
             except Organisation.DoesNotExist:
                 raise forms.ValidationError('Sorry, that organisation is not recognised.')
 
