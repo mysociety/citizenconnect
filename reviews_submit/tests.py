@@ -9,6 +9,7 @@ from dateutil import relativedelta
 from selenium.webdriver.common.action_chains import ActionChains
 
 from django.test import TestCase
+from django.test.utils import override_settings
 from django.core.urlresolvers import reverse
 from django.core.management import call_command
 from django.utils import timezone
@@ -488,3 +489,43 @@ class RemoveReviewsSentToApiTest(TestCase):
         self.assertEquals(self.organisation.submitted_reviews.count(), 4)
         call_command('delete_reviews_sent_to_choices_api', stdout=self.stdout, stderr=self.stderr)
         self.assertEquals(self.organisation.submitted_reviews.count(), 2)
+
+
+class ReviewsProviderPickerTests(TestCase):
+
+    def setUp(self):
+        self.pick_provider_url = reverse('reviews-pick-provider', kwargs={'cobrand': 'choices'})
+        self.results_url = "{0}?organisation_type={1}&location={2}".format(self.pick_provider_url, 'gppractices', 'London')
+
+    def test_results_page_exists(self):
+        resp = self.client.get(self.results_url)
+        self.assertEqual(resp.status_code, 200)
+
+    @override_settings(REVIEW_IGNORE_ORGANISATIONS=[])
+    def test_results_page_finds_organisation(self):
+        self.included_hospital = create_test_organisation({
+            'name': 'Included Hospital',
+            'organisation_type': 'hospitals',
+            'ods_code': 'XYZ123'
+        })
+        results_url = "{0}?organisation_type={1}&location={2}".format(self.pick_provider_url, 'hospitals', 'Hospital')
+        resp = self.client.get(results_url)
+        self.assertContains(resp, self.included_hospital.name, status_code=200)
+
+    @override_settings(REVIEW_IGNORE_ORGANISATIONS=['XYZ123'])
+    def test_results_page_does_not_show_excluded_organisation(self):
+        self.included_hospital = create_test_organisation({
+            'name': 'Included Hospital',
+            'organisation_type': 'hospitals',
+            'ods_code': 'ABC123'
+        })
+        self.excluded_hospital = create_test_organisation({
+            'name': 'Excluded Hospital',
+            'organisation_type': 'hospitals',
+            'ods_code': 'XYZ123'
+        })
+        results_url = "{0}?organisation_type={1}&location={2}".format(self.pick_provider_url, 'hospitals', 'Hospital')
+        resp = self.client.get(results_url)
+        self.assertNotContains(resp, self.excluded_hospital.name, status_code=200)
+        self.assertContains(resp, self.included_hospital.name, status_code=200)
+

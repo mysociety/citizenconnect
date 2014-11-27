@@ -115,3 +115,10 @@ REVIEWS_MUST_BE_SENT: 2
 REVIEWS_MUST_BE_CREATED: 24
 PROBLEMS_MUST_BE_CREATED: 168
 
+# Organisations to ignore for reviews.
+# Some organisation codes are not recognised by NHS Choices and error when
+# we try to send a review about them. Putting their code in this list means
+# that we won't let someone pick them in the organisation search for reviews.
+REVIEW_IGNORE_ORGANISATIONS:
+  - 'XYZ123'
+

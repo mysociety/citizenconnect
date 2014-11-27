@@ -4,6 +4,7 @@ from django.views.generic.edit import CreateView
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
+from django.conf import settings
 
 # App imports
 from organisations.views.base import PickProviderBase
@@ -15,6 +16,15 @@ from . import forms
 class ReviewPickProvider(PickProviderBase):
     result_link_url_name = 'review-form'
     title_text = 'Share Your Experience'
+
+    def get_queryset(self):
+        # Exclude some organisations from the search.
+        # exclusions. Doing this in get_queryset so that it's easier to test
+        # with overriden settings
+        # Note: exclude is a noop if the list is empty
+        return super(ReviewPickProvider, self).get_queryset().exclude(
+            ods_code__in=settings.REVIEW_IGNORE_ORGANISATIONS
+        )
 
 
 class ReviewForm(CreateView):
