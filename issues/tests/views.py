@@ -309,7 +309,7 @@ class ProblemProviderPickerTests(TestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_results_page_does_not_show_inactive_organisation(self):
-        results_url = "{0}?organisation_type={1}&location={2}".format(self.pick_provider_url, 'hospitals', 'London')
+        results_url = "{0}?organisation_type={1}&location={2}".format(self.pick_provider_url, 'hospitals', 'Inactive')
         resp = self.client.get(results_url)
         self.assertNotContains(resp, self.inactive_hospital.name, status_code=200)
 
