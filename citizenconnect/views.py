@@ -276,7 +276,6 @@ class HealthCheck(TemplateView):
         surveys_must_be_sent_by = now - timedelta(hours=settings.SURVEYS_MUST_BE_SENT)
         reviews_must_be_sent_by = now - timedelta(hours=settings.REVIEWS_MUST_BE_SENT)
         reviews_must_have_been_received_since = now - timedelta(hours=settings.REVIEWS_MUST_BE_CREATED)
-        problems_must_have_been_created_since = now - timedelta(hours=settings.PROBLEMS_MUST_BE_CREATED)
 
         # Unsent problems
         unsent_problems = Problem.objects.filter(
@@ -337,14 +336,5 @@ class HealthCheck(TemplateView):
             if latest_choices_review.created <= reviews_must_have_been_received_since:
                 self.status = 500
                 context['latest_choices_review_healthy'] = False
-
-        # No new problems
-        latest_problems = Problem.objects.all().order_by('-created')
-        if latest_problems:
-            context['latest_problem'] = latest_problem = latest_problems[0]
-            context['latest_problem_healthy'] = True
-            if latest_problem.created <= problems_must_have_been_created_since:
-                self.status = 500
-                context['latest_problem_healthy'] = False
 
         return context

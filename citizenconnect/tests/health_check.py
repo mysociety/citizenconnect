@@ -25,7 +25,6 @@ from issues.models import Problem
     SURVEYS_MUST_BE_SENT = 2,
     REVIEWS_MUST_BE_SENT = 2,
     REVIEWS_MUST_BE_CREATED = 24,
-    PROBLEMS_MUST_BE_CREATED = 168
 )
 class HealthCheckTests(TestCase):
 
@@ -98,17 +97,6 @@ class HealthCheckTests(TestCase):
         review.save()
         resp = self.client.get(self.health_check_url)
         expected_text = 'Last new review (from NHS Choices) created: {0} - Bad'.format(django_date(review.created, formats.DATETIME_FORMAT))
-        self.assertContains(resp, expected_text, status_code=500)
-
-    def test_no_new_problems_recently(self):
-        # Create a problem but make it over 1 week old, and use our timezone
-        # specific date so that we can check the output from the view
-        problem = create_test_problem({
-            'organisation': self.organisation,
-            'created': self.eight_days_ago
-        })
-        resp = self.client.get(self.health_check_url)
-        expected_text = 'Last new problem created: {0} - Bad'.format(django_date(problem.created, formats.DATETIME_FORMAT))
         self.assertContains(resp, expected_text, status_code=500)
 
     def test_all_ok(self):

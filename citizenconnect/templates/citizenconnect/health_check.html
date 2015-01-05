@@ -14,9 +14,6 @@
     {% if latest_choices_review %}
         <li>Last new review (from NHS Choices) created: {{ latest_choices_review.created }} - {% if latest_choices_review_healthy %}Good{% else %}Bad{% endif %}</li>
     {% endif %}
-    {% if latest_problem %}
-        <li>Last new problem created: {{ latest_problem.created }} - {% if latest_problem_healthy %}Good{% else %}Bad{% endif %}</li>
-    {% endif %}
 </ul>
 
 {% endblock content %}

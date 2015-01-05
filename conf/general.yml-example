@@ -113,7 +113,6 @@ CONFIRMATIONS_MUST_BE_SENT: 2
 SURVEYS_MUST_BE_SENT: 2
 REVIEWS_MUST_BE_SENT: 2
 REVIEWS_MUST_BE_CREATED: 24
-PROBLEMS_MUST_BE_CREATED: 168
 
 # Organisations to ignore for reviews.
 # Some organisation codes are not recognised by NHS Choices and error when
