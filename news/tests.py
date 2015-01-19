@@ -172,7 +172,10 @@ class PullArticlesFromRssFeedTests(TestCase):
         self.assertEqual(Article.objects.count(), 2)
         article = Article.objects.get(guid='http://blogs.mysociety.org/careconnect/?p=1')
         image_filename = article.image.url
-        image_filename_regex = re.compile('article_images/MelonHatCat_1.jpg', re.I)
+        # The regex is needed because as of Django 1.4.14 file upload code
+        # picks a random 7 char string to avoid filename clashes, rather
+        # than simply incrementing an integer.
+        image_filename_regex = re.compile('article_images/MelonHatCat_[\w\d]+.jpg', re.I)
         self.assertRegexpMatches(image_filename, image_filename_regex)
 
 
