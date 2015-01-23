@@ -28,10 +28,6 @@
             <img src="{{ im.url }}" style="max-width: 100%;" />
         {% endthumbnail %}
         {% include 'news/includes/recent_articles_sidebar.html' with articles=recent_articles %}
-        <div class="latest-tweet">
-            <h2 class="news-article__sidebar__title">TWITTER</h2>
-            {% include 'citizenconnect/includes/twitter_latest_tweet.html' %}
-        </div>
     </div>
 
 </div>
@@ -39,7 +35,3 @@
 {% include 'citizenconnect/includes/emergency_numbers.html' %}
 
 {% endblock content %}
-
-{% block extra_js %}
-<script src="{% static 'js/twitter-embed.js' %}"></script>
-{% endblock extra_js %}

@@ -72,11 +72,6 @@ GOOGLE_ANALYTICS_ACCOUNT = config.get('GOOGLE_ANALYTICS_ACCOUNT')
 MAX_IMAGES_PER_PROBLEM = config.get('MAX_IMAGES_PER_PROBLEM')
 ALLOWED_IMAGE_EXTENSIONS = config.get('ALLOWED_IMAGE_EXTENSIONS')
 
-
-# Twitter related
-TWITTER_USERNAME = config.get('TWITTER_USERNAME', 'CareConnectNHS')  # without the '@'
-TWITTER_WIDGET_ID = config.get('TWITTER_WIDGET_ID', '355653879704207362')
-
 NHS_RSS_FEED_URL = config.get('NHS_RSS_FEED_URL', 'http://news.careconnect.mysociety.org/feed/')
 
 # Whether to prefer X_FORWARDED_HOST to HOST, should only be True for

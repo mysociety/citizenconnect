@@ -30,18 +30,8 @@
 
     <div class="g  one-third  palm-one-whole">
         {% include 'news/includes/recent_articles_sidebar.html' with articles=recent_articles %}
-
-        <h2 class="title  title--news  mb--s">Twitter</h2>
-        {% include "citizenconnect/includes/twitter_timeline.html" %}
-
     </div>
 
 </div>
 
 {% endblock content %}
-
-
-{% block extra_js %}
-  {{ block.super }}
-  <script src="{% static 'js/twitter-embed.js' %}"></script>
-{% endblock extra_js %}

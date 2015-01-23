@@ -11,8 +11,6 @@ def add_settings(request):
             'ABUSE_EMAIL_ADDRESS': settings.ABUSE_EMAIL_ADDRESS,
             'MAX_IMAGES_PER_PROBLEM': settings.MAX_IMAGES_PER_PROBLEM,
             'ALLOWED_IMAGE_EXTENSIONS': settings.ALLOWED_IMAGE_EXTENSIONS,
-            'TWITTER_USERNAME': settings.TWITTER_USERNAME,
-            'TWITTER_WIDGET_ID': settings.TWITTER_WIDGET_ID,
             'STATIC_URL': settings.STATIC_URL
         }
     }

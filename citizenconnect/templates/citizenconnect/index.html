@@ -90,27 +90,6 @@
     </div>
 </div>
 
-
-<div class="gw">
-    <div class="g  two-thirds  palm-one-whole">
-        <div class="news-articles">
-            <h2 class="title  title--news  mb--s">Latest News</h2>
-            {% for article in recent_articles %}
-                {% include 'news/includes/article_in_list.html' with article=article %}
-            {% endfor %}
-            <div class="align-center">
-                <a href="{% url 'article-list' cobrand=cobrand.name %}" class="coloured-link">View all news <span class="icon-chevron-right" aria-hidden="true"></span> </a>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="g  one-third  palm-one-whole">
-        <h2 class="title  title--news  mb--s">Twitter</h2>
-        {% include "citizenconnect/includes/twitter_timeline.html" %}
-    </div>
-</div>
-
 {% include 'citizenconnect/includes/contact_numbers.html' %}
 
 {% include 'citizenconnect/includes/emergency_numbers.html' %}
@@ -152,8 +131,5 @@
         });
     });
 </script>
-
-{# Twitter embedded timeline activation js - place last on page to prevent blocking #}
-<script src="{% static 'js/twitter-embed.js' %}"></script>
 
 {% endblock extra_js %}
