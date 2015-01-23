@@ -47,7 +47,6 @@ urlpatterns = patterns(
     url(r'^' + cobrand_pattern + r'/reviews/', include('reviews_submit.urls')),
     url(r'^' + cobrand_pattern + r'/reviews', include('reviews_display.urls')),
     url(r'^' + cobrand_pattern + r'/', include('organisations.urls.public')),
-    url(r'^' + cobrand_pattern + r'/news', include('news.urls')),
 
     # private is the namespace for NHS-staff only pages
     url(r'^private/', include('organisations.urls.private')),

@@ -72,8 +72,6 @@ GOOGLE_ANALYTICS_ACCOUNT = config.get('GOOGLE_ANALYTICS_ACCOUNT')
 MAX_IMAGES_PER_PROBLEM = config.get('MAX_IMAGES_PER_PROBLEM')
 ALLOWED_IMAGE_EXTENSIONS = config.get('ALLOWED_IMAGE_EXTENSIONS')
 
-NHS_RSS_FEED_URL = config.get('NHS_RSS_FEED_URL', 'http://news.careconnect.mysociety.org/feed/')
-
 # Whether to prefer X_FORWARDED_HOST to HOST, should only be True for
 # sites which are being proxied, hence set in general.yml where
 # we know what site we're dealing with.
@@ -88,12 +86,6 @@ CSRF_COOKIE_SECURE = not STAGING
 CSRF_COOKIE_PATH = '/careconnect'
 
 ALLOWED_HOSTS = [] if STAGING else config.get('ALLOWED_HOSTS', [])
-
-# What URL do the blog files live at?
-# So that we can rewrite their HTML and reverse proxy them
-BLOG_FILES_URL = 'http://news.careconnect.mysociety.org/files'
-# What url should they be proxied to?
-PROXIED_BLOG_FILES_URL = '/careconnect/news/files'
 
 # How many day's worth of things to show on the Live feed
 LIVE_FEED_CUTOFF_DAYS = config.get("LIVE_FEED_CUTOFF_DAYS")

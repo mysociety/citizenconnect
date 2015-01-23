@@ -9,7 +9,6 @@ from organisations.models import (
     FriendsAndFamilySurvey
 )
 from reviews_display.models import Review, Rating
-from news.models import Article
 
 
 class Command(NoArgsCommand):
@@ -25,7 +24,6 @@ class Command(NoArgsCommand):
     organisations.FriendsAndFamilySurvey
     reviews_display.Review
     reviews_display.Rating
-    news.Article
 
     For CCGs and OrganisationParents, the existing email addresses will be
     replaced by dummy email addresses:
@@ -35,12 +33,9 @@ class Command(NoArgsCommand):
 
     For reviews, the data is left as-is, since it's come from the public NHS
     api anyway.
-
-    For news, the data is left as-is, since it's come from the public news
-    page.
     """
 
-    help = "Dump out organisation, review and news data from this site, " \
+    help = "Dump out organisation and review from this site, " \
     "anonymising or removing all the personal data. Note: problems are not " \
     "dumped, because anonymising them is tricky, and transferring them to a " \
     "separate instance doesn't necessarily make any sense."
@@ -75,9 +70,6 @@ class Command(NoArgsCommand):
         objects.extend(Review.objects.all())
         objects.extend(Rating.objects.all())
 
-        # News
-        objects.extend(Article.objects.all())
-
         # Serialise things
         # This is a bit tricky because we don't want to serialise some
         # specific fields, but we want to get everything else.
@@ -85,7 +77,7 @@ class Command(NoArgsCommand):
 
         # If you dump any more objects, make sure to add them to this list too
         # otherwise we won't dump any of their fields for sure
-        model_classes = [CCG, OrganisationParent, Organisation, Service, FriendsAndFamilySurvey, Review, Rating, Article]
+        model_classes = [CCG, OrganisationParent, Organisation, Service, FriendsAndFamilySurvey, Review, Rating]
 
         for model_class in model_classes:
             # These two fields on the _meta are what

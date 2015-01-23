@@ -81,11 +81,11 @@ Loading Data
 
 At the very least, the site will need some CCGs, Organisation Parents and
 Organisations in order to be useful. To have a fully functional site, you'll
-also want some reviews, news articles and of course, some problems.
+also want some reviews and of course, some problems.
 
 The best way to do this is to take an anonymised dump of what's on the current
-live site. We have a command to do this for the organisations/ccgs/parents,
-news articles and reviews. By doing this you can mostly match the live site,
+live site. We have a command to do this for the organisations/ccgs/parents and
+reviews. By doing this you can mostly match the live site,
 but don't have to worry about having any real email addresses or private data
 in your instance.
 
@@ -96,7 +96,7 @@ generating randomised problems for all the current orgs from a few "seeds".
 
 To do all that:
 
-### On the live site, dump the current orgs/ccgs/parents, news and reviews:
+### On the live site, dump the current orgs/ccgs/parent and reviews:
     ./manage.py dump_anonymised_data > /tmp/some-file.json
 
 ### On your site, load this dump in:

@@ -19,7 +19,6 @@ from issues.forms import PublicLookupForm
 from issues.models import Problem
 from reviews_display.models import Review
 from reviews_submit.models import Review as SubmittedReview
-from news.models import Article
 
 from .forms import LiveFeedFilterForm, FeedbackForm
 
@@ -46,8 +45,6 @@ class Home(FormView):
         date_created = lambda issue: issue.api_published if hasattr(issue, 'api_published') else issue.created
         issues.sort(key=date_created, reverse=True)
         context['issues'] = issues[:num_issues]
-
-        context['recent_articles'] = Article.objects.order_by('-published')[:3]
 
         return context
 

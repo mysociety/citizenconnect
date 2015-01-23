@@ -155,7 +155,6 @@ INSTALLED_APPS = (
     'reversion',
     'failedloginblocker',
     'geocoder',
-    'news',
     'pipeline',
 )
 

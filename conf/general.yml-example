@@ -83,9 +83,6 @@ MAX_IMAGES_PER_PROBLEM: 3
 # before checking them against it
 ALLOWED_IMAGE_EXTENSIONS: ['.jpg', '.jpeg', '.gif', '.bmp']
 
-# The news feed url where news articles should be pulled from
-NHS_RSS_FEED_URL: http://news.careconnect.mysociety.org/feed/
-
 # Whether to prefer the X_FORWARDED_HOST header - used when the site
 # is behind a proxy, and therefore set here on a site-by-site basis
 USE_X_FORWARDED_HOST: False
