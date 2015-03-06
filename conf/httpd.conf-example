@@ -77,3 +77,24 @@ WSGIPassAuthorization On
         Header unset X-UA-Compatible
     </FilesMatch>
 </IfModule>
+
+# Disable access to everything except /admin and /private and the health check
+<Location />
+Order deny,allow
+Deny from all
+</Location>
+
+<Location /careconnect/private>
+Order allow,deny
+Allow from all
+</Location>
+
+<Location /careconnect/admin>
+Order allow,deny
+Allow from all
+</Location>
+
+<Location /careconnect/health>
+Order allow,deny
+Allow from all
+</Location>
